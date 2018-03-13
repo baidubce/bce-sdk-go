@@ -645,11 +645,15 @@ etag, err := bosClient.PutObject(bucketName, objectName, bodyStream, args)
 
 BOS修改Object的Metadata通过拷贝Object实现。即拷贝Object的时候，把目的Bucket
 设置为源Bucket，目的Object设置为源Object，并设置新的Metadata，通过拷贝自身
-实现修改Metadata的目的。如果不设置新的Metadata，则报错。
+实现修改Metadata的目的。如果不设置新的Metadata，则报错。这种方式下必须使用
+拷贝模式为"replace"（默认情况为"copy"）。示例如下：
 
 ```
 // 创建CopyObjectArgs对象用于设置可选参数
 args := new(api.CopyObjectArgs)
+
+// 必须设置拷贝模式为"replace"，默认为"copy"是不能执行Metadata修改的
+args.MetadataDirective="replace"
 
 // 设置Metadata参数值，具体字段请参考官网说明
 args.LastModified = "Wed, 29 Nov 2017 13:18:08 GMT"

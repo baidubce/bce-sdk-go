@@ -38,7 +38,10 @@
 package bce
 
 import (
+	"bytes"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"time"
 
 	"github.com/baidubce/bce-sdk-go/auth"
@@ -108,8 +111,18 @@ func (c *BceClient) SendRequest(req *BceRequest, resp *BceResponse) error {
 
 	// Send request with the given retry policy
 	retries := 0
+	if req.Body() != nil {
+		defer req.Body().Close() // Manually close the ReadCloser body for retry
+	}
 	for {
+		// The request body should be temporarily saved if retry to send the http request
+		var retryBuf bytes.Buffer
+		if req.Body() != nil {
+			teeReader := io.TeeReader(req.Body(), &retryBuf)
+			req.Request.SetBody(ioutil.NopCloser(teeReader))
+		}
 		httpResp, err := http.Execute(&req.Request)
+
 		if err != nil {
 			if c.Config.Retry.ShouldRetry(err, retries) {
 				delay_in_mills := c.Config.Retry.GetDelayBeforeNextRetryInMillis(err, retries)
@@ -121,6 +134,9 @@ func (c *BceClient) SendRequest(req *BceRequest, resp *BceResponse) error {
 			}
 			retries++
 			log.Warnf("send request failed: %v, retry for %d time(s)", err, retries)
+			if req.Body() != nil {
+				req.Request.SetBody(ioutil.NopCloser(&retryBuf))
+			}
 			continue
 		}
 		resp.SetHttpResponse(httpResp)
@@ -141,6 +157,9 @@ func (c *BceClient) SendRequest(req *BceRequest, resp *BceResponse) error {
 			}
 			retries++
 			log.Warnf("send request failed, retry for %d time(s)", retries)
+			if req.Body() != nil {
+				req.Request.SetBody(ioutil.NopCloser(&retryBuf))
+			}
 			continue
 		}
 		return nil

@@ -97,6 +97,7 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 	if resp.IsFail() {
 		return "", resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return strings.Trim(resp.Header(http.ETAG), "\""), nil
 }
 
@@ -363,6 +364,7 @@ func GetObjectMeta(cli bce.Client, bucket, object string) (*GetObjectMetaResult,
 	if val, ok := headers[toHttpHeaderKey(http.BCE_NEXT_APPEND_OFFSET)]; ok {
 		result.NextAppendOffset = val
 	}
+	defer func() { resp.Body().Close() }()
 	return result, nil
 }
 
@@ -489,6 +491,7 @@ func AppendObject(cli bce.Client, bucket, object string, content *bce.Body,
 		resp.Header(http.CONTENT_MD5),
 		nextOffset,
 		strings.Trim(resp.Header(http.ETAG), "\"")}
+	defer func() { resp.Body().Close() }()
 	return result, nil
 }
 
@@ -512,6 +515,7 @@ func DeleteObject(cli bce.Client, bucket, object string) error {
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
@@ -565,7 +569,7 @@ func GeneratePresignedUrl(conf *bce.BceClientConfiguration, signer auth.Signer, 
 	req := &bce.BceRequest{}
 
 	// Set basic arguments
-	req.SetUri(getObjectUri(bucket, object))
+	req.SetUri(bce.URI_PREFIX + object)
 	if len(method) == 0 {
 		method = http.GET
 	}
@@ -573,6 +577,9 @@ func GeneratePresignedUrl(conf *bce.BceClientConfiguration, signer auth.Signer, 
 	req.SetEndpoint(conf.Endpoint)
 	if req.Protocol() == "" {
 		req.SetProtocol(bce.DEFAULT_PROTOCOL)
+	}
+	if len(bucket) != 0 { // only for ListBuckets API
+		req.SetHost(bucket + "." + req.Host())
 	}
 
 	// Set headers and params if given.

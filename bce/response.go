@@ -91,6 +91,7 @@ func (r *BceResponse) ParseResponse() {
 
 		// First try to read the error `Code' and `Message' from body
 		rawBody, _ := ioutil.ReadAll(r.Body())
+		defer r.Body().Close()
 		if len(rawBody) != 0 {
 			jsonDecoder := json.NewDecoder(bytes.NewBuffer(rawBody))
 			if err := jsonDecoder.Decode(r.serviceError); err != nil {
