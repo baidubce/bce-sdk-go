@@ -1124,6 +1124,13 @@ if err != nil {
 
 ## 版本变更记录
 
+### v0.9.2 [2018-3-16]
+
+ - 修复go get下载时的错误提示信息
+ - 修复重试请求时请求的body流丢失的问题
+ - 完善UploadSuperFile返回的错误提示信息
+ - 将GeneratePresignedUrl接口统一调整为bucket virtual hosting模式
+
 ### v0.9.1 [2018-1-4]
 
 首次发布：
