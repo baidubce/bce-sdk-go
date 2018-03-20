@@ -111,6 +111,7 @@ func HeadBucket(cli bce.Client, bucket string) error {
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
@@ -133,6 +134,7 @@ func PutBucket(cli bce.Client, bucket string) (string, error) {
 	if resp.IsFail() {
 		return "", resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return resp.Header(http.LOCATION), nil
 }
 
@@ -154,6 +156,7 @@ func DeleteBucket(cli bce.Client, bucket string) error {
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
@@ -218,6 +221,7 @@ func PutBucketAcl(cli bce.Client, bucket, cannedAcl string, aclBody *bce.Body) e
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
@@ -270,6 +274,7 @@ func PutBucketLogging(cli bce.Client, bucket string, logging *bce.Body) error {
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
@@ -320,6 +325,7 @@ func DeleteBucketLogging(cli bce.Client, bucket string) error {
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
@@ -344,6 +350,7 @@ func PutBucketLifecycle(cli bce.Client, bucket string, lifecycle *bce.Body) erro
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
@@ -394,6 +401,7 @@ func DeleteBucketLifecycle(cli bce.Client, bucket string) error {
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
@@ -429,6 +437,7 @@ func PutBucketStorageclass(cli bce.Client, bucket, storageClass string) error {
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 

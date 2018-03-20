@@ -161,10 +161,10 @@ func setUserMetadata(req *bce.BceRequest, meta map[string]string) error {
 		if len(k) == 0 {
 			continue
 		}
-		if len(k) + len(v) > 32 * 1024 {
+		if len(k)+len(v) > 32*1024 {
 			return bce.NewBceClientError("MetadataTooLarge")
 		}
-		req.SetHeader(http.BCE_USER_METADATA_PREFIX + k, v)
+		req.SetHeader(http.BCE_USER_METADATA_PREFIX+k, v)
 	}
 	return nil
 }
