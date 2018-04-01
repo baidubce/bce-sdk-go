@@ -20,14 +20,69 @@
 package http
 
 import (
+	"net"
 	"net/http"
 	"net/url"
 	"time"
 )
 
+const (
+	defaultMaxIdleConnsPerHost   = 500
+	defaultResponseHeaderTimeout = 60 * time.Second
+	defaultDialTimeout           = 30 * time.Second
+	defaultSmallInterval         = 60 * time.Second
+	defaultLargeInterval         = 300 * time.Second
+)
+
 // The httpClient is the global variable to send the request and get response
 // for reuse and the Client provided by the Go standard library is thread safe.
-var httpClient = &http.Client{}
+var (
+	httpClient *http.Client
+	transport  *http.Transport
+)
+
+type timeoutConn struct {
+	conn          net.Conn
+	smallInterval time.Duration
+	largeInterval time.Duration
+}
+
+func (c *timeoutConn) Read(b []byte) (n int, err error) {
+	c.SetReadDeadline(time.Now().Add(c.smallInterval))
+	n, err = c.conn.Read(b)
+	c.SetReadDeadline(time.Now().Add(c.largeInterval))
+	return n, err
+}
+func (c *timeoutConn) Write(b []byte) (n int, err error) {
+	c.SetWriteDeadline(time.Now().Add(c.smallInterval))
+	n, err = c.conn.Write(b)
+	c.SetWriteDeadline(time.Now().Add(c.largeInterval))
+	return n, err
+}
+func (c *timeoutConn) Close() error                       { return c.conn.Close() }
+func (c *timeoutConn) LocalAddr() net.Addr                { return c.conn.LocalAddr() }
+func (c *timeoutConn) RemoteAddr() net.Addr               { return c.conn.RemoteAddr() }
+func (c *timeoutConn) SetDeadline(t time.Time) error      { return c.conn.SetDeadline(t) }
+func (c *timeoutConn) SetReadDeadline(t time.Time) error  { return c.conn.SetReadDeadline(t) }
+func (c *timeoutConn) SetWriteDeadline(t time.Time) error { return c.conn.SetWriteDeadline(t) }
+
+func init() {
+	httpClient = &http.Client{}
+	transport = &http.Transport{
+		MaxIdleConnsPerHost:   defaultMaxIdleConnsPerHost,
+		ResponseHeaderTimeout: defaultResponseHeaderTimeout,
+		Dial: func(network, address string) (net.Conn, error) {
+			conn, err := net.DialTimeout(network, address, defaultDialTimeout)
+			if err != nil {
+				return nil, err
+			}
+			tc := &timeoutConn{conn, defaultSmallInterval, defaultLargeInterval}
+			tc.SetReadDeadline(time.Now().Add(defaultLargeInterval))
+			return tc, nil
+		},
+	}
+	httpClient.Transport = transport
+}
 
 // Execute - do the http requset and get the response
 //
@@ -38,9 +93,11 @@ var httpClient = &http.Client{}
 //     - error: nil if ok otherwise the specific error
 func Execute(request *Request) (*Response, error) {
 	// Build the request object for the current requesting
-	httpRequest := &http.Request{}
-	defaultTr := http.DefaultTransport
-	tr, _ := defaultTr.(*http.Transport)
+	httpRequest := &http.Request{
+		Proto:      "HTTP/1.1",
+		ProtoMajor: 1,
+		ProtoMinor: 1,
+	}
 
 	// Set the connection timeout for current request
 	httpClient.Timeout = time.Duration(request.Timeout()) * time.Second
@@ -76,7 +133,7 @@ func Execute(request *Request) (*Response, error) {
 
 	// Set the proxy setting if needed
 	if len(request.ProxyUrl()) != 0 {
-		tr.Proxy = func(_ *http.Request) (*url.URL, error) {
+		transport.Proxy = func(_ *http.Request) (*url.URL, error) {
 			return url.Parse(request.ProxyUrl())
 		}
 	}
@@ -84,17 +141,16 @@ func Execute(request *Request) (*Response, error) {
 	// Perform the http request and get response
 	// It needs to explicitly close the keep-alive connections when error occurs for the request
 	// that may continue sending request's data subsequently.
-	httpClient.Transport = tr
 	start := time.Now()
 	httpResponse, err := httpClient.Do(httpRequest)
 	end := time.Now()
 	if err != nil {
-		tr.CloseIdleConnections()
+		transport.CloseIdleConnections()
 		return nil, err
 	}
 	if httpResponse.StatusCode >= 400 &&
 		(httpRequest.Method == PUT || httpRequest.Method == POST) {
-		tr.CloseIdleConnections()
+		transport.CloseIdleConnections()
 	}
 	response := &Response{httpResponse, end.Sub(start)}
 	return response, nil

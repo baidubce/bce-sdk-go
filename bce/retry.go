@@ -81,6 +81,9 @@ func (b *BackOffRetryPolicy) ShouldRetry(err BceError, attempts int) bool {
 		case http.StatusServiceUnavailable:
 			log.Warn("retry for service unavailable(503)")
 			return true
+		case http.StatusBadRequest:
+			log.Warn("retry for bad request(400)")
+			return true
 		}
 
 		if realErr.Code == EREQUEST_EXPIRED {
