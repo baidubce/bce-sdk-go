@@ -149,16 +149,16 @@ func main() {
 	// 使用申请的临时STS创建BOS服务的Client对象，Endpoint使用默认值
 	bosClient, err := bos.NewClient(sts.AccessKeyId, sts.SecretAccessKey, "")
 	if err != nil {
-	    fmt.Println("create bos client failed:", err)
-	    return
+		fmt.Println("create bos client failed:", err)
+		return
 	}
 	stsCredential, err := auth.NewSessionBceCredentials(
-	        sts.AccessKeyId,
-	        sts.SecretAccessKey,
-	        sts.SessionToken)
+		sts.AccessKeyId,
+		sts.SecretAccessKey,
+		sts.SessionToken)
 	if err != nil {
-	    fmt.Println("create sts credential object failed:", err)
-	    return
+		fmt.Println("create sts credential object failed:", err)
+		return
 	}
 	bosClient.Config.Credentials = stsCredential
 }
@@ -570,8 +570,8 @@ args := new(api.PutObjectArgs)
 
 // 设置用户自定义元数据
 args.UserMeta = map[string]string{
-    "name1": "my-metadata1",
-    "name2": "my-metadata2",
+	"name1": "my-metadata1",
+	"name2": "my-metadata2",
 }
 
 etag, err := bosClient.PutObject(bucketName, objectName, bodyStream, args)
@@ -729,21 +729,22 @@ fmt.Println(res.UploadId) // 打印初始化分块上传后获取的UploadId
 
 ```go
 // import "github.com/baidubce/bce-sdk-go/bce"
+// import "github.com/baidubce/bce-sdk-go/services/bos"
 // import "github.com/baidubce/bce-sdk-go/services/bos/api"
 
 file, _ := os.Open("/path/to/file.zip")
 
 // 分块大小按MULTIPART_ALIGN=1MB对齐
 partSize := (bosClient.MultipartSize +
-	bce.MULTIPART_ALIGN - 1) / bce.MULTIPART_ALIGN * bce.MULTIPART_ALIGN
+	bos.MULTIPART_ALIGN - 1) / bos.MULTIPART_ALIGN * bos.MULTIPART_ALIGN
 
 // 获取文件大小，并计算分块数目，最大分块数MAX_PART_NUMBER=10000
 fileInfo, _ := file.Stat()
 fileSize := fileInfo.Size()
 partNum := (fileSize + partSize - 1) / partSize
-if partNum > bce.MAX_PART_NUMBER { // 超过最大分块数，需调整分块大小
-	partSize := (fileSize + bce.MAX_PART_NUMBER + 1) / bce.MAX_PART_NUMBER
-	partSize := (partSize + bce.MULTIPART_ALIGN - 1) / bce.MULTIPART_ALIGN * bce.MULTIPART_ALIGN
+if partNum > bos.MAX_PART_NUMBER { // 超过最大分块数，需调整分块大小
+	partSize = (fileSize + bos.MAX_PART_NUMBER + 1) / bos.MAX_PART_NUMBER
+	partSize = (partSize + bos.MULTIPART_ALIGN - 1) / bos.MULTIPART_ALIGN * bos.MULTIPART_ALIGN
 	partNum = (fileSize + partSize - 1) / partSize
 }
 
@@ -761,13 +762,13 @@ for i := int64(1); i <= partNum; i++  {
 	}
 
 	// 创建指定偏移、指定大小的文件流
-	partBody, _ := bce.NewBodyFromSectionFile(file, offset[i], uploadSize)
+	partBody, _ := bce.NewBodyFromSectionFile(file, offset, uploadSize)
 
 	// 上传当前分块
-	etag, err := bosClient.BasicUploadPart(bucketName, objectKey, uploadId, i, partBody)
+	etag, err := bosClient.BasicUploadPart(bucketName, objectKey, uploadId, int(i), partBody)
 
 	// 保存当前分块上传成功后返回的序号和ETag
-	partEtags = append(partEtags, api.UploadInfoType{partNum, etag})
+	partEtags = append(partEtags, api.UploadInfoType{int(partNum), etag})
 }
 ```
 
@@ -1497,16 +1498,16 @@ BceServiceError | BOS服务返回的错误
 // bosClient 为已创建的BOS Client对象
 bucketLocation, err := bosClient.PutBucket("test-bucket")
 if err != nil {
-    switch realErr := err.(type) {
-    case *bce.BceClientError:
-        fmt.Println("client occurs error:", realErr.Error())
-    case *bce.BceServiceError:
-        fmt.Println("service occurs error:", realErr.Error())
-    default:
-        fmt.Println("unknown error:", err)
-    }
+	switch realErr := err.(type) {
+	case *bce.BceClientError:
+		fmt.Println("client occurs error:", realErr.Error())
+	case *bce.BceServiceError:
+		fmt.Println("service occurs error:", realErr.Error())
+	default:
+		fmt.Println("unknown error:", err)
+	}
 } else {
-    fmt.Println("create bucket success, bucket location:", bucketLocation)
+	fmt.Println("create bucket success, bucket location:", bucketLocation)
 }
 ```
 

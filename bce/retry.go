@@ -82,6 +82,9 @@ func (b *BackOffRetryPolicy) ShouldRetry(err BceError, attempts int) bool {
 			log.Warn("retry for service unavailable(503)")
 			return true
 		case http.StatusBadRequest:
+			if realErr.Code != "Http400" {
+				return false
+			}
 			log.Warn("retry for bad request(400)")
 			return true
 		}

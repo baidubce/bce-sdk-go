@@ -104,6 +104,9 @@ func UploadPart(cli bce.Client, bucket, object, uploadId string, partNumber int,
 	if content == nil {
 		return "", bce.NewBceClientError("upload part content should not be empty")
 	}
+	if content.Size() >= THRESHOLD_100_CONTINUE {
+		req.SetHeader("Expect", "100-continue")
+	}
 	req.SetBody(content)
 
 	// Optional arguments settings
@@ -196,6 +199,9 @@ func CompleteMultipartUpload(cli bce.Client, bucket, object, uploadId string,
 	req.SetParam("uploadId", uploadId)
 	if parts == nil {
 		return nil, bce.NewBceClientError("upload parts info should not be emtpy")
+	}
+	if parts.Size() >= THRESHOLD_100_CONTINUE {
+		req.SetHeader("Expect", "100-continue")
 	}
 	req.SetBody(parts)
 

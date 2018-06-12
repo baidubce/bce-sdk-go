@@ -43,6 +43,12 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetMethod(http.PUT)
+	if body == nil {
+		return "", bce.NewBceClientError("PutObject body should not be emtpy")
+	}
+	if body.Size() >= THRESHOLD_100_CONTINUE {
+		req.SetHeader("Expect", "100-continue")
+	}
 	req.SetBody(body)
 
 	// Optional arguments settings
@@ -441,6 +447,12 @@ func AppendObject(cli bce.Client, bucket, object string, content *bce.Body,
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetMethod(http.POST)
 	req.SetParam("append", "")
+	if content == nil {
+		return nil, bce.NewBceClientError("AppendObject body should not be emtpy")
+	}
+	if content.Size() >= THRESHOLD_100_CONTINUE {
+		req.SetHeader("Expect", "100-continue")
+	}
 	req.SetBody(content)
 
 	// Optional arguments settings
@@ -535,6 +547,12 @@ func DeleteMultipleObjects(cli bce.Client, bucket string,
 	req.SetMethod(http.POST)
 	req.SetParam("delete", "")
 	req.SetHeader(http.CONTENT_TYPE, "application/json; charset=utf-8")
+	if objectListStream == nil {
+		return nil, bce.NewBceClientError("DeleteMultipleObjects body should not be emtpy")
+	}
+	if objectListStream.Size() >= THRESHOLD_100_CONTINUE {
+		req.SetHeader("Expect", "100-continue")
+	}
 	req.SetBody(objectListStream)
 
 	resp := &bce.BceResponse{}

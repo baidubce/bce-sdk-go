@@ -35,7 +35,7 @@ const (
 	DEFAULT_SERVICE_DOMAIN = bce.DEFAULT_REGION + ".bcebos.com"
 	DEFAULT_MAX_PARALLEL   = 10
 	MULTIPART_ALIGN        = 1 << 20        // 1MB
-	MIN_MULTIPART_SIZE     = 5 * (1 << 20)  // 5MB
+	MIN_MULTIPART_SIZE     = 1 << 20        // 1MB
 	DEFAULT_MULTIPART_SIZE = 10 * (1 << 20) // 10MB
 
 	MAX_PART_NUMBER        = 10000
@@ -1036,7 +1036,7 @@ func (c *Client) UploadSuperFile(bucket, object, fileName, storageClass string) 
 	}
 	size := fileInfo.Size()
 	if size < MIN_MULTIPART_SIZE || c.MultipartSize < MIN_MULTIPART_SIZE {
-		return bce.NewBceClientError("multipart size should not be less than 5MB")
+		return bce.NewBceClientError("multipart size should not be less than 1MB")
 	}
 
 	// Caculate part size and total part number

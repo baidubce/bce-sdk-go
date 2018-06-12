@@ -30,8 +30,8 @@ const (
 	defaultMaxIdleConnsPerHost   = 500
 	defaultResponseHeaderTimeout = 60 * time.Second
 	defaultDialTimeout           = 30 * time.Second
-	defaultSmallInterval         = 60 * time.Second
-	defaultLargeInterval         = 300 * time.Second
+	defaultSmallInterval         = 600 * time.Second
+	defaultLargeInterval         = 1200 * time.Second
 )
 
 // The httpClient is the global variable to send the request and get response
