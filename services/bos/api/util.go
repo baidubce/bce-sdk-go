@@ -39,6 +39,8 @@ const (
 	CANNED_ACL_PUBLIC_READ_WRITE = "public-read-write"
 
 	RAW_CONTENT_TYPE = "application/octet-stream"
+
+	THRESHOLD_100_CONTINUE = 1 << 20 // add 100 continue header if body size bigger than 1MB
 )
 
 var (
