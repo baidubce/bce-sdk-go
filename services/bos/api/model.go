@@ -167,6 +167,77 @@ type StorageClassType struct {
 	StorageClass string `json:"storageClass"`
 }
 
+// BucketReplicationDescriptor defines the description data structure
+type BucketReplicationDescriptor struct {
+	Bucket       string `json:"bucket,omitempty"`
+	StorageClass string `json:"storageClass,omitempty"`
+}
+
+// BucketReplicationType defines the data structure for Put and Get of bucket replication
+type BucketReplicationType struct {
+	Id               string                       `json:"id"`
+	Status           string                       `json:"status"`
+	Resource         []string                     `json:"resource"`
+	ReplicateDeletes string                       `json:"replicateDeletes"`
+	Destination      *BucketReplicationDescriptor `json:"destination,omitempty"`
+	ReplicateHistory *BucketReplicationDescriptor `json:"replicateHistory,omitempty"`
+}
+
+type PutBucketReplicationArgs BucketReplicationType
+type GetBucketReplicationResult BucketReplicationType
+
+// GetBucketReplicationProgressResult defines output result for replication process
+type GetBucketReplicationProgressResult struct {
+	Status                    string  `json:"status"`
+	HistoryReplicationPercent float64 `json:"historyReplicationPercent"`
+	LatestReplicationTime     string  `json:"latestReplicationTime"`
+}
+
+// BucketEncryptionType defines the data structure for Put and Get of bucket encryption
+type BucketEncryptionType struct {
+	EncryptionAlgorithm string `json:"encryptionAlgorithm"`
+}
+
+// BucketStaticWebsiteType defines the data structure for Put and Get of bucket static website
+type BucketStaticWebsiteType struct {
+	Index    string `json:"index"`
+	NotFound string `json:"notFound"`
+}
+
+type PutBucketStaticWebsiteArgs BucketStaticWebsiteType
+type GetBucketStaticWebsiteResult BucketStaticWebsiteType
+
+type BucketCORSType struct {
+	AllowedOrigins       []string `json:"allowedOrigins"`
+	AllowedMethods       []string `json:"allowedMethods"`
+	AllowedHeaders       []string `json:"allowedHeaders,omitempty"`
+	AllowedExposeHeaders []string `json:"allowedExposeHeaders,omitempty"`
+	MaxAgeSeconds        int64    `json:"maxAgeSeconds,omitempty"`
+}
+
+// PutBucketCorsArgs defines the request argument for bucket CORS setting
+type PutBucketCorsArgs struct {
+	CorsConfiguration []BucketCORSType `json:"corsConfiguration"`
+}
+
+// GetBucketCorsResult defines the data structure of getting bucket CORS result
+type GetBucketCorsResult struct {
+	CorsConfiguration []BucketCORSType `json:"corsConfiguration"`
+}
+
+// CopyrightProtectionType defines the data structure for Put and Get copyright protection API
+type CopyrightProtectionType struct {
+	Resource []string `json:"resource"`
+}
+
+// ObjectAclType defines the data structure for Put and Get object acl API
+type ObjectAclType struct {
+	AccessControlList []GrantType `json:"accessControlList"`
+}
+
+type PutObjectAclArgs ObjectAclType
+type GetObjectAclResult ObjectAclType
+
 // PutObjectArgs defines the optional args structure for the put object api.
 type PutObjectArgs struct {
 	CacheControl       string
