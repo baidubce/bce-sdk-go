@@ -398,6 +398,30 @@ aclString := `{
 sts, err := stsClient.GetSessionToken(300, aclString)
 ```
 
+### 查看Bucket的访问权限
+
+用户可以通过如下接口查看Bucket的访问权限，注意：Bucket的访问权限不能删除，默认为私有。
+
+```go
+result, err := bosClient.GetBucketAcl(bucketName)
+```
+
+返回的结果对象的字段包含了访问权限的详细内容，具体定义如下：
+
+```go
+type GetBucketAclResult struct {
+	AccessControlList []struct{
+		Grantee []struct {
+			Id string
+		}
+		Permission []string
+	}
+	Owner struct {
+		Id string
+	}
+}
+```
+
 ## 查看Bucket所属的区域
 
 Bucket Location即Bucket Region，百度云支持的各region详细信息可参见[区域选择说明](https://cloud.baidu.com/doc/Reference/Regions.html)。
@@ -1168,6 +1192,101 @@ for _, obj := range listObjectResult.Contents {
 }
 ```
 
+## 权限控制
+
+### 设置对象的访问权限
+
+目前BOS支持两种方式设置ACL。第一种是使用Canned Acl，在PutObjectAcl的时候，通过头域的"x-bce-acl"或者"x-bce-grant-permission"来设置对象的访问权限，当前可设置的权限包括private和public-read，两种类型的header不可以同时在一个请求中出现。第二种方式是上传一个ACL文件。详细信息请参考[设置Object权限控制](https://cloud.baidu.com/doc/BOS/API.html#PutObjectAcl.E6.8E.A5.E5.8F.A3)
+
+#### 设置Canned ACL
+
+Canned ACL是预定义的访问权限，用户可选择对某个对象进行设置，支持三种接口：
+
+```go
+// 1. 使用x-bce-acl Header设置
+err := bosClient.PutObjectAclFromCanned(bucket, object, cannedAcl) //cannedAcl可取值为：private、public-read
+
+// 2. 使用x-bce-grant-{permission} Header设置
+err1 := bosClient.PutObjectAclGrantRead(bucket, object, userId) 
+err2 := bosClient.PutObjectAclGrantFullControl(bucket, object, userId)
+// userId为授权的用户，支持可变参数，传入多个用户ID
+```
+
+#### 设置自定义ACL
+
+用户可参考如下代码设置Bucket内的对象的自定义访问权限，支持四种不同参数：
+
+```go
+// import "github.com/baidubce/bce-sdk-go/bce"
+// import "github.com/baidubce/bce-sdk-go/services/bos/api"
+
+// 1. 直接上传ACL文件流
+aclBodyStream := bce.NewBodyFromFile("<path-to-acl-file>")
+err := bosClient.PutObjectAcl(bucket, object, aclBodyStream)
+
+// 2. 直接使用ACL json字符串
+aclString := `{
+    "accessControlList":[
+        {
+            "grantee":[{
+                "id":"e13b12d0131b4c8bae959df4969387b8" //指定用户ID
+            }],
+            "permission":["FULL_CONTROL"] //指定用户权限
+        }
+    ]
+}`
+err := bosClient.PutObjectAclFromString(bucket, object, aclString)
+
+// 3. 使用ACL文件
+err := bosClient.PutObjectAclFromFile(bucket, object, "<acl-file-name>")
+
+// 4. 使用ACL struct对象设置
+grantUser1 := api.GranteeType{"<user-id-1>"}
+grantUser2 := api.GranteeType{"<user-id-2>"}
+grant1 := api.GrantType{
+	Grantee: []api.GranteeType{grantUser1},
+	Permission: []string{"FULL_CONTROL"}
+}
+grant2 := api.GrantType{
+	Grantee: []api.GranteeType{granteUser2},
+	Permission: []string{"READ"}
+}
+grantArr := make([]api.GranteType)
+grantArr = append(grantArr, grant1)
+grantArr = append(grantArr, grant2)
+args := &api.PutObjectAclArgs{grantArr}
+err := bosClient.PutObjectAclFromStruct(bucketName, object, args)
+```
+
+### 获取对象的访问权限
+
+如下代码可获取一个对象的访问权限：
+
+```go
+result, err := bosClient.GetObjectAcl(bucketName, object)
+```
+
+返回结果对象的字段包含了访问权限的详细内容，具体定义如下：
+
+```go
+type GetObjectAclResult struct {
+	AccessControlList []struct{
+		Grantee []struct{
+			Id string
+		}
+		Permission []string
+	}
+}
+```
+
+### 删除对象的访问权限
+
+对设置过访问权限的对象，可以调用此接口进行删除：
+
+```go
+err := bosClient.DeleteObjectAcl(bucketName, object)
+```
+
 ## 删除文件
 
 **删除单个文件**
@@ -1416,6 +1535,55 @@ fmt.Printf("%+v\n", res.Rule)
 err := bosClient.DeleteBucketLifecycle(bucketName)
 ```
 
+## 跨域资源共享
+
+跨域资源共享（Cross-Origin Resource Sharing），简称CORS，是HTML5提供的标准跨域解决方案，BOS目前已经支持CORS标准来实现跨域访问。关于跨域访问的介绍请参考[跨域访问](https://cloud.baidu.com/doc/BOS/DevRef.html#.E8.B7.A8.E5.9F.9F.E8.AE.BF.E9.97.AE)。
+
+### 设置CORS规则
+
+用户可针对Bucket设置CORS规则，支持通过json字符串、文件、流、对象方式设置：
+
+```go
+// import "github.com/baidubce/bce-sdk-go/service/bos/api"
+
+// 1. 通过流式调用接口进行设置
+err := bosClient.PutBucketCors(bucketName, body)
+
+// 2. 直接传入字符串
+err := bosClient.PutBucketCorsFromString(bucketName, corsString)
+
+// 3. 传入CORS文件名
+err := bosClient.PutBucketCorsFromFile(bucketName, corsFile)
+
+// 4. 传入对象
+corsObj := &api.BucketCORSType{
+	AllowedOrigins: []string{"example.com"},
+	AllowedMethods: []string{"HEAD", "GET"},
+	AllowedHeaders: []string{"*"},
+	AllowedExposeHeaders: []string{"*"},
+	MaxAgeSeconds: 3600,
+}
+err := bosClient.PutBucketCorsFromStruct(bucketName, &api.PutBucketCorsArgs{corsObj})
+```
+
+### 获取CORS规则
+
+用户可获取指定Bucket的CORS规则：
+
+```go
+result, err := bosClient.GetBucketCors(bucketName)
+```
+
+结果对象的定义与`PutBucketCorsFromStruct`接口的请求参数相同。
+
+### 删除CORS规则
+
+可参考如下代码删除Bucket的CORS规则，删除后的Bucket将无法进行跨域访问。
+
+```go
+err := bosClient.DeleteBucketCors(bucketName)
+```
+
 ## 管理存储类型
 
 每个Bucket会有自身的存储类型，如果该Bucket下的Object上传时未指定存储类型则会默认继承该Bucket的存储类型。
@@ -1481,6 +1649,183 @@ fmt.Println(res.TargetPrefix)
 ```go
 err := bosClient.DeleteBucketLogging(bucketName)
 ```
+
+## 服务端加密
+
+### 设置服务端加密功能
+
+用户可针对一个Bucket设置开启服务端加密的功能，所有存储到该Bucket的数据将会进行加密存储，保证数据安全性。
+
+```go
+err := bosClient.PutBucketEncryption(bucketName, algorithm)
+```
+`algorithm`参数为加密算法，当前只支持“AES256”加密算法。
+
+### 获取服务端加密
+
+用户可调用如下接口获取Bucket的服务端加密功能：
+
+```go
+algorithm, err := bosClient.GetBucketEncryption(bucketName)
+```
+
+### 删除服务端加密功能
+
+用户可调用如下接口删除指定Bucket的服务端加密功能：
+
+```go
+err := bosClient.DeleteBucketEncryption(bucketName)
+```
+
+## 原图保护功能
+
+用户可针对Bucket下存储的图片设置原图保护功能，用户需指定待保护的资源。
+
+### 开启原图保护功能
+
+通过如下代码开启原图保护功能：
+
+```go
+err := bosClient.PutBucketCopyrightProtection(bucket, resources)
+```
+
+`resources`参数为可变参数，可指定多个。
+
+### 获取原图保护设置
+
+用户通过如下示例代码获取Bucket设置的原图保护的资源：
+
+```go
+resources, err := bosClient.GetBucketCopyrightProtection(bucketName)
+```
+
+### 删除原图保护配置
+
+```go
+err := bosClient.DeleteBucketCopyrightProtection(bucketName)
+```
+
+## 静态网站托管
+
+### 开启静态网站托管
+
+用户可通过如下示例代码设置一个Bucket开启静态网站托管的功能：
+
+```go
+// import "github.com/baidubce/bce-sdk-go/service/bos/api"
+
+// 1. 通过流式调用接口进行设置
+err := bosClient.PutBucketStaticWebsite(bucketName, body)
+
+// 2. 直接传入json字符串
+jsonStr := `{"index": "index.html", "notFound": "404.html"}`
+err := bosClient.PutBucketStaticWebsiteFromString(bucketName, jsonStr)
+
+// 3. 传入对象
+args := &api.BucketStaticWebsiteType{
+	Index: "index.html",
+	NotFound: "404.html",
+}
+err := bosClient.PutBucketStaticWebsiteFromStruct(bucketName, args)
+
+// 4. 简单接口设置
+err := bosClient.SimplePutBucketStaticWebsite(bucketName, "index.html", "404.html")
+```
+
+### 获取静态网站托管的设置
+
+用户通过如下代码获取指定Bucket的静态网站托管的设置情况：
+
+```go
+result, err := bosClient.SimplePutBucketStaticWebsite(bucketName)
+fmt.Println(result.Index)
+fmt.Println(result.NotFound)
+```
+
+### 删除静态网站托管的设置
+
+通过如下示例代码删除指定Bucket的静态网站托管功能：
+
+```go
+err := bosClient.DeleteBucketStaticWebsite(bucketName)
+```
+
+## 跨区域复制
+
+BOS提供了跨区域复制功能，针对用户在某个物理区域创建的Bucket，为了数据安全或其他目的，可配置将整个Bucket的数据复制到物理上的另一个区域。
+
+### 开启Bucket跨区域复制功能
+
+用户可通过如下代码开启Bucket的跨区域复制功能：
+
+```go
+// 1. json字符串
+jsonStr := `{
+  "status":"enabled",
+  "resource":[
+    "bucket/abc",
+    "bucket/cd*",
+  ],
+  "destination": {
+    "bucket":"bucket-name",
+    "storageClass":"COLD"
+  },
+  "replicateHistory": {
+    "bucket":"bucket-name",
+    "storageClass":"COLD"
+  },
+  "replicateDeletes":"enabled",
+  "id":"sample-bucket-replication-config"
+}`
+err := bosClient.PutBucketReplicationFromString(bucketName, jsonStr)
+
+// 2. 使用配置文件名
+err := bosClient.PutBucketReplicationFromFile(bucketName, configFile)
+
+// 3. 使用参数对象
+argsObj := &api.PutBucketReplicationArgs{
+	Id: "sample-bucket-replication-config",
+	Status: "enabled",
+	Resource: []string{"bucket/abc"},
+	ReplicateDeletes: "enabled",
+	Destination: &api.BucketReplicationDescriptor{"bucket-abc", "COLD"},
+	ReplicateHistory: &api.BucketReplicationDescriptor{"bucket-abc", "COLD"},
+}
+err := bosClient.PutBucketReplicationFromStruct(bucketName, argsObj)
+
+// 4. 使用流
+err := bosClient.PutBucketReplication(bucketName, bodyStream)
+```
+
+### 获取Bucket跨区域复制的配置
+
+用户可使用如下示例代码获取Bucket的跨区域复制的配置，返回的结果与Put接口字段相同。
+
+```go
+result, err := bosClient.GetBucketReplication(bucketName)
+```
+
+### 删除Bucket跨区域复制配置
+
+用户可使用如下示例代码删除Bucket跨区域复制功能：
+
+```go
+err := bosClient.DeleteBucketReplication(bucketName)
+```
+
+### 获取跨区域复制到进度
+
+由于跨区域复制需要后台进行异步复制操作，用户可通过如下接口查询当前复制到进度：
+
+```go
+result, err := bosClient.GetBucketReplicationProgress(bucketName)
+```
+
+返回的结果对象包含了如下字段：
+
+- `Status`(string): 当前的状态
+- `HistoryReplicationPercent`(float64): 当前复制到进度
+- `LatestReplicationTime`(string): 最近一次执行复制的时间
 
 
 # 错误处理
@@ -1570,6 +1915,13 @@ myLogger.Info("this is my own logger from the BOS go sdk")
 
 
 # 版本变更记录
+
+## v0.9.3 [2018-09-21]
+
+ - 支持Bucket跨区域复制、服务端加密、原图保护
+ - 支持设置Bucket的CORS规则和静态网站托管
+ - 支持Object级别的ACL设置
+ - 修复GeneratePresignedUrl问题
 
 ## v0.9.2 [2018-3-16]
 

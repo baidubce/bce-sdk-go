@@ -468,3 +468,452 @@ func GetBucketStorageclass(cli bce.Client, bucket string) (string, error) {
 	}
 	return result.StorageClass, nil
 }
+
+// PutBucketReplication - set the bucket replication of different region
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+//     - replicationConf: the replication config body stream
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func PutBucketReplication(cli bce.Client, bucket string, replicationConf *bce.Body) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.PUT)
+	req.SetParam("replication", "")
+	if replicationConf != nil {
+		req.SetHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE)
+		req.SetBody(replicationConf)
+	}
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// GetBucketReplication - get the bucket replication config of the given bucket
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+// RETURNS:
+//     - *GetBucketReplicationResult: the result of the bucket replication config
+//     - error: nil if success otherwise the specific error
+func GetBucketReplication(cli bce.Client, bucket string) (*GetBucketReplicationResult, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.GET)
+	req.SetParam("replication", "")
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	result := &GetBucketReplicationResult{}
+	if err := resp.ParseJsonBody(result); err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+// DeleteBucketReplication - delete the bucket replication config of the given bucket
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func DeleteBucketReplication(cli bce.Client, bucket string) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.DELETE)
+	req.SetParam("replication", "")
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// GetBucketReplicationProgress - get the bucket replication process of the given bucket
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+// RETURNS:
+//     - *GetBucketReplicationProgressResult: the result of the bucket replication process
+//     - error: nil if success otherwise the specific error
+func GetBucketReplicationProgress(cli bce.Client, bucket string) (
+	*GetBucketReplicationProgressResult, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.GET)
+	req.SetParam("replicationProgress", "")
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	result := &GetBucketReplicationProgressResult{}
+	if err := resp.ParseJsonBody(result); err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+// PutBucketEncryption - set the bucket encrpytion config
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+//     - algorithm: the encryption algorithm
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func PutBucketEncryption(cli bce.Client, bucket, algorithm string) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.PUT)
+	req.SetParam("encryption", "")
+
+	obj := &BucketEncryptionType{algorithm}
+	jsonBytes, jsonErr := json.Marshal(obj)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE)
+	req.SetBody(body)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// GetBucketEncryption - get the encryption config of the given bucket
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+// RETURNS:
+//     - algorithm: the bucket encryption algorithm
+//     - error: nil if success otherwise the specific error
+func GetBucketEncryption(cli bce.Client, bucket string) (string, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.GET)
+	req.SetParam("encryption", "")
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return "", err
+	}
+	if resp.IsFail() {
+		return "", resp.ServiceError()
+	}
+	result := &BucketEncryptionType{}
+	if err := resp.ParseJsonBody(result); err != nil {
+		return "", err
+	}
+	return result.EncryptionAlgorithm, nil
+}
+
+// DeleteBucketEncryption - delete the encryption config of the given bucket
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func DeleteBucketEncryption(cli bce.Client, bucket string) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.DELETE)
+	req.SetParam("encryption", "")
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// PutBucketStaticWebsite - set the bucket static website config
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+//     - confBody: the static website config body stream
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func PutBucketStaticWebsite(cli bce.Client, bucket string, confBody *bce.Body) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.PUT)
+	req.SetParam("website", "")
+	if confBody != nil {
+		req.SetHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE)
+		req.SetBody(confBody)
+	}
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// GetBucketStaticWebsite - get the static website config of the given bucket
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+// RETURNS:
+//     - result: the bucket static website config result object
+//     - error: nil if success otherwise the specific error
+func GetBucketStaticWebsite(cli bce.Client, bucket string) (
+	*GetBucketStaticWebsiteResult, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.GET)
+	req.SetParam("website", "")
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	result := &GetBucketStaticWebsiteResult{}
+	if err := resp.ParseJsonBody(result); err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+// DeleteBucketStaticWebsite - delete the static website config of the given bucket
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func DeleteBucketStaticWebsite(cli bce.Client, bucket string) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.DELETE)
+	req.SetParam("website", "")
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// PutBucketCors - set the bucket CORS config
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+//     - confBody: the CORS config body stream
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func PutBucketCors(cli bce.Client, bucket string, confBody *bce.Body) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.PUT)
+	req.SetParam("cors", "")
+	if confBody != nil {
+		req.SetHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE)
+		req.SetBody(confBody)
+	}
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// GetBucketCors - get the CORS config of the given bucket
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+// RETURNS:
+//     - result: the bucket CORS config result object
+//     - error: nil if success otherwise the specific error
+func GetBucketCors(cli bce.Client, bucket string) (
+	*GetBucketCorsResult, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.GET)
+	req.SetParam("cors", "")
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	result := &GetBucketCorsResult{}
+	if err := resp.ParseJsonBody(result); err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+// DeleteBucketCors - delete the CORS config of the given bucket
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func DeleteBucketCors(cli bce.Client, bucket string) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.DELETE)
+	req.SetParam("cors", "")
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// PutBucketCopyrightProtection - set the copyright protection config of the given bucket
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+//     - resources: the resource items in the bucket to be protected
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func PutBucketCopyrightProtection(cli bce.Client, bucket string, resources ...string) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.PUT)
+	req.SetParam("copyrightProtection", "")
+	if len(resources) == 0 {
+		return bce.NewBceClientError("the resource to set copyright protection is empty")
+	}
+	arg := &CopyrightProtectionType{resources}
+	jsonBytes, jsonErr := json.Marshal(arg)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE)
+	req.SetBody(body)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// GetBucketCopyrightProtection - get the copyright protection config of the given bucket
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+// RETURNS:
+//     - result: the bucket copyright protection resources array
+//     - error: nil if success otherwise the specific error
+func GetBucketCopyrightProtection(cli bce.Client, bucket string) ([]string, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.GET)
+	req.SetParam("copyrightProtection", "")
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	result := &CopyrightProtectionType{}
+	if err := resp.ParseJsonBody(result); err != nil {
+		return nil, err
+	}
+	return result.Resource, nil
+}
+
+// DeleteBucketCopyrightProtection - delete the copyright protection config of the given bucket
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func DeleteBucketCopyrightProtection(cli bce.Client, bucket string) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.DELETE)
+	req.SetParam("copyrightProtection", "")
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
