@@ -39,6 +39,8 @@ type Body struct {
 
 func (b *Body) Stream() io.ReadCloser { return b.stream }
 
+func (b *Body) SetStream(stream io.ReadCloser) { b.stream = stream }
+
 func (b *Body) Size() int64 { return b.size }
 
 func (b *Body) ContentMD5() string { return b.contentMD5 }

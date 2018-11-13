@@ -992,6 +992,18 @@ func TestGeneratePresignedUrl(t *testing.T) {
 	resp, err = http.Head(url)
 	ExpectEqual(t.Errorf, err, nil)
 	ExpectEqual(t.Errorf, resp.StatusCode, 200)
+
+	BOS_CLIENT.Config.Endpoint = "10.180.112.31"
+	url = BOS_CLIENT.GeneratePresignedUrl(EXISTS_BUCKET, "glog.go", 100, "HEAD", nil, params)
+	resp, err = http.Head(url)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, resp.StatusCode, 200)
+
+	BOS_CLIENT.Config.Endpoint = "10.180.112.31:80"
+	url = BOS_CLIENT.GeneratePresignedUrl(EXISTS_BUCKET, "glog.go", 100, "HEAD", nil, params)
+	resp, err = http.Head(url)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, resp.StatusCode, 200)
 }
 
 func TestPutObjectAcl(t *testing.T) {
