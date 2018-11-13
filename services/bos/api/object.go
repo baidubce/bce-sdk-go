@@ -18,6 +18,7 @@ package api
 
 import (
 	"fmt"
+	"net"
 	"strconv"
 	"strings"
 
@@ -587,7 +588,6 @@ func GeneratePresignedUrl(conf *bce.BceClientConfiguration, signer auth.Signer, 
 	req := &bce.BceRequest{}
 
 	// Set basic arguments
-	req.SetUri(bce.URI_PREFIX + object)
 	if len(method) == 0 {
 		method = http.GET
 	}
@@ -596,8 +596,15 @@ func GeneratePresignedUrl(conf *bce.BceClientConfiguration, signer auth.Signer, 
 	if req.Protocol() == "" {
 		req.SetProtocol(bce.DEFAULT_PROTOCOL)
 	}
-	if len(bucket) != 0 { // only for ListBuckets API
+	domain := req.Host()
+	if pos := strings.Index(domain, ":"); pos != -1 {
+		domain = domain[:pos]
+	}
+	if len(bucket) != 0 && net.ParseIP(domain) == nil { // not use an IP as the endpoint by client
+		req.SetUri(bce.URI_PREFIX + object)
 		req.SetHost(bucket + "." + req.Host())
+	} else {
+		req.SetUri(getObjectUri(bucket, object))
 	}
 
 	// Set headers and params if given.

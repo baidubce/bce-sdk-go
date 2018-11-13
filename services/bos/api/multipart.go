@@ -125,6 +125,7 @@ func UploadPart(cli bce.Client, bucket, object, uploadId string, partNumber int,
 	if resp.IsFail() {
 		return "", resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return strings.Trim(resp.Header(http.ETAG), "\""), nil
 }
 
@@ -249,6 +250,7 @@ func AbortMultipartUpload(cli bce.Client, bucket, object, uploadId string) error
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
