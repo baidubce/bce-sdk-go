@@ -92,8 +92,13 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 					args.StorageClass)
 			}
 		}
+
 		if err := setUserMetadata(req, args.UserMeta); err != nil {
 			return "", err
+		}
+
+		if len(args.Process) != 0 {
+			req.SetHeader(http.BCE_PROCESS, args.Process)
 		}
 	}
 

@@ -249,6 +249,7 @@ type PutObjectArgs struct {
 	UserMeta           map[string]string
 	ContentSha256      string
 	StorageClass       string
+	Process            string
 }
 
 // CopyObjectArgs defines the optional args structure for the copy object api.
@@ -391,7 +392,9 @@ type UploadInfoType struct {
 
 // CompleteMultipartUploadArgs defines the input arguments structure of CompleteMultipartUpload.
 type CompleteMultipartUploadArgs struct {
-	Parts []UploadInfoType `json:"parts"`
+	Parts    []UploadInfoType  `json:"parts"`
+	UserMeta map[string]string `json:"-"`
+	Process  string            `json:"-"`
 }
 
 // CompleteMultipartUploadResult defines the result structure of CompleteMultipartUpload.

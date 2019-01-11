@@ -810,9 +810,9 @@ for i := int64(1); i <= partNum; i++  {
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/bos/api"
 
-completeArgs := &api.CompleteMultipartUploadArgs{partEtags}
+completeArgs := &api.CompleteMultipartUploadArgs{Parts: partEtags}
 res, _ := bosClient.CompleteMultipartUploadFromStruct(
-	bucketName, objectKey, uploadId, completeArgs, nil)
+	bucketName, objectKey, uploadId, completeArgs)
 
 // 输出结果对象的内容
 fmt.Println(res.Location)
@@ -1463,8 +1463,89 @@ fmt.Println("ETag:", res.ETag, "LastModified:", res.LastModified)
 
 当前BOS的CopyObject接口是通过同步方式实现的。同步方式下，BOS端会等待Copy实际完成才返回成功。同步Copy能帮助用户更准确的判断Copy状态，但用户感知的复制时间会变长，且复制时间和文件大小成正比。
 
-同步Copy方式更符合业界常规，提升了与其它平台的兼容性。同步Copy方式还简化了BOS服务端的业务逻辑，提高了服务效率。
+### 分块拷贝
 
+除了通过CopyObject接⼝拷贝文件以外，BOS还提供了另外一种拷贝模式——Multipart Upload Copy。用户可以在如下的应用场景内（但不仅限于此），使用Multipart Upload Copy，如：
+
+- 需要支持断点拷贝。
+- 拷贝超过5GB大小的文件。
+- 网络条件较差，和BOS的服务器之间的连接经常断开。
+
+分块拷贝与上传对象中的分块上传类似，也是通过三个步骤来实现：初始化、执行分块拷贝和汇总完成，其中初始化和汇总完成的操作同分块上传的接口一致。
+
+下面提供分块拷贝的详细示例代码，用户可与分块上传的详细说明进行对比，以便于理解：
+
+```
+// import "github.com/baidubce/bce-sdk-go/services/bos/api"
+
+// 1. 初始化分块上传，
+initResult, err := bosClient.BasicInitiateMultipartUpload(bucketName, objectKey)
+if err != nil {
+	fmt.Println("initiate multipart upload copy failed:", err)
+	return
+}
+
+// 2. 执行分块上传
+meta, err := bosClient.GetObjectMeta(bucketName, objectKey) // 获取对象大小以便进行切块
+if err != nil {
+	fmt.Println("get object length failed:", err)
+	return
+}
+const (
+	MB        = 1 << 20
+	MAX_PARTS = 10000  // 分块拷贝的part总数不能超过10000
+)
+var (
+	leftSize     int64 = meta.ContentLength
+	offset       int64 = 0
+
+	// 单个part须为1MB的整数倍，且不超过5GB，除最后一个外其余part必须大于等于5MB
+	partSize int64 = 8 * MB
+)
+totalParts := (meta.ContentLength + partSize - 1) / partSize
+if totalParts > MAX_PARTS {
+	partSize = (meta.ContentLength + MAX_PART - 1) / 10000
+	partSize = (partSize + MB - 1) / MB * MB // 按1MB对齐
+	totalParts = (meta.ContentLength + partSize - 1) / partSize
+}
+copyInfo := make([]UploadInfoType, partNumber)
+for partNumber := int64(1); partNumber <= totalParts; partNumber++ {
+	start := (partNumber - 1) * partSize
+	end := partNumber * partSize
+	if end > meta.ContentLength {
+		end = meta.ContentLength
+	}
+
+	// 设置拷贝的参数，分块拷贝的SourceRange制定当前拷贝的区间，若不指定则拷贝全部对象
+	// 还有另外四个参数用户可自行设定：IfMatch、IfNoneMatch、IfModifiedSince、IfUnmodifiedSince
+	args := &api.UploadPartCopyArgs{
+		// 指定拷贝区间时必须使用“bytes=first-last”格式，last是最后一个字节的索引（从0开始算起）
+		SourceRange: fmt.Sprintf("bytes=%d-%d", start, end-1)
+	}
+	res, err := bosClient.UploadPartCopy(destBucket, destObject,
+		initResult.Bucket, initResult.Key, initResult.UploadId, partNumber, args)
+	if err != nil {
+		bosClient.AbortMultipartUpload(initResult.Bucket, initResult.Key, initResult.UploadId)
+		fmt.Println("abort multipart upload copy with error:", err)
+		return
+	}
+	copyInfo[partNumber-1] = api.UploadInfoType{partNumber, res.ETag}
+}
+
+// 3. 完成汇总
+completeArgs := &api.CompleteMultipartUploadArgs{Parts: copyInfo}
+completeRes, err := bosClient.CompleteMultipartUploadFromStruct(
+	initResult.Bucket, initResult.Key, initResult.UploadId, completeArgs)
+if err != nil {
+	bosClient.AbortMultipartUpload(initResult.Bucket, initResult.Key, initResult.UploadId)
+	fmt.Println("abort multipart upload copy with error:", err)
+	return
+}
+fmt.Println(completeRes.Location)
+fmt.Println(completeRes.Bucket)
+fmt.Println(completeRes.Key)
+fmt.Println(completeRes.ETag)
+```
 
 # 数据处理及使用
 

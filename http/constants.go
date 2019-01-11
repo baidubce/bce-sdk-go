@@ -71,4 +71,5 @@ const (
 	BCE_OBJECT_TYPE                     = "x-bce-object-type"
 	BCE_NEXT_APPEND_OFFSET              = "x-bce-next-append-offset"
 	BCE_STORAGE_CLASS                   = "x-bce-storage-class"
+	BCE_PROCESS                         = "x-bce-process"
 )
