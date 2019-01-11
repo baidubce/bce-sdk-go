@@ -1236,8 +1236,8 @@ func (c *Client) BasicUploadPartCopy(bucket, object, srcBucket, srcObject, uploa
 //     - *CompleteMultipartUploadResult: the result data
 //     - error: nil if ok otherwise the specific error
 func (c *Client) CompleteMultipartUpload(bucket, object, uploadId string,
-	parts *bce.Body, meta map[string]string) (*api.CompleteMultipartUploadResult, error) {
-	return api.CompleteMultipartUpload(c, bucket, object, uploadId, parts, meta)
+	body *bce.Body, args *api.CompleteMultipartUploadArgs) (*api.CompleteMultipartUploadResult, error) {
+	return api.CompleteMultipartUpload(c, bucket, object, uploadId, body, args)
 }
 
 // CompleteMultipartUploadFromStruct - finish a multipart upload operation with parts struct
@@ -1246,15 +1246,13 @@ func (c *Client) CompleteMultipartUpload(bucket, object, uploadId string,
 //     - bucket: the destination bucket name
 //     - object: the destination object name
 //     - uploadId: the multipart upload id
-//     - parts: all parts info struct object
-//     - meta: user defined meta data
+//     - args: args info struct object
 // RETURNS:
 //     - *CompleteMultipartUploadResult: the result data
 //     - error: nil if ok otherwise the specific error
 func (c *Client) CompleteMultipartUploadFromStruct(bucket, object, uploadId string,
-	parts *api.CompleteMultipartUploadArgs,
-	meta map[string]string) (*api.CompleteMultipartUploadResult, error) {
-	jsonBytes, jsonErr := json.Marshal(parts)
+	args *api.CompleteMultipartUploadArgs) (*api.CompleteMultipartUploadResult, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
 		return nil, jsonErr
 	}
@@ -1262,7 +1260,7 @@ func (c *Client) CompleteMultipartUploadFromStruct(bucket, object, uploadId stri
 	if err != nil {
 		return nil, err
 	}
-	return api.CompleteMultipartUpload(c, bucket, object, uploadId, body, meta)
+	return api.CompleteMultipartUpload(c, bucket, object, uploadId, body, args)
 }
 
 // AbortMultipartUpload - abort a multipart upload operation
@@ -1415,7 +1413,9 @@ func (c *Client) UploadSuperFile(bucket, object, fileName, storageClass string) 
 	}
 
 	// Check the return of each part uploading, and decide to complete or abort it
-	completeArgs := &api.CompleteMultipartUploadArgs{make([]api.UploadInfoType, partNum)}
+	completeArgs := &api.CompleteMultipartUploadArgs{
+		Parts :make([]api.UploadInfoType, partNum),
+	}
 	for i := partNum; i > 0; i-- {
 		uploaded := <-uploadedResult
 		if uploaded == nil { // error occurs and not be caught in `select' statement
@@ -1426,7 +1426,7 @@ func (c *Client) UploadSuperFile(bucket, object, fileName, storageClass string) 
 		log.Debugf("upload part %d success, etag: %s", uploaded.PartNumber, uploaded.ETag)
 	}
 	if _, err := c.CompleteMultipartUploadFromStruct(bucket, object,
-		uploadId, completeArgs, nil); err != nil {
+		uploadId, completeArgs); err != nil {
 		c.AbortMultipartUpload(bucket, object, uploadId)
 		return err
 	}

@@ -193,24 +193,28 @@ func UploadPartCopy(cli bce.Client, bucket, object, source, uploadId string, par
 //     - *CompleteMultipartUploadResult: the result data
 //     - error: nil if ok otherwise the specific error
 func CompleteMultipartUpload(cli bce.Client, bucket, object, uploadId string,
-	parts *bce.Body, meta map[string]string) (*CompleteMultipartUploadResult, error) {
+	body *bce.Body, args *CompleteMultipartUploadArgs) (*CompleteMultipartUploadResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetMethod(http.POST)
 	req.SetParam("uploadId", uploadId)
-	if parts == nil {
-		return nil, bce.NewBceClientError("upload parts info should not be emtpy")
+	if body == nil {
+		return nil, bce.NewBceClientError("upload body info should not be emtpy")
 	}
-	if parts.Size() >= THRESHOLD_100_CONTINUE {
+	if body.Size() >= THRESHOLD_100_CONTINUE {
 		req.SetHeader("Expect", "100-continue")
 	}
-	req.SetBody(parts)
+	req.SetBody(body)
 
 	// Optional arguments settings
-	if meta != nil {
-		if err := setUserMetadata(req, meta); err != nil {
+	if args.UserMeta != nil {
+		if err := setUserMetadata(req, args.UserMeta); err != nil {
 			return nil, err
 		}
+	}
+
+	if len(args.Process) != 0 {
+		req.SetHeader(http.BCE_PROCESS, args.Process)
 	}
 
 	// Send request and get the result
