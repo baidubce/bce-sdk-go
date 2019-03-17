@@ -18,6 +18,7 @@ package api
 
 import (
 	"fmt"
+	"net"
 	"strconv"
 	"strings"
 
@@ -97,8 +98,13 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 					args.StorageClass)
 			}
 		}
+
 		if err := setUserMetadata(req, args.UserMeta); err != nil {
 			return "", err
+		}
+
+		if len(args.Process) != 0 {
+			req.SetHeader(http.BCE_PROCESS, args.Process)
 		}
 	}
 
@@ -436,7 +442,7 @@ func FetchObject(cli bce.Client, bucket, object, source string,
 	return jsonBody, nil
 }
 
-// AppendObject - append the gievn content to a new or existed object which is appendable
+// AppendObject - append the given content to a new or existed object which is appendable
 //
 // PARAMS:
 //     - cli: the client agent which can perform sending request
@@ -593,7 +599,6 @@ func GeneratePresignedUrl(conf *bce.BceClientConfiguration, signer auth.Signer, 
 	req := &bce.BceRequest{}
 
 	// Set basic arguments
-	req.SetUri(bce.URI_PREFIX + object)
 	if len(method) == 0 {
 		method = http.GET
 	}
@@ -602,8 +607,15 @@ func GeneratePresignedUrl(conf *bce.BceClientConfiguration, signer auth.Signer, 
 	if req.Protocol() == "" {
 		req.SetProtocol(bce.DEFAULT_PROTOCOL)
 	}
-	if len(bucket) != 0 { // only for ListBuckets API
+	domain := req.Host()
+	if pos := strings.Index(domain, ":"); pos != -1 {
+		domain = domain[:pos]
+	}
+	if len(bucket) != 0 && net.ParseIP(domain) == nil { // not use an IP as the endpoint by client
+		req.SetUri(bce.URI_PREFIX + object)
 		req.SetHost(bucket + "." + req.Host())
+	} else {
+		req.SetUri(getObjectUri(bucket, object))
 	}
 
 	// Set headers and params if given.
@@ -628,5 +640,123 @@ func GeneratePresignedUrl(conf *bce.BceClientConfiguration, signer auth.Signer, 
 	// Generate the authorization string and return the signed url.
 	signer.Sign(&req.Request, conf.Credentials, &option)
 	req.SetParam("authorization", req.Header(http.AUTHORIZATION))
-	return fmt.Sprintf("%s://%s%s?%s", req.Protocol(), req.Host(), req.Uri(), req.QueryString())
+	return fmt.Sprintf("%s://%s%s?%s", req.Protocol(), req.Host(),
+		util.UriEncode(req.Uri(), false), req.QueryString())
+}
+
+// PutObjectAcl - set the ACL of the given object
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+//     - object: the object name
+//     - cannedAcl: support private and public-read
+//     - grantRead: user id list
+//     - grantFullControl: user id list
+//     - aclBody: the acl file body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func PutObjectAcl(cli bce.Client, bucket, object, cannedAcl string,
+	grantRead, grantFullControl []string, aclBody *bce.Body) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getObjectUri(bucket, object))
+	req.SetMethod(http.PUT)
+	req.SetParam("acl", "")
+
+	// Joiner for generate the user id list string for grant acl header
+	joiner := func(ids []string) string {
+		for i := range ids {
+			ids[i] = "id=\"" + ids[i] + "\""
+		}
+		return strings.Join(ids, ",")
+	}
+
+	// Choose a acl setting method
+	methods := 0
+	if len(cannedAcl) != 0 {
+		methods += 1
+		if validCannedAcl(cannedAcl) {
+			req.SetHeader(http.BCE_ACL, cannedAcl)
+		}
+	}
+	if len(grantRead) != 0 {
+		methods += 1
+		req.SetHeader(http.BCE_GRANT_READ, joiner(grantRead))
+	}
+	if len(grantFullControl) != 0 {
+		methods += 1
+		req.SetHeader(http.BCE_GRANT_FULL_CONTROL, joiner(grantFullControl))
+	}
+	if aclBody != nil {
+		methods += 1
+		req.SetHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE)
+		req.SetBody(aclBody)
+	}
+	if methods != 1 {
+		return bce.NewBceClientError("BOS only support one acl setting method at the same time")
+	}
+
+	// Do sending request
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// GetObjectAcl - get the ACL of the given object
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+//     - object: the object name
+// RETURNS:
+//     - result: the object acl result object
+//     - error: nil if success otherwise the specific error
+func GetObjectAcl(cli bce.Client, bucket, object string) (*GetObjectAclResult, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getObjectUri(bucket, object))
+	req.SetMethod(http.GET)
+	req.SetParam("acl", "")
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	result := &GetObjectAclResult{}
+	if err := resp.ParseJsonBody(result); err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+// DeleteObjectAcl - delete the ACL of the given object
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+//     - object: the object name
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func DeleteObjectAcl(cli bce.Client, bucket, object string) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getObjectUri(bucket, object))
+	req.SetMethod(http.DELETE)
+	req.SetParam("acl", "")
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
 }

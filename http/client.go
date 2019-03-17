@@ -126,7 +126,7 @@ func Execute(request *Request) (*Response, error) {
 	// Variable body's type is `*BodyStream`. If its value is nil, the `Body` field must be
 	// explicitly assigned `nil` value, otherwise nil pointer dereference will arise.
 	body := request.Body()
-	if body != nil {
+	if body != nil && request.Length() != 0 { // body != nil and length == 0 regards unknown
 		httpRequest.Body = body
 		httpRequest.ContentLength = request.Length()
 	}

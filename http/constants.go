@@ -51,6 +51,8 @@ const (
 	// BCE Common HTTP Headers
 	BCE_PREFIX               = "x-bce-"
 	BCE_ACL                  = "x-bce-acl"
+	BCE_GRANT_READ           = "x-bce-grant-read"
+	BCE_GRANT_FULL_CONTROL   = "x-bce-grant-full-control"
 	BCE_CONTENT_SHA256       = "x-bce-content-sha256"
 	BCE_REQUEST_ID           = "x-bce-request-id"
 	BCE_USER_METADATA_PREFIX = "x-bce-meta-"
@@ -69,4 +71,5 @@ const (
 	BCE_OBJECT_TYPE                     = "x-bce-object-type"
 	BCE_NEXT_APPEND_OFFSET              = "x-bce-next-append-offset"
 	BCE_STORAGE_CLASS                   = "x-bce-storage-class"
+	BCE_PROCESS                         = "x-bce-process"
 )

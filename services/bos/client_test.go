@@ -44,6 +44,9 @@ func init() {
 	//log.SetLogHandler(log.STDERR | log.FILE)
 	//log.SetRotateType(log.ROTATE_SIZE)
 	log.SetLogLevel(log.WARN)
+
+	//log.SetLogHandler(log.STDERR)
+	//log.SetLogLevel(log.DEBUG)
 }
 
 // ExpectEqual is the helper function for test each case
@@ -346,6 +349,481 @@ func TestGetBucketStorageClass(t *testing.T) {
 	res, err := BOS_CLIENT.GetBucketStorageclass(EXISTS_BUCKET)
 	ExpectEqual(t.Errorf, err, nil)
 	t.Logf("%+v", res)
+}
+
+func TestPutBucketReplication(t *testing.T) {
+	BOS_CLIENT.DeleteBucketReplication(EXISTS_BUCKET)
+	str := `{
+		"id": "abc",
+		"status":"enabled",
+		"resource": ["bos-rd-ssy/films"],
+		"destination": {
+			"bucket": "bos-rd-su-test",
+			"storageClass": "COLD"
+		},
+		"replicateDeletes": "disabled"
+}`
+	body, _ := bce.NewBodyFromString(str)
+	err := BOS_CLIENT.PutBucketReplication(EXISTS_BUCKET, body)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketReplication(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res.Id, "abc")
+	ExpectEqual(t.Errorf, res.Status, "enabled")
+	ExpectEqual(t.Errorf, res.Resource[0], "bos-rd-ssy/films")
+	ExpectEqual(t.Errorf, res.Destination.Bucket, "bos-rd-su-test")
+	ExpectEqual(t.Errorf, res.ReplicateDeletes, "disabled")
+}
+
+func TestPutBucketReplicationFromFile(t *testing.T) {
+	BOS_CLIENT.DeleteBucketReplication(EXISTS_BUCKET)
+	str := `{
+		"id": "abc",
+		"status":"enabled",
+		"resource": ["bos-rd-ssy/films"],
+		"destination": {
+			"bucket": "bos-rd-su-test",
+			"storageClass": "COLD"
+		},
+		"replicateDeletes": "disabled"
+}`
+	fname := "/tmp/test-put-bucket-replication-by-file"
+	f, _ := os.Create(fname)
+	f.WriteString(str)
+	f.Close()
+	err := BOS_CLIENT.PutBucketReplicationFromFile(EXISTS_BUCKET, fname)
+	os.Remove(fname)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketReplication(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res.Id, "abc")
+	ExpectEqual(t.Errorf, res.Status, "enabled")
+	ExpectEqual(t.Errorf, res.Resource[0], "bos-rd-ssy/films")
+	ExpectEqual(t.Errorf, res.Destination.Bucket, "bos-rd-su-test")
+	ExpectEqual(t.Errorf, res.ReplicateDeletes, "disabled")
+}
+
+func TestPutBucketReplicationFromString(t *testing.T) {
+	BOS_CLIENT.DeleteBucketReplication(EXISTS_BUCKET)
+	str := `{
+		"id": "abc",
+		"status":"enabled",
+		"resource": ["bos-rd-ssy/films"],
+		"destination": {
+			"bucket": "bos-rd-su-test",
+			"storageClass": "COLD"
+		},
+		"replicateDeletes": "disabled"
+}`
+	err := BOS_CLIENT.PutBucketReplicationFromString(EXISTS_BUCKET, str)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketReplication(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res.Id, "abc")
+	ExpectEqual(t.Errorf, res.Status, "enabled")
+	ExpectEqual(t.Errorf, res.Resource[0], "bos-rd-ssy/films")
+	ExpectEqual(t.Errorf, res.Destination.Bucket, "bos-rd-su-test")
+	ExpectEqual(t.Errorf, res.ReplicateDeletes, "disabled")
+}
+
+func TestPutBucketReplicationFromStruct(t *testing.T) {
+	BOS_CLIENT.DeleteBucketReplication(EXISTS_BUCKET)
+	args := &api.PutBucketReplicationArgs{
+		Id:               "abc",
+		Status:           "enabled",
+		Resource:         []string{"bos-rd-ssy/films"},
+		Destination:      &api.BucketReplicationDescriptor{"bos-rd-su-test", "COLD"},
+		ReplicateDeletes: "disabled",
+	}
+	err := BOS_CLIENT.PutBucketReplicationFromStruct(EXISTS_BUCKET, args)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketReplication(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res.Id, "abc")
+	ExpectEqual(t.Errorf, res.Status, "enabled")
+	ExpectEqual(t.Errorf, res.Resource[0], "bos-rd-ssy/films")
+	ExpectEqual(t.Errorf, res.Destination.Bucket, "bos-rd-su-test")
+	ExpectEqual(t.Errorf, res.ReplicateDeletes, "disabled")
+}
+
+func TestGetBucketReplication(t *testing.T) {
+	res, err := BOS_CLIENT.GetBucketReplication(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res.Id, "abc")
+	ExpectEqual(t.Errorf, res.Status, "enabled")
+	ExpectEqual(t.Errorf, res.Resource[0], "bos-rd-ssy/films")
+	ExpectEqual(t.Errorf, res.Destination.Bucket, "bos-rd-su-test")
+	ExpectEqual(t.Errorf, res.ReplicateDeletes, "disabled")
+}
+
+func TestGetBucketReplicationProcess(t *testing.T) {
+	res, err := BOS_CLIENT.GetBucketReplicationProgress(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%v", res)
+}
+
+func TestDeleteBucketReplication(t *testing.T) {
+	err := BOS_CLIENT.DeleteBucketReplication(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestPutBucketEncryption(t *testing.T) {
+	err := BOS_CLIENT.PutBucketEncryption(EXISTS_BUCKET, api.ENCRYPTION_AES256)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketEncryption(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res, api.ENCRYPTION_AES256)
+}
+
+func TestGetBucketEncryption(t *testing.T) {
+	res, err := BOS_CLIENT.GetBucketEncryption(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", res)
+}
+
+func TestDeleteBucketEncryption(t *testing.T) {
+	err := BOS_CLIENT.DeleteBucketEncryption(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketEncryption(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", res)
+}
+
+func TestPutBucketStaticWebsite(t *testing.T) {
+	BOS_CLIENT.DeleteBucketStaticWebsite(EXISTS_BUCKET)
+	body, _ := bce.NewBodyFromString(`{"index": "index.html", "notFound":"blank.html"}`)
+	err := BOS_CLIENT.PutBucketStaticWebsite(EXISTS_BUCKET, body)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketStaticWebsite(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res.Index, "index.html")
+	ExpectEqual(t.Errorf, res.NotFound, "blank.html")
+}
+
+func TestPutBucketStaticWebsiteFromString(t *testing.T) {
+	BOS_CLIENT.DeleteBucketStaticWebsite(EXISTS_BUCKET)
+	jsonConf := `{"index": "index.html", "notFound":"blank.html"}`
+	err := BOS_CLIENT.PutBucketStaticWebsiteFromString(EXISTS_BUCKET, jsonConf)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketStaticWebsite(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res.Index, "index.html")
+	ExpectEqual(t.Errorf, res.NotFound, "blank.html")
+}
+
+func TestPutBucketStaticWebsiteFromStruct(t *testing.T) {
+	BOS_CLIENT.DeleteBucketStaticWebsite(EXISTS_BUCKET)
+	obj := &api.PutBucketStaticWebsiteArgs{"index.html", "blank.html"}
+	err := BOS_CLIENT.PutBucketStaticWebsiteFromStruct(EXISTS_BUCKET, obj)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketStaticWebsite(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res.Index, "index.html")
+	ExpectEqual(t.Errorf, res.NotFound, "blank.html")
+}
+
+func TestSimplePutBucketStaticWebsite(t *testing.T) {
+	BOS_CLIENT.DeleteBucketStaticWebsite(EXISTS_BUCKET)
+	err := BOS_CLIENT.SimplePutBucketStaticWebsite(EXISTS_BUCKET, "index.html", "blank.html")
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketStaticWebsite(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res.Index, "index.html")
+	ExpectEqual(t.Errorf, res.NotFound, "blank.html")
+}
+
+func TestGetBucketStaticWebsite(t *testing.T) {
+	res, err := BOS_CLIENT.GetBucketStaticWebsite(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%v", res)
+}
+
+func TestDeleteBucketStaticWebsite(t *testing.T) {
+	err := BOS_CLIENT.DeleteBucketStaticWebsite(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketStaticWebsite(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err != nil, true)
+	t.Logf("%v", res)
+}
+
+func TestPutBucketCors(t *testing.T) {
+	body, _ := bce.NewBodyFromString(`
+	{
+		"corsConfiguration": [
+			{
+				"allowedOrigins": ["https://www.baidu.com"],
+				"allowedMethods": ["GET"],
+				"maxAgeSeconds": 1800
+			}
+		]
+	}
+	`)
+	err := BOS_CLIENT.PutBucketCors(EXISTS_BUCKET, body)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketCors(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res.CorsConfiguration[0].AllowedOrigins[0], "https://www.baidu.com")
+	ExpectEqual(t.Errorf, res.CorsConfiguration[0].AllowedMethods[0], "GET")
+	ExpectEqual(t.Errorf, res.CorsConfiguration[0].MaxAgeSeconds, 1800)
+}
+
+func TestPutBucketCorsFromFile(t *testing.T) {
+	str := `{
+		"corsConfiguration": [
+			{
+				"allowedOrigins": ["https://www.baidu.com"],
+				"allowedMethods": ["GET"],
+				"maxAgeSeconds": 1800
+			}
+		]
+	}`
+	fname := "/tmp/test-put-bucket-cors-by-file"
+	f, _ := os.Create(fname)
+	f.WriteString(str)
+	f.Close()
+	err := BOS_CLIENT.PutBucketCorsFromFile(EXISTS_BUCKET, fname)
+	os.Remove(fname)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketCors(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res.CorsConfiguration[0].AllowedOrigins[0], "https://www.baidu.com")
+	ExpectEqual(t.Errorf, res.CorsConfiguration[0].AllowedMethods[0], "GET")
+	ExpectEqual(t.Errorf, res.CorsConfiguration[0].MaxAgeSeconds, 1800)
+
+	err = BOS_CLIENT.PutBucketCorsFromFile(EXISTS_BUCKET, "/tmp/not-exist")
+	ExpectEqual(t.Errorf, err != nil, true)
+}
+
+func TestPutBucketCorsFromString(t *testing.T) {
+	str := `{
+		"corsConfiguration": [
+			{
+				"allowedOrigins": ["https://www.baidu.com"],
+				"allowedMethods": ["GET"],
+				"maxAgeSeconds": 1800
+			}
+		]
+	}`
+	err := BOS_CLIENT.PutBucketCorsFromString(EXISTS_BUCKET, str)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketCors(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res.CorsConfiguration[0].AllowedOrigins[0], "https://www.baidu.com")
+	ExpectEqual(t.Errorf, res.CorsConfiguration[0].AllowedMethods[0], "GET")
+	ExpectEqual(t.Errorf, res.CorsConfiguration[0].MaxAgeSeconds, 1800)
+
+	err = BOS_CLIENT.PutBucketCorsFromString(EXISTS_BUCKET, "")
+	ExpectEqual(t.Errorf, err != nil, true)
+}
+
+func TestPutBucketCorsFromStruct(t *testing.T) {
+	obj := &api.PutBucketCorsArgs{
+		[]api.BucketCORSType{
+			api.BucketCORSType{
+				AllowedOrigins: []string{"https://www.baidu.com"},
+				AllowedMethods: []string{"GET"},
+				MaxAgeSeconds:  1200,
+			},
+		},
+	}
+	err := BOS_CLIENT.PutBucketCorsFromStruct(EXISTS_BUCKET, obj)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketCors(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res.CorsConfiguration[0].AllowedOrigins[0], "https://www.baidu.com")
+	ExpectEqual(t.Errorf, res.CorsConfiguration[0].AllowedMethods[0], "GET")
+	ExpectEqual(t.Errorf, res.CorsConfiguration[0].MaxAgeSeconds, 1200)
+
+	err = BOS_CLIENT.PutBucketCorsFromStruct(EXISTS_BUCKET, nil)
+	ExpectEqual(t.Errorf, err != nil, true)
+}
+
+func TestGetBucketCors(t *testing.T) {
+	res, err := BOS_CLIENT.GetBucketCors(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%v", res)
+	ExpectEqual(t.Errorf, res.CorsConfiguration[0].AllowedOrigins[0], "https://www.baidu.com")
+	ExpectEqual(t.Errorf, res.CorsConfiguration[0].AllowedMethods[0], "GET")
+	ExpectEqual(t.Errorf, res.CorsConfiguration[0].MaxAgeSeconds, 1200)
+}
+
+func TestDeleteBucketCors(t *testing.T) {
+	err := BOS_CLIENT.DeleteBucketCors(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketCors(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err != nil, true)
+	t.Logf("%v, %v", res, err)
+}
+
+func TestPutBucketCopyrightProtection(t *testing.T) {
+	err := BOS_CLIENT.PutBucketCopyrightProtection(EXISTS_BUCKET,
+		"bos-rd-ssy/glog.go", "bos-rd-ssy/films/*")
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketCopyrightProtection(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res[0], "bos-rd-ssy/glog.go")
+	ExpectEqual(t.Errorf, res[1], "bos-rd-ssy/films/*")
+}
+
+func TestGetBucketCopyrightProtection(t *testing.T) {
+	res, err := BOS_CLIENT.GetBucketCopyrightProtection(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%v, %v", res, err)
+}
+
+func TestDeleteBucketCopyrightProtection(t *testing.T) {
+	err := BOS_CLIENT.DeleteBucketCopyrightProtection(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketCopyrightProtection(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err != nil, true)
+	t.Logf("%v, %v", res, err)
+}
+
+func TestPutBucketNotification(t *testing.T) {
+	body, _ := bce.NewBodyFromString(`
+	{
+		"notifications": [
+			{
+				"id": "id-1",
+				"appId": "app-id-1",
+				"status": "enabled",
+				"resources": [
+					"/path1/*", "/*.jpg", "/*.png"
+				],
+				"events": [
+					"PutObject"
+				],
+				"quota": {
+					"quotaDay": 1000,
+					"quotaSec": 10
+				},
+				"apps": [
+					{
+						"id": "app-id-1",
+						"eventUrl": "http://127.0.0.1:8080/event"
+					}
+				]
+			}
+		]
+	}`)
+	err := BOS_CLIENT.PutBucketNotification(EXISTS_BUCKET, body)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketNotification(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, len(res.Notifications), 1)
+	notification := res.Notifications[0]
+	ExpectEqual(t.Errorf, notification.Id, "id-1")
+	ExpectEqual(t.Errorf, notification.AppId, "app-id-1")
+	ExpectEqual(t.Errorf, notification.Status, "enabled")
+	ExpectEqual(t.Errorf, notification.Resources, []string{"/path1/*", "/*.jpg", "/*.png"})
+	ExpectEqual(t.Errorf, notification.Events, []string{"PutObject"})
+	ExpectEqual(t.Errorf, notification.Quota.QuotaDay, float64(1000))
+	ExpectEqual(t.Errorf, notification.Quota.QuotaSec, float64(10))
+	ExpectEqual(t.Errorf, notification.Apps[0].Id, "app-id-1")
+	ExpectEqual(t.Errorf, notification.Apps[0].EventUrl, "http://127.0.0.1:8080/event")
+}
+
+func TestPutBucketNotificationFromFile(t *testing.T) {
+	str := `
+	{
+		"notifications": [
+			{
+				"id": "id-1",
+				"appId": "app-id-1",
+				"status": "enabled",
+				"resources": [
+					"/path1/*", "/*.jpg", "/*.png"
+				],
+				"events": [
+					"PutObject"
+				],
+				"quota": {
+					"quotaDay": 1000,
+					"quotaSec": 10
+				},
+				"apps": [
+					{
+						"id": "app-id-1",
+						"eventUrl": "http://127.0.0.1:8080/event"
+					}
+				]
+			}
+		]
+	}`
+	filename := "/tmp/test-put-notification-by-file"
+	f, _ := os.Create(filename)
+	defer os.Remove(filename)
+	f.WriteString(str)
+	f.Close()
+
+	err := BOS_CLIENT.PutBucketNotificationFromFile(EXISTS_BUCKET, filename)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketNotification(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, len(res.Notifications), 1)
+	notification := res.Notifications[0]
+	ExpectEqual(t.Errorf, notification.Id, "id-1")
+	ExpectEqual(t.Errorf, notification.AppId, "app-id-1")
+	ExpectEqual(t.Errorf, notification.Status, "enabled")
+	ExpectEqual(t.Errorf, notification.Resources, []string{"/path1/*", "/*.jpg", "/*.png"})
+	ExpectEqual(t.Errorf, notification.Events, []string{"PutObject"})
+	ExpectEqual(t.Errorf, notification.Quota.QuotaDay, float64(1000))
+	ExpectEqual(t.Errorf, notification.Quota.QuotaSec, float64(10))
+	ExpectEqual(t.Errorf, notification.Apps[0].Id, "app-id-1")
+	ExpectEqual(t.Errorf, notification.Apps[0].EventUrl, "http://127.0.0.1:8080/event")
+
+	err = BOS_CLIENT.PutBucketNotificationFromFile(EXISTS_BUCKET, "/tmp/not-exist")
+	ExpectEqual(t.Errorf, err != nil, true)
+}
+
+func TestPutBucketNotificationFromStruct(t *testing.T) {
+	args := &api.PutBucketNotificationArgs{
+		Notifications: []api.Notification{
+			api.Notification{
+				Id:        "id-1",
+				AppId:     "app-id-1",
+				Status:    "enabled",
+				Resources: []string{"/path1/*", "/*.jpg", "/*.png"},
+				Events:    []string{"PutObject"},
+				Quota: api.NotificationQuota{
+					QuotaDay: 1000,
+					QuotaSec: 10,
+				},
+				Apps: []api.NotificationApp{
+					api.NotificationApp{
+						Id:       "app-id-1",
+						EventUrl: "http://127.0.0.1:8080/event",
+					},
+				},
+			},
+		},
+	}
+	err := BOS_CLIENT.PutBucketNotificationFromStruct(EXISTS_BUCKET, args)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketNotification(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, len(res.Notifications), 1)
+	notification := res.Notifications[0]
+	ExpectEqual(t.Errorf, notification.Id, "id-1")
+	ExpectEqual(t.Errorf, notification.AppId, "app-id-1")
+	ExpectEqual(t.Errorf, notification.Status, "enabled")
+	ExpectEqual(t.Errorf, notification.Resources, []string{"/path1/*", "/*.jpg", "/*.png"})
+	ExpectEqual(t.Errorf, notification.Events, []string{"PutObject"})
+	ExpectEqual(t.Errorf, notification.Quota.QuotaDay, float64(1000))
+	ExpectEqual(t.Errorf, notification.Quota.QuotaSec, float64(10))
+	ExpectEqual(t.Errorf, notification.Apps[0].Id, "app-id-1")
+	ExpectEqual(t.Errorf, notification.Apps[0].EventUrl, "http://127.0.0.1:8080/event")
+
+	err = BOS_CLIENT.PutBucketNotificationFromStruct(EXISTS_BUCKET, nil)
+	ExpectEqual(t.Errorf, err != nil, true)
+}
+
+func TestDeleteNotification(t *testing.T) {
+	err := BOS_CLIENT.DeleteBucketNotification(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetBucketNotification(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, err != nil, true)
+	ExpectEqual(t.Errorf, res == nil, true)
 }
 
 func TestPutObject(t *testing.T) {
@@ -661,4 +1139,136 @@ func TestGeneratePresignedUrl(t *testing.T) {
 	resp, err = http.Head(url)
 	ExpectEqual(t.Errorf, err, nil)
 	ExpectEqual(t.Errorf, resp.StatusCode, 200)
+
+	BOS_CLIENT.Config.Endpoint = "10.180.112.31"
+	url = BOS_CLIENT.GeneratePresignedUrl(EXISTS_BUCKET, "glog.go", 100, "HEAD", nil, params)
+	resp, err = http.Head(url)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, resp.StatusCode, 200)
+
+	BOS_CLIENT.Config.Endpoint = "10.180.112.31:80"
+	url = BOS_CLIENT.GeneratePresignedUrl(EXISTS_BUCKET, "glog.go", 100, "HEAD", nil, params)
+	resp, err = http.Head(url)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, resp.StatusCode, 200)
+}
+
+func TestPutObjectAcl(t *testing.T) {
+	acl := `{
+    "accessControlList":[
+        {
+            "grantee":[{
+                "id":"e13b12d0131b4c8bae959df4969387b8"
+            }],
+            "permission":["READ"]
+        }
+    ]
+}`
+	body, _ := bce.NewBodyFromString(acl)
+	err := BOS_CLIENT.PutObjectAcl(EXISTS_BUCKET, "glog.go", body)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetObjectAcl(EXISTS_BUCKET, "glog.go")
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%v", res)
+	ExpectEqual(t.Errorf, res.AccessControlList[0].Permission[0], "READ")
+}
+
+func TestPutObjectAclFromCanned(t *testing.T) {
+	err := BOS_CLIENT.PutObjectAclFromCanned(EXISTS_BUCKET, "glog.go", api.CANNED_ACL_PUBLIC_READ)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetObjectAcl(EXISTS_BUCKET, "glog.go")
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%v", res)
+}
+
+func TestPutObjectAclGrantRead(t *testing.T) {
+	err := BOS_CLIENT.PutObjectAclGrantRead(EXISTS_BUCKET,
+		"glog.go", "e13b12d0131b4c8bae959df4969387b8")
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetObjectAcl(EXISTS_BUCKET, "glog.go")
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%v", res)
+	ExpectEqual(t.Errorf, res.AccessControlList[0].Permission[0], "READ")
+}
+
+func TestPutObjectAclGrantFullControl(t *testing.T) {
+	err := BOS_CLIENT.PutObjectAclGrantFullControl(EXISTS_BUCKET,
+		"glog.go", "e13b12d0131b4c8bae959df4969387b8")
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetObjectAcl(EXISTS_BUCKET, "glog.go")
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%v", res)
+	ExpectEqual(t.Errorf, res.AccessControlList[0].Permission[0], "FULL_CONTROL")
+}
+
+func TestPutObjectAclFromFile(t *testing.T) {
+	acl := `{
+    "accessControlList":[
+        {
+            "grantee":[{
+                "id":"e13b12d0131b4c8bae959df4969387b8"
+            }],
+            "permission":["READ"]
+        }
+    ]
+}`
+	fname := "/tmp/test-put-object-acl-by-file"
+	f, _ := os.Create(fname)
+	f.WriteString(acl)
+	f.Close()
+	err := BOS_CLIENT.PutObjectAclFromFile(EXISTS_BUCKET, "glog.go", fname)
+	os.Remove(fname)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetObjectAcl(EXISTS_BUCKET, "glog.go")
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%v", res)
+	ExpectEqual(t.Errorf, res.AccessControlList[0].Permission[0], "READ")
+}
+
+func TestPutObjectAclFromString(t *testing.T) {
+	acl := `{
+    "accessControlList":[
+        {
+            "grantee":[{
+                "id":"e13b12d0131b4c8bae959df4969387b8"
+            }],
+            "permission":["FULL_CONTROL"]
+        }
+    ]
+}`
+	err := BOS_CLIENT.PutObjectAclFromString(EXISTS_BUCKET, "glog.go", acl)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetObjectAcl(EXISTS_BUCKET, "glog.go")
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%v", res)
+	ExpectEqual(t.Errorf, res.AccessControlList[0].Permission[0], "FULL_CONTROL")
+}
+
+func TestPutObjectAclFromStruct(t *testing.T) {
+	aclObj := &api.PutObjectAclArgs{
+		[]api.GrantType{
+			api.GrantType{
+				Grantee: []api.GranteeType{
+					api.GranteeType{"e13b12d0131b4c8bae959df4969387b8"},
+				},
+				Permission: []string{
+					"READ",
+				},
+			},
+		},
+	}
+	err := BOS_CLIENT.PutObjectAclFromStruct(EXISTS_BUCKET, "glog.go", aclObj)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetObjectAcl(EXISTS_BUCKET, "glog.go")
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%v", res)
+	ExpectEqual(t.Errorf, res.AccessControlList[0].Permission[0], "READ")
+}
+
+func TestDeleteObjectAcl(t *testing.T) {
+	err := BOS_CLIENT.DeleteObjectAcl(EXISTS_BUCKET, "glog.go")
+	ExpectEqual(t.Errorf, err, nil)
+	res, err := BOS_CLIENT.GetObjectAcl(EXISTS_BUCKET, "glog.go")
+	ExpectEqual(t.Errorf, err != nil, true)
+	t.Logf("%v, %v", res, err)
 }
