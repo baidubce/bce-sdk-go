@@ -59,6 +59,7 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 			http.CONTENT_TYPE:        args.ContentType,
 			http.EXPIRES:             args.Expires,
 			http.BCE_CONTENT_SHA256:  args.ContentSha256,
+			http.CONTENT_ENCODING:    args.ContentEncoding,
 		})
 		if args.ContentLength != 0 {
 			// User specified Content-Length can be smaller than the body size, so the body should
@@ -81,6 +82,11 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 		// Reset the contentMD5 if set by user
 		if len(args.ContentMD5) != 0 {
 			req.SetHeader(http.CONTENT_MD5, args.ContentMD5)
+		}
+
+		// Reset the ContentEncoding if set by user
+		if len(args.ContentEncoding) != 0 {
+			req.SetHeader(http.CONTENT_ENCODING, args.ContentEncoding)
 		}
 
 		if validStorageClass(args.StorageClass) {

@@ -174,6 +174,7 @@ type PutObjectArgs struct {
 	ContentMD5         string
 	ContentType        string
 	ContentLength      int64
+	ContentEncoding    string
 	Expires            string
 	UserMeta           map[string]string
 	ContentSha256      string
