@@ -210,7 +210,7 @@ myLogger.Info("this is my own logger from the sdk")
 
 产品名称   | 产品缩写 | 导入路径 | 说明文档
 -----------|----------|----------|----------
-百度对象存储 |  BOS   | github.com/baidubce/bce-sdk-go/services/bos | [BOS.md](https://github.com/baidubce/bce-sdk-go/doc/BOS.md)
-安全Token服务|  STS   | github.com/baidubce/bce-sdk-go/services/sts | [STS.md](https://github.com/baidubce/bce-sdk-go/doc/STS.md)
+百度对象存储 |  BOS   | github.com/baidubce/bce-sdk-go/services/bos | [BOS.md](./doc/BOS.md)
+安全Token服务|  STS   | github.com/baidubce/bce-sdk-go/services/sts | [STS.md](./doc/STS.md)
 视频内容分析 |  VCA   | github.com/baidubce/bce-sdk-go/services/vca |
 视频内容审核 |  VCR   | github.com/baidubce/bce-sdk-go/services/vcr |

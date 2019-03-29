@@ -72,10 +72,15 @@ func ListObjects(cli bce.Client, bucket string,
 		if len(args.Marker) != 0 {
 			req.SetParam("marker", args.Marker)
 		}
-		req.SetParam("maxKeys", strconv.Itoa(args.MaxKeys))
+		if args.MaxKeys != 0 {
+			req.SetParam("maxKeys", strconv.Itoa(args.MaxKeys))
+		}
 		if len(args.Prefix) != 0 {
 			req.SetParam("prefix", args.Prefix)
 		}
+	}
+	if args == nil || args.MaxKeys == 0 {
+		req.SetParam("maxKeys", "1000")
 	}
 
 	// Send the request and get result
