@@ -114,6 +114,7 @@ func UploadPart(cli bce.Client, bucket, object, uploadId string, partNumber int,
 		setOptionalNullHeaders(req, map[string]string{
 			http.CONTENT_MD5:        args.ContentMD5,
 			http.BCE_CONTENT_SHA256: args.ContentSha256,
+			http.BCE_CONTENT_CRC32:  args.ContentCrc32,
 		})
 	}
 
@@ -212,9 +213,11 @@ func CompleteMultipartUpload(cli bce.Client, bucket, object, uploadId string,
 			return nil, err
 		}
 	}
-
 	if len(args.Process) != 0 {
 		req.SetHeader(http.BCE_PROCESS, args.Process)
+	}
+	if len(args.ContentCrc32) != 0 {
+		req.SetHeader(http.BCE_CONTENT_CRC32, args.ContentCrc32)
 	}
 
 	// Send request and get the result
@@ -228,6 +231,10 @@ func CompleteMultipartUpload(cli bce.Client, bucket, object, uploadId string,
 	result := &CompleteMultipartUploadResult{}
 	if err := resp.ParseJsonBody(result); err != nil {
 		return nil, err
+	}
+	headers := resp.Headers()
+	if val, ok := headers[toHttpHeaderKey(http.BCE_CONTENT_CRC32)]; ok {
+		result.ContentCrc32 = val
 	}
 	return result, nil
 }

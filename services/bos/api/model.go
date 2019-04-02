@@ -230,37 +230,6 @@ type CopyrightProtectionType struct {
 	Resource []string `json:"resource"`
 }
 
-type Notification struct {
-	Id        string            `json:"id"`
-	AppId     string            `json:"appId"`
-	Status    string            `json:"status"`
-	Resources []string          `json:"resources"`
-	Events    []string          `json:"events"`
-	Quota     NotificationQuota `json:"quota"`
-	Apps      []NotificationApp `json:"apps"`
-}
-
-type NotificationApp struct {
-	Id       string `json:"id"`
-	AipAppId string `json:"aipAppId"`
-	EventUrl string `json:"eventUrl"`
-	XVars    string `json:"xVars"`
-}
-
-type NotificationQuota struct {
-	QuotaDay float64 `json:"quotaDay"`
-	QuotaSec float64 `json:"quotaSec"`
-}
-
-type PutBucketNotificationArgs struct {
-	Notifications []Notification `json:"notifications"`
-}
-
-// GetBucketNotificationResult defines the notification result structure for getting
-type GetBucketNotificationResult struct {
-	Notifications []Notification `json:"notifications"`
-}
-
 // ObjectAclType defines the data structure for Put and Get object acl API
 type ObjectAclType struct {
 	AccessControlList []GrantType `json:"accessControlList"`
@@ -279,6 +248,7 @@ type PutObjectArgs struct {
 	Expires            string
 	UserMeta           map[string]string
 	ContentSha256      string
+	ContentCrc32       string
 	StorageClass       string
 	Process            string
 }
@@ -308,6 +278,7 @@ type ObjectMeta struct {
 	ContentType        string
 	ContentMD5         string
 	ContentSha256      string
+	ContentCrc32       string
 	Expires            string
 	LastModified       string
 	ETag               string
@@ -353,6 +324,7 @@ type AppendObjectArgs struct {
 	Expires            string
 	UserMeta           map[string]string
 	ContentSha256      string
+	ContentCrc32       string
 	StorageClass       string
 }
 
@@ -360,6 +332,7 @@ type AppendObjectArgs struct {
 type AppendObjectResult struct {
 	ContentMD5       string
 	NextAppendOffset int64
+	ContentCrc32     string
 	ETag             string
 }
 
@@ -404,6 +377,7 @@ type InitiateMultipartUploadResult struct {
 type UploadPartArgs struct {
 	ContentMD5    string
 	ContentSha256 string
+	ContentCrc32  string
 }
 
 // UploadPartCopyArgs defines the optional arguments of UploadPartCopy.
@@ -423,17 +397,19 @@ type UploadInfoType struct {
 
 // CompleteMultipartUploadArgs defines the input arguments structure of CompleteMultipartUpload.
 type CompleteMultipartUploadArgs struct {
-	Parts    []UploadInfoType  `json:"parts"`
-	UserMeta map[string]string `json:"-"`
-	Process  string            `json:"-"`
+	Parts        []UploadInfoType  `json:"parts"`
+	UserMeta     map[string]string `json:"-"`
+	Process      string            `json:"-"`
+	ContentCrc32 string            `json:"-"`
 }
 
 // CompleteMultipartUploadResult defines the result structure of CompleteMultipartUpload.
 type CompleteMultipartUploadResult struct {
-	Location string `json:"location"`
-	Bucket   string `json:"bucket"`
-	Key      string `json:"key"`
-	ETag     string `json:"eTag"`
+	Location     string `json:"location"`
+	Bucket       string `json:"bucket"`
+	Key          string `json:"key"`
+	ETag         string `json:"eTag"`
+	ContentCrc32 string `json:"-"`
 }
 
 // ListPartsArgs defines the input optional arguments of listing parts information.
