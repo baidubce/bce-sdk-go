@@ -60,6 +60,7 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 			http.CONTENT_TYPE:        args.ContentType,
 			http.EXPIRES:             args.Expires,
 			http.BCE_CONTENT_SHA256:  args.ContentSha256,
+			http.BCE_CONTENT_CRC32:   args.ContentCrc32,
 		})
 		if args.ContentLength != 0 {
 			// User specified Content-Length can be smaller than the body size, so the body should
@@ -277,6 +278,9 @@ func GetObject(cli bce.Client, bucket, object string, responseHeaders map[string
 	if val, ok := headers[toHttpHeaderKey(http.BCE_CONTENT_SHA256)]; ok {
 		result.ContentSha256 = val
 	}
+	if val, ok := headers[toHttpHeaderKey(http.BCE_CONTENT_CRC32)]; ok {
+		result.ContentCrc32 = val
+	}
 	if val, ok := headers[toHttpHeaderKey(http.BCE_STORAGE_CLASS)]; ok {
 		result.StorageClass = val
 	}
@@ -357,6 +361,9 @@ func GetObjectMeta(cli bce.Client, bucket, object string) (*GetObjectMetaResult,
 	}
 	if val, ok := headers[toHttpHeaderKey(http.BCE_CONTENT_SHA256)]; ok {
 		result.ContentSha256 = val
+	}
+	if val, ok := headers[toHttpHeaderKey(http.BCE_CONTENT_CRC32)]; ok {
+		result.ContentCrc32 = val
 	}
 	if val, ok := headers[toHttpHeaderKey(http.BCE_STORAGE_CLASS)]; ok {
 		result.StorageClass = val
@@ -477,6 +484,7 @@ func AppendObject(cli bce.Client, bucket, object string, content *bce.Body,
 			http.CONTENT_TYPE:        args.ContentType,
 			http.EXPIRES:             args.Expires,
 			http.BCE_CONTENT_SHA256:  args.ContentSha256,
+			http.BCE_CONTENT_CRC32:   args.ContentCrc32,
 		})
 
 		if validStorageClass(args.StorageClass) {
@@ -500,15 +508,26 @@ func AppendObject(cli bce.Client, bucket, object string, content *bce.Body,
 	if resp.IsFail() {
 		return nil, resp.ServiceError()
 	}
-	nextOffset, offsetErr := strconv.ParseInt(
-		resp.Header(http.BCE_PREFIX+"next-append-offset"), 10, 64)
-	if offsetErr != nil {
-		nextOffset = content.Size()
+	headers := resp.Headers()
+	result := &AppendObjectResult{}
+	if val, ok := headers[http.CONTENT_MD5]; ok {
+		result.ContentMD5 = val
 	}
-	result := &AppendObjectResult{
-		resp.Header(http.CONTENT_MD5),
-		nextOffset,
-		strings.Trim(resp.Header(http.ETAG), "\"")}
+	if val, ok := headers[toHttpHeaderKey(http.BCE_NEXT_APPEND_OFFSET)]; ok {
+		nextOffset, offsetErr := strconv.ParseInt(val, 10, 64)
+		if offsetErr != nil {
+			nextOffset = content.Size()
+		}
+		result.NextAppendOffset = nextOffset
+	} else {
+		result.NextAppendOffset = content.Size()
+	}
+	if val, ok := headers[toHttpHeaderKey(http.BCE_CONTENT_CRC32)]; ok {
+		result.ContentCrc32 = val
+	}
+	if val, ok := headers[http.ETAG]; ok {
+		result.ETag = strings.Trim(val, "\"")
+	}
 	defer func() { resp.Body().Close() }()
 	return result, nil
 }
