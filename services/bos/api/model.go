@@ -232,6 +232,7 @@ type CopyrightProtectionType struct {
 
 type Notification struct {
 	Id        string            `json:"id"`
+	Name      string            `json:"name"`
 	AppId     string            `json:"appId"`
 	Status    string            `json:"status"`
 	Resources []string          `json:"resources"`
