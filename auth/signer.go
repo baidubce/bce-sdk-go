@@ -89,8 +89,12 @@ func (b *BceV1Signer) Sign(req *http.Request, cred *BceCredentials, opt *SignOpt
 	}
 
 	// Set security token if using session credentials
-	if len(cred.SessionToken) != 0 {
-		req.SetHeader(http.BCE_SECURITY_TOKEN, cred.SessionToken)
+	// if has security token in query then do nothing, or add security token 
+	// to header
+	if len(req.Param(http.BCE_SECURITY_TOKEN)) == 0 {
+		if len(cred.SessionToken) != 0 {
+			req.SetHeader(http.BCE_SECURITY_TOKEN, cred.SessionToken)
+		}
 	}
 
 	// Prepare the canonical request components
