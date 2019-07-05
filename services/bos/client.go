@@ -501,6 +501,88 @@ func (c *Client) GetBucketReplicationProgress(bucket string) (
 	return api.GetBucketReplicationProgress(c, bucket)
 }
 
+// PutBucketMirroring - set the bucket mirroring config
+//
+// PARAMS:
+//     - bucket: the bucket name
+//     - mirroring: the mirroring config json body stream
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) PutBucketMirroring(bucket string, mirroring *bce.Body) error {
+	return api.PutBucketMirroring(c, bucket, mirroring)
+}
+
+// PutBucketMirroringFromFile - set the bucket mirroring config with json file name
+//
+// PARAMS:
+//     - bucket: the bucket name
+//     - confFile: the config json file name
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) PutBucketMirroringFromFile(bucket, confFile string) error {
+	body, err := bce.NewBodyFromFile(confFile)
+	if err != nil {
+		return err
+	}
+	return api.PutBucketMirroring(c, bucket, body)
+}
+
+// PutBucketMirroringFromString - set the bucket mirroring config with json string
+//
+// PARAMS:
+//     - bucket: the bucket name
+//     - confString: the config string with json format
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) PutBucketMirroringFromString(bucket, confString string) error {
+	body, err := bce.NewBodyFromString(confString)
+	if err != nil {
+		return err
+	}
+	return api.PutBucketMirroring(c, bucket, body)
+}
+
+// PutBucketMirroringFromStruct - set the bucket mirroring config with struct
+//
+// PARAMS:
+//     - bucket: the bucket name
+//     - confObj: the mirroring config struct object
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) PutBucketMirroringFromStruct(bucket string,
+	confObj *api.PutBucketMirroringArgs) error {
+	jsonBytes, jsonErr := json.Marshal(confObj)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return api.PutBucketMirroring(c, bucket, body)
+}
+
+// GetBucketMirroring - get the bucket mirroring config of the given bucket
+//
+// PARAMS:
+//     - bucket: the bucket name
+// RETURNS:
+//     - *api.GetBucketMirroringResult: the result of the bucket mirroring config
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetBucketMirroring(bucket string) (*api.GetBucketMirroringResult, error) {
+	return api.GetBucketMirroring(c, bucket)
+}
+
+// DeleteBucketMirroring - delete the bucket mirroring config of the given bucket
+//
+// PARAMS:
+//     - bucket: the bucket name
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeleteBucketMirroring(bucket string) error {
+	return api.DeleteBucketMirroring(c, bucket)
+}
+
 // PutBucketEncryption - set the bucket encryption config of the given bucket
 //
 // PARAMS:
