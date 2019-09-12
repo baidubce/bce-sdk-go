@@ -429,10 +429,10 @@ func TestPutBucketReplicationFromString(t *testing.T) {
 func TestPutBucketReplicationFromStruct(t *testing.T) {
 	BOS_CLIENT.DeleteBucketReplication(EXISTS_BUCKET)
 	args := &api.PutBucketReplicationArgs{
-		Id:               "abc",
-		Status:           "enabled",
-		Resource:         []string{"bos-rd-ssy/films"},
-		Destination:      &api.BucketReplicationDescriptor{"bos-rd-su-test", "COLD"},
+		Id: "abc",
+		Status: "enabled",
+		Resource: []string{"bos-rd-ssy/films"},
+		Destination: &api.BucketReplicationDescriptor{"bos-rd-su-test", "COLD"},
 		ReplicateDeletes: "disabled",
 	}
 	err := BOS_CLIENT.PutBucketReplicationFromStruct(EXISTS_BUCKET, args)
@@ -677,153 +677,6 @@ func TestDeleteBucketCopyrightProtection(t *testing.T) {
 	res, err := BOS_CLIENT.GetBucketCopyrightProtection(EXISTS_BUCKET)
 	ExpectEqual(t.Errorf, err != nil, true)
 	t.Logf("%v, %v", res, err)
-}
-
-func TestPutBucketNotification(t *testing.T) {
-	body, _ := bce.NewBodyFromString(`
-	{
-		"notifications": [
-			{
-				"id": "id-1",
-				"appId": "app-id-1",
-				"status": "enabled",
-				"resources": [
-					"/path1/*", "/*.jpg", "/*.png"
-				],
-				"events": [
-					"PutObject"
-				],
-				"quota": {
-					"quotaDay": 1000,
-					"quotaSec": 10
-				},
-				"apps": [
-					{
-						"id": "app-id-1",
-						"eventUrl": "http://127.0.0.1:8080/event"
-					}
-				]
-			}
-		]
-	}`)
-	err := BOS_CLIENT.PutBucketNotification(EXISTS_BUCKET, body)
-	ExpectEqual(t.Errorf, err, nil)
-	res, err := BOS_CLIENT.GetBucketNotification(EXISTS_BUCKET)
-	ExpectEqual(t.Errorf, err, nil)
-	ExpectEqual(t.Errorf, len(res.Notifications), 1)
-	notification := res.Notifications[0]
-	ExpectEqual(t.Errorf, notification.Id, "id-1")
-	ExpectEqual(t.Errorf, notification.AppId, "app-id-1")
-	ExpectEqual(t.Errorf, notification.Status, "enabled")
-	ExpectEqual(t.Errorf, notification.Resources, []string{"/path1/*", "/*.jpg", "/*.png"})
-	ExpectEqual(t.Errorf, notification.Events, []string{"PutObject"})
-	ExpectEqual(t.Errorf, notification.Quota.QuotaDay, float64(1000))
-	ExpectEqual(t.Errorf, notification.Quota.QuotaSec, float64(10))
-	ExpectEqual(t.Errorf, notification.Apps[0].Id, "app-id-1")
-	ExpectEqual(t.Errorf, notification.Apps[0].EventUrl, "http://127.0.0.1:8080/event")
-}
-
-func TestPutBucketNotificationFromFile(t *testing.T) {
-	str := `
-	{
-		"notifications": [
-			{
-				"id": "id-1",
-				"appId": "app-id-1",
-				"status": "enabled",
-				"resources": [
-					"/path1/*", "/*.jpg", "/*.png"
-				],
-				"events": [
-					"PutObject"
-				],
-				"quota": {
-					"quotaDay": 1000,
-					"quotaSec": 10
-				},
-				"apps": [
-					{
-						"id": "app-id-1",
-						"eventUrl": "http://127.0.0.1:8080/event"
-					}
-				]
-			}
-		]
-	}`
-	filename := "/tmp/test-put-notification-by-file"
-	f, _ := os.Create(filename)
-	defer os.Remove(filename)
-	f.WriteString(str)
-	f.Close()
-
-	err := BOS_CLIENT.PutBucketNotificationFromFile(EXISTS_BUCKET, filename)
-	ExpectEqual(t.Errorf, err, nil)
-	res, err := BOS_CLIENT.GetBucketNotification(EXISTS_BUCKET)
-	ExpectEqual(t.Errorf, err, nil)
-	ExpectEqual(t.Errorf, len(res.Notifications), 1)
-	notification := res.Notifications[0]
-	ExpectEqual(t.Errorf, notification.Id, "id-1")
-	ExpectEqual(t.Errorf, notification.AppId, "app-id-1")
-	ExpectEqual(t.Errorf, notification.Status, "enabled")
-	ExpectEqual(t.Errorf, notification.Resources, []string{"/path1/*", "/*.jpg", "/*.png"})
-	ExpectEqual(t.Errorf, notification.Events, []string{"PutObject"})
-	ExpectEqual(t.Errorf, notification.Quota.QuotaDay, float64(1000))
-	ExpectEqual(t.Errorf, notification.Quota.QuotaSec, float64(10))
-	ExpectEqual(t.Errorf, notification.Apps[0].Id, "app-id-1")
-	ExpectEqual(t.Errorf, notification.Apps[0].EventUrl, "http://127.0.0.1:8080/event")
-
-	err = BOS_CLIENT.PutBucketNotificationFromFile(EXISTS_BUCKET, "/tmp/not-exist")
-	ExpectEqual(t.Errorf, err != nil, true)
-}
-
-func TestPutBucketNotificationFromStruct(t *testing.T) {
-	args := &api.PutBucketNotificationArgs{
-		Notifications: []api.Notification{
-			api.Notification{
-				Id:        "id-1",
-				AppId:     "app-id-1",
-				Status:    "enabled",
-				Resources: []string{"/path1/*", "/*.jpg", "/*.png"},
-				Events:    []string{"PutObject"},
-				Quota: api.NotificationQuota{
-					QuotaDay: 1000,
-					QuotaSec: 10,
-				},
-				Apps: []api.NotificationApp{
-					api.NotificationApp{
-						Id:       "app-id-1",
-						EventUrl: "http://127.0.0.1:8080/event",
-					},
-				},
-			},
-		},
-	}
-	err := BOS_CLIENT.PutBucketNotificationFromStruct(EXISTS_BUCKET, args)
-	ExpectEqual(t.Errorf, err, nil)
-	res, err := BOS_CLIENT.GetBucketNotification(EXISTS_BUCKET)
-	ExpectEqual(t.Errorf, err, nil)
-	ExpectEqual(t.Errorf, len(res.Notifications), 1)
-	notification := res.Notifications[0]
-	ExpectEqual(t.Errorf, notification.Id, "id-1")
-	ExpectEqual(t.Errorf, notification.AppId, "app-id-1")
-	ExpectEqual(t.Errorf, notification.Status, "enabled")
-	ExpectEqual(t.Errorf, notification.Resources, []string{"/path1/*", "/*.jpg", "/*.png"})
-	ExpectEqual(t.Errorf, notification.Events, []string{"PutObject"})
-	ExpectEqual(t.Errorf, notification.Quota.QuotaDay, float64(1000))
-	ExpectEqual(t.Errorf, notification.Quota.QuotaSec, float64(10))
-	ExpectEqual(t.Errorf, notification.Apps[0].Id, "app-id-1")
-	ExpectEqual(t.Errorf, notification.Apps[0].EventUrl, "http://127.0.0.1:8080/event")
-
-	err = BOS_CLIENT.PutBucketNotificationFromStruct(EXISTS_BUCKET, nil)
-	ExpectEqual(t.Errorf, err != nil, true)
-}
-
-func TestDeleteNotification(t *testing.T) {
-	err := BOS_CLIENT.DeleteBucketNotification(EXISTS_BUCKET)
-	ExpectEqual(t.Errorf, err, nil)
-	res, err := BOS_CLIENT.GetBucketNotification(EXISTS_BUCKET)
-	ExpectEqual(t.Errorf, err != nil, true)
-	ExpectEqual(t.Errorf, res == nil, true)
 }
 
 func TestPutObject(t *testing.T) {

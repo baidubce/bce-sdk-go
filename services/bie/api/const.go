@@ -12,19 +12,9 @@
  * and limitations under the License.
  */
 
-// init.go - just import the sub packages
+// const.go - define common constants
+package api
 
-// Package sdk imports all sub packages to build all of them when calling `go install', `go build'
-// or `go get' commands.
-package sdk
-
-import (
-	_ "github.com/baidubce/bce-sdk-go/auth"
-	_ "github.com/baidubce/bce-sdk-go/bce"
-	_ "github.com/baidubce/bce-sdk-go/http"
-	_ "github.com/baidubce/bce-sdk-go/services/bos"
-	_ "github.com/baidubce/bce-sdk-go/services/sts"
-	_ "github.com/baidubce/bce-sdk-go/services/bie"
-	_ "github.com/baidubce/bce-sdk-go/util"
-	_ "github.com/baidubce/bce-sdk-go/util/log"
+const (
+	PREFIX = "/v3/group"
 )

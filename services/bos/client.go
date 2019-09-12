@@ -728,72 +728,6 @@ func (c *Client) DeleteBucketCopyrightProtection(bucket string) error {
 	return api.DeleteBucketCopyrightProtection(c, bucket)
 }
 
-// PutBucketNotification - set the notification of the given bucket
-//
-// PARAMS:
-//     - bucket: the bucket name
-//     - body: the notification json file body
-// RETURNS:
-//     - error: nil if success otherwise the specific error
-func (c *Client) PutBucketNotification(bucket string, body *bce.Body) error {
-	return api.PutBucketNotification(c, bucket, body)
-}
-
-// PutBucketNotificationFromFile - set the notification of the given bucket with notification json file name
-//
-// PARAMS:
-//     - bucket: the bucket name
-//     - filename: the notification file name
-// RETURNS:
-//     - error: nil if success otherwise the specific error
-func (c *Client) PutBucketNotificationFromFile(bucket, filename string) error {
-	body, err := bce.NewBodyFromFile(filename)
-	if err != nil {
-		return err
-	}
-	return api.PutBucketNotification(c, bucket, body)
-}
-
-// PutBucketNotificationFromStruct - set the bucket notification config from json config object
-//
-// PARAMS:
-//     - bucket: the bucket name
-//     - filename: the bucket notification json config object
-// RETURNS:
-//     - error: nil if success otherwise the specific error
-func (c *Client) PutBucketNotificationFromStruct(bucket string, args *api.PutBucketNotificationArgs) error {
-	jsonBytes, jsonErr := json.Marshal(args)
-	if jsonErr != nil {
-		return jsonErr
-	}
-	body, err := bce.NewBodyFromBytes(jsonBytes)
-	if err != nil {
-		return err
-	}
-	return api.PutBucketNotification(c, bucket, body)
-}
-
-// GetBucketNotification - get the notification of the given bucket
-//
-// PARAMS:
-//     - bucket: the bucket name
-// RETURNS:
-//     - *api.GetBucketNotificationResult: the result of the bucket notification
-//     - error: nil if success otherwise the specific error
-func (c *Client) GetBucketNotification(bucket string) (*api.GetBucketNotificationResult, error) {
-	return api.GetBucketNotification(c, bucket)
-}
-
-// DeleteBucketNotification - delete the notification rule of the given bucket
-//
-// PARAMS:
-//     - bucket: the bucket name
-// RETURNS:
-//     - error: nil if success otherwise the specific error
-func (c *Client) DeleteBucketNotification(bucket string) error {
-	return api.DeleteBucketNotification(c, bucket)
-}
-
 // PutObject - upload a new object or rewrite the existed object with raw stream
 //
 // PARAMS:
@@ -1480,7 +1414,7 @@ func (c *Client) UploadSuperFile(bucket, object, fileName, storageClass string) 
 
 	// Check the return of each part uploading, and decide to complete or abort it
 	completeArgs := &api.CompleteMultipartUploadArgs{
-		Parts: make([]api.UploadInfoType, partNum),
+		Parts :make([]api.UploadInfoType, partNum),
 	}
 	for i := partNum; i > 0; i-- {
 		uploaded := <-uploadedResult

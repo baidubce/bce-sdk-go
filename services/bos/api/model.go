@@ -230,38 +230,6 @@ type CopyrightProtectionType struct {
 	Resource []string `json:"resource"`
 }
 
-type Notification struct {
-	Id        string            `json:"id"`
-	Name      string            `json:"name"`
-	AppId     string            `json:"appId"`
-	Status    string            `json:"status"`
-	Resources []string          `json:"resources"`
-	Events    []string          `json:"events"`
-	Quota     NotificationQuota `json:"quota"`
-	Apps      []NotificationApp `json:"apps"`
-}
-
-type NotificationApp struct {
-	Id       string `json:"id"`
-	AipAppId string `json:"aipAppId"`
-	EventUrl string `json:"eventUrl"`
-	XVars    string `json:"xVars"`
-}
-
-type NotificationQuota struct {
-	QuotaDay float64 `json:"quotaDay"`
-	QuotaSec float64 `json:"quotaSec"`
-}
-
-type PutBucketNotificationArgs struct {
-	Notifications []Notification `json:"notifications"`
-}
-
-// GetBucketNotificationResult defines the notification result structure for getting
-type GetBucketNotificationResult struct {
-	Notifications []Notification `json:"notifications"`
-}
-
 // ObjectAclType defines the data structure for Put and Get object acl API
 type ObjectAclType struct {
 	AccessControlList []GrantType `json:"accessControlList"`
