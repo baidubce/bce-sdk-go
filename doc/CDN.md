@@ -1,0 +1,1101 @@
+CDN服务
+
+# 概述
+
+本文档主要介绍CDN GO SDK的使用。在使用本文档前，您需要先了解CDN的一些基本知识，并已开通了CDN服务。若您还不了解CDN，可以参考[产品描述](https://cloud.baidu.com/doc/CDN/index.html)和[快速入门](https://cloud.baidu.com/doc/CDN/s/ujwvye8ao)。
+
+# 初始化
+
+## 确认Endpoint
+
+目前使用CDN服务时，CDN的Endpoint都统一使用`https://cdn.baidubce.com`，这也是默认值。
+
+## 获取密钥
+
+要使用百度云CDN，您需要拥有一个有效的AK(Access Key ID)和SK(Secret Access Key)用来进行签名认证。AK/SK是由系统分配给用户的，均为字符串，用于标识用户，为访问CDN做签名验证。
+
+可以通过如下步骤获得并了解您的AK/SK信息：
+
+[注册百度云账号](https://login.bce.baidu.com/reg.html?tpl=bceplat&from=portal)
+
+[创建AK/SK](https://console.bce.baidu.com/iam/?_=1513940574695#/iam/accesslist)
+
+## 使用AK/SK新建CDN Client
+
+通过AK/SK方式访问CDN，用户可以参考如下代码新建一个CDN Client：
+
+```go
+ak := "your_access_key_id"                     
+sk := "your_secret_key_id"                     
+endpoint := "https://cdn.baidubce.com"         
+client, err := cdn.NewClient(ak, sk, endpoint) 
+```
+
+在上面代码中，变量`ak`对应控制台中的“Access Key ID”，变量`sk`对应控制台中的“Access Key Secret”，获取方式请参考《 [如何获取AKSK](https://cloud.baidu.com/doc/Reference/s/9jwvz2egb/)》。变量`endpoint`必须为`https://cdn.baidubce.com`，也是默认值，为空表示使用默认值，设置为其他则SDK无法工作。
+
+在下面的示例中，会频繁使用到GetDefaultClient函数，它的定义为：
+
+```go
+func GetDefaultClient() *cdn.Client {
+	ak := "your_access_key_id"
+	sk := "your_secret_key_id"
+	endpoint := "https://cdn.baidubce.com"
+	
+	// ignore error in test, but you should handle error in dev
+	client, _ := cdn.NewClient(ak, sk, endpoint)
+	return client
+}
+```
+
+## 域名操作接口
+
+### 域名列表查询 ListDomains
+
+> 查询该用户账户下拥有的加速域名
+
+```go
+marker := ""                                           
+cli := GetDefaultClient()                          
+domains, nextMarker, err := cli.ListDomains(marker)    
+fmt.Printf("domains:%+v\n", domains)                   
+fmt.Printf("nextMarker:%+v\n", nextMarker)             
+fmt.Printf("err:%+v\n", err)                           
+```
+
+`marker`参数表示从这个字符串所代表的索引开始查询域名列表，空表示从头开始。目前服务器处理分页size是一个很大的数，所以使用的时候将marker赋值为空即可。ListDomains返回的`nextMarker`表示下一个域名列表索引 ，空表示从`marker`开始之后的域名列表全部被获取，非空可用于传递到ListDomains参数。`domains`是一个string slice，表示域名列表数据，如: `["1.baidu.com", "2.baidu.com"]`
+
+### 查询用户名下所有域名 GetDomainStatus
+
+> 查询用户名下所有域名和域名状态，可以根据特定状态查询属于这个状态的域名。
+
+```go
+cli := client.GetDefaultClient()   
+status := "ALL"
+domainStatus, err := cli.GetDomainStatus(status, "")     
+fmt.Printf("domainStatus:%+v\n", domainStatus)          
+fmt.Printf("err:%+v\n", err)                            
+```
+
+`status`表示域名的状态，如果为`ALL`，表示查询所有状态的域名，如果为`RUNNING`查询已经加速的域名，`STOPPED`查询停止加速的域名，`OPERATING`查询操作中的域名。
+`domainStatus`是**DomainStatus**类型对象，如下所示：
+
+| 字段   | 类型   | 说明                                                |
+| ------ | ------ | --------------------------------------------------- |
+| Domain | string | 域名，如`www.baidu.com`                             |
+| Status | string | 域名状态，合法值为`RUNNING`、`STOPPED`和`OPERATING` |
+
+`domainStatus`的示例数据如：`[{"Domain":"1.baidu.com", "Status":"RUNNING"}, {"Domain":"2.baidu.com", "Status":"STOPPED"}]`
+
+### 查询域名是否可添加 IsValidDomain
+
+> 查询特定域名是否可以使用CDN加速，一个可以被添加的域名必须是合法的域名，不可重复添加，必须通过ICP备案。
+
+```go
+cli := client.GetDefaultClient()           
+testDomain := "test_go_sdk.baidu.com"
+domainValidInfo, err := cli.IsValidDomain(testDomain)  
+fmt.Printf("domainValidInfo:%+v\n", domainValidInfo)                
+fmt.Printf("err:%+v\n", err)                                        
+```
+`testDomain`是要测试的域名，`domainValidInfo`是**DomainValidInfo**类型对象，表示的是关于是否可添加的详细信息
+
+| 字段   | 类型   | 说明                                                |
+| ------ | ------ | --------------------------------------------------- |
+| Domain | string | 域名，如`www.baidu.com`                             |
+| IsValid | bool | true表示该域名可添加，false表示该域名不可被添加 |
+| Message | string | 当IsValid为false，表示域名不可被添加的原因；当IsValid为true时，为空 |
+
+### 创建加速域名接口 CreateDomain
+
+> 添加一个加速域名到用户名下，该域名在调用IsValidDomain的时候返回必须为true。创建加速域名必须设置源站。
+
+```go
+cli := client.GetDefaultClient()
+domainCreatedInfo, err := cli.CreateDomain("test_go_sdk.baidu.com", &api.OriginInit{
+	Origin: []api.OriginPeer{
+		{
+			Peer:      "1.1.1.1",
+			Host:      "www.baidu.com",
+			Backup:    true,
+			Follow302: true,
+		},
+		{
+			Peer:      "http://2.2.2.2",
+			Host:      "www.baidu.com",
+			Backup:    false,
+			Follow302: true,
+		},
+	},
+	DefaultHost: "www.baidu.com",
+	Form:        "default",
+})
+fmt.Printf("domainCreatedInfo:%+v\n", domainCreatedInfo)
+fmt.Printf("err:%+v\n", err)
+```
+
+`api.OriginPeer`表示一个源站，`api.OriginInit`表示对于这个加速域名的源站配置，包括一个或多个源站，和一个默认的会员host，表示为`DefaultHost`。`Form`表示加速服务类型，默认为`default`，其他可选的服务类型有`image`表示图片小文件，`download`表示大文件下载，`media`表示流媒体点播，`dynamic`表示动静态加速。
+源站信息**api.OriginPeer**的结构如下：
+
+| 字段      | 类型   | 说明                                                         |
+| --------- | ------ | ------------------------------------------------------------ |
+| Peer      | string | 源站的endpoint，如`http://2.2.2.2:9090`或     `https://test.baidu.com:9090`，源站类型可以为域名形式、IP形式和bucket，示例代码展示的是IP形式的源站类型，需要注意的是一个域名所有的源站必须具有相同的源站类型。**如果使用的是默认端口，即HTTP的80和HTTPS的443，CDN系统会将源站视为HTTP和HTTPS两种协议都支持**。 |
+| Host      | string | 表示回源时在HTTP请求头中携带的Host，如果没有设置则使用`DefaultHost` |
+| Backup    | bool   | 表示是否为备用源站，备用源站在主源站都不可用的情况下才会使用，false表示这个源站是主源站。需要注意的是在golang中bool对象默认值为false，如果没有显式设置Backup的值，那么默认就是false。 |
+| Follow302 | bool   | true表示当回源到源站时源站返回302时，CDN系统会处理Location重定向，主动获取资源返回给客户端。false表示当源站返回302时，CDN系统透传302给客户端。**需要注意的是，目前Follow302已经修改为所有源站级别的配置，所以要求所有的源站Follow302必须一致，否则可能会出现不可预料的结果**。 |
+
+### 启用/停止/删除加速域名 EnableDomain/DisableDomain/DeleteDomain
+
+```go
+cli := client.GetDefaultClient()      
+testDomain := "test_go_sdk.baidu.com" 
+                                      
+// 启用加速域名                             
+err := cli.EnableDomain(testDomain)   
+fmt.Printf("err:%+v\n", err)          
+                                      
+// 停用加速域名                             
+err = cli.DisableDomain(testDomain)   
+fmt.Printf("err:%+v\n", err)  
+
+// 删除该用户名下的加速域名
+err = cli.DeleteDomain(testDomain)
+fmt.Printf("err:%+v\n", err)
+```
+
+## 域名配置接口
+
+### 查询加速域名详情 GetDefaultClient
+
+> 查询某个特定域名的全部配置信息
+
+```go
+cli := client.GetDefaultClient()                    
+testDomain := "test_go_sdk.baidu.com"               
+domainConfig, err := cli.GetDomainConfig(testDomain)
+fmt.Printf("domainConfig:%+v\n", domainConfig)      
+fmt.Printf("err:%+v\n", err)                        
+```
+
+`domainConfig`是`*api.DomainConfig`类型的对象，他的结构相对比较复杂，如下所示：
+
+| 字段           | 类型             | 说明                                                         |
+| -------------- | ---------------- | ------------------------------------------------------------ |
+| Domain         | string           | 域名信息，如：`test.baidu.com`。                             |
+| Cname          | string           | 域名的CNAME，如：`test.baidu.com.a.bdydns.com`。             |
+| Status         | string           | 域名状态，合法值为`RUNNING`、`STOPPED`和`OPERATING`。        |
+| CreateTime     | string           | 域名创建的时间，UTC时间，如：`2019-09-02T10:08:38Z。`        |
+| LastModifyTime | string           | 上次修改域名配置的时间，UTC时间，如：`2019-09-06T15:00:21Z`。 |
+| IsBan          | string           | 是否被禁用，禁用的意思是欠费或者其他违规操作被系统封禁，被封禁的域名不拥有加速服务。`ON`表示为被封禁，`YES`表示被封禁了。 |
+| Origin         | []api.OriginPeer | 源站信息，在创建加速域名接口有详细说明。                     |
+| DefaultHost    | string           | 默认的会员host，在创建加速域名接口有详细说明。               |
+| CacheTTL       | []api.CacheTTL   | 文件类型与路径的缓存策略，在`设置/查询缓存过期规则`小段有详细说明。     |
+| LimitRate      | int              | 下载限速，单位Byte/s。                                       |
+| RequestAuth    | api.RequestAuth  | 访问鉴权配置，在设置访问鉴权有详细说明。                     |
+| Https          | api.HTTPSConfig  | HTTPS加速配置，在设置HTTPS加速有详细说明。                   |
+| FollowProtocol | bool             | 是否开启了协议跟随回源，true表示开启了协议跟随回源，即访问资源是https://xxx或http://xxx之类的url，回源也使用相对应的scheme，即分别为HTTPS和HTTP。 |
+| SeoSwitch      | api.SeoSwitch    | seo 开关配置，在设置SEO开关属性有详细说明。                  |
+
+### 设置/查询缓存过期规则 SetCacheTTL/GetCacheTTL
+
+> 设置针对文件、目录和错误码等相关的缓存策略，合理设置缓存策略可以提高命中率。
+
+```go
+cli := client.GetDefaultClient()                    
+testDomain := "test_go_sdk.baidu.com"               
+                                                    
+// 设置缓存策略使用源站规则                                   
+err := cli.SetCacheTTL(testDomain, []api.CacheTTL{  
+	{                                               
+		Type:  "origin",                            
+		Value: "-",                                 
+		TTL:   0,                                   
+	},                                              
+})                                                  
+fmt.Printf("err:%+v\n", err)                        
+                                                    
+// 设置缓存策略，分别设置后缀规则、目录规则、路径完全匹配和错误码                                      
+err = cli.SetCacheTTL(testDomain, []api.CacheTTL{   
+	{                                               
+		Type:   "suffix",                           
+		Value:  ".jpg",                             
+		TTL:    420000,                             
+		Weight: 30,                                 
+	},                                              
+	{                                               
+		Type:  "path",                              
+		Value: "/js",                               
+		TTL:   10000,                               
+	},                                              
+	{                                               
+		Type:   "exactPath",                        
+		Value:  "index.html",                       
+		TTL:    600,                                
+		Weight: 100,                                
+	},                                              
+	{                                               
+		Type:   "code",                             
+		Value:  "404",                              
+		TTL:    600,                                
+		Weight: 100,                                
+	},                                              
+})                                                  
+fmt.Printf("err:%+v\n", err)                        
+                                                    
+// 查询缓存策略                                           
+cacheTTls, err := cli.GetCacheTTL(testDomain)       
+fmt.Printf("cacheTTls:%+v\n", cacheTTls)            
+fmt.Printf("err:%+v\n", err)                        
+```
+
+`cacheTTls`包含全部的缓存策略，每一个缓存策略用`api.CacheTTL`类型的对象表示，如下关于缓存策略结构的说明。
+
+| 字段   | 类型   | 说明                                                         |
+| ------ | ------ | ------------------------------------------------------------ |
+| Type   | string | 缓存策略的类型。合法的类型有：`suffix`、`path`、`origin`、`code`和`exactPath`。"suffix"表示文件名后缀，"path"表示url中的目录，"origin"表示源站规则，此规则只有一条，只表示出权重即可，value为"-", ttl为 0，"code"表示异常码缓存，如可以配置404缓存100s ，“exactPath”表示路径完全匹配。 |
+| Value  | string | Type所指定类型的配置规则。                                   |
+| Weight | int    | 权重，0-100的整数，权重越高优先级越高，默认为0，优先级在为code类型下是没有作用的，可以忽略。权重越大，优先级越高，规则优先生效。不推荐两条缓存策略配置相同的权重，如果权重相同，会随机选择其中一条策略生效。 |
+| TTL    | int    | 缓存时间，单位为秒。                                         |
+
+### 设置/查询缓存参数过滤规则 SetCacheUrlArgs/GetCacheUrlArgs
+
+> 设置缓存key，缓存key为CDN系统对某个资源的进行缓存的时候所采用的key，一个url可能带有很多参数，那么时候所有的参数都需要放在缓存key中呢？其实是不必的，下面展示了不同的设置。
+
+```go
+cli := client.GetDefaultClient()                          
+testDomain := "test_go_sdk.baidu.com"                     
+                                                          
+// 设置全URL缓存                                               
+err := cli.SetCacheUrlArgs(testDomain, &api.CacheUrlArgs{ 
+	CacheFullUrl: true,                                   
+})                                                        
+fmt.Printf("err:%+v\n", err)                              
+                                                          
+// 设置缓存带有部分参数                                             
+err = cli.SetCacheUrlArgs(testDomain, &api.CacheUrlArgs{  
+	CacheFullUrl: false,                                  
+	CacheUrlArgs: []string{"name", "id"},                 
+})                                                        
+fmt.Printf("err:%+v\n", err)                              
+                                                          
+// 设置忽略所有参数                                               
+err = cli.SetCacheUrlArgs(testDomain, &api.CacheUrlArgs{  
+	CacheFullUrl: false,                                  
+	CacheUrlArgs: []string{"name", "id"},                 
+})                                                        
+fmt.Printf("err:%+v\n", err)                              
+                                                          
+// 查询关于URL参数缓存设置                                          
+cacheUrlArgs, err := cli.GetCacheUrlArgs(testDomain)      
+fmt.Printf("cacheUrlArgs:%+v\n", cacheUrlArgs)            
+```
+
+`cacheUrlArgs`是`api.CacheUrlArgs`类型的对象，下面是详细说明：
+
+| 字段         | 类型     | 说明                                                         |
+| ------------ | -------- | ------------------------------------------------------------ |
+| CacheFullUrl | bool     | true或false，true表示支持全URL缓存，false表示忽略参数缓存(可保留部分参数)。注意golang中如果不显式赋值CacheFullUrl为true或false，那么取零值false。 |
+| CacheUrlArgs | []string | CacheFullUrl为true时，此项不起作用；CacheFullUrl为false时，此项表示保留的参数列表，如果为空，表示忽略所有参数。 |
+
+### 设置/查询自定义错误码页面 SetErrorPage/GetErrorPage
+
+> 用户可以定义当访问源站或CDN系统内部出现错误时（通常是返回4xx或5xx错误码），有CDN系统返回给用户的重定向页面，用户可以设置这个重定向页面的链接。
+
+```go
+cli := client.GetDefaultClient()                        
+testDomain := "test_go_sdk.baidu.com"                   
+                                                        
+// 设置错误出现时的重定向页面                                        
+err := cli.SetErrorPage(testDomain, []api.ErrorPage{    
+	{                                                   
+		Code:         510,                              
+		RedirectCode: 301,                              
+		Url:          "/customer_404.html",             
+	},                                                  
+	{                                                   
+		Code: 403,   
+    // 这里没有设置RedirectCode，表示使用默认的302重定向
+		Url:  "/custom_403.html",                       
+	},                                                  
+})                                                      
+fmt.Printf("err:%+v\n", err)                            
+                                                        
+// 取消设置错误出现时的重定向页面                                      
+err = cli.SetErrorPage(testDomain, []api.ErrorPage{})   
+fmt.Printf("err:%+v\n", err)                            
+                                                        
+// 设置错误出现时的重定向页面                                        
+err = cli.SetErrorPage(testDomain, []api.ErrorPage{})   
+fmt.Printf("err:%+v\n", err)                            
+                                                        
+// 查询设置的错误重定向页面                                         
+errorPages, err := cli.GetErrorPage(testDomain)         
+fmt.Printf("errorPages:%+v\n", errorPages)              
+```
+
+`errorPages`是`[]api.ErrorPage`类型的对象，`api.ErrorPage`结构的详细说明如下：
+
+| 字段         | 类型   | 说明                                                         |
+| ------------ | ------ | ------------------------------------------------------------ |
+| Code         | int    | 特定的状态码，要求必须为HTTP的标准错误码，且不能是408、444、499等客户端异常/提前断开这类特殊状态码。 |
+| RedirectCode | int    | 重定向状态码，当出现code错误码时，重定向的类型。支持301和302，默认302。 |
+| Url          | string | 重定向目标地址 ，当出现code错误码是，重定向到这个用户自定义的url，即301或302重定向中HTTP报文中的Location的值为了Url。 |
+
+
+### 设置/查询访问Referer控制 SetRefererACL/GetRefererACL
+
+> 设置Referer的访问控制规则，当通过浏览器或者其他形式跳转到资源是，浏览器通常会在请求头中加入Referer信息。CDN系统提供对Referer进行过滤，可以设置Referer黑名单或者白名单。当Referer出现在黑名单中的请求到达时响应403，当Referer没有出现在白名单中的请求到达时响应403。黑名单和白名单设置只能选其一，要么设置黑名单要么设置白名单。当设置了白名单并且过滤规则为空时，白名单不生效。
+
+```go
+cli := client.GetDefaultClient()                          
+testDomain := "test_go_sdk.baidu.com"   
+isAllowEmpty := true
+                                                          
+// 设置白名单ACL                                               
+err := cli.SetRefererACL(testDomain, nil, []string{       
+	"a.bbbbbb.c",                                         
+	"*.baidu.com.*",                                      
+}, isAllowEmpty)                                                  
+fmt.Printf("err:%+v\n", err)                              
+                                                          
+// 设置白名单为空，白名单规则不生效                                           
+err = cli.SetRefererACL(testDomain, nil, []string{}, isAllowEmpty)
+fmt.Printf("err:%+v\n", err)                              
+                                                          
+// 设置黑名单ACL                                               
+err = cli.SetRefererACL(testDomain, []string{             
+	"a.b.c",                                              
+	"*.xxxxx.com.*",                                      
+}, nil, isAllowEmpty)                                             
+fmt.Printf("err:%+v\n", err)                              
+                                                          
+// 查询referer ACL设置                                        
+refererACL, err := cli.GetRefererACL(testDomain)          
+fmt.Printf("refererACL:%+v\n", refererACL)                
+fmt.Printf("err:%+v\n", err)                              
+```
+
+`isAllowEmpty`表示是否允许空Referer访问，true表示允许空Referer访问，即如果Referer为空，那么不管是设置了黑名单还是白名单都不会生效，大多数情况下这个值都设置为**true**；false表示不允许空Referer访问，当设置为false时，如果访问的HTTP报文中不存在Referer那么CDN系统将返回403。`refererACL`是`api.RefererACL`类型的对象，他的详细说明如下：
+
+| 字段       | 类型     | 说明                                                         |
+| ---------- | -------- | ------------------------------------------------------------ |
+| BlackList  | []string | 可选项，表示referer黑名单列表，支持使用通配符*，不需要加protocol，如设置某个黑名单域名，设置为"www.xxx.com"形式即可，而不是"http://www.xxx.com"。* |
+| WhiteList  | []string | *可选项，list类型，表示referer白名单列表，支持通配符*，同样不需要加protocol。 |
+| AllowEmpty | bool     | 必选项，bool类型，表示是否允许空referer访问，为true即允许空referer访问。 |
+
+### 设置/查询访问IP控制 SetIpACL/GetIpACL
+
+> CDN获取客户端IP，同配置中的IP黑/白名单进行匹配，对匹配上的客户端请求进行拒绝/放过。
+
+```go
+cli := client.GetDefaultClient()              
+testDomain := "test_go_sdk.baidu.com"         
+                                              
+// 设置IP白名单                                    
+err := cli.SetIpACL(testDomain, []string{     
+	"1.1.1.1",                                
+	"2.2.2.2",                                
+}, nil)                                       
+fmt.Printf("err:%+v\n", err)                  
+                                              
+// 设置IP黑名单，CIDR格式的IP                            
+err = cli.SetIpACL(testDomain, nil, []string{ 
+	"1.2.3.4/24",                             
+})                                            
+fmt.Printf("err:%+v\n", err)   
+
+// 查询IP黑白设置                           
+ipACL, err := cli.GetIpACL(testDomain)
+fmt.Printf("ipACL:%+v\n", ipACL)      
+fmt.Printf("err:%+v\n", err)          
+```
+
+`ipACL`是`api.IpACL`类型对象，详细说明如下：
+
+| 字段      | 类型     | 说明                                                         |
+| --------- | -------- | ------------------------------------------------------------ |
+| BlackList | []string | IP黑名单列表，当设置黑名单生效时，当客户端的IP属于BlackList，CDN系统返回403。BlackList不可与WhiteList同时设置。 |
+| WhiteList | []string | IP白名单列表，当设置白名单生效时，当WhiteList为空时，没有白名单效果。当WhiteList非空时，只有客户端的IP属于WhiteList才允许访问。同样不可与BlackList同时设置。 |
+
+### 设置访问鉴权 SetDomainRequestAuth
+
+> 高级鉴权也是为了防止客户源站内容被盗用，比Referer黑白名单和IP黑白名单更加安全。
+
+```go
+cli := client.GetDefaultClient()                              
+testDomain := "test_go_sdk.baidu.com"                         
+err := cli.SetDomainRequestAuth(testDomain, &api.RequestAuth{ 
+	Type:    "c",                                             
+	Key1:    "secretekey1",                                   
+	Key2:    "secretekey2",                                   
+	Timeout: 300,                                             
+	WhiteList: []string{                                      
+		"/crossdomain.xml",                                   
+	},                                                        
+	SignArg: "sign",                                          
+	TimeArg: "t",                                             
+})                                                            
+                                                              
+fmt.Printf("err:%+v\n", err)                                  
+```
+
+示例代码设置一个C类鉴权方式，对应的字段在[高级鉴权](https://cloud.baidu.com/doc/CDN/s/ujwvyeo0t)。有非常消息的说明。
+
+### 设置域名限速 SetLimitRate
+
+> 限定此域名下向客户端传输的每份请求的最大响应速率。该速率是针对单个请求的，多请求自动翻倍。
+
+```go
+cli := client.GetDefaultClient()                
+testDomain := "test_go_sdk.baidu.com"           
+                                                
+// 设置单请求限速1024Bytes/s                           
+err := cli.SetLimitRate(testDomain, 1024)       
+fmt.Printf("err:%+v\n", err)                    
+                                                
+// 不做任何限速                                       
+err = cli.SetLimitRate(testDomain, 0)           
+fmt.Printf("err:%+v\n", err)                                          
+```
+
+### 设置/查询Cors跨域 SetCors/GetCors
+
+> 跨域访问是指发起请求的资源所在域不同于该请求所指向的资源所在域，出于安全考虑，浏览器会限制这种非同源的访问。开启此功能，用户可以自己进行清除缓存及跨域访问配置，当源站（BOS）对象更新后，CDN所有对应的缓存可进行同步自动更新。
+
+```go
+cli := client.GetDefaultClient()                       
+testDomain := "test_go_sdk.baidu.com"                  
+                                                       
+// 设置允许的跨域域名                                           
+err := cli.SetCors(testDomain, true, []string{         
+	"http://www.baidu.com",                            
+	"http://*.bce.com",                                
+})                                                     
+fmt.Printf("err:%+v\n", err)                           
+                                                       
+// 取消跨域设置                                              
+err = cli.SetCors(testDomain, false, nil)              
+fmt.Printf("err:%+v\n", err)                           
+                                                       
+// 查询跨域设置                                              
+cors, err := cli.GetCors(testDomain)                   
+fmt.Printf("cors:%+v\n", cors)                         
+fmt.Printf("err:%+v\n", err)                           
+```
+
+### 设置/查询IP访问限频 SetAccessLimit/GetAccessLimit
+
+> 限制IP单节点的每秒访问次数，针对所有的访问路径。
+
+```go
+cli := client.GetDefaultClient()                        
+testDomain := "test_go_sdk.baidu.com"                   
+                                                        
+// 设置单IP访问限频为200/s                                      
+err := cli.SetAccessLimit(testDomain, &api.AccessLimit{ 
+	Enabled: true,                                      
+	Limit:   200,                                       
+})                                                      
+fmt.Printf("err:%+v\n", err)                            
+                                                        
+// 取消IP访问限频                                             
+err = cli.SetAccessLimit(testDomain, &api.AccessLimit{  
+	Enabled: false,                                     
+	Limit:   0,                                         
+})                                                      
+fmt.Printf("err:%+v\n", err)                            
+                                                        
+// 查询IP访问限频设置                                           
+accessLimit, err := cli.GetAccessLimit(testDomain)      
+fmt.Printf("accessLimit:%+v\n", accessLimit)            
+fmt.Printf("err:%+v\n", err)                            
+```
+
+`accessLimit`是`api.AccessLimit`类型的对象，详细说明如下：
+
+| 字段    | 类型 | 说明                                                         |
+| ------- | ---- | ------------------------------------------------------------ |
+| Enabled | bool | true表示开启IP单节点访问限频，false表示取消限频。这里要注意golang的bool对象的零值为false，设置Limit的值必须要设置Enabled为true。 |
+| Limit   | int  | 1秒内单个IP节点请求次数上限，enabled为true时此项默认为1000，enabled为false此项无意义。 |
+
+### 设置/查询获取真实用户IP SetClientIp/GetClientIp
+
+> 用户在使用CDN加速的同时可获取访问源的真实IP地址或客户端IP地址.。
+
+```go
+cli := client.GetDefaultClient()                              
+testDomain := "test_go_sdk.baidu.com"                         
+                                                              
+// 设置Client IP，源站可以获取到访问源的客户端IP地址，携带True-Client-Ip         
+err := cli.SetClientIp(testDomain, &api.ClientIp{             
+	Enabled: true,                                            
+	Name:    "True-Client-IP",                                
+})                                                            
+fmt.Printf("err:%+v\n", err)                                  
+                                                              
+// 设置Real IP：源站可以获取到访问源的真实IP地址，携带X-Real-IP。               
+err = cli.SetClientIp(testDomain, &api.ClientIp{              
+	Enabled: true,                                            
+	Name:    "X-Real-IP",                                     
+})                                                            
+fmt.Printf("err:%+v\n", err)                                  
+                                                              
+// 关闭设置Client IP和Real IP                                      
+err = cli.SetClientIp(testDomain, &api.ClientIp{              
+	Enabled: false,                                           
+})                                                            
+fmt.Printf("err:%+v\n", err)                                  
+       
+// 查询关于客户端IP的设置
+clientIp, err := cli.GetClientIp(testDomain)                  
+fmt.Printf("err:%+v\n", err)                                  
+fmt.Printf("clientIp:%+v\n", clientIp)                        
+```
+
+`clientIp`是`api.ClientIp`类型的对象，详细说明如下：
+
+| 字段    | 类型   | 说明                                                         |
+| ------- | ------ | ------------------------------------------------------------ |
+| Enabled | bool   | true表示开启，false表示关闭。                                |
+| Name    | string | 只能设置为"True-Client-Ip"或"X-Real-IP"两种之一，默认为"True-Client-Ip"，enabled为false时此项无意义。 |
+
+### 更新加速域名回源地址 SetDomainOrigin
+
+> 加速域名的回源地址可以在创建域名的时候设置好，也可以在创建完成后进行更新。
+
+```go
+cli := client.GetDefaultClient()                        
+testDomain := "test_go_sdk.baidu.com"                   
+                                                        
+err := cli.SetDomainOrigin(testDomain, []api.OriginPeer{
+	{                                                   
+		Peer:      "1.1.1.1",                           
+		Host:      "www.baidu.com",                     
+		Backup:    true,                                
+		Follow302: true,                                
+	},                                                  
+	{                                                   
+		Peer:      "http://2.2.2.2",                    
+		Host:      "www.baidu.com",                     
+		Backup:    false,                               
+		Follow302: true,                                
+	},                                                  
+}, "www.baidu.com")                                     
+fmt.Printf("err:%+v\n", err)                            
+```
+
+`api.OriginPeer`类型的详细说明在**创建加速域名一节**已经有说明。
+
+### 设置协议跟随回源 SetFollowProtocol
+
+> 设置协议跟随回源，表示CDN节点回源协议与客户端访问协议保持一致。
+
+```go
+cli := client.GetDefaultClient()                         
+testDomain := "test_go_sdk.baidu.com"                    
+                                                         
+// 设置协议跟随回源                                              
+err := cli.SetFollowProtocol(testDomain, true)           
+fmt.Printf("err:%+v\n", err)                             
+                                                         
+// 取消设置协议跟随回源                                            
+err = cli.SetFollowProtocol(testDomain, false)           
+fmt.Printf("err:%+v\n", err)                           
+```
+
+### 设置/查询Range回源 SetRangeSwitch/GetRangeSwitch
+
+> 设置Range回源，有助于减少大文件分发时回源消耗并缩短响应时间。此功能需源站支持Range请求。
+
+```go
+cli := client.GetDefaultClient()                      
+testDomain := "test_go_sdk.baidu.com"                 
+                                                      
+// 设置range回源                                          
+err := cli.SetRangeSwitch(testDomain, true)           
+fmt.Printf("err:%+v\n", err)                          
+                                                      
+// 取消设置range回源                                        
+err = cli.SetRangeSwitch(testDomain, false)           
+fmt.Printf("err:%+v\n", err)                          
+                                                      
+// 查询range回源设置                                        
+rangeSwitch, err := cli.GetRangeSwitch(testDomain)    
+fmt.Printf("rangeSwitch:%+v\n", rangeSwitch)          
+```
+
+### 设置/查询移动访问控制 SetMobileAccess/GetMobileAccess
+
+> 开启移动访问控制，源站可有针对性地进行移动端／PC端的资源内容分发，暂不支持自定义进行移动端配置。
+
+```go
+cli := client.GetDefaultClient()                        
+testDomain := "test_go_sdk.baidu.com"                   
+                                                        
+// 设置移动访问                                               
+err := cli.SetMobileAccess(testDomain, true)            
+fmt.Printf("err:%+v\n", err)                            
+                                                        
+// 取消设置移动访问                                             
+err = cli.SetMobileAccess(testDomain, false)            
+fmt.Printf("err:%+v\n", err)                            
+                                                        
+// 查询移动访问设置                                             
+mobileAccess, err := cli.GetMobileAccess(testDomain)    
+fmt.Printf("mobileAccess:%+v\n", mobileAccess)          
+fmt.Printf("err:%+v\n", err)                            
+```
+
+### 设置/查询HttpHeader SetHttpHeader/GetHttpHeader
+
+> CDN支持CDN节点到客户端的response（HTTP响应头）、CDN节点到源站的request（HTTP请求头）中的header信息修改。
+
+```go
+cli := client.GetDefaultClient()                              
+testDomain := "test_go_sdk.baidu.com"                         
+                                                              
+// 设置CDN系统工作时增删的HTTP请求头                                       
+err := cli.SetHttpHeader(testDomain, []api.HttpHeader{        
+	{                                                         
+		Type:   "origin",                                     
+		Header: "x-auth-cn",                                  
+		Value:  "xxxxxxxxx",                                  
+		Action: "remove",                                     
+	},                                                        
+	{                                                         
+		Type:   "response",                                   
+		Header: "content-type",                               
+		Value:  "application/octet-stream",                   
+		Action: "add",                                        
+	},                                                        
+})                                                            
+fmt.Printf("err:%+v\n", err)                                  
+                                                              
+// 取消CDN系统工作时增删的HTTP请求头                                       
+err = cli.SetHttpHeader(testDomain, []api.HttpHeader{})       
+fmt.Printf("err:%+v\n", err)                                  
+                                                              
+// 查询CDN系统工作时增删的HTTP请求头                                       
+headers, err := cli.GetHttpHeader(testDomain)                 
+fmt.Printf("headers:%+v\n", headers)                          
+fmt.Printf("err:%+v\n", err)                                  
+```
+
+`headers`是`api.HttpHeader`类型的对象，详细说明如下：
+
+| 字段     | 类型   | 说明                                                         |
+| -------- | ------ | ------------------------------------------------------------ |
+| Type     | string | "origin"表示此header 回源生效，"response"表示给用户响应时生效。 |
+| Header   | string | header为http头字段，一般为HTTP的标准Header，也可以是用户自定义的；如x-bce-authoriztion。 |
+| Value    | string | 指定Header的值。                                             |
+| Action   | string | 表示是删除还是添加，可选remove/add，默认是add；目前console只支持add action; API做后端remove配置的兼容。 |
+| Describe | string | 描述，可选，可以是中文，统一使用Unicode统码；长度不能超过100个字符。 |
+
+### 设置/查询SEO开关属性 SetDomainSeo/GetDomainSeo
+
+> SEO（Search Engine Optimization）优化是一种利用搜索引擎的规则提高网站在有关搜索引擎内的自然排名的方式。目前CDN系统支持两项优化配置：（1）搜索引擎开启自动回源；（2）数据与百度搜索链接。
+
+```go
+cli := client.GetDefaultClient()                     
+testDomain := "test_go_sdk.baidu.com"                
+                                                     
+// 设置SEO优化                                           
+err := cli.SetDomainSeo(testDomain, &api.SeoSwitch{  
+	DirectlyOrigin: "ON",                            
+	PushRecord:     "OFF",                           
+})                                                   
+fmt.Printf("err:%+v\n", err)                         
+                                                     
+// 查询SEO优化设置                                         
+seoSwitch, err := cli.GetDomainSeo(testDomain)       
+fmt.Printf("seoSwitch:%+v\n", seoSwitch)             
+fmt.Printf("err:%+v\n", err)                         
+```
+
+`seoSwitch`是`api.SeoSwitch`类型的对象，详细说明如下：
+
+| 字段           | 类型   | 说明                                  |
+| -------------- | ------ | ------------------------------------- |
+| DirectlyOrigin | string | ON表示设置直接回源，OFF则相反。       |
+| PushRecord     | string | ON表示给大搜推送访问记录，OFF则相反。 |
+
+### 设置/查询页面优化 SetFileTrim/GetFileTrim
+
+> 用户开启页面优化功能，将自动删除 html中的注释以及重复的空白符，这样可以有效地去除页面的冗余内容，减小文件体积，提高加速分发效率。
+
+```go
+cli := client.GetDefaultClient()          
+testDomain := "test_go_sdk.baidu.com"     
+                                          
+// 设置页面优化                                 
+err := cli.SetFileTrim(testDomain, true)  
+fmt.Printf("err:%+v\n", err)              
+                                          
+// 取消页面优化                                 
+err = cli.SetFileTrim(testDomain, false)  
+fmt.Printf("err:%+v\n", err)              
+                                          
+// 查询页面优化设置                               
+fileTrim, err := cli.GetFileTrim(testDomai
+fmt.Printf("fileTrim:%+v\n", fileTrim)    
+fmt.Printf("err:%+v\n", err)              
+```
+
+### 设置/查询视屏拖拽 SetMediaDrag/GetMediaDrag
+
+> CDN支持flv与mp4视频类型的拖拽，开启拖拽可降低回源率，提升速度。
+
+```go
+cli := client.GetDefaultClient()                       
+testDomain := "test_go_sdk.baidu.com"                  
+                                                       
+// 设置视频拖拽设置                                            
+err := cli.SetMediaDrag(testDomain, &api.MediaDragConf{
+	Mp4: &api.MediaCfg{                                
+		DragMode: "second",                            
+		FileSuffix: []string{                          
+			"mp4",                                     
+			"m4a",                                     
+			"m4z",                                     
+		},                                             
+		StartArgName: "startIndex",                    
+	},                                                 
+	Flv: &api.MediaCfg{                                
+		DragMode:   "byteAV",                          
+		FileSuffix: []string{},                        
+	},                                                 
+})                                                     
+fmt.Printf("err:%+v\n", err)                           
+                                                       
+// 查询视频拖拽设置                                            
+mediaDragConf, err := cli.GetMediaDrag(testDomain)     
+fmt.Printf("mediaDragConf:%+v\n", mediaDragConf)       
+fmt.Printf("err:%+v\n", err)                           
+```
+
+`mediaDragConf`是`api.MediaDragConf`类型的对象，定义如下：
+
+```go
+type MediaDragConf struct {
+	Mp4 *MediaCfg 
+	Flv *MediaCfg 
+}
+```
+
+可以设置Mp4或Flv类型视频流相关的拖拽，`MediaCfg`的详细说明如下：
+
+| 字段         | 类型     | 说明                                                         |
+| ------------ | -------- | ------------------------------------------------------------ |
+| FileSuffix   | []string | CDN系统支持MP4文件的伪流（pseudo-streaming）播放，通常这些文件拓展名为.mp4，.m4v，.m4a，因此这个fileSuffix值为文件拓展名集合，如： ["mp4", "m4v", "m4a"]，type为mp4，fileSuffix默认值为["mp4"]；type为flv，fileSuffix默认值为["flv"] |
+| StartArgName | string   | start参数名称，默认为“start”，您可以自定义参数名称，但是要求不能和`endArgName`相同 |
+| EndArgName   | string   | end参数名称，默认为“end”，您可以自定义参数名称，但是要求不能和`startArgName`相同 |
+| DragMode     | string   | mp4类型按秒进行拖拽，flv类型按字节进行拖拽。type为flv可选择的模式为“byteAV”或”byte”；type为mp4只能是"second"模式 |
+
+### 设置/查询页面压缩 SetContentEncoding/GetContentEncoding
+
+> 开启页面压缩功能后，您可以对大多数静态文件进行压缩，有效减少用户传输内容大小，加速分发效果。目前页面压缩支持Brotli压缩和Gzip压缩两种方式。
+
+```go
+cli := client.GetDefaultClient()                                     
+testDomain := "test_go_sdk.baidu.com"                                
+                                                                     
+// 设置页面压缩算法为gzip                                                     
+err := cli.SetContentEncoding(testDomain, true, "gzip")              
+fmt.Printf("err:%+v\n", err)                                         
+                                                                     
+// 设置页面压缩算法为br                                                       
+err = cli.SetContentEncoding(testDomain, true, "br")                 
+fmt.Printf("err:%+v\n", err)                                         
+                                                                     
+// 关闭页面压缩                                                            
+err = cli.SetContentEncoding(testDomain, false, "br")                
+fmt.Printf("err:%+v\n", err)                                         
+                                                                     
+// 查询页面压缩算法，当关闭页面压缩时contentEncoding为空                                
+contentEncoding, err := cli.GetContentEncoding(testDomain)           
+fmt.Printf("contentEncoding:%+v\n", contentEncoding)                 
+```
+
+### 设置HTTPS加速 SetDomainHttps
+
+> 配置HTTPS的一个加速域名，必须要上传证书，了解证书详情请参考[证书管理](https://cloud.baidu.com/doc/Reference/s/8jwvz26si/)。
+
+```go
+cli := client.GetDefaultClient()                          
+testDomain := "test_go_sdk.baidu.com"                     
+                                                          
+err := cli.SetDomainHttps(testDomain, &api.HTTPSConfig{   
+	Enabled:          false,                              
+	CertId:           "ssl-xxxxxx",                       
+	Http2Enabled:     true,                               
+	HttpRedirect:     true,                               
+	HttpRedirectCode: 301,                                
+})                                                        
+fmt.Printf("err:%+v\n", err)                              
+                                                          
+err = cli.SetDomainHttps(testDomain, &api.HTTPSConfig{    
+	Enabled: false,                                       
+})                                                        
+fmt.Printf("err:%+v\n", err)                              
+```
+
+`api.HTTPSConfig`的结构比较复杂，详细说明如下：
+
+| 字段              | 类型   | 说明                                                         |
+| ----------------- | ------ | ------------------------------------------------------------ |
+| Enabled           | bool   | 开启HTTPS加速，默认为false，当enabled=false，以下几列字段设置无效。 |
+| CertId            | string | 当enabled=true时此项为必选，为SSL证书服务返回的证书ID，当enabled=False此项无效。 |
+| HttpRedirect      | bool   | 为true时将HTTP请求重定向到HTTPS（重定向状态码为httpRedirectCode所配置），默认为false，当enabled=false此项无效，不可与httpsRedirect同时为true。 |
+| HttpRedirectCode  | int    | 重定向状态码，可选值301/302，默认302，当enabled=false此项无效，httpRedirect=false此项无效。 |
+| HttpsRedirect     | bool   | 为true时将HTTPS请求重定向到HTTP重定向状态码为httpsRedirectCode所配置），默认为false，当enabled=false此项无效，不可与httpRedirect同时为true。 |
+| HttpsRedirectCode | int    | 重定向状态码，可选值301/302，默认302，当enabled=false此项无效，httpsRedirect=false此项无效。 |
+| Http2Enabled      | bool   | 开启HTTP2特性，当enabled=false此项无效。必须要注意go的bool对象零值为false。 |
+| HttpOrigin        | bool   | 当为true时以HTTP协议回源，默认为false，当enabled=false此项无效。 |
+| SslVersion        | string | 设置TLS版本，默认为支持从TLSv1.0到TLSv1.3的版本，也可以设置为以下四个之一，SSLV3,TLSV1,TLSV11,TLSV12，当enabled=false时此项无效，此项一般取默认值，无需设置。 |
+
+## 缓存管理接口
+
+### 刷新缓存/查询刷新状态 Purge/GetPurgedStatus
+
+> 缓存清除方式有URL刷新、目录刷新除。URL刷新除是以文件或一个资源为单位进行缓存刷新。目录刷新除是以目录为单位，将目录下的所有文件进行缓存清除。
+
+```go
+cli := client.GetDefaultClient()                               
+                                                               
+// 刷除                                                          
+purgedId, err := cli.Purge([]api.PurgeTask{                    
+	{                                                          
+		Url: "http://my.domain.com/path/to/purge/2.data",      
+	},                                                         
+	{                                                          
+		Url:  "http://my.domain.com/path/to/purege/html/",     
+		Type: "directory",                                     
+	},                                                         
+})                                                             
+fmt.Printf("purgedId:%+v\n", purgedId)                         
+fmt.Printf("err:%+v\n", err)                                   
+                                                               
+// 根据任务ID查询刷除状态                                                
+purgedStatus, err := cli.GetPurgedStatus(&api.CStatusQueryData{
+	Id: string(purgedId),                                      
+})                                                             
+                                                               
+fmt.Printf("purgedStatus:%+v\n", purgedStatus)                 
+fmt.Printf("err:%+v\n", err)                                   
+```
+
+示例中刷除了两类资源，第一种是刷除一个文件，第二种是刷除某个目录的所有的文件。根据Purge返回的task id去查询任务进度。`api.CStatusQueryData`是一个相对较复杂的结构，可以根据不同的条件查询，具体可以查看定义。
+
+### 预热资源/查询预热状态 Prefetch/GetPrefetchStatus
+
+> URL预热是以文件为单位进行资源预热。
+
+```go
+cli := client.GetDefaultClient()                                    
+                                                                    
+prefetchId, err := cli.Prefetch([]api.PrefetchTask{                 
+	{                                                               
+		Url: "http://my.domain.com/path/to/purge/1.data",           
+	},                                                              
+})                                                                  
+fmt.Printf("prefetchId:%+v\n", prefetchId)                          
+fmt.Printf("err:%+v\n", err)                                        
+                                                                    
+                                                                    
+prefetchStatus, err := cli.GetPrefetchStatus(&api.CStatusQueryData{ 
+	Id: string(prefetchId),                                         
+})                                                                  
+fmt.Printf("prefetchStatus:%+v\n", prefetchStatus)                  
+fmt.Printf("err:%+v\n", err)                                        
+```
+
+### 查询刷新/预热限额 GetQuota
+
+```go
+cli := client.GetDefaultClient()                 
+quotaDetail, err := cli.GetQuota()               
+fmt.Printf("quotaDetail:%+v\n", quotaDetail)     
+fmt.Printf("err:%+v\n", err)                     
+```
+
+`quotaDetail`是`api.QuotaDetail`类型的对象，详细说明如下：
+
+| 字段      | 类型 | 说明                            |
+| --------- | ---- | ------------------------------- |
+| DirRemain | int  | 当日刷新目录限额余量。          |
+| UrlRemain | int  | 当日刷新（含预热）URL限额余量。 |
+| DirQuota  | int  | 刷新目录限额总量。              |
+| UrlQuota  | int  | 刷新（含预热）URL限额总量。     |
+
+## 动态加速接口
+
+### 配置动态加速服务 EnableDsa/DisableDsa
+
+> 开启/关闭DSA是针对用户级别的开启关闭。
+
+```go
+cli := client.GetDefaultClient()      
+                                      
+// 开启DSA服务                            
+err := cli.EnableDsa()                
+fmt.Printf("err:%+v\n", err)          
+                                      
+// 关闭DSA服务                            
+err = cli.DisableDsa()                
+fmt.Printf("err:%+v\n", err)          
+```
+
+### 查询动态加速域名列表 ListDsaDomains
+
+> 查询某个用户配置了DSA加速规则的域名列表。
+
+```go
+cli := client.GetDefaultClient()          
+dsaDomains, err := cli.ListDsaDomains()   
+fmt.Printf("dsaDomains:%+v\n", dsaDomains)
+fmt.Printf("err:%+v\n", err)              
+```
+
+`dsaDomains`是string数组，代表配置了DSA加速规则的域名。
+
+### 配置域名动态加速规则 SetDsaConfig
+
+> 配置某个域名的DSA加速规则。
+
+```go
+cli := client.GetDefaultClient()                   
+testDomain := "test_go_sdk.baidu.com"              
+                                                   
+// 配置DSA规则                                         
+err := cli.SetDsaConfig(testDomain, &api.DSAConfig{
+	Enabled: true,                                 
+	Rules: []api.DSARule{                          
+		{                                          
+			Type:  "suffix",                       
+			Value: ".mp4;.jpg;.php",               
+		},                                         
+		{                                          
+			Type:  "path",                         
+			Value: "/path",                        
+		},                                         
+		{                                          
+			Type:  "exactPath",                    
+			Value: "/path/to/file.mp4",            
+		},                                         
+	},                                             
+	Comment: "test",                               
+})                                                 
+fmt.Printf("err:%+v\n", err)                       
+                                                   
+// 取消DSA规则                                         
+err = cli.SetDsaConfig(testDomain, &api.DSAConfig{ 
+	Enabled: false,                                
+})                                                 
+fmt.Printf("err:%+v\n", err)                                               
+```
+
+`api.DSAConfig`的详细说明如下：
+
+| 字段  | 类型   | 说明                                                         |
+| ----- | ------ | ------------------------------------------------------------ |
+| Type  | string | "suffix"表示文件类型，"path"表示动态路径，“exactPath“表示动态URL。 |
+| Value | string | Type所指定类型的配置规则，多条规则使用";"分割。              |
+
+
+## 日志接口
+
+### 获取单个域名日志 GetDomainLog
+
+```go
+cli := client.GetDefaultClient()                                    
+testDomain := "test_go_sdk.baidu.com"                               
+endTime := "2019-09-01T07:12:00Z"                                   
+startTime := "2019-09-09T07:18:00Z"                                 
+domainLogs, err := cli.GetDomainLog(testDomain, api.TimeInterval{   
+	StartTime: startTime,                                           
+	EndTime:   endTime,                                             
+})                                                                  
+                                                                    
+fmt.Printf("domainLogs:%+v\n", domainLogs)                          
+fmt.Printf("err:%+v\n", err)                                        
+```
+
+示例查询了单个域名在2019-09-01T07:12:00Z～2019-09-09T07:18:00Z之间的日志，`domainLogs`是`api.LogEntry`数组类型，LogEntry包含日志名，所属域名，下载路径，起始时间等信息。
+
+### 获取多个域名日志 GetMultiDomainLog
+
+```go
+cli := client.GetDefaultClient()                              
+endTime := "2019-09-01T07:12:00Z"                             
+startTime := "2019-09-09T07:18:00Z"                           
+                                                              
+domainLogs, err := cli.GetMultiDomainLog(&api.LogQueryData{   
+	TimeInterval: api.TimeInterval{                           
+		StartTime: startTime,                                 
+		EndTime:   endTime,                                   
+	},                                                        
+	Type:    1,                                               
+	Domains: []string{"1.baidu.com", "2.baidu.com"},          
+})                                                            
+                                                              
+fmt.Printf("domainLogs:%+v\n", domainLogs)                    
+fmt.Printf("err:%+v\n", err)                                  
+```
+
+示例查询["1.baidu.com", "2.baidu.com"]这些域名的日志，`domainLogs`和上一节GetDomainLog返回格式一致。
+
+## 工具接口
+
+### IP检测 GetIpInfo
+
+> 验证指定的IP是否属于百度开放云CDN服务节点。
+
+```go
+cli := client.GetDefaultClient()                     
+ipStr := "1.2.3.4"                                   
+ipInfo, err := cli.GetIpInfo(ipStr, "describeIp")    
+                                                     
+fmt.Printf("ipInfo:%+v\n", ipInfo)                   
+fmt.Printf("err:%+v\n", err)                         
+```
+
+其中GetIpInfo的第二个参数只能为**"describeIp"**，ipInfo包含IP的详细信息，包括区域和ISP，如果不属于百度开放云CDN的节点，区域和ISP都为空。
+
+
+## 统计查询
+
+> 这部分接口在文档[统计接口](https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn)中有详细说明。
+
+`api.QueryCondition`结构包含了最基本的查询条件，如下：
+
+| **参数**  | **类型** | **说明**                                                     |
+| --------- | -------- | ------------------------------------------------------------ |
+| StartTime | string   | 查询的时间范围起始值，默认为endTime前推24小时。格式为UTC时间字符串，如："2019-09-01T07:12:00Z"。 |
+| EndTime   | string   | 查询的时间范围结束值，默认为当前时间。时间跨度最长90天，时间格式和StartTime一样。 |
+| Period    | int      | 查询结果的粒度，单位秒，可选值为60,300,3600,86400；默认为300，uv 默认3600（选60s的时间粒度时建议StartTime和EndTime区间跨度建议选择0.5到1h，否则可能会因为数据量太大无法正常返回） |
+| KeyType   | int      | 标识key的内容，0=>域名，1=>用户id，2=>tag，默认0。           |
+| Key       | []string | 域名、用户Id或Tag。                                          |
+| GroupBy   | string   | 返回结果聚合粒度，key => 根据key聚合，最后的key是`total`， 空 => 返回整体结果，每个key的每个时间段都对应一组数据。 |
+
+`metric`表示查询的统计数据类型，如下，接口具体返回结果的格式在对应的函数中可以看到。
+
+| metric           | 函数                | 接口类型                           | 额外参数                                                     |
+| ---------------- | ------------------- | ---------------------------------- | ------------------------------------------------------------ |
+| avg_speed        | GetAvgSpeed         | 查询平均速率                       | 无。                                                         |
+| avg_speed_region | GetAvgSpeedByRegion | 客户端访问分布查询平均速率         | prov和isp。prov是查询的省份全拼，默认为空，查询全国数据。isp是查询的运营商代码，默认为空，查询所有运营商数据。 |
+| pv               | GetPv               | pv/qps查询                         | level，查询边缘节点或者中心节点pv。可填写"all"或"edge"或者"internal"，默认为“all”。 |
+| pv_src           | GetSrcPv            | 回源pv/qps查询                     | 无。                                                         |
+| pv_region        | GetPvByRegion       | 查询pv/qps(分客户端访问分布)       | prov和isp。prov是查询的省份全拼，默认为空，查询全国数据。isp是查询的运营商代码，默认为空，查询所有运营商数据。 |
+| uv               | GetUv               | uv查询                             | 无。                                                         |
+| flow             | GetFlow             | 查询流量、带宽                     | level，查询边缘节点或者中心节点带宽。可填写"all"或"edge"或"internal"，默认为"all"。 |
+| flow_protocol    | GetFlowByProtocol   | 查询流量、带宽(分协议)             | protocol，查询http或https的流量、带宽, 取值"http", "https"或者 "all"，默认"all"。 |
+| flow_region      | GetFlowByRegion     | 查询流量、带宽（分客户端访问分布） | prov和isp。prov是查询的省份全拼，默认为空，查询全国数据。isp是查询的运营商代码，默认为空，查询所有运营商数据。 |
+| src_flow         | GetSrcFlow          | 查询回源流量、回源带宽             | 无。                                                         |
+| real_hit         | GetRealHit          | 字节命中率查询                     | 无。                                                         |
+| pv_hit           | GetPvHit            | 请求命中率查询                     | 无。                                                         |
+| httpcode         | GetHttpCode         | 状态码统计查询                     | 无。                                                         |
+| src_httpcode     | GetSrcHttpCode      | 回源状态码查询                     | 无。                                                         |
+| httpcode_region  | GetHttpCodeByRegion | 状态码统计查询（分客户端访问分布） | prov和isp。prov是查询的省份全拼，默认为空，查询全国数据。isp是查询的运营商代码，默认为空，查询所有运营商数据。 |
+| top_urls         | GetTopNUrls         | TopN urls                          | extra，查询指定http状态码的记录，默认值： ""。               |
+| top_referers     | GetTopNReferers     | TopN referers                      | extra，查询指定http状态码的记录，默认值： ""。               |
+| top_domains      | GetTopNDomains      | TopN domains                       | extra，查询指定http状态码的记录，默认值： ""。               |
+| error            | GetError            | cdn错误码分类统计查询              | 无。                                                         |

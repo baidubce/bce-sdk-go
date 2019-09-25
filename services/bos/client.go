@@ -20,6 +20,7 @@ package bos
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -920,6 +921,19 @@ func (c *Client) GetObjectMeta(bucket, object string) (*api.GetObjectMetaResult,
 	return api.GetObjectMeta(c, bucket, object)
 }
 
+// SelectObject - select the object content
+//
+// PARAMS:
+//     - bucket: the name of the bucket
+//     - object: the name of the object
+//     - args: the optional arguments to select the object
+// RETURNS:
+//     - *api.SelectObjectResult: select object result
+//     - error: any error if it occurs
+func (c *Client) SelectObject(bucket, object string, args *api.SelectObjectArgs) (*api.SelectObjectResult, error) {
+	return api.SelectObject(c, bucket, object, args)
+}
+
 // FetchObject - fetch the object content from the given source and store
 //
 // PARAMS:
@@ -1414,7 +1428,7 @@ func (c *Client) UploadSuperFile(bucket, object, fileName, storageClass string) 
 
 	// Check the return of each part uploading, and decide to complete or abort it
 	completeArgs := &api.CompleteMultipartUploadArgs{
-		Parts :make([]api.UploadInfoType, partNum),
+		Parts: make([]api.UploadInfoType, partNum),
 	}
 	for i := partNum; i > 0; i-- {
 		uploaded := <-uploadedResult
@@ -1678,4 +1692,20 @@ func (c *Client) GetObjectAcl(bucket, object string) (*api.GetObjectAclResult, e
 //     - error: nil if success otherwise the specific error
 func (c *Client) DeleteObjectAcl(bucket, object string) error {
 	return api.DeleteObjectAcl(c, bucket, object)
+}
+
+func (c *Client) RestoreObject(bucket string, object string, restoreDays int, restoreTier string) error {
+	if _, ok := api.VALID_RESTORE_TIER[restoreTier]; !ok {
+		return errors.New("invalid restore tier")
+	}
+
+	if restoreDays <= 0 {
+		return errors.New("invalid restore days")
+	}
+
+	args := api.ArchiveRestoreArgs{
+		RestoreTier: restoreTier,
+		RestoreDays: restoreDays,
+	}
+	return api.RestoreObject(c, bucket, object, args)
 }

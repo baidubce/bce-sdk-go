@@ -300,6 +300,63 @@ type GetObjectMetaResult struct {
 	ObjectMeta
 }
 
+// SelectObjectResult defines the result data of the select object api.
+type SelectObjectResult struct {
+	Body io.ReadCloser
+}
+
+// selectObject request args
+type SelectObjectArgs struct {
+	SelectType    string               `json: "-"`
+	SelectRequest *SelectObjectRequest `json: "selectRequest"`
+}
+
+type SelectObjectRequest struct {
+	Expression          string                `json:"expression"`
+	ExpressionType      string                `json:"expressionType"` // SQL
+	InputSerialization  *SelectObjectInput    `json:"inputSerialization"`
+	OutputSerialization *SelectObjectOutput   `json:"outputSerialization"`
+	RequestProgress     *SelectObjectProgress `json:"requestProgress"`
+}
+
+type SelectObjectInput struct {
+	CompressionType string            `json:"compressionType"`
+	CsvParams       map[string]string `json:"csv"`
+	JsonParams      map[string]string `json:"json"`
+}
+type SelectObjectOutput struct {
+	OutputHeader bool              `json:"outputHeader"`
+	CsvParams    map[string]string `json:"csv"`
+	JsonParams   map[string]string `json:"json"`
+}
+type SelectObjectProgress struct {
+	Enabled bool `json:"enabled"`
+}
+
+type Prelude struct {
+	TotalLen   uint32
+	HeadersLen uint32
+}
+
+// selectObject response msg
+type CommonMessage struct {
+	Prelude
+	Headers map[string]string // message-type/content-type……
+	Crc32   uint32            // crc32 of RecordsMessage
+}
+type RecordsMessage struct {
+	CommonMessage
+	Records []string // csv/json seleted data, one or more records
+}
+type ContinuationMessage struct {
+	CommonMessage
+	BytesScanned  uint64
+	BytesReturned uint64
+}
+type EndMessage struct {
+	CommonMessage
+}
+
 // FetchObjectArgs defines the optional arguments structure for the fetch object api.
 type FetchObjectArgs struct {
 	FetchMode    string
@@ -467,4 +524,9 @@ type ListMultipartUploadsResult struct {
 	MaxUploads     int                        `json:"maxUploads"`
 	NextKeyMarker  string                     `json:"nextKeyMarker"`
 	Uploads        []ListMultipartUploadsType `json:"uploads"`
+}
+
+type ArchiveRestoreArgs struct {
+	RestoreTier string
+	RestoreDays int
 }

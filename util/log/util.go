@@ -149,7 +149,7 @@ func Panicln(msg ...interface{}) {
 }
 
 func Panicf(format string, msg ...interface{}) {
-	record := fmt.Sprintf(format, msg)
+	record := fmt.Sprintf(format, msg...)
 	gDefaultLogger.logging(PANIC, format+"\n", msg...)
 	panic(record)
 }

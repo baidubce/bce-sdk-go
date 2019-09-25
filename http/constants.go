@@ -73,4 +73,6 @@ const (
 	BCE_NEXT_APPEND_OFFSET              = "x-bce-next-append-offset"
 	BCE_STORAGE_CLASS                   = "x-bce-storage-class"
 	BCE_PROCESS                         = "x-bce-process"
+	BCE_RESTORE_TIER                    = "x-bce-restore-tier"
+	BCE_RESTORE_DAYS                    = "x-bce-restore-days"
 )

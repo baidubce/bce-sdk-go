@@ -341,7 +341,7 @@ func (l *logger) Panicln(msg ...interface{}) {
 }
 
 func (l *logger) Panicf(format string, msg ...interface{}) {
-	record := fmt.Sprintf(format, msg)
+	record := fmt.Sprintf(format, msg...)
 	l.logging(PANIC, format+"\n", msg...)
 	panic(record)
 }

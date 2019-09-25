@@ -17,6 +17,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"net"
 	"strconv"
@@ -384,6 +385,48 @@ func GetObjectMeta(cli bce.Client, bucket, object string) (*GetObjectMetaResult,
 		result.NextAppendOffset = val
 	}
 	defer func() { resp.Body().Close() }()
+	return result, nil
+}
+
+// SelectObject - select the object content
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name of the object
+//     - object: the name of the object
+//     - args: the optional arguments to perform the select operation
+// RETURNS:
+//     - *SelectObjectResult: the output select content result of the object
+//     - error: nil if ok otherwise the specific error
+func SelectObject(cli bce.Client, bucket, object string, args *SelectObjectArgs) (*SelectObjectResult, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getObjectUri(bucket, object))
+	req.SetMethod(http.POST)
+	req.SetParam("select", "")
+	req.SetParam("type", args.SelectType)
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get the result
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	result := &SelectObjectResult{}
+
+	result.Body = resp.Body()
 	return result, nil
 }
 
@@ -771,5 +814,24 @@ func DeleteObjectAcl(cli bce.Client, bucket, object string) error {
 		return resp.ServiceError()
 	}
 	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+func RestoreObject(cli bce.Client, bucket string, object string, args ArchiveRestoreArgs) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getObjectUri(bucket, object))
+	req.SetParam("restore", "")
+	req.SetMethod(http.POST)
+	req.SetHeader(http.BCE_RESTORE_DAYS, strconv.Itoa(args.RestoreDays))
+	req.SetHeader(http.BCE_RESTORE_TIER, args.RestoreTier)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
 	return nil
 }

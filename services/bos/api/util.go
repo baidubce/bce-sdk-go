@@ -30,6 +30,7 @@ const (
 	STORAGE_CLASS_STANDARD    = "STANDARD"
 	STORAGE_CLASS_STANDARD_IA = "STANDARD_IA"
 	STORAGE_CLASS_COLD        = "COLD"
+	STORAGE_CLASS_ARCHIVE     = "ARCHIVE"
 
 	FETCH_MODE_SYNC  = "sync"
 	FETCH_MODE_ASYNC = "async"
@@ -46,7 +47,22 @@ const (
 	STATUS_DISABLED = "disabled"
 
 	ENCRYPTION_AES256 = "AES256"
+
+	RESTORE_TIER_STANDARD  = "Standard"  //标准取回对象
+	RESTORE_TIER_EXPEDITED = "Expedited" //快速取回对象
 )
+
+var VALID_STORAGE_CLASS_TYPE = map[string]int{
+	STORAGE_CLASS_STANDARD:    0,
+	STORAGE_CLASS_STANDARD_IA: 1,
+	STORAGE_CLASS_COLD:        2,
+	STORAGE_CLASS_ARCHIVE:     3,
+}
+
+var VALID_RESTORE_TIER = map[string]int{
+	RESTORE_TIER_STANDARD:  1,
+	RESTORE_TIER_EXPEDITED: 1,
+}
 
 var (
 	GET_OBJECT_ALLOWED_RESPONSE_HEADERS = map[string]struct{}{
@@ -75,9 +91,7 @@ func validMetadataDirective(val string) bool {
 }
 
 func validStorageClass(val string) bool {
-	if val == STORAGE_CLASS_STANDARD_IA ||
-		val == STORAGE_CLASS_STANDARD ||
-		val == STORAGE_CLASS_COLD {
+	if _, ok := VALID_STORAGE_CLASS_TYPE[val]; ok {
 		return true
 	}
 	return false
