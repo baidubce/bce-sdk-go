@@ -167,7 +167,7 @@ func DeleteVolume(cli bce.Client, name string) error {
 //     - error: nil if ok otherwise the specific error
 func ListVolumeVer(cli bce.Client, nv *NameVersion) (*ListVolumeVerResult, error) {
 	url := PREFIX_V3VOL + "/" + nv.Name + "/version"
-	params := map[string]string {}
+	params := map[string]string{}
 	if nv.Version != "" {
 		params["version"] = nv.Version
 	}

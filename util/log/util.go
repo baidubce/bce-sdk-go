@@ -189,7 +189,7 @@ func SetLogFormat(format []string) {
 func SetLogDir(dir string) error {
 	if _, err := os.Stat(dir); err != nil {
 		if os.IsNotExist(err) {
-			if mkErr := os.Mkdir(dir, 0644); mkErr != nil {
+			if mkErr := os.Mkdir(dir, os.ModePerm); mkErr != nil {
 				return mkErr
 			}
 		} else {

@@ -75,7 +75,7 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 //////////////////////////////////////////////
 
 func TestListGroup(t *testing.T) {
-	listReq := &api.ListGroupReq{PageNo:1, PageSize: 1000}
+	listReq := &api.ListGroupReq{PageNo: 1, PageSize: 1000}
 	res, err := CLIENT.ListGroup(listReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
@@ -83,7 +83,7 @@ func TestListGroup(t *testing.T) {
 
 func TestGroupCRUD(t *testing.T) {
 	// 1, list group first
-	listReq := &api.ListGroupReq{PageNo:1, PageSize: 1000}
+	listReq := &api.ListGroupReq{PageNo: 1, PageSize: 1000}
 	groups, err := CLIENT.ListGroup(listReq)
 	ExpectEqual(t.Errorf, nil, err)
 
@@ -109,7 +109,6 @@ func TestGroupCRUD(t *testing.T) {
 
 	createdGroup, err := CLIENT.CreateGroup(createReq)
 	ExpectEqual(t.Errorf, nil, err)
-
 
 	groups2, err := CLIENT.ListGroup(listReq)
 	ExpectEqual(t.Errorf, nil, err)
@@ -139,7 +138,7 @@ func TestGroupCRUD(t *testing.T) {
 }
 
 func createNewGroup(cli *Client, name string) (*api.CreateGroupResult, error) {
-	listReq := &api.ListGroupReq{PageNo:1, PageSize: 1000}
+	listReq := &api.ListGroupReq{PageNo: 1, PageSize: 1000}
 	// 1, list group first
 	groups, err := cli.ListGroup(listReq)
 	if err != nil {
@@ -294,11 +293,11 @@ func TestVolumeCrudAndOp(t *testing.T) {
 	name := "TestVolumeCrudAndOp"
 	hostPath := "/var/local"
 	createReq := &api.CreateVolReq{
-		Name: name,
-		Tags: []string{"tag1", "tag2"},
+		Name:         name,
+		Tags:         []string{"tag1", "tag2"},
 		TemplateCode: templates.Result[0].Code,
-		HostPath: hostPath,
-		Description: "desc",
+		HostPath:     hostPath,
+		Description:  "desc",
 	}
 	createRet, err := CLIENT.CreateVolume(createReq)
 	ExpectEqual(t.Errorf, nil, err)
@@ -331,7 +330,7 @@ func TestVolumeCrudAndOp(t *testing.T) {
 	verListRet, err := CLIENT.ListVolumeVer(&api.NameVersion{Name: name, Version: updateRet.Version})
 	ExpectEqual(t.Errorf, nil, err)
 	ExpectEqual(t.Errorf, true, len(verListRet.Result) > 0)
-	
+
 	// 6, publish new version
 	pubRet, err := CLIENT.PubVolumeVer(name)
 	ExpectEqual(t.Errorf, nil, err)
@@ -345,7 +344,7 @@ func TestVolumeCrudAndOp(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 	ExpectEqual(t.Errorf, true, len(downRet.Url) > 0)
 
-	// 8, delete 
+	// 8, delete
 	err = CLIENT.DeleteVolume(name)
 	ExpectEqual(t.Errorf, nil, err)
 }
@@ -377,11 +376,11 @@ func TestVolumeFileCrud(t *testing.T) {
 
 	hostPath := "/var/local"
 	createReq := &api.CreateVolReq{
-		Name: name,
-		Tags: []string{"tag1", "tag2"},
+		Name:         name,
+		Tags:         []string{"tag1", "tag2"},
 		TemplateCode: tmplate.Code,
-		HostPath: hostPath,
-		Description: "desc",
+		HostPath:     hostPath,
+		Description:  "desc",
 	}
 	createVolRet, err := CLIENT.CreateVolume(createReq)
 	ExpectEqual(t.Errorf, nil, err)
@@ -392,7 +391,7 @@ func TestVolumeFileCrud(t *testing.T) {
 	content := "{\"a\":1}"
 	createFileReq := &api.CreateVolFileReq{
 		FileName: filename,
-		Content: content,
+		Content:  content,
 	}
 	createFileRet, err := CLIENT.CreateVolFile(name, createFileReq)
 	t.Logf("%+v", createFileRet)
@@ -402,9 +401,9 @@ func TestVolumeFileCrud(t *testing.T) {
 
 	// 3, get file
 	getFileReq := &api.GetVolFileReq{
-		Name: name,
+		Name:     name,
 		FileName: filename,
-		Version: createVolRet.Version,
+		Version:  createVolRet.Version,
 	}
 	getFileRet, err := CLIENT.GetVolumeFile(getFileReq)
 	ExpectEqual(t.Errorf, nil, err)
@@ -460,11 +459,11 @@ func TestVolumeMisc(t *testing.T) {
 
 	hostPath := "/var/local"
 	createReq := &api.CreateVolReq{
-		Name: name,
-		Tags: []string{"tag1", "tag2"},
+		Name:         name,
+		Tags:         []string{"tag1", "tag2"},
 		TemplateCode: tmplate.Code,
-		HostPath: hostPath,
-		Description: "desc",
+		HostPath:     hostPath,
+		Description:  "desc",
 	}
 	createVolRet, err := CLIENT.CreateVolume(createReq)
 	ExpectEqual(t.Errorf, nil, err)
@@ -472,7 +471,7 @@ func TestVolumeMisc(t *testing.T) {
 
 	// 2, import cfc
 	importCfcReq := &api.ImportCfcReq{
-		Name: "non-exist-name",
+		Name:    "non-exist-name",
 		Version: "1",
 	}
 
@@ -501,10 +500,9 @@ func TestVolumeMisc(t *testing.T) {
 	editCoreVerReq := &api.EditCoreVolVerReq{
 		Jobs: []api.EditCoreVolVerEntry{entry},
 	}
-	
+
 	err = CLIENT.EditCoreVolVer(name, editCoreVerReq)
 	ExpectEqual(t.Errorf, true, err != nil)
-	
 
 	// 5, delete volume
 	CLIENT.DeleteVolume(name)
@@ -537,11 +535,11 @@ func TestVolumeImportBos(t *testing.T) {
 
 	hostPath := "/var/local"
 	createReq := &api.CreateVolReq{
-		Name: name,
-		Tags: []string{"tag1", "tag2"},
+		Name:         name,
+		Tags:         []string{"tag1", "tag2"},
 		TemplateCode: tmplate.Code,
-		HostPath: hostPath,
-		Description: "desc",
+		HostPath:     hostPath,
+		Description:  "desc",
 	}
 	createVolRet, err := CLIENT.CreateVolume(createReq)
 	ExpectEqual(t.Errorf, nil, err)
@@ -550,7 +548,7 @@ func TestVolumeImportBos(t *testing.T) {
 	// 2, import cfc
 	importBosReq := &api.ImportBosReq{
 		BosBucket: "non-exist-bucket",
-		BosKey: "non-exist-key",
+		BosKey:    "non-exist-key",
 	}
 
 	err = CLIENT.ImportBos(name, importBosReq)
@@ -602,7 +600,7 @@ func TestDockerImages(t *testing.T) {
 	// 2, list user image again, and compare the totalCount
 	list, err = CLIENT.ListImageUser(listReq)
 	ExpectEqual(t.Errorf, nil, err)
-	ExpectEqual(t.Errorf, cnt1 + 1, list.TotalCount)
+	ExpectEqual(t.Errorf, cnt1+1, list.TotalCount)
 
 	// 2, delete the create image
 	err = CLIENT.DeleteImageUser(img.UUID)

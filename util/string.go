@@ -60,7 +60,7 @@ func UriEncode(uri string, encodeSlash bool) string {
 	return byte_buf.String()
 }
 
-func NewRequestId() string {
+func NewUUID() string {
 	var buf [16]byte
 	for {
 		if _, err := rand.Read(buf[:]); err == nil {
@@ -81,4 +81,8 @@ func NewRequestId() string {
 	res[23] = '-'
 	hex.Encode(res[24:], buf[10:])
 	return string(res)
+}
+
+func NewRequestId() string {
+	return NewUUID()
 }

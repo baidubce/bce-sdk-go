@@ -26,7 +26,7 @@ import (
 
 const (
 	PREFIX_V3MODSYS = "/v3/module/system"
-	PREFIX_V3MODUSR    = "/v3/module/user"
+	PREFIX_V3MODUSR = "/v3/module/user"
 )
 
 // ListImageSys - list all system docker images
@@ -40,7 +40,7 @@ const (
 func ListImageSys(cli bce.Client, lir *ListImageReq) (*ListImageResult, error) {
 	url := PREFIX_V3MODSYS
 	result := &ListImageResult{}
-	params := map[string]string {}
+	params := map[string]string{}
 	params["pageNo"] = strconv.Itoa(lir.PageNo)
 	params["pageSize"] = strconv.Itoa(lir.PageSize)
 	if lir.Tag != "" {
@@ -84,7 +84,7 @@ func GetImageSys(cli bce.Client, uuid string) (*Image, error) {
 func ListImageUser(cli bce.Client, lir *ListImageReq) (*ListImageResult, error) {
 	url := PREFIX_V3MODUSR
 	result := &ListImageResult{}
-	params := map[string]string {}
+	params := map[string]string{}
 	params["pageNo"] = strconv.Itoa(lir.PageNo)
 	params["pageSize"] = strconv.Itoa(lir.PageSize)
 	if lir.Tag != "" {

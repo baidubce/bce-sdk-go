@@ -263,6 +263,10 @@ type CopyObjectArgs struct {
 	IfUnmodifiedSince string
 }
 
+type MultiCopyObjectArgs struct {
+	StorageClass string
+}
+
 // CopyObjectResult defines the result json structure for the copy object api.
 type CopyObjectResult struct {
 	LastModified string `json:"lastModified"`
@@ -529,4 +533,32 @@ type ListMultipartUploadsResult struct {
 type ArchiveRestoreArgs struct {
 	RestoreTier string
 	RestoreDays int
+}
+
+type GetBucketTrashResult struct {
+	TrashDir string `json:"trashDir"`
+}
+
+type PutBucketTrashReq struct {
+	TrashDir string `json:"trashDir"`
+}
+
+type PutBucketNotificationReq struct {
+	Notifications []PutBucketNotificationSt `json:"notifications"`
+}
+
+type PutBucketNotificationSt struct {
+	Id        string                        `json:"id"`
+	Name      string                        `json:"name"`
+	AppId     string                        `json:"appId"`
+	Status    string                        `json:"status"`
+	Resources []string                      `json:"resources"`
+	Events    []string                      `json:"events"`
+	Apps      []PutBucketNotificationAppsSt `json:"apps"`
+}
+
+type PutBucketNotificationAppsSt struct {
+	Id       string `json:"id"`
+	EventUrl string `json:"eventUrl"`
+	XVars    string `json:"xVars"`
 }

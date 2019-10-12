@@ -26,9 +26,9 @@ type Group struct {
 }
 
 type ListGroupReq struct {
-	PageNo           int     `json:"pageNo"`
-	PageSize         int     `json:"pageSize"`
-	Name             string `json:"name"`
+	PageNo   int    `json:"pageNo"`
+	PageSize int    `json:"pageSize"`
+	Name     string `json:"name"`
 }
 
 type ListGroupResult struct {
@@ -151,7 +151,7 @@ type CfgResult struct {
 	Status         string       `json:"status"`
 	Version        string       `json:"version"`
 	Description    string       `json:"description"`
-	LastDeployTime string         `json:"lastDeployTime"`
+	LastDeployTime string       `json:"lastDeployTime"`
 	CreateTime     string       `json:"createTime"`
 	ConfigServices []CfgService `json:"configServices"`
 	ConfigVolumes  []CfgVolume  `json:"configVolumes"`
@@ -259,7 +259,7 @@ type CreateVolReq struct {
 	TemplateCode string   `json:"templateCode"`
 	Description  string   `json:"description"`
 	Tags         []string `json:"tags"`
-	HostPath	string `json:"hostPath"`
+	HostPath     string   `json:"hostPath"`
 }
 
 type VolFile struct {
@@ -271,23 +271,23 @@ type VolFile struct {
 }
 
 type VolumeResult struct {
-	Uuid        string        `json:"uuid"`
-	Name        string        `json:"name"`
-	Tags        []string      `json:"tags"`
-	HostPath    string        `json:"hostPath"`
-	Files       []VolFile     `json:"files"`
-	Description string        `json:"description"`
-	Version     string        `json:"version"`
+	Uuid        string      `json:"uuid"`
+	Name        string      `json:"name"`
+	Tags        []string    `json:"tags"`
+	HostPath    string      `json:"hostPath"`
+	Files       []VolFile   `json:"files"`
+	Description string      `json:"description"`
+	Version     string      `json:"version"`
 	Template    VolTemplate `json:"template"`
-	NewFile     bool          `json:"newFile"`
-	CleanFile   bool          `json:"cleanFile"`
-	CreateTime  string        `json:"createTime"`
+	NewFile     bool        `json:"newFile"`
+	CleanFile   bool        `json:"cleanFile"`
+	CreateTime  string      `json:"createTime"`
 }
 
 type ListVolumeReq struct {
 	PageNo   int    `json:"pageNo"`
 	PageSize int    `json:"pageSize"`
-	Tag      string    `json:"tag"`
+	Tag      string `json:"tag"`
 	Name     string `json:"name"`
 }
 
@@ -318,7 +318,7 @@ type CreateVolFileReq struct {
 }
 
 type GetVolFileReq struct {
-	Name  string `json:"name"`
+	Name     string `json:"name"`
 	Version  string `json:"version"`
 	FileName string `json:"fileName"`
 }
@@ -368,15 +368,15 @@ type ImportCfcReq struct {
 }
 
 type ImportBosReq struct {
-	BosBucket    string `json:"bosBucket"`
-	BosKey string `json:"bosKey"`
+	BosBucket string `json:"bosBucket"`
+	BosKey    string `json:"bosKey"`
 }
 
 // image
 type ListImageReq struct {
-	PageNo     int `json:"pageNo"`
-	PageSize   int `json:"pageSize"`
-	Tag        string `json:"tag"`
+	PageNo   int    `json:"pageNo"`
+	PageSize int    `json:"pageSize"`
+	Tag      string `json:"tag"`
 }
 
 type Image struct {
@@ -388,16 +388,16 @@ type Image struct {
 	Tags        string `json:"tags"`
 	UUID        string `json:"uuid"`
 	Warehouse   string `json:"warehouse"`
-	Replica	struct {
-		Min	string `json:"min"`
+	Replica     struct {
+		Min string `json:"min"`
 	} `json:"replica"`
 }
 
 type ListImageResult struct {
 	Result     []Image `json:"result"`
-	PageNo     int `json:"pageNo"`
-	PageSize   int `json:"pageSize"`
-	TotalCount int `json:"totalCount"`
+	PageNo     int     `json:"pageNo"`
+	PageSize   int     `json:"pageSize"`
+	TotalCount int     `json:"totalCount"`
 }
 
 type CreateImageReq struct {

@@ -2,9 +2,9 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/baidubce/bce-sdk-go/bce"
-	"github.com/pkg/errors"
 	"strings"
 )
 

@@ -172,3 +172,24 @@ func (c *BceClient) SendRequest(req *BceRequest, resp *BceResponse) error {
 func NewBceClient(conf *BceClientConfiguration, sign auth.Signer) *BceClient {
 	return &BceClient{conf, sign}
 }
+
+func NewBceClientWithAkSk(ak, sk, endPoint string) (*BceClient, error) {
+	credentials, err := auth.NewBceCredentials(ak, sk)
+	if err != nil {
+		return nil, err
+	}
+	defaultSignOptions := &auth.SignOptions{
+		HeadersToSign: auth.DEFAULT_HEADERS_TO_SIGN,
+		ExpireSeconds: auth.DEFAULT_EXPIRE_SECONDS}
+	defaultConf := &BceClientConfiguration{
+		Endpoint:                  endPoint,
+		Region:                    DEFAULT_REGION,
+		UserAgent:                 DEFAULT_USER_AGENT,
+		Credentials:               credentials,
+		SignOption:                defaultSignOptions,
+		Retry:                     DEFAULT_RETRY_POLICY,
+		ConnectionTimeoutInMillis: DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS}
+	v1Signer := &auth.BceV1Signer{}
+
+	return NewBceClient(defaultConf, v1Signer), nil
+}
