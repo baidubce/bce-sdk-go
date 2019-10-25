@@ -271,6 +271,26 @@ func (c *Client) ModifyInstanceAttribute(instanceId string, args *api.ModifyInst
 	return api.ModifyInstanceAttribute(c, instanceId, body)
 }
 
+// ModifyInstanceDesc - modify an instance's description
+//
+// PARAMS:
+//     - instanceId: the specific instance ID
+//     - args: the arguments of now instance's description
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ModifyInstanceDesc(instanceId string, args *api.ModifyInstanceDescArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.ModifyInstanceDesc(c, instanceId, body)
+}
+
 // BindSecurityGroup - bind a security group to an instance
 //
 // PARAMS:

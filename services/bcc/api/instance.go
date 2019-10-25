@@ -375,6 +375,35 @@ func ModifyInstanceAttribute(cli bce.Client, instanceId string, reqBody *bce.Bod
 	return nil
 }
 
+// ModifyInstanceDesc - modify desc of a specified instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance to be modified
+//	   - reqBody: the request body to modify instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func ModifyInstanceDesc(cli bce.Client, instanceId string, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getInstanceUriWithId(instanceId))
+	req.SetMethod(http.PUT)
+	req.SetParam("modifyDesc", "")
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
 // BindSecurityGroup - bind security group for a specified instance
 //
 // PARAMS:

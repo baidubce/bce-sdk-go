@@ -66,37 +66,6 @@ const (
 	PaymentTimingPostPaid PaymentTimingType = "Postpaid"
 )
 
-type IpsModel struct {
-	PrivateIp       string `json:"privateIp"`
-	Eip             string `json:"eip"`
-	Primary         string `json:"primary"`
-	EipId           string `json:"eipId"`
-	EipAllocationId string `json:"eipAllocationId"`
-	EipSize         string `json:"eipSize"`
-	EipStatus       string `json:"eipStatus"`
-	EipGroupId      string `json:"eipGroupId"`
-	EipType         string `json:"eipType"`
-}
-
-type NicInfoModel struct {
-	EniId          string               `json:"eniId"`
-	EniUuid        string               `json:"eniUuid"`
-	Name           string               `json:"name"`
-	Type           string               `json:"type"`
-	SubnetId       string               `json:"subnetId"`
-	SubnetType     string               `json:"subnetType"`
-	Az             string               `json:"az"`
-	Description    string               `json:"description"`
-	DeviceId       string               `json:"deviceId"`
-	Status         string               `json:"status"`
-	MacAddress     string               `json:"macAddress"`
-	VpcId          string               `json:"vpcId"`
-	CreateTime     string               `json:"createTime"`
-	Ips            []IpsModel           `json:"ips"`
-	SecurityGroups []SecurityGroupModel `json:"securityGroups"`
-	EniNum         int                  `json:"eniNum"`
-}
-
 // Instance define instance model
 type InstanceModel struct {
 	InstanceId            string           `json:"id"`
@@ -121,8 +90,6 @@ type InstanceModel struct {
 	ZoneName              string           `json:"zoneName"`
 	SubnetId              string           `json:"subnetId"`
 	VpcId                 string           `json:"vpcId"`
-	NicInfo               *NicInfoModel    `json:"nicInfo"`
-	EniNum                string           `json:"eniNum"`
 	AutoRenew             bool             `json:"autoRenew"`
 	KeypairId             string           `json:"keypairId"`
 	KeypairName           string           `json:"keypairName"`
@@ -228,6 +195,10 @@ type ChangeInstancePassArgs struct {
 
 type ModifyInstanceAttributeArgs struct {
 	Name string `json:"name"`
+}
+
+type ModifyInstanceDescArgs struct {
+	Description string `json:"desc"`
 }
 
 type BindSecurityGroupArgs struct {
@@ -629,22 +600,6 @@ type ListASPArgs struct {
 	VolumeName string
 }
 
-// TODO: This structure may be wrong, it should has same structure with AutoSnapshotPolicyModel,
-//  remove it when this wrong be fixed in the future
-type AutoSnapshotPolicyModel2 struct {
-	CreatedTime     string   `json:"createdTime"`
-	Id              string   `json:"id"`
-	Status          string   `json:"status"`
-	RetentionDays   string   `json:"retentionDays"`
-	UpdatedTime     string   `json:"updatedTime"`
-	DeletedTime     string   `json:"deletedTime"`
-	LastExecuteTime string   `json:"lastExecuteTime"`
-	VolumeCount     string   `json:"volumeCount"`
-	Name            string   `json:"name"`
-	TimePoints      []string `json:"timePoints"`
-	RepeatWeekdays  []string `json:"repeatWeekdays"`
-}
-
 type ListASPResult struct {
 	Marker              string                    `json:"marker"`
 	IsTruncated         bool                      `json:"isTruncated"`
@@ -654,7 +609,7 @@ type ListASPResult struct {
 }
 
 type GetASPDetailResult struct {
-	AutoSnapshotPolicy AutoSnapshotPolicyModel2 `json:"autoSnapshotPolicy"`
+	AutoSnapshotPolicy AutoSnapshotPolicyModel `json:"autoSnapshotPolicy"`
 }
 
 type UpdateASPArgs struct {
