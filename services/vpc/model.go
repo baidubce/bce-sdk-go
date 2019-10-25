@@ -245,7 +245,7 @@ type CreateRouteRuleArgs struct {
 	RouteTableId       string      `json:"routeTableId"`
 	SourceAddress      string      `json:"sourceAddress"`
 	DestinationAddress string      `json:"destinationAddress"`
-	NexthopId          string      `json:"nexthopId"`
+	NexthopId          string      `json:"nexthopId,omitempty"`
 	NexthopType        NexthopType `json:"nexthopType"`
 	Description        string      `json:"description,omitempty"`
 }

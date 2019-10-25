@@ -190,6 +190,14 @@ func TestModifyInstanceAttribute(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestModifyInstanceDesc(t *testing.T) {
+	modifyArgs := &api.ModifyInstanceDescArgs{
+		Description: "test modify",
+	}
+	err := BCC_CLIENT.ModifyInstanceDesc(BCC_TestBccId, modifyArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestGetInstanceVNC(t *testing.T) {
 	_, err := BCC_CLIENT.GetInstanceVNC(BCC_TestBccId)
 	ExpectEqual(t.Errorf, err, nil)

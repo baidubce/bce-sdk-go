@@ -424,6 +424,21 @@ if err != nil {
 > **提示：**
 > - 目前该接口仅支持修改实例名称
 
+### 修改实例描述
+
+如下代码可以修改实例描述
+```go
+args := &api.ModifyInstanceDescArgs{
+    Description: "new Instance description",
+}
+err := client.ModifyInstanceDesc(instanceId, args)
+if err != nil {
+    fmt.Println("modify instance failed:", err)
+} else {
+    fmt.Println("modify instance success")
+}
+```
+
 ### 重装实例
 
 如下代码可以重装实例

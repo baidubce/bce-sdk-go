@@ -217,14 +217,14 @@ myLogger.Info("this is my own logger from the sdk")
 
 产品名称   | 产品缩写 | 导入路径 | 说明文档
 -----------|----------|----------|----------
-应用型负载均衡 | APPBLB | github.com/baidubce/bce-sdk-go/services/appblb |
-云服务器 | BCC | github.com/baidubce/bce-sdk-go/services/bcc | 
+应用型负载均衡 | APPBLB | github.com/baidubce/bce-sdk-go/services/appblb | [APPBLB.md](./doc/APPBLB.md)
+云服务器 | BCC | github.com/baidubce/bce-sdk-go/services/bcc | [BCC.md](./doc/BCC.md)
 百度边缘计算 |  BIE   | github.com/baidubce/bce-sdk-go/services/bie |
 百度对象存储 |  BOS   | github.com/baidubce/bce-sdk-go/services/bos | [BOS.md](./doc/BOS.md)
 内容分布网络 |  CDN   | github.com/baidubce/bce-sdk-go/services/cdn | [CDN.md](./doc/CDN.md)
-SSL证书服务 | CERT | github.com/baidubce/bce-sdk-go/services/cert |
-弹性公网IP | EIP | github.com/baidubce/bce-sdk-go/services/eip |
+SSL证书服务 | CERT | github.com/baidubce/bce-sdk-go/services/cert | [CERT.md](./doc/CERT.md)
+弹性公网IP | EIP | github.com/baidubce/bce-sdk-go/services/eip | [EIP.md](./doc/EIP.md)
 安全Token服务|  STS   | github.com/baidubce/bce-sdk-go/services/sts | [STS.md](./doc/STS.md)
 视频内容分析 |  VCA   | github.com/baidubce/bce-sdk-go/services/vca |
 视频内容审核 |  VCR   | github.com/baidubce/bce-sdk-go/services/vcr |
-私有网络 | VPC | github.com/baidubce/bce-sdk-go/services/vpc |
+私有网络 | VPC | github.com/baidubce/bce-sdk-go/services/vpc | [VPC.md](./doc/VPC.md)
