@@ -19,8 +19,7 @@
 package bbc
 
 import (
-	//:	"encoding/json"
-	//:
+	"encoding/json"
 	"github.com/baidubce/bce-sdk-go/auth"
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/services/bbc/api"
@@ -60,34 +59,34 @@ func NewClient(ak, sk, endPoint string) (*Client, error) {
 	return client, nil
 }
 
-//:// CreateInstance - create an instance with the specific parameters
-//://
-//:// PARAMS:
-//://     - args: the arguments to create instance
-//:// RETURNS:
-//://     - *api.CreateInstanceResult: the result of create Instance, contains new Instance ID
-//://     - error: nil if success otherwise the specific error
-//:func (c *Client) CreateInstance(args *api.CreateInstanceArgs) (*api.CreateInstanceResult, error) {
-//:	if len(args.AdminPass) > 0 {
-//:		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
-//:		if err != nil {
-//:			return nil, err
-//:		}
-//:
-//:		args.AdminPass = cryptedPass
-//:	}
-//:
-//:	jsonBytes, jsonErr := json.Marshal(args)
-//:	if jsonErr != nil {
-//:		return nil, jsonErr
-//:	}
-//:	body, err := bce.NewBodyFromBytes(jsonBytes)
-//:	if err != nil {
-//:		return nil, err
-//:	}
-//:
-//:	return api.CreateInstance(c, args.ClientToken, body)
-//:}
+// CreateInstance - create an instance with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to create instance
+// RETURNS:
+//     - *api.CreateInstanceResult: the result of create Instance, contains new Instance ID
+//     - error: nil if success otherwise the specific error
+func (c *Client) CreateInstance(args *api.CreateInstanceArgs) (*api.CreateInstanceResult, error) {
+	if len(args.AdminPass) > 0 {
+		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
+		if err != nil {
+			return nil, err
+		}
+
+		args.AdminPass = cryptedPass
+	}
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.CreateInstance(c, args.ClientToken, body)
+}
 
 // ListInstances - list all instance with the specific parameters
 //
@@ -100,17 +99,17 @@ func (c *Client) ListInstances(args *api.ListInstanceArgs) (*api.ListInstanceRes
 	return api.ListInstances(c, args)
 }
 
-//:// GetInstanceDetail - get a specific instance detail info
-//://
-//:// PARAMS:
-//://     - instanceId: the specific instance ID
-//:// RETURNS:
-//://     - *api.GetInstanceDetailResult: the result of get instance detail info
-//://     - error: nil if success otherwise the specific error
-//:func (c *Client) GetInstanceDetail(instanceId string) (*api.GetInstanceDetailResult, error) {
-//:	return api.GetInstanceDetail(c, instanceId)
-//:}
-//:
+// GetInstanceDetail - get a specific instance detail info
+//
+// PARAMS:
+//     - instanceId: the specific instance ID
+// RETURNS:
+//     - *api.GetInstanceDetailResult: the result of get instance detail info
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetInstanceDetail(instanceId string) (*api.GetInstanceDetailResult, error) {
+	return api.GetInstanceDetail(c, instanceId)
+}
+
 //:// DeleteInstance - delete a specific instance
 //://
 //:// PARAMS:
