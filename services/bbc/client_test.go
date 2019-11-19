@@ -21,13 +21,6 @@ var (
 	BBC_TestAspId           string
 )
 
-// For security reason, ak/sk should not hard write here.
-type Conf struct {
-	AK       string
-	SK       string
-	Endpoint string
-}
-
 func init() {
 	var err error
 	ak:= os.Getenv("BAIDUCLOUD_SECRET_ID")
