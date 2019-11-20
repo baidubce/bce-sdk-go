@@ -1,7 +1,6 @@
 package bbc
 
 import (
-	"fmt"
 	"os"
 	"reflect"
 	"runtime"
