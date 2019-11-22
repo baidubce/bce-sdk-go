@@ -41,6 +41,7 @@ bce-sdk-go
 |  |     |--util.go       //BOS相关API实现使用的工具
 |  |--cdn                 //内容分布网络
 |  |--cert                //SSL证书服务
+|  |--cfc                 //函数计算
 |  |--eip                 //弹性公网IP
 |  |--sts                 //STS服务目录
 |  |--vca                 //VCA服务目录
@@ -223,6 +224,7 @@ myLogger.Info("this is my own logger from the sdk")
 百度对象存储 |  BOS   | github.com/baidubce/bce-sdk-go/services/bos | [BOS.md](./doc/BOS.md)
 内容分布网络 |  CDN   | github.com/baidubce/bce-sdk-go/services/cdn | [CDN.md](./doc/CDN.md)
 SSL证书服务 | CERT | github.com/baidubce/bce-sdk-go/services/cert | [CERT.md](./doc/CERT.md)
+函数计算 | CFC | github.com/baidubce/bce-sdk-go/services/cfc | [CFC.md](./doc/CFC.md)
 弹性公网IP | EIP | github.com/baidubce/bce-sdk-go/services/eip | [EIP.md](./doc/EIP.md)
 安全Token服务|  STS   | github.com/baidubce/bce-sdk-go/services/sts | [STS.md](./doc/STS.md)
 视频内容分析 |  VCA   | github.com/baidubce/bce-sdk-go/services/vca |
