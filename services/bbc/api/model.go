@@ -82,7 +82,7 @@ type CreateInstanceArgs struct {
 	Billing          Billing `json:"billing,omitempty"`
 	Name             string  `json:"name"`
 	AdminPass        string  `json:"adminPass"`
-	  ClientToken           string           `json:"-"`
+	ClientToken      string  `json:"-"`
 }
 
 type CreateInstanceResult struct {
@@ -104,6 +104,6 @@ type ListInstanceResult struct {
 	Instances   []InstanceModel `json:"instances"`
 }
 
-type GetInstanceDetailResult struct{
+type GetInstanceDetailResult struct {
 	Instance InstanceModel `json:"instance"`
 }

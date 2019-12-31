@@ -16,40 +16,30 @@
 package api
 
 import (
-		"encoding/hex"
-		"fmt"
-	
+	"encoding/hex"
+	"fmt"
+
 	"github.com/baidubce/bce-sdk-go/bce"
-		"github.com/baidubce/bce-sdk-go/util/crypto"
+	"github.com/baidubce/bce-sdk-go/util/crypto"
 )
 
 const (
-	URI_PREFIX = bce.URI_PREFIX + "v1"
+	URI_PREFIXv1 = bce.URI_PREFIX + "v1"
+	URI_PREFIXv2 = bce.URI_PREFIX + "v2"
 
 	REQUEST_INSTANCE_URI = "/instance"
-
-//	REQUEST_VNC_SUFFIX   = "/vnc"
-//
-//	REQUEST_VOLUME_URI           = "/volume"
-//	REQUEST_SECURITYGROUP_URI    = "/securityGroup"
-//	REQUEST_IMAGE_URI            = "/image"
-//	REQUEST_IMAGE_SHAREDUSER_URI = "/sharedUsers"
-//	REQUEST_IMAGE_OS_URI         = "/os"
-//
-//	REQUEST_SNAPSHOT_URI = "/snapshot"
-//	REQUEST_ASP_URI      = "/asp"
-//	REQUEST_SPEC_URI     = "/instance/spec"
-//	REQUEST_ZONE_URI     = "/zone"
-//
-//	REQUEST_SUBNET_URI = "/subnet"
 )
 
 func getInstanceUri() string {
-	return URI_PREFIX + REQUEST_INSTANCE_URI
+	return URI_PREFIXv1 + REQUEST_INSTANCE_URI
 }
 
-func getInstanceUriWithId(id string) string {
-	return URI_PREFIX + REQUEST_INSTANCE_URI + "/" + id
+func getInstanceUriWithIdv1(id string) string {
+	return URI_PREFIXv1 + REQUEST_INSTANCE_URI + "/" + id
+}
+
+func getInstanceUriWithIdv2(id string) string {
+	return URI_PREFIXv2 + REQUEST_INSTANCE_URI + "/" + id
 }
 
 //func getInstanceVNCUri(id string) string {
@@ -68,64 +58,3 @@ func Aes128EncryptUseSecreteKey(sk string, data string) (string, error) {
 
 	return hex.EncodeToString(crypted), nil
 }
-
-//func getVolumeUri() string {
-//	return URI_PREFIX + REQUEST_VOLUME_URI
-//}
-//
-//func getVolumeUriWithId(id string) string {
-//	return URI_PREFIX + REQUEST_VOLUME_URI + "/" + id
-//}
-//
-//func getSecurityGroupUri() string {
-//	return URI_PREFIX + REQUEST_SECURITYGROUP_URI
-//}
-//
-//func getSecurityGroupUriWithId(id string) string {
-//	return URI_PREFIX + REQUEST_SECURITYGROUP_URI + "/" + id
-//}
-//
-//func getImageUri() string {
-//	return URI_PREFIX + REQUEST_IMAGE_URI
-//}
-//
-//func getImageUriWithId(id string) string {
-//	return URI_PREFIX + REQUEST_IMAGE_URI + "/" + id
-//}
-//
-//func getImageSharedUserUri(id string) string {
-//	return URI_PREFIX + REQUEST_IMAGE_URI + "/" + id + REQUEST_IMAGE_SHAREDUSER_URI
-//}
-//
-//func getImageOsUri() string {
-//	return URI_PREFIX + REQUEST_IMAGE_URI + REQUEST_IMAGE_OS_URI
-//}
-//
-//func getSnapshotUri() string {
-//	return URI_PREFIX + REQUEST_SNAPSHOT_URI
-//}
-//
-//func getSnapshotUriWithId(id string) string {
-//	return URI_PREFIX + REQUEST_SNAPSHOT_URI + "/" + id
-//}
-//
-//func getASPUri() string {
-//	return URI_PREFIX + REQUEST_ASP_URI
-//}
-//
-//func getASPUriWithId(id string) string {
-//	return URI_PREFIX + REQUEST_ASP_URI + "/" + id
-//}
-//
-//func getSpecUri() string {
-//	return URI_PREFIX + REQUEST_SPEC_URI
-//}
-//
-//func getZoneUri() string {
-//	return URI_PREFIX + REQUEST_ZONE_URI
-//}
-//
-//func getChangeSubnetUri() string {
-//	return URI_PREFIX + REQUEST_SUBNET_URI + "/changeSubnet"
-//}
-//
