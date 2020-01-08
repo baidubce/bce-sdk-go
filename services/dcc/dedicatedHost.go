@@ -50,7 +50,7 @@ func (c *Client) Create(args *CreateArgs) (ret *CreateResult, err error) {
 	err = bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
 		WithURL(bce.URI_PREFIX+"v1/dedicatedHost").
-		WithQueryParamFilter("clientToken", args.clientToken).
+		WithQueryParamFilter("clientToken", args.ClientToken).
 		WithBody(&args).
 		WithResult(&ret).
 		Do()
