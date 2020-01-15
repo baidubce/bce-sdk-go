@@ -49,11 +49,11 @@ func getURLforFlavor(version int) string {
 }
 
 func getURLforFlavorwithID(version int, instanceID string) string {
-	return fmt.Sprintf("%s%d/floavor/%s", bce.URI_PREFIX, version, instanceID)
+	return fmt.Sprintf("%sv%d/floavor/%s", bce.URI_PREFIX, version, instanceID)
 }
 
 func getURLforFlavorRaid(version int, instanceID string) string {
-	return fmt.Sprintf("%s%d/flavorRaid/%s", bce.URI_PREFIX, version, instanceID)
+	return fmt.Sprintf("%sv%d/flavorRaid/%s", bce.URI_PREFIX, version, instanceID)
 }
 
 func getURLforImage(version int) string {
