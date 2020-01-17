@@ -21,8 +21,8 @@ type CreateInstanceArgs struct {
 
 // Billing -- xx
 type Billing struct {
-	paymentTiming string      //付款时间，预支付（Prepaid）和后支付（Postpaid）
-	reservation   Reservation //保留信息，支付方式为后支付时不需要设置，预支付时必须设置
+	PaymentTiming string      //付款时间，预支付（Prepaid）和后支付（Postpaid）
+	Reservation   Reservation //保留信息，支付方式为后支付时不需要设置，预支付时必须设置
 }
 
 // Reservation -- xx
