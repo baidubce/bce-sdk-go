@@ -276,7 +276,9 @@ type DeleteAliasArgs struct {
 
 type ListTriggersArgs struct {
 	FunctionBrn string
+	ScopeType   string
 }
+
 type ListTriggersResult struct {
 	Relation []*RelationInfo
 }
@@ -330,6 +332,12 @@ type CrontabTriggerData struct {
 	Input              string
 	Name               string
 	ScheduleExpression string
+}
+
+type CFCEdgeTriggerData struct {
+	Domain    string
+	EventType string
+	Path      string
 }
 
 type CreateTriggerArgs struct {

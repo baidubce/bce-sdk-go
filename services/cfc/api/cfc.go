@@ -481,6 +481,7 @@ func ListTriggers(cli bce.Client, args *ListTriggersArgs) (*ListTriggersResult, 
 		Args: args,
 		Params: map[string]interface{}{
 			"FunctionBrn": args.FunctionBrn,
+			"ScopeType":   args.ScopeType,
 		},
 	}
 	result := &cfcResult{
