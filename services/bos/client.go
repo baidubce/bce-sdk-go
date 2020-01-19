@@ -73,12 +73,12 @@ func NewClient(ak, sk, endpoint string) (*Client, error) {
 		HeadersToSign: auth.DEFAULT_HEADERS_TO_SIGN,
 		ExpireSeconds: auth.DEFAULT_EXPIRE_SECONDS}
 	defaultConf := &bce.BceClientConfiguration{
-		Endpoint:                  endpoint,
-		Region:                    bce.DEFAULT_REGION,
-		UserAgent:                 bce.DEFAULT_USER_AGENT,
-		Credentials:               credentials,
-		SignOption:                defaultSignOptions,
-		Retry:                     bce.DEFAULT_RETRY_POLICY,
+		Endpoint:    endpoint,
+		Region:      bce.DEFAULT_REGION,
+		UserAgent:   bce.DEFAULT_USER_AGENT,
+		Credentials: credentials,
+		SignOption:  defaultSignOptions,
+		Retry:       bce.DEFAULT_RETRY_POLICY,
 		ConnectionTimeoutInMillis: bce.DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS}
 	v1Signer := &auth.BceV1Signer{}
 
@@ -1935,12 +1935,18 @@ func (c *Client) singlePartUpload(
 //     - destBucketName: the dest bucket name
 //     - destObjectName: the dest object name
 //     - args: the copy args
+//     - srcClient: the src region client
 // RETURNS:
 //     - *api.CompleteMultipartUploadResult: multipart upload result
 //     - error: nil if success otherwise the specific error
 func (c *Client) ParallelCopy(srcBucketName string, srcObjectName string,
-	destBucketName string, destObjectName string, args *api.MultiCopyObjectArgs) (*api.CompleteMultipartUploadResult, error) {
-	objectMeta, err := api.GetObjectMeta(c, srcBucketName, srcObjectName)
+	destBucketName string, destObjectName string,
+	args *api.MultiCopyObjectArgs, srcClient *Client) (*api.CompleteMultipartUploadResult, error) {
+
+	if srcClient == nil {
+		srcClient = c
+	}
+	objectMeta, err := srcClient.GetObjectMeta(srcBucketName, srcObjectName)
 	if err != nil {
 		return nil, err
 	}
@@ -2012,7 +2018,7 @@ func (c *Client) parallelPartCopy(srcMeta api.GetObjectMetaResult, source string
 		}
 
 		partCopyArgs := api.UploadPartCopyArgs{
-			SourceRange: fmt.Sprintf("bytes=%d-%d", (i-1)*partSize, (i-1)*partSize+uploadSize),
+			SourceRange: fmt.Sprintf("bytes=%d-%d", (i-1)*partSize, (i-1)*partSize+uploadSize-1),
 			IfMatch:     srcMeta.ETag,
 		}
 

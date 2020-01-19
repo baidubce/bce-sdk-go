@@ -589,6 +589,9 @@ args := &api.ListTriggersArgs{
     FunctionBrn: "functionBrn",
 }
 
+// 默认不返回cfc-edge触发器，若想查询所有的触发器，可以设置
+args.ScopeType = "all"
+
 result, err := client.ListTriggers(args)
 if err != nil {
     fmt.Println("get function trigger failed:", err)
