@@ -95,7 +95,7 @@ func (c *Client) UnbindTag(dccID string, args *BindTagArgs) (err error) {
 func (c *Client) CreateInstance(args *CreateInstanceArgs) (ret *CreateInstanceResult, err error) {
 	err = bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
-		WithURL(bce.URI_PREFIX+"v1/dedicatedHost").
+		WithURL(bce.URI_PREFIX+"v1/dedicatedHost/instance").
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		WithBody(&args).
 		WithResult(&ret).
