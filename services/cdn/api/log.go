@@ -54,7 +54,7 @@ func GetDomainLog(cli bce.Client, domain string, timeInterval TimeInterval) ([]L
 	urlPath := fmt.Sprintf("/v2/log/%s/log", domain)
 	params := map[string]string{}
 	params["startTime"] = timeInterval.StartTime
-	params["endTime	"] = timeInterval.EndTime
+	params["endTime"] = timeInterval.EndTime
 
 	respObj := &struct {
 		Logs []LogEntry `json:"logs"`
