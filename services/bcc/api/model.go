@@ -68,33 +68,33 @@ const (
 
 // Instance define instance model
 type InstanceModel struct {
-	InstanceId            string           `json:"id"`
-	InstanceName          string           `json:"name"`
-	InstanceType          InstanceType     `json:"instanceType"`
-	Description           string           `json:"desc"`
-	Status                InstanceStatus   `json:"status"`
-	PaymentTiming         string           `json:"paymentTiming"`
-	CreationTime          string           `json:"createTime"`
-	ExpireTime            string           `json:"expireTime"`
-	PublicIP              string           `json:"publicIp"`
-	InternalIP            string           `json:"internalIp"`
-	CpuCount              int              `json:"cpuCount"`
-	GpuCard               string           `json:"gpuCard"`
-	FpgaCard              string           `json:"fpgaCard"`
-	CardCount             string           `json:"cardCount"`
-	MemoryCapacityInGB    int              `json:"memoryCapacityInGB"`
-	LocalDiskSizeInGB     int              `json:"localDiskSizeInGB"`
-	ImageId               string           `json:"imageId"`
-	NetworkCapacityInMbps int              `json:"networkCapacityInMbps"`
-	PlacementPolicy       string           `json:"placementPolicy"`
-	ZoneName              string           `json:"zoneName"`
-	SubnetId              string           `json:"subnetId"`
-	VpcId                 string           `json:"vpcId"`
-	AutoRenew             bool             `json:"autoRenew"`
-	KeypairId             string           `json:"keypairId"`
-	KeypairName           string           `json:"keypairName"`
-	DedicatedHostId       string           `json:"dedicatedHostId"`
-	Tags                  []model.TagModel `json:"tags"`
+	InstanceId            string         `json:"id"`
+	InstanceName          string         `json:"name"`
+	InstanceType          InstanceType   `json:"instanceType"`
+	Description           string         `json:"desc"`
+	Status                InstanceStatus `json:"status"`
+	PaymentTiming         string         `json:"paymentTiming"`
+	CreationTime          string         `json:"createTime"`
+	ExpireTime            string         `json:"expireTime"`
+	PublicIP              string         `json:"publicIp"`
+	InternalIP            string         `json:"internalIp"`
+	CpuCount              int            `json:"cpuCount"`
+	GpuCard               string         `json:"gpuCard"`
+	FpgaCard              string         `json:"fpgaCard"`
+	CardCount             string         `json:"cardCount"`
+	MemoryCapacityInGB    int            `json:"memoryCapacityInGB"`
+	LocalDiskSizeInGB     int            `json:"localDiskSizeInGB"`
+	ImageId               string         `json:"imageId"`
+	NetworkCapacityInMbps int            `json:"networkCapacityInMbps"`
+	PlacementPolicy       string         `json:"placementPolicy"`
+	ZoneName              string         `json:"zoneName"`
+	SubnetId              string         `json:"subnetId"`
+	VpcId                 string         `json:"vpcId"`
+	AutoRenew             bool           `json:"autoRenew"`
+	KeypairId             string         `json:"keypairId"`
+	KeypairName           string         `json:"keypairName"`
+	DedicatedHostId       string         `json:"dedicatedHostId"`
+	Tags                  []model.Tag    `json:"tags"`
 }
 
 type Reservation struct {
@@ -145,7 +145,7 @@ type CreateInstanceArgs struct {
 	AutoRenewTime         int              `json:"autoRenewTime"`
 	CdsAutoRenew          bool             `json:"cdsAutoRenew"`
 	RelationTag           bool             `json:"relationTag,omitempty"`
-	Tags                  []model.TagModel `json:"tags,omitempty"`
+	Tags                  []model.Tag      `json:"tags,omitempty"`
 	ClientToken           string           `json:"-"`
 }
 
@@ -305,7 +305,7 @@ type VolumeModel struct {
 	RegionId           string                   `json:"regionId"`
 	SourceSnapshotId   string                   `json:"sourceSnapshotId"`
 	SnapshotNum        string                   `json:"snapshotNum"`
-	Tags               []model.TagModel         `json:"tags"`
+	Tags               []model.Tag              `json:"tags"`
 }
 
 type VolumeAttachmentModel struct {
@@ -392,7 +392,7 @@ type SecurityGroupModel struct {
 	Desc  string                   `json:"desc"`
 	VpcId string                   `json:"vpcId"`
 	Rules []SecurityGroupRuleModel `json:"rules"`
-	Tags  []model.TagModel         `json:"tags"`
+	Tags  []model.Tag              `json:"tags"`
 }
 
 type CreateSecurityGroupArgs struct {
@@ -401,7 +401,7 @@ type CreateSecurityGroupArgs struct {
 	Desc        string                   `json:"desc,omitempty"`
 	VpcId       string                   `json:"vpcId,omitempty"`
 	Rules       []SecurityGroupRuleModel `json:"rules"`
-	Tags        []model.TagModel         `json:"tags,omitempty"`
+	Tags        []model.Tag              `json:"tags,omitempty"`
 }
 
 type ListSecurityGroupArgs struct {
