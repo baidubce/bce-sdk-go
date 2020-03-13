@@ -1,6 +1,6 @@
 package model
 
-type TagModel struct {
-	TagKey   string `json:"tagKey"`
-	TagValue string `json:"tagValue"`
+type Tag struct {
+	Key   string `json:"tagKey"`
+	Value string `json:"tagValue"`
 }

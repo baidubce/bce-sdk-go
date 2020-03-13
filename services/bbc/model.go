@@ -1,34 +1,35 @@
 package bbc
 
+import "github.com/baidubce/bce-sdk-go/model"
+
 // for instance.go
 
 // CreateInstanceArgs -- xx
 type CreateInstanceArgs struct {
-	Version          int
-	ClientToken      string
-	FlavorID         string //物理机套餐Id。
-	ImageID          string //镜像Id。
-	RaidID           string //raid配置Id，可通过查询RAID接口获得。
-	RootDiskSizeInGb int    //待创建物理机的系统盘大小。
-	PurchaseCount    int    //批量创建（购买）的实例个数
-	ZoneName         string //可通过调用查询可用区列表接口查询可用区列表。
-
-	SubnetID  string  //指定subnet信息，为空时将使用默认子网。
-	Billing   Billing //订单、计费相关参数。
-	Name      string  //物理机名字（可选）。默认都不指定name
-	AdminPass string  //机器密码，密码需要加密传输。
+	Version          int     `json:"version"`
+	ClientToken      string  `json:"clientToken"`
+	FlavorID         string  `json:"flavorId"`
+	ImageID          string  `json:"imageId"`
+	RaidID           string  `json:"raidId"`
+	RootDiskSizeInGb int     `json:"rootDiskSizeInGb"`
+	PurchaseCount    int     `json:"purchaseCount"`
+	ZoneName         string  `json:"zoneName"`
+	SubnetID         string  `json:"subnetId"`
+	Billing          Billing `json:"billing"`
+	Name             string  `json:"name"`
+	AdminPass        string  `json:"adminPass"`
 }
 
 // Billing -- xx
 type Billing struct {
-	PaymentTiming string      //付款时间，预支付（Prepaid）和后支付（Postpaid）
-	Reservation   Reservation //保留信息，支付方式为后支付时不需要设置，预支付时必须设置
+	PaymentTiming string      `json:"paymentTiming"`
+	Reservation   Reservation `json:"reservation"`
 }
 
 // Reservation -- xx
 type Reservation struct {
-	ReservationLength   int    //时长，[1,2,3,4,5,6,7,8,9,12,24,36]
-	ReservationTimeUnit string //时间单位，month，当前仅支持按月
+	Length   int    `json:"reservationLength"`
+	TimeUnit string `json:"reservationTimeUnit"`
 }
 
 // CreateInstanceResult -- xx
@@ -38,44 +39,33 @@ type CreateInstanceResult struct {
 
 // ListInstancesArgs -- xx
 type ListInstancesArgs struct {
-	//Version    int    //	是	URL参数	API版本号
-	Marker     string //	否	Query参数	批量获取列表的查询的起始位置，是一个由系统生成的字符串。
-	MaxKeys    int    //	否	Query参数	每页包含的最大数量，最大数量通常不超过1000，缺省值为1000。
+	model.ArgsMeta
 	InternalIP string //	否	Query参数	内网ip
 }
 
 // ListInstancesResult -- xx
 type ListInstancesResult struct {
-	Marker      string           //	标记查询的起始位置。
-	IsTruncated bool             //	true表示后面还有数据，false表示已经是最后一页。
-	NextMarker  string           //	获取下一页所需要传递的marker值。当isTruncated为false时，该域不出现。
-	MaxKeys     int              //	 每页包含的最大数量。
-	Instances   []*InstanceModel //	实例信息，由 InstanceModel 组成的集合。
+	model.ResultMeta
+	Instances []*InstanceModel //	实例信息，由 InstanceModel 组成的集合。
 }
 
 // InstanceModel -- xx
 type InstanceModel struct {
-	ID                    string      //	实例ID，符合BCE规范，是一个定长字符串，且只允许包含大小写字母、数字、连字号（-）和下划线（_）
-	Name                  string      //	实例名称,支持大小写字母、数字、中文以及-_ /.特殊字符，必须以字母开头，长度1-65
-	Status                string      //	实例状态
-	Desc                  string      //	实例描述信息
-	PaymentTiming         string      //	付费方式，包括Postpaid(后付费)，Prepaid(预付费)两种。
-	CreateTime            string      //	创建时间
-	ExpireTime            string      //	过期时间
-	InternalIP            string      //	内网IP
-	PublicIP              string      //	外网IP
-	ImageID               string      //	镜像ID
-	FlavorID              string      //	套餐ID
-	Zone                  string      //	可用区名称
-	Region                string      //	区域名称
-	NetworkCapacityInMbps int         //	公网带宽，单位为Mb
-	Tags                  []*TagModel //	标签信息，由Tag组成的集合
-}
-
-// TagModel -- xx
-type TagModel struct {
-	TagKey   string //	标签键
-	TagValue string //	标签值
+	ID                    string
+	Name                  string
+	Status                string
+	Desc                  string
+	PaymentTiming         string
+	CreateTime            string
+	ExpireTime            string
+	InternalIP            string
+	PublicIP              string
+	ImageID               string
+	FlavorID              string
+	Zone                  string
+	Region                string
+	NetworkCapacityInMbps int
+	Tags                  []*model.Tag
 }
 
 // StopInstanceArgs -- xx
@@ -130,7 +120,7 @@ type SubnetModel struct {
 
 // ChangeTagsArgs -- xx
 type ChangeTagsArgs struct {
-	ChangeTags []*TagModel
+	ChangeTags []*model.Tag
 }
 
 // for flavors
@@ -185,19 +175,15 @@ type CreateImageResult struct {
 
 // ListImagesArgs -- xx
 type ListImagesArgs struct {
+	model.ArgsMeta
 	Version   string //	是	URL参数	API版本号
-	Marker    string //	否	Query参数	批量获取列表的查询的起始位置，是一个由系统生成的字符串
-	MaxKeys   int    //	否	Query参数	每页包含的最大数量，最大数量通常不超过1000。缺省值为1000
 	ImageType string //	否	Query参数	指定要查询何种类型的镜像，包括All(所有)，System(系统镜像/公共镜像)，Custom(自定义镜像)，Integration(服务集成镜像)，缺省值为All
 }
 
 // ListImagesResult -- xx
 type ListImagesResult struct {
-	Marker      string       //	标记查询的起始位置
-	IsTruncated bool         //	true表示后面还有数据，false表示已经是最后一页。
-	NextMarker  string       //	获取下一页所需要传递的marker值。当isTruncated为false时，该域不出现。
-	MaxKeys     int          //	每页包含的最大数量
-	Images      []ImageModel //	返回的镜像列表
+	model.ResultMeta
+	Images []ImageModel //	返回的镜像列表
 }
 
 // ImageModel -- xx
@@ -260,19 +246,15 @@ const (
 
 // ListOperationLogArgs -- xx
 type ListOperationLogArgs struct {
+	model.ArgsMeta
 	Version   string //	是	URL参数	API版本号
-	Marker    string //	否	Query参数	批量获取列表的查询的起始位置，是一个由系统生成的字符串
-	MaxKeys   int    //	否	Query参数	每页包含的最大数量，最大数量通常不超过1000。缺省值为100
 	StartTime string //	否	Query参数	需查询物理机操作的起始时间（UTC时间），格式 yyyy-MM-dd'T'HH:mm:ss'Z' ，为空则查询当日操作日志
 	EndTime   string //	否	Query参数	需查询物理机操作的终止时间（UTC时间），格式 yyyy-MM-dd'T'HH:mm:ss'Z' ，为空则查询当日操作日志
 }
 
 // ListOperationLogResult -- xx
 type ListOperationLogResult struct {
-	Marker        string              //	标记查询的起始位置
-	IsTruncated   bool                //	true表示后面还有数据，false表示已经是最后一页
-	NextMarker    string              //	获取下一页所需要传递的marker值。当isTruncated为false时，该域不出现
-	MaxKeys       int                 //	每页包含的最大数量
+	model.ResultMeta
 	OperationLogs []OperationLogModel //	操作日志信息，由 OperationLogModel 组成的集合
 }
 
