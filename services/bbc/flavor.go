@@ -8,7 +8,7 @@ import (
 // ListFlavor -- xx
 func (c *Client) ListFlavor() (list *ListFlavorsResult, err error) {
 	err = bce.NewRequestBuilder(c).
-		WithURL(getURLforFlavor(1)).
+		WithURL(getURLforFlavor(Version1)).
 		WithMethod(http.GET).
 		WithResult(&list).
 		Do()
@@ -19,7 +19,7 @@ func (c *Client) ListFlavor() (list *ListFlavorsResult, err error) {
 func (c *Client) GetFlavorDetail(instanceID string) (ret *FlavorModel, err error) {
 	err = bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithURL(getURLforFlavorwithID(1, instanceID)).
+		WithURL(getURLforFlavorwithID(Version1, instanceID)).
 		WithResult(&ret).
 		Do()
 	return
@@ -29,7 +29,7 @@ func (c *Client) GetFlavorDetail(instanceID string) (ret *FlavorModel, err error
 func (c *Client) GetRaidofFlavor(instanceID string) (ret *GetRaidofFlavorResult, err error) {
 	err = bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithURL(getURLforFlavorRaid(1, instanceID)).
+		WithURL(getURLforFlavorRaid(Version1, instanceID)).
 		WithResult(&ret).
 		Do()
 	return

@@ -9,6 +9,10 @@ import (
 const (
 	// DefaultEndpoint -- xx
 	DefaultEndpoint = "bcc." + bce.DEFAULT_REGION + ".baidubce.com"
+
+	// The api version used in url.
+	Version1 = 1
+	Version2 = 2
 )
 
 // Client -- xx

@@ -9,7 +9,7 @@ import (
 func (c *Client) UnbindTag(instanceID string, args *ChangeTagsArgs) (err error) {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
-		WithURL(getURLforTagwithID(1, instanceID)).
+		WithURL(getURLforTagwithID(Version1, instanceID)).
 		WithQueryParam("unbind", "").
 		WithBody(args).
 		Do()
