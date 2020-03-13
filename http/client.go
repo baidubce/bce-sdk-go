@@ -24,6 +24,8 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -141,9 +143,11 @@ func Execute(request *Request) (*Response, error) {
 	// Perform the http request and get response
 	// It needs to explicitly close the keep-alive connections when error occurs for the request
 	// that may continue sending request's data subsequently.
+	logrus.Debug(httpRequest)
 	start := time.Now()
 	httpResponse, err := httpClient.Do(httpRequest)
 	end := time.Now()
+	logrus.Debug(httpResponse)
 	if err != nil {
 		transport.CloseIdleConnections()
 		return nil, err
