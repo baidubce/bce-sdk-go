@@ -2,12 +2,17 @@ package bbc
 
 import (
 	"fmt"
+
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
 )
 
 // CreateImage -- xx
 func (c *Client) CreateImage(args *CreateImageArgs) (ret *CreateImageResult, err error) {
+	// forward compatibility
+	if args.Version == 0 {
+		args.Version = Version1
+	}
 	err = bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
 		WithURL(getURLforImage(args.Version)).
@@ -21,7 +26,7 @@ func (c *Client) CreateImage(args *CreateImageArgs) (ret *CreateImageResult, err
 // ListImage -- xx
 func (c *Client) ListImage(args *ListImagesArgs) (list *ListImagesResult, err error) {
 	err = bce.NewRequestBuilder(c).
-		WithURL(getURLforImage(1)).
+		WithURL(getURLforImage(Version1)).
 		WithMethod(http.GET).
 		WithQueryParamFilter("marker", args.Marker).
 		WithQueryParamFilter("maxKeys", fmt.Sprintf("%d", args.MaxKeys)).
@@ -35,7 +40,7 @@ func (c *Client) ListImage(args *ListImagesArgs) (list *ListImagesResult, err er
 func (c *Client) GetImageDetail(imageID string) (ret *GetImageDetailResult, err error) {
 	err = bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithURL(getURLforImagewithID(1, imageID)).
+		WithURL(getURLforImagewithID(Version1, imageID)).
 		WithResult(&ret).
 		Do()
 	return
@@ -45,7 +50,7 @@ func (c *Client) GetImageDetail(imageID string) (ret *GetImageDetailResult, err 
 func (c *Client) DeleteImage(imageID string) (err error) {
 	err = bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
-		WithURL(getURLforImagewithID(1, imageID)).
+		WithURL(getURLforImagewithID(Version1, imageID)).
 		Do()
 	return
 

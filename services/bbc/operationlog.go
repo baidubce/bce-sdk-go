@@ -11,7 +11,7 @@ import (
 func (c *Client) ListOperationLog(args *ListOperationLogArgs) (ret *ListOperationLogResult, err error) {
 	err = bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithURL(getURLforOperationLog(1)).
+		WithURL(getURLforOperationLog(Version1)).
 		WithQueryParamFilter("marker", args.Marker).
 		WithQueryParamFilter("maxKeys", fmt.Sprintf("%d", args.MaxKeys)).
 		WithQueryParamFilter("startTime", args.StartTime).
