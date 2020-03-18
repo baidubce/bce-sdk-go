@@ -14,8 +14,8 @@
 
 // tag.go - the tag APIs definition supported by the BBC service
 
-// Package api defines all APIs supported by the BBC service of BCE.
-package api
+// Package bbc defines all APIs supported by the BBC service of BCE.
+package bbc
 
 import (
 	"github.com/baidubce/bce-sdk-go/bce"

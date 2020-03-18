@@ -12,27 +12,63 @@
  * and limitations under the License.
  */
 
-// flavor.go - the flavor APIs definition supported by the BBC service
+// deploySet.go - the deploy set APIs definition supported by the BBC service
 
-// Package api defines all APIs supported by the BBC service of BCE.
-package api
+// Package bbc defines all APIs supported by the BBC service of BCE.
+package bbc
 
 import (
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
 )
 
-// ListFlavors - list all available flavors
+// CreateDeploySet - create a deploy set
 //
 // PARAMS:
 //     - cli: the client agent which can perform sending request
+//     - clientToken: idempotent token,  an ASCII string no longer than 64 bits
+//     - reqBody: http request body
 // RETURNS:
-//     - *ListFlavorsResult: the result of list all flavors
+//     - *CreateDeploySetResult: results of creating a deploy set
 //     - error: nil if success otherwise the specific error
-func ListFlavors(cli bce.Client) (*ListFlavorsResult, error) {
+func CreateDeploySet(cli bce.Client, clientToken string, reqBody *bce.Body) (*CreateDeploySetResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
-	req.SetUri(getFlavorUri())
+	req.SetUri(getDeploySetUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	if clientToken != "" {
+		req.SetParam("clientToken", clientToken)
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &CreateDeploySetResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+// ListDeploySets - list all deploy sets
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+// RETURNS:
+//     - *ListDeploySetsResult: the result of list all deploy sets
+//     - error: nil if success otherwise the specific error
+func ListDeploySets(cli bce.Client) (*ListDeploySetsResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getDeploySetUri())
 	req.SetMethod(http.GET)
 
 	// Send request and get response
@@ -44,7 +80,7 @@ func ListFlavors(cli bce.Client) (*ListFlavorsResult, error) {
 		return nil, resp.ServiceError()
 	}
 
-	jsonBody := &ListFlavorsResult{}
+	jsonBody := &ListDeploySetsResult{}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
@@ -52,18 +88,18 @@ func ListFlavors(cli bce.Client) (*ListFlavorsResult, error) {
 	return jsonBody, nil
 }
 
-// GetFlavorDetail - get details of the specified flavor
+// GetDeploySet - get details of the deploy set
 //
 // PARAMS:
 //     - cli: the client agent which can perform sending request
-//     - flavorId: the id of the flavor
+//     - deploySetId: the id of the deploy set
 // RETURNS:
-//     - *api.GetFlavorDetailResult: the detail of the specified flavor
+//     - *GetDeploySetResult: the detail of the deploy set
 //     - error: nil if success otherwise the specific error
-func GetFlavorDetail(cli bce.Client, flavorId string) (*GetFlavorDetailResult, error) {
+func GetDeploySet(cli bce.Client, deploySetId string) (*GetDeploySetResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
-	req.SetUri(getFlavorUriWithId(flavorId))
+	req.SetUri(getDeploySetUriWithId(deploySetId))
 	req.SetMethod(http.GET)
 
 	// Send request and get response
@@ -75,7 +111,7 @@ func GetFlavorDetail(cli bce.Client, flavorId string) (*GetFlavorDetailResult, e
 		return nil, resp.ServiceError()
 	}
 
-	jsonBody := &GetFlavorDetailResult{}
+	jsonBody := &GetDeploySetResult{}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
@@ -83,45 +119,37 @@ func GetFlavorDetail(cli bce.Client, flavorId string) (*GetFlavorDetailResult, e
 	return jsonBody, nil
 }
 
-// GetFlavorRaid - get the RAID detail and disk size of the specified flavor
+// DeleteDeploySet - delete a deploy set
 //
 // PARAMS:
 //     - cli: the client agent which can perform sending request
-//     - flavorId: the id of the flavor
+//     - deploySetId: the id of the deploy set
 // RETURNS:
-//     - *api.GetFlavorRaidResult: the detail of the raid of the specified flavor
 //     - error: nil if success otherwise the specific error
-func GetFlavorRaid(cli bce.Client, flavorId string) (*GetFlavorRaidResult, error) {
+func DeleteDeploySet(cli bce.Client, deploySetId string) error {
 	// Build the request
 	req := &bce.BceRequest{}
-	req.SetUri(getFlavorRaidUriWithId(flavorId))
-	req.SetMethod(http.GET)
+	req.SetUri(getDeploySetUriWithId(deploySetId))
+	req.SetMethod(http.DELETE)
 
 	// Send request and get response
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
-		return nil, err
+		return err
 	}
 	if resp.IsFail() {
-		return nil, resp.ServiceError()
+		return resp.ServiceError()
 	}
 
-	jsonBody := &GetFlavorRaidResult{}
-	if err := resp.ParseJsonBody(jsonBody); err != nil {
-		return nil, err
-	}
+	defer func() { resp.Body().Close() }()
 
-	return jsonBody, nil
+	return nil
 }
 
-func getFlavorUri() string {
-	return URI_PREFIX_V1 + REQUEST_FLAVOR_URI
+func getDeploySetUri() string {
+	return URI_PREFIX_V1 + REQUEST_DEPLOY_SET_URI
 }
 
-func getFlavorUriWithId(id string) string {
-	return URI_PREFIX_V1 + REQUEST_FLAVOR_URI + "/" + id
-}
-
-func getFlavorRaidUriWithId(id string) string {
-	return URI_PREFIX_V1 + REQUEST_FLAVOR_RAID_URI + "/" + id
+func getDeploySetUriWithId(id string) string {
+	return URI_PREFIX_V1 + REQUEST_DEPLOY_SET_URI + "/" + id
 }
