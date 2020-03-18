@@ -14,8 +14,8 @@
 
 // image.go - the image APIs definition supported by the BBC service
 
-// Package api defines all APIs supported by the BBC service of BCE.
-package api
+// Package bbc defines all APIs supported by the BBC service of BCE.
+package bbc
 
 import (
 	"strconv"
@@ -31,7 +31,7 @@ import (
 //     - clientToken: idempotent token,  an ASCII string no longer than 64 bits
 //     - reqBody: http request body
 // RETURNS:
-//     - *api.CreateImageResult: the result of create Image
+//     - *CreateImageResult: the result of create Image
 //     - error: nil if success otherwise the specific error
 func CreateImageFromInstanceId(cli bce.Client, clientToken string, reqBody *bce.Body) (*CreateImageResult, error) {
 	// Build the request
@@ -67,7 +67,7 @@ func CreateImageFromInstanceId(cli bce.Client, clientToken string, reqBody *bce.
 //     - cli: the client agent which can perform sending request
 //     - args: the arguments to list all images
 // RETURNS:
-//     - *api.ListImageResult: the result of list all images
+//     - *ListImageResult: the result of list all images
 //     - error: nil if success otherwise the specific error
 func ListImage(cli bce.Client, queryArgs *ListImageArgs) (*ListImageResult, error) {
 	// Build the request
@@ -113,7 +113,7 @@ func ListImage(cli bce.Client, queryArgs *ListImageArgs) (*ListImageResult, erro
 //     - cli: the client agent which can perform sending request
 //     - imageId: the specific image ID
 // RETURNS:
-//     - *api.GetImageDetailResult: the result of get image's detail
+//     - *GetImageDetailResult: the result of get image's detail
 //     - error: nil if success otherwise the specific error
 func GetImageDetail(cli bce.Client, imageId string) (*GetImageDetailResult, error) {
 	// Build the request

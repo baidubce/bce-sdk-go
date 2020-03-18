@@ -13,7 +13,7 @@
  */
 
 // util.go - define the utilities for api package of BBC service
-package api
+package bbc
 
 import (
 	"encoding/hex"

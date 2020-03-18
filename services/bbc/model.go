@@ -14,7 +14,7 @@
 
 // model.go - definitions of the request arguments and results data structure model
 
-package api
+package bbc
 
 import "github.com/baidubce/bce-sdk-go/model"
 
