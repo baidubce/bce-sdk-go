@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/baidubce/bce-sdk-go/model"
-	"github.com/baidubce/bce-sdk-go/services/bbc/api"
 	"github.com/baidubce/bce-sdk-go/util/log"
 )
 
@@ -94,7 +93,7 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 }
 
 func TestCreateInstance(t *testing.T) {
-	createInstanceArgs := &api.CreateInstanceArgs{
+	createInstanceArgs := &CreateInstanceArgs{
 		FlavorId:         BBC_TestFlavorId,
 		ImageId:          BBC_TestImageId,
 		RaidId:           BBC_TestRaidId,
@@ -103,9 +102,9 @@ func TestCreateInstance(t *testing.T) {
 		ZoneName:         BBC_TestZoneName,
 		SubnetId:         BBC_TestSubnetId,
 		ClientToken:      BBC_TestClientToken,
-		Billing: api.Billing{
-			PaymentTiming: api.PaymentTimingPostPaid,
-			Reservation: api.Reservation{
+		Billing: Billing{
+			PaymentTiming: PaymentTimingPostPaid,
+			Reservation: Reservation{
 				Length:   1,
 				TimeUnit: "Month",
 			},
@@ -121,7 +120,7 @@ func TestCreateInstance(t *testing.T) {
 }
 
 func TestListInstances(t *testing.T) {
-	listArgs := &api.ListInstancesArgs{
+	listArgs := &ListInstancesArgs{
 		MaxKeys: 100,
 	}
 	res, err := BBC_CLIENT.ListInstances(listArgs)
@@ -151,7 +150,7 @@ func TestRebootInstance(t *testing.T) {
 }
 
 func TestModifyInstanceName(t *testing.T) {
-	modifyInstanceNameArgs := &api.ModifyInstanceNameArgs{
+	modifyInstanceNameArgs := &ModifyInstanceNameArgs{
 		Name: "new_bbc_name",
 	}
 	err := BBC_CLIENT.ModifyInstanceName(BBC_TestBbcId, modifyInstanceNameArgs)
@@ -159,7 +158,7 @@ func TestModifyInstanceName(t *testing.T) {
 }
 
 func TestModifyInstanceDesc(t *testing.T) {
-	modifyInstanceDescArgs := &api.ModifyInstanceDescArgs{
+	modifyInstanceDescArgs := &ModifyInstanceDescArgs{
 		Description: "new_bbc_description",
 	}
 	err := BBC_CLIENT.ModifyInstanceDesc(BBC_TestBbcId, modifyInstanceDescArgs)
@@ -167,7 +166,7 @@ func TestModifyInstanceDesc(t *testing.T) {
 }
 
 func TestRebuildInstance(t *testing.T) {
-	rebuildArgs := &api.RebuildInstanceArgs{
+	rebuildArgs := &RebuildInstanceArgs{
 		ImageId:        BBC_TestImageId,
 		AdminPass:      BBC_TestAdminPass,
 		IsPreserveData: true,
@@ -184,7 +183,7 @@ func TestReleaseInstance(t *testing.T) {
 }
 
 func TestModifyInstancePassword(t *testing.T) {
-	modifyInstancePasswordArgs := &api.ModifyInstancePasswordArgs{
+	modifyInstancePasswordArgs := &ModifyInstancePasswordArgs{
 		AdminPass: BBC_TestAdminPass,
 	}
 	err := BBC_CLIENT.ModifyInstancePassword(BBC_TestBbcId, modifyInstancePasswordArgs)
@@ -192,7 +191,7 @@ func TestModifyInstancePassword(t *testing.T) {
 }
 
 func TestGetVpcSubnet(t *testing.T) {
-	getVpcSubnetArgs := &api.GetVpcSubnetArgs{
+	getVpcSubnetArgs := &GetVpcSubnetArgs{
 		BbcIds: []string{BBC_TestBbcId},
 	}
 	result, err := BBC_CLIENT.GetVpcSubnet(getVpcSubnetArgs)
@@ -201,7 +200,7 @@ func TestGetVpcSubnet(t *testing.T) {
 }
 
 func TestUnbindTags(t *testing.T) {
-	unbindTagsArgs := &api.UnbindTagsArgs{
+	unbindTagsArgs := &UnbindTagsArgs{
 		ChangeTags: []model.TagModel{
 			{
 				TagKey:   "BCC",
@@ -236,7 +235,7 @@ func TestGetFlavorRaid(t *testing.T) {
 func TestCreateImageFromInstanceId(t *testing.T) {
 	testInstanceId := BBC_TestBbcId
 	testImageName := "testCreateImage"
-	queryArgs := &api.CreateImageArgs{
+	queryArgs := &CreateImageArgs{
 		ImageName:  testImageName,
 		InstanceId: testInstanceId,
 	}
@@ -246,7 +245,7 @@ func TestCreateImageFromInstanceId(t *testing.T) {
 }
 
 func TestListImage(t *testing.T) {
-	queryArgs := &api.ListImageArgs{}
+	queryArgs := &ListImageArgs{}
 	rep, err := BBC_CLIENT.ListImage(queryArgs)
 	fmt.Println(rep)
 	ExpectEqual(t.Errorf, err, nil)
@@ -255,7 +254,7 @@ func TestListImage(t *testing.T) {
 func TestGetImageDetail(t *testing.T) {
 	testImageId := BBC_TestImageId
 	rep, err := BBC_CLIENT.GetImageDetail(testImageId)
-	fmt.Println(rep.Image)
+	fmt.Println(rep)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -266,7 +265,7 @@ func TestDeleteImage(t *testing.T) {
 }
 
 func TestGetOperationLog(t *testing.T) {
-	queryArgs := &api.GetOperationLogArgs{}
+	queryArgs := &GetOperationLogArgs{}
 	rep, err := BBC_CLIENT.GetOperationLog(queryArgs)
 	fmt.Println(rep)
 	ExpectEqual(t.Errorf, err, nil)
@@ -277,7 +276,7 @@ func TestCreateDeploySet(t *testing.T) {
 	testDeployDesc := "testDesc"
 	testConcurrency := 1
 	testStrategy := "tor_ha"
-	queryArgs := &api.CreateDeploySetArgs{
+	queryArgs := &CreateDeploySetArgs{
 		Strategy:    testStrategy,
 		Concurrency: testConcurrency,
 		Name:        testDeploySetName,
