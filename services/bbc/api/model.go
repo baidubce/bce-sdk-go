@@ -74,25 +74,25 @@ type CreateInstanceArgs struct {
 
 type Billing struct {
 	PaymentTiming PaymentTimingType `json:"paymentTiming,omitempty"`
-	Reservation   *Reservation      `json:"reservation,omitempty"`
+	Reservation   Reservation       `json:"reservation,omitempty"`
 }
 
 type Reservation struct {
-	ReservationLength   int    `json:"reservationLength"`
-	ReservationTimeUnit string `json:"reservationTimeUnit"`
+	Length   int    `json:"reservationLength"`
+	TimeUnit string `json:"reservationTimeUnit"`
 }
 
 type CreateInstanceResult struct {
 	InstanceIds []string `json:"instanceIds"`
 }
 
-type ListInstanceArgs struct {
+type ListInstancesArgs struct {
 	Marker     string
 	MaxKeys    int
 	InternalIp string
 }
 
-type ListInstanceResult struct {
+type ListInstancesResult struct {
 	Marker      string          `json:"marker"`
 	IsTruncated bool            `json:"isTruncated"`
 	NextMarker  string          `json:"nextMarker"`
@@ -108,8 +108,8 @@ type InstanceModel struct {
 	PaymentTiming         string           `json:"paymentTiming"`
 	CreateTime            string           `json:"createTime"`
 	ExpireTime            string           `json:"expireTime"`
-	PublicIP              string           `json:"publicIp"`
-	InternalIP            string           `json:"internalIp"`
+	PublicIp              string           `json:"publicIp"`
+	InternalIp            string           `json:"internalIp"`
 	ImageId               string           `json:"imageId"`
 	FlavorId              string           `json:"flavorId"`
 	Zone                  string           `json:"zone"`

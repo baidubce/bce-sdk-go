@@ -102,7 +102,7 @@ func (c *Client) CreateInstance(args *api.CreateInstanceArgs) (*api.CreateInstan
 // RETURNS:
 //     - *api.ListInstanceResult: the result of list Instance
 //     - error: nil if success otherwise the specific error
-func (c *Client) ListInstances(args *api.ListInstanceArgs) (*api.ListInstanceResult, error) {
+func (c *Client) ListInstances(args *api.ListInstancesArgs) (*api.ListInstancesResult, error) {
 	return api.ListInstances(c, args)
 }
 
@@ -248,14 +248,14 @@ func (c *Client) RebuildInstance(instanceId string, isPreserveData bool, args *a
 	return api.RebuildInstance(c, instanceId, body)
 }
 
-// ReleaseInstance - release an instance
+// DeleteInstance - delete an instance
 //
 // PARAMS:
 //     - instanceId: the specific instance ID
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) ReleaseInstance(instanceId string) error {
-	return api.ReleaseInstance(c, instanceId)
+func (c *Client) DeleteInstance(instanceId string) error {
+	return api.DeleteInstance(c, instanceId)
 }
 
 // ModifyInstancePassword - modify an instance's password
