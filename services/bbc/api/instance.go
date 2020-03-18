@@ -69,7 +69,7 @@ func CreateInstance(cli bce.Client, clientToken string, reqBody *bce.Body) (*Cre
 // RETURNS:
 //     - *ListInstanceResult: results of list bbc instances
 //     - error: nil if success otherwise the specific error
-func ListInstances(cli bce.Client, args *ListInstanceArgs) (*ListInstanceResult, error) {
+func ListInstances(cli bce.Client, args *ListInstancesArgs) (*ListInstancesResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getInstanceUri())
@@ -100,7 +100,7 @@ func ListInstances(cli bce.Client, args *ListInstanceArgs) (*ListInstanceResult,
 		return nil, resp.ServiceError()
 	}
 
-	jsonBody := &ListInstanceResult{}
+	jsonBody := &ListInstancesResult{}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
@@ -312,14 +312,14 @@ func RebuildInstance(cli bce.Client, instanceId string, reqBody *bce.Body) error
 	return nil
 }
 
-// ReleaseInstance - release a bbc instance
+// DeleteInstance - delete a bbc instance
 //
 // PARAMS:
 //     - cli: the client agent which can perform sending request
 //     - instanceId: the id of the instance
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func ReleaseInstance(cli bce.Client, instanceId string) error {
+func DeleteInstance(cli bce.Client, instanceId string) error {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getInstanceUriWithIdV2(instanceId))

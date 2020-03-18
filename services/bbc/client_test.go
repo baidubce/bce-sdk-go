@@ -105,9 +105,9 @@ func TestCreateInstance(t *testing.T) {
 		ClientToken:      BBC_TestClientToken,
 		Billing: api.Billing{
 			PaymentTiming: api.PaymentTimingPostPaid,
-			Reservation: &api.Reservation{
-				ReservationLength:   1,
-				ReservationTimeUnit: "Month",
+			Reservation: api.Reservation{
+				Length:   1,
+				TimeUnit: "Month",
 			},
 		},
 		SecurityGroupId: BBC_TestSecurityGroupId,
@@ -121,7 +121,7 @@ func TestCreateInstance(t *testing.T) {
 }
 
 func TestListInstances(t *testing.T) {
-	listArgs := &api.ListInstanceArgs{
+	listArgs := &api.ListInstancesArgs{
 		MaxKeys: 100,
 	}
 	res, err := BBC_CLIENT.ListInstances(listArgs)
@@ -179,7 +179,7 @@ func TestRebuildInstance(t *testing.T) {
 }
 
 func TestReleaseInstance(t *testing.T) {
-	err := BBC_CLIENT.ReleaseInstance(BBC_TestBbcId)
+	err := BBC_CLIENT.DeleteInstance(BBC_TestBbcId)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
