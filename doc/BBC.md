@@ -138,7 +138,7 @@ ExpireSeconds | int   | 签名字符串的有效期
 
 使用以下代码可以创建一个物理机实例：
 ```go
-createInstanceArgs := &api.CreateInstanceArgs{
+createInstanceArgs := &CreateInstanceArgs{
     // 输入你选择的flavor（套餐）ID，通过SDK获取可用flavor id的方法详见套餐章节
     FlavorId:         "your-choose-flavor-id",
     // 输入你要创建instance使用的镜像ID，通过SDK获取可用镜像ID的方法详见镜像章节
@@ -158,11 +158,11 @@ createInstanceArgs := &api.CreateInstanceArgs{
     // 使用 uuid 生成一个长度不超过64位的ASCII字符串
     ClientToken:      "random-uuid",
     // 选择付费方式
-    Billing: api.Billing{
-        PaymentTiming: api.PaymentTimingPostPaid,
-        Reservation: &api.Reservation{
-            ReservationLength: 1,
-            ReservationTimeUnit: "Month",
+    Billing: Billing{
+        PaymentTiming: PaymentTimingPostPaid,
+        Reservation: Reservation{
+            Length: 1,
+            TimeUnit: "Month",
         },
     },
     // 指定使用的部署集id，可选参数，通过SDK获取可用部署集id的方法详见部署集章节
@@ -181,13 +181,13 @@ if res, err := bbcClient.CreateInstance(createInstanceArgs); err != nil {
 
 > **注意：**
 >付费方式(PaymentTiming)可选：
->- 后付费: api.PaymentTimingPostPaid
->- 预付费: api.PaymentTimingPrePaid
+>- 后付费: PaymentTimingPostPaid
+>- 预付费: PaymentTimingPrePaid
 
 ### 查询实例列表
 使用以下代码查询所有BBC实例的列表及详情信息：
 ```go
-listArgs := &api.ListInstanceArgs{
+listArgs := &ListInstancesArgs{
     // 批量获取列表的查询起始位置，是一个由系统产生的字符串
     Marker: "your-marker",
     // 设置返回数据大小，缺省为1000
@@ -256,7 +256,7 @@ if err := bbcClient.RebootInstance(instanceId, forceStop); err != nil {
 ### 修改实例名称
 使用以下代码可以修改指定BBC实例的名称：
 ```go
-modifyInstanceNameArgs := &api.ModifyInstanceNameArgs{
+modifyInstanceNameArgs := &ModifyInstanceNameArgs{
     Name: "new_bbc_name",
 }
 // 设置你要操作的instanceId
@@ -271,7 +271,7 @@ if err := bbcClient.ModifyInstanceName(instanceId, modifyInstanceNameArgs); err 
 ### 修改实例描述
 使用以下代码可以修改指定BBC实例的描述：
 ```go
-modifyInstanceDescArgs := &api.ModifyInstanceDescArgs{
+modifyInstanceDescArgs := &ModifyInstanceDescArgs{
     Description: "new_bbc_description",
 }
 // 设置你要操作的instanceId
@@ -286,7 +286,7 @@ if err := bbcClient.ModifyInstanceDesc(instanceId, modifyInstanceDescArgs); err 
 ### 重装实例
 使用以下代码可以使用镜像重建指定BBC实例:
 ```go
-rebuildArgs := &api.RebuildInstanceArgs{
+rebuildArgs := &RebuildInstanceArgs{
     // 设置使用的镜像id
     ImageId:        "your-choose-image-id",
     // 设置管理员密码
@@ -318,7 +318,7 @@ if err := bbcClient.RebuildInstance(instanceId, isPreserveData, rebuildArgs); er
 ```go
 // 设置你要操作的instanceId
 instanceId := "your-choose-instance-id"
-if err := bbcClient.ReleaseInstance(instanceId); err != nil {
+if err := bbcClient.DeleteInstance(instanceId); err != nil {
     fmt.Println("release instance failed: ", err)
 } else {
     fmt.Println("release instance success.")
@@ -328,7 +328,7 @@ if err := bbcClient.ReleaseInstance(instanceId); err != nil {
 ### 修改实例密码
 使用以下代码可以修改指定BBC实例的管理员密码：
 ```go
-modifyInstancePasswordArgs := &api.ModifyInstancePasswordArgs{
+modifyInstancePasswordArgs := &ModifyInstancePasswordArgs{
     AdminPass: "your_new_password",
 }
 // 设置你要操作的instanceId
@@ -349,7 +349,7 @@ if err := bbcClient.ModifyInstancePassword(instanceId, modifyInstancePasswordArg
 ```go
 // 设置你要操作的instanceId
 instanceId := "your-choose-instance-id"
-getVpcSubnetArgs := &api.GetVpcSubnetArgs{
+getVpcSubnetArgs := &GetVpcSubnetArgs{
     BbcIds: []string{instanceId},
 }
 if res, err := bbcClient.GetVpcSubnet(getVpcSubnetArgs); err != nil {
@@ -359,11 +359,41 @@ if res, err := bbcClient.GetVpcSubnet(getVpcSubnetArgs); err != nil {
 }
 ```
 
+### 向指定实例批量添加指定ip
+```go
+privateIps := []string{"192.168.1.25"}
+instanceId := "your-choose-instance-id"
+batchAddIpArgs := &BatchAddIpArgs{
+	InstanceId: instanceId,
+	PrivateIps: privateIps,
+}
+if err := bbcClient.BatchAddIP(batchAddIpArgs); err != nil {
+    fmt.Println("add ips failed: ", err)
+} else {
+    fmt.Println("add ips success.")
+}
+```
+
+### 批量删除指定实例的ip
+```go
+privateIps := []string{"192.168.1.25"}
+instanceId := "your-choose-instance-id"
+batchDelIpArgs := &BatchDelIpArgs{
+	InstanceId: instanceId,
+	PrivateIps: privateIps,
+}
+if err := bbcClient.BatchDelIP(batchDelIpArgs); err != nil {
+    fmt.Println("delete ips failed: ", err)
+} else {
+    fmt.Println("delete ips success.")
+}
+```
+
 ## 标签
 ### 实例解绑标签
 通过以下代码解绑实例已有的标签
 ```go
-unbindTagsArgs := &api.UnbindTagsArgs{
+unbindTagsArgs := &UnbindTagsArgs{
     // 设置您要解绑的标签
     ChangeTags: []model.TagModel{
         {
@@ -427,7 +457,7 @@ if res, err := bbcClient.GetFlavorRaid(testFlavorId); err != nil {
 instanceId := "i-3EavdPl8"
 // 设置创建镜像的名称
 imageName := "testCreateImage"
-queryArgs := &api.CreateImageArgs{
+queryArgs := &CreateImageArgs{
     ImageName:  testImageName,
     InstanceId: testInstanceId,
 }
@@ -454,7 +484,7 @@ imageType := "All"
 marker := "your-marker"
 // 每页包含的最大数量
 maxKeys := 100
-queryArgs := &api.ListImageArgs{
+queryArgs := &ListImageArgs{
     Marker:    marker, 
     MaxKeys:   maxKeys,
     ImageType: imageType,
@@ -503,7 +533,7 @@ maxKeys := 100
 startTime := ""
 // 需查询物理机操作的终止时间（UTC时间），格式 yyyy-MM-dd'T'HH:mm:ss'Z' ，为空则查询当日操作日志
 endTime := ""
-queryArgs := &api.GetOperationLogArgs{
+queryArgs := &GetOperationLogArgs{
     Marker:    marker,
     MaxKeys:   maxKeys,
     StartTime: startTime,
@@ -528,7 +558,7 @@ deployDesc := "your-deploy-set-desc"
 concurrency := 1
 // 设置创建部署集的策略，BBC实例策略只支持："tor_ha"
 strategy := "tor_ha"
-queryArgs := &api.CreateDeploySetArgs{
+queryArgs := &CreateDeploySetArgs{
     Strategy:    strategy,
     Concurrency: concurrency,
     Name:        deploySetName,
