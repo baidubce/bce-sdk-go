@@ -31,6 +31,8 @@ const (
 	REQUEST_SUBNET_URI   = "/vpcSubnet"
 
 	REQUEST_IMAGE_URI = "/image"
+	REQUEST_BATCHADDIP_URI = "/batchAddIp"
+	REQUEST_BATCHDELIP_URI = "/batchDelIp"
 
 	REQUEST_FLAVOR_URI      = "/flavor"
 	REQUEST_FLAVOR_RAID_URI = "/flavorRaid"

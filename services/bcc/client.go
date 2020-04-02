@@ -412,6 +412,42 @@ func (c *Client) InstanceChangeSubnet(args *api.InstanceChangeSubnetArgs) error 
 	return api.InstanceChangeSubnet(c, body)
 }
 
+// BatchAddIP - Add ips to instance
+//
+// PARAMS:
+//      - args: the arguments to add ips to bbc instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchAddIP(args *api.BatchAddIpArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return api.BatchAddIp(c, body)
+}
+
+// BatchDelIP - Delete ips of instance
+//
+// PARAMS:
+//      - args: the arguments to add ips to bbc instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchDelIP(args *api.BatchDelIpArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return api.BatchDelIp(c, body)
+}
+
 //cds sdk
 // CreateCDSVolume - create a CDS volume
 //

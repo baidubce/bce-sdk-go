@@ -19,7 +19,6 @@ package bbc
 
 import (
 	"encoding/json"
-
 	"github.com/baidubce/bce-sdk-go/auth"
 	"github.com/baidubce/bce-sdk-go/bce"
 )
@@ -301,6 +300,42 @@ func (c *Client) GetVpcSubnet(args *GetVpcSubnetArgs) (*GetVpcSubnetResult, erro
 		return nil, err
 	}
 	return GetVpcSubnet(c, body)
+}
+
+// BatchAddIP - Add ips to instance
+//
+// PARAMS:
+//      - args: the arguments to add ips to bbc instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchAddIP(args *BatchAddIpArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return BatchAddIp(c, body)
+}
+
+// BatchDelIP - Delete ips of instance
+//
+// PARAMS:
+//      - args: the arguments to add ips to bbc instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchDelIP(args *BatchDelIpArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return BatchDelIp(c, body)
 }
 
 // UnbindTags - unbind an instance tags
