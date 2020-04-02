@@ -613,6 +613,38 @@ if err != nil {
 > - 变更子网后默认自动重启，用户选择是否执行该操作。
 > - 变更子网的范围目前仅支持在同AZ下变更子网，不支持跨AZ或跨VPC变更子网，如果从普通子网变更至NAT专属子网请先手动解绑EIP。
 
+### 向指定实例批量添加指定ip
+
+```go
+privateIps := []string{"192.168.1.25"}
+instanceId := "your-choose-instance-id"
+batchAddIpArgs := &api.BatchAddIpArgs{
+	InstanceId: instanceId,
+	PrivateIps: privateIps,
+}
+if err := client.BatchAddIP(batchAddIpArgs); err != nil {
+    fmt.Println("add ips failed: ", err)
+} else {
+    fmt.Println("add ips success.")
+}
+```
+
+### 批量删除指定实例的ip
+
+```go
+privateIps := []string{"192.168.1.25"}
+instanceId := "your-choose-instance-id"
+batchDelIpArgs := &api.BatchDelIpArgs{
+	InstanceId: instanceId,
+	PrivateIps: privateIps,
+}
+if err := client.BatchDelIP(batchDelIpArgs); err != nil {
+    fmt.Println("delete ips failed: ", err)
+} else {
+    fmt.Println("delete ips success.")
+}
+```
+
 ## 磁盘管理
 
 ### 创建CDS磁盘

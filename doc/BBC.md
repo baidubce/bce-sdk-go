@@ -359,6 +359,36 @@ if res, err := bbcClient.GetVpcSubnet(getVpcSubnetArgs); err != nil {
 }
 ```
 
+### 向指定实例批量添加指定ip
+```go
+privateIps := []string{"192.168.1.25"}
+instanceId := "your-choose-instance-id"
+batchAddIpArgs := &BatchAddIpArgs{
+	InstanceId: instanceId,
+	PrivateIps: privateIps,
+}
+if err := bbcClient.BatchAddIP(batchAddIpArgs); err != nil {
+    fmt.Println("add ips failed: ", err)
+} else {
+    fmt.Println("add ips success.")
+}
+```
+
+### 批量删除指定实例的ip
+```go
+privateIps := []string{"192.168.1.25"}
+instanceId := "your-choose-instance-id"
+batchDelIpArgs := &BatchDelIpArgs{
+	InstanceId: instanceId,
+	PrivateIps: privateIps,
+}
+if err := bbcClient.BatchDelIP(batchDelIpArgs); err != nil {
+    fmt.Println("delete ips failed: ", err)
+} else {
+    fmt.Println("delete ips success.")
+}
+```
+
 ## 标签
 ### 实例解绑标签
 通过以下代码解绑实例已有的标签

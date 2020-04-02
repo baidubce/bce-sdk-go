@@ -58,7 +58,7 @@ func init() {
 	BBC_TestName = "sdkTest"
 	BBC_TestAdminPass = "123@adminPass"
 	BBC_TestDeploySetId = "deployset-id"
-	BBC_TestBbcId = "bbc-id"
+	BBC_TestBbcId = "bbc_id"
 	BBC_TestSecurityGroupId = "bbc-security-group-id"
 	BBC_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
@@ -196,6 +196,26 @@ func TestGetVpcSubnet(t *testing.T) {
 	}
 	result, err := BBC_CLIENT.GetVpcSubnet(getVpcSubnetArgs)
 	fmt.Println(result)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBatchAddIp(t *testing.T)  {
+	privateIps := []string{"192.168.1.25"}
+	batchAddIpArgs := &BatchAddIpArgs{
+		InstanceId: BBC_TestBbcId,
+		PrivateIps: privateIps,
+	}
+	err := BBC_CLIENT.BatchAddIP(batchAddIpArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBatchDelIp(t *testing.T)  {
+	privateIps := []string{"192.168.1.25"}
+	batchDelIpArgs := &BatchDelIpArgs{
+		InstanceId: BBC_TestBbcId,
+		PrivateIps: privateIps,
+	}
+	err := BBC_CLIENT.BatchDelIP(batchDelIpArgs)
 	ExpectEqual(t.Errorf, err, nil)
 }
 

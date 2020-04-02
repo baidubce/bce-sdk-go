@@ -34,6 +34,8 @@ const (
 	REQUEST_IMAGE_URI            = "/image"
 	REQUEST_IMAGE_SHAREDUSER_URI = "/sharedUsers"
 	REQUEST_IMAGE_OS_URI         = "/os"
+	REQUEST_BATCHADDIP_URI = "/batchAddIp"
+	REQUEST_BATCHDELIP_URI = "/batchDelIp"
 
 	REQUEST_SNAPSHOT_URI = "/snapshot"
 	REQUEST_ASP_URI      = "/asp"
@@ -49,6 +51,14 @@ func getInstanceUri() string {
 
 func getInstanceUriWithId(id string) string {
 	return URI_PREFIX + REQUEST_INSTANCE_URI + "/" + id
+}
+
+func getBatchAddIpUri() string {
+	return URI_PREFIX + REQUEST_INSTANCE_URI + REQUEST_BATCHADDIP_URI
+}
+
+func getBatchDelIpUri() string {
+	return URI_PREFIX + REQUEST_INSTANCE_URI + REQUEST_BATCHDELIP_URI
 }
 
 func getInstanceVNCUri(id string) string {
