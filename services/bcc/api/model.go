@@ -225,6 +225,16 @@ type InstanceChangeSubnetArgs struct {
 	Reboot     bool   `json:"reboot"`
 }
 
+type BatchAddIpArgs struct {
+	InstanceId string   `json:"instanceId"`
+	PrivateIps []string `json:"privateIps"`
+}
+
+type BatchDelIpArgs struct {
+	InstanceId string   `json:"instanceId"`
+	PrivateIps []string `json:"privateIps"`
+}
+
 type VolumeStatus string
 
 const (

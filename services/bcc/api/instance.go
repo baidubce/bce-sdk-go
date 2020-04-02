@@ -579,3 +579,58 @@ func InstanceChangeSubnet(cli bce.Client, reqBody *bce.Body) error {
 	defer func() { resp.Body().Close() }()
 	return nil
 }
+
+// BatchAddIp - Add ips to instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func BatchAddIp(cli bce.Client, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getBatchAddIpUri())
+	req.SetMethod(http.PUT)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// BatchDelIp - Delete ips of instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func BatchDelIp(cli bce.Client, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getBatchDelIpUri())
+	req.SetMethod(http.PUT)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+

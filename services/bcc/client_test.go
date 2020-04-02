@@ -203,6 +203,26 @@ func TestGetInstanceVNC(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestBatchAddIp(t *testing.T)  {
+	privateIps := []string{"192.168.16.17"}
+	batchAddIpArgs := &api.BatchAddIpArgs{
+		InstanceId: BCC_TestBccId,
+		PrivateIps: privateIps,
+	}
+	err := BCC_CLIENT.BatchAddIP(batchAddIpArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBatchDelIp(t *testing.T)  {
+	privateIps := []string{"192.168.16.17"}
+	batchDelIpArgs := &api.BatchDelIpArgs{
+		InstanceId: BCC_TestBccId,
+		PrivateIps: privateIps,
+	}
+	err := BCC_CLIENT.BatchDelIP(batchDelIpArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestBindSecurityGroup(t *testing.T) {
 	err := BCC_CLIENT.BindSecurityGroup(BCC_TestBccId, BCC_TestSecurityGroupId)
 	ExpectEqual(t.Errorf, err, nil)

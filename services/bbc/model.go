@@ -173,6 +173,16 @@ type ModifyInstancePasswordArgs struct {
 	AdminPass string `json:"adminPass"`
 }
 
+type BatchAddIpArgs struct {
+	InstanceId string   `json:"instanceId"`
+	PrivateIps []string `json:"privateIps"`
+}
+
+type BatchDelIpArgs struct {
+	InstanceId string   `json:"instanceId"`
+	PrivateIps []string `json:"privateIps"`
+}
+
 type UnbindTagsArgs struct {
 	ChangeTags []model.TagModel `json:"changeTags"`
 }
