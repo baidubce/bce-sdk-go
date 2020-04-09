@@ -31,11 +31,13 @@ type Billing struct {
 }
 
 type CreateEipArgs struct {
-	Name            string           `json:"name,omitempty"`
-	BandWidthInMbps int              `json:"bandwidthInMbps"`
-	Billing         *Billing         `json:"billing"`
-	Tags            []model.TagModel `json:"tags"`
-	ClientToken     string           `json:"-"`
+	Name              string           `json:"name,omitempty"`
+	BandWidthInMbps   int              `json:"bandwidthInMbps"`
+	Billing           *Billing         `json:"billing"`
+	Tags              []model.TagModel `json:"tags"`
+	AutoRenewTimeUnit string           `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime     int              `json:"autoRenewTime,omitempty"`
+	ClientToken       string           `json:"-"`
 }
 
 type CreateEipResult struct {
@@ -89,4 +91,10 @@ type EipModel struct {
 type PurchaseReservedEipArgs struct {
 	Billing     *Billing `json:"billing"`
 	ClientToken string   `json:"clientToken"`
+}
+
+type StartAutoRenewArgs struct {
+	AutoRenewTimeUnit string `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime     int    `json:"autoRenewTime,omitempty"`
+	ClientToken       string `json:"-"`
 }
