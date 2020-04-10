@@ -183,3 +183,40 @@ func (c *Client) PurchaseReservedEip(eip string, args *PurchaseReservedEipArgs) 
 		WithBody(args).
 		Do()
 }
+
+// StartAutoRenew - start auto renew an eip
+//
+// PARAMS:
+//     - eip: the specific EIP
+//     - args: the arguments to start auto renew an eip
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) StartAutoRenew(eip string, args *StartAutoRenewArgs) error {
+	if args == nil {
+		return fmt.Errorf("please set eip auto renew argments")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getEipUriWithEip(eip)).
+		WithQueryParam("startAutoRenew", "").
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithBody(args).
+		Do()
+}
+
+// StopAutoRenew - stop eip auto renew
+//
+// PARAMS:
+//     - eip: the specific EIP
+//     - clientToken: optional parameter, an Idempotent Token
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) StopAutoRenew(eip string, clientToken string) error {
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getEipUriWithEip(eip)).
+		WithQueryParam("stopAutoRenew", "").
+		WithQueryParamFilter("clientToken", clientToken).
+		Do()
+}

@@ -256,6 +256,9 @@ args := &eip.CreateEipArgs{
         PaymentTiming: "Postpaid",
         BillingMethod: "ByTraffic",
     },
+    // 预付费资源可以设置是否自动续费
+    AutoRenewTimeUnit: "month",
+    AutoRenewTime: 1,
     // 指定eip的标签键值对列表
     Tags: []model.TagModel{
         {
@@ -446,7 +449,41 @@ fmt.Printf("renew eip success.")
 ```
 
 > 注意: EIP扩缩容期间不能进行续费操作。
-      
+
+## EIP自动续费
+使用以下代码可以为指定的EIP开启自动续费操作
+ ```go
+// import "github.com/baidubce/bce-sdk-go/services/eip"
+
+args := &eip.StartAutoRenewArgs{
+	// 预付费资源可以设置是否自动续费
+   AutoRenewTimeUnit: "month",
+   AutoRenewTime: 1,
+}
+if err := client.StartAutoRenew(eip, args); err != nil {
+    fmt.Printf("start auto renew eip error: %+v\n", err)
+    return
+}
+
+fmt.Printf("start auto renew eip success.")
+```
+ 
+> 注意:
+> - 仅预付费资源可以开通自动续费操作。
+> - 设置续费单位若AutoRenewTimeUnit可以为"month"和"year"。
+> - 若AutoRenewTimeUnit设置为month，AutoRenewTime支持1-9；若AutoRenewTimeUnit设置为year，AutoRenewTime支持1-3
+
+## EIP停止自动续费
+使用以下代码可以为指定的EIP停止自动续费操作
+ ```go
+ // import "github.com/baidubce/bce-sdk-go/services/eip"
+ if err := client.StopAutoRenew(eip, ""); err != nil {
+     fmt.Printf("stop auto renew eip error: %+v\n", err)
+     return
+ }
+ 
+ fmt.Printf("stop auto renew eip success.")
+ ```
 
 # 错误处理
 
