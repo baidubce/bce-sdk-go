@@ -18,6 +18,8 @@ package api
 
 import (
 	"bytes"
+	net_http "net/http"
+	"strings"
 
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
@@ -52,6 +54,10 @@ const (
 	RESTORE_TIER_EXPEDITED = "Expedited" //快速取回对象
 )
 
+var DEFAULT_CNAME_LIKE_LIST = []string{
+	".cdn.bcebos.com",
+}
+
 var VALID_STORAGE_CLASS_TYPE = map[string]int{
 	STORAGE_CLASS_STANDARD:    0,
 	STORAGE_CLASS_STANDARD_IA: 1,
@@ -81,6 +87,18 @@ func getBucketUri(bucketName string) string {
 
 func getObjectUri(bucketName, objectName string) string {
 	return bce.URI_PREFIX + bucketName + "/" + objectName
+}
+
+func getCnameUri(uri string) string {
+	if len(uri) <= 0 {
+		return uri
+	}
+	slash_index := strings.Index(uri[1:], "/")
+	if slash_index == -1 {
+		return bce.URI_PREFIX
+	} else {
+		return uri[slash_index+1:]
+	}
 }
 
 func validMetadataDirective(val string) bool {
@@ -190,4 +208,52 @@ func setUserMetadata(req *bce.BceRequest, meta map[string]string) error {
 		req.SetHeader(http.BCE_USER_METADATA_PREFIX+k, v)
 	}
 	return nil
+}
+
+func isCnameLikeHost(host string) bool {
+	for _, suffix := range DEFAULT_CNAME_LIKE_LIST {
+		if strings.HasSuffix(strings.ToLower(host), suffix) {
+			return true
+		}
+	}
+	return false
+}
+
+func SendRequest(cli bce.Client, req *bce.BceRequest, resp *bce.BceResponse) error {
+	var (
+		err        error
+		need_retry bool
+	)
+
+	req.SetEndpoint(cli.GetBceClientConfig().Endpoint)
+	origin_uri := req.Uri()
+	// set uri for cname or cdn endpoint
+	if cli.GetBceClientConfig().CnameEnabled || isCnameLikeHost(cli.GetBceClientConfig().Endpoint) {
+		req.SetUri(getCnameUri(origin_uri))
+	}
+
+	if err = cli.SendRequest(req, resp); err != nil {
+		if serviceErr, isServiceErr := err.(*bce.BceServiceError); isServiceErr {
+			if serviceErr.StatusCode == net_http.StatusInternalServerError ||
+				serviceErr.StatusCode == net_http.StatusBadGateway ||
+				serviceErr.StatusCode == net_http.StatusServiceUnavailable ||
+				(serviceErr.StatusCode == net_http.StatusBadRequest && serviceErr.Code == "Http400") {
+				need_retry = true
+			}
+		}
+		if _, isClientErr := err.(*bce.BceClientError); isClientErr {
+			need_retry = true
+		}
+		// retry backup endpoint
+		if need_retry && cli.GetBceClientConfig().BackupEndpoint != "" {
+			req.SetEndpoint(cli.GetBceClientConfig().BackupEndpoint)
+			if cli.GetBceClientConfig().CnameEnabled || isCnameLikeHost(cli.GetBceClientConfig().BackupEndpoint) {
+				req.SetUri(getCnameUri(origin_uri))
+			}
+			if err = cli.SendRequest(req, resp); err != nil {
+				return err
+			}
+		}
+	}
+	return err
 }

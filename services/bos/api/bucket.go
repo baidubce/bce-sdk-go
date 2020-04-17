@@ -36,7 +36,7 @@ func ListBuckets(cli bce.Client) (*ListBucketsResult, error) {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.GET)
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -85,7 +85,7 @@ func ListObjects(cli bce.Client, bucket string,
 
 	// Send the request and get result
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -110,7 +110,7 @@ func HeadBucket(cli bce.Client, bucket string) error {
 	req.SetUri(getBucketUri(bucket))
 	req.SetMethod(http.HEAD)
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -133,7 +133,7 @@ func PutBucket(cli bce.Client, bucket string) (string, error) {
 	req.SetUri(getBucketUri(bucket))
 	req.SetMethod(http.PUT)
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return "", err
 	}
 	if resp.IsFail() {
@@ -155,7 +155,7 @@ func DeleteBucket(cli bce.Client, bucket string) error {
 	req.SetUri(getBucketUri(bucket))
 	req.SetMethod(http.DELETE)
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -179,7 +179,7 @@ func GetBucketLocation(cli bce.Client, bucket string) (string, error) {
 	req.SetMethod(http.GET)
 	req.SetParam("location", "")
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return "", err
 	}
 	if resp.IsFail() {
@@ -220,7 +220,7 @@ func PutBucketAcl(cli bce.Client, bucket, cannedAcl string, aclBody *bce.Body) e
 	}
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -245,7 +245,7 @@ func GetBucketAcl(cli bce.Client, bucket string) (*GetBucketAclResult, error) {
 	req.SetParam("acl", "")
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -273,7 +273,7 @@ func PutBucketLogging(cli bce.Client, bucket string, logging *bce.Body) error {
 	req.SetParam("logging", "")
 	req.SetBody(logging)
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -298,7 +298,7 @@ func GetBucketLogging(cli bce.Client, bucket string) (*GetBucketLoggingResult, e
 	req.SetParam("logging", "")
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -324,7 +324,7 @@ func DeleteBucketLogging(cli bce.Client, bucket string) error {
 	req.SetMethod(http.DELETE)
 	req.SetParam("logging", "")
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -349,7 +349,7 @@ func PutBucketLifecycle(cli bce.Client, bucket string, lifecycle *bce.Body) erro
 	req.SetParam("lifecycle", "")
 	req.SetBody(lifecycle)
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -374,7 +374,7 @@ func GetBucketLifecycle(cli bce.Client, bucket string) (*GetBucketLifecycleResul
 	req.SetParam("lifecycle", "")
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -400,7 +400,7 @@ func DeleteBucketLifecycle(cli bce.Client, bucket string) error {
 	req.SetMethod(http.DELETE)
 	req.SetParam("lifecycle", "")
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -436,7 +436,7 @@ func PutBucketStorageclass(cli bce.Client, bucket, storageClass string) error {
 	req.SetBody(body)
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -461,7 +461,7 @@ func GetBucketStorageclass(cli bce.Client, bucket string) (string, error) {
 	req.SetParam("storageClass", "")
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return "", err
 	}
 	if resp.IsFail() {
@@ -493,7 +493,7 @@ func PutBucketReplication(cli bce.Client, bucket string, replicationConf *bce.Bo
 	}
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -518,7 +518,7 @@ func GetBucketReplication(cli bce.Client, bucket string) (*GetBucketReplicationR
 	req.SetParam("replication", "")
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -544,7 +544,7 @@ func DeleteBucketReplication(cli bce.Client, bucket string) error {
 	req.SetMethod(http.DELETE)
 	req.SetParam("replication", "")
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -570,7 +570,7 @@ func GetBucketReplicationProgress(cli bce.Client, bucket string) (
 	req.SetParam("replicationProgress", "")
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -610,7 +610,7 @@ func PutBucketEncryption(cli bce.Client, bucket, algorithm string) error {
 	req.SetBody(body)
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -635,7 +635,7 @@ func GetBucketEncryption(cli bce.Client, bucket string) (string, error) {
 	req.SetParam("encryption", "")
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return "", err
 	}
 	if resp.IsFail() {
@@ -661,7 +661,7 @@ func DeleteBucketEncryption(cli bce.Client, bucket string) error {
 	req.SetMethod(http.DELETE)
 	req.SetParam("encryption", "")
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -690,7 +690,7 @@ func PutBucketStaticWebsite(cli bce.Client, bucket string, confBody *bce.Body) e
 	}
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -716,7 +716,7 @@ func GetBucketStaticWebsite(cli bce.Client, bucket string) (
 	req.SetParam("website", "")
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -742,7 +742,7 @@ func DeleteBucketStaticWebsite(cli bce.Client, bucket string) error {
 	req.SetMethod(http.DELETE)
 	req.SetParam("website", "")
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -771,7 +771,7 @@ func PutBucketCors(cli bce.Client, bucket string, confBody *bce.Body) error {
 	}
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -797,7 +797,7 @@ func GetBucketCors(cli bce.Client, bucket string) (
 	req.SetParam("cors", "")
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -823,7 +823,7 @@ func DeleteBucketCors(cli bce.Client, bucket string) error {
 	req.SetMethod(http.DELETE)
 	req.SetParam("cors", "")
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -862,7 +862,7 @@ func PutBucketCopyrightProtection(cli bce.Client, bucket string, resources ...st
 	req.SetBody(body)
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -887,7 +887,7 @@ func GetBucketCopyrightProtection(cli bce.Client, bucket string) ([]string, erro
 	req.SetParam("copyrightProtection", "")
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -913,7 +913,7 @@ func DeleteBucketCopyrightProtection(cli bce.Client, bucket string) error {
 	req.SetMethod(http.DELETE)
 	req.SetParam("copyrightProtection", "")
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -943,7 +943,7 @@ func PutBucketTrash(cli bce.Client, bucket string, trashReq PutBucketTrashReq) e
 	}
 	req.SetBody(body)
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -959,7 +959,7 @@ func GetBucketTrash(cli bce.Client, bucket string) (*GetBucketTrashResult, error
 	req.SetMethod(http.GET)
 	req.SetParam("trash", "")
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -978,7 +978,7 @@ func DeleteBucketTrash(cli bce.Client, bucket string) error {
 	req.SetMethod(http.DELETE)
 	req.SetParam("trash", "")
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -1000,7 +1000,7 @@ func PutBucketNotification(cli bce.Client, bucket string, putBucketNotificationR
 	}
 	req.SetBody(body)
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -1016,7 +1016,7 @@ func GetBucketNotification(cli bce.Client, bucket string) (*PutBucketNotificatio
 	req.SetMethod(http.GET)
 	req.SetParam("notification", "")
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -1035,7 +1035,7 @@ func DeleteBucketNotification(cli bce.Client, bucket string) error {
 	req.SetMethod(http.DELETE)
 	req.SetParam("notification", "")
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {

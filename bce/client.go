@@ -54,6 +54,7 @@ import (
 // will define its own client in case of specific extension.
 type Client interface {
 	SendRequest(*BceRequest, *BceResponse) error
+	GetBceClientConfig() *BceClientConfiguration
 }
 
 // BceClient defines the general client to access the BCE services.
@@ -71,7 +72,9 @@ func (c *BceClient) buildHttpRequest(request *BceRequest) {
 	request.BuildHttpRequest()
 
 	// Set the client specific configurations
-	request.SetEndpoint(c.Config.Endpoint)
+	if request.Endpoint() == "" {
+		request.SetEndpoint(c.Config.Endpoint)
+	}
 	if request.Protocol() == "" {
 		request.SetProtocol(DEFAULT_PROTOCOL)
 	}
@@ -118,7 +121,7 @@ func (c *BceClient) SendRequest(req *BceRequest, resp *BceResponse) error {
 		// The request body should be temporarily saved if retry to send the http request
 		var retryBuf bytes.Buffer
 		var teeReader io.Reader
-		if req.Body() != nil {
+		if c.Config.Retry.ShouldRetry(nil, 0) && req.Body() != nil {
 			teeReader = io.TeeReader(req.Body(), &retryBuf)
 			req.Request.SetBody(ioutil.NopCloser(teeReader))
 		}
@@ -169,6 +172,10 @@ func (c *BceClient) SendRequest(req *BceRequest, resp *BceResponse) error {
 	}
 }
 
+func (c *BceClient) GetBceClientConfig() *BceClientConfiguration {
+	return c.Config
+}
+
 func NewBceClient(conf *BceClientConfiguration, sign auth.Signer) *BceClient {
 	return &BceClient{conf, sign}
 }
@@ -182,12 +189,12 @@ func NewBceClientWithAkSk(ak, sk, endPoint string) (*BceClient, error) {
 		HeadersToSign: auth.DEFAULT_HEADERS_TO_SIGN,
 		ExpireSeconds: auth.DEFAULT_EXPIRE_SECONDS}
 	defaultConf := &BceClientConfiguration{
-		Endpoint:                  endPoint,
-		Region:                    DEFAULT_REGION,
-		UserAgent:                 DEFAULT_USER_AGENT,
-		Credentials:               credentials,
-		SignOption:                defaultSignOptions,
-		Retry:                     DEFAULT_RETRY_POLICY,
+		Endpoint:    endPoint,
+		Region:      DEFAULT_REGION,
+		UserAgent:   DEFAULT_USER_AGENT,
+		Credentials: credentials,
+		SignOption:  defaultSignOptions,
+		Retry:       DEFAULT_RETRY_POLICY,
 		ConnectionTimeoutInMillis: DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS}
 	v1Signer := &auth.BceV1Signer{}
 

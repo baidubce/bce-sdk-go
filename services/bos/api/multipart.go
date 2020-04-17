@@ -68,7 +68,7 @@ func InitiateMultipartUpload(cli bce.Client, bucket, object, contentType string,
 
 	// Send request and get the result
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -120,7 +120,7 @@ func UploadPart(cli bce.Client, bucket, object, uploadId string, partNumber int,
 
 	// Send request and get the result
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return "", err
 	}
 	if resp.IsFail() {
@@ -168,7 +168,7 @@ func UploadPartCopy(cli bce.Client, bucket, object, source, uploadId string, par
 
 	// Send request and get the result
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -222,7 +222,7 @@ func CompleteMultipartUpload(cli bce.Client, bucket, object, uploadId string,
 
 	// Send request and get the result
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -255,7 +255,7 @@ func AbortMultipartUpload(cli bce.Client, bucket, object, uploadId string) error
 	req.SetParam("uploadId", uploadId)
 
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -297,7 +297,7 @@ func ListParts(cli bce.Client, bucket, object, uploadId string,
 
 	// Send request and get the result
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -344,7 +344,7 @@ func ListMultipartUploads(cli bce.Client, bucket string,
 
 	// Send request and get the result
 	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
+	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
