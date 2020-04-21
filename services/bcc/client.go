@@ -89,6 +89,13 @@ func (c *Client) CreateInstance(args *api.CreateInstanceArgs) (*api.CreateInstan
 	return api.CreateInstance(c, args.ClientToken, body)
 }
 
+// CreateInstanceBySpec - create an instance with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to create instance
+// RETURNS:
+//     - *api.CreateInstanceBySpecResult: the result of create Instance, contains new Instance ID
+//     - error: nil if success otherwise the specific error
 func (c *Client) CreateInstanceBySpec(args *api.CreateInstanceBySpecArgs) (*api.CreateInstanceBySpecResult, error) {
 	if len(args.AdminPass) > 0 {
 		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
