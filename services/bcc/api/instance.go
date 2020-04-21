@@ -133,7 +133,6 @@ func ListInstances(cli bce.Client, args *ListInstanceArgs) (*ListInstanceResult,
 	}
 
 	// Send request and get response
-
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
 		return nil, err

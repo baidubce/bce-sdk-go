@@ -1,6 +1,9 @@
 package bcc
 
 import (
+	"encoding/json"
+	"os"
+	"path/filepath"
 	"reflect"
 	"runtime"
 	"testing"
@@ -27,23 +30,19 @@ type Conf struct {
 }
 
 func init() {
-	//_, f, _, _ := runtime.Caller(0)
-	//for i := 0; i < 7; i++ {
-	//	f = filepath.Dir(f)
-	//}
-	//conf := filepath.Join(f, "config.json")
-	//fp, err := os.Open(conf)
-	//if err != nil {
-	//	log.Fatal("config json file of ak/sk not given:", conf)
-	//	os.Exit(1)
-	//}
-	//decoder := json.NewDecoder(fp)
-	confObj := &Conf{
-		AK: "031def8902d346c6a28719948d11e024",
-		SK: "00fd30dfac894cae92e16eefaf33fbe0",
-		Endpoint: "bcc.bj.baidubce.com",
+	_, f, _, _ := runtime.Caller(0)
+	for i := 0; i < 7; i++ {
+		f = filepath.Dir(f)
 	}
-	//decoder.Decode(confObj)
+	conf := filepath.Join(f, "config.json")
+	fp, err := os.Open(conf)
+	if err != nil {
+		log.Fatal("config json file of ak/sk not given:", conf)
+		os.Exit(1)
+	}
+	decoder := json.NewDecoder(fp)
+	confObj := &Conf{}
+	decoder.Decode(confObj)
 
 	BCC_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
