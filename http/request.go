@@ -51,6 +51,9 @@ func (r *Request) SetProtocol(protocol string) {
 }
 
 func (r *Request) Endpoint() string {
+	if r.host == "" {
+		return ""
+	}
 	return r.protocol + "://" + r.host
 }
 

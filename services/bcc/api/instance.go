@@ -60,6 +60,42 @@ func CreateInstance(cli bce.Client, clientToken string, reqBody *bce.Body) (*Cre
 	return jsonBody, nil
 }
 
+// CreateInstanceBySpec - create an instance with specified spec.
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: the request body to create instance
+// RETURNS:
+//     - *CreateInstanceBySpecResult: result of the instance ids newly created
+//     - error: nil if success otherwise the specific error
+func CreateInstanceBySpec(cli bce.Client, clientToken string, reqBody *bce.Body) (*CreateInstanceBySpecResult, error)  {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getInstanceUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	if clientToken != "" {
+		req.SetParam("clientToken", clientToken)
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &CreateInstanceBySpecResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
 // ListInstances - list all instances with the specified parameters
 //
 // PARAMS:

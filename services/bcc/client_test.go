@@ -101,6 +101,21 @@ func TestCreateInstance(t *testing.T) {
 	BCC_TestBccId = createResult.InstanceIds[0]
 }
 
+func TestCreateInstanceBySpec(t *testing.T) {
+	createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
+		ImageId:               "m-1PyVLtic",
+		Spec:                  "bcc.g2.c2m8",
+		Name:                  "sdkTest2",
+		AdminPass:             "123qaz!@#",
+		ZoneName:              "cn-bj-a",
+		Billing:               api.Billing{
+			PaymentTiming: api.PaymentTimingPostPaid,
+		},
+	}
+	_, err := BCC_CLIENT.CreateInstanceBySpec(createInstanceBySpecArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestCreateSecurityGroup(t *testing.T) {
 	args := &api.CreateSecurityGroupArgs{
 		Name: "testSecurityGroup",
