@@ -89,6 +89,28 @@ func (c *Client) CreateInstance(args *api.CreateInstanceArgs) (*api.CreateInstan
 	return api.CreateInstance(c, args.ClientToken, body)
 }
 
+func (c *Client) CreateInstanceBySpec(args *api.CreateInstanceBySpecArgs) (*api.CreateInstanceBySpecResult, error) {
+	if len(args.AdminPass) > 0 {
+		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
+		if err != nil {
+			return nil, err
+		}
+
+		args.AdminPass = cryptedPass
+	}
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.CreateInstanceBySpec(c, args.ClientToken, body)
+}
+
 // ListInstances - list all instance with the specific parameters
 //
 // PARAMS:
