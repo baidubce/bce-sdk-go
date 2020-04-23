@@ -75,4 +75,5 @@ const (
 	BCE_PROCESS                         = "x-bce-process"
 	BCE_RESTORE_TIER                    = "x-bce-restore-tier"
 	BCE_RESTORE_DAYS                    = "x-bce-restore-days"
+	BCE_RESTORE                         = "x-bce-restore"
 )

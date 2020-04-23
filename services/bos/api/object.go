@@ -369,6 +369,9 @@ func GetObjectMeta(cli bce.Client, bucket, object string) (*GetObjectMetaResult,
 	if val, ok := headers[toHttpHeaderKey(http.BCE_STORAGE_CLASS)]; ok {
 		result.StorageClass = val
 	}
+	if val, ok := headers[toHttpHeaderKey(http.BCE_RESTORE)]; ok {
+		result.BceRestore = val
+	}
 	bcePrefix := toHttpHeaderKey(http.BCE_USER_METADATA_PREFIX)
 	for k, v := range headers {
 		if strings.Index(k, bcePrefix) == 0 {
