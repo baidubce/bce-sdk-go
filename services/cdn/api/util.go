@@ -43,6 +43,7 @@ func httpRequest(cli bce.Client, method string, urlPath string, params map[strin
 	req.SetUri(urlPath)
 	req.SetMethod(method)
 	req.SetParams(params)
+	req.SetEndpoint(cli.GetBceClientConfig().Endpoint)
 
 	if bodyObj != nil {
 		bodyBytes, err := NewBodyFromJsonObj(bodyObj)
