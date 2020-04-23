@@ -153,6 +153,35 @@ type CreateInstanceResult struct {
 	InstanceIds []string `json:"instanceIds"`
 }
 
+type CreateInstanceBySpecArgs struct {
+	ImageId               string           `json:"imageId"`
+	Spec                  string           `json:"spec"`
+	RootDiskSizeInGb      int              `json:"rootDiskSizeInGb,omitempty"`
+	RootDiskStorageType   StorageType      `json:"rootDiskStorageType,omitempty"`
+	EphemeralDisks        []EphemeralDisk  `json:"ephemeralDisks,omitempty"`
+	CreateCdsList         []CreateCdsModel `json:"createCdsList,omitempty"`
+	NetWorkCapacityInMbps int              `json:"networkCapacityInMbps,omitempty"`
+	InternetChargeType    string           `json:"internetChargeType,omitempty"`
+	PurchaseCount         int              `json:"purchaseCount,omitempty"`
+	Name                  string           `json:"name,omitempty"`
+	AdminPass             string           `json:"adminPass,omitempty"`
+	Billing               Billing          `json:"billing"`
+	ZoneName              string           `json:"zoneName,omitempty"`
+	SubnetId              string           `json:"subnetId,omitempty"`
+	SecurityGroupId       string           `json:"securityGroupId,omitempty"`
+	RelationTag           bool             `json:"relationTag,omitempty"`
+	Tags                  []model.TagModel `json:"tags,omitempty"`
+	KeypairId             string           `json:"keypairId"`
+	AutoRenewTimeUnit     string           `json:"autoRenewTimeUnit"`
+	AutoRenewTime         int              `json:"autoRenewTime"`
+	CdsAutoRenew          bool             `json:"cdsAutoRenew"`
+	ClientToken           string           `json:"-"`
+}
+
+type CreateInstanceBySpecResult struct {
+	InstanceIds []string `json:"instanceIds"`
+}
+
 type ListInstanceArgs struct {
 	Marker          string
 	MaxKeys         int

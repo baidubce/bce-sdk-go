@@ -307,6 +307,59 @@ if err != nil {
 > 20. 创建FPGA BCC虚机需要使用指定的(CPU、内存、本地数据盘、FPGA卡类型以及专用镜像), 详细请参考BCC API 文档[FPGA型BCC可选规格配置](https://cloud.baidu.com/doc/BCC/s/6jwvyo0q2#fpga%E5%9E%8Bbcc%E5%8F%AF%E9%80%89%E8%A7%84%E6%A0%BC%E9%85%8D%E7%BD%AE)
 > 21. 创建GPU BCC虚机需要使用指定的(CPU、内存、本地数据盘、GPU卡类型), 详细请参考BCC API 文档[GPU型BCC可选规格配置](https://cloud.baidu.com/doc/BCC/s/6jwvyo0q2#gpu%E5%9E%8Bbcc%E5%8F%AF%E9%80%89%E8%A7%84%E6%A0%BC%E9%85%8D%E7%BD%AE)
 
+### 创建实例（通过指定实例套餐规格）
+使用以下代码可以创建BCC实例，包括普通型BCC、存储优化型BCC、计算优化型BCC、大数据机型BCC、GPU机型BCC、FPGA机型BCC：
+
+```go
+createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
+    // 选择实例创建镜像ID 
+	ImageId:               "m-1PyVLtic",
+    // 选择创建BCC的套餐规格
+	Spec:                  "bcc.g2.c2m8",
+    // 选择40GB磁盘空间 
+    RootDiskSizeInGb:      40,
+    // 选择待创建的实例系统盘介质为HP1 
+    RootDiskStorageType:   api.StorageTypeCloudHP1,
+    // 选择创建100GB大小SSD类型CDS磁盘并挂载到实例上 
+    CreateCdsList: []api.CreateCdsModel{
+		{
+			StorageType: api.StorageTypeSSD,
+			CdsSizeInGB: 100,
+    	},
+    },
+    // 选择付款方式，可以选择预付费或后付费 
+    Billing: api.Billing{
+		PaymentTiming: api.PaymentTimingPostPaid,
+    },
+    Name:                  "sdkTest",
+    AdminPass:             "123qaz!@#",
+
+}
+result, err := client.TestCreateInstanceBySpec(args)
+if err != nil {
+    fmt.Println("create instance failed:", err)
+} else {
+    fmt.Println("create instance success: ", result)
+}
+```
+> **提示：**
+> 1.  创建BCC请求是一个异步请求，返回200表明订单生成，后续可以通过查询返回的实例id信息了解BCC虚机的创建进度。
+> 2.  本接口用于创建一个或多个同配虚拟机实例。
+> 3.  创建实例需要实名认证，没有通过实名认证的可以前往百度开放云官网控制台中的安全认证下的实名认证中进行认证。
+> 4.  创建计费方式为后付费的实例需要账户现金余额+通用代金券大于100；预付费方式的实例则需要账户现金余额大于等于实例费用。
+> 5.  支持批量创建，且如果创建过程中有一个实例创建失败，所有实例将全部回滚，均创建失败，如果创建时包含CDS，CDS也会回滚。
+> 6.  缺省情形下，一个实例最多只能挂载5个云磁盘。
+> 7.  创建CDS磁盘和临时数据盘时，磁盘容量大小限制为5的倍数。
+> 8.  创建实例支持创建和添加临时数据盘，但不支持单独创建或添加临时数据盘。
+> 9.  临时数据盘不支持挂载、卸载、删除。
+> 10. 普通实例的临时数据盘最大不能超过500G。
+> 11. 指定子网和安全组创建，要求子网和安全组必须同时指定或同时不指定，同时指定的子网和安全组必须同属于一个VPC，都不指定会使用默认子网和默认安全组。
+> 12. 指定公网IP带宽创建，计费方式为按照带宽计费。
+> 13. 创建接口为异步创建，可通过查询实例详情接口查询实例状态
+> 14. 每个实例最多只能购买一块临时数据盘。
+> 15. 实例的临时数据盘默认只有hp1类型。
+> 16. 创建存储优化型实例必须购买临时数据盘，通过ephemeralDisks指定临时盘数据盘大小，默认nvme类型数据盘，无需指定。
+
 ### 查询实例列表
 
 以下代码可以查询BCC虚机实例列表,支持通过内网ip、专属服务器id、可用区名称进行筛选
