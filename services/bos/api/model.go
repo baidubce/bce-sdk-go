@@ -290,6 +290,7 @@ type ObjectMeta struct {
 	StorageClass       string
 	NextAppendOffset   string
 	ObjectType         string
+	BceRestore         string
 }
 
 // GetObjectResult defines the result data of the get object api.
