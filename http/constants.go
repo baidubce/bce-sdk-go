@@ -23,6 +23,8 @@ const (
 	POST   = "POST"
 	DELETE = "DELETE"
 	HEAD   = "HEAD"
+	OPTIONS = "OPTIONS"
+	PATCH   = "PATCH"
 )
 
 // Constants of the HTTP headers for BCE

@@ -132,6 +132,10 @@ func (r *Request) SetParams(params map[string]string) {
 	r.params = params
 }
 
+func (r *Request) SetPathParam(key, value string) {
+	r.uri = strings.ReplaceAll(r.uri, "[" + key + "]", value)
+}
+
 func (r *Request) Param(key string) string {
 	if v, ok := r.params[key]; ok {
 		return v

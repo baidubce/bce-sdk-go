@@ -968,3 +968,19 @@ func (cli *Client) GetTopNDomains(queryCondition *api.QueryCondition, httpCode s
 func (cli *Client) GetError(queryCondition *api.QueryCondition) ([]api.ErrorDetail, error) {
 	return api.GetError(cli, queryCondition)
 }
+
+// GetPeak95Bandwidth - get peak 95 bandwidth for the specified tags or domains.
+// For details, pleader refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E6%9F%A5%E8%AF%A2%E6%9C%8895%E5%B3%B0%E5%80%BC%E5%B8%A6%E5%AE%BD
+//
+// PARAMS:
+//     - startTime: start time which in `YYYY-mm-ddTHH:ii:ssZ` style
+//     - endTime: end time which in `YYYY-mm-ddTHH:ii:ssZ` style
+//     - domains: a list of domains, only one of `tags` and `domains` can contains item
+//     - tags: a list of tag names, only one of `tags` and `domains` can contains item
+// RETURNS:
+//     - string: the peak95 time which in `YYYY-mm-ddTHH:ii:ssZ` style
+//     - int64: peak95 bandwidth
+//     - error: nil if success otherwise the specific error
+func (cli *Client) GetPeak95Bandwidth(startTime, endTime string, domains, tags []string) (string, int64, error) {
+	return api.GetPeak95Bandwidth(cli, startTime, endTime, domains, tags)
+}

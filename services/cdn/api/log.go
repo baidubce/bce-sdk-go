@@ -3,9 +3,10 @@ package api
 import (
 	"errors"
 	"fmt"
+	"time"
+
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/util"
-	"time"
 )
 
 type LogBase struct {

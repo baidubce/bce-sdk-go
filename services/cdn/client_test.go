@@ -3,11 +3,12 @@ package cdn
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+	"time"
+
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/services/cdn/api"
 	"github.com/baidubce/bce-sdk-go/util"
-	"testing"
-	"time"
 )
 
 const (
@@ -832,4 +833,11 @@ func TestGetError(t *testing.T) {
 	data, _ := json.Marshal(errorDetails)
 	t.Logf("errorDetails: %s", string(data))
 	checkClientErr(t, "GetErrorCount", err)
+}
+
+func TestGetPeak95Bandwidth(t *testing.T) {
+	peak95Time, peak95Band, err := testCli.GetPeak95Bandwidth(
+		"2020-05-01T00:00:00Z", "2020-05-10T00:00:00Z", []string{"www.test.com"}, nil)
+	t.Logf("peak95Time %s, peak95Band %d", peak95Time, peak95Band)
+	checkClientErr(t, "TestGetPeak95Bandwidth", err)
 }

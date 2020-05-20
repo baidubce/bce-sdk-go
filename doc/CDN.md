@@ -1063,7 +1063,9 @@ fmt.Printf("err:%+v\n", err)
 
 ## 统计查询
 
-> 这部分接口在文档[统计接口](https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn)中有详细说明。
+### 通用统计接口
+
+> 通用统计接口在文档[统计接口](https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn)中有详细说明。
 
 `api.QueryCondition`结构包含了最基本的查询条件，如下：
 
@@ -1099,3 +1101,27 @@ fmt.Printf("err:%+v\n", err)
 | top_referers     | GetTopNReferers     | TopN referers                      | extra，查询指定http状态码的记录，默认值： ""。               |
 | top_domains      | GetTopNDomains      | TopN domains                       | extra，查询指定http状态码的记录，默认值： ""。               |
 | error            | GetError            | cdn错误码分类统计查询              | 无。                                                         |
+
+### 计费统计接口
+
+#### 查询域名或者tag的95带宽 GetPeak95Bandwidth
+
+查询条件：
+| **参数**  | **类型** | **说明**                                                     |
+| --------- | -------- | ------------------------------------------------------------ |
+| StartTime | string   | 查询的时间范围起始值，默认为endTime前推24小时。格式为UTC时间字符串，如："2019-09-01T07:12:00Z"。 |
+| EndTime   | string   | 查询的时间范围结束值，默认为当前时间。时间跨度最长90天，时间格式和StartTime一样。 |
+| domains   | []string | 域名集合，和tags互斥存在，设置了domains请设置tags为nil | 
+| tags      | []string | tag集合，和domains互斥存在，设置了tags请设置domains为nil | 
+
+请求示例：
+
+```go
+cli := client.GetDefaultClient()                     
+peak95Time, peak95Band, err := cli.GetPeak95Bandwidth(
+		"2020-05-01T00:00:00Z", "2020-05-10T00:00:00Z", nil, []string{"www.test.com"})
+                                                     
+fmt.Printf("peak95Time:%s\n", peak95Time)   
+fmt.Printf("peak95Band:%d\n", peak95Band)
+fmt.Printf("err:%+v\n", err)                         
+```

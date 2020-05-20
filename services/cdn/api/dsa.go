@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+
 	"github.com/baidubce/bce-sdk-go/bce"
 )
 

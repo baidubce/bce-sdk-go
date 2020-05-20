@@ -1,11 +1,16 @@
 package api
 
 import (
-	"github.com/baidubce/bce-sdk-go/bce"
 	"strconv"
+	"strings"
+
+	"github.com/baidubce/bce-sdk-go/bce"
 )
 
-const statisticsObjectKey = "/v2/stat/query"
+const (
+	statisticsObjectKey  = "/v2/stat/query"
+	statisticsBillingKey = "/v2/billing"
+)
 
 // QueryCondition defined a struct for query condition
 type QueryCondition struct {
@@ -700,4 +705,43 @@ func GetError(cli bce.Client, queryCondition *QueryCondition) ([]ErrorDetail, er
 	}
 
 	return respObj.Details, nil
+}
+
+// GetPeak95Bandwidth - get peak 95 bandwidth for the specified tags or domains.
+// For details, pleader refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E6%9F%A5%E8%AF%A2%E6%9C%8895%E5%B3%B0%E5%80%BC%E5%B8%A6%E5%AE%BD
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - startTime: start time which in `YYYY-mm-ddTHH:ii:ssZ` style
+//     - endTime: end time which in `YYYY-mm-ddTHH:ii:ssZ` style
+//     - domains: a list of domains, only one of `tags` and `domains` can contains item
+//     - tags: a list of tag names, only one of `tags` and `domains` can contains item
+// RETURNS:
+//     - string: the peak95 time which in `YYYY-mm-ddTHH:ii:ssZ` style
+//     - int64: peak95 bandwidth
+//     - error: nil if success otherwise the specific error
+func GetPeak95Bandwidth(cli bce.Client, startTime, endTime string, domains, tags []string) (peak95Time string, peak95Band int64, err error) {
+	respObj := &struct {
+		Details struct {
+			Bandwidth int64  `json:"bill_band"`
+			Time      string `json:"bill_time"`
+		} `json:"billing_details"`
+	}{}
+
+	tagOrDomains, withTag := domains, false
+	if len(tags) != 0 {
+		tagOrDomains, withTag = tags, true
+	}
+	err = httpRequest(cli, "POST", statisticsBillingKey, nil, map[string]interface{}{
+		"domains":   strings.Join(tagOrDomains, ","),
+		"type":      "peak95",
+		"withTag":   withTag,
+		"byTime":    true,
+		"startTime": startTime,
+		"endTime":   endTime,
+	}, respObj)
+	if err != nil {
+		return
+	}
+	return respObj.Details.Time, respObj.Details.Bandwidth, nil
 }

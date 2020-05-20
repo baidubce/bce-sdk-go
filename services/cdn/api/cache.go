@@ -2,9 +2,10 @@ package api
 
 import (
 	"errors"
+	"time"
+
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/util"
-	"time"
 )
 
 type PurgedId string

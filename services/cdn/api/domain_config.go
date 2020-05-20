@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/bce"
 	"strings"
+
+	"github.com/baidubce/bce-sdk-go/bce"
 )
 
 // DomainConfig defined a struct for a specified domain's configuration
