@@ -37,8 +37,8 @@ func init() {
 	for i := 0; i < 7; i++ {
 		f = filepath.Dir(f)
 	}
-	//conf := filepath.Join(f, "config.json")
-	conf := "/Users/chenchangquan/GoProject/baidu/bce-sdk/go/services/blb/config.json"
+	// attention : native test need absolute path
+	conf := filepath.Join(f, "config.json")
 	fp, err := os.Open(conf)
 	if err != nil {
 		log.Fatal("config json file of ak/sk not given:", conf)

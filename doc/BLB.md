@@ -250,6 +250,8 @@ if err != nil {
     fmt.Println("create blb success: ", result)
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[CreateLoadBalancer创建实例](https://cloud.baidu.com/doc/BLB/s/njwvxnv79#createloadbalancer%E5%88%9B%E5%BB%BA%E5%AE%9E%E4%BE%8B)
 
 ### 更新实例
 
@@ -266,6 +268,9 @@ if err != nil {
     fmt.Println("update blb success")
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[UpdateLoadBalancer更新实例](https://cloud.baidu.com/doc/BLB/s/njwvxnv79#updateloadbalancer%E6%9B%B4%E6%96%B0%E5%AE%9E%E4%BE%8B)
+
 ### 查询已有的实例
 
 通过以下代码，可以查询用户账户下所有LoadBalancer的信息
@@ -288,6 +293,8 @@ if err != nil {
     fmt.Println("list all blb success: ", result)
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[DescribeLoadBalancers查询已有的BLB实例](https://cloud.baidu.com/doc/BLB/s/njwvxnv79#describeloadbalancers%E6%9F%A5%E8%AF%A2%E5%B7%B2%E6%9C%89%E7%9A%84blb%E5%AE%9E%E4%BE%8B)
 
 ### 查询实例详情
 
@@ -300,6 +307,8 @@ if err != nil {
     fmt.Println("get blb detail success: ", result)
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[DescribeLoadBalancerDetail查询BLB实例详情](https://cloud.baidu.com/doc/BLB/s/njwvxnv79#describeloadbalancerdetail%E6%9F%A5%E8%AF%A2blb%E5%AE%9E%E4%BE%8B%E8%AF%A6%E6%83%85)
 
 ### 释放实例
 
@@ -312,6 +321,8 @@ if err != nil {
     fmt.Println("delete blb success")
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[DeleteLoadBalancer释放BLB实例](https://cloud.baidu.com/doc/BLB/s/njwvxnv79#deleteloadbalancer%E9%87%8A%E6%94%BEblb%E5%AE%9E%E4%BE%8B)
 
 ### 添加普通型BLB后端服务器
 
@@ -320,16 +331,18 @@ if err != nil {
 args := &blb.AddBackendServersArgs{
     // 配置后端服务器的列表及权重
     BackendServerList: []blb.BackendServerModel{  
-        {InstanceId: instanceId, Weight: 30},
+        {InstanceId: instanceId, Weight: 100},
     },
 }
 err := client.AddBackendServers(blbId, args)
 if err != nil {
     fmt.Println("add backend servers failed:", err)
 } else {
-    fmt.Println("add backend servers success: ", result)
+    fmt.Println("add backend servers success: ")
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[AddBackendServers添加后端服务器](https://cloud.baidu.com/doc/BLB/s/Ujwvxnvxe#addbackendservers%E6%B7%BB%E5%8A%A0%E5%90%8E%E7%AB%AF%E6%9C%8D%E5%8A%A1%E5%99%A8)
 
 ### 更新后端服务器权重
 
@@ -341,13 +354,15 @@ args := &blb.UpdateBackendServersArgs{
         {InstanceId: instanceId, Weight: 30},
     },
 }
-err := client.UpdateBlbRs(blbId, args)
+err := client.UpdateBackendServers(blbId, args)
 if err != nil {
     fmt.Println("update backend servers failed:", err)
 } else {
-    fmt.Println("update backend servers success: ", result)
+    fmt.Println("update backend servers success: ")
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[UpdateBackendServers更新后端服务器](https://cloud.baidu.com/doc/BLB/s/Ujwvxnvxe#updatebackendservers%E6%9B%B4%E6%96%B0%E5%90%8E%E7%AB%AF%E6%9C%8D%E5%8A%A1%E5%99%A8)
 
 ### 查询后端服务器列表信息
 
@@ -363,6 +378,8 @@ if err != nil {
     fmt.Println("describe backend servers success: ", result)
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[DescribeBackendServers查询后端服务器列表](https://cloud.baidu.com/doc/BLB/s/Ujwvxnvxe#describebackendservers%E6%9F%A5%E8%AF%A2%E5%90%8E%E7%AB%AF%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%88%97%E8%A1%A8)
 
 ### 查询后端服务器健康状态
 
@@ -378,22 +395,26 @@ if err != nil {
     fmt.Println("describe health status success: ", result)
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[DescribeHealthStatus查询后端服务器健康状态](https://cloud.baidu.com/doc/BLB/s/Ujwvxnvxe#describehealthstatus%E6%9F%A5%E8%AF%A2%E5%90%8E%E7%AB%AF%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%81%A5%E5%BA%B7%E7%8A%B6%E6%80%81)
 
-### 删除后端服务器
+### 释放后端服务器
 
-通过以下代码，删除后端服务器
+通过以下代码，释放后端服务器
 ```go
 args := &blb.RemoveBackendServersArgs{
-    // 要从后端服务器列表中删除的实例列表
+    // 要从后端服务器列表中释放的实例列表
     BackendServerList: []string{instanceId},
 }
 err := client.RemoveBackendServers(blbId, args)
 if err != nil {
-    fmt.Println("delete backend servers failed:", err)
+    fmt.Println("remove backend servers failed:", err)
 } else {
-    fmt.Println("delete backend servers success: ", result)
+    fmt.Println("remove backend servers success: ")
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[RemoveBackendServers释放后端服务器](https://cloud.baidu.com/doc/BLB/s/Ujwvxnvxe#removebackendservers%E9%87%8A%E6%94%BE%E5%90%8E%E7%AB%AF%E6%9C%8D%E5%8A%A1%E5%99%A8)
 
 ## 监听器管理
 
@@ -403,9 +424,9 @@ if err != nil {
 ```go
 args := &blb.CreateTCPListenerArgs{
     // 监听器监听的端口，需要在1-65535之间
-    ListenerPort: 90,
+    ListenerPort: 80,
     // 后端服务器的监听端口，需要在1-65535之间
-    BackendPort: 90,
+    BackendPort: 80,
     // 负载均衡算法，支持RoundRobin/LeastConnection/Hash
     Scheduler: "RoundRobin",
     // TCP设置链接超时时间，默认900秒，需要为10-4000之间的整数
@@ -418,20 +439,20 @@ if err != nil {
     fmt.Println("create TCP Listener success")
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[CreateTCPListener创建TCP监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#createtcplistener%E5%88%9B%E5%BB%BAtcp%E7%9B%91%E5%90%AC%E5%99%A8)
 
 ### 更新TCP监听器
 
 通过以下代码，更新指定LoadBalancer下的TCP监听器参数，所有请求参数中指定的域都会被更新，未指定的域保持不变，监听器通过端口指定
 ```go
 args := &blb.UpdateTCPListenerArgs{
-    UpdateListenerArgs: blb.UpdateListenerArgs{
-        // 要更新的监听器端口号
-        ListenerPort: 90,
-        // 更新负载均衡的算法
-        Scheduler:    "Hash", 
-        // 更新tcp链接超时时间
-        TcpSessionTimeout: 2000,
-    },
+    // 要更新的监听器端口号
+    ListenerPort: 80,
+    // 更新负载均衡的算法
+    Scheduler:    "Hash", 
+    // 更新tcp链接超时时间
+    TcpSessionTimeout: 2000,
 }
 err := client.UpdateTCPListener(BLBID, args)
 if err != nil {
@@ -440,6 +461,8 @@ if err != nil {
     fmt.Println("update TCP Listener success")
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[UpdateTCPListener更新TCP监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#updatetcplistener%E6%9B%B4%E6%96%B0tcp%E7%9B%91%E5%90%AC%E5%99%A8)
 
 ### 查询TCP监听器
 
@@ -447,7 +470,7 @@ if err != nil {
 ```go
 args := &blb.DescribeListenerArgs{
     // 要查询的监听器端口
-    ListenerPort: 90,
+    ListenerPort: 80,
 }
 result, err := client.DescribeTCPListeners(BLBID, args)
 if err != nil {
@@ -456,6 +479,8 @@ if err != nil {
     fmt.Println("describe TCP Listener success: ", result)
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[DescribeTCPListeners查询TCP监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#describetcplisteners%E6%9F%A5%E8%AF%A2tcp%E7%9B%91%E5%90%AC%E5%99%A8)
 
 ### 创建UDP监听器
 
@@ -463,11 +488,13 @@ if err != nil {
 ```go
 args := &blb.CreateUDPListenerArgs{
     // 监听器监听的端口，需要在1-65535之间
-    ListenerPort: 80,
+    ListenerPort: 53,
     // 后端服务器的监听端口，需要在1-65535之间
-    BackendPort: 80,
+    BackendPort: 53,
     // 负载均衡算法，支持RoundRobin/LeastConnection/Hash
     Scheduler:    "RoundRobin",
+    // 健康检查字符串 健康发送的请求字符串，后端服务器收到后需要进行应答，支持16进制\00-\FF和标准ASCII字符串，最大长度1299
+    HealthCheckString: "\00\01\01\00\00\01\00\00\00\00\00\00\05baidu\03com\00\00\01\00\01"
 }
 err := client.CreateUDPListener(BLBID, args)
 if err != nil {
@@ -476,18 +503,18 @@ if err != nil {
     fmt.Println("create UDP Listener success")
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[CreateUDPListener创建UDP监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#createudplistener%E5%88%9B%E5%BB%BAudp%E7%9B%91%E5%90%AC%E5%99%A8)
 
 ### 更新UDP监听器
 
 通过以下代码，更新指定LoadBalancer下的UDP监听器参数，所有请求参数中指定的域都会被更新，未指定的域保持不变，监听器通过端口指定
 ```go
 args := &blb.UpdateUDPListenerArgs{
-    UpdateListenerArgs: blb.UpdateListenerArgs{
-        // 要更新的监听器端口号
-        ListenerPort: 80, 
-        // 更新负载均衡的算法
-        Scheduler:    "Hash",
-    },
+    // 要更新的监听器端口号
+    ListenerPort: 53, 
+    // 更新负载均衡的算法
+    Scheduler:    "Hash",
 }
 err := client.UpdateUDPListener(BLBID, args)
 if err != nil {
@@ -496,6 +523,8 @@ if err != nil {
     fmt.Println("update UDP Listener success")
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[UpdateUDPListener更新UDP监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#updateudplistener%E6%9B%B4%E6%96%B0udp%E7%9B%91%E5%90%AC%E5%99%A8)
 
 ### 查询UDP监听器
 
@@ -503,7 +532,7 @@ if err != nil {
 ```go
 args := &blb.DescribeListenerArgs{
     // 要查询的监听器端口
-    ListenerPort: 80,
+    ListenerPort: 53,
 }
 result, err := client.DescribeUDPListeners(BLBID, args)
 if err != nil {
@@ -512,6 +541,8 @@ if err != nil {
     fmt.Println("describe UDP Listener success: ", result)
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[DescribeUDPListeners查询UDP监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#describeudplisteners%E6%9F%A5%E8%AF%A2udp%E7%9B%91%E5%90%AC%E5%99%A8)
 
 ### 创建HTTP监听器
 
@@ -532,9 +563,8 @@ if err != nil {
     fmt.Println("create HTTP Listener success")
 }
 ```
-
 > **提示：**
-> - 详细的参数配置及限制条件，可以参考BLB API 文档[创建HTTP监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#createhttplistener%E5%88%9B%E5%BB%BAhttp%E7%9B%91%E5%90%AC%E5%99%A8)
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[CreateHTTPListener创建HTTP监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#createhttplistener%E5%88%9B%E5%BB%BAhttp%E7%9B%91%E5%90%AC%E5%99%A8)
 
 ### 更新HTTP监听器
 
@@ -555,7 +585,6 @@ if err != nil {
     fmt.Println("update HTTP Listener success")
 }
 ```
-
 > **提示：**
 > - 详细的参数配置及限制条件，可以参考BLB API 文档[更新HTTP监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#updatehttplistener%E6%9B%B4%E6%96%B0http%E7%9B%91%E5%90%AC%E5%99%A8)
 
@@ -574,6 +603,8 @@ if err != nil {
     fmt.Println("describe HTTP Listener success: ", result)
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[DescribeHTTPListeners查询HTTP监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#describehttplisteners%E6%9F%A5%E8%AF%A2http%E7%9B%91%E5%90%AC%E5%99%A8)
 
 ### 创建HTTPS监听器
 
@@ -581,7 +612,7 @@ if err != nil {
 ```go
 args := &blb.CreateHTTPSListenerArgs{
     // 监听器监听的端口，需要在1-65535之间
-    ListenerPort: 80,
+    ListenerPort: 443,
     // 后端服务器的监听端口，需要在1-65535之间
     BackendPort: 80,
     // 负载均衡算法，支持RoundRobin/LeastConnection
@@ -596,9 +627,8 @@ if err != nil {
     fmt.Println("create HTTPS Listener success")
 }
 ```
-
 > **提示：**
-> - 详细的参数配置及限制条件，可以参考BLB API 文档[创建HTTPS监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#createhttpslistener%E5%88%9B%E5%BB%BAhttps%E7%9B%91%E5%90%AC%E5%99%A8)
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[CreateHTTPSListener创建HTTPS监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#createhttpslistener%E5%88%9B%E5%BB%BAhttps%E7%9B%91%E5%90%AC%E5%99%A8)
 
 ### 更新HTTPS监听器
 
@@ -606,11 +636,9 @@ if err != nil {
 ```go
 args := &blb.UpdateHTTPSListenerArgs{
 	// 要更新的监听器端口号
-    ListenerPort: 80,
+    ListenerPort: 443,
     // 更新负载均衡的算法
-    Scheduler:    "LeastConnection", 
-    // 开启会话保持功能
-    KeepSession:  true,
+    Scheduler:    "LeastConnection",
     // 配置证书列表
     CertIds:      []string{certId},
 }
@@ -621,9 +649,9 @@ if err != nil {
     fmt.Println("update HTTPS Listener success")
 }
 ```
-
 > **提示：**
-> - 详细的参数配置及限制条件，可以参考BLB API 文档[更新HTTPS监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#updatehttpslistener%E6%9B%B4%E6%96%B0https%E7%9B%91%E5%90%AC%E5%99%A8)
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[UpdateHTTPSListener更新HTTPS监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#updatehttpslistener%E6%9B%B4%E6%96%B0https%E7%9B%91%E5%90%AC%E5%99%A8)
+
 
 ### 查询HTTPS监听器
 
@@ -631,7 +659,7 @@ if err != nil {
 ```go
 args := &blb.DescribeListenerArgs{
     // 要查询的监听器端口
-    ListenerPort: 80,
+    ListenerPort: 443,
 }
 result, err := client.DescribeHTTPSListeners(BLBID, args)
 if err != nil {
@@ -640,6 +668,10 @@ if err != nil {
     fmt.Println("describe HTTPS Listener success: ", result)
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[DescribeHTTPSListeners查询HTTPS监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#describehttpslisteners%E6%9F%A5%E8%AF%A2https%E7%9B%91%E5%90%AC%E5%99%A8)
+
+
 
 ### 创建SSL监听器
 
@@ -647,7 +679,7 @@ if err != nil {
 ```go
 args := &blb.CreateSSLListenerArgs{
     // 监听器监听的端口，需要在1-65535之间
-    ListenerPort: 80,
+    ListenerPort: 443,
     // 后端服务器的监听端口，需要在1-65535之间
     BackendPort: 80,
     // 负载均衡算法，支持RoundRobin/LeastConnection/Hash
@@ -662,9 +694,10 @@ if err != nil {
     fmt.Println("create SSL Listener success")
 }
 ```
-
 > **提示：**
-> - 详细的参数配置及限制条件，可以参考BLB API 文档[创建SSL监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#createssllistener%E5%88%9B%E5%BB%BAssl%E7%9B%91%E5%90%AC%E5%99%A8)
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[CreateSSLListener创建SSL监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#createssllistener%E5%88%9B%E5%BB%BAssl%E7%9B%91%E5%90%AC%E5%99%A8)
+
+
 
 ### 更新SSL监听器
 
@@ -672,7 +705,7 @@ if err != nil {
 ```go
 args := &blb.UpdateSSLListenerArgs{
 	// 要更新的监听器端口号
-    ListenerPort: 80,
+    ListenerPort: 443,
     // 更新负载均衡的算法
     Scheduler:    "LeastConnection", 
     // 配置证书列表
@@ -685,17 +718,17 @@ if err != nil {
     fmt.Println("update SSL Listener success")
 }
 ```
-
 > **提示：**
-> - 详细的参数配置及限制条件，可以参考BLB API 文档[更新SSL监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#updatessllistener%E6%9B%B4%E6%96%B0ssl%E7%9B%91%E5%90%AC%E5%99%A8)
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[UpdateSSLListener更新SSL监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#updatessllistener%E6%9B%B4%E6%96%B0ssl%E7%9B%91%E5%90%AC%E5%99%A8)
+
 
 ### 查询SSL监听器
 
-通过以下代码，查询指定LoadBalancer下所有HTTPS监听器的信息，支持按监听器端口进行匹配查询，结果支持marker分页，分页大小默认为1000，可通过maxKeys参数指定
+通过以下代码，查询指定LoadBalancer下所有SSL监听器的信息，支持按监听器端口进行匹配查询，结果支持marker分页，分页大小默认为1000，可通过maxKeys参数指定
 ```go
 args := &blb.DescribeListenerArgs{
     // 要查询的监听器端口
-    ListenerPort: 80,
+    ListenerPort: 443,
 }
 result, err := client.DescribeSSLListeners(BLBID, args)
 if err != nil {
@@ -704,22 +737,28 @@ if err != nil {
     fmt.Println("describe SSL Listener success: ", result)
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[DescribeSSLListeners查询SSL监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#describessllisteners%E6%9F%A5%E8%AF%A2ssl%E7%9B%91%E5%90%AC%E5%99%A8)
+
 
 ### 删除监听器
 
 通过以下代码，释放指定LoadBalancer下的监听器，监听器通过监听端口来指定，支持批量释放
 ```go
 args := &blb.DeleteListenersArgs{
+    ClientToken: "be31b98c-5e41-4838-9830-9be700de5a20",
     // 要删除的监听器监听的端口
-    PortList:    []uint16{80}, 
+    PortList:    []uint16{80, 443}, 
 }
 err := client.DeleteListeners(BLBID, args)
 if err != nil {
     fmt.Println("delete Listeners failed:", err)
 } else {
-    fmt.Println("delete Listeners success: ", result)
+    fmt.Println("delete Listeners success: ")
 }
 ```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BLB API 文档[DeleteListeners释放监听器](https://cloud.baidu.com/doc/BLB/s/yjwvxnvl6#deletelisteners%E9%87%8A%E6%94%BE%E7%9B%91%E5%90%AC%E5%99%A8)
 
 
 # 错误处理
@@ -760,7 +799,7 @@ if err != nil {
 
 # 版本变更记录
 
-## v0.9.1 [2020-05-19]
+## v0.9.11 [2020-05-20]
 
 首次发布：
 

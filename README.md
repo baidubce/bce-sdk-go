@@ -220,9 +220,10 @@ myLogger.Info("this is my own logger from the sdk")
 产品名称   | 产品缩写 | 导入路径 | 说明文档
 -----------|----------|----------|----------
 应用型负载均衡 | APPBLB | github.com/baidubce/bce-sdk-go/services/appblb | [APPBLB.md](./doc/APPBLB.md)
-云服务器 | BCC | github.com/baidubce/bce-sdk-go/services/bcc | [BCC.md](./doc/BCC.md)
 物理服务器 | BBC | github.com/baidubce/bce-sdk-go/services/bbc | [BBC.md](./doc/BBC.md)
+云服务器 | BCC | github.com/baidubce/bce-sdk-go/services/bcc | [BCC.md](./doc/BCC.md)
 百度边缘计算 |  BIE   | github.com/baidubce/bce-sdk-go/services/bie |
+负载均衡 | BLB | github.com/baidubce/bce-sdk-go/services/blb | [BLB.md](./doc/BLB.md)
 百度对象存储 |  BOS   | github.com/baidubce/bce-sdk-go/services/bos | [BOS.md](./doc/BOS.md)
 内容分布网络 |  CDN   | github.com/baidubce/bce-sdk-go/services/cdn | [CDN.md](./doc/CDN.md)
 SSL证书服务 | CERT | github.com/baidubce/bce-sdk-go/services/cert | [CERT.md](./doc/CERT.md)

@@ -428,6 +428,7 @@ type BackendServerStatus struct {
 	InstanceId string `json:"instanceId"`
 	Weight     int    `json:"weight"`
 	Status     string `json:"status"`
+	PrivateIp  string `json:"privateIp"`
 }
 
 type UpdateBackendServersArgs struct {
@@ -453,8 +454,9 @@ type DescribeHealthStatusArgs struct {
 
 type DescribeHealthStatusResult struct {
 	BackendServerList []BackendServerStatus `json:"backendServerList"`
-	ListenerPort      string                `json:"listenerPort"`
-	BackendPort       string                `json:"backendPort"`
+	Type              string                `json:"type"`
+	ListenerPort      uint16                `json:"listenerPort"`
+	BackendPort       uint16                `json:"backendPort"`
 	DescribeResultMeta
 }
 

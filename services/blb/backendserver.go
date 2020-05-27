@@ -131,6 +131,10 @@ func (c *Client) DescribeHealthStatus(blbId string, args *DescribeHealthStatusAr
 		WithQueryParam("maxKeys", strconv.Itoa(args.MaxKeys)).
 		WithResult(result)
 
+	if args.ListenerPort != 0 {
+		request.WithQueryParam("listenerPort", strconv.Itoa(int(args.ListenerPort)))
+	}
+
 	err := request.Do()
 	return result, err
 }
