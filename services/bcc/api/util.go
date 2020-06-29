@@ -26,23 +26,23 @@ import (
 const (
 	URI_PREFIX = bce.URI_PREFIX + "v2"
 
-	REQUEST_INSTANCE_URI = "/instance"
-	REQUEST_VNC_SUFFIX   = "/vnc"
-
-	REQUEST_VOLUME_URI           = "/volume"
-	REQUEST_SECURITYGROUP_URI    = "/securityGroup"
+	REQUEST_ASP_URI              = "/asp"
+	REQUEST_BATCHADDIP_URI       = "/batchAddIp"
+	REQUEST_BATCHDELIP_URI       = "/batchDelIp"
+	REQUEST_CREATE_URI           = "/create"
+	REQUEST_DEPLOYSET_URI        = "/deployset"
 	REQUEST_IMAGE_URI            = "/image"
 	REQUEST_IMAGE_SHAREDUSER_URI = "/sharedUsers"
 	REQUEST_IMAGE_OS_URI         = "/os"
-	REQUEST_BATCHADDIP_URI = "/batchAddIp"
-	REQUEST_BATCHDELIP_URI = "/batchDelIp"
-
-	REQUEST_SNAPSHOT_URI = "/snapshot"
-	REQUEST_ASP_URI      = "/asp"
-	REQUEST_SPEC_URI     = "/instance/spec"
-	REQUEST_ZONE_URI     = "/zone"
-
-	REQUEST_SUBNET_URI = "/subnet"
+	REQUEST_INSTANCE_URI         = "/instance"
+	REQUEST_LIST_URI             = "/list"
+	REQUEST_SECURITYGROUP_URI    = "/securityGroup"
+	REQUEST_SNAPSHOT_URI         = "/snapshot"
+	REQUEST_SPEC_URI             = "/instance/spec"
+	REQUEST_SUBNET_URI           = "/subnet"
+	REQUEST_VNC_SUFFIX           = "/vnc"
+	REQUEST_VOLUME_URI           = "/volume"
+	REQUEST_ZONE_URI             = "/zone"
 )
 
 func getInstanceUri() string {

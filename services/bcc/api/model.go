@@ -146,6 +146,7 @@ type CreateInstanceArgs struct {
 	CdsAutoRenew          bool             `json:"cdsAutoRenew"`
 	RelationTag           bool             `json:"relationTag,omitempty"`
 	Tags                  []model.TagModel `json:"tags,omitempty"`
+	DeployId              string           `json:"deployId,omitempty"`
 	ClientToken           string           `json:"-"`
 }
 
@@ -677,4 +678,43 @@ type ZoneModel struct {
 
 type ListZoneResult struct {
 	Zones []ZoneModel `json:"zones"`
+}
+
+type CreateDeploySetArgs struct {
+	Strategy    string `json:"strategy"`
+	Name        string `json:"name,omitempty"`
+	Desc        string `json:"desc,omitempty"`
+	ClientToken string `json:"-"`
+}
+
+type ModifyDeploySetArgs struct {
+	Name        string `json:"name,omitempty"`
+	Desc        string `json:"desc,omitempty"`
+	ClientToken string `json:"-"`
+}
+
+type CreateDeploySetResult struct {
+	DeploySetIds []string `json:"deploySetIds"`
+}
+
+type ListDeploySetsResult struct {
+	DeploySetList []DeploySetModel `json:"deploySets"`
+}
+
+type DeploySetModel struct {
+	Strategy     string              `json:"strategy"`
+	InstanceList []AzIntstanceStatis `json:"azIntstanceStatisList"`
+	Name         string              `json:"name"`
+	Desc         string              `json:"desc"`
+	DeploySetId  string              `json:"deploysetId"`
+}
+
+type AzIntstanceStatis struct {
+	ZoneName string `json:"zoneName"`
+	Count    int    `json:"instanceCount"`
+	Total    int    `json:"instanceTotal"`
+}
+
+type GetDeploySetResult struct {
+	DeploySetModel
 }

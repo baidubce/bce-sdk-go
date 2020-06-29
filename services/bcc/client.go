@@ -920,3 +920,60 @@ func (c *Client) ListSpec() (*api.ListSpecResult, error) {
 func (c *Client) ListZone() (*api.ListZoneResult, error) {
 	return api.ListZone(c)
 }
+
+// CreateDeploySet - create a deploy set
+//
+// PARAMS:
+//     - args: the arguments to create a deploy set
+// RETURNS:
+//     - *CreateDeploySetResult: results of creating a deploy set
+//     - error: nil if success otherwise the specific error
+func (c *Client) CreateDeploySet(args *api.CreateDeploySetArgs) (*api.CreateDeploySetResult, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return api.CreateDeploySet(c, args.ClientToken, body)
+}
+
+// ListDeploySets - list all deploy sets
+//
+// RETURNS:
+//     - *ListDeploySetsResult: the result of list all deploy sets
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListDeploySets() (*api.ListDeploySetsResult, error) {
+	return api.ListDeploySets(c)
+}
+
+// GetDeploySet - get details of the deploy set
+//
+// PARAMS:
+//     - deploySetId: the id of the deploy set
+// RETURNS:
+//     - *GetDeploySetResult: the detail of the deploy set
+//     - error: nil if success otherwise the specific error
+func (c *Client) ModifyDeploySet(deploySetId string, args *api.ModifyDeploySetArgs) (error, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, nil
+	}
+	return api.ModifyDeploySet(c, deploySetId, args.ClientToken, body), nil
+}
+
+// DeleteDeploySet - delete a deploy set
+//
+// PARAMS:
+//     - deploySetId: the id of the deploy set
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeleteDeploySet(deploySetId string) error {
+	return api.DeleteDeploySet(c, deploySetId)
+}

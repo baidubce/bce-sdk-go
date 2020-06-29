@@ -2,6 +2,7 @@ package bcc
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -20,6 +21,7 @@ var (
 	BCC_TestImageId         string
 	BCC_TestSnapshotId      string
 	BCC_TestAspId           string
+	BCC_TestDeploySetId     string
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -35,6 +37,7 @@ func init() {
 		f = filepath.Dir(f)
 	}
 	conf := filepath.Join(f, "config.json")
+	fmt.Println(conf)
 	fp, err := os.Open(conf)
 	if err != nil {
 		log.Fatal("config json file of ak/sk not given:", conf)
@@ -78,23 +81,22 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 
 func TestCreateInstance(t *testing.T) {
 	createInstanceArgs := &api.CreateInstanceArgs{
-		ImageId: "m-DpgNg8lO",
+		DeployId: "DeployId",
+		ImageId:  "ImageId",
 		Billing: api.Billing{
 			PaymentTiming: api.PaymentTimingPostPaid,
 		},
-		InstanceType:        api.InstanceTypeN1,
+		InstanceType:        api.InstanceTypeN3,
 		CpuCount:            1,
-		MemoryCapacityInGB:  1,
+		MemoryCapacityInGB:  4,
 		RootDiskSizeInGb:    40,
-		RootDiskStorageType: api.StorageTypeCloudHP1,
-		CreateCdsList: []api.CreateCdsModel{
-			{
-				StorageType: api.StorageTypeSSD,
-				CdsSizeInGB: 0,
-			},
-		},
-		AdminPass: "123qaz!@#",
-		Name:      "sdkTest",
+		RootDiskStorageType: api.StorageTypeHP1,
+		ZoneName:            "ZoneName",
+		SubnetId:            "SubnetId",
+		SecurityGroupId:     "SecurityGroupId",
+		RelationTag:         true,
+		PurchaseCount:       1,
+		Name:                "sdkTest",
 	}
 	createResult, err := BCC_CLIENT.CreateInstance(createInstanceArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -103,12 +105,12 @@ func TestCreateInstance(t *testing.T) {
 
 func TestCreateInstanceBySpec(t *testing.T) {
 	createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
-		ImageId:               "m-1PyVLtic",
-		Spec:                  "bcc.g2.c2m8",
-		Name:                  "sdkTest2",
-		AdminPass:             "123qaz!@#",
-		ZoneName:              "cn-bj-a",
-		Billing:               api.Billing{
+		ImageId:   "m-1PyVLtic",
+		Spec:      "bcc.g2.c2m8",
+		Name:      "sdkTest2",
+		AdminPass: "123qaz!@#",
+		ZoneName:  "cn-bj-a",
+		Billing: api.Billing{
 			PaymentTiming: api.PaymentTimingPostPaid,
 		},
 	}
@@ -218,7 +220,7 @@ func TestGetInstanceVNC(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
-func TestBatchAddIp(t *testing.T)  {
+func TestBatchAddIp(t *testing.T) {
 	privateIps := []string{"192.168.16.17"}
 	batchAddIpArgs := &api.BatchAddIpArgs{
 		InstanceId: BCC_TestBccId,
@@ -228,7 +230,7 @@ func TestBatchAddIp(t *testing.T)  {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
-func TestBatchDelIp(t *testing.T)  {
+func TestBatchDelIp(t *testing.T) {
 	privateIps := []string{"192.168.16.17"}
 	batchDelIpArgs := &api.BatchDelIpArgs{
 		InstanceId: BCC_TestBccId,
@@ -542,5 +544,46 @@ func TestListSpec(t *testing.T) {
 
 func TestListZone(t *testing.T) {
 	_, err := BCC_CLIENT.ListZone()
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestCreateDeploySet(t *testing.T) {
+	testDeploySetName := "testName"
+	testDeployDesc := "testDesc"
+	testStrategy := "HOST_HA"
+	queryArgs := &api.CreateDeploySetArgs{
+		Strategy: testStrategy,
+		Name:     testDeploySetName,
+		Desc:     testDeployDesc,
+	}
+	rep, err := BCC_CLIENT.CreateDeploySet(queryArgs)
+	fmt.Println(rep)
+	ExpectEqual(t.Errorf, err, nil)
+	BCC_TestDeploySetId = rep.DeploySetIds[0]
+}
+
+func TestListDeploySets(t *testing.T) {
+	rep, err := BCC_CLIENT.ListDeploySets()
+	fmt.Println(rep)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestModifyDeploySet(t *testing.T) {
+	testDeploySetName := "testName"
+	testDeployDesc := "goDesc"
+	queryArgs := &api.ModifyDeploySetArgs{
+		Name: testDeploySetName,
+		Desc: testDeployDesc,
+	}
+	BCC_TestDeploySetId = "DeploySetId"
+	rep, err := BCC_CLIENT.ModifyDeploySet(BCC_TestDeploySetId, queryArgs)
+	fmt.Println(rep)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestDeleteDeploySet(t *testing.T) {
+	testDeleteDeploySetId := "DeploySetId"
+	err := BCC_CLIENT.DeleteDeploySet(testDeleteDeploySetId)
+	fmt.Println(err)
 	ExpectEqual(t.Errorf, err, nil)
 }
