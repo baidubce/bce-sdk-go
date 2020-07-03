@@ -45,6 +45,7 @@ bce-sdk-go
 |  |--cfc                 //函数计算
 |  |--eip                 //弹性公网IP
 |  |--etGateway           //专线网关
+|  |--scs                 //SCS服务目录
 |  |--sts                 //STS服务目录
 |  |--vca                 //VCA服务目录
 |  |--vcr                 //VCR服务目录
@@ -232,6 +233,7 @@ SSL证书服务 | CERT | github.com/baidubce/bce-sdk-go/services/cert | [CERT.md
 函数计算 | CFC | github.com/baidubce/bce-sdk-go/services/cfc | [CFC.md](./doc/CFC.md)
 弹性公网IP | EIP | github.com/baidubce/bce-sdk-go/services/eip | [EIP.md](./doc/EIP.md)
 专线网关 | EtGateway | github.com/baidubce/bce-sdk-go/services/etGateway | [ETGateway.md](./doc/ETGateway.md)
+分布式缓存服务 | SCS | github.com/baidubce/bce-sdk-go/services/scs | [SCS.md](./doc/SCS.md)
 安全Token服务|  STS   | github.com/baidubce/bce-sdk-go/services/sts | [STS.md](./doc/STS.md)
 视频内容分析 |  VCA   | github.com/baidubce/bce-sdk-go/services/vca |
 视频内容审核 |  VCR   | github.com/baidubce/bce-sdk-go/services/vcr |
