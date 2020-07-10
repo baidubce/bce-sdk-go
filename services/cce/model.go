@@ -104,6 +104,7 @@ const (
 
 type BccConfig struct {
 	Name                string       `json:"name,omitempty"`
+	KeypairId           string       `json:"keypairId,omitempty"`
 	ProductType         ProductType  `json:"productType"`
 	LogicalZone         string       `json:"logicalZone,omitempty"`
 	InstanceType        InstanceType `json:"instanceType"`

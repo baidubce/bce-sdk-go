@@ -146,6 +146,7 @@ type CreateInstanceArgs struct {
 	CdsAutoRenew          bool             `json:"cdsAutoRenew"`
 	RelationTag           bool             `json:"relationTag,omitempty"`
 	Tags                  []model.TagModel `json:"tags,omitempty"`
+	KeypairId             string           `json:"keypairId,omitempty"`
 	DeployId              string           `json:"deployId,omitempty"`
 	ClientToken           string           `json:"-"`
 }
