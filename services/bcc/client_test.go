@@ -170,8 +170,13 @@ func TestResizeInstance(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestStopInstanceWithNoCharge(t *testing.T) {
+	err := BCC_CLIENT.StopInstanceWithNoCharge(BCC_TestBccId, true, true)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestStopInstance(t *testing.T) {
-	err := BCC_CLIENT.StopInstance(BCC_TestBccId, true, true)
+	err := BCC_CLIENT.StopInstance(BCC_TestBccId, true)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -693,7 +698,8 @@ func TestInstancePurchaseReserved(t *testing.T) {
 				ReservationLength: 1,
 			},
 		},
+		RelatedRenewFlag: "CDS",
 	}
-	err := BCC_CLIENT.InstancePurchaseReserved(BCC_TestBccId, api.RelatedRenewFlagCDS, purchaseReservedArgs)
+	err := BCC_CLIENT.InstancePurchaseReserved(BCC_TestBccId, purchaseReservedArgs)
 	ExpectEqual(t.Errorf, err, nil)
 }
