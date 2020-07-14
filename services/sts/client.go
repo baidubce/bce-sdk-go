@@ -43,6 +43,7 @@ func (c *Client) GetSessionToken(duration int, acl string) (*api.GetSessionToken
 func NewClient(ak, sk string) (*Client, error) {
 	return NewStsClient(ak, sk, DEFAULT_SERVICE_DOMAIN)
 }
+
 func NewStsClient(ak, sk, endpoint string) (*Client, error) {
 	credentials, err := auth.NewBceCredentials(ak, sk)
 	if err != nil {
@@ -64,6 +65,7 @@ func NewStsClient(ak, sk, endpoint string) (*Client, error) {
 		Retry:       bce.DEFAULT_RETRY_POLICY,
 		ConnectionTimeoutInMillis: bce.DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS}
 	v1Signer := &auth.BceV1Signer{}
+
 	client := &Client{bce.NewBceClient(defaultConf, v1Signer)}
 	return client, nil
 }

@@ -127,6 +127,9 @@ func ListInstances(cli bce.Client, args *ListInstanceArgs) (*ListInstanceResult,
 		if len(args.ZoneName) != 0 {
 			req.SetParam("zoneName", args.ZoneName)
 		}
+		if len(args.KeypairId) != 0 {
+			req.SetParam("keypairId", args.KeypairId)
+		}
 	}
 	if args == nil || args.MaxKeys == 0 {
 		req.SetParam("maxKeys", "1000")
@@ -536,12 +539,14 @@ func GetInstanceVNC(cli bce.Client, instanceId string) (*GetInstanceVNCResult, e
 //     - reqBody: the request body to renew instance
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func InstancePurchaseReserved(cli bce.Client, instanceId, clientToken string, reqBody *bce.Body) error {
+func InstancePurchaseReserved(cli bce.Client, instanceId, relatedRenewFlag, clientToken string,
+	reqBody *bce.Body) error {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getInstanceUriWithId(instanceId))
 	req.SetMethod(http.PUT)
 	req.SetParam("purchaseReserved", "")
+	req.SetParam("relatedRenewFlag", relatedRenewFlag)
 	req.SetBody(reqBody)
 
 	if clientToken != "" {
@@ -668,5 +673,277 @@ func BatchDelIp(cli bce.Client, reqBody *bce.Body) error {
 
 	defer func() { resp.Body().Close() }()
 	return nil
+}
+
+// ResizeInstanceBySpec - resize a specified instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance to be resized
+//     - reqBody: the request body to resize instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func ResizeInstanceBySpec(cli bce.Client, instanceId, clientToken string, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getResizeInstanceBySpec(instanceId))
+	req.SetMethod(http.PUT)
+	req.SetParam("resize", "")
+	req.SetBody(reqBody)
+
+	if clientToken != "" {
+		req.SetParam("clientToken", clientToken)
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// BatchRebuildInstances - batch rebuild instances
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: the request body to rebuild instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func BatchRebuildInstances(cli bce.Client, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getRebuildBatchInstanceUri())
+	req.SetMethod(http.PUT)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// ChangeToPrepaid - to prepaid
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: the request body to ChangeToPrepaid
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func ChangeToPrepaid(cli bce.Client, instanceId string, reqBody *bce.Body) (*ChangeToPrepaidResponse, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getChangeToPrepaidUri(instanceId))
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+	req.SetParam("toPrepay", "")
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ChangeToPrepaidResponse{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+// bindInstanceToTags - bind instance to tags
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: the request body to bindInstanceToTags
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func BindInstanceToTags(cli bce.Client, instanceId string, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getbindInstanceToTagsUri(instanceId))
+	req.SetMethod(http.PUT)
+	req.SetBody(reqBody)
+	req.SetParam("bind", "")
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// UnBindInstanceToTags - unbind instance to tags
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: the request body to unbindInstanceToTags
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func UnBindInstanceToTags(cli bce.Client, instanceId string, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getbindInstanceToTagsUri(instanceId))
+	req.SetMethod(http.PUT)
+	req.SetBody(reqBody)
+	req.SetParam("unbind", "")
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// GetInstanceNoChargeList - get instance with nocharge list
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - args: the arguments to list instances
+// RETURNS:
+//     - *ListInstanceResult: result of the instance list
+//     - error: nil if success otherwise the specific error
+func GetInstanceNoChargeList(cli bce.Client, args *ListInstanceArgs) (*ListInstanceResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(GetInstanceNoChargeListUri())
+	req.SetMethod(http.GET)
+
+	// Optional arguments settings
+	if args != nil {
+		if len(args.Marker) != 0 {
+			req.SetParam("marker", args.Marker)
+		}
+		if args.MaxKeys != 0 {
+			req.SetParam("maxKeys", strconv.Itoa(args.MaxKeys))
+		}
+		if len(args.InternalIp) != 0 {
+			req.SetParam("internalIp", args.InternalIp)
+		}
+		if len(args.ZoneName) != 0 {
+			req.SetParam("zoneName", args.ZoneName)
+		}
+		if len(args.KeypairId) != 0 {
+			req.SetParam("keypairId", args.KeypairId)
+		}
+	}
+	if args == nil || args.MaxKeys == 0 {
+		req.SetParam("maxKeys", "1000")
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ListInstanceResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+// createBidInstance - create an instance with specified parameters
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: the request body to create instance
+// RETURNS:
+//     - *CreateInstanceResult: result of the instance ids newly created
+//     - error: nil if success otherwise the specific error
+func CreateBidInstance(cli bce.Client, clientToken string, reqBody *bce.Body) (*CreateInstanceResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(GetCreateBidInstanceUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	if clientToken != "" {
+		req.SetParam("clientToken", clientToken)
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &CreateInstanceResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+// CancelBidOrder - Cancel the bidding instance order.
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: the request body to cancel bid order
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func CancelBidOrder(cli bce.Client, clientToken string, reqBody *bce.Body) (*CreateBidInstanceResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(GetCancelBidOrderUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	if clientToken != "" {
+		req.SetParam("clientToken", clientToken)
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &CreateBidInstanceResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
 }
 

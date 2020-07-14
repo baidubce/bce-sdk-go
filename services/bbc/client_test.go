@@ -93,6 +93,7 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 }
 
 func TestCreateInstance(t *testing.T) {
+	InternalIps := []string{"ip"}
 	createInstanceArgs := &CreateInstanceArgs{
 		FlavorId:         BBC_TestFlavorId,
 		ImageId:          BBC_TestImageId,
@@ -107,6 +108,7 @@ func TestCreateInstance(t *testing.T) {
 		},
 		DeploySetId: BBC_TestDeploySetId,
 		Name:        BBC_TestName,
+		InternalIps: InternalIps,
 	}
 	res, err := BBC_CLIENT.CreateInstance(createInstanceArgs)
 	fmt.Println(res)

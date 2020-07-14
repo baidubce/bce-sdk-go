@@ -81,3 +81,4 @@ func ListZone(cli bce.Client) (*ListZoneResult, error) {
 
 	return jsonBody, nil
 }
+

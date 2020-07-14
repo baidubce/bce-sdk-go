@@ -43,6 +43,14 @@ const (
 	REQUEST_VNC_SUFFIX           = "/vnc"
 	REQUEST_VOLUME_URI           = "/volume"
 	REQUEST_ZONE_URI             = "/zone"
+	REQUEST_FLAVOR_SPEC_URI      = "/instance/flavorSpec"
+	REQUEST_INSTANCE_PRICE_URI   = "/instance/price"
+	REQUEST_INSTANCE_BY_SPEC_URI = "/instanceBySpec"
+	REQUEST_REBUILD_URI = "/rebuild"
+	REQUEST_TAG_URI = "/tag"
+	REQUEST_NOCHARGE_URI = "/noCharge"
+	REQUEST_BID_URI = "/bid"
+	REQUEST_CANCEL_BIDORDER_URI = "/cancelBidOrder"
 )
 
 func getInstanceUri() string {
@@ -136,4 +144,40 @@ func getZoneUri() string {
 
 func getChangeSubnetUri() string {
 	return URI_PREFIX + REQUEST_SUBNET_URI + "/changeSubnet"
+}
+
+func getFlavorSpecUri() string {
+	return URI_PREFIX + REQUEST_FLAVOR_SPEC_URI
+}
+
+func getPriceBySpecUri() string {
+	return URI_PREFIX + REQUEST_INSTANCE_PRICE_URI
+}
+
+func getResizeInstanceBySpec(id string) string {
+	return URI_PREFIX + REQUEST_INSTANCE_BY_SPEC_URI + "/" + id
+}
+
+func getRebuildBatchInstanceUri() string {
+	return URI_PREFIX + REQUEST_INSTANCE_URI + REQUEST_REBUILD_URI
+}
+
+func getChangeToPrepaidUri(id string) string {
+	return URI_PREFIX + REQUEST_INSTANCE_URI + "/" + id
+}
+
+func getbindInstanceToTagsUri(id string) string {
+	return URI_PREFIX + REQUEST_INSTANCE_URI + "/" + id + REQUEST_TAG_URI
+}
+
+func GetInstanceNoChargeListUri() string {
+	return URI_PREFIX + REQUEST_INSTANCE_URI + REQUEST_NOCHARGE_URI
+}
+
+func GetCreateBidInstanceUri() string {
+	return URI_PREFIX + REQUEST_INSTANCE_URI + REQUEST_BID_URI
+}
+
+func GetCancelBidOrderUri() string {
+	return URI_PREFIX + REQUEST_INSTANCE_URI + REQUEST_CANCEL_BIDORDER_URI
 }
