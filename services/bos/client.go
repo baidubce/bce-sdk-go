@@ -413,10 +413,11 @@ func (c *Client) GetBucketStorageclass(bucket string) (string, error) {
 // PARAMS:
 //     - bucket: the bucket name
 //     - replicationConf: the replication config json body stream
+//     - replicationRuleId: the replication rule id composed of [0-9 A-Z a-z _ -]
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) PutBucketReplication(bucket string, replicationConf *bce.Body) error {
-	return api.PutBucketReplication(c, bucket, replicationConf)
+func (c *Client) PutBucketReplication(bucket string, replicationConf *bce.Body, replicationRuleId string) error {
+	return api.PutBucketReplication(c, bucket, replicationConf, replicationRuleId)
 }
 
 // PutBucketReplicationFromFile - set the bucket replication config with json file name
@@ -424,14 +425,15 @@ func (c *Client) PutBucketReplication(bucket string, replicationConf *bce.Body) 
 // PARAMS:
 //     - bucket: the bucket name
 //     - confFile: the config json file name
+//     - replicationRuleId: the replication rule id composed of [0-9 A-Z a-z _ -]
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) PutBucketReplicationFromFile(bucket, confFile string) error {
+func (c *Client) PutBucketReplicationFromFile(bucket, confFile string, replicationRuleId string) error {
 	body, err := bce.NewBodyFromFile(confFile)
 	if err != nil {
 		return err
 	}
-	return api.PutBucketReplication(c, bucket, body)
+	return api.PutBucketReplication(c, bucket, body, replicationRuleId)
 }
 
 // PutBucketReplicationFromString - set the bucket replication config with json string
@@ -439,14 +441,15 @@ func (c *Client) PutBucketReplicationFromFile(bucket, confFile string) error {
 // PARAMS:
 //     - bucket: the bucket name
 //     - confString: the config string with json format
+//     - replicationRuleId: the replication rule id composed of [0-9 A-Z a-z _ -]
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) PutBucketReplicationFromString(bucket, confString string) error {
+func (c *Client) PutBucketReplicationFromString(bucket, confString string, replicationRuleId string) error {
 	body, err := bce.NewBodyFromString(confString)
 	if err != nil {
 		return err
 	}
-	return api.PutBucketReplication(c, bucket, body)
+	return api.PutBucketReplication(c, bucket, body, replicationRuleId)
 }
 
 // PutBucketReplicationFromStruct - set the bucket replication config with struct
@@ -454,10 +457,11 @@ func (c *Client) PutBucketReplicationFromString(bucket, confString string) error
 // PARAMS:
 //     - bucket: the bucket name
 //     - confObj: the replication config struct object
+//     - replicationRuleId: the replication rule id composed of [0-9 A-Z a-z _ -]
 // RETURNS:
 //     - error: nil if success otherwise the specific error
 func (c *Client) PutBucketReplicationFromStruct(bucket string,
-	confObj *api.PutBucketReplicationArgs) error {
+	confObj *api.PutBucketReplicationArgs, replicationRuleId string) error {
 	jsonBytes, jsonErr := json.Marshal(confObj)
 	if jsonErr != nil {
 		return jsonErr
@@ -466,40 +470,54 @@ func (c *Client) PutBucketReplicationFromStruct(bucket string,
 	if err != nil {
 		return err
 	}
-	return api.PutBucketReplication(c, bucket, body)
+	return api.PutBucketReplication(c, bucket, body, replicationRuleId)
 }
 
 // GetBucketReplication - get the bucket replication config of the given bucket
 //
 // PARAMS:
 //     - bucket: the bucket name
+//     - replicationRuleId: the replication rule id composed of [0-9 A-Z a-z _ -]
 // RETURNS:
 //     - *api.GetBucketReplicationResult: the result of the bucket replication config
 //     - error: nil if success otherwise the specific error
-func (c *Client) GetBucketReplication(bucket string) (*api.GetBucketReplicationResult, error) {
-	return api.GetBucketReplication(c, bucket)
+func (c *Client) GetBucketReplication(bucket string, replicationRuleId string) (*api.GetBucketReplicationResult, error) {
+	return api.GetBucketReplication(c, bucket, replicationRuleId)
+}
+
+// ListBucketReplication - get all replication config of the given bucket
+//
+// PARAMS:
+//     - bucket: the bucket name
+// RETURNS:
+//     - *api.ListBucketReplicationResult: the list of the bucket replication config
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListBucketReplication(bucket string) (*api.ListBucketReplicationResult, error) {
+	return api.ListBucketReplication(c, bucket)
 }
 
 // DeleteBucketReplication - delete the bucket replication config of the given bucket
 //
 // PARAMS:
 //     - bucket: the bucket name
+//     - replicationRuleId: the replication rule id composed of [0-9 A-Z a-z _ -]
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) DeleteBucketReplication(bucket string) error {
-	return api.DeleteBucketReplication(c, bucket)
+func (c *Client) DeleteBucketReplication(bucket string, replicationRuleId string) error {
+	return api.DeleteBucketReplication(c, bucket, replicationRuleId)
 }
 
 // GetBucketReplicationProgress - get the bucket replication process of the given bucket
 //
 // PARAMS:
 //     - bucket: the bucket name
+//     - replicationRuleId: the replication rule id composed of [0-9 A-Z a-z _ -]
 // RETURNS:
 //     - *api.GetBucketReplicationProgressResult: the process of the bucket replication
 //     - error: nil if success otherwise the specific error
-func (c *Client) GetBucketReplicationProgress(bucket string) (
+func (c *Client) GetBucketReplicationProgress(bucket string, replicationRuleId string) (
 	*api.GetBucketReplicationProgressResult, error) {
-	return api.GetBucketReplicationProgress(c, bucket)
+	return api.GetBucketReplicationProgress(c, bucket, replicationRuleId)
 }
 
 // PutBucketEncryption - set the bucket encryption config of the given bucket
