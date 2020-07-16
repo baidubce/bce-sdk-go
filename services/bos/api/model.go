@@ -181,10 +181,17 @@ type BucketReplicationType struct {
 	ReplicateDeletes string                       `json:"replicateDeletes"`
 	Destination      *BucketReplicationDescriptor `json:"destination,omitempty"`
 	ReplicateHistory *BucketReplicationDescriptor `json:"replicateHistory,omitempty"`
+	CreateTime       int64                        `json:"createTime"`
+	DestRegion       string                       `json:"destRegion"`
 }
 
 type PutBucketReplicationArgs BucketReplicationType
 type GetBucketReplicationResult BucketReplicationType
+
+// ListBucketReplicationResult defines output result for replication conf list
+type ListBucketReplicationResult struct {
+	Rules []BucketReplicationType `json:"rules"`
+}
 
 // GetBucketReplicationProgressResult defines output result for replication process
 type GetBucketReplicationProgressResult struct {
