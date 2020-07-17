@@ -525,6 +525,7 @@ func GetBucketReplication(cli bce.Client, bucket string, replicationRuleId strin
 	if len(replicationRuleId) > 0 {
 		req.SetParam("id", replicationRuleId)
 	}
+
 	resp := &bce.BceResponse{}
 	if err := SendRequest(cli, req, resp); err != nil {
 		return nil, err
