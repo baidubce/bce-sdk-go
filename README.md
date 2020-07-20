@@ -44,6 +44,7 @@ bce-sdk-go
 |  |--cdn                 //内容分布网络
 |  |--cert                //SSL证书服务
 |  |--cfc                 //函数计算
+|  |--dts                 //数据传输服务
 |  |--eip                 //弹性公网IP
 |  |--etGateway           //专线网关
 |  |--rds                 //云数据库
@@ -234,6 +235,7 @@ myLogger.Info("this is my own logger from the sdk")
 内容分布网络 |  CDN   | github.com/baidubce/bce-sdk-go/services/cdn | [CDN.md](./doc/CDN.md)
 SSL证书服务 | CERT | github.com/baidubce/bce-sdk-go/services/cert | [CERT.md](./doc/CERT.md)
 函数计算 | CFC | github.com/baidubce/bce-sdk-go/services/cfc | [CFC.md](./doc/CFC.md)
+数据传输服务 | DTS | github.com/baidubce/bce-sdk-go/services/dts | [DTS.md](./doc/DTS.md)
 弹性公网IP | EIP | github.com/baidubce/bce-sdk-go/services/eip | [EIP.md](./doc/EIP.md)
 专线网关 | EtGateway | github.com/baidubce/bce-sdk-go/services/etGateway | [ETGateway.md](./doc/ETGateway.md)
 云数据库 | RDS | github.com/baidubce/bce-sdk-go/services/rds | [RDS.md](./doc/RDS.md)
