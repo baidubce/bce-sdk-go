@@ -38,6 +38,10 @@ func (c *Client) GetSessionToken(duration int, acl string) (*api.GetSessionToken
 	return api.GetSessionToken(c, duration, acl)
 }
 
+func (c *Client) AssumeRole(args *api.AssumeRoleArgs) (*api.Credential, error) {
+	return api.AssumeRole(c, args)
+}
+
 // NewClient make the STS service client with default configuration.
 // Use `cli.Config.xxx` to access the config or change it to non-default value.
 func NewClient(ak, sk string) (*Client, error) {

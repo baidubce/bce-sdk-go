@@ -3,6 +3,7 @@
 # 概述
 
 本文档主要介绍STS服务的使用。STS（Security Token Service）是百度云提供的临时授权服务。通过STS，您可以为第三方用户颁发一个自定义时效和权限的访问凭证。第三方用户可以使用该访问凭证直接调用百度云的API或SDK访问百度云资源。
+若您还不了解STS，可以参考[产品描述](https://cloud.baidu.com/doc/IAM/s/xjwvybxhv)和[操作指南](https://cloud.baidu.com/doc/IAM/s/njwvyc2zd)。
 
 # 使用方法
 
@@ -53,5 +54,45 @@ func main() {
 	fmt.Println("  createTime:", obj.CreateTime)
 	fmt.Println("  expiration:", obj.Expiration)
 	fmt.Println("  userId:", obj.UserId)
+}
+```
+
+## 获取关联指定角色的临时身份凭证
+
+```go
+import (
+	"fmt"
+
+	"github.com/baidubce/bce-sdk-go/services/sts" //导入STS服务模块 
+	"github.com/baidubce/bce-sdk-go/services/sts/api"
+)
+
+func main() {
+	// 创建STS服务的Client对象，Endpoint使用默认值
+	AK, SK := "<your-access-key-id>", "<your-secret-access-key>"
+	stsClient, err := sts.NewClient(AK, SK)
+	if err != nil {
+		fmt.Println("create sts client object :", err)
+		return
+	}
+
+	// 获取临时认证token，有效期为60秒，ACL为空
+    AccountId, RoleName := "<your-account-id>", "<your-assume-role-name>"
+	args := &api.AssumeRoleArgs{
+		AccountId: AccountId,
+		RoleName:  RoleName,
+    }
+    obj, err := client.AssumeRole(args)
+    if err != nil {
+    	return
+    }
+	fmt.Println("GetSessionToken result:")
+	fmt.Println("  accessKeyId:", obj.AccessKeyId)
+	fmt.Println("  secretAccessKey:", obj.SecretAccessKey)
+	fmt.Println("  sessionToken:", obj.SessionToken)
+	fmt.Println("  createTime:", obj.CreateTime)
+	fmt.Println("  expiration:", obj.Expiration)
+	fmt.Println("  userId:", obj.UserId)
+	fmt.Println("  roleId:", obj.RoleId)
 }
 ```
