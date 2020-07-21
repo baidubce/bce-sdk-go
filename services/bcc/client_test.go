@@ -9,6 +9,7 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/baidubce/bce-sdk-go/model"
 	"github.com/baidubce/bce-sdk-go/services/bcc/api"
 	"github.com/baidubce/bce-sdk-go/util/log"
 )
@@ -36,7 +37,7 @@ func init() {
 	for i := 0; i < 7; i++ {
 		f = filepath.Dir(f)
 	}
-	conf := filepath.Join(f, "config.json")
+	conf := filepath.Join(f, "/go_conf.json")
 	fmt.Println(conf)
 	fp, err := os.Open(conf)
 	if err != nil {
@@ -80,9 +81,9 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 }
 
 func TestCreateInstance(t *testing.T) {
+	InternalIps := []string{"ip"}
 	createInstanceArgs := &api.CreateInstanceArgs{
-		DeployId: "DeployId",
-		ImageId:  "ImageId",
+		ImageId: "ImageId",
 		Billing: api.Billing{
 			PaymentTiming: api.PaymentTimingPostPaid,
 		},
@@ -97,6 +98,8 @@ func TestCreateInstance(t *testing.T) {
 		RelationTag:         true,
 		PurchaseCount:       1,
 		Name:                "sdkTest",
+		KeypairId:           "KeypairId",
+		InternalIps:         InternalIps,
 	}
 	createResult, err := BCC_CLIENT.CreateInstance(createInstanceArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -164,6 +167,11 @@ func TestResizeInstance(t *testing.T) {
 		MemoryCapacityInGB: 4,
 	}
 	err := BCC_CLIENT.ResizeInstance(BCC_TestBccId, resizeArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestStopInstanceWithNoCharge(t *testing.T) {
+	err := BCC_CLIENT.StopInstanceWithNoCharge(BCC_TestBccId, true, true)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -258,6 +266,7 @@ func TestCreateCDSVolume(t *testing.T) {
 		Billing: &api.Billing{
 			PaymentTiming: api.PaymentTimingPostPaid,
 		},
+		EncryptKey: "EncryptKey",
 	}
 
 	result, err := BCC_CLIENT.CreateCDSVolume(args)
@@ -368,6 +377,7 @@ func TestDetachCDSVolume(t *testing.T) {
 func TestResizeCDSVolume(t *testing.T) {
 	args := &api.ResizeCSDVolumeArgs{
 		NewCdsSizeInGB: 100,
+		NewVolumeType:  api.StorageTypeHdd,
 	}
 
 	err := BCC_CLIENT.ResizeCDSVolume(BCC_TestCdsId, args)
@@ -585,5 +595,111 @@ func TestDeleteDeploySet(t *testing.T) {
 	testDeleteDeploySetId := "DeploySetId"
 	err := BCC_CLIENT.DeleteDeploySet(testDeleteDeploySetId)
 	fmt.Println(err)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestResizeInstanceBySpec(t *testing.T) {
+	resizeArgs := &api.ResizeInstanceArgs{
+		Spec: "Spec",
+	}
+	err := BCC_CLIENT.ResizeInstanceBySpec(BCC_TestBccId, resizeArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBatchRebuildInstances(t *testing.T) {
+	rebuildArgs := &api.RebuildBatchInstanceArgs{
+		ImageId:     "ImageId",
+		AdminPass:   "123qaz!@#",
+		InstanceIds: []string{BCC_TestBccId},
+	}
+	err := BCC_CLIENT.BatchRebuildInstances(rebuildArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestChangeToPrepaid(t *testing.T) {
+	args := &api.ChangeToPrepaidRequest{
+		Duration:    1,
+		RelationCds: true,
+	}
+	_, err := BCC_CLIENT.ChangeToPrepaid(BCC_TestBccId, args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBindInstanceToTags(t *testing.T) {
+	args := &api.BindTagsRequest{
+		ChangeTags: []model.TagModel{
+			{
+				TagKey:   "TagKey",
+				TagValue: "TagValue",
+			},
+		},
+	}
+	err := BCC_CLIENT.BindInstanceToTags(BCC_TestBccId, args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestUnBindInstanceToTags(t *testing.T) {
+	args := &api.UnBindTagsRequest{
+		ChangeTags: []model.TagModel{
+			{
+				TagKey:   "TagKey",
+				TagValue: "TagValue",
+			},
+		},
+	}
+	err := BCC_CLIENT.UnBindInstanceToTags(BCC_TestBccId, args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestGetInstanceNoChargeList(t *testing.T) {
+	listArgs := &api.ListInstanceArgs{}
+	_, err := BCC_CLIENT.GetInstanceNoChargeList(listArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestCreateBidInstance(t *testing.T) {
+	createInstanceArgs := &api.CreateInstanceArgs{
+		ImageId: "ImageId",
+		Billing: api.Billing{
+			PaymentTiming: api.PaymentTimingBidding,
+		},
+		InstanceType:        api.InstanceTypeN3,
+		CpuCount:            1,
+		MemoryCapacityInGB:  4,
+		RootDiskSizeInGb:    40,
+		RootDiskStorageType: api.StorageTypeHP1,
+		ZoneName:            "zoneName",
+		SubnetId:            "SubnetId",
+		SecurityGroupId:     "SecurityGroupId",
+		RelationTag:         true,
+		PurchaseCount:       1,
+		Name:                "sdkTest",
+		BidModel:            "BidModel",
+		BidPrice:            "BidPrice",
+	}
+	createResult, err := BCC_CLIENT.CreateBidInstance(createInstanceArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	BCC_TestBccId = createResult.InstanceIds[0]
+}
+
+func TestCancelBidOrder(t *testing.T) {
+	createInstanceArgs := &api.CancelBidOrderRequest{
+		OrderId: "OrderId",
+	}
+	_, err := BCC_CLIENT.CancelBidOrder(createInstanceArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestInstancePurchaseReserved(t *testing.T) {
+	purchaseReservedArgs := &api.PurchaseReservedArgs{
+		Billing: api.Billing{
+			PaymentTiming: api.PaymentTimingPrePaid,
+			Reservation: &api.Reservation{
+				ReservationLength: 1,
+			},
+		},
+		RelatedRenewFlag: "CDS",
+	}
+	err := BCC_CLIENT.InstancePurchaseReserved(BCC_TestBccId, purchaseReservedArgs)
 	ExpectEqual(t.Errorf, err, nil)
 }

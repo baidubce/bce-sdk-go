@@ -57,19 +57,20 @@ const (
 )
 
 type CreateInstanceArgs struct {
-	FlavorId         string  `json:"flavorId"`
-	ImageId          string  `json:"imageId"`
-	RaidId           string  `json:"raidId"`
-	RootDiskSizeInGb int     `json:"rootDiskSizeInGb"`
-	PurchaseCount    int     `json:"purchaseCount"`
-	ZoneName         string  `json:"zoneName"`
-	SubnetId         string  `json:"subnetId"`
-	Billing          Billing `json:"billing"`
-	Name             string  `json:"name,omitempty"`
-	AdminPass        string  `json:"adminPass,omitempty"`
-	DeploySetId      string  `json:"deploySetId,omitempty"`
-	ClientToken      string  `json:"-"`
-	SecurityGroupId  string  `json:"securityGroupId,omitempty"`
+	FlavorId         string   `json:"flavorId"`
+	ImageId          string   `json:"imageId"`
+	RaidId           string   `json:"raidId"`
+	RootDiskSizeInGb int      `json:"rootDiskSizeInGb"`
+	PurchaseCount    int      `json:"purchaseCount"`
+	ZoneName         string   `json:"zoneName"`
+	SubnetId         string   `json:"subnetId"`
+	Billing          Billing  `json:"billing"`
+	Name             string   `json:"name,omitempty"`
+	AdminPass        string   `json:"adminPass,omitempty"`
+	DeploySetId      string   `json:"deploySetId,omitempty"`
+	ClientToken      string   `json:"-"`
+	SecurityGroupId  string   `json:"securityGroupId,omitempty"`
+	InternalIps      []string `json:"internalIps,omitempty"`
 }
 
 type Billing struct {

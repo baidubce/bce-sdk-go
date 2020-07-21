@@ -104,7 +104,7 @@ type HttpCodeDetail struct {
 
 type HttpCodeRegionData struct {
 	*NetSite
-	Counters []HttpCodeDetail `json:"counters"`
+	Counters []KvCounter `json:"counters"`
 }
 
 type HttpCodeRegionDetail struct {

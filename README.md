@@ -40,11 +40,14 @@ bce-sdk-go
 |  |     |--multipart.go  //BOS的Multipart相关API实现
 |  |     |--module.go     //BOS相关API的数据模型
 |  |     |--util.go       //BOS相关API实现使用的工具
+|  |--cce                 //容器引擎
 |  |--cdn                 //内容分布网络
 |  |--cert                //SSL证书服务
 |  |--cfc                 //函数计算
+|  |--dts                 //数据传输服务
 |  |--eip                 //弹性公网IP
 |  |--etGateway           //专线网关
+|  |--rds                 //云数据库
 |  |--scs                 //SCS服务目录
 |  |--sts                 //STS服务目录
 |  |--vca                 //VCA服务目录
@@ -228,11 +231,14 @@ myLogger.Info("this is my own logger from the sdk")
 百度边缘计算 |  BIE   | github.com/baidubce/bce-sdk-go/services/bie |
 负载均衡 | BLB | github.com/baidubce/bce-sdk-go/services/blb | [BLB.md](./doc/BLB.md)
 百度对象存储 |  BOS   | github.com/baidubce/bce-sdk-go/services/bos | [BOS.md](./doc/BOS.md)
+容器引擎 |  CCE   | github.com/baidubce/bce-sdk-go/services/cce | [CCE.md](./doc/CCE.md)
 内容分布网络 |  CDN   | github.com/baidubce/bce-sdk-go/services/cdn | [CDN.md](./doc/CDN.md)
 SSL证书服务 | CERT | github.com/baidubce/bce-sdk-go/services/cert | [CERT.md](./doc/CERT.md)
 函数计算 | CFC | github.com/baidubce/bce-sdk-go/services/cfc | [CFC.md](./doc/CFC.md)
+数据传输服务 | DTS | github.com/baidubce/bce-sdk-go/services/dts | [DTS.md](./doc/DTS.md)
 弹性公网IP | EIP | github.com/baidubce/bce-sdk-go/services/eip | [EIP.md](./doc/EIP.md)
 专线网关 | EtGateway | github.com/baidubce/bce-sdk-go/services/etGateway | [ETGateway.md](./doc/ETGateway.md)
+云数据库 | RDS | github.com/baidubce/bce-sdk-go/services/rds | [RDS.md](./doc/RDS.md)
 分布式缓存服务 | SCS | github.com/baidubce/bce-sdk-go/services/scs | [SCS.md](./doc/SCS.md)
 安全Token服务|  STS   | github.com/baidubce/bce-sdk-go/services/sts | [STS.md](./doc/STS.md)
 视频内容分析 |  VCA   | github.com/baidubce/bce-sdk-go/services/vca |
