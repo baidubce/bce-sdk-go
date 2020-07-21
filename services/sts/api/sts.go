@@ -12,12 +12,13 @@
  * and limitations under the License.
  */
 
-// get_session_token.go - define the response of GetSessionToken for STS service
+// sts.go - define the response for STS service
 
 // Package api defines all APIs supported by the STS service of BCE.
 package api
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/baidubce/bce-sdk-go/bce"
@@ -28,16 +29,11 @@ const (
 	DEFAULT_DURATION_SECONDS = 43200                 // default duration is 12 hours
 	URI_PREFIX               = bce.URI_PREFIX + "v1" // sts service not support uri without prefix "v1"
 	REQUEST_URI              = "/sessionToken"
+
+	DEFAULT_ASSUMEROLE_DURATION_SECONDS = 7200       // default duration is 2 hours
+	REQUEST_ASSUMEROLE_URI   = "/credential"
 )
 
-type GetSessionTokenResult struct {
-	AccessKeyId     string
-	SecretAccessKey string
-	SessionToken    string
-	CreateTime      string
-	Expiration      string
-	UserId          string
-}
 
 // GetSessionToken - get the session token from the STS service
 //
@@ -78,6 +74,65 @@ func GetSessionToken(cli bce.Client, durationSec int, acl string) (*GetSessionTo
 		return nil, resp.ServiceError()
 	}
 	jsonBody := &GetSessionTokenResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
+// AssumeRole - get the credential for the assume role from the STS service
+//
+// PARAMS:
+//     - cli: the client object which can perform sending request
+//     - args: the args for assumeRole
+// RETURNS:
+//     - *Credential: result of this api
+//     - error: nil if ok otherwise the specific error
+func AssumeRole(cli bce.Client, args *AssumeRoleArgs) (*Credential, error) {
+	// If the duration seconds is not a positive, use the default value
+	if args.DurationSeconds <= 0 {
+		args.DurationSeconds = DEFAULT_ASSUMEROLE_DURATION_SECONDS
+	}
+
+	if args.AccountId == "" {
+		return nil, fmt.Errorf("please set accountId")
+	}
+
+	if args.RoleName == "" {
+		return nil, fmt.Errorf("please set roleName")
+	}
+
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(URI_PREFIX + REQUEST_ASSUMEROLE_URI)
+	req.SetMethod(http.POST)
+	req.SetParam("assumeRole", "")
+	req.SetParam("durationSeconds", strconv.Itoa(args.DurationSeconds))
+	req.SetParam("accountId", args.AccountId)
+	req.SetParam("roleName", args.RoleName)
+
+	if args.UserId != "" {
+		req.SetParam("userId", args.UserId)
+	}
+
+	if len(args.Acl) > 0 {
+		req.SetHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE)
+		body, err := bce.NewBodyFromString(args.Acl)
+		if err != nil {
+			return nil, err
+		}
+		req.SetBody(body)
+	}
+
+	// Send requet and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	jsonBody := &Credential{}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
