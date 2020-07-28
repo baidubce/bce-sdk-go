@@ -54,6 +54,7 @@ import (
 // will define its own client in case of specific extension.
 type Client interface {
 	SendRequest(*BceRequest, *BceResponse) error
+	SendRequestFromBytes(*BceRequest, *BceResponse, []byte) error
 	GetBceClientConfig() *BceClientConfiguration
 }
 
@@ -166,6 +167,67 @@ func (c *BceClient) SendRequest(req *BceRequest, resp *BceResponse) error {
 				ioutil.ReadAll(teeReader)
 				req.Request.SetBody(ioutil.NopCloser(&retryBuf))
 			}
+			continue
+		}
+		return nil
+	}
+}
+
+// SendRequestFromBytes - the client performs sending the http request with retry policy and receive the
+// response from the BCE services.
+//
+// PARAMS:
+//     - req: the request object to be sent to the BCE service
+//     - resp: the response object to receive the content from BCE service
+//     - content: the content of body
+// RETURNS:
+//     - error: nil if ok otherwise the specific error
+func (c *BceClient) SendRequestFromBytes(req *BceRequest, resp *BceResponse, content []byte) error {
+	// Return client error if it is not nil
+	if req.ClientError() != nil {
+		return req.ClientError()
+	}
+	// Build the http request and prepare to send
+	c.buildHttpRequest(req)
+	log.Infof("send http request: %v", req)
+	// Send request with the given retry policy
+	retries := 0
+	for {
+		// The request body should be temporarily saved if retry to send the http request
+		buf := bytes.NewBuffer(content)
+		req.Request.SetBody(ioutil.NopCloser(buf))
+		defer req.Request.Body().Close() // Manually close the ReadCloser body for retry
+		httpResp, err := http.Execute(&req.Request)
+		if err != nil {
+			if c.Config.Retry.ShouldRetry(err, retries) {
+				delay_in_mills := c.Config.Retry.GetDelayBeforeNextRetryInMillis(err, retries)
+				time.Sleep(delay_in_mills)
+			} else {
+				return &BceClientError{
+					fmt.Sprintf("execute http request failed! Retried %d times, error: %v",
+						retries, err)}
+			}
+			retries++
+			log.Warnf("send request failed: %v, retry for %d time(s)", err, retries)
+			continue
+		}
+		resp.SetHttpResponse(httpResp)
+		resp.ParseResponse()
+		log.Infof("receive http response: status: %s, debugId: %s, requestId: %s, elapsed: %v",
+			resp.StatusText(), resp.DebugId(), resp.RequestId(), resp.ElapsedTime())
+		for k, v := range resp.Headers() {
+			log.Debugf("%s=%s", k, v)
+		}
+		if resp.IsFail() {
+			err := resp.ServiceError()
+			if c.Config.Retry.ShouldRetry(err, retries) {
+				delay_in_mills := c.Config.Retry.GetDelayBeforeNextRetryInMillis(err, retries)
+				time.Sleep(delay_in_mills)
+			} else {
+				return err
+			}
+			retries++
+			log.Warnf("send request failed, retry for %d time(s)", retries)
 			continue
 		}
 		return nil

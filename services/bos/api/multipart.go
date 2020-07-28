@@ -17,6 +17,7 @@
 package api
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 
@@ -121,6 +122,67 @@ func UploadPart(cli bce.Client, bucket, object, uploadId string, partNumber int,
 	// Send request and get the result
 	resp := &bce.BceResponse{}
 	if err := SendRequest(cli, req, resp); err != nil {
+		return "", err
+	}
+	if resp.IsFail() {
+		return "", resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return strings.Trim(resp.Header(http.ETAG), "\""), nil
+}
+
+// UploadPartFromBytes - upload the single part in the multipart upload process
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+//     - object: the object name
+//     - uploadId: the multipart upload id
+//     - partNumber: the current part number
+//     - content: the uploaded part content
+//     - args: the optional arguments
+// RETURNS:
+//     - string: the etag of the uploaded part
+//     - error: nil if ok otherwise the specific error
+func UploadPartFromBytes(cli bce.Client, bucket, object, uploadId string, partNumber int,
+	content []byte, args *UploadPartArgs) (string, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getObjectUri(bucket, object))
+	req.SetMethod(http.PUT)
+	req.SetParam("uploadId", uploadId)
+	req.SetParam("partNumber", fmt.Sprintf("%d", partNumber))
+	if content == nil {
+		return "", bce.NewBceClientError("upload part content should not be empty")
+	}
+	size := len(content)
+	if size >= THRESHOLD_100_CONTINUE {
+		req.SetHeader("Expect", "100-continue")
+	}
+	// set md5 and content-length
+	req.SetLength(int64(size))
+	if size > 0 {
+		// calc md5
+		if args == nil || args.ContentMD5 == "" {
+			buf := bytes.NewBuffer(content)
+			contentMD5, err := util.CalculateContentMD5(buf, int64(size))
+			if err != nil {
+				return "", err
+			}
+			req.SetHeader(http.CONTENT_MD5, contentMD5)
+		}
+		req.SetHeader(http.CONTENT_LENGTH, fmt.Sprintf("%d", size))
+	}
+	// Optional arguments settings
+	if args != nil {
+		setOptionalNullHeaders(req, map[string]string{
+			http.CONTENT_MD5:        args.ContentMD5,
+			http.BCE_CONTENT_SHA256: args.ContentSha256,
+			http.BCE_CONTENT_CRC32:  args.ContentCrc32,
+		})
+	}
+	// Send request and get the result
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequestFromBytes(req, resp, content); err != nil {
 		return "", err
 	}
 	if resp.IsFail() {

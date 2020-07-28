@@ -1219,6 +1219,23 @@ func (c *Client) BasicUploadPart(bucket, object, uploadId string, partNumber int
 	return api.UploadPart(c, bucket, object, uploadId, partNumber, content, nil)
 }
 
+// UploadPartFromBytes - upload the single part in the multipart upload process
+//
+// PARAMS:
+//     - bucket: the bucket name
+//     - object: the object name
+//     - uploadId: the multipart upload id
+//     - partNumber: the current part number
+//     - content: the uploaded part content
+//     - args: the optional arguments
+// RETURNS:
+//     - string: the etag of the uploaded part
+//     - error: nil if ok otherwise the specific error
+func (c *Client) UploadPartFromBytes(bucket, object, uploadId string, partNumber int,
+	content []byte, args *api.UploadPartArgs) (string, error) {
+	return api.UploadPartFromBytes(c, bucket, object, uploadId, partNumber, content, args)
+}
+
 // UploadPartCopy - copy the multipart object
 //
 // PARAMS:
