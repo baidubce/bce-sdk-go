@@ -52,6 +52,9 @@ const (
 
 	RESTORE_TIER_STANDARD  = "Standard"  //标准取回对象
 	RESTORE_TIER_EXPEDITED = "Expedited" //快速取回对象
+
+	FORBID_OVERWRITE_FALSE = "false"
+	FORBID_OVERWRITE_TRUE  = "true"
 )
 
 var DEFAULT_CNAME_LIKE_LIST = []string{
@@ -68,6 +71,11 @@ var VALID_STORAGE_CLASS_TYPE = map[string]int{
 var VALID_RESTORE_TIER = map[string]int{
 	RESTORE_TIER_STANDARD:  1,
 	RESTORE_TIER_EXPEDITED: 1,
+}
+
+var VALID_FORBID_OVERWRITE = map[string]int{
+	FORBID_OVERWRITE_FALSE: 1,
+	FORBID_OVERWRITE_TRUE:  1,
 }
 
 var (
@@ -103,6 +111,13 @@ func getCnameUri(uri string) string {
 
 func validMetadataDirective(val string) bool {
 	if val == METADATA_DIRECTIVE_COPY || val == METADATA_DIRECTIVE_REPLACE {
+		return true
+	}
+	return false
+}
+
+func validForbidOverwrite(val string) bool {
+	if _, ok := VALID_FORBID_OVERWRITE[val]; ok {
 		return true
 	}
 	return false

@@ -372,6 +372,9 @@ func GetObjectMeta(cli bce.Client, bucket, object string) (*GetObjectMetaResult,
 	if val, ok := headers[toHttpHeaderKey(http.BCE_RESTORE)]; ok {
 		result.BceRestore = val
 	}
+	if val, ok := headers[http.BCE_OBJECT_TYPE]; ok {
+		result.BceObjectType = val
+	}
 	bcePrefix := toHttpHeaderKey(http.BCE_USER_METADATA_PREFIX)
 	for k, v := range headers {
 		if strings.Index(k, bcePrefix) == 0 {
@@ -825,6 +828,15 @@ func DeleteObjectAcl(cli bce.Client, bucket, object string) error {
 	return nil
 }
 
+// RestoreObject - restore the archive object
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name
+//     - object: the object name
+//	   - args: the restore args
+// RETURNS:
+//     - error: nil if success otherwise the specific error
 func RestoreObject(cli bce.Client, bucket string, object string, args ArchiveRestoreArgs) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
@@ -842,4 +854,78 @@ func RestoreObject(cli bce.Client, bucket string, object string, args ArchiveRes
 	}
 
 	return nil
+}
+
+// PutObjectSymlink - put the object from the string or the stream
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name of the object
+//     - object: the name of the object
+//     - symlinkKey: the name of the symlink
+//     - symlinkArgs: the optional arguments of this api
+// RETURNS:
+//     - error: nil if ok otherwise the specific error
+func PutObjectSymlink(cli bce.Client, bucket string, object string, symlinkKey string, symlinkArgs *PutSymlinkArgs) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getObjectUri(bucket, symlinkKey))
+	req.SetParam("symlink", "")
+	req.SetMethod(http.PUT)
+	if symlinkArgs != nil {
+		if len(symlinkArgs.ForbidOverwrite) != 0 {
+			if !validForbidOverwrite(symlinkArgs.ForbidOverwrite) {
+				return bce.NewBceClientError("invalid forbid overwrite val," + symlinkArgs.ForbidOverwrite)
+			}
+			req.SetHeader(http.BCE_FORBID_OVERWRITE, symlinkArgs.ForbidOverwrite)
+		}
+		if len(symlinkArgs.StorageClass) != 0 {
+			if !validStorageClass(symlinkArgs.StorageClass) {
+				return bce.NewBceClientError("invalid storage class val," + symlinkArgs.StorageClass)
+			}
+			if symlinkArgs.StorageClass == STORAGE_CLASS_ARCHIVE {
+				return bce.NewBceClientError("archive storage class not support")
+			}
+			req.SetHeader(http.BCE_STORAGE_CLASS, symlinkArgs.StorageClass)
+		}
+		if len(symlinkArgs.UserMeta) != 0 {
+			if err := setUserMetadata(req, symlinkArgs.UserMeta); err != nil {
+				return err
+			}
+		}
+	}
+	req.SetHeader(http.BCE_SYMLINK_TARGET, object)
+	resp := &bce.BceResponse{}
+	if err := SendRequest(cli, req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// PutObjectSymlink - put the object from the string or the stream
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name of the object
+//     - symlinkKey: the name of the symlink
+// RETURNS:
+//	   - string: the name of the target object
+//     - error: nil if ok otherwise the specific error
+func GetObjectSymlink(cli bce.Client, bucket string, symlinkKey string) (string, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getObjectUri(bucket, symlinkKey))
+	req.SetParam("symlink", "")
+	req.SetMethod(http.GET)
+	resp := &bce.BceResponse{}
+	if err := SendRequest(cli, req, resp); err != nil {
+		return "", err
+	}
+	if resp.IsFail() {
+		return "", resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return resp.Header(http.BCE_SYMLINK_TARGET), nil
 }
