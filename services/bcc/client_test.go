@@ -37,7 +37,7 @@ func init() {
 	for i := 0; i < 7; i++ {
 		f = filepath.Dir(f)
 	}
-	conf := filepath.Join(f, "/go_conf.json")
+	conf := filepath.Join(f, "/config.json")
 	fmt.Println(conf)
 	fp, err := os.Open(conf)
 	if err != nil {
@@ -47,7 +47,7 @@ func init() {
 	decoder := json.NewDecoder(fp)
 	confObj := &Conf{}
 	decoder.Decode(confObj)
-
+	fmt.Println(confObj.Endpoint)
 	BCC_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
 	//log.SetLogLevel(log.DEBUG)
@@ -108,8 +108,8 @@ func TestCreateInstance(t *testing.T) {
 
 func TestCreateInstanceBySpec(t *testing.T) {
 	createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
-		ImageId:   "m-1PyVLtic",
-		Spec:      "bcc.g2.c2m8",
+		ImageId:   "m-xpTjObRS",
+		Spec:      "bcc.ic3.c2m2",
 		Name:      "sdkTest2",
 		AdminPass: "123qaz!@#",
 		ZoneName:  "cn-bj-a",
@@ -117,8 +117,9 @@ func TestCreateInstanceBySpec(t *testing.T) {
 			PaymentTiming: api.PaymentTimingPostPaid,
 		},
 	}
-	_, err := BCC_CLIENT.CreateInstanceBySpec(createInstanceBySpecArgs)
+	createResult, err := BCC_CLIENT.CreateInstanceBySpec(createInstanceBySpecArgs)
 	ExpectEqual(t.Errorf, err, nil)
+	BCC_TestBccId = createResult.InstanceIds[0]
 }
 
 func TestCreateSecurityGroup(t *testing.T) {
@@ -152,13 +153,15 @@ func TestCreateImage(t *testing.T) {
 
 func TestListInstances(t *testing.T) {
 	listArgs := &api.ListInstanceArgs{}
-	_, err := BCC_CLIENT.ListInstances(listArgs)
+	res, err := BCC_CLIENT.ListInstances(listArgs)
 	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
 }
 
 func TestGetInstanceDetail(t *testing.T) {
-	_, err := BCC_CLIENT.GetInstanceDetail(BCC_TestBccId)
+	res, err := BCC_CLIENT.GetInstanceDetail(BCC_TestBccId)
 	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
 }
 
 func TestResizeInstance(t *testing.T) {
@@ -231,10 +234,12 @@ func TestGetInstanceVNC(t *testing.T) {
 func TestBatchAddIp(t *testing.T) {
 	privateIps := []string{"192.168.16.17"}
 	batchAddIpArgs := &api.BatchAddIpArgs{
-		InstanceId: BCC_TestBccId,
-		PrivateIps: privateIps,
+		InstanceId:                     BCC_TestBccId,
+		PrivateIps:                     privateIps,
+		SecondaryPrivateIpAddressCount: 1,
 	}
-	err := BCC_CLIENT.BatchAddIP(batchAddIpArgs)
+	result, err := BCC_CLIENT.BatchAddIP(batchAddIpArgs)
+	fmt.Println(result)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -274,6 +279,26 @@ func TestCreateCDSVolume(t *testing.T) {
 	BCC_TestCdsId = result.VolumeIds[0]
 }
 
+func TestGetBidInstancePrice(t *testing.T) {
+	args := &api.GetBidInstancePriceArgs{
+		InstanceType:        api.InstanceTypeN1,
+		CpuCount:            1,
+		MemoryCapacityInGB:  2,
+		RootDiskSizeInGb:    45,
+		RootDiskStorageType: api.StorageTypeCloudHP1,
+		PurchaseCount:       1,
+	}
+	result, err := BCC_CLIENT.GetBidInstancePrice(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}
+
+func TestListBidFlavor(t *testing.T) {
+	result, err := BCC_CLIENT.ListBidFlavor()
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}
+
 func TestCreateSnapshot(t *testing.T) {
 	args := &api.CreateSnapshotArgs{
 		VolumeId:     BCC_TestCdsId,
@@ -288,6 +313,18 @@ func TestCreateSnapshot(t *testing.T) {
 func TestListSnapshot(t *testing.T) {
 	args := &api.ListSnapshotArgs{}
 	_, err := BCC_CLIENT.ListSnapshot(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestListSnapshotChain(t *testing.T) {
+	args := &api.ListSnapshotChainArgs{
+		OrderBy:  "chainId",
+		Order:    "asc",
+		PageSize: 2,
+		PageNo:   2,
+	}
+	res, err := BCC_CLIENT.ListSnapshotChain(args)
+	fmt.Println(res)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -326,6 +363,17 @@ func TestDetachAutoSnapshotPolicy(t *testing.T) {
 		VolumeIds: []string{BCC_TestCdsId},
 	}
 	err := BCC_CLIENT.DetachAutoSnapshotPolicy(BCC_TestAspId, args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestUpdateAutoSnapshotPolicy(t *testing.T) {
+	args := &api.UpdateASPArgs{
+		AspId:          "AspId",
+		Name:           "Name",
+		TimePoints:     []string{"21"},
+		RepeatWeekdays: []string{"2"},
+	}
+	err := BCC_CLIENT.UpdateAutoSnapshotPolicy(args)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -377,10 +425,18 @@ func TestDetachCDSVolume(t *testing.T) {
 func TestResizeCDSVolume(t *testing.T) {
 	args := &api.ResizeCSDVolumeArgs{
 		NewCdsSizeInGB: 100,
-		NewVolumeType:  api.StorageTypeHdd,
 	}
 
 	err := BCC_CLIENT.ResizeCDSVolume(BCC_TestCdsId, args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestRollbackCDSVolume(t *testing.T) {
+	args := &api.RollbackCSDVolumeArgs{
+		SnapshotId: "SnapshotId",
+	}
+
+	err := BCC_CLIENT.RollbackCDSVolume(BCC_TestCdsId, args)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -441,6 +497,26 @@ func TestDeleteCDSVolumeNew(t *testing.T) {
 
 func TestDeleteCDSVolume(t *testing.T) {
 	err := BCC_CLIENT.DeleteCDSVolume(BCC_TestCdsId)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestAutoRenewCDSVolume(t *testing.T) {
+	args := &api.AutoRenewCDSVolumeArgs{
+		VolumeId:      "v-agDi4SHo",
+		RenewTimeUnit: "month",
+		RenewTime:     2,
+	}
+
+	err := BCC_CLIENT.AutoRenewCDSVolume(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestCancelAutoRenewCDSVolume(t *testing.T) {
+	args := &api.CancelAutoRenewCDSVolumeArgs{
+		VolumeId: "v-agDi4SHo",
+	}
+
+	err := BCC_CLIENT.CancelAutoRenewCDSVolume(args)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -557,19 +633,40 @@ func TestListZone(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestListFlavorSpec(t *testing.T) {
+	args := &api.ListFlavorSpecArgs{}
+	res, err := BCC_CLIENT.ListFlavorSpec(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestGetPriceBySpec(t *testing.T) {
+	args := &api.GetPriceBySpecArgs{
+		SpecId:         "g1",
+		Spec:           "",
+		PaymentTiming:  "Postpaid",
+		ZoneName:       "cn-gz-b",
+		PurchaseCount:  1,
+		PurchaseLength: 1,
+	}
+	res, err := BCC_CLIENT.GetPriceBySpec(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
 func TestCreateDeploySet(t *testing.T) {
 	testDeploySetName := "testName"
 	testDeployDesc := "testDesc"
 	testStrategy := "HOST_HA"
 	queryArgs := &api.CreateDeploySetArgs{
-		Strategy: testStrategy,
-		Name:     testDeploySetName,
-		Desc:     testDeployDesc,
+		Strategy:    testStrategy,
+		Name:        testDeploySetName,
+		Desc:        testDeployDesc,
+		Concurrency: 5,
 	}
 	rep, err := BCC_CLIENT.CreateDeploySet(queryArgs)
 	fmt.Println(rep)
 	ExpectEqual(t.Errorf, err, nil)
-	BCC_TestDeploySetId = rep.DeploySetIds[0]
 }
 
 func TestListDeploySets(t *testing.T) {
@@ -595,6 +692,13 @@ func TestDeleteDeploySet(t *testing.T) {
 	testDeleteDeploySetId := "DeploySetId"
 	err := BCC_CLIENT.DeleteDeploySet(testDeleteDeploySetId)
 	fmt.Println(err)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestGetDeploySet(t *testing.T) {
+	testDeploySetID := "DeploySetId"
+	rep, err := BCC_CLIENT.GetDeploySet(testDeploySetID)
+	fmt.Println(rep)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -700,6 +804,145 @@ func TestInstancePurchaseReserved(t *testing.T) {
 		},
 		RelatedRenewFlag: "CDS",
 	}
-	err := BCC_CLIENT.InstancePurchaseReserved(BCC_TestBccId, purchaseReservedArgs)
+	err := BCC_CLIENT.InstancePurchaseReserved("i-4brEpBx1", purchaseReservedArgs)
+	//fmt.Print(err)
 	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestGetAvailableDiskInfo(t *testing.T) {
+	zoneName := "cn-bj-a"
+	if res, err := BCC_CLIENT.GetAvailableDiskInfo(zoneName); err != nil {
+		fmt.Println("Get the specific zone flavor failed: ", err)
+	} else {
+		fmt.Println("Get the specific zone flavor success, result: ", res)
+	}
+}
+
+func TestListTypeZones(t *testing.T) {
+	args := &api.ListTypeZonesArgs{
+		InstanceType: "",
+		ProductType:  "",
+		Spec:         "bcc.g3.c2m12",
+		SpecId:       "",
+	}
+	if res, err := BCC_CLIENT.ListTypeZones(args); err != nil {
+		fmt.Println("Get the specific zone flavor failed: ", err)
+	} else {
+		fmt.Println("Get the specific zone flavor success, result: ", res)
+	}
+}
+
+func TestListInstanceEnis(t *testing.T) {
+	instanceId := "instanceId"
+	if res, err := BCC_CLIENT.ListInstanceEnis(instanceId); err != nil {
+		fmt.Println("Get specific instance eni failed: ", err)
+	} else {
+		fmt.Println("Get specific instance eni success, result: ", res)
+	}
+}
+
+func TestCreateKeypair(t *testing.T) {
+	args := &api.CreateKeypairArgs{
+		Name:        "gosdk",
+		Description: "go sdk test",
+	}
+	if res, err := BCC_CLIENT.CreateKeypair(args); err != nil {
+		fmt.Println("Get specific instance eni failed: ", err)
+	} else {
+		fmt.Println("Get specific instance eni success, result: ", res)
+	}
+}
+
+func TestImportKeypair(t *testing.T) {
+	args := &api.ImportKeypairArgs{
+		ClientToken: "",
+		Name:        "goImport",
+		Description: "go sdk test",
+		PublicKey:   "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCNItVsPPOYbMH4W5fyFqoYZwfL2A1G9IWgofhrrNYVmUr22qx42FPcyR6Fj1frHGNUIZ0NN3CzS8wXg/aKWJkYMiZGjlwmppdrNGWUjmPZD9GbHw/w8sVGCBEyyCEVlTZHQe+AgfzOr/yzqpUmCareBIlQDlR1PzX39wDf7ohpzmJy2e+B+amNy2pgsxG9OI9a4RacGLAeD/OTE/nvj027pEwbWbxM1BsJjrMeH51gWGqv8zANJFL2MGqdBaUGH0r4iXTWGZ+TkA1L7np8qWNCwquve2iy8dlHw7OnzA+hsFVZJROjJimzMY+yNNiy3CqzdO+WaBXG9MWUxtLf3ZjF",
+	}
+	if res, err := BCC_CLIENT.ImportKeypair(args); err != nil {
+		fmt.Println("Get specific instance eni failed: ", err)
+	} else {
+		fmt.Println("Get specific instance eni success, result: ", res)
+	}
+}
+
+func TestListKeypairs(t *testing.T) {
+	args := &api.ListKeypairArgs{
+		Marker:  "",
+		MaxKeys: 0,
+	}
+	if res, err := BCC_CLIENT.ListKeypairs(args); err != nil {
+		fmt.Println("Get specific instance eni failed: ", err)
+	} else {
+		fmt.Println("Get specific instance eni success, result: ", res)
+	}
+}
+
+func TestRenameKeypair(t *testing.T) {
+	args := &api.RenameKeypairArgs{
+		Name:      "renameKeypair",
+		KeypairId: "k-hcNzmnW0",
+	}
+	if err := BCC_CLIENT.RenameKeypair(args); err != nil {
+		fmt.Println("Get specific instance eni failed: ", err)
+	} else {
+		fmt.Println("Get specific instance eni success")
+	}
+}
+
+func TestUpdateKeypairDescription(t *testing.T) {
+	args := &api.KeypairUpdateDescArgs{
+		KeypairId:   "k-hcNzmnW0",
+		Description: "UpdateKeypairDescription test",
+	}
+	if err := BCC_CLIENT.UpdateKeypairDescription(args); err != nil {
+		fmt.Println("Get specific instance eni failed: ", err)
+	} else {
+		fmt.Println("Get specific instance eni success")
+	}
+}
+
+func TestGetKeypairDetail(t *testing.T) {
+	keypairId := "k-uEA5vUFS"
+	if resp, err := BCC_CLIENT.GetKeypairDetail(keypairId); err != nil {
+		fmt.Println("Get specific instance eni failed: ", err)
+	} else {
+		fmt.Println("Get specific instance eni success resp:", resp.Keypair.InstanceCount)
+	}
+}
+
+func TestAttachKeypair(t *testing.T) {
+	args := &api.AttackKeypairArgs{
+		KeypairId:   "k-uEA5vUFS",
+		InstanceIds: []string{"i-4dLwwdgo"},
+	}
+	if err := BCC_CLIENT.AttachKeypair(args); err != nil {
+		fmt.Println("Get specific instance eni failed: ", err)
+	} else {
+		fmt.Println("Get specific instance eni success")
+	}
+}
+
+func TestDetachKeypair(t *testing.T) {
+	args := &api.DetachKeypairArgs{
+		KeypairId:   "k-uEA5vUFS",
+		InstanceIds: []string{"i-4dLwwdgo"},
+	}
+	if err := BCC_CLIENT.DetachKeypair(args); err != nil {
+		fmt.Println("Get specific instance eni failed: ", err)
+	} else {
+		fmt.Println("Get specific instance eni success")
+	}
+}
+
+func TestDeleteKeypair(t *testing.T) {
+	args := &api.DeleteKeypairArgs{
+		KeypairId: "k-uEA5vUFS",
+	}
+	if err := BCC_CLIENT.DeleteKeypair(args); err != nil {
+		fmt.Println("Get specific instance eni failed: ", err)
+	} else {
+		fmt.Println("Get specific instance eni success")
+	}
 }

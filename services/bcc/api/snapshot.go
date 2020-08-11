@@ -112,6 +112,54 @@ func ListSnapshot(cli bce.Client, queryArgs *ListSnapshotArgs) (*ListSnapshotRes
 	return jsonBody, nil
 }
 
+// ListSnapshotChain - list all snapshot chains with the specified parameters
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - queryArgs: arguments to list snapshot chains
+// RETURNS:
+//     - *ListSnapshotChainResult: result of the snapshot chain list
+//     - error: nil if success otherwise the specific error
+func ListSnapshotChain(cli bce.Client, queryArgs *ListSnapshotChainArgs) (*ListSnapshotChainResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getSnapshotChainUri())
+	req.SetMethod(http.GET)
+
+	if queryArgs != nil {
+		if len(queryArgs.OrderBy) != 0 {
+			req.SetParam("orderBy", queryArgs.OrderBy)
+		}
+		if len(queryArgs.Order) != 0 {
+			req.SetParam("order", queryArgs.Order)
+		}
+		if queryArgs.PageSize != 0 {
+			req.SetParam("pageSize", strconv.Itoa(queryArgs.PageSize))
+		}
+		if queryArgs.PageNo != 0 {
+			req.SetParam("pageNo", strconv.Itoa(queryArgs.PageNo))
+		}
+		if len(queryArgs.VolumeId) != 0 {
+			req.SetParam("volumeId", queryArgs.VolumeId)
+		}
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ListSnapshotChainResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
 // GetSnapshotDetail - get details of the specified snapshot
 //
 // PARAMS:

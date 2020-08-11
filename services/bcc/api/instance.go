@@ -18,6 +18,7 @@
 package api
 
 import (
+	"encoding/json"
 	"strconv"
 
 	"github.com/baidubce/bce-sdk-go/bce"
@@ -32,13 +33,16 @@ import (
 // RETURNS:
 //     - *CreateInstanceResult: result of the instance ids newly created
 //     - error: nil if success otherwise the specific error
-func CreateInstance(cli bce.Client, clientToken string, reqBody *bce.Body) (*CreateInstanceResult, error) {
+func CreateInstance(cli bce.Client, args *CreateInstanceArgs, reqBody *bce.Body) (*CreateInstanceResult,
+	error) {
 	// Build the request
+	clientToken := args.ClientToken
+	requestToken := args.RequestToken
 	req := &bce.BceRequest{}
 	req.SetUri(getInstanceUri())
 	req.SetMethod(http.POST)
 	req.SetBody(reqBody)
-
+	req.SetHeader("x-request-token", requestToken)
 	if clientToken != "" {
 		req.SetParam("clientToken", clientToken)
 	}
@@ -68,13 +72,16 @@ func CreateInstance(cli bce.Client, clientToken string, reqBody *bce.Body) (*Cre
 // RETURNS:
 //     - *CreateInstanceBySpecResult: result of the instance ids newly created
 //     - error: nil if success otherwise the specific error
-func CreateInstanceBySpec(cli bce.Client, clientToken string, reqBody *bce.Body) (*CreateInstanceBySpecResult, error)  {
+func CreateInstanceBySpec(cli bce.Client, args *CreateInstanceBySpecArgs, reqBody *bce.Body) (
+	*CreateInstanceBySpecResult, error) {
 	// Build the request
+	clientToken := args.ClientToken
+	requestToken := args.RequestToken
 	req := &bce.BceRequest{}
-	req.SetUri(getInstanceUri())
+	req.SetUri(getInstanceBySpecUri())
 	req.SetMethod(http.POST)
 	req.SetBody(reqBody)
-
+	req.SetHeader("x-request-token", requestToken)
 	if clientToken != "" {
 		req.SetParam("clientToken", clientToken)
 	}
@@ -165,7 +172,33 @@ func GetInstanceDetail(cli bce.Client, instanceId string) (*GetInstanceDetailRes
 	req := &bce.BceRequest{}
 	req.SetUri(getInstanceUriWithId(instanceId))
 	req.SetMethod(http.GET)
+	req.SetParam("isDeploySet", "false")
 
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &GetInstanceDetailResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+func GetInstanceDetailWithDeploySet(cli bce.Client, instanceId string, isDeploySet bool) (*GetInstanceDetailResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getInstanceUriWithId(instanceId))
+	req.SetMethod(http.GET)
+	if isDeploySet == true {
+		req.SetParam("isDeploySet", "true")
+	}
 	// Send request and get response
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
@@ -539,8 +572,7 @@ func GetInstanceVNC(cli bce.Client, instanceId string) (*GetInstanceVNCResult, e
 //     - reqBody: the request body to renew instance
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func InstancePurchaseReserved(cli bce.Client, instanceId, relatedRenewFlag, clientToken string,
-	reqBody *bce.Body) error {
+func InstancePurchaseReserved(cli bce.Client, instanceId, relatedRenewFlag, clientToken string, reqBody *bce.Body) error {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getInstanceUriWithId(instanceId))
@@ -628,7 +660,7 @@ func InstanceChangeSubnet(cli bce.Client, reqBody *bce.Body) error {
 //     - reqBody: http request body
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func BatchAddIp(cli bce.Client, reqBody *bce.Body) error {
+func BatchAddIp(cli bce.Client, reqBody *bce.Body) (*BatchAddIpResponse, error) {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getBatchAddIpUri())
@@ -638,14 +670,18 @@ func BatchAddIp(cli bce.Client, reqBody *bce.Body) error {
 	// Send request and get response
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
-		return err
+		return nil, err
 	}
 	if resp.IsFail() {
-		return resp.ServiceError()
+		return nil, resp.ServiceError()
 	}
 
-	defer func() { resp.Body().Close() }()
-	return nil
+	jsonBody := &BatchAddIpResponse{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
 }
 
 // BatchDelIp - Delete ips of instance
@@ -947,3 +983,129 @@ func CancelBidOrder(cli bce.Client, clientToken string, reqBody *bce.Body) (*Cre
 	return jsonBody, nil
 }
 
+// GetBidInstancePrice - get the market price of the specified bidding instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: http request body
+// RETURNS:
+//     - *GetBidInstancePriceResult: result of the market price of the specified bidding instance
+//     - error: nil if success otherwise the specific error
+func GetBidInstancePrice(cli bce.Client, clientToken string, reqBody *bce.Body) (*GetBidInstancePriceResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getBidInstancePriceUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+	if clientToken != "" {
+		req.SetParam("clientToken", clientToken)
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &GetBidInstancePriceResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
+// ListBidFlavor - list all flavors of the bidding instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+// RETURNS:
+//     - *ListBidFlavorResult: result of the flavor list
+//     - error: nil if success otherwise the specific error
+func ListBidFlavor(cli bce.Client) (*ListBidFlavorResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(listBidFlavorUri())
+	req.SetMethod(http.POST)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ListBidFlavorResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
+func GetInstanceResizeStock(cli bce.Client, args *ResizeInstanceStockArgs) (*InstanceStockResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getResizeInstanceStock())
+	req.SetMethod(http.POST)
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return nil, err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &InstanceStockResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
+func GetInstanceCreateStock(cli bce.Client, args *CreateInstanceStockArgs) (*InstanceStockResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getCreateInstanceStock())
+	req.SetMethod(http.POST)
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return nil, err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &InstanceStockResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}

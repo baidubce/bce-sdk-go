@@ -18,11 +18,11 @@ package http
 
 // Constants of the supported HTTP methods for BCE
 const (
-	GET    = "GET"
-	PUT    = "PUT"
-	POST   = "POST"
-	DELETE = "DELETE"
-	HEAD   = "HEAD"
+	GET     = "GET"
+	PUT     = "PUT"
+	POST    = "POST"
+	DELETE  = "DELETE"
+	HEAD    = "HEAD"
 	OPTIONS = "OPTIONS"
 	PATCH   = "PATCH"
 )

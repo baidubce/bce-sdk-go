@@ -18,7 +18,6 @@
 package api
 
 import (
-	"fmt"
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
 )
@@ -52,11 +51,17 @@ func CreateDeploySet(cli bce.Client, clientToken string, reqBody *bce.Body) (*Cr
 		return nil, resp.ServiceError()
 	}
 
-	jsonBody := &CreateDeploySetResult{}
+	jsonBody := &CreateDeploySetResp{}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
-	return jsonBody, nil
+	if jsonBody != nil && len(jsonBody.DeploySetIds) > 0 {
+		jsonResp := &CreateDeploySetResult{
+			DeploySetId: jsonBody.DeploySetIds[0],
+		}
+		return jsonResp, nil
+	}
+	return nil, nil
 }
 
 // ListDeploySets - list all deploy sets
@@ -71,9 +76,6 @@ func ListDeploySets(cli bce.Client) (*ListDeploySetsResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getDeploySetListUri())
 	req.SetMethod(http.GET)
-
-	fmt.Println(req)
-
 	// Send request and get response
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
@@ -82,7 +84,6 @@ func ListDeploySets(cli bce.Client) (*ListDeploySetsResult, error) {
 	if resp.IsFail() {
 		return nil, resp.ServiceError()
 	}
-
 	jsonBody := &ListDeploySetsResult{}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
@@ -154,14 +155,49 @@ func DeleteDeploySet(cli bce.Client, deploySetId string) error {
 	return nil
 }
 
+// GetDeploySet - get details of the deploy set
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - deploySetId: the id of the deploy set
+// RETURNS:
+//     - *GetDeploySetResult: the detail of the deploy set
+//     - error: nil if success otherwise the specific error
+func GetDeploySet(cli bce.Client, deploySetId string) (*DeploySetResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getDeploySetUrl(deploySetId))
+	req.SetMethod(http.GET)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &DeploySetResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
 func getDeploySetCreateUri() string {
-	return URI_PREFIX + REQUEST_INSTANCE_URI + REQUEST_DEPLOYSET_URI + REQUEST_CREATE_URI
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_DEPLOYSET_URI + REQUEST_CREATE_URI
 }
 
 func getDeploySetListUri() string {
-	return URI_PREFIX + REQUEST_INSTANCE_URI + REQUEST_DEPLOYSET_URI + REQUEST_LIST_URI
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_DEPLOYSET_URI + REQUEST_LIST_URI
 }
 
 func getDeploySetUriWithId(id string) string {
-	return URI_PREFIX + REQUEST_INSTANCE_URI + REQUEST_DEPLOYSET_URI + "/" + id
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_DEPLOYSET_URI + "/" + id
+}
+
+func getDeploySetUrl(id string) string {
+	return URI_PREFIXV2 + REQUEST_DEPLOYSET_URI + "/" + id
 }

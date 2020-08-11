@@ -163,10 +163,80 @@ func DeleteImage(cli bce.Client, imageId string) error {
 	return nil
 }
 
+// GetCommonImage - get common flavor image list
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - flavorIds: the specific flavorIds, can be nil
+// RETURNS:
+//     - *GetImageDetailResult: the result of get image's detail
+//     - error: nil if success otherwise the specific error
+func GetCommonImage(cli bce.Client, reqBody *bce.Body) (*GetImagesResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getCommonImageUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &GetImagesResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
+// GetCustomImage - get user onwer flavor image list
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - flavorIds: the specific flavorIds, can be nil
+// RETURNS:
+//     - *GetImageDetailResult: the result of get image's detail
+//     - error: nil if success otherwise the specific error
+func GetCustomImage(cli bce.Client, reqBody *bce.Body) (*GetImagesResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getCustomImageUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &GetImagesResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
 func getImageUri() string {
 	return URI_PREFIX_V1 + REQUEST_IMAGE_URI
 }
 
 func getImageUriWithId(id string) string {
 	return URI_PREFIX_V1 + REQUEST_IMAGE_URI + "/" + id
+}
+
+func getCommonImageUri() string {
+	return URI_PREFIX_V1 + REQUEST_COMMON_IMAGE_URI
+}
+
+func getCustomImageUri() string {
+	return URI_PREFIX_V1 + REQUEST_CUSTOM_IMAGE_URI
 }

@@ -96,7 +96,7 @@ func ListDeploySets(cli bce.Client) (*ListDeploySetsResult, error) {
 // RETURNS:
 //     - *GetDeploySetResult: the detail of the deploy set
 //     - error: nil if success otherwise the specific error
-func GetDeploySet(cli bce.Client, deploySetId string) (*GetDeploySetResult, error) {
+func GetDeploySet(cli bce.Client, deploySetId string) (*DeploySetResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getDeploySetUriWithId(deploySetId))
@@ -111,7 +111,7 @@ func GetDeploySet(cli bce.Client, deploySetId string) (*GetDeploySetResult, erro
 		return nil, resp.ServiceError()
 	}
 
-	jsonBody := &GetDeploySetResult{}
+	jsonBody := &DeploySetResult{}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}

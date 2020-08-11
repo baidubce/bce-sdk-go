@@ -244,6 +244,8 @@ args := &api.CreateInstanceArgs{
     RootDiskSizeInGb:    40,
     // 选择待创建的实例系统盘介质为HP1 
     RootDiskStorageType: api.StorageTypeCloudHP1,
+    // 临时盘数据盘大小
+    EphemeralDisks        []EphemeralDisk  "ephemeralDisks"
     // 选择创建100GB大小SSD类型CDS磁盘并挂载到实例上 
     CreateCdsList: []api.CreateCdsModel{
 		{
@@ -255,6 +257,50 @@ args := &api.CreateInstanceArgs{
     AdminPass: "123qaz!@#",
 	// 设置实例名称 
 	Name:      "terraform_sdkTest",
+	// 设置创建BCC使用的网络带宽大小
+    NetWorkCapacityInMbps int              networkCapacityInMbps
+    // 设置需要创建BCC使用的DCC服务器id
+    DedicateHostId        string           "dedicatedHostId"
+    // 设置待查询的竞价实例的购买个数
+    PurchaseCount         int              purchaseCount
+    // 设置可用区
+    ZoneName              string           "zoneName"
+    // 指定子网和安全组创建，要求子网和安全组必须同时指定或同时不指定，
+    // 同时指定的子网和安全组必须同属于一个VPC，都不指定会使用默认子网和默认安全组。
+    // 设置创建BCC使用的子网
+    SubnetId              string           "subnetId"
+    // // 设置创建BCC使用的安全组
+    SecurityGroupId       string           "securityGroupId"
+    // 设置需要创建GPU卡信息
+    GpuCard               string           "gpuCard"
+    // 设置需要创建FPGA卡信息
+    FpgaCard              string           "fpgaCard"
+    // 设置GPU卡或FPGA卡数量
+    CardCount             string           "cardCount"
+    // 设置按月付费或者按年付费 月是"month",年是"year"
+    AutoRenewTimeUnit     string           "autoRenewTimeUnit"
+    // 设置自动续费的时间 按月是1-9 按年是 1-3
+    AutoRenewTime         int              autoRenewTime
+    // cds是否自动续费 是:true 否:false
+    CdsAutoRenew          bool             cdsAutoRenew
+    // 待创建实例指定的标签是否需要和已有标签键进行关联，默认为false。注意值为true时要保证该标签键已存在
+    RelationTag           bool             relationTag
+    // 待创建的标签列表
+    Tags                  []model.TagModel tags
+    // 指定实例所在的部署集id
+    DeployId              string           "deployId"
+    // 设置要绑定的密钥对ID
+    KeypairId             string           "keypairId"
+    // 设置要绑定的自动快照策略ID
+    AspId                 string           "aspId"
+    // 公网带宽计费方式，若不指定internetChargeType，默认付费方式同BCC，预付费默认为包年包月按带宽，后付费默认为按使用带宽计费。（BANDWIDTH_PREPAID：预付费按带宽结算；TRAFFIC_POSTPAID_BY_HOUR：流量按小时后付费；BANDWIDTH_POSTPAID_BY_HOUR：带宽按小时后付费）
+    InternetChargeType    string           "internetChargeType"
+    // 设置内网IP
+    InternalIps           []string         internalIps
+    // 使用 uuid 生成一个长度不超过64位的ASCII字符串
+    ClientToken           string           "random-uuid"
+    //创建实例支持幂等的token
+    RequestToken     string  "requestToken"
 }
 
 // 若要生成预付费实例，可以按以下配置生成一个月的预付费实例
@@ -333,6 +379,42 @@ createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
     },
     Name:                  "sdkTest",
     AdminPass:             "123qaz!@#",
+    // 临时盘数据盘大小
+    EphemeralDisks        []EphemeralDisk  "ephemeralDisks"
+    // 设置创建BCC使用的网络带宽大小
+    NetWorkCapacityInMbps int              networkCapacityInMbps
+    // 设置待查询的竞价实例的购买个数
+    PurchaseCount         int              purchaseCount
+    // 设置可用区
+    ZoneName              string           "zoneName"
+    // 指定子网和安全组创建，要求子网和安全组必须同时指定或同时不指定，
+    // 同时指定的子网和安全组必须同属于一个VPC，都不指定会使用默认子网和默认安全组。
+    // 设置创建BCC使用的子网
+    SubnetId              string           "subnetId"
+    // 设置创建BCC使用的安全组
+    SecurityGroupId       string           "securityGroupId"
+    // 设置按月付费或者按年付费 月是"month",年是"year"
+    AutoRenewTimeUnit     string           "autoRenewTimeUnit"
+    // 设置自动续费的时间 按月是1-9 按年是 1-3
+    AutoRenewTime         int              autoRenewTime
+    // cds是否自动续费 是:true 否:false
+    CdsAutoRenew          bool             cdsAutoRenew
+    // 待创建实例指定的标签是否需要和已有标签键进行关联，默认为false。注意值为true时要保证该标签键已存在
+    RelationTag           bool             relationTag
+    // 待创建的标签列表
+    Tags                  []model.TagModel tags
+    // 设置要绑定的密钥对ID
+    KeypairId             string           "keypairId"
+    // 设置要绑定的自动快照策略ID
+    AspId                 string           "aspId"
+    // 公网带宽计费方式，若不指定internetChargeType，默认付费方式同BCC，预付费默认为包年包月按带宽，后付费默认为按使用带宽计费。（BANDWIDTH_PREPAID：预付费按带宽结算；TRAFFIC_POSTPAID_BY_HOUR：流量按小时后付费；BANDWIDTH_POSTPAID_BY_HOUR：带宽按小时后付费）
+    InternetChargeType    string           "internetChargeType"
+    // 设置内网IP
+    InternalIps           []string         internalIps
+    // 使用 uuid 生成一个长度不超过64位的ASCII字符串
+    ClientToken           string           "random-uuid"
+	// 创建实例支持幂等的token,成功后永久有效
+    RequestToken          string           "requestToken"
 
 }
 result, err := client.TestCreateInstanceBySpec(args)
@@ -360,6 +442,285 @@ if err != nil {
 > 15. 实例的临时数据盘默认只有hp1类型。
 > 16. 创建存储优化型实例必须购买临时数据盘，通过ephemeralDisks指定临时盘数据盘大小，默认nvme类型数据盘，无需指定。
 
+## 创建竞价实例
+使用以下代码可以创建BCC实例：
+```go
+createInstanceArgs := &CreateInstanceArgs{
+    // 输入你要创建instance使用的镜像ID
+    ImageId:          "your-choose-image-id",
+    // BCC实例类型
+    InstanceType: "InstanceType"
+    // BCC核数
+    CpuCount: CpuCount
+    // BCC的内存大小GB
+    MemoryCapacityInGB: MemoryCapacityInGB
+    // 系统盘大小GB
+	RootDiskSizeInGb      int              "rootDiskSizeInGb"
+	// 设置待查询的竞价实例的系统盘介质
+    RootDiskStorageType   StorageType      "rootDiskStorageType"
+	// 临时盘数据盘大小
+    EphemeralDisks        []EphemeralDisk  "ephemeralDisks"
+	// 创建需要创建的CDS磁盘列表
+    CreateCdsList         []CreateCdsModel "createCdsList"
+	// 设置创建BCC使用的网络带宽大小
+    NetWorkCapacityInMbps int              networkCapacityInMbps
+	// 设置需要创建BCC使用的DCC服务器id
+    DedicateHostId        string           "dedicatedHostId"
+	// 设置待查询的竞价实例的购买个数
+    PurchaseCount         int              purchaseCount
+	// 实例名称
+    Name                  string           "name"
+	// 设置BCC虚机密码
+    AdminPass             string           "adminPass"
+	// 设置可用区
+    ZoneName              string           "zoneName"
+	// 指定子网和安全组创建，要求子网和安全组必须同时指定或同时不指定，
+    // 同时指定的子网和安全组必须同属于一个VPC，都不指定会使用默认子网和默认安全组。
+    // 设置创建BCC使用的子网
+    SubnetId              string           "subnetId"
+	// // 设置创建BCC使用的安全组
+    SecurityGroupId       string           "securityGroupId"
+	// 设置需要创建GPU卡信息
+    GpuCard               string           "gpuCard"
+	// 设置需要创建FPGA卡信息
+    FpgaCard              string           "fpgaCard"
+	// 设置GPU卡或FPGA卡数量
+    CardCount             string           "cardCount"
+	// 设置按月付费或者按年付费 月是"month",年是"year"
+    AutoRenewTimeUnit     string           "autoRenewTimeUnit"
+	// 设置自动续费的时间 按月是1-9 按年是 1-3
+    AutoRenewTime         int              autoRenewTime
+	// cds是否自动续费 是:true 否:false
+    CdsAutoRenew          bool             cdsAutoRenew
+	// 待创建实例指定的标签是否需要和已有标签键进行关联，默认为false。注意值为true时要保证该标签键已存在
+    RelationTag           bool             relationTag
+	// 待创建的标签列表
+    Tags                  []model.TagModel tags
+	// 指定实例所在的部署集id
+    DeployId              string           "deployId"
+	// 设置创建BCC虚机使用的竞价模式：market 或者 custom
+    BidModel              string           "bidModel"
+	// 设置创建BCC虚机使用的竞价金额,只有当bidModel为custom时有效
+    BidPrice              string           "bidPrice"
+	// 设置要绑定的密钥对ID
+    KeypairId             string           "keypairId"
+	// 设置要绑定的自动快照策略ID
+    AspId                 string           "aspId"
+	// 公网带宽计费方式，若不指定internetChargeType，默认付费方式同BCC，预付费默认为包年包月按带宽，后付费默认为按使用带宽计费。（BANDWIDTH_PREPAID：预付费按带宽结算；TRAFFIC_POSTPAID_BY_HOUR：流量按小时后付费；BANDWIDTH_POSTPAID_BY_HOUR：带宽按小时后付费）
+    InternetChargeType    string           "internetChargeType"
+    // 设置内网IP
+    InternalIps           []string         internalIps
+    // 设置创建BCC虚机使用的竞价模式：market 或者 custom
+    BidModel              string           "bidModel"
+	// 设置创建BCC虚机使用的竞价金额,只有当bidModel为custom时有效
+    BidPrice              string           "bidPrice"
+	// 使用 uuid 生成一个长度不超过64位的ASCII字符串
+    ClientToken           string           "random-uuid"
+    // 创建实例支持幂等的token,成功后永久有效
+    RequestToken          string           "requestToken"
+}
+if res, err := bccClient.CreateBidInstance(createInstanceBySpecArgs); err != nil {
+    fmt.Println("create instance failed: ", err)
+} else {
+    fmt.Println("create instance success, instanceId: ", res.InstanceIds[0])
+}
+```
+## 取消竞价实例订单
+通过以下代码可以取消竞价实例订单
+```go
+cancelBidOrderRequest := &CancelBidOrderRequest{
+    // 订单ID
+    OrderId     string "orderId"
+}
+if err := bccClient.CancelBidOrder(cancelBidOrderRequest); err != nil {
+    fmt.Println("CancelBidOrderRequest failed: ", err)
+} else {
+    fmt.Println("CancelBidOrderRequest success.")
+}
+```
+## 查询竞价实例套餐
+通过以下代码可以查询竞价实例套餐
+```go
+if res, err := bccClient.ListBidFlavor(); err != nil {
+    fmt.Println("List bidding instance flavors failed: ", err)
+} else {
+    fmt.Println("List bidding instance flavors success, result: ", res)
+}
+```
+## 查询竞价实例市场价
+通过以下代码可以查询竞价实例市场价
+```go
+createCdsList := []api.CreateCdsModel{{
+    // 设置CDS磁盘容量，必须为大于0的整数，单位为GB，大小为0~5120G，可选参数
+    CdsSizeInGB: 40,
+    // 设置CDS磁盘存储类别，默认为高性能型，可选参数
+    StorageType: api.StorageTypeHP1,
+    // 设置快照ID
+    SnapshotId:  "your-snapshot-id",
+    // 设置加密密钥，true或false
+    EncryptKey:  true,
+}}
+tagList := []model.TagModel{{
+    // 设置要查询的tagKey
+    TagKey:   "your-tag-key",
+    // 设置要查询的tagValue
+    TagValue: "your-tag-value",
+}}
+args := &api.GetBidInstancePriceArgs{
+    // 使用 uuid 生成一个长度不超过64位的ASCII字符串
+    ClientToken:           "random-uuid",
+     // 设置待查询的虚拟机实例类型，具体可选类型参见InstanceType
+    InstanceType:          "your-choose-instance-type",
+    // 设置待查询虚拟机实例的CPU核数
+    CpuCount:              1,
+    // 设置待查询虚拟机实例的内存容量
+    MemoryCapacityInGB:    2,
+    // 设置待查询虚拟机实例的系统盘大小，单位GB，默认是40GB，范围为[40, 100]GB，超过40GB按照云磁盘价格收费。注意指定的系统盘大小需要满足所使用镜像最小磁盘空间限制。
+    RootDiskSizeInGb:      45,
+    // 设置待查询虚拟机实例系统盘介质，默认使用SSD型云磁盘，可指定系统盘磁盘类型可参见StorageType
+    RootDiskStorageType:   api.StorageTypeCloudHP1,
+    // 设置待查询的CDS磁盘列表
+    CreateCdsList:           createCdsList,
+    // 设置批量查询（购买）的虚拟机实例个数，必须为大于0的整数，可选参数，缺省为1
+    PurchaseCount:         1,
+    // 设置虚拟机名字，可选参数
+    Name:                  "your-choose-instance-name",
+    // 设置实例管理员密码(8-16位字符，英文，数字和符号必须同时存在，符号仅限!@#$%^*()),可选参数
+    AdminPass:             "your-admin-pass",
+    // 设置待查询实例所要绑定的密钥对ID,可选参数
+    KeypairId:             "your-keypair-id",
+    // 设置自动快照策略ID,可选参数
+    AspId:                 "your-asp-id",
+    // 设置待查询虚拟机实例的镜像ID,可选参数
+    ImageId:               "your-image-id",
+    // 设置竞价实例出价模型， 市场价: "market" 自定义："custom",可选参数
+    BidModel:              "your-bid-model",
+    // 设置竞价实例出价金额，若是自定义出价，且出价金额小于市场价，则不允许创建。当bidModel='custom'时才有效,可选参数
+    BidPrice:              "your-bid-price",
+    // 设置公网带宽，单位为Mbps。必须为0~200之间的整数，为0表示不分配公网IP，默认为0Mbps,可选参数
+    NetWorkCapacityInMbps: 20,
+    // 设置待查询实例指定的标签是否需要和已有标签键进行关联，默认为false。注意值为true时要保证该标签键已存在,可选参数
+    RelationTag:           false,
+    // 设置待查询的标签列表,可选参数
+    Tags:                    tagList,
+    // 设置securityGroup信息，为空时将使用默认安全组,可选参数
+    SecurityGroupId:       "your-security-group-id",
+    // 设置subnet信息，为空时将使用默认子网,可选参数
+    SubnetId:              "your-subnet-id",
+    // 设置指定zone信息，默认为空，由系统自动选择,可选参数
+    ZoneName:              "your-zone-name",
+    // 设置公网带宽计费方式,可选参数
+    InternetChargeType:    "your-internet-charge-type",
+}
+if res, err := bccClient.GetBidInstancePrice(args); err != nil {
+    fmt.Println("Get bidding instance price failed: ", err)
+} else {
+    fmt.Println("Get bidding instance price success, result: ", res)
+}
+```
+
+##查询实例套餐库存
+
+查询实例资源套餐规格对应的库存。
+```go
+// 实例类型
+instanceType := "instanceType"
+// CPU核数
+cpuCount := cpuCount
+// 内存容量（GB）
+memoryCapacityInGB := memoryCapacityInGB
+// 可用区名称
+zoneName := "zoneNamen"
+// GPU卡类型，GPU和VGPU可填
+gpuCard := "gpuCard"
+// GPU卡数量，GPU和VGPU可填
+cardCount := "cardCount"
+//本地盘信息
+ephemeralDisks := []EphemeralDisks{{
+      "storageType": "ssd",
+      "sizeInGB": sizeInGB,
+}}
+
+args := &api.CreateInstanceStockArgs{
+    InstanceType:     instanceType,
+    CpuCount: cpuCount,
+    MemoryCapacityInGB:  memoryCapacityInGB,
+    ZoneName:  zoneName,
+    GpuCard:  gpuCard,
+    CardCount:  cardCount,
+    EphemeralDisks:  ephemeralDisks,
+}
+if res, err := bccClient.GetInstanceCreateStock(args); err != nil {
+    fmt.Println("GetInstanceCreateStock failed: ", err)
+} else {
+    fmt.Println("GetInstanceCreateStock success: ", res)
+}
+
+```
+###实例扩缩容库存查询
+
+实例变配余量查询
+```go
+// 实例id
+instanceId := "instanceId"
+// CPU核数
+cpuCount := cpuCount
+// 内存容量（GB）
+memoryCapacityInGB := memoryCapacityInGB
+
+args := &api.CreateInstanceStockArgs{
+    InstanceId:     instanceId,
+    CpuCount: cpuCount,
+    MemoryCapacityInGB:  memoryCapacityInGB,
+}
+if res, err := bccClient.ResizeInstanceStockArgs(args); err != nil {
+    fmt.Println("ResizeInstanceStockArgs failed: ", err)
+} else {
+    fmt.Println("ResizeInstanceStockArgs success: ", res)
+}
+
+```
+###查询带部署集相关字段实例详情
+   查询带部署集相关字段实例详情：
+```go
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+//设置是否展示部署集字段,true or false
+isDeploySet := "your-isDeploySet"
+
+if res, err := bccClient.GetInstanceDetailWithDeploySet(instanceId,isDeploySet); err != nil {
+fmt.Println("get instance detail failed: ", err)
+} else {
+fmt.Println("get instance detail success, result: ", res)
+}
+
+```
+
+## 查询可关机不计费的实例列表
+查询可关机不计费的BCC实例列表：
+```go
+listInstanceArgs := &ListInstanceArgs{
+    // 批量获取列表的查询起始位置，是一个由系统产生的字符串
+    Marker          string
+	// 设置返回数据大小，缺省为1000
+    MaxKeys         int
+	// 通过internal Ip过滤
+    InternalIp      string
+	// 通过DedicatedHostId过滤
+    DedicatedHostId string
+	// 通过ZoneName过滤
+    ZoneName        string
+	// 通过KeypairId过滤
+    KeypairId       string
+}
+
+if res, err := bccClient.GetInstanceNoChargeList(listInstanceArgs); err != nil {
+    fmt.Println("GetInstanceNoChargeList failed: ", err)
+} else {
+    fmt.Println("GetInstanceNoChargeList success, result: ", res)
+}
+```
+
 ### 查询实例列表
 
 以下代码可以查询BCC虚机实例列表,支持通过内网ip、专属服务器id、可用区名称进行筛选
@@ -381,7 +742,12 @@ if err != nil {
 
 使用以下代码可以查询指定BCC虚机的详细信息
 ```go
-result, err := client.GetInstanceDetail(instanceId)
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+//设置是否展示部署集字段
+isDeploySet := "your-isDeploySet"
+
+result, err := client.GetInstanceDetail(instanceId,isDeploySet)
 if err != nil {
     fmt.Println("get instance detail failed:", err)
 } else 
@@ -415,6 +781,24 @@ if err != nil {
     fmt.Println("stop instance failed:", err)
 } else {
     fmt.Println("stop instance success")
+}
+```
+
+## 停止实例(支持强制停止&关机不计费)
+使用以下代码停止实例:
+
+```go
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+// 设置是否强制停止，强制停止等同于断电处理，可能丢失实例操作系统中未写入磁盘的数据
+forceStop ：= false
+// 设置是否关机不计费，TRUE为关机不计费，FALSE为关机计费。注意：只有白名单用户才可以实行关机不计费
+stopWithNoCharge := false
+
+if err := bccClient.StopInstanceWithNoCharge(instanceId, forceStop, stopWithNoCharge); err != nil {
+    fmt.Println("Stop instance failed: ", err)
+} else {
+    fmt.Println("Stop instance success.")
 }
 ```
 
@@ -499,12 +883,36 @@ if err != nil {
 args := &api.RebuildInstanceArgs{
 	ImageId:   "m-DpgNg8lO",
 	AdminPass: "123qaz!@#",
+	// 设置要绑定的密钥对ID
+    KeypairId string "keypairId"
 }
 err := client.RebuildInstance(instanceId, args)
 if err != nil {
     fmt.Println("rebuild instance failed:", err)
 } else {
     fmt.Println("rebuild instance success")
+}
+```
+
+## 重装实例（批量）
+使用以下代码重装实例:
+
+```go
+rebuildBatchInstanceArgs := &RebuildBatchInstanceArgs{
+    // 输入你要重装instance使用的镜像ID
+    ImageId   string "imageId"
+	// 设置BCC虚机密码
+    AdminPass string "adminPass"
+	// 设置要绑定的密钥对ID
+    KeypairId string "keypairId"
+    // 实例ID集合
+    InstanceIds []string "instanceIds"
+}
+
+if err := bccClient.BatchRebuildInstances(rebuildBatchInstanceArgs); err != nil {
+    fmt.Println("rebuild instance failed: ", err)
+} else {
+    fmt.Println("rebuild instance success.")
 }
 ```
 
@@ -523,36 +931,99 @@ if err != nil {
 }
 ```
 
+## 释放实例（POST）
+使用以下代码修改实例描述:
+```go
+deleteInstanceWithRelateResourceArgs := &DeleteInstanceWithRelateResourceArgs{
+    // 设置释放的时候是否关联释放当前时刻，实例挂载的eip+数据盘 false代表否 true代表是
+    // (只有该字段为true时 deleteCdsSnapshotFlag字段才会有效，若该字段为false,deleteCdsSnapshotFlag字段的值无效）
+    RelatedReleaseFlag    bool "relatedReleaseFlag"
+	// 设置是否释放云磁盘快照 false代表否 true代表是
+    DeleteCdsSnapshotFlag bool "deleteCdsSnapshotFlag"
+}
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+
+if err := bccClient.DeleteInstanceWithRelateResource(instanceId, deleteInstanceWithRelateResourceArgs); err != nil {
+    fmt.Println("release instance failed: ", err)
+} else {
+    fmt.Println("release instance success.")
+}
+```
+
 > **提示：**
 > -   释放单个云服务器实例，释放后实例所使用的物理资源都被收回，相关数据全部丢失且不可恢复。
 > -   只有付费类型为Postpaid或者付费类型为Prepaid且已过期的实例才可以释放。
 > -   实例释放后，已挂载的CDS磁盘自动卸载，，基于此CDS磁盘的快照会保留。
 > -   实例释放后，基于原系统盘的快照会自动删除，基于原系统盘的自定义镜像会保留。
 
-### 将实例加入安全组
+## 变配实例
+使用以下代码可以选择CPU,MemoryCapacityInGB,EphemeralDisks变配指定BCC实例:
 
-如下代码可以将实例加入安全组
 ```go
-err := client.BindSecurityGroup(instanceId, subnetId)
-if err != nil {
-    fmt.Println("add instance to security group failed:", err)
+resizeInstanceArgs := &ResizeInstanceArgs{
+    // BCC核数
+    CpuCount: CpuCount
+    // BCC的内存大小GB
+    MemoryCapacityInGB: MemoryCapacityInGB
+	// 临时盘数据盘大小
+    EphemeralDisks        []EphemeralDisk  "ephemeralDisks"
+}
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+
+if err := bccClient.ResizeInstance(instanceId, resizeInstanceArgs); err != nil {
+    fmt.Println("resize instance failed: ", err)
 } else {
-    fmt.Println("add instance to security group success")
+    fmt.Println("resize instance success.")
+}
+```
+## 变配实例（通过实例套餐规格）
+使用以下代码可以选择CPU,MemoryCapacityInGB,EphemeralDisks变配指定BCC实例:
+
+```go
+resizeInstanceArgs := &ResizeInstanceArgs{
+    // 实例套餐规格
+    Spec               string          "spec"
+}
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+
+if err := bccClient.ResizeInstanceBySpec(instanceId, resizeInstanceArgs); err != nil {
+    fmt.Println("resize instance failed: ", err)
+} else {
+    fmt.Println("resize instance success.")
 }
 ```
 
-> **提示：**
-> - 每个实例最多关联10个安全组
+## 绑定安全组
+使用以下代码绑定安全组:
 
-### 将实例移出安全组
-
-如下代码可以
 ```go
-err := client.UnBindSecurityGroup(instanceId, "g-x7jis4ytps4e")
-if err != nil {
-    fmt.Println("move instance out from security group failed:", err)
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+// 设置BCC绑定的安全组
+SecurityGroupId := "SecurityGroupId"
+
+if err := bccClient.BindSecurityGroup(instanceId, SecurityGroupId); err != nil {
+    fmt.Println("Bind Security Group failed: ", err)
 } else {
-    fmt.Println("move instance out from security group success")
+    fmt.Println("Bind Security Group success.")
+}
+```
+## 解绑安全组
+使用以下代码解绑安全组:
+
+```go
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+// 设置BCC解绑的安全组
+SecurityGroupId := "SecurityGroupId"
+
+if err := bccClient.UnBindSecurityGroup(instanceId, SecurityGroupId); err != nil {
+    fmt.Println("UnBind Security Group failed: ", err)
+} else {
+    fmt.Println("UnBind Security Group success.")
 }
 ```
 
@@ -611,13 +1082,28 @@ args := &api.PurchaseReservedArgs{
         }
     }
 }
-err := client.InstancePurchaseReserved(instanceId, args)
-if err != nil {
-    fmt.Println("purchase reserve instance failed:", err)
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+// 设置实例关联续费标识，默认为空字符串。
+relatedRenewFlag := "CDS"
+
+if err := bccClient.InstancePurchaseReserved(instanceId, ModifyInstanceDescArgs); err != nil {
+    fmt.Println("Modify Instance Attribute failed: ", err)
 } else {
-    fmt.Println("purchase reserve instance success")
+    fmt.Println("Modify Instance Attribute success.")
 }
 ```
+> **注意：** 
+>
+> 关联续费产品(relatedRenewFlag)可选：
+>
+> -   CDS	        只对BCC实例关联的预付费CDS进行续费
+> -   EIP	        只对BCC实例关联的预付费EIP进行续费
+> -   MKT	        只对BCC实例关联的预付费MKT进行续费
+> -   CDS_EIP	    只对BCC实例关联的预付费CDS、EIP进行续费
+> -   CDS_MKT	    只对BCC实例关联的预付费CDS、MKT进行续费
+> -   EIP_MKT	    只对BCC实例关联的预付费EIP、MKT进行续费
+> -   CDS_EIP_MKT	只对BCC实例关联的预付费CDS、EIP、MKT进行续费
 
 > **提示：**
 > - BCC虚机实例扩缩容期间不能进行续费操作。
@@ -669,16 +1155,19 @@ if err != nil {
 ### 向指定实例批量添加指定ip
 
 ```go
-privateIps := []string{"192.168.1.25"}
-instanceId := "your-choose-instance-id"
-batchAddIpArgs := &api.BatchAddIpArgs{
-	InstanceId: instanceId,
-	PrivateIps: privateIps,
+batchAddIpArgs := &BatchAddIpArgs{
+    // 实例ID
+    InstanceId string "instanceId"
+    // 辅助IP，和SecondaryPrivateIpAddressCount不可同时使用
+	PrivateIps []string "privateIps"
+    // 自动分配IP数量，和PrivateIps不可同时使用
+    SecondaryPrivateIpAddressCount int 1
 }
-if err := client.BatchAddIP(batchAddIpArgs); err != nil {
-    fmt.Println("add ips failed: ", err)
+
+if res, err := bccClient.BatchAddIP(batchAddIpArgs); err != nil {
+    fmt.Println("BatchAddIP failed: ", err)
 } else {
-    fmt.Println("add ips success.")
+    fmt.Println("BatchAddIP success, result: ", res)
 }
 ```
 
@@ -695,6 +1184,83 @@ if err := client.BatchDelIP(batchDelIpArgs); err != nil {
     fmt.Println("delete ips failed: ", err)
 } else {
     fmt.Println("delete ips success.")
+}
+```
+
+## 计费变更-转预付费
+使用以下代码对实例计费变更-转预付费:
+
+```go
+changeToPrepaidRequest := &ChangeToPrepaidRequest{
+    // 设置将要变更预付费的时长，单位为月
+    Duration    int  "duration"
+	// 设置是否变更关联的数据盘，TRUE表示变更，FLASE表示不变更
+    RelationCds bool "relationCds"
+}
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+
+if err := bccClient.ChangeToPrepaid(instanceId, changeToPrepaidRequest); err != nil {
+    fmt.Println("ChangeToPrepaid failed: ", err)
+} else {
+    fmt.Println("ChangeToPrepaid success.")
+}
+```
+
+## 实例绑定标签
+使用以下代码对实例绑定标签:
+
+```go
+bindTagsRequest := &BindTagsRequest{
+    // 设置想要绑定的标签
+    ChangeTags: []model.TagModel{
+        {
+            TagKey:   "TagKey",
+            TagValue: "TagValue",
+        },
+    },
+}
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+
+if err := bccClient.BindInstanceToTags(instanceId, bindTagsRequest); err != nil {
+    fmt.Println("BindInstanceToTags failed: ", err)
+} else {
+    fmt.Println("BindInstanceToTags success.")
+}
+```
+## 实例解绑标签
+使用以下代码对实例解绑标签:
+
+```go
+unBindTagsRequest := &UnBindTagsRequest{
+    // 设置想要解绑的标签
+    ChangeTags: []model.TagModel{
+        {
+            TagKey:   "TagKey",
+            TagValue: "TagValue",
+        },
+    },
+}
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+
+if err := bccClient.UnBindInstanceToTags(instanceId, unBindTagsRequest); err != nil {
+    fmt.Println("UnBindInstanceToTags failed: ", err)
+} else {
+    fmt.Println("UnBindInstanceToTags success.")
+}
+```
+
+### 查询可用区的磁盘信息
+使用以下代码可以查询指定可用区的磁盘信息
+```GO
+// 设置你要操作的zoneName
+zoneName := "cn-bj-a"
+if res, err := bccClient.GetAvailableDiskInfo(zoneName); err != nil {
+    fmt.Println("Get the specific zone flavor failed: ", err)
+} else {
+    fmt.Println("Get the specific zone flavor success, result: ", res)
 }
 ```
 
@@ -721,6 +1287,12 @@ args := &api.CreateCDSVolumeArgs{
     Name:        "sdkCreate", 
     // 设置磁盘描述
     Description: "sdk test",
+    // 快照ID
+    SnapshotId    string      "snapshotId"
+    // 可用区
+    ZoneName      string      "zoneName"
+	// 设置磁盘加密密钥
+	EncryptKey    string      "encryptKey"
 }
 result, err := client.CreateCDSVolume(args)
 if err != nil {
@@ -822,6 +1394,24 @@ if err != nil {
 > - 磁盘释放后不可恢复。缺省情况下，该磁盘的所有快照将保留，但会删除与磁盘的关联关系。
 > - 只有磁盘状态为 Available 或 Expired 或 Error 时才可以执行此操作，否则将提示 409 错误。
 
+## 释放磁盘（POST）
+使用以下代码可以释放磁盘：
+```go
+deleteCDSVolumeArgs := &DeleteCDSVolumeArgs{
+	// 设置关联释放手动快照，取值为"on"时，会删除磁盘关联的手动快照
+    ManualSnapshot string "on"
+	// 设置关联释放自动快照，取值为"on"时，会删除磁盘关联的自动快照
+    AutoSnapshot   string "on"
+}
+// 设置你要操作的volumeId
+volumeId := "your-choose-volume-id"
+if err := bccClient.DeleteCDSVolumeNew(volumeId, deleteCDSVolumeArgs); err != nil {
+    fmt.Println("DeleteCDSVolumeNew failed: ", err)
+} else {
+    fmt.Println("DeleteCDSVolumeNew success")
+}
+```
+
 ### 磁盘重命名
 
 如下代码可以给一个CDS磁盘重命名
@@ -876,13 +1466,57 @@ if err != nil {
 }
 ```
 
+## 磁盘开通自动续费
+通过以下代码可以开通磁盘自动续费
+```go
+// 设置要开通自动续费的磁盘id
+volumeId := "your-volume-id"
+// 设置按月付费或者按年付费 月是"month",年是"year"
+renewTimeUnit := "your-renew-time-unit"
+// 设置自动续费的时间 按月是1-9 按年是 1-3
+renewTime := 3
+args := &api.AutoRenewCDSVolumeArgs{
+    VolumeId:       volumeId,
+    RenewTimeUnit: renewTimeUnit,
+    RenewTime:       renewTime,
+}
+if err := bccClient.AutoRenewCDSVolume(args); err != nil {
+    fmt.Println("Auto renew cds volume failed: ", err)
+} else {
+    fmt.Println("Auto renew cds volume success")
+}
+```
+>- 注意数据盘才能进行自动续费操作
+>- 注意过期状态磁盘不能进行自动续费操作
+>- 异步接口，可通过查询磁盘详情接口查询磁盘到期时间
+
+## 磁盘取消自动续费
+通过以下代码可以取消磁盘自动续费
+```go
+// 设置要取消自动续费的磁盘id
+volumeId := "your-volume-id"
+args := &api.CancelAutoRenewCDSVolumeArgs{
+    VolumeId:       volumeId,
+}
+if err := bccClient.CancelAutoRenewCDSVolume(args); err != nil {
+    fmt.Println("Cancel auto renew cds volume failed: ", err)
+} else {
+    fmt.Println("Cancel auto renew cds volume success")
+}
+```
+>- 注意数据盘才能取消进行自动续费操作
+>- 异步接口，可通过查询磁盘详情接口查询磁盘到期时间
+
 ### 磁盘扩容
 
 使用以下代码可以对磁盘进行扩大容量操作：
 
 ```go
 args := &api.ResizeCSDVolumeArgs{
-	NewCdsSizeInGB: 100,
+	// 磁盘容量GB
+    NewCdsSizeInGB int         `json:"newCdsSizeInGB"`
+    // 磁盘类型
+    NewVolumeType  StorageType `json:"newVolumeType"`
 }
 err := client.ResizeCDSVolume(volumeId, args)
 if err != nil {
@@ -963,44 +1597,77 @@ if err != nil {
 > - 该接口用于释放未挂载的CDS磁盘，系统盘不能释放。
 > - 与老接口功能上的区别在于，可以控制是否删除与磁盘关联的快照。
 
+### 查询可用区的磁盘信息
+使用以下代码可以查询指定可用区的磁盘信息
+```GO
+// 设置你要操作的zoneName
+zoneName := "cn-bj-a"
+if res, err := bccClient.GetAvailableDiskInfo(zoneName); err != nil {
+    fmt.Println("Get the specific zone flavor failed: ", err)
+} else {
+    fmt.Println("Get the specific zone flavor success, result: ", res)
+}
+```
+
 ## 镜像管理
 
-## 创建自定义镜像
-
-支持通过实例创建和通过快照创建两种方式。参考一下代码可以创建一个自定义镜像：
-
+### 创建自定义镜像
+- 该接口用于创建自定义镜像，默认配额20个每账号，创建后的镜像可用于创建实例。
+- 支持通过实例创建和通过快照创建两种方式。
+- 当通过实例创建时，只有 Running 或 Stopped 状态的实例才可以执行成功，否则会提示 409 错误。
+- 仅限通过系统盘快照创建自定义镜像。
+- 当通过快照创建时，只有 Available 状态的快照才可以执行成功，否则会提示 409 错误
 ```go
+// 待创建的自定义镜像名称，支持大小写字母、数字、中文以及-_ /.特殊字符，必须以字母开头，长度1-65。
+imageName := "your-imageName"
+// 当从实例创建镜像时，此参数是指用于创建镜像的实例ID。可选参数，与 snapshotId 不同时存在，同时存在时只取instanceId
+instanceId := "your-instanceId"
+// 当从快照创建镜像时，此参数是指用于创建镜像的快照ID。可选参数，与 instanceId 不同时存在，同时存在时只取instanceId
+snapshotId := "your-snapshotId"
+// 是否关联CDS，默认为false
+relateCds := true or false
 args := &api.CreateImageArgs{
-    ImageName:  "test", 
-    InstanceId: instanceId,
+    ImageName:      imageName,
+    InstanceId:     instanceId,
+    SnapshotId:     snapshotId,
+    RelateCds:      relateCds,
 }
-result, err := client.CreateImage(args)
-if err != nil {
-    fmt.Println("create image failed:", err)
+if res, err := bccClient.CreateImage(args); err != nil {
+    fmt.Println("create image failed: ", err)
 } else {
-    fmt.Println("create image success: ", result)
+    fmt.Println("create image success:", res)
 }
 ```
 
 > 注意，创建自定义镜像，默认配额20个每账号。
 
-## 查询镜像列表
-
-使用以下代码可以查询有权限的镜像列表:
-
+### 查询镜像列表
+- 使用以下代码可以查询有权限的镜像列表。
+- 查询的镜像信息中包括系统镜像、自定义镜像和服务集成镜像。
+- 支持按 imageType 来过滤查询，此参数非必需，缺省为 All,即查询所有类型的镜像。
 ```go
-args := &api.ListImageArgs{}
-result, err := client.ListImage(args)
-if err != nil {
-    fmt.Println("list all images failed:", err)
+// 批量获取列表的查询的起始位置，是一个由系统生成的字符串,可选参数
+marker := "your-marker"
+// 每页包含的最大数量，最大数量通常不超过1000。缺省值为1000,可选参数
+maxKeys := your-maxKeys
+// 指定要查询何种类型的镜像，包括All(所有)，System(系统镜像/公共镜像)，Custom(自定义镜像)，Integration(服务集成镜像)，Sharing(共享镜像)，GpuBccSystem(GPU专用公共镜像)，GpuBccCustom(GPU专用自定义镜像)，FpgaBccSystem(FPGA专用公共镜像)，FpgaBccCustom(FPGA专用自定义镜像)，缺省值为All
+imageType := "your-imageType"
+
+args := &api.ListImageArgs{
+	Marker:         marker,
+    MaxKeys:        maxKeys,
+    ImageType:      imageType,
+}
+if res, err := bccClient.ListImage(args); err != nil {
+    fmt.Println("get image list failed: ", err)
 } else {
-    fmt.Println("list all images success: ", result)
+    fmt.Println("get image list success,res: ", res)
 }
 ```
 
 > 具体的镜像类型可详细参考BCC API文档[查询镜像列表](https://cloud.baidu.com/doc/BCC/s/Ajwvynu5r)
 
-## 查询镜像详情
+### 查询镜像详情
 
 以下代码可以查询镜像详细信息：
 
@@ -1009,11 +1676,14 @@ result, err := client.GetImageDetail(imageId)
 if err != nil {
     fmt.Println("get image detail failed:", err)
 } else {
-    fmt.Println("get image detail success: ", result)
+    fmt.Println("get image detail success: ", result.Image)
 }
 ```
 
-## 删除自定义镜像
+### 删除自定义镜像
+- 该接口用于删除用户自己的指定的自定义镜像，仅限自定义镜像，系统镜像和服务集成镜像不能删除。
+- imageId 所指定的镜像不存在，提示404错误。
+- 镜像删除后无法恢复，不能再用于创建、重置实例。
 
 以下代码可以删除一个自定义镜像：
 
@@ -1026,12 +1696,9 @@ if err != nil {
 }
 ```
 
-## 跨区域复制自定义镜像
-
-用于用户跨区域复制自定义镜像，仅限自定义镜像，系统镜像和服务集成镜像不能复制
-
-regions如北京"bj",广州"gz",苏州"su"，可多选：
-
+### 跨区域复制自定义镜像
+- 用于用户跨区域复制自定义镜像，仅限自定义镜像，系统镜像和服务集成镜像不能复制
+- regions如北京"bj",广州"gz",苏州"su"，可多选：
 ```go
  args := &api.RemoteCopyImageArgs{
     Name:       "test2",
@@ -1045,7 +1712,7 @@ regions如北京"bj",广州"gz",苏州"su"，可多选：
  }
 ```
 
-## 取消跨区域复制自定义镜像
+### 取消跨区域复制自定义镜像
 
 用于取消跨区域复制自定义镜像，仅限自定义镜像，系统镜像和服务集成镜像不能复制：
 
@@ -1058,40 +1725,60 @@ if err != nil {
 }
 ```
 
-## 共享自定义镜像
+### 共享自定义镜像
 
-用于共享用户自己的指定的自定义镜像，仅限自定义镜像，系统镜像和服务集成镜像不能共享：
+- 该接口用于共享用户自己的指定的自定义镜像，仅限自定义镜像，系统镜像和服务集成镜像不能共享。
+- imageId 所指定的镜像不存在，提示404错误。
+- 镜像共享后，被共享的用户可以使用此镜像创建、重置实例。
+- 请求参数中的account和accountId均为可选参数，但不能全部为空，当两个参数同时出现时，服务端会自动去重。
 
 ```go
+// 待共享的用户id
+accountId := "your-accountId"
+//待共享的用户名
+account := "your-account"
+// 待共享的镜像ID
+imageId := "your-imageId"
+
 args := &api.SharedUser{
-    AccountId: accountId,
+	AccountId:  accountId,
+    Account:    account,
 }
-err := client.ShareImage(imageId, args)
-if err != nil {
-    fmt.Println("share image failed:", err)
+if  err := bccClient.ShareImage(imageId,args); err != nil {
+    fmt.Println("ShareImage failed: ", err)
 } else {
-    fmt.Println("share image success")
+    fmt.Println("ShareImage success")
 }
 ```
 
-## 取消共享自定义镜像
+### 取消共享自定义镜像
 
-用于取消共享用户自己的指定的自定义镜像：
+- 该接口用于取消共享用户自己的指定的自定义镜像，仅限自定义镜像，系统镜像和服务集成镜像不能共享。
+- imageId 所指定的镜像不存在，提示404错误。
+- 镜像取消共享后，被取消共享的用户不能再使用此镜像创建、重置实例。
+- 请求参数中的account和accountId均为可选参数，但不能全部为空，当两个参数同时出现时，服务端会自动去重。
 
 ```go
+// 待共享的用户id
+accountId := "your-accountId"
+//待共享的用户名
+account := "your-account"
+// 待共享的镜像ID
+imageId := "your-imageId"
+
 args := &api.SharedUser{
-    AccountId: accountId,
+	AccountId:  accountId,
+    Account:    account,
 }
-err := client.UnShareImage(imageId, args)
-if err != nil {
-    fmt.Println("cancel share image failed:", err)
+if  err := bccClient.UnShareImage(imageId,args); err != nil {
+    fmt.Println("UnShareImage failed: ", err)
 } else {
-    fmt.Println("cancel share image success")
+    fmt.Println("UnShareImage success")
 }
 ```
 
-## 查询镜像已共享用户列表
-
+### 查询镜像已共享用户列表
+- mageId 所指定的镜像不存在，提示404错误。
 用于查询镜像已共享的用户列表：
 
 ```go
@@ -1173,7 +1860,32 @@ if err != nil {
     fmt.Println("delete snapshot success")
 }
 ```
-
+### 查询快照链列表
+通过以下代码可以查询快照链列表
+```go
+// 设置排序属性：chainId(快照链id,默认值),chainSize(快照链大小),volumeSize(磁盘大小)。可选参数
+orderBy := "your-order-by"
+// 设置排序方式:asc(正序,默认值), desc(倒序)。可选参数
+order := "your-order"
+// 设置每页容量，默认值为1000，可选参数
+pageSize := 100
+// 设置页数，默认为1，可选参数
+pageNo := 1
+// 设置磁盘ID，该字段非空则只返回这个磁盘的快照链信息,可选
+volumeId := "your-volume-id"
+args := &api.ListSnapshotChainArgs{
+    OrderBy:    orderBy,
+    Order:      order,
+    PageSize:   pageSize,
+    PageNo:     pageNo,
+    VolumeId:   volumeId,
+}
+if res, err := bccClient.ListSnapshotChain(args); err != nil {
+    fmt.Println("get snapshot chain list failed: ", err)
+} else {
+    fmt.Println("get snapshot chain list success, SnapshotId: ", res.Snapshot.Id)
+}
+```
 
 ## 自动快照策略管理
 
@@ -1410,8 +2122,233 @@ if err != nil {
 > -   同一安全组中的规则以remark、protocol、direction、portRange、sourceIp|destIp、sourceGroupId|destGroupId六元组作为唯一性索引，若安全组中不存在对应的规则将报404错误。
 > -   具体的接口描述BCC API 文档[撤销安全组规则](https://cloud.baidu.com/doc/BCC/s/yjwvynxk0)。
 
-## 其他接口
+## 部署集
+### 创建部署集
 
+通过以下代码可以根据指定的部署集策略创建部署集
+
+```go
+// 设置创建部署集的名称
+deploySetName := "your-deploy-set-name"
+// 设置创建的部署集的描述信息
+deployDesc := "your-deploy-set-desc"
+// 设置创建部署集的策略，BBC实例策略只支持："tor_ha"
+strategy := "tor_ha"
+queryArgs := &CreateDeploySetArgs{
+    Strategy:    strategy,
+    Name:        deploySetName,
+    Desc:        deployDesc,
+}
+if res, err := bccClient.CreateDeploySet(queryArgs); err != nil {
+    fmt.Println("Create deploy set failed: ", err)
+} else {
+    fmt.Println("Create deploy set success, result: ", res)
+}
+```
+
+### 查询部署集列表
+
+通过以下代码可以查询所有部署集实例的列表及详情信息
+
+```go
+if res, err := bccClient.ListDeploySets(); err != nil {
+    fmt.Println("List deploy sets failed: ", err)
+} else {
+    fmt.Println("List deploy sets success, result: ", res)
+}
+```
+### 修改部署集属性
+
+使用以下代码可以修改指定部署集的属性值
+
+```go
+    // 设置创建部署集的名称
+	testDeploySetName := "testName"
+    // 设置创建的部署集的描述信息
+	testDeployDesc := "goDesc"
+	queryArgs := &api.ModifyDeploySetArgs{
+		Name: testDeploySetName,
+		Desc: testDeployDesc,
+	}
+	BCC_TestDeploySetId = "DeploySetId"
+	rep, err := BCC_CLIENT.ModifyDeploySet(BCC_TestDeploySetId, queryArgs)
+	fmt.Println(rep)
+	ExpectEqual(t.Errorf, err, nil)
+```
+
+### 删除指定的部署集
+
+使用以下代码删除用户自己的指定的部署集
+
+```go
+// 设置你要删除的deploySetID
+deploySetID := "your-choose-deploy-set-id"
+if err := bccClient.DeleteDeploySet(deploySetID); err != nil {
+    fmt.Println("Delete deploy set failed: ", err)
+}
+```
+
+## 密钥对接口
+### 创建密钥对
+
+该接口用于创建密钥对，创建后的密钥对可植入实例以实现远程登录虚机。
+
+```go
+// 待创建的密钥对名称
+name := "your-keypair-name"
+// 待创建的密钥对的描述,可选参数
+description := "your-keypair-desc"
+args := &api.CreateKeypairArgs{
+    Name:     name,
+    Description:  description,
+}
+if res, err := bccClient.CreateKeypair(args); err != nil {
+    fmt.Println("create keypair failed: ", err)
+} else {
+    fmt.Println("create keypair success,res: ", res)
+}
+```
+
+### 导入密钥对
+
+该接口用于用户自行导入创建密钥对。
+
+```go
+// 待创建的密钥对名称
+name := "your-keypair-name"
+// 待创建的密钥对的描述,可选参数
+description := "your-keypair-desc"
+publicKey := "your-publickey"
+args := &api.ImportKeypairArgs{
+    Name:     name,
+    Description:  description,
+    PublicKey:  publicKey,
+}
+if res, err := bccClient.ImportKeypair(args); err != nil {
+    fmt.Println("create keypair failed: ", err)
+} else {
+    fmt.Println("create keypair success,res: ", res)
+}
+```
+
+### 绑定密钥对
+
+该接口用于将所选密钥对（限单个）绑定到所选虚机（支持多台）。 目前一台虚机只能绑定一个密钥对，若操作的虚机已经绑定密钥对，则此操作将替换该虚机原有的密钥对。此操作仅适用于linux系统的虚机，且所选虚机必须处于运行中或关机状态。
+
+```go
+instanceIds := []string{"your-instanceId"}
+keypairId:= "your-keypair-id"
+args := &api.AttackKeypairArgs{
+    InstanceIds:     instanceIds,
+    KeypairId:  keypairId,
+}
+if err := bccClient.AttachKeypair(args); err != nil {
+    fmt.Println("attach keypair failed: ", err)
+} else {
+    fmt.Println("attach keypair success")
+}
+```
+
+### 解绑密钥对
+
+该接口用于将所选虚机与它们各自绑定的密钥对解绑。 目前一台虚机只能绑定一个密钥对，此操作将使所选虚机与其通过百度云控制台操作所绑定的密钥对解绑，若该虚机不存在这种密钥对，则不进行处理。 此操作仅适用于linux系统的虚机，且所选虚机必须处于运行中或关机状态。 
+注： 1）用户所选虚机可能并未绑定任何密钥对，则此操作对该虚机无任何作用； 2）用户可能对所选虚机手动绑定了密钥对，则此操作对其手动绑定的密钥对不产生任何影响； 3）用户如若此前通过百度云控制台操作，为所选虚机绑定过密钥对，且该密钥对状态正常，则此操作将从该虚机中删除该密钥对
+```go
+instanceIds := []string{"your-instanceId"}
+keypairId:= "your-keypair-id"
+args := &api.DetachKeypairArgs{
+    InstanceIds:     instanceIds,
+    KeypairId:  keypairId,
+}
+if err := bccClient.DetachKeypair(args); err != nil {
+    fmt.Println("detach keypair failed: ", err)
+} else {
+    fmt.Println("detach keypair success")
+}
+```
+
+### 删除密钥对
+
+该接口用于删除密钥对，已经绑定虚机的密钥对无法被删除。
+```go
+keypairId:= "your-keypair-id"
+args := &api.DetachKeypairArgs{
+    KeypairId:  keypairId,
+}
+if err := bccClient.DeleteKeypair(args); err != nil {
+    fmt.Println("detach keypair failed: ", err)
+} else {
+    fmt.Println("detach keypair success")
+}
+```
+
+### 查询密钥对详情
+
+该接口用于查询单个密钥对的详细信息。
+```go
+keypairId:= "your-keypair-id"
+if res, err := bccClient.GetKeypairDetail(keypairId); err != nil {
+    fmt.Println("get keypair failed: ", err)
+} else {
+    fmt.Println("get keypair success,res: ", res)
+}
+```
+
+### 查询密钥对列表
+
+该接口用于查询密钥对列表。
+```go
+// 批量获取列表的查询的起始位置，是一个由系统生成的字符串,可选参数
+marker := "your-marker"
+// 每页包含的最大数量，最大数量通常不超过1000。缺省值为1000,可选参数
+maxKeys := your-maxKeys
+
+args := &api.ListKeypairArgs{
+    Marker     marker,
+    MaxKeys    maxKeys,
+}
+if res, err := bccClient.ListKeypair(args); err != nil {
+    fmt.Println("get keypair list failed: ", err)
+} else {
+    fmt.Println("get keypair list success,res: ", res)
+}
+```
+
+### 重命名密钥对
+
+该接口用于重命名密钥对。
+```go
+name := "your-keypair-name"
+keypairId:= "your-keypair-id"
+args := &api.RenameKeypairArgs{
+    Name:     name,
+    KeypairId:  keypairId,
+}
+if err := bccClient.RenameKeypair(args); err != nil {
+    fmt.Println("update keypair name failed: ", err)
+} else {
+    fmt.Println("update keypair name  success")
+}
+```
+
+### 更改密钥对描述
+
+该接口用于更改密钥对描述，若用户提供的新的描述内容为空，则删除所操作虚机的描述。
+```go
+description := "your-keypair-desc"
+keypairId:= "your-keypair-id"
+args := &api.KeypairUpdateDescArgs{
+    Description:  description,
+    KeypairId:  keypairId,
+}
+if  err := bccClient.UpdateKeypairDescription(args); err != nil {
+    fmt.Println("create keypair failed: ", err)
+} else {
+    fmt.Println("update keypair desc success")
+}
+```
+
+## 其他接口
 ### 查询实例套餐规格
 
 如下代码可以查询当前可以创建的实例的套餐的规格
@@ -1419,8 +2356,69 @@ if err != nil {
 result, err := client.ListSpec()
 if err != nil { 
     fmt.Println("list specs failed: ", err)
+```
+
+### 查询实例套餐规格(新)
+
+通过以下代码可以查询实例资源套餐规格列表信息
+```go
+// 设置可用区名称，可选
+zoneName := "your-zone-name"
+args := &api.ListFlavorSpecArgs{
+    ZoneName:   zoneName,
+}
+if res, err := bccClient.ListFlavorSpec(args); err != nil {
+    fmt.Println("Get specified flavor list failed: ", err)
 } else {
-    fmt.Println("list specs success: ", result)
+    fmt.Println("Get specified flavor list success, result: ", res)
+}
+```
+>- 创建虚机时建议使用参数(spec)指定需要的机型以及配置。
+
+### 查询实例套餐价格
+通过以下代码可以查询实例资源套餐规格对应的价格
+```go
+// 设置实例规格族
+specId := "your-spec-id"
+// 设置实例套餐规格
+spec := "your-spec"
+// 设置付费方式，包括Postpaid(后付费)，Prepaid(预付费)两种
+paymentTiming := "your-payment-timing"
+// 设置可用区名称
+zoneName := "your-zone-name"
+// 设置所要购买的实例数量，缺省值为1，可选参数
+purchaseCount := 1
+// 设置时长，[1,2,3,4,5,6,7,8,9,12,24,36]，单位：月
+reservationLength := 9
+args := &api.GetPriceBySpecArgs{
+    SpecId:         specId,
+    Spec:           spec,
+    PaymentTiming:  paymentTiming,
+    ZoneName:       zoneName,
+    PurchaseCount:  purchaseCount,
+    PurchaseLength: reservationLength,
+}
+if res, err := bccClient.GetPriceBySpec(args); err != nil {
+    fmt.Println("Get specified instance's price failed: ", err)
+} else {
+    fmt.Println("Get specified intstance's price success, result: ", res)
+}
+```
+
+### 查询机型的可用区
+
+使用以下代码可以查询指定机型支持的可用区列表
+```go
+args := &api.ListTypeZonesArgs{
+    InstanceType: "",
+    ProductType:  "",
+    Spec:         "bcc.g3.c2m12",
+    SpecId:       "",
+}
+if res, err := BCC_CLIENT.ListTypeZones(args); err != nil {
+    fmt.Println("Get the specific zone flavor failed: ", err)
+} else {
+    fmt.Println("Get the specific zone flavor success, result: ", res)
 }
 ```
 
@@ -1433,6 +2431,100 @@ if err != nil {
     fmt.Println("list zone failed: ", err)
 } else {
     fmt.Println("list zone success: ", result)
+}
+```
+
+### 查询机型的可用区
+
+使用以下代码可以查询指定机型支持的可用区列表
+```go
+args := &api.ListTypeZonesArgs{
+    // 选择实例类型，可以选择N1, N2, N3等
+    InstanceType: "",
+    // 产品类型, 可以选择Prepaid，Postpaid
+    ProductType:  "",
+    // 实例套餐规格，可以选择bcc.g3.c2m12等
+    Spec:         "",
+    // 实例套餐规格族,可以选择g3,ic4等
+    SpecId:       "",
+}
+if res, err := BCC_CLIENT.ListTypeZones(args); err != nil {
+    fmt.Println("Get the specific zone flavor failed: ", err)
+} else {
+    fmt.Println("Get the specific zone flavor success, result: ", res)
+}
+```
+### 查询实例套餐库存
+查询实例资源套餐规格对应的库存。
+```go
+// 实例类型
+instanceType := "instanceType"
+// CPU核数
+cpuCount := cpuCount
+// 内存容量（GB）
+memoryCapacityInGB := memoryCapacityInGB
+// 可用区名称
+zoneName := "zoneNamen"
+// GPU卡类型，GPU和VGPU可填
+gpuCard := "gpuCard"
+// GPU卡数量，GPU和VGPU可填
+cardCount := "cardCount"
+//本地盘信息
+ephemeralDisks := []EphemeralDisks{{
+      "storageType": "ssd",
+      "sizeInGB": sizeInGB,
+}}
+
+args := &api.CreateInstanceStockArgs{
+    InstanceType:     instanceType,
+    CpuCount: cpuCount,
+    MemoryCapacityInGB:  memoryCapacityInGB,
+    ZoneName:  zoneName,
+    GpuCard:  gpuCard,
+    CardCount:  cardCount,
+    EphemeralDisks:  ephemeralDisks,
+}
+if res, err := bccClient.GetInstanceCreateStock(args); err != nil {
+    fmt.Println("GetInstanceCreateStock failed: ", err)
+} else {
+    fmt.Println("GetInstanceCreateStock success: ", res)
+}
+```
+
+  
+### 实例扩缩容库存查询
+实例变配余量查询
+```go
+// 实例id
+instanceId := "instanceId"
+// CPU核数
+cpuCount := cpuCount
+// 内存容量（GB）
+memoryCapacityInGB := memoryCapacityInGB
+
+args := &api.CreateInstanceStockArgs{
+    InstanceId:     instanceId,
+    CpuCount: cpuCount,
+    MemoryCapacityInGB:  memoryCapacityInGB,
+}
+if res, err := bccClient.ResizeInstanceStockArgs(args); err != nil {
+    fmt.Println("ResizeInstanceStockArgs failed: ", err)
+} else {
+    fmt.Println("ResizeInstanceStockArgs success: ", res)
+}
+```
+
+### 查询实例绑定的弹性网卡列表
+
+使用以下代码可以查询实例绑定的弹性网卡列表
+
+```go
+// 设置你要操作的zoneName
+zoneName := "cn-bj-a"
+if res, err := bccClient.GetAvailableDiskInfo(zoneName); err != nil {
+    fmt.Println("Get the specific zone flavor failed: ", err)
+} else {
+    fmt.Println("Get the specific zone flavor success, result: ", res)
 }
 ```
 

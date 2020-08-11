@@ -86,7 +86,7 @@ func (c *Client) CreateInstance(args *api.CreateInstanceArgs) (*api.CreateInstan
 		return nil, err
 	}
 
-	return api.CreateInstance(c, args.ClientToken, body)
+	return api.CreateInstance(c, args, body)
 }
 
 // CreateInstanceBySpec - create an instance with the specific parameters
@@ -115,7 +115,7 @@ func (c *Client) CreateInstanceBySpec(args *api.CreateInstanceBySpecArgs) (*api.
 		return nil, err
 	}
 
-	return api.CreateInstanceBySpec(c, args.ClientToken, body)
+	return api.CreateInstanceBySpec(c, args, body)
 }
 
 // ListInstances - list all instance with the specific parameters
@@ -138,6 +138,11 @@ func (c *Client) ListInstances(args *api.ListInstanceArgs) (*api.ListInstanceRes
 //     - error: nil if success otherwise the specific error
 func (c *Client) GetInstanceDetail(instanceId string) (*api.GetInstanceDetailResult, error) {
 	return api.GetInstanceDetail(c, instanceId)
+}
+
+func (c *Client) GetInstanceDetailWithDeploySet(instanceId string, isDeploySet bool) (*api.GetInstanceDetailResult,
+	error) {
+	return api.GetInstanceDetailWithDeploySet(c, instanceId, isDeploySet)
 }
 
 // DeleteInstance - delete a specific instance
@@ -216,10 +221,9 @@ func (c *Client) StartInstance(instanceId string) error {
 //     - error: nil if success otherwise the specific error
 func (c *Client) StopInstanceWithNoCharge(instanceId string, forceStop bool, stopWithNoCharge bool) error {
 	args := &api.StopInstanceArgs{
-		ForceStop: forceStop,
+		ForceStop:        forceStop,
 		StopWithNoCharge: stopWithNoCharge,
 	}
-
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
 		return jsonErr
@@ -228,7 +232,6 @@ func (c *Client) StopInstanceWithNoCharge(instanceId string, forceStop bool, sto
 	if err != nil {
 		return err
 	}
-
 	return api.StopInstance(c, instanceId, body)
 }
 
@@ -429,6 +432,34 @@ func (c *Client) InstancePurchaseReserved(instanceId string, args *api.PurchaseR
 	return api.InstancePurchaseReserved(c, instanceId, relatedRenewFlag, args.ClientToken, body)
 }
 
+// GetBidInstancePrice - get the market price of the specified bidding instance
+//
+// PARAMS:
+//      - args: the arguments to get the bidding instance market price
+// RETURNS:
+//     - *GetBidInstancePriceResult: result of the market price of the specified bidding instance
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetBidInstancePrice(args *api.GetBidInstancePriceArgs) (*api.GetBidInstancePriceResult, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return api.GetBidInstancePrice(c, args.ClientToken, body)
+}
+
+// ListBidFlavor - list all flavors of the bidding instance
+//
+// RETURNS:
+//     - *ListBidFlavorResult: result of the flavor list
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListBidFlavor() (*api.ListBidFlavorResult, error) {
+	return api.ListBidFlavor(c)
+}
+
 // DeleteInstanceWithRelateResource - delete an instance and all eip/cds relate it
 //
 // PARAMS:
@@ -474,15 +505,16 @@ func (c *Client) InstanceChangeSubnet(args *api.InstanceChangeSubnetArgs) error 
 //      - args: the arguments to add ips to bbc instance
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) BatchAddIP(args *api.BatchAddIpArgs) error {
+func (c *Client) BatchAddIP(args *api.BatchAddIpArgs) (*api.BatchAddIpResponse, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
-		return jsonErr
+		return nil, jsonErr
 	}
 	body, err := bce.NewBodyFromBytes(jsonBytes)
 	if err != nil {
-		return err
+		return nil, err
 	}
+
 	return api.BatchAddIp(c, body)
 }
 
@@ -646,6 +678,26 @@ func (c *Client) ModifyCDSVolume(volumeId string, args *api.ModifyCSDVolumeArgs)
 //     - error: nil if success otherwise the specific error
 func (c *Client) ModifyChargeTypeCDSVolume(volumeId string, args *api.ModifyChargeTypeCSDVolumeArgs) error {
 	return api.ModifyChargeTypeCDSVolume(c, volumeId, args)
+}
+
+// AutoRenewCDSVolume - auto renew the specified cds volume
+//
+// PARAMS:
+//     - args: the arguments to auto renew the cds volume
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) AutoRenewCDSVolume(args *api.AutoRenewCDSVolumeArgs) error {
+	return api.AutoRenewCDSVolume(c, args)
+}
+
+// CancelAutoRenewCDSVolume - cancel auto renew the specified cds volume
+//
+// PARAMS:
+//     - args: the arguments to cancel auto renew the cds volume
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) CancelAutoRenewCDSVolume(args *api.CancelAutoRenewCDSVolumeArgs) error {
+	return api.CancelAutoRenewCDSVolume(c, args)
 }
 
 //securityGroup sdk
@@ -834,6 +886,17 @@ func (c *Client) ListSnapshot(args *api.ListSnapshotArgs) (*api.ListSnapshotResu
 	return api.ListSnapshot(c, args)
 }
 
+// ListSnapshotChain - list all snapshot chains
+//
+// PARAMS:
+//     - args: the arguments to list all snapshot chains
+// RETURNS:
+//     - *api.ListSnapshotChainResult: the result of list all snapshot chains
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListSnapshotChain(args *api.ListSnapshotChainArgs) (*api.ListSnapshotChainResult, error) {
+	return api.ListSnapshotChain(c, args)
+}
+
 // GetSnapshotDetail - get a snapshot's detail info
 //
 // PARAMS:
@@ -948,6 +1011,28 @@ func (c *Client) ListZone() (*api.ListZoneResult, error) {
 	return api.ListZone(c)
 }
 
+// ListFlavorSpec - get the specified flavor list
+//
+// PARAMS:
+//	   - args: the arguments to list the specified flavor
+// RETURNS:
+//     - *api.ListFlavorSpecResult: result of the specified flavor list
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListFlavorSpec(args *api.ListFlavorSpecArgs) (*api.ListFlavorSpecResult, error) {
+	return api.ListFlavorSpec(c, args)
+}
+
+// GetPriceBySpec - get the price information of specified instance.
+//
+// PARAMS:
+//	   - args: the arguments to get the price information of specified instance.
+// RETURNS:
+//     - *api.GetPriceBySpecResult: result of the specified instance's price information
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetPriceBySpec(args *api.GetPriceBySpecArgs) (*api.GetPriceBySpecResult, error) {
+	return api.GetPriceBySpec(c, args)
+}
+
 // CreateDeploySet - create a deploy set
 //
 // PARAMS:
@@ -976,12 +1061,12 @@ func (c *Client) ListDeploySets() (*api.ListDeploySetsResult, error) {
 	return api.ListDeploySets(c)
 }
 
-// GetDeploySet - get details of the deploy set
+// ModifyDeploySet - modify the deploy set
 //
 // PARAMS:
 //     - deploySetId: the id of the deploy set
 // RETURNS:
-//     - *GetDeploySetResult: the detail of the deploy set
+//     - *ModifyDeploySetArgs: the detail of the deploy set
 //     - error: nil if success otherwise the specific error
 func (c *Client) ModifyDeploySet(deploySetId string, args *api.ModifyDeploySetArgs) (error, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
@@ -1003,6 +1088,17 @@ func (c *Client) ModifyDeploySet(deploySetId string, args *api.ModifyDeploySetAr
 //     - error: nil if success otherwise the specific error
 func (c *Client) DeleteDeploySet(deploySetId string) error {
 	return api.DeleteDeploySet(c, deploySetId)
+}
+
+// GetDeploySet - get details of the deploy set
+//
+// PARAMS:
+//     - deploySetId: the id of the deploy set
+// RETURNS:
+//     - *GetDeploySetResult: the detail of the deploy set
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetDeploySet(deploySetId string) (*api.DeploySetResult, error) {
+	return api.GetDeploySet(c, deploySetId)
 }
 
 // ResizeInstanceBySpec - resize a specific instance
@@ -1168,4 +1264,82 @@ func (c *Client) CancelBidOrder(args *api.CancelBidOrderRequest) (*api.CreateBid
 	}
 
 	return api.CancelBidOrder(c, args.ClientToken, body)
+}
+
+// GetAvailableDiskInfo - get available diskInfos of the specified zone
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - zoneName: the zone name eg:cn-bj-a
+// RETURNS:
+//     - *GetAvailableDiskInfoResult: the result of the specified zone diskInfos
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetAvailableDiskInfo(zoneName string) (*api.GetAvailableDiskInfoResult, error) {
+	return api.GetAvailableDiskInfo(c, zoneName)
+}
+
+// ListTypeZones - list instanceType zones
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceType: the instanceType like "N1"
+// RETURNS:
+//     - *api.ListTypeZonesResult: the result of list instanceType zones
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListTypeZones(args *api.ListTypeZonesArgs) (*api.ListTypeZonesResult, error) {
+	return api.ListTypeZones(c, args)
+}
+
+// ListInstanceEni - get the eni list of the bcc instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: the bcc instance id
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListInstanceEnis(instanceId string) (*api.ListInstanceEniResult, error) {
+	return api.ListInstanceEnis(c, instanceId)
+}
+
+func (c *Client) CreateKeypair(args *api.CreateKeypairArgs) (*api.KeypairResult, error) {
+	return api.CreateKeypair(c, args)
+}
+
+func (c *Client) ImportKeypair(args *api.ImportKeypairArgs) (*api.KeypairResult, error) {
+	return api.ImportKeypair(c, args)
+}
+
+func (c *Client) AttachKeypair(args *api.AttackKeypairArgs) error {
+	return api.AttachKeypair(c, args)
+}
+
+func (c *Client) DetachKeypair(args *api.DetachKeypairArgs) error {
+	return api.DetachKeypair(c, args)
+}
+
+func (c *Client) DeleteKeypair(args *api.DeleteKeypairArgs) error {
+	return api.DeleteKeypair(c, args)
+}
+
+func (c *Client) GetKeypairDetail(keypairId string) (*api.KeypairResult, error) {
+	return api.GetKeypairDetail(c, keypairId)
+}
+
+func (c *Client) ListKeypairs(args *api.ListKeypairArgs) (*api.ListKeypairResult, error) {
+	return api.ListKeypairs(c, args)
+}
+
+func (c *Client) RenameKeypair(args *api.RenameKeypairArgs) error {
+	return api.RenameKeypair(c, args)
+}
+
+func (c *Client) UpdateKeypairDescription(args *api.KeypairUpdateDescArgs) error {
+	return api.UpdateKeypairDescription(c, args)
+}
+
+func (c *Client) GetInstanceCreateStock(args *api.CreateInstanceStockArgs) (*api.InstanceStockResult, error) {
+	return api.GetInstanceCreateStock(c, args)
+}
+
+func (c *Client) GetInstanceResizeStock(args *api.ResizeInstanceStockArgs) (*api.InstanceStockResult, error) {
+	return api.GetInstanceResizeStock(c, args)
 }

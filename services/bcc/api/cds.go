@@ -510,7 +510,7 @@ func ModifyChargeTypeCDSVolume(cli bce.Client, volumeId string, args *ModifyChar
 	req.SetUri(getVolumeUriWithId(volumeId))
 	req.SetMethod(http.PUT)
 
-	req.SetParam("modify", "")
+	req.SetParam("modifyChargeType", "")
 
 	jsonBytes, err := json.Marshal(args)
 	if err != nil {
@@ -533,4 +533,111 @@ func ModifyChargeTypeCDSVolume(cli bce.Client, volumeId string, args *ModifyChar
 
 	defer func() { resp.Body().Close() }()
 	return nil
+}
+
+// AutoRenewCDSVolume - auto renew the specified cds volume
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - args: the arguments to auto renew the cds volume
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func AutoRenewCDSVolume(cli bce.Client, args *AutoRenewCDSVolumeArgs) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getAutoRenewVolumeUri())
+	req.SetMethod(http.POST)
+	if args.ClientToken != "" {
+		req.SetParam("clientToken", args.ClientToken)
+	}
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+
+	return nil
+}
+
+// CancelAutoRenewCDSVolume - cancel auto renew the specified cds volume
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - args: the arguments to cancel auto renew the cds volume
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func CancelAutoRenewCDSVolume(cli bce.Client, args *CancelAutoRenewCDSVolumeArgs) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getCancelAutoRenewVolumeUri())
+	req.SetMethod(http.POST)
+	if args.ClientToken != "" {
+		req.SetParam("clientToken", args.ClientToken)
+	}
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+
+	return nil
+}
+
+// GetAvailableDiskInfo - get available diskInfos of the specified zone
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - zoneName: the zone name eg:cn-bj-a
+// RETURNS:
+//     - *GetAvailableDiskInfoResult: the result of the specified zone diskInfos
+//     - error: nil if success otherwise the specific error
+func GetAvailableDiskInfo(cli bce.Client, zoneName string) (*GetAvailableDiskInfoResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getAvailableDiskInfo())
+	req.SetMethod(http.GET)
+	req.SetParam("zoneName", zoneName)
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	jsonBody := &GetAvailableDiskInfoResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
 }

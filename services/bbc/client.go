@@ -90,7 +90,7 @@ func (c *Client) CreateInstance(args *CreateInstanceArgs) (*CreateInstanceResult
 	if err != nil {
 		return nil, err
 	}
-	return CreateInstance(c, args.ClientToken, body)
+	return CreateInstance(c, args, body)
 }
 
 // ListInstances - list all instance with the specific parameters
@@ -113,6 +113,10 @@ func (c *Client) ListInstances(args *ListInstancesArgs) (*ListInstancesResult, e
 //     - error: nil if success otherwise the specific error
 func (c *Client) GetInstanceDetail(instanceId string) (*InstanceModel, error) {
 	return GetInstanceDetail(c, instanceId)
+}
+
+func (c *Client) GetInstanceDetailWithDeploySet(instanceId string, isDeploySet bool) (*InstanceModel, error) {
+	return GetInstanceDetailWithDeploySet(c, instanceId, isDeploySet)
 }
 
 // StartInstance - start an instance
@@ -308,14 +312,14 @@ func (c *Client) GetVpcSubnet(args *GetVpcSubnetArgs) (*GetVpcSubnetResult, erro
 //      - args: the arguments to add ips to bbc instance
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) BatchAddIP(args *BatchAddIpArgs) error {
+func (c *Client) BatchAddIP(args *BatchAddIpArgs) (*BatchAddIpResponse, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
-		return jsonErr
+		return nil, jsonErr
 	}
 	body, err := bce.NewBodyFromBytes(jsonBytes)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	return BatchAddIp(c, body)
 }
@@ -336,6 +340,25 @@ func (c *Client) BatchDelIP(args *BatchDelIpArgs) error {
 		return err
 	}
 	return BatchDelIp(c, body)
+}
+
+// BindTags - bind an instance tags
+//
+// PARAMS:
+//     - instanceId: the id of the instance
+//     - args: tags of an instance to bind
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BindTags(instanceId string, args *BindTagsArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return BindTags(c, instanceId, body)
 }
 
 // UnbindTags - unbind an instance tags
@@ -485,7 +508,7 @@ func (c *Client) ListDeploySets() (*ListDeploySetsResult, error) {
 // RETURNS:
 //     - *GetDeploySetResult: the detail of the deploy set
 //     - error: nil if success otherwise the specific error
-func (c *Client) GetDeploySet(deploySetId string) (*GetDeploySetResult, error) {
+func (c *Client) GetDeploySet(deploySetId string) (*DeploySetResult, error) {
 	return GetDeploySet(c, deploySetId)
 }
 
@@ -497,4 +520,321 @@ func (c *Client) GetDeploySet(deploySetId string) (*GetDeploySetResult, error) {
 //     - error: nil if success otherwise the specific error
 func (c *Client) DeleteDeploySet(deploySetId string) error {
 	return DeleteDeploySet(c, deploySetId)
+}
+
+// BindSecurityGroups - Bind Security Groups
+//
+// PARAMS:
+//     - args: the arguments of bind security groups
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BindSecurityGroups(args *BindSecurityGroupsArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return BindSecurityGroups(c, body)
+}
+
+// UnBindSecurityGroups - UnBind Security Groups
+//
+// PARAMS:
+//     - args: the arguments of bind security groups
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UnBindSecurityGroups(args *UnBindSecurityGroupsArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return UnBindSecurityGroups(c, body)
+}
+
+// ListFlavorZones - get the zone list of the specified flavor which can buy
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - flavorId: the id of the flavor
+// RETURNS:
+//     - *ListZonesResult: the list of zone names
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListFlavorZones(args *ListFlavorZonesArgs) (*ListZonesResult, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return ListFlavorZones(c, body)
+}
+
+// ListZoneFlavors - get the flavor detail of the specific zone
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - zoneName: the zone name
+// RETURNS:
+//     - *ListZoneResult: flavor detail of the specific zone
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListZoneFlavors(args *ListZoneFlavorsArgs) (*ListFlavorInfosResult, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return ListZoneFlavors(c, body)
+}
+
+// GetCommonImage - get common flavor image list
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - flavorIds: the specific flavorIds, can be nil
+// RETURNS:
+//     - *GetImageDetailResult: the result of get image's detail
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetCommonImage(args *GetFlavorImageArgs) (*GetImagesResult, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return GetCommonImage(c, body)
+}
+
+// GetCustomImage - get user onwer flavor image list
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - flavorIds: the specific flavorIds, can be nil
+// RETURNS:
+//     - *GetImageDetailResult: the result of get image's detail
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetCustomImage(args *GetFlavorImageArgs) (*GetImagesResult, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return GetCustomImage(c, body)
+}
+
+// GetInstanceEni - get the eni of the bbc instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: the bbc instance id
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+
+func (c *Client) GetInstanceEni(instanceId string) (*GetInstanceEniResult, error) {
+	return GetInstanceEni(c, instanceId)
+}
+
+func (c *Client) GetInstanceCreateStock(args *CreateInstanceStockArgs) (*InstanceStockResult, error) {
+	return GetInstanceCreateStock(c, args)
+}
+
+func (c *Client) GetSimpleFlavor(args *GetSimpleFlavorArgs) (*SimpleFlavorResult, error) {
+	return GetSimpleFlavor(c, args)
+}
+
+func (c *Client) GetInstancePirce(args *InstancePirceArgs) (*InstancePirceResult, error) {
+	return GetInstancePirce(c, args)
+}
+
+func (c *Client) ListRepairTasks(args *ListRepairTaskArgs) (*ListRepairTaskResult, error) {
+	return ListRepairTasks(c, args)
+}
+
+func (c *Client) ListClosedRepairTasks(args *ListClosedRepairTaskArgs) (*ListClosedRepairTaskResult, error) {
+	return ListClosedRepairTasks(c, args)
+}
+
+func (c *Client) GetRepairTaskDetail(taskId string) (*GetRepairTaskResult, error) {
+	return GetTaskDetail(c, taskId)
+}
+
+func (c *Client) AuthorizeRepairTask(args *TaskIdArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return AuthorizeRepairTask(c, body)
+}
+
+func (c *Client) UnAuthorizeRepairTask(args *TaskIdArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return UnAuthorizeRepairTask(c, body)
+}
+
+func (c *Client) ConfirmRepairTask(args *TaskIdArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return ConfirmRepairTask(c, body)
+}
+
+func (c *Client) DisConfirmRepairTask(args *DisconfirmTaskArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return DisConfirmRepairTask(c, body)
+}
+
+func (c *Client) GetRepairTaskRecord(args *TaskIdArgs) (*GetRepairRecords, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return GetRepairTaskReocrd(c, body)
+}
+
+
+// ListRule - list the repair plat rules
+//
+// PARAMS:
+//     - args: the arguments of listing the repair plat rules
+// RETURNS:
+//     - *ListRuleResult: results of listing the repair plat rules
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListRule(args *ListRuleArgs) (*ListRuleResult, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return ListRule(c, body)
+}
+
+// GetRuleDetail - list the repair plat rules
+//
+// PARAMS:
+//     - ruleId: the specified rule id
+// RETURNS:
+//     - *Rule: results of the specified repair plat rule
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetRuleDetail(ruleId string) (*Rule, error) {
+	return GetRuleDetail(c, ruleId)
+}
+
+// CreateRule - create the repair plat rule
+//
+// PARAMS:
+//     - args: the arguments of creating the repair plat rule
+// RETURNS:
+//     - *CreateRuleResult: results of the id of the repair plat rule which is created
+//     - error: nil if success otherwise the specific error
+func (c *Client) CreateRule(args *CreateRuleArgs) (*CreateRuleResult, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return CreateRule(c, body)
+}
+
+// DeleteRule - delete the repair plat rule
+//
+// PARAMS:
+//     - args: the arguments of deleting the repair plat rule
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeleteRule(args *DeleteRuleArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return DeleteRule(c, body)
+}
+
+// DisableRule - disable the repair plat rule
+//
+// PARAMS:
+//     - args: the arguments of disabling the repair plat rule
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DisableRule(args *DisableRuleArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return DisableRule(c, body)
+}
+
+// EnableRule - enable the repair plat rule
+//
+// PARAMS:
+//     - args: the arguments of enabling the repair plat rule
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) EnableRule(args *EnableRuleArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return EnableRule(c, body)
 }

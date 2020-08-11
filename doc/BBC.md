@@ -13,6 +13,8 @@
 [BBC访问域名](https://cloud.baidu.com/doc/BBC/s/3jwvxu9iz#%E6%9C%8D%E5%8A%A1%E5%9F%9F%E5%90%8D)的部分，
 理解Endpoint相关的概念。百度云目前开放了多区域支持，请参考[区域选择说明](https://cloud.baidu.com/doc/Reference/s/2jwvz23xx/)。
 
+由于BBC维修任务并不按照区域区分，在访问维修任务相关接口时，Endpoint统一使用北京区域的BBC访问域名。
+
 ## 获取密钥
 
 要使用百度云BBC，您需要拥有一个有效的AK(Access Key ID)和SK(Secret Access Key)用来进行签名认证。
@@ -153,10 +155,14 @@ createInstanceArgs := &CreateInstanceArgs{
     ZoneName:         "cn-bj-a",
     // 指定子网 ID，必填参数
     SubnetId:         "your-choose-subnet-id",
+    // 设置内网IP（只有智能卡套餐支持自定义内网IP）
+    InternalIps           []string         internalIps
     // 指定安全组id，可选参数
     SecurityGroupId:  "your-choose-security-group-id"
     // 使用 uuid 生成一个长度不超过64位的ASCII字符串
     ClientToken:      "random-uuid",
+    //创建实例支持幂等的token，永久有效
+    RequestToken     string  "requestToken"
     // 选择付费方式
     Billing: Billing{
         PaymentTiming: PaymentTimingPostPaid,
@@ -171,6 +177,17 @@ createInstanceArgs := &CreateInstanceArgs{
     AdminPass:   "your-admin-pass",
     // 实例名称
     Name:        "your-choose-instance-name",
+    // 支持幂等的token
+    RequestToken: "requestToken",
+    // 指定是否开启numa true为开启，false为关闭
+    EnableNuma:  true,
+    // 指定实例绑定标签
+    Tags: []model.TagModel{
+        {
+            TagKey:   "tagKey",
+            TagValue: "tagVaule",
+        },
+    },
 }
 if res, err := bbcClient.CreateInstance(createInstanceArgs); err != nil {
     fmt.Println("create instance failed: ", err)
@@ -206,7 +223,23 @@ if res, err := bbcClient.ListInstances(listArgs); err != nil {
 ```go
 // 设置你要操作的instanceId
 instanceId := "your-choose-instance-id"
+//设置是否展示部署集字段
+isDeploySet := "your-isDeploySet"
 if res, err := bbcClient.GetInstanceDetail(instanceId); err != nil {
+    fmt.Println("get instance detail failed: ", err)
+} else {
+    fmt.Println("get instance detail success, result: ", res)
+}
+```
+### 查询带部署集相关字段实例详情
+查询带部署集相关字段实例详情：
+```go
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+//设置是否展示部署集字段true or false
+isDeploySet := "your-isDeploySet"
+
+if res, err := bccClient.GetInstanceDetailWithDeploySet(instanceId,isDeploySet); err != nil {
     fmt.Println("get instance detail failed: ", err)
 } else {
     fmt.Println("get instance detail success, result: ", res)
@@ -359,18 +392,54 @@ if res, err := bbcClient.GetVpcSubnet(getVpcSubnetArgs); err != nil {
 }
 ```
 
-### 向指定实例批量添加指定ip
+## 智能卡实例绑定安全组
+
+使用以下代码可以将智能卡实例绑定安全组：
+
 ```go
-privateIps := []string{"192.168.1.25"}
-instanceId := "your-choose-instance-id"
-batchAddIpArgs := &BatchAddIpArgs{
-	InstanceId: instanceId,
-	PrivateIps: privateIps,
+args := &BindSecurityGroupsArgs{
+    InstanceIds: ["instanceId"],
+    SecurityGroups: ["SecurityGroup"],
 }
-if err := bbcClient.BatchAddIP(batchAddIpArgs); err != nil {
-    fmt.Println("add ips failed: ", err)
+if err := bbcClient.BindSecurityGroups(args); err != nil {
+    fmt.Println("BindSecurityGroups failed: ", err)
 } else {
-    fmt.Println("add ips success.")
+    fmt.Println("BindSecurityGroups success.")
+}
+```
+## 智能卡实例解绑安全组
+
+使用以下代码可以将智能卡实例解绑安全组：
+
+```go
+args := &UnBindSecurityGroupsArgs{
+    InstanceId: "",
+    SecurityGroupId: "",
+}
+if err := bbcClient.UnBindSecurityGroups(args); err != nil {
+    fmt.Println("UnBindSecurityGroups failed: ", err)
+} else {
+    fmt.Println("UnBindSecurityGroups success.")
+}
+```
+
+## 批量增加辅助IP
+使用以下代码对实例增加辅助IP:
+
+```go
+batchAddIpArgs := &BatchAddIpArgs{
+    // 实例ID
+    InstanceId string "instanceId"
+    // 辅助IP，和SecondaryPrivateIpAddressCount不可同时使用
+	PrivateIps []string "privateIps"
+    // 自动分配IP数量，和PrivateIps不可同时使用
+    SecondaryPrivateIpAddressCount int 1
+}
+
+if res, err := bbcClient.BatchAddIP(batchAddIpArgs); err != nil {
+    fmt.Println("BatchAddIP failed: ", err)
+} else {
+    fmt.Println("BatchAddIP success, result: ", res)
 }
 ```
 
@@ -386,6 +455,18 @@ if err := bbcClient.BatchDelIP(batchDelIpArgs); err != nil {
     fmt.Println("delete ips failed: ", err)
 } else {
     fmt.Println("delete ips success.")
+}
+```
+
+### 查询实例绑定的弹性网卡列表
+使用以下代码可以查询实例绑定的弹性网卡列表
+```GO
+// 设置你要操作的instanceId
+instanceId := ""
+if res, err := bbcClient.GetInstanceEni(instanceId); err != nil {
+    fmt.Println("Get specific instance eni failed: ", err)
+} else {
+    fmt.Println("Get specific instance eni success, result: ", res)
 }
 ```
 
@@ -447,6 +528,39 @@ if res, err := bbcClient.GetFlavorRaid(testFlavorId); err != nil {
 }
 ```
 
+### 查询套餐支持的可用区
+使用以下代码可以查询指定套餐支持的可用区列表
+
+```go
+// 设置你要操作的flavorId
+flavorId := ""
+queryArgs := &GetFlavorZoneArgs{
+    FlavorId: flavorId,
+}
+if res, err := bbcClient.GetFlavorZone(queryArgs); err != nil {
+    fmt.Println("Get flavor zoneName failed: ", err)
+} else {
+    fmt.Println("Get flavor zoneName success, result: ", res)
+}
+```
+
+### 查询可用区支持的套餐
+使用以下代码可以查询指定可用区支持的套餐列表
+
+```go
+// 设置你要操作的zoneName，可以使用cn-bj-a 等
+zoneName := ""
+queryArgs := &GetZoneFlavorArgs{
+    ZoneName: zoneName,
+}
+if res, err := bbcClient.GetFlavors(queryArgs); err != nil {
+    fmt.Println("Get the specific zone flavor failed: ", err)
+} else {
+    fmt.Println("Get the specific zone flavor success, result: ", res)
+}
+
+```
+
 ## 镜像
 ### 通过实例创建自定义镜像
 - 用于创建自定义镜像，默认每个账号配额20个，创建后的镜像可用于创建实例
@@ -504,7 +618,7 @@ image_id :="your-choose-image-id"
 if res, err := bbcClient.GetImageDetail(testImageId); err != nil {
     fmt.Println("Get image failed: ", err)
 } else {
-    fmt.Println("Get image success, result: ", res)
+    fmt.Println("Get image success, result: ", res.Result)
 }
 ```
 ### 删除自定义镜像
@@ -517,6 +631,40 @@ if res, err := bbcClient.GetImageDetail(testImageId); err != nil {
 imageId := "your-choose-image-id"
 if err := bbcClient.DeleteImage(testImageId); err != nil {
     fmt.Println("Delete image failed: ", err)
+}
+```
+
+### 获取套餐的公共镜像
+- 如果不传套餐id，获取所有套餐的镜像列表
+使用以下代码可以获取指定套餐可选的公共镜像列表
+
+```go
+// 物理机套餐Id列表
+flavorIds := []string{""}
+queryArgs := &GetFlavorImageArgs{
+    FlavorIds: flavorIds,
+}
+if res, err := bbcClient.GetCommonImage(queryArgs); err != nil {
+    fmt.Println("Get specific flavor common image failed: ", err)
+} else {
+    fmt.Println("Get specific flavor common image success, result: ", res)
+}
+```
+
+### 获取套餐的自定义镜像
+- 如果不传套餐id，获取所有套餐的镜像列表
+使用以下代码可以获取指定套餐可选的自定义镜像列表
+
+```go
+// 物理机套餐Id列表
+flavorIds := []string{"BBC-S3-02"}
+queryArgs := &GetFlavorImageArgs{
+    FlavorIds: flavorIds,
+}
+if res, err := bbcClient.GetCustomImage(queryArgs); err != nil {
+    fmt.Println("Get specific flavor common image failed: ", err)
+} else {
+    fmt.Println("Get specific flavor common image success, result: ", res)
 }
 ```
 
@@ -604,3 +752,352 @@ if err := bbcClient.DeleteDeploySet(deploySetID); err != nil {
 }
 ```
 
+##标签
+### 实例绑定标签
+通过以下代码绑定实例想要绑定的标签
+```go
+bindTagsArgs := &BindTagsArgs{
+    // 设置您要绑定的标签
+    ChangeTags: []model.TagModel{
+        {
+            TagKey:   "tag1",
+            TagValue: "var1",
+        },
+    },
+}
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+if err := BBC_CLIENT.BindTags(instanceId, bindTagsArgs); err != nil {
+    fmt.Println("bind instance tags failed: ", err)
+} else {
+    fmt.Println("bind instance tags success.")
+}
+```
+### 实例解绑标签
+通过以下代码解绑实例已有的标签
+```go
+unbindTagsArgs := &UnbindTagsArgs{
+    // 设置您要解绑的标签
+    ChangeTags: []model.TagModel{
+        {
+            TagKey:   "tag1",
+            TagValue: "var1",
+        },
+    },
+}
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+if err := BBC_CLIENT.UnbindTags(instanceId, unbindTagsArgs); err != nil {
+    fmt.Println("unbind instance tags failed: ", err)
+} else {
+    fmt.Println("unbind instance tags success.")
+}
+```
+## 查询物理机套餐库存
+查询物理机套餐库存
+```go
+// 套餐id
+flavorId := "flavorId"
+// 可用区名称
+zoneName := "zoneName"
+
+args := &api.CreateInstanceStockArgs{
+    FlavorId:     flavorId,
+    ZoneName: zoneName,
+}
+if res, err := bccClient.GetInstanceCreateStock(args); err != nil {
+    fmt.Println("GetInstanceCreateStock failed: ", err)
+} else {
+    fmt.Println("GetInstanceCreateStock success: ", res)
+}
+```
+
+  
+## 查询物理机套餐价格
+套餐询价接口
+```go
+// 套餐id
+flavorId := "flavorId"
+// 购买数量
+purchaseCount := "purchaseCount"
+//价格相关参数
+billing: = Billing{
+    PaymentTiming: "Prepaid",
+    Reservation: Reservation{
+    Length: 4,
+       },
+  },
+
+args := &api.InstancePirceArgs{
+    FlavorId:     flavorId,
+    PurchaseCount: purchaseCount,
+    Billing: billing,
+}
+if res, err := bccClient.GetInstancePirce(args); err != nil {
+    fmt.Println("GetInstancePirce failed: ", err)
+} else {
+    fmt.Println("GetInstancePirce success: ", res)
+}
+```
+
+  
+## 物理机额外套餐查询
+物理机套餐参数查询接口
+```go
+// 物理机id
+instanceIds := []string{"your-instanceId"}
+
+args := &api.SimpleFlavorArgs{
+    InstanceIds:    instanceIds,
+}
+if res, err := bccClient.GetSimpleFlavor(args); err != nil {
+    fmt.Println("GetSimpleFlavor failed: ", err)
+} else {
+    fmt.Println("GetSimpleFlavor success: ", res)
+}
+```
+
+
+### 查询BBC维修任务列表
+使用以下代码查询所有未关闭的故障bbc维修任务的列表及详情信息：
+```go
+listArgs := &ListRepairTaskArgs{
+    // 批量获取列表的查询起始位置，是一个由系统产生的字符串
+    Marker: "your-marker",
+    // 设置返回数据大小，缺省为1000
+    MaxKeys: 100,
+    // 通过internal Ip过滤维修任务列表
+    InstanceId: "your-choose-instance-id",
+    // 通过故障名称过滤维修任务列表
+    ErrResult: "your-choose-errResult",
+}
+if res, err := bbcClient.ListRepairTasks(listArgs); err != nil {
+    fmt.Println("list tasks failed: ", err)
+} else {
+    fmt.Println("list tasks success, result: ", res)
+}
+```
+
+
+### 查询维修任务详情
+使用以下代码可以查询指定BBC维修任务的详细信息：
+```go
+// 设置你要查询的taskId
+taskId := "your-choose-task-id"
+if res, err := bbcClient.GetRepairTaskDetail(taskId); err != nil {
+    fmt.Println("get task detail failed: ", err)
+} else {
+    fmt.Println("get task detail success, result: ", res)
+}
+```
+
+
+### 维修任务授权维修
+使用以下代码可以授权指定BBC维修任务，实例状态必须为 unauthorized 或 ignored，调用此接口才可以成功返回，否则提示409错误：
+```go
+taskIdArgs := &TaskIdArgs{
+    // 设置你要操作的taskId
+    taskId : "your-choose-task-id",
+}
+if err := bbcClient.AuthorizeRepairTask(taskIdArgs); err != nil {
+    fmt.Println("authorize task failed: ", err)
+} else {
+    fmt.Println("authorize task success.")
+}
+```
+
+### 维修任务授权维修
+使用以下代码可以授权指定BBC维修任务，实例状态必须为 unauthorized 或 ignored，调用此接口才可以成功返回，否则提示409错误：
+```go
+taskIdArgs := &TaskIdArgs{
+    // 设置你要操作的taskId
+    taskId : "your-choose-task-id",
+}
+if err := bbcClient.AuthorizeRepairTask(taskIdArgs); err != nil {
+    fmt.Println("authorize task failed: ", err)
+} else {
+    fmt.Println("authorize task success.")
+}
+```
+
+
+### 维修任务暂不授权维修
+使用以下代码可以暂不授权指定BBC维修任务，实例状态必须为 unauthorized，调用此接口才可以成功返回，否则提示409错误：
+```go
+taskIdArgs := &TaskIdArgs{
+    // 设置你要操作的taskId
+    taskId :"your-choose-task-id",
+}
+if err := bbcClient.UnAuthorizeRepairTask(taskIdArgs); err != nil {
+    fmt.Println("unauthorize task failed: ", err)
+} else {
+    fmt.Println("unauthorize task success.")
+}
+```
+
+
+### 维修任务确认恢复
+使用以下代码可以确认指定BBC维修任务已恢复，实例状态必须为 processing，调用此接口才可以成功返回，否则提示409错误：
+```go
+taskIdArgs := &TaskIdArgs{
+    // 设置你要操作的taskId
+    taskId :"your-choose-task-id",
+}
+if err := bbcClient.ConfirmRepairTask(taskIdArgs); err != nil {
+    fmt.Println("confirm task failed: ", err)
+} else {
+    fmt.Println("confirm task success.")
+}
+```
+
+
+### 维修任务确认未恢复
+使用以下代码可以确认指定BBC维修任务未恢复，实例状态必须为 processing，调用此接口才可以成功返回，否则提示409错误：
+```go
+taskIdArgs := &TaskIdArgs{
+    // 设置你要操作的taskId
+    taskId :"your-choose-task-id",
+    // 设置你要报修的新故障
+    newErrResult :"your-new-errResult",
+}
+if err := bbcClient.DisconfirmTaskArgs(taskIdArgs); err != nil {
+    fmt.Println("disconfirm task failed: ", err)
+} else {
+    fmt.Println("disconfirm task success.")
+}
+```
+
+
+### 维修任务操作详情
+使用以下代码可以查看指定BBC维修任务操作详情：
+```go
+taskIdArgs := &TaskIdArgs{
+    // 设置你要操作的taskId
+    taskId :"your-choose-task-id",
+}
+if err := bbcClient.GetRepairTaskRecord(taskIdArgs); err != nil {
+    fmt.Println("get task record failed: ", err)
+} else {
+    fmt.Println("get task record success.")
+}
+```
+
+### 查询BBC已完成的维修任务列表
+使用以下代码查询所有已关闭的故障bbc维修任务的列表及详情信息：
+```go
+listArgs := &ListRepairTaskArgs{
+    // 批量获取列表的查询起始位置，是一个由系统产生的字符串
+    Marker: "your-marker",
+    // 设置返回数据大小，缺省为1000
+    MaxKeys: 100,
+    // 通过internal Ip过滤维修任务列表
+    InstanceId: "your-choose-instance-id",
+    // 通过故障名称过滤维修任务列表
+    ErrResult: "your-choose-errResult",
+    // 通过任务id过滤维修任务列表
+    TaskId: "your-choose-task-id",
+}
+if res, err := bbcClient.ListRepairTasks(listArgs); err != nil {
+    fmt.Println("list tasks failed: ", err)
+} else {
+    fmt.Println("list tasks success, result: ", res)
+}
+```
+
+### 获取维修平台预授权规则列表
+通过以下代码获取维修平台预授权规则列表
+```go
+args := &ListRuleArgs{
+    // 批量获取列表的查询起始位置，是一个由系统产生的字符串
+    Marker:   "your-marker",
+    // 设置返回数据大小，缺省为1000
+    MaxKeys:   100,
+    // 通过rule name筛选规则列表
+    RuleName: "your-choose-rule-name",
+    // 通过rule id筛选规则列表
+    RuleId:   "your-choose-rule-id",
+}
+if res, err := bbcClient.ListRule(args); err != nil {
+    fmt.Println("list rules failed: ", err)
+} else {
+    fmt.Println("list rules success, result: ", res)
+}
+```
+
+### 获取维修平台预授权规则详情
+通过以下代码获取维修平台预授权规则详情
+```go
+// 设置查询rule id
+ruleId := "your-choose-rule-id"
+if res, err := bbcClient.GetRuleDetail(ruleId); err != nil {
+    fmt.Println("get rule failed: ", err)
+} else {
+    fmt.Println("get rule success, result: ", res)
+}
+```
+
+### 创建维修平台预授权规则
+通过以下代码创建维修平台预授权规则
+```go
+args := &CreateRuleArgs{
+    // 设置规则名称
+    RuleName: "your-choose-rule-name",
+    // 设置授权上线
+    Limit:    2,
+    // 规则是否启用，1表示启用，0表示禁用
+    Enabled:  1,
+    // 设置规则关联标签，tagKey:tagValue
+    TagStr:   "tagKey:tagValue",
+    // 设置备注
+    Extra:    "extra",
+}
+if res, err := bbcClient.CreateRule(args); err != nil {
+    fmt.Println("create rule failed: ", err)
+} else {
+    fmt.Println("create rule success, result: ", res)
+}
+```
+
+### 删除维修平台预授权规则
+- 规则Enabled时不能删除
+
+通过以下代码删除维修平台预授权规则
+```go
+args := &DeleteRuleArgs{
+    // 设置要删除的rule id
+    RuleId: "your-choose-rule-id",
+}
+if err := bbcClient.DeleteRule(args); err != nil {
+    fmt.Println("delete rule failed: ", err)
+} else {
+    fmt.Println("delete rule success")
+}
+```
+
+### 禁用维修平台预授权规则
+通过以下代码禁用维修平台预授权规则
+```go
+args := &DisableRuleArgs{
+    // 设置要禁用的rule id
+    RuleId: "your-choose-rule-id",
+}
+if err := bbcClient.CreateRule(args); err != nil {
+    fmt.Println("disable rule failed: ", err)
+} else {
+    fmt.Println("disable rule success")
+}
+```
+
+### 启用维修平台预授权规则
+通过以下代码启用维修平台预授权规则
+```go
+args := &EnableRuleArgs{
+    // 设置要启用的rule id
+    RuleId: "your-choose-rule-id",
+}
+if err := bbcClient.EnableRule(args); err != nil {
+    fmt.Println("enable rule failed: ", err)
+} else {
+    fmt.Println("enable rule success")
+}
+```

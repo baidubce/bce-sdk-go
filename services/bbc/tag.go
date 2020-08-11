@@ -22,6 +22,34 @@ import (
 	"github.com/baidubce/bce-sdk-go/http"
 )
 
+// bindTags - bind a bbc instance tags
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: the id of the instance
+//     - reqBody: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func BindTags(cli bce.Client, instanceId string, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getBindTagsUriWithId(instanceId))
+	req.SetMethod(http.PUT)
+	req.SetParam("bind", "")
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
 // UnbindTags - unbind a bbc instance tags
 //
 // PARAMS:
@@ -37,7 +65,6 @@ func UnbindTags(cli bce.Client, instanceId string, reqBody *bce.Body) error {
 	req.SetMethod(http.PUT)
 	req.SetParam("unbind", "")
 	req.SetBody(reqBody)
-
 	// Send request and get response
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
@@ -49,6 +76,10 @@ func UnbindTags(cli bce.Client, instanceId string, reqBody *bce.Body) error {
 
 	defer func() { resp.Body().Close() }()
 	return nil
+}
+
+func getBindTagsUriWithId(id string) string {
+	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + "/" + id + "/tag"
 }
 
 func getUnbindTagsUriWithId(id string) string {

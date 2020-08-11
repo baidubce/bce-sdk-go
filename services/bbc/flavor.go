@@ -18,6 +18,7 @@
 package bbc
 
 import (
+	"fmt"
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
 )
@@ -114,6 +115,72 @@ func GetFlavorRaid(cli bce.Client, flavorId string) (*GetFlavorRaidResult, error
 	return jsonBody, nil
 }
 
+// ListFlavorZones - get the zone list of the specified flavor which can buy
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - flavorId: the id of the flavor
+// RETURNS:
+//     - *ListZonesResult: the list of zone names
+//     - error: nil if success otherwise the specific error
+func ListFlavorZones(cli bce.Client, reqBody *bce.Body) (*ListZonesResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getFlavorZoneUrl())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	fmt.Println(getFlavorZoneUrl())
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ListZonesResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+// ListZoneFlavors - get the flavor detail of the specific zone
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - zoneName: the zone name
+// RETURNS:
+//     - *ListZoneResult: flavor detail of the specific zone
+//     - error: nil if success otherwise the specific error
+func ListZoneFlavors(cli bce.Client, reqBody *bce.Body) (*ListFlavorInfosResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getFlavors())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ListFlavorInfosResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
 func getFlavorUri() string {
 	return URI_PREFIX_V1 + REQUEST_FLAVOR_URI
 }
@@ -124,4 +191,12 @@ func getFlavorUriWithId(id string) string {
 
 func getFlavorRaidUriWithId(id string) string {
 	return URI_PREFIX_V1 + REQUEST_FLAVOR_RAID_URI + "/" + id
+}
+
+func getFlavorZoneUrl() string {
+	return URI_PREFIX_V1 + REQUEST_FLAVOR_ZONE_URI
+}
+
+func getFlavors() string {
+	return URI_PREFIX_V1 + REQUEST_FLAVORS_URI
 }

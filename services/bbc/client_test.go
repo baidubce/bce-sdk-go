@@ -26,6 +26,9 @@ var (
 	BBC_TestDeploySetId     string
 	BBC_TestClientToken     string
 	BBC_TestSecurityGroupId string
+	BBC_TestTaskId          string
+	BBC_TestErrResult       string
+	BBC_TestRuleId          string
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -60,6 +63,9 @@ func init() {
 	BBC_TestDeploySetId = "deployset-id"
 	BBC_TestBbcId = "bbc_id"
 	BBC_TestSecurityGroupId = "bbc-security-group-id"
+	BBC_TestTaskId = "task-id"
+	BBC_TestErrResult = "err-result"
+	BBC_TestRuleId = "rule-id"
 	BBC_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
 	//log.SetLogLevel(log.DEBUG)
@@ -108,7 +114,14 @@ func TestCreateInstance(t *testing.T) {
 		},
 		DeploySetId: BBC_TestDeploySetId,
 		Name:        BBC_TestName,
+		EnableNuma:  false,
 		InternalIps: InternalIps,
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tag1",
+				TagValue: "var1",
+			},
+		},
 	}
 	res, err := BBC_CLIENT.CreateInstance(createInstanceArgs)
 	fmt.Println(res)
@@ -198,10 +211,12 @@ func TestGetVpcSubnet(t *testing.T) {
 func TestBatchAddIp(t *testing.T) {
 	privateIps := []string{"192.168.1.25"}
 	batchAddIpArgs := &BatchAddIpArgs{
-		InstanceId: BBC_TestBbcId,
-		PrivateIps: privateIps,
+		InstanceId:                     BBC_TestBbcId,
+		SecondaryPrivateIpAddressCount: 2,
+		PrivateIps:                     privateIps,
 	}
-	err := BBC_CLIENT.BatchAddIP(batchAddIpArgs)
+	result, err := BBC_CLIENT.BatchAddIP(batchAddIpArgs)
+	fmt.Println(result)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -212,6 +227,19 @@ func TestBatchDelIp(t *testing.T) {
 		PrivateIps: privateIps,
 	}
 	err := BBC_CLIENT.BatchDelIP(batchDelIpArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBindTags(t *testing.T) {
+	bindTagsArgs := &BindTagsArgs{
+		ChangeTags: []model.TagModel{
+			{
+				TagKey:   "BBCTestKey",
+				TagValue: "BBCTestValue",
+			},
+		},
+	}
+	err := BBC_CLIENT.BindTags(BBC_TestBbcId, bindTagsArgs)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -268,7 +296,7 @@ func TestListImage(t *testing.T) {
 }
 
 func TestGetImageDetail(t *testing.T) {
-	testImageId := BBC_TestImageId
+	testImageId := ""
 	rep, err := BBC_CLIENT.GetImageDetail(testImageId)
 	fmt.Println(rep)
 	ExpectEqual(t.Errorf, err, nil)
@@ -320,5 +348,204 @@ func TestDeleteDeploySet(t *testing.T) {
 	testDeleteDeploySetId := BBC_TestDeploySetId
 	err := BBC_CLIENT.DeleteDeploySet(testDeleteDeploySetId)
 	fmt.Println(err)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBindSecurityGroups(t *testing.T) {
+	instanceIds := []string{""}
+	sg := []string{""}
+	args := &BindSecurityGroupsArgs{
+		InstanceIds:      instanceIds,
+		SecurityGroupIds: sg,
+	}
+	err := BBC_CLIENT.BindSecurityGroups(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestUnBindSecurityGroups(t *testing.T) {
+	args := &UnBindSecurityGroupsArgs{
+		InstanceId:      "",
+		SecurityGroupId: "",
+	}
+	err := BBC_CLIENT.UnBindSecurityGroups(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestGetFlavorZone(t *testing.T) {
+	flavorId := "BBC-G3-01"
+	queryArgs := &ListFlavorZonesArgs{
+		FlavorId: flavorId,
+	}
+	if res, err := BBC_CLIENT.ListFlavorZones(queryArgs); err != nil {
+		fmt.Println("Get flavor zoneName failed: ", err)
+	} else {
+		fmt.Println("Get flavor zoneName success, result: ", res)
+	}
+}
+
+func TestListZoneFlavors(t *testing.T) {
+	zoneName := "cn-bj-b"
+	queryArgs := &ListZoneFlavorsArgs{
+		ZoneName: zoneName,
+	}
+	if res, err := BBC_CLIENT.ListZoneFlavors(queryArgs); err != nil {
+		fmt.Println("Get the specific zone flavor failed: ", err)
+	} else {
+		fmt.Println("Get the specific zone flavor success, result: ", res)
+	}
+}
+
+func TestGetCommonImage(t *testing.T) {
+	flavorIds := []string{"BBC-S3-02"}
+	queryArgs := &GetFlavorImageArgs{
+		FlavorIds: flavorIds,
+	}
+	if res, err := BBC_CLIENT.GetCommonImage(queryArgs); err != nil {
+		fmt.Println("Get specific flavor common image failed: ", err)
+	} else {
+		fmt.Println("Get specific flavor common image success, result: ", res)
+	}
+}
+
+func TestGetCustomImage(t *testing.T) {
+	flavorIds := []string{"BBC-S3-02"}
+	queryArgs := &GetFlavorImageArgs{
+		FlavorIds: flavorIds,
+	}
+	if res, err := BBC_CLIENT.GetCustomImage(queryArgs); err != nil {
+		fmt.Println("Get specific flavor common image failed: ", err)
+	} else {
+		fmt.Println("Get specific flavor common image success, result: ", res)
+	}
+}
+
+func TestGetInstanceEni(t *testing.T) {
+	instanceId := "instanceId"
+	if res, err := BBC_CLIENT.GetInstanceEni(instanceId); err != nil {
+		fmt.Println("Get specific instance eni failed: ", err)
+	} else {
+		fmt.Println("Get specific instance eni success, result: ", res)
+	}
+}
+
+func TestListRepairTasks(t *testing.T) {
+	listArgs := &ListRepairTaskArgs{
+		MaxKeys: 100,
+	}
+	res, err := BBC_CLIENT.ListRepairTasks(listArgs)
+	fmt.Println(res)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestListClosedRepairTasks(t *testing.T) {
+	listArgs := &ListClosedRepairTaskArgs{
+		MaxKeys: 100,
+	}
+	res, err := BBC_CLIENT.ListClosedRepairTasks(listArgs)
+	fmt.Println(res)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestGetTaskDetail(t *testing.T) {
+	res, err := BBC_CLIENT.GetRepairTaskDetail(BBC_TestTaskId)
+	fmt.Println(res)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestAuthorizeTask(t *testing.T) {
+	taskIdArgs := &TaskIdArgs{
+		TaskId: BBC_TestTaskId,
+	}
+	err := BBC_CLIENT.AuthorizeRepairTask(taskIdArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestUnAuthorizeTask(t *testing.T) {
+	taskIdArgs := &TaskIdArgs{
+		TaskId: BBC_TestTaskId,
+	}
+	err := BBC_CLIENT.UnAuthorizeRepairTask(taskIdArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestConfirmTask(t *testing.T) {
+	taskIdArgs := &TaskIdArgs{
+		TaskId: BBC_TestTaskId,
+	}
+	err := BBC_CLIENT.ConfirmRepairTask(taskIdArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestDisConfirmTask(t *testing.T) {
+	disconfirmTaskArgs := &DisconfirmTaskArgs{
+		TaskId:       BBC_TestTaskId,
+		NewErrResult: BBC_TestErrResult,
+	}
+	err := BBC_CLIENT.DisConfirmRepairTask(disconfirmTaskArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestGetRepairRecord(t *testing.T) {
+	taskIdArgs := &TaskIdArgs{
+		TaskId: BBC_TestTaskId,
+	}
+	res, err := BBC_CLIENT.GetRepairTaskRecord(taskIdArgs)
+	fmt.Println(res)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestListRule(t *testing.T) {
+	args := &ListRuleArgs{
+		Marker:   "your-marker",
+		MaxKeys:  100,
+		RuleName: "your-choose-rule-name",
+		RuleId:   "your-choose-rule-id",
+	}
+	res, err := BBC_CLIENT.ListRule(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestGetRuleDetail(t *testing.T) {
+	ruleId := BBC_TestRuleId
+	res, err := BBC_CLIENT.GetRuleDetail(ruleId)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestCreateRule(t *testing.T) {
+	args := &CreateRuleArgs{
+		RuleName: "goSdkRule",
+		Limit:    2,
+		Enabled:  1,
+		TagStr:   "msinstancekey:msinstancevalue",
+		Extra:    "extra",
+	}
+	res, err := BBC_CLIENT.CreateRule(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestDeleteRule(t *testing.T) {
+	args := &DeleteRuleArgs{
+		RuleId: BBC_TestRuleId,
+	}
+	err := BBC_CLIENT.DeleteRule(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestDisableRule(t *testing.T) {
+	args := &DisableRuleArgs{
+		RuleId: BBC_TestRuleId,
+	}
+	err := BBC_CLIENT.DisableRule(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestEnableRule(t *testing.T) {
+	args := &EnableRuleArgs{
+		RuleId: BBC_TestRuleId,
+	}
+	err := BBC_CLIENT.EnableRule(args)
 	ExpectEqual(t.Errorf, err, nil)
 }

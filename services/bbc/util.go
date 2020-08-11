@@ -29,17 +29,33 @@ const (
 
 	REQUEST_INSTANCE_URI = "/instance"
 	REQUEST_SUBNET_URI   = "/vpcSubnet"
+	SECURITY_GROUP_URI   = "/securitygroup"
 
-	REQUEST_IMAGE_URI = "/image"
+	REQUEST_IMAGE_URI      = "/image"
 	REQUEST_BATCHADDIP_URI = "/batchAddIp"
 	REQUEST_BATCHDELIP_URI = "/batchDelIp"
 
-	REQUEST_FLAVOR_URI      = "/flavor"
-	REQUEST_FLAVOR_RAID_URI = "/flavorRaid"
+	REQUEST_FLAVOR_URI       = "/flavor"
+	REQUEST_FLAVOR_RAID_URI  = "/flavorRaid"
+	REQUEST_COMMON_IMAGE_URI = "/flavor/image"
+	REQUEST_CUSTOM_IMAGE_URI = "/customFlavor/image"
+
+	REQUEST_FLAVOR_ZONE_URI = "/order/flavorZone"
+	REQUEST_FLAVORS_URI     = "/order/flavor"
 
 	REQUEST_OPERATION_LOG_URI = "/operationLog"
 
-	REQUEST_DEPLOY_SET_URI = "/deployset"
+	REQUEST_DEPLOY_SET_URI    = "/deployset"
+	REQUEST_INSTANCE_PORT_URI = "/vpcPort"
+
+	REQUEST_REPAIR_TASK_URI = "/task"
+	REQUEST_REPAIR_CLOSED_TASK_URI = "/closedTask"
+
+	REQUEST_RULE_URI    = "/rule"
+	REQUEST_CREATE_URI  = "/create"
+	REQUEST_DELETE_URI  = "/delete"
+	REQUEST_DISABLE_URI = "/disable"
+	REQUEST_ENABLE_URI  = "/enable"
 )
 
 func Aes128EncryptUseSecreteKey(sk string, data string) (string, error) {
