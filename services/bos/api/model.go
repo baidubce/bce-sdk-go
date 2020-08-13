@@ -459,7 +459,6 @@ type UploadPartCopyArgs struct {
 	IfUnmodifiedSince string
 }
 
-// PutSymlinkArgs defines the input arguments structure of PutSymlink
 type PutSymlinkArgs struct {
 	ForbidOverwrite string
 	StorageClass    string

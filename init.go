@@ -37,6 +37,7 @@ import (
 	_ "github.com/baidubce/bce-sdk-go/services/etGateway"
 	_ "github.com/baidubce/bce-sdk-go/services/rds"
 	_ "github.com/baidubce/bce-sdk-go/services/scs"
+	_ "github.com/baidubce/bce-sdk-go/services/sms"
 	_ "github.com/baidubce/bce-sdk-go/services/sts"
 	_ "github.com/baidubce/bce-sdk-go/services/vca"
 	_ "github.com/baidubce/bce-sdk-go/services/vcr"

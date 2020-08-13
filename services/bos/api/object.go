@@ -878,6 +878,7 @@ func PutObjectSymlink(cli bce.Client, bucket string, object string, symlinkKey s
 			}
 			req.SetHeader(http.BCE_FORBID_OVERWRITE, symlinkArgs.ForbidOverwrite)
 		}
+
 		if len(symlinkArgs.StorageClass) != 0 {
 			if !validStorageClass(symlinkArgs.StorageClass) {
 				return bce.NewBceClientError("invalid storage class val," + symlinkArgs.StorageClass)
@@ -887,6 +888,7 @@ func PutObjectSymlink(cli bce.Client, bucket string, object string, symlinkKey s
 			}
 			req.SetHeader(http.BCE_STORAGE_CLASS, symlinkArgs.StorageClass)
 		}
+
 		if len(symlinkArgs.UserMeta) != 0 {
 			if err := setUserMetadata(req, symlinkArgs.UserMeta); err != nil {
 				return err
@@ -894,6 +896,7 @@ func PutObjectSymlink(cli bce.Client, bucket string, object string, symlinkKey s
 		}
 	}
 	req.SetHeader(http.BCE_SYMLINK_TARGET, object)
+
 	resp := &bce.BceResponse{}
 	if err := SendRequest(cli, req, resp); err != nil {
 		return err

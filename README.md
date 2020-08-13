@@ -49,6 +49,7 @@ bce-sdk-go
 |  |--etGateway           //专线网关
 |  |--rds                 //云数据库
 |  |--scs                 //SCS服务目录
+|  |--sms                 //SMS服务目录
 |  |--sts                 //STS服务目录
 |  |--vca                 //VCA服务目录
 |  |--vcr                 //VCR服务目录
@@ -240,6 +241,7 @@ SSL证书服务 | CERT | github.com/baidubce/bce-sdk-go/services/cert | [CERT.md
 专线网关 | EtGateway | github.com/baidubce/bce-sdk-go/services/etGateway | [ETGateway.md](./doc/ETGateway.md)
 云数据库 | RDS | github.com/baidubce/bce-sdk-go/services/rds | [RDS.md](./doc/RDS.md)
 分布式缓存服务 | SCS | github.com/baidubce/bce-sdk-go/services/scs | [SCS.md](./doc/SCS.md)
+SMS简单消息服务 | SMS | github.com/baidubce/bce-sdk-go/services/sms | [SMS.md](./doc/SMS.md)
 安全Token服务|  STS   | github.com/baidubce/bce-sdk-go/services/sts | [STS.md](./doc/STS.md)
 视频内容分析 |  VCA   | github.com/baidubce/bce-sdk-go/services/vca |
 视频内容审核 |  VCR   | github.com/baidubce/bce-sdk-go/services/vcr |
