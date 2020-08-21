@@ -569,3 +569,193 @@ type InstanceTemplate struct {
 type CommonResponse struct {
 	RequestID string `json:"requestID"`
 }
+
+type InstanceGroup struct {
+	Spec      *InstanceGroupSpec   `json:"spec"`
+	Status    *InstanceGroupStatus `json:"status"`
+	CreatedAt time.Time            `json:"createdAt"`
+}
+
+type InstanceGroupSpec struct {
+	CCEInstanceGroupID string `json:"cceInstanceGroupID,omitempty"`
+	InstanceGroupName  string `json:"instanceGroupName"`
+
+	ClusterID   string               `json:"clusterID,omitempty"`
+	ClusterRole types.ClusterRole `json:"clusterRole,omitempty"`
+	ShrinkPolicy ShrinkPolicy `json:"shrinkPolicy,omitempty"`
+	UpdatePolicy UpdatePolicy `json:"updatePolicy,omitempty"`
+	CleanPolicy  CleanPolicy  `json:"cleanPolicy,omitempty"`
+
+	InstanceTemplate InstanceTemplate `json:"instanceTemplate"`
+	Replicas         int              `json:"replicas"`
+
+	ClusterAutoscalerSpec *ClusterAutoscalerSpec `json:"clusterAutoscalerSpec,omitempty"`
+}
+
+type ShrinkPolicy string
+type UpdatePolicy string
+type CleanPolicy string
+
+type ClusterAutoscalerSpec struct {
+	Enabled              bool `json:"enabled"`
+	MinReplicas          int  `json:"minReplicas"`
+	MaxReplicas          int  `json:"maxReplicas"`
+	ScalingGroupPriority int  `json:"scalingGroupPriority"`
+}
+
+// InstanceGroupStatus -
+type InstanceGroupStatus struct {
+	ReadyReplicas int          `json:"readyReplicas"`
+	Pause         *PauseDetail `json:"pause,omitempty"`
+}
+
+type PauseDetail struct {
+	Paused bool   `json:"paused"`
+	Reason string `json:"reason"`
+}
+
+// CreateInstanceGroupRequest - 创建InstanceGroup request
+type CreateInstanceGroupRequest struct {
+	types.InstanceGroupSpec
+}
+
+// CreateInstanceGroupResponse - 创建InstanceGroup response
+type CreateInstanceGroupResponse struct {
+	CommonResponse
+	InstanceGroupID string `json:"instanceGroupID"`
+}
+
+type ListInstanceGroupResponse struct {
+	CommonResponse
+	Page ListInstanceGroupPage `json:"page"`
+}
+
+type ListInstanceGroupPage struct {
+	PageNo     int              `json:"pageNo"`
+	PageSize   int              `json:"pageSize"`
+	TotalCount int              `json:"totalCount"`
+	List       []*InstanceGroup `json:"list"`
+}
+
+type GetInstanceGroupResponse struct {
+	CommonResponse
+	InstanceGroup *InstanceGroup `json:"instanceGroup"`
+}
+
+type UpdateInstanceGroupReplicasRequest struct {
+	Replicas       int                    `json:"replicas"`
+	InstanceIDs    []string               `json:"instanceIDs"`
+	DeleteInstance bool                   `json:"deleteInstance"`
+	DeleteOption   *types.DeleteOption `json:"deleteOption,omitempty"`
+}
+
+type UpdateInstanceGroupReplicasResponse struct {
+	CommonResponse
+}
+
+type UpdateInstanceGroupClusterAutoscalerSpecResponse struct {
+	CommonResponse
+}
+
+type DeleteInstanceGroupResponse struct {
+	CommonResponse
+}
+
+type ListInstancesByInstanceGroupIDPage struct {
+	PageNo     int         `json:"pageNo"`
+	PageSize   int         `json:"pageSize"`
+	TotalCount int         `json:"totalCount"`
+	List       []*Instance `json:"list"`
+}
+
+type ListInstancesByInstanceGroupIDResponse struct {
+	CommonResponse
+	Page ListInstancesByInstanceGroupIDPage `json:"page"`
+}
+
+type GetAutoscalerResponse struct {
+	Autoscaler *Autoscaler `json:"autoscaler"`
+	RequestID  string      `json:"requestID"`
+}
+
+type Autoscaler struct {
+	ClusterID   string                         `json:"clusterID"`
+	ClusterName string                         `json:"clusterName"`
+	CAConfig    ClusterAutoscalerConfig `json:"caConfig,omitempty"`
+}
+
+type ClusterAutoscalerConfig struct {
+	KubeVersion    string                           `json:"kubeVersion,omitempty"`
+	ReplicaCount   int                              `json:"replicaCount"`
+	InstanceGroups []ClusterAutoscalerInstanceGroup `json:"instanceGroups,omitempty"`
+	// default: false
+	ScaleDownEnabled bool `json:"scaleDownEnabled"`
+	// 可选，缩容阈值百分比，范围(0, 100)
+	ScaleDownUtilizationThreshold *int `json:"scaleDownUtilizationThreshold,omitempty"`
+	// 可选，GPU缩容阈值百分比，范围(0, 100)
+	ScaleDownGPUUtilizationThreshold *int `json:"scaleDownGPUUtilizationThreshold,omitempty"`
+	// 可选，缩容触发时延，单位：m
+	ScaleDownUnneededTime *int `json:"scaleDownUnneededTime,omitempty"`
+	// 可选，扩容后缩容启动时延，单位：m
+	ScaleDownDelayAfterAdd *int `json:"scaleDownDelayAfterAdd,omitempty"`
+	// 可选，最大并发缩容数
+	MaxEmptyBulkDelete *int `json:"maxEmptyBulkDelete,omitempty"`
+	// 可选，
+	SkipNodesWithLocalStorage *bool `json:"skipNodesWithLocalStorage,omitempty"`
+	// 可选，
+	SkipNodesWithSystemPods *bool `json:"skipNodesWithSystemPods,omitempty"`
+	// supported: random, most-pods, least-waste, priority; default: random
+	Expander string `json:"expander"`
+}
+
+type ClusterAutoscalerInstanceGroup struct {
+	InstanceGroupID string
+	MinReplicas     int
+	MaxReplicas     int
+	Priority        int
+}
+
+type InstanceGroupListOption struct {
+	PageNo   int
+	PageSize int
+}
+
+type CreateInstanceGroupArgs struct {
+	ClusterID string
+	Request *CreateInstanceGroupRequest
+}
+
+type ListInstanceGroupsArgs struct {
+	ClusterID string
+	ListOption *InstanceGroupListOption
+}
+
+type ListInstanceByInstanceGroupIDArgs struct {
+	ClusterID string
+	InstanceGroupID string
+	PageNo int
+	PageSize int
+}
+
+type GetInstanceGroupArgs struct {
+	ClusterID string
+	InstanceGroupID string
+}
+
+type UpdateInstanceGroupClusterAutoscalerSpecArgs struct {
+	ClusterID string
+	InstanceGroupID string
+	Request *ClusterAutoscalerSpec
+}
+
+type UpdateInstanceGroupReplicasArgs struct {
+	ClusterID string
+	InstanceGroupID string
+	Request *UpdateInstanceGroupReplicasRequest
+}
+
+type DeleteInstanceGroupArgs struct {
+	ClusterID string
+	InstanceGroupID string
+	DeleteInstances bool
+}

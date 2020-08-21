@@ -10,11 +10,14 @@ modification history
 package v2
 
 import (
+	"encoding/base64"
+
 	"github.com/baidubce/bce-sdk-go/bce"
+	"github.com/baidubce/bce-sdk-go/services/cce/v2/types"
 )
 
 const (
-	URI_PREFIX = bce.URI_PREFIX + "/api/cce/service/v2"
+	URI_PREFIX = bce.URI_PREFIX + "api/cce/service/v2"
 
 	DEFAULT_ENDPOINT = "cce." + bce.DEFAULT_REGION + ".baidubce.com"
 
@@ -37,10 +40,6 @@ const (
 	REQUEST_QUOTA_URL = "/quota"
 
 	REQUEST_NODE_URL = "/node"
-
-	REQUEST_KUBECONFIG_URL = "/kubeconfig"
-
-	REQUEST_KUBECONFIG_ADMIN_URL = "/admin"
 
 	REQUEST_NET_URL = "/net"
 
@@ -139,6 +138,27 @@ func getQuotaNodeURI(clusterID string) string {
 	return URI_PREFIX + REQUEST_QUOTA_URL + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_NODE_URL
 }
 
-func getAdminKubeConfigURI(clusterID, kubeconfigType string) string {
-	return URI_PREFIX + REQUEST_KUBECONFIG_URL + "/" + clusterID + REQUEST_KUBECONFIG_ADMIN_URL + "/" + kubeconfigType
+
+func encodeUserScriptInInstanceSet(instancesSets []*InstanceSet) error {
+	if instancesSets == nil {
+		return nil
+	}
+	for _, instanceSet := range instancesSets {
+		encodeUserScript(&instanceSet.InstanceSpec)
+	}
+	return nil
+}
+
+func encodeUserScript(instanceSpec *types.InstanceSpec) {
+	if instanceSpec == nil{
+		return
+	}
+	if instanceSpec.DeployCustomConfig.PreUserScript != "" {
+		base64Str := base64.StdEncoding.EncodeToString([]byte(instanceSpec.DeployCustomConfig.PreUserScript))
+		instanceSpec.DeployCustomConfig.PreUserScript = base64Str
+	}
+	if instanceSpec.DeployCustomConfig.PostUserScript != "" {
+		base64Str := base64.StdEncoding.EncodeToString([]byte(instanceSpec.DeployCustomConfig.PostUserScript))
+		instanceSpec.DeployCustomConfig.PostUserScript = base64Str
+	}
 }

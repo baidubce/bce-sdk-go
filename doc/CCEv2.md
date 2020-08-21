@@ -455,6 +455,21 @@ s, _ := json.MarshalIndent(resp, "", "\t")
 fmt.Println("Response:"+ string(s))
 ```
 
+## 获取节点组的节点列表
+使用以下代码可以获取节点组的节点列表
+```go
+args := &ListInstanceByInstanceGroupIDArgs{
+    ClusterID: "your-cluster-id",
+    InstanceGroupID: "your-instance-group-id",
+    PageSize: 0,
+    {ageNo: 0,
+}
+resp, err := ccev2Client.ListInstancesByInstanceGroupID(args)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
 ## 删除节点(集群缩容)
 使用以下代码可以删除集群内的一个节点
 ```go
@@ -593,6 +608,127 @@ s, _ := json.MarshalIndent(resp, "", "\t")
 fmt.Println("Response:"+ string(s))
 ```
 
+## 创建节点组
+使用以下代码可以创建节点组
+```go	
+args := &CreateInstanceGroupArgs{
+    ClusterID: CCE_CLUSTER_ID,
+    Request: &CreateInstanceGroupRequest{
+        types.InstanceGroupSpec{
+            InstanceGroupName: "your-instance-group-name",
+            CleanPolicy: types.DeleteCleanPolicy,
+            Replicas: 3,
+            InstanceTemplate: types.InstanceTemplate{
+                InstanceSpec: types.InstanceSpec{
+                    ClusterRole:  types.ClusterRoleNode,
+                    Existed:      false,
+                    MachineType:  types.MachineTypeBCC,
+                    InstanceType: bccapi.InstanceTypeN3,
+                    VPCConfig: types.VPCConfig{
+                        VPCID:           "your-vpc-id",
+                        VPCSubnetID:     "your-vpc-subnet-id",
+                        SecurityGroupID: "your-secuirity-group-id",
+                        AvailableZone:   types.AvailableZoneA,
+                    },
+                    DeployCustomConfig: types.DeployCustomConfig{
+                        PreUserScript: "your-script",
+                        PostUserScript:"your-script",
+                    },
+                    InstanceResource: types.InstanceResource{
+                        CPU:           1,
+                        MEM:           4,
+                        RootDiskSize:  40,
+                        LocalDiskSize: 0,
+                    },
+                    ImageID: IMAGE_TEST_ID,
+                    InstanceOS: types.InstanceOS{
+                        ImageType: bccapi.ImageTypeSystem,
+                    },
+                    NeedEIP:              false,
+                    AdminPassword:        "your-admin-password",
+                    SSHKeyID:             "your-ssh-key-id",
+                    InstanceChargingType: bccapi.PaymentTimingPostPaid,
+                    RuntimeType:          types.RuntimeTypeDocker,
+                },
+            },
+        },
+    },
+}
+resp, err := ccev2Client.CreateInstanceGroup(args)
+
+s, _ = json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
+
+## 获取节点组列表
+使用以下代码可以获取节点组列表
+```go	
+args := &ListInstanceGroupsArgs{
+    ClusterID: "your-cluster-id",
+    ListOption: &InstanceGroupListOption{
+        PageNo: 0,
+        PageSize: 0,
+    },
+}
+resp, err := ccev2Client.ListInstanceGroups(args)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
+
+## 查询节点组详情
+使用以下代码可以查询节点组详情
+```go	
+args := &GetInstanceGroupArgs{
+    ClusterID: "your-cluster-id",
+    InstanceGroupID: "your-instance-group-id",
+}
+resp, err := ccev2Client.GetInstanceGroup(args)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
+
+## 修改节点组内节点副本数
+使用以下代码可以修改节点组内节点副本数
+```go	
+args := &UpdateInstanceGroupReplicasArgs{
+    ClusterID: "your-cluster-id",
+    InstanceGroupID: "your-instance-group-id",
+    Request:  &UpdateInstanceGroupReplicasRequest{
+        Replicas: 1,
+        DeleteInstance: true,
+        DeleteOption: &types.DeleteOption{
+            MoveOut: false,
+            DeleteCDSSnapshot: true,
+            DeleteResource: true,
+        },
+    },
+}
+resp, err := ccev2Client.UpdateInstanceGroupReplicas(args)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
+
+## 删除节点组
+使用以下代码可以删除节点组
+```go	
+args := &DeleteInstanceGroupArgs{
+    ClusterID: "your-cluster-id",
+    InstanceGroupID: "your-instance-group-id",
+    DeleteInstances: true,
+}
+resp, err := ccev2Client.DeleteInstanceGroup(args)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
 # 错误处理
 
 GO语言以error类型标识错误，CCE支持两种错误见下表：
@@ -688,3 +824,10 @@ myLogger.Info("this is my own logger from the CCE go sdk")
  - 支持创建节点（集群扩容）、获取集群的节点列表、获取节点详情、删除节点（集群缩容）
  - 支持检查集群网络网段、检查容器网络网段、推荐集群网络网段、推荐容器网络网段
  - 支持查询集群配额、集群节点配额
+ 
+ 
+ ## v1.1.0 [2020-08-20]
+ 
+ 增加节点组相关接口:
+  - 支持节点组创建、获取节点组列表、查询节点组详情、修改节点组内节点副本数、删除节点组
+  - 获取节点组的节点列表

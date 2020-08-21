@@ -1,6 +1,7 @@
 package v2
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 
@@ -10,12 +11,27 @@ import (
 
 // 创建集群
 func (c *Client) CreateCluster(args *CreateClusterArgs) (*CreateClusterResponse, error) {
-	if args == nil {
+	if args == nil || args.CreateClusterRequest == nil {
 		return nil, fmt.Errorf("args is nil")
 	}
 
+	//给其中可能存在的user script用base64编码
+	err := encodeUserScriptInInstanceSet(args.CreateClusterRequest.MasterSpecs)
+	if err != nil{
+		return nil ,err
+	}
+
+	err = encodeUserScriptInInstanceSet(args.CreateClusterRequest.NodeSpecs)
+	if err != nil{
+		return nil ,err
+	}
+
+
+	s, _ := json.MarshalIndent(args, "", "\t")
+	fmt.Println("Args:" + string(s))
+
 	result := &CreateClusterResponse{}
-	err := bce.NewRequestBuilder(c).
+	err = bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
 		WithURL(getClusterURI()).
 		WithBody(args.CreateClusterRequest).
@@ -90,8 +106,17 @@ func (c *Client) CreateInstances(args *CreateInstancesArgs) (*CreateInstancesRes
 		return nil, fmt.Errorf("args is nil")
 	}
 
+	//给其中可能存在的user script用base64编码
+	err := encodeUserScriptInInstanceSet(args.Instances)
+	if err != nil{
+		return nil ,err
+	}
+
+	s, _ := json.MarshalIndent(args, "", "\t")
+	fmt.Println("Args:" + string(s))
+
 	result := &CreateInstancesResponse{}
-	err := bce.NewRequestBuilder(c).
+	err = bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
 		WithURL(getClusterInstanceListURI(args.ClusterID)).
 		WithBody(args.Instances).
@@ -246,6 +271,109 @@ func (c *Client) GetClusterNodeQuota(clusterID string) (*GetQuotaResponse, error
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
 		WithURL(getQuotaNodeURI(clusterID)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+//创建节点组
+func (c *Client) CreateInstanceGroup(args *CreateInstanceGroupArgs) (*CreateInstanceGroupResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	encodeUserScript(&args.Request.InstanceTemplate.InstanceSpec)
+
+	result := &CreateInstanceGroupResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getInstanceGroupURI(args.ClusterID)).
+		WithBody(args.Request).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+//获取节点组列表
+func (c *Client) ListInstanceGroups(args *ListInstanceGroupsArgs) (*ListInstanceGroupResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	result := &ListInstanceGroupResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithQueryParamFilter("pageNo",  strconv.Itoa(args.ListOption.PageNo)).
+		WithQueryParamFilter("pageSize", strconv.Itoa(args.ListOption.PageSize)).
+		WithURL(getInstanceGroupListURI(args.ClusterID)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+func (c *Client) ListInstancesByInstanceGroupID(args *ListInstanceByInstanceGroupIDArgs) (*ListInstancesByInstanceGroupIDResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	result := &ListInstancesByInstanceGroupIDResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithQueryParamFilter("pageNo", strconv.Itoa(args.PageNo)).
+		WithQueryParamFilter("pageSize", strconv.Itoa(args.PageSize)).
+		WithURL(getClusterInstanceListWithInstanceGroupIDURI(args.ClusterID, args.InstanceGroupID)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+//获取节点组详情
+func (c *Client) GetInstanceGroup(args *GetInstanceGroupArgs) (*GetInstanceGroupResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	result := &GetInstanceGroupResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getInstanceGroupWithIDURI(args.ClusterID, args.InstanceGroupID)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+//更新节点组副本数
+func (c *Client) UpdateInstanceGroupReplicas(args *UpdateInstanceGroupReplicasArgs) (*UpdateInstanceGroupReplicasResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	result := &UpdateInstanceGroupReplicasResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getInstanceGroupReplicasURI(args.ClusterID, args.InstanceGroupID)).
+		WithBody(args.Request).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+//删除节点组
+func (c *Client) DeleteInstanceGroup(args *DeleteInstanceGroupArgs) (*DeleteInstanceGroupResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	result := &DeleteInstanceGroupResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(getInstanceGroupWithIDURI(args.ClusterID, args.InstanceGroupID)).
 		WithResult(result).
 		Do()
 

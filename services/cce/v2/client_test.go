@@ -18,6 +18,7 @@ import (
 var (
 	CCE_CLIENT             *Client
 	CCE_CLUSTER_ID         string
+	CCE_INSTANCE_GROUP_ID  string
 	CCE_INSTANCE_ID        string
 	VPC_TEST_ID            = "vpc-mwbgygrjb72w"
 	IMAGE_TEST_ID          = "m-gTpZ1k6n"
@@ -176,39 +177,9 @@ func TestClient_CreateCluster(t *testing.T) {
 					ClusterPodCIDR:       "172.28.0.0/16",
 					ClusterIPServiceCIDR: "172.31.0.0/16",
 				},
-			},
-			NodeSpecs: []*InstanceSet{
-				{
-					Count: 1,
-					InstanceSpec: types.InstanceSpec{
-						InstanceName: "",
-						ClusterRole:  types.ClusterRoleNode,
-						Existed:      false,
-						MachineType:  types.MachineTypeBCC,
-						InstanceType: bccapi.InstanceTypeN3,
-						VPCConfig: types.VPCConfig{
-							VPCID:           VPC_TEST_ID,
-							VPCSubnetID:     VPC_SUBNET_TEST_ID,
-							SecurityGroupID: SECURITY_GROUP_TESI_ID,
-							AvailableZone:   types.AvailableZoneA,
-						},
-						InstanceResource: types.InstanceResource{
-							CPU:           4,
-							MEM:           8,
-							RootDiskSize:  40,
-							LocalDiskSize: 0,
-							CDSList:       []types.CDSConfig{},
-						},
-						ImageID: IMAGE_TEST_ID,
-						InstanceOS: types.InstanceOS{
-							ImageType: bccapi.ImageTypeSystem,
-						},
-						NeedEIP:              false,
-						AdminPassword:        ADMIN_PASSWORD_TEST,
-						SSHKeyID:             "",
-						InstanceChargingType: bccapi.PaymentTimingPostPaid,
-						RuntimeType:          types.RuntimeTypeDocker,
-					},
+				K8SCustomConfig: types.K8SCustomConfig{
+					KubeAPIQPS:   1000,
+					KubeAPIBurst: 2000,
 				},
 			},
 		},
@@ -222,7 +193,7 @@ func TestClient_CreateCluster(t *testing.T) {
 	fmt.Println("Response:" + string(s))
 
 	//等集群创建完成
-	time.Sleep(time.Duration(240) * time.Second)
+	time.Sleep(time.Duration(180) * time.Second)
 }
 
 func TestClient_GetCluster(t *testing.T) {
@@ -251,6 +222,151 @@ func TestClient_ListClusters(t *testing.T) {
 	fmt.Println("Response:" + string(s))
 }
 
+func TestClient_CreateInstanceGroup(t *testing.T) {
+	args := &CreateInstanceGroupArgs{
+		ClusterID: CCE_CLUSTER_ID,
+		Request: &CreateInstanceGroupRequest{
+			types.InstanceGroupSpec{
+				InstanceGroupName: "jichao-sdk-testcase",
+				CleanPolicy: types.DeleteCleanPolicy,
+				Replicas: 3,
+				InstanceTemplate: types.InstanceTemplate{
+					InstanceSpec: types.InstanceSpec{
+						ClusterRole:  types.ClusterRoleNode,
+						Existed:      false,
+						MachineType:  types.MachineTypeBCC,
+						InstanceType: bccapi.InstanceTypeN3,
+						VPCConfig: types.VPCConfig{
+							VPCID:           VPC_TEST_ID,
+							VPCSubnetID:     VPC_SUBNET_TEST_ID,
+							SecurityGroupID: SECURITY_GROUP_TESI_ID,
+							AvailableZone:   types.AvailableZoneA,
+						},
+						DeployCustomConfig: types.DeployCustomConfig{
+							PreUserScript: "ls",
+							PostUserScript: "time",
+						},
+						InstanceResource: types.InstanceResource{
+							CPU:           1,
+							MEM:           4,
+							RootDiskSize:  40,
+							LocalDiskSize: 0,
+						},
+						ImageID: IMAGE_TEST_ID,
+						InstanceOS: types.InstanceOS{
+							ImageType: bccapi.ImageTypeSystem,
+						},
+						NeedEIP:              false,
+						AdminPassword:        ADMIN_PASSWORD_TEST,
+						SSHKeyID:             SSH_KEY_TEST_ID,
+						InstanceChargingType: bccapi.PaymentTimingPostPaid,
+						RuntimeType:          types.RuntimeTypeDocker,
+					},
+				},
+			},
+		},
+	}
+
+	resp, err := CCE_CLIENT.CreateInstanceGroup(args)
+
+
+	ExpectEqual(t.Errorf, nil, err)
+	CCE_INSTANCE_GROUP_ID = resp.InstanceGroupID
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:" + string(s))
+
+	time.Sleep(time.Duration(180) * time.Second)
+}
+
+func TestClient_ListInstanceGroups(t *testing.T) {
+	args := &ListInstanceGroupsArgs{
+		ClusterID: CCE_CLUSTER_ID,
+		ListOption: &InstanceGroupListOption{
+			PageNo: 0,
+			PageSize: 0,
+		},
+	}
+	resp, err := CCE_CLIENT.ListInstanceGroups(args)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:" + string(s))
+
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_ListInstancesByInstanceGroupID(t *testing.T) {
+	args := &ListInstanceByInstanceGroupIDArgs{
+		ClusterID: CCE_CLUSTER_ID,
+		InstanceGroupID: CCE_INSTANCE_GROUP_ID,
+		PageSize: 0,
+		PageNo: 0,
+	}
+
+	resp, err := CCE_CLIENT.ListInstancesByInstanceGroupID(args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:" + string(s))
+}
+
+func TestClient_GetInstanceGroup(t *testing.T) {
+	args := &GetInstanceGroupArgs{
+		ClusterID: CCE_CLUSTER_ID,
+		InstanceGroupID: CCE_INSTANCE_GROUP_ID,
+	}
+
+	resp, err := CCE_CLIENT.GetInstanceGroup(args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:" + string(s))
+}
+
+func TestClient_UpdateInstanceGroupReplicas(t *testing.T) {
+	args := &UpdateInstanceGroupReplicasArgs{
+		ClusterID: CCE_CLUSTER_ID,
+		InstanceGroupID: CCE_INSTANCE_GROUP_ID,
+		Request:  &UpdateInstanceGroupReplicasRequest{
+			Replicas: 1,
+			DeleteInstance: true,
+			DeleteOption: &types.DeleteOption{
+				MoveOut: false,
+				DeleteCDSSnapshot: true,
+				DeleteResource: true,
+			},
+		},
+	}
+
+	resp, err := CCE_CLIENT.UpdateInstanceGroupReplicas(args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:" + string(s))
+
+	time.Sleep(time.Duration(120) * time.Second)
+}
+
+func TestClient_DeleteInstanceGroup(t *testing.T) {
+	args := &DeleteInstanceGroupArgs{
+		ClusterID: CCE_CLUSTER_ID,
+		InstanceGroupID: CCE_INSTANCE_GROUP_ID,
+		DeleteInstances: true,
+	}
+
+	resp, err := CCE_CLIENT.DeleteInstanceGroup(args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:" + string(s))
+
+	time.Sleep(time.Duration(180) * time.Second)
+}
+
 func TestClient_CreateInstances(t *testing.T) {
 	args := &CreateInstancesArgs{
 		ClusterID: CCE_CLUSTER_ID,
@@ -267,6 +383,10 @@ func TestClient_CreateInstances(t *testing.T) {
 						VPCSubnetID:     VPC_SUBNET_TEST_ID,
 						SecurityGroupID: SECURITY_GROUP_TESI_ID,
 						AvailableZone:   types.AvailableZoneA,
+					},
+					DeployCustomConfig: types.DeployCustomConfig{
+						PreUserScript: "ls",
+						PostUserScript: "time",
 					},
 					InstanceResource: types.InstanceResource{
 						CPU:           1,
@@ -294,6 +414,8 @@ func TestClient_CreateInstances(t *testing.T) {
 
 	s, _ := json.MarshalIndent(resp, "", "\t")
 	fmt.Println("Response:" + string(s))
+
+	time.Sleep(time.Duration(180) * time.Second)
 }
 
 func TestClient_ListInstancesByPage(t *testing.T) {

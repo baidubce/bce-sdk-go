@@ -188,8 +188,13 @@ type DeployCustomConfig struct {
 	// key:value: cpu: 100m, memory: 1000Mi
 	KubeReserved map[string]string `json:"kubeReserved,omitempty"`
 
-	// 用户自定义脚本, 前端 base64编码后传参
-	UserScript string `json:"userScript,omitempty"`
+	// 是否封锁节点
+	EnableCordon bool `json:"enableCordon,omitempty"`
+
+	// 部署前执行脚本, 前端 base64编码后传参
+	PreUserScript string `json:"preUserScript,omitempty"`
+	// 部署后执行脚本, 前端 base64编码后传参
+	PostUserScript string `json:"postUserScript,omitempty"`
 }
 
 

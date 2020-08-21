@@ -58,6 +58,21 @@ type ClusterSpec struct {
 	MasterConfig           MasterConfig           `json:"masterConfig,omitempty" valid:"Required"`
 	ContainerNetworkConfig ContainerNetworkConfig `json:"containerNetworkConfig,omitempty" valid:"Required"`
 
+	// K8S 自定义配置
+	K8SCustomConfig K8SCustomConfig `json:"k8sCustomConfig,omitempty"`
+}
+
+// K8SCustomConfig - K8S 自定义配置
+type K8SCustomConfig struct {
+	MasterFeatureGates  map[string]bool `json:"masterFeatureGates,omitempty"`  // 自定义 FeatureGates
+	NodeFeatureGates    map[string]bool `json:"nodeFeatureGates,omitempty"`    // 自定义 FeatureGates
+	AdmissionPlugins    []string        `json:"admissionPlugins,omitempty"`    // 自定义 AdmissionPlugins
+	PauseImage          string          `json:"pauseImage,omitempty"`          // 自定义 PauseImage
+	KubeAPIQPS          int             `json:"kubeAPIQPS,omitempty"`          // 自定义 KubeAPIQPS
+	KubeAPIBurst        int             `json:"kubeAPIBurst,omitempty"`        // 自定义 KubeAPIBurst
+	SchedulerPredicates []string        `json:"schedulerPredicates,omitempty"` // 自定义 SchedulerPredicates
+	SchedulerPriorities map[string]int  `json:"schedulerPriorities,omitempty"` // 自定义 SchedulerPriorities
+	ETCDDataPath        string          `json:"etcdDataPath,omitempty"`        // 自定义 etcd数据目录
 }
 
 // ClusterType usually used to init Provider
