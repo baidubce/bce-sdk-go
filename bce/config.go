@@ -59,8 +59,9 @@ type BceClientConfiguration struct {
 	Retry                     RetryPolicy
 	ConnectionTimeoutInMillis int
 	// CnameEnabled should be true when use custom domain as endpoint to visit bos resource
-	CnameEnabled   bool
-	BackupEndpoint string
+	CnameEnabled     bool
+	BackupEndpoint   string
+	RedirectDisabled bool
 }
 
 func (c *BceClientConfiguration) String() string {
@@ -72,7 +73,8 @@ func (c *BceClientConfiguration) String() string {
         Credentials=%v;
         SignOption=%v;
         RetryPolicy=%v;
-        ConnectionTimeoutInMillis=%v
+        ConnectionTimeoutInMillis=%v;
+		RedirectDisabled=%v
     ]`, c.Endpoint, c.ProxyUrl, c.Region, c.UserAgent, c.Credentials,
-		c.SignOption, reflect.TypeOf(c.Retry).Name(), c.ConnectionTimeoutInMillis)
+		c.SignOption, reflect.TypeOf(c.Retry).Name(), c.ConnectionTimeoutInMillis, c.RedirectDisabled)
 }
