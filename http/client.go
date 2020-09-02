@@ -23,6 +23,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"sync"
 	"time"
 )
 
@@ -66,22 +67,35 @@ func (c *timeoutConn) SetDeadline(t time.Time) error      { return c.conn.SetDea
 func (c *timeoutConn) SetReadDeadline(t time.Time) error  { return c.conn.SetReadDeadline(t) }
 func (c *timeoutConn) SetWriteDeadline(t time.Time) error { return c.conn.SetWriteDeadline(t) }
 
-func init() {
-	httpClient = &http.Client{}
-	transport = &http.Transport{
-		MaxIdleConnsPerHost:   defaultMaxIdleConnsPerHost,
-		ResponseHeaderTimeout: defaultResponseHeaderTimeout,
-		Dial: func(network, address string) (net.Conn, error) {
-			conn, err := net.DialTimeout(network, address, defaultDialTimeout)
-			if err != nil {
-				return nil, err
+type ClientConfig struct {
+	RedirectDisabled bool
+}
+
+var customizeInit sync.Once
+
+func InitClient(config ClientConfig) {
+	customizeInit.Do(func() {
+		httpClient = &http.Client{}
+		transport = &http.Transport{
+			MaxIdleConnsPerHost:   defaultMaxIdleConnsPerHost,
+			ResponseHeaderTimeout: defaultResponseHeaderTimeout,
+			Dial: func(network, address string) (net.Conn, error) {
+				conn, err := net.DialTimeout(network, address, defaultDialTimeout)
+				if err != nil {
+					return nil, err
+				}
+				tc := &timeoutConn{conn, defaultSmallInterval, defaultLargeInterval}
+				tc.SetReadDeadline(time.Now().Add(defaultLargeInterval))
+				return tc, nil
+			},
+		}
+		httpClient.Transport = transport
+		if config.RedirectDisabled {
+			httpClient.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+				return http.ErrUseLastResponse
 			}
-			tc := &timeoutConn{conn, defaultSmallInterval, defaultLargeInterval}
-			tc.SetReadDeadline(time.Now().Add(defaultLargeInterval))
-			return tc, nil
-		},
-	}
-	httpClient.Transport = transport
+		}
+	})
 }
 
 // Execute - do the http requset and get the response

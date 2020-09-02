@@ -53,11 +53,28 @@ type Client struct {
 	MultipartSize int64
 }
 
+// BosClientConfiguration defines the config components structure by user.
+type BosClientConfiguration struct {
+	Ak               string
+	Sk               string
+	Endpoint         string
+	RedirectDisabled bool
+}
+
 // NewClient make the BOS service client with default configuration.
 // Use `cli.Config.xxx` to access the config or change it to non-default value.
 func NewClient(ak, sk, endpoint string) (*Client, error) {
+	return NewClientWithConfig(&BosClientConfiguration{
+		Ak:               ak,
+		Sk:               sk,
+		Endpoint:         endpoint,
+		RedirectDisabled: false,
+	})
+}
+func NewClientWithConfig(config *BosClientConfiguration) (*Client, error) {
 	var credentials *auth.BceCredentials
 	var err error
+	ak, sk, endpoint := config.Ak, config.Sk, config.Endpoint
 	if len(ak) == 0 && len(sk) == 0 { // to support public-read-write request
 		credentials, err = nil, nil
 	} else {
@@ -79,7 +96,8 @@ func NewClient(ak, sk, endpoint string) (*Client, error) {
 		Credentials: credentials,
 		SignOption:  defaultSignOptions,
 		Retry:       bce.DEFAULT_RETRY_POLICY,
-		ConnectionTimeoutInMillis: bce.DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS}
+		ConnectionTimeoutInMillis: bce.DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS,
+		RedirectDisabled:          config.RedirectDisabled}
 	v1Signer := &auth.BceV1Signer{}
 
 	client := &Client{bce.NewBceClient(defaultConf, v1Signer),

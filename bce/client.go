@@ -239,6 +239,8 @@ func (c *BceClient) GetBceClientConfig() *BceClientConfiguration {
 }
 
 func NewBceClient(conf *BceClientConfiguration, sign auth.Signer) *BceClient {
+	clientConfig := http.ClientConfig{RedirectDisabled: conf.RedirectDisabled}
+	http.InitClient(clientConfig)
 	return &BceClient{conf, sign}
 }
 
@@ -257,7 +259,8 @@ func NewBceClientWithAkSk(ak, sk, endPoint string) (*BceClient, error) {
 		Credentials: credentials,
 		SignOption:  defaultSignOptions,
 		Retry:       DEFAULT_RETRY_POLICY,
-		ConnectionTimeoutInMillis: DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS}
+		ConnectionTimeoutInMillis: DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS,
+		RedirectDisabled:          false}
 	v1Signer := &auth.BceV1Signer{}
 
 	return NewBceClient(defaultConf, v1Signer), nil
