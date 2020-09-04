@@ -1144,3 +1144,33 @@ type ListTypeZonesArgs struct {
 	Spec         string `json:"spec"`
 	SpecId       string `json:"specId"`
 }
+
+type BccCreateAutoRenewArgs struct {
+	InstanceId    string `json:"instanceId"`
+	RenewTimeUnit string `json:"renewTimeUnit"`
+	RenewTime     int    `json:"renewTime"`
+}
+
+type BccDeleteAutoRenewArgs struct {
+	InstanceId    string `json:"instanceId"`
+}
+
+type DeleteInstanceIngorePaymentArgs struct {
+	InstanceId            string `json:"instanceId"`
+	RelatedReleaseFlag    bool   `json:"relatedReleaseFlag"`
+	DeleteCdsSnapshotFlag bool   `json:"deleteCdsSnapshotFlag"`
+	DeleteRelatedEnisFlag bool   `json:"deleteRelatedEnisFlag"`
+}
+
+type DeleteInstanceModel struct {
+	InstanceId  string   `json:"instanceId"`
+	Eip         string   `json:"eip"`
+	InsnapIds   []string `json:"insnapIds"`
+	SnapshotIds []string `json:"snapshotIds"`
+	VolumeIds   []string `json:"volumeIds"`
+}
+
+type DeleteInstanceResult struct {
+	SuccessResources *DeleteInstanceModel `json:"successResources"`
+	FailResources *DeleteInstanceModel `json:"failResources"`
+}

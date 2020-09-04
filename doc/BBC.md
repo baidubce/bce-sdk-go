@@ -358,6 +358,20 @@ if err := bbcClient.DeleteInstance(instanceId); err != nil {
 }
 ```
 
+### 释放实例（包含预付费实例）
+不区分后付费还是预付费实例，释放bbc以及关联的eip，可以使用以下代码将其释放:
+```go
+	args := &DeleteInstanceIngorePaymentArgs{
+		InstanceId:      "instanceid",
+		RelatedReleaseFlag: relatedReleaseFlag, //true or false
+	}
+	if res, err := BBC_CLIENT.DeleteInstanceIngorePayment(args); err != nil {
+		fmt.Println("delete instance failed: ", err)
+	} else {
+		fmt.Printf("delelte instance success, result: %s", res)
+	}
+```
+
 ### 修改实例密码
 使用以下代码可以修改指定BBC实例的管理员密码：
 ```go
@@ -455,6 +469,42 @@ if err := bbcClient.BatchDelIP(batchDelIpArgs); err != nil {
     fmt.Println("delete ips failed: ", err)
 } else {
     fmt.Println("delete ips success.")
+}
+```
+
+### 开通自动续费（包含关联产品）
+自动续费仅限预付费产品
+
+```go
+bbcCreateAutoRenewArgs := &BbcCreateAutoRenewArgs{
+    // 实例ID
+    InstanceId: instanceId,
+    // 续费单位，month，year
+    RenewTimeUnit: "month",
+    // 续费时长，单位：month，支持1, 2, 3, 4, 5, 6, 7, 8, 9；单位：year，支持1, 2, 3
+    RenewTime: 1,
+}
+
+if err := bbcClient.BatchCreateAutoRenewRules(bbcCreateAutoRenewArgs); err != nil {
+    fmt.Println("BatchCreateAutoRenewRules failed: ", err)
+} else {
+    fmt.Println("BatchCreateAutoRenewRules success.")
+}
+```
+
+### 关闭自动续费（包含关联产品）
+自动续费仅限预付费产品
+
+```go
+bbcDeleteAutoRenewArgs := &BbcDeleteAutoRenewArgs{
+	// 实例ID
+	InstanceId: instanceId,
+}
+
+if err := bbcClient.BatchDeleteAutoRenewRules(bbcCreateAutoRenewArgs); err != nil {
+    fmt.Println("BatchDeleteAutoRenewRules failed: ", err)
+} else {
+    fmt.Println("BatchDeleteAutoRenewRules success.")
 }
 ```
 

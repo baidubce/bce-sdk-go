@@ -64,6 +64,8 @@ const (
 	REQUEST_NOCHARGE_URI = "/noCharge"
 	REQUEST_BID_URI = "/bid"
 	REQUEST_CANCEL_BIDORDER_URI = "/cancelBidOrder"
+	REQUEST_BATCH_CREATE_AUTORENEW_RULES_URI = "/batchCreateAutoRenewRules"
+	REQUEST_BATCH_Delete_AUTORENEW_RULES_URI = "/batchDeleteAutoRenewRules"
 )
 
 func getInstanceUri() string {
@@ -244,4 +246,16 @@ func GetCreateBidInstanceUri() string {
 
 func GetCancelBidOrderUri() string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_CANCEL_BIDORDER_URI
+}
+
+func getBatchCreateAutoRenewRulesUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_BATCH_CREATE_AUTORENEW_RULES_URI
+}
+
+func getBatchDeleteAutoRenewRulesUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_BATCH_Delete_AUTORENEW_RULES_URI
+}
+
+func getDeleteInstanceDeleteIngorePaymentUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/delete"
 }

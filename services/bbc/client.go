@@ -838,3 +838,43 @@ func (c *Client) EnableRule(args *EnableRuleArgs) error {
 	}
 	return EnableRule(c, body)
 }
+
+// BatchCreateAutoRenewRules - Batch Create AutoRenew Rules
+//
+// PARAMS:
+//      - args: the arguments to batch create autorenew rules
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchCreateAutoRenewRules(args *BbcCreateAutoRenewArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return BatchCreateAutoRenewRules(c, body)
+}
+
+// BatchDeleteAutoRenewRules - Batch Delete AutoRenew Rules
+//
+// PARAMS:
+//      - args: the arguments to batch delete autorenew rules
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchDeleteAutoRenewRules(args *BbcDeleteAutoRenewArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return BatchDeleteAutoRenewRules(c, body)
+}
+
+func (c *Client) DeleteInstanceIngorePayment(args *DeleteInstanceIngorePaymentArgs) (*DeleteInstanceResult, error) {
+	return DeleteBbcIngorePayment(c, args)
+}

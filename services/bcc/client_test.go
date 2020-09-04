@@ -946,3 +946,35 @@ func TestDeleteKeypair(t *testing.T) {
 		fmt.Println("Get specific instance eni success")
 	}
 }
+
+func TestBatchCreateAutoRenewRules(t *testing.T) {
+	bccAutoRenewArgs := &api.BccCreateAutoRenewArgs{
+		InstanceId: BCC_TestBccId,
+		RenewTimeUnit: "month",
+		RenewTime: 1,
+	}
+	err := BCC_CLIENT.BatchCreateAutoRenewRules(bccAutoRenewArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBatchDeleteAutoRenewRules(t *testing.T) {
+	bccAutoRenewArgs := &api.BccDeleteAutoRenewArgs{
+		InstanceId: BCC_TestBccId,
+	}
+	err := BCC_CLIENT.BatchDeleteAutoRenewRules(bccAutoRenewArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestDeleteInstanceIngorePayment(t *testing.T) {
+	args := &api.DeleteInstanceIngorePaymentArgs{
+		InstanceId:      "i-IydDpQFF",
+		RelatedReleaseFlag: true,
+		DeleteRelatedEnisFlag:true,
+		DeleteCdsSnapshotFlag:true,
+	}
+	if res, err := BCC_CLIENT.DeleteInstanceIngorePayment(args); err != nil {
+		fmt.Println("delete  instance failed: ", err)
+	} else {
+		fmt.Println("delete  instance success, result: ", res)
+	}
+}

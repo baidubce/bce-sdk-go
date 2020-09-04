@@ -549,3 +549,33 @@ func TestEnableRule(t *testing.T) {
 	err := BBC_CLIENT.EnableRule(args)
 	ExpectEqual(t.Errorf, err, nil)
 }
+
+func TestBatchCreateAutoRenewRules(t *testing.T) {
+	bccAutoRenewArgs := &BbcCreateAutoRenewArgs{
+		InstanceId: BBC_TestBbcId,
+		RenewTimeUnit: "month",
+		RenewTime: 1,
+	}
+	err := BBC_CLIENT.BatchCreateAutoRenewRules(bccAutoRenewArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBatchDeleteAutoRenewRules(t *testing.T) {
+	bccAutoRenewArgs := &BbcDeleteAutoRenewArgs{
+		InstanceId: BBC_TestBbcId,
+	}
+	err := BBC_CLIENT.BatchDeleteAutoRenewRules(bccAutoRenewArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestDeleteInstanceIngorePayment(t *testing.T) {
+	args := &DeleteInstanceIngorePaymentArgs{
+		InstanceId:      "i-htkPgy0d",
+		RelatedReleaseFlag: false,
+	}
+	if res, err := BBC_CLIENT.DeleteInstanceIngorePayment(args); err != nil {
+		fmt.Println("delete instance failed: ", err)
+	} else {
+		fmt.Println("delelte instance success, result: ", res)
+	}
+}

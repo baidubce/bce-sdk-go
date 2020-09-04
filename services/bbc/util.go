@@ -34,6 +34,8 @@ const (
 	REQUEST_IMAGE_URI      = "/image"
 	REQUEST_BATCHADDIP_URI = "/batchAddIp"
 	REQUEST_BATCHDELIP_URI = "/batchDelIp"
+	REQUEST_BATCH_CREATE_AUTORENEW_RULES_URI = "/batchCreateAutoRenewRules"
+	REQUEST_BATCH_Delete_AUTORENEW_RULES_URI = "/batchDeleteAutoRenewRules"
 
 	REQUEST_FLAVOR_URI       = "/flavor"
 	REQUEST_FLAVOR_RAID_URI  = "/flavorRaid"

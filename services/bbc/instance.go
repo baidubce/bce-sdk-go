@@ -227,6 +227,50 @@ func StopInstance(cli bce.Client, instanceId string, reqBody *bce.Body) error {
 	return nil
 }
 
+// DeleteInstance - delete a specified instance,contains prepay or postpay instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance to be deleted
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+
+func DeleteBbcIngorePayment(cli bce.Client, args *DeleteInstanceIngorePaymentArgs) (*DeleteInstanceResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getDeleteBbcDeleteIngorePaymentUri())
+	req.SetMethod(http.POST)
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return nil, err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &DeleteInstanceResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
+func getDeleteBbcDeleteIngorePaymentUri() string {
+	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + "/delete"
+}
+
 // RebootInstance - reboot a bbc instance
 //
 // PARAMS:
@@ -614,6 +658,60 @@ func GetInstanceEni(cli bce.Client, instanceId string) (*GetInstanceEniResult, e
 	return jsonBody, nil
 }
 
+// BatchCreateAutoRenewRules - Batch Create AutoRenew Rules
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func BatchCreateAutoRenewRules(cli bce.Client, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getBatchCreateAutoRenewRulesUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// BatchDeleteAutoRenewRules - Batch Delete AutoRenew Rules
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func BatchDeleteAutoRenewRules(cli bce.Client, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getBatchDeleteAutoRenewRulesUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
 func getInstanceEniUri(instanceId string) string {
 	return URI_PREFIX_V1 + REQUEST_INSTANCE_PORT_URI + "/" + instanceId
 }
@@ -652,4 +750,12 @@ func getsimpleFlavor() string {
 
 func getInstancePirce() string {
 	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + "/price"
+}
+
+func getBatchCreateAutoRenewRulesUri() string {
+	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + REQUEST_BATCH_CREATE_AUTORENEW_RULES_URI
+}
+
+func getBatchDeleteAutoRenewRulesUri() string {
+	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + REQUEST_BATCH_Delete_AUTORENEW_RULES_URI
 }

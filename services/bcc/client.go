@@ -1343,3 +1343,43 @@ func (c *Client) GetInstanceCreateStock(args *api.CreateInstanceStockArgs) (*api
 func (c *Client) GetInstanceResizeStock(args *api.ResizeInstanceStockArgs) (*api.InstanceStockResult, error) {
 	return api.GetInstanceResizeStock(c, args)
 }
+
+// BatchCreateAutoRenewRules - Batch Create AutoRenew Rules
+//
+// PARAMS:
+//      - args: the arguments to batch create autorenew rules
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchCreateAutoRenewRules(args *api.BccCreateAutoRenewArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return api.BatchCreateAutoRenewRules(c, body)
+}
+
+// BatchDeleteAutoRenewRules - Batch Delete AutoRenew Rules
+//
+// PARAMS:
+//      - args: the arguments to batch delete autorenew rules
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchDeleteAutoRenewRules(args *api.BccDeleteAutoRenewArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return api.BatchDeleteAutoRenewRules(c, body)
+}
+
+func (c *Client) DeleteInstanceIngorePayment(args *api.DeleteInstanceIngorePaymentArgs) (*api.DeleteInstanceResult, error) {
+	return api.DeleteInstanceIngorePayment(c, args)
+}

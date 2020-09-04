@@ -609,3 +609,30 @@ type AzIntstanceStatisDetail struct {
 	Total       int      `json:"instanceTotal"`
 	InstanceIds []string `json:"instanceIds"`
 }
+
+type BbcCreateAutoRenewArgs struct {
+	InstanceId    string `json:"instanceId"`
+	RenewTimeUnit string `json:"renewTimeUnit"`
+	RenewTime     int    `json:"renewTime"`
+}
+
+type BbcDeleteAutoRenewArgs struct {
+	InstanceId    string `json:"instanceId"`
+}
+
+type DeleteInstanceIngorePaymentArgs struct {
+	InstanceId            string `json:"instanceId"`
+	RelatedReleaseFlag    bool   `json:"relatedReleaseFlag"`
+	DeleteCdsSnapshotFlag bool   `json:"deleteCdsSnapshotFlag"`
+	DeleteRelatedEnisFlag bool   `json:"deleteRelatedEnisFlag"`
+}
+
+type DeleteInstanceModel struct {
+	InstanceId  string   `json:"instanceId"`
+	Eip         string   `json:"eip"`
+}
+
+type DeleteInstanceResult struct {
+	SuccessResources *DeleteInstanceModel `json:"successResources"`
+	FailResources *DeleteInstanceModel `json:"failResources"`
+}

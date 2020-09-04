@@ -950,6 +950,27 @@ if err := bccClient.DeleteInstanceWithRelateResource(instanceId, deleteInstanceW
     fmt.Println("release instance success.")
 }
 ```
+## 释放实例（包含预付费实例）
+不区分后付费还是预付费实例，释放bcc以及关联的资源，可以使用以下代码将其释放:
+```go
+	args := &api.DeleteInstanceIngorePaymentArgs{
+		InstanceId:      "instanceid",
+		//设置是否释放eip和cds false代表否 true代表是，默认false
+		RelatedReleaseFlag: true,
+		//设置是否释放 false代表否 true代表是，默认false
+		DeleteRelatedEnisFlag:true,
+		//设置是否释放云磁盘快照 false代表否 true代表是，默认false，释放预付费bcc时DeleteCdsSnapshotFlag和RelatedReleaseFlag不存在绑定关系，
+		// 选择DeleteCdsSnapshotFlag=true即会释放虚机绑定的各种快照
+		// 释放后付费bcc时，DeleteCdsSnapshotFlag和RelatedReleaseFlag之间逻辑和之前逻辑保持一致
+		DeleteCdsSnapshotFlag:true,
+	}
+	if res, err := BCC_CLIENT.DeleteInstanceIngorePayment(args); err != nil {
+		fmt.Println("delete  instance failed: ", err)
+	} else {
+		fmt.Printf("delete  instance success, result: %s", res.String())
+	}
+
+```
 
 > **提示：**
 > -   释放单个云服务器实例，释放后实例所使用的物理资源都被收回，相关数据全部丢失且不可恢复。
@@ -1184,6 +1205,42 @@ if err := client.BatchDelIP(batchDelIpArgs); err != nil {
     fmt.Println("delete ips failed: ", err)
 } else {
     fmt.Println("delete ips success.")
+}
+```
+
+### 开通自动续费（包含关联产品）
+自动续费仅限预付费产品
+
+```go
+bccCreateAutoRenewArgs := &api.BccCreateAutoRenewArgs{
+    // 实例ID
+    InstanceId: instanceId,
+    // 续费单位，month，year
+    RenewTimeUnit: "month",
+    // 续费时长，单位：month，支持1, 2, 3, 4, 5, 6, 7, 8, 9；单位：year，支持1, 2, 3
+    RenewTime: 1,
+}
+
+if err := bccClient.BatchCreateAutoRenewRules(bccCreateAutoRenewArgs); err != nil {
+    fmt.Println("BatchCreateAutoRenewRules failed: ", err)
+} else {
+    fmt.Println("BatchCreateAutoRenewRules success.")
+}
+```
+
+### 关闭自动续费（包含关联产品）
+自动续费仅限预付费产品
+
+```go
+bccDeleteAutoRenewArgs := &api.BccDeleteAutoRenewArgs{
+	// 实例ID
+	InstanceId: instanceId,
+}
+
+if err := bccClient.BatchDeleteAutoRenewRules(bccDeleteAutoRenewArgs); err != nil {
+    fmt.Println("BatchDeleteAutoRenewRules failed: ", err)
+} else {
+    fmt.Println("BatchDeleteAutoRenewRules success.")
 }
 ```
 
