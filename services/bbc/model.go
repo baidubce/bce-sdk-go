@@ -112,6 +112,7 @@ type ListInstancesResult struct {
 type InstanceModel struct {
 	Id                    string           `json:"id"`
 	Name                  string           `json:"name"`
+	Uuid                  string           `json:"uuid"`
 	Desc                  string           `json:"desc"`
 	Status                InstanceStatus   `json:"status"`
 	PaymentTiming         string           `json:"paymentTiming"`

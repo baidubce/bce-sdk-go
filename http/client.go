@@ -156,7 +156,9 @@ func Execute(request *Request) (*Response, error) {
 	// It needs to explicitly close the keep-alive connections when error occurs for the request
 	// that may continue sending request's data subsequently.
 	start := time.Now()
+
 	httpResponse, err := httpClient.Do(httpRequest)
+
 	end := time.Now()
 	if err != nil {
 		transport.CloseIdleConnections()

@@ -133,7 +133,7 @@ fmt.Printf("domainCreatedInfo:%+v\n", domainCreatedInfo)
 fmt.Printf("err:%+v\n", err)
 ```
 
-`api.OriginPeer`表示一个源站，`api.OriginInit`表示对于这个加速域名的源站配置，包括一个或多个源站，和一个默认的会员host，表示为`DefaultHost`。`Form`表示加速服务类型，默认为`default`，其他可选的服务类型有`image`表示图片小文件，`download`表示大文件下载，`media`表示流媒体点播，`dynamic`表示动静态加速。
+`api.OriginPeer`表示一个源站，`api.OriginInit`表示对于这个加速域名的源站配置，包括一个或多个源站，和一个默认的回源host，表示为`DefaultHost`。`Form`表示加速服务类型，默认为`default`，其他可选的服务类型有`image`表示图片小文件，`download`表示大文件下载，`media`表示流媒体点播，`dynamic`表示动静态加速。
 源站信息**api.OriginPeer**的结构如下：
 
 | 字段      | 类型   | 说明                                                         |
@@ -187,7 +187,7 @@ fmt.Printf("err:%+v\n", err)
 | LastModifyTime | string           | 上次修改域名配置的时间，UTC时间，如：`2019-09-06T15:00:21Z`。 |
 | IsBan          | string           | 是否被禁用，禁用的意思是欠费或者其他违规操作被系统封禁，被封禁的域名不拥有加速服务。`ON`表示为被封禁，`YES`表示被封禁了。 |
 | Origin         | []api.OriginPeer | 源站信息，在创建加速域名接口有详细说明。                     |
-| DefaultHost    | string           | 默认的会员host，在创建加速域名接口有详细说明。               |
+| DefaultHost    | string           | 默认的回源host，在创建加速域名接口有详细说明。               |
 | CacheTTL       | []api.CacheTTL   | 文件类型与路径的缓存策略，在`设置/查询缓存过期规则`小段有详细说明。     |
 | LimitRate      | int              | 下载限速，单位Byte/s。                                       |
 | RequestAuth    | api.RequestAuth  | 访问鉴权配置，在设置访问鉴权有详细说明。                     |
@@ -585,7 +585,33 @@ fmt.Printf("err:%+v\n", err)
 
 `api.OriginPeer`类型的详细说明在**创建加速域名一节**已经有说明。
 
-### 设置协议跟随回源 SetFollowProtocol
+### 设置/查询回源协议 SetOriginProtocol/GetOriginProtocol
+
+> 设置回源协议指的是设置CDN侧接受请求miss的时候请求源站的协议，可以设置的回源协议有"http"、"https"或者"*"，"*"表示协议跟随回源(请求是HTTP/HTTPS协议那么请求源站也是HTTP/HTTPS协议)。默认是HTTP回源。
+
+```go
+cli := client.GetDefaultClient()
+testDomain := "test_go_sdk.baidu.com"  
+
+// 设置回源协议为HTTP
+err := testCli.SetOriginProtocol(testAuthorityDomain, "http")
+fmt.Printf("err:%+v\n", err)  
+
+// 设置回源协议为HTTPS（域名必须HTTPS，否则以下请求失败）
+err = testCli.SetOriginProtocol(testAuthorityDomain, "https")
+fmt.Printf("err:%+v\n", err)
+
+// 设置回源跟随协议
+err = testCli.SetOriginProtocol(testAuthorityDomain, "*")
+fmt.Printf("err:%+v\n", err)
+
+// 查询回源协议
+originProtocol, err := testCli.GetOriginProtocol(testAuthorityDomain)
+fmt.Printf("err:%+v\n", err)
+fmt.Printf("originProtocol:%s\n", originProtocol)
+```
+
+### 设置协议跟随回源 SetFollowProtocol(废弃，设置协议跟随请使用SetOriginProtocol)
 
 > 设置协议跟随回源，表示CDN节点回源协议与客户端访问协议保持一致。
 
@@ -849,7 +875,7 @@ fmt.Printf("err:%+v\n", err)
 | HttpsRedirect     | bool   | 为true时将HTTPS请求重定向到HTTP重定向状态码为httpsRedirectCode所配置），默认为false，当enabled=false此项无效，不可与httpRedirect同时为true。 |
 | HttpsRedirectCode | int    | 重定向状态码，可选值301/302，默认302，当enabled=false此项无效，httpsRedirect=false此项无效。 |
 | Http2Enabled      | bool   | 开启HTTP2特性，当enabled=false此项无效。必须要注意go的bool对象零值为false。 |
-| HttpOrigin        | bool   | 当为true时以HTTP协议回源，默认为false，当enabled=false此项无效。 |
+| ~~HttpOrigin~~        | bool   | **已弃用**，设置回源协议请参考**SetOriginProtocol**。 |
 | SslVersion        | string | 设置TLS版本，默认为支持从TLSv1.0到TLSv1.3的版本，也可以设置为以下四个之一，SSLV3,TLSV1,TLSV11,TLSV12，当enabled=false时此项无效，此项一般取默认值，无需设置。 |
 
 ## 缓存管理接口

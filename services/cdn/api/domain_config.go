@@ -56,8 +56,11 @@ type HTTPSConfig struct {
 	HttpsRedirect     bool   `json:"httpsRedirect"`
 	HttpsRedirectCode int    `json:"httpsRedirectCode"`
 	Http2Enabled      bool   `json:"http2Enabled"`
-	HttpOrigin        bool   `json:"httpOrigin"`
 	SslVersion        string `json:"sslVersion,omitempty"`
+
+	// Deprecated: You can no longer use this field,
+	// The better choice is use SetOriginProtocol/GetOriginProtocol.
+	HttpOrigin bool `json:"-"`
 }
 
 // SeoSwitch defined a struct for SEO setting
@@ -180,6 +183,74 @@ func SetDomainOrigin(cli bce.Client, domain string, origins []OriginPeer, defaul
 	}, nil)
 
 	return err
+}
+
+// SetOriginProtocol - set the http protocol back to backend server.
+// The valid "originProtocol" must be "http", "https" or "*",
+// "http" means send the HTTP request to the backend server,
+// "https" means send the HTTPS request to the backend server,
+// "*" means send the request follow the client's requesting protocol.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/7k9jdhhlm
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - domain: the specified domain
+//     - originProtocol: the protocol used for back to the backend server
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func SetOriginProtocol(cli bce.Client, domain string, originProtocol string) error {
+	validOriginProtocols := map[string]bool{
+		"http":  true,
+		"https": false,
+		"*":     true,
+	}
+	if _, ok := validOriginProtocols[originProtocol]; !ok {
+		return fmt.Errorf("invalid originProtocol \"%s\", "+
+			"valid value must be \"http\", \"https\" or \"*\"", originProtocol)
+	}
+
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"originProtocol": "",
+	}
+
+	err := httpRequest(cli, "PUT", urlPath, params, map[string]interface{}{
+		"originProtocol": map[string]string{
+			"value": originProtocol,
+		},
+	}, nil)
+
+	return err
+}
+
+// GetOriginProtocol - get the protocol used for back to the backend server.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/dk9jdoob4
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - domain: the specified domain
+// RETURNS:
+//     - string: the protocol used for back to the backend server, it's value must be "http", "https" or "*"
+//     - error: nil if success otherwise the specific error
+func GetOriginProtocol(cli bce.Client, domain string) (string, error) {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"originProtocol": "",
+	}
+
+	respObj := &struct {
+		OriginProtocol struct {
+			Value string `json:"value"`
+		} `json:"originProtocol"`
+	}{}
+	err := httpRequest(cli, "GET", urlPath, params, nil, respObj)
+	if err != nil {
+		return "", err
+	}
+	if respObj.OriginProtocol.Value == "" {
+		return "http", nil
+	}
+	return respObj.OriginProtocol.Value, nil
 }
 
 // SetDomainSeo - set SEO setting

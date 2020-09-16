@@ -54,14 +54,15 @@ func httpRequest(cli bce.Client, method string, urlPath string, params map[strin
 	}
 
 	resp := &bce.BceResponse{}
-	defer func() { _ = resp.Body().Close() }()
-
 	if err := cli.SendRequest(req, resp); err != nil {
 		return err
 	}
-	if resp.IsFail() {
-		return resp.ServiceError()
-	}
+	defer func() {
+		reader := resp.Body()
+		if reader != nil {
+			_ = reader.Close()
+		}
+	}()
 
 	buf := new(bytes.Buffer)
 	_, _ = buf.ReadFrom(resp.Body())

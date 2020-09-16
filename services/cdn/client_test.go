@@ -190,6 +190,17 @@ func TestSetDomainOrigin(t *testing.T) {
 	checkClientErr(t, "SetDomainOrigin", err)
 }
 
+func TestClientSetOriginProtocol(t *testing.T) {
+	err := testCli.SetOriginProtocol(testAuthorityDomain, "*")
+	checkClientErr(t, "SetOriginProtocol", err)
+}
+
+func TestClientGetOriginProtocol(t *testing.T) {
+	originProtocol, err := testCli.GetOriginProtocol(testAuthorityDomain)
+	t.Logf("originProtocol: %s", originProtocol)
+	checkClientErr(t, "GetDomainSeo", err)
+}
+
 func TestSetDomainSeo(t *testing.T) {
 	err := testCli.SetDomainSeo(testAuthorityDomain, &api.SeoSwitch{
 		DirectlyOrigin: "ON",
