@@ -18,6 +18,7 @@
 package bbc
 
 import (
+	"encoding/json"
 	"strconv"
 
 	"github.com/baidubce/bce-sdk-go/bce"
@@ -223,6 +224,84 @@ func GetCustomImage(cli bce.Client, reqBody *bce.Body) (*GetImagesResult, error)
 		return nil, err
 	}
 	return jsonBody, nil
+}
+
+// ShareImage - share a specified custom image
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - imageId: id of the image to be shared
+//     - args: the arguments to share image
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func ShareImage(cli bce.Client, imageId string, args *SharedUser) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getImageUriWithId(imageId))
+	req.SetMethod(http.POST)
+
+	req.SetParam("share", "")
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// UnShareImage - unshare a specified image
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - imageId: id of the image to be unshared
+//     - args: the arguments to unshare image
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func UnShareImage(cli bce.Client, imageId string, args *SharedUser) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getImageUriWithId(imageId))
+	req.SetMethod(http.POST)
+
+	req.SetParam("unshare", "")
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
 }
 
 func getImageUri() string {

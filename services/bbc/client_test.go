@@ -419,6 +419,23 @@ func TestGetCustomImage(t *testing.T) {
 	}
 }
 
+func TestShareImage(t *testing.T) {
+	args := &SharedUser{
+		AccountId: "id",
+	}
+	err := BBC_CLIENT.ShareImage(BBC_TestImageId, args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestUnShareImage(t *testing.T) {
+	args := &SharedUser{
+		AccountId: "id",
+	}
+	err := BBC_CLIENT.UnShareImage(BBC_TestImageId, args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+
 func TestGetInstanceEni(t *testing.T) {
 	instanceId := "instanceId"
 	if res, err := BBC_CLIENT.GetInstanceEni(instanceId); err != nil {

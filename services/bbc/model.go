@@ -637,3 +637,8 @@ type DeleteInstanceResult struct {
 	SuccessResources *DeleteInstanceModel `json:"successResources"`
 	FailResources *DeleteInstanceModel `json:"failResources"`
 }
+
+type SharedUser struct {
+	AccountId string `json:"accountId,omitempty"`
+	Account   string `json:"account,omitempty"`
+}

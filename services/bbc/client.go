@@ -639,6 +639,28 @@ func (c *Client) GetCustomImage(args *GetFlavorImageArgs) (*GetImagesResult, err
 	return GetCustomImage(c, body)
 }
 
+// ShareImage - share an image
+//
+// PARAMS:
+//     - imageId: the specific image ID
+//     - args: the arguments to share an image
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ShareImage(imageId string, args *SharedUser) error {
+	return ShareImage(c, imageId, args)
+}
+
+// UnShareImage - cancel share an image
+//
+// PARAMS:
+//     - imageId: the specific image ID
+//     - args: the arguments to cancel share an image
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UnShareImage(imageId string, args *SharedUser) error {
+	return UnShareImage(c, imageId, args)
+}
+
 // GetInstanceEni - get the eni of the bbc instance
 //
 // PARAMS:

@@ -718,6 +718,58 @@ if res, err := bbcClient.GetCustomImage(queryArgs); err != nil {
 }
 ```
 
+### 共享自定义镜像
+
+- 该接口用于共享用户自己的指定的自定义镜像，仅限自定义镜像，系统镜像和服务集成镜像不能共享。
+- imageId 所指定的镜像不存在，提示404错误。
+- 镜像共享后，被共享的用户可以使用此镜像创建、重置实例。
+- 请求参数中的account和accountId均为可选参数，但不能全部为空，当两个参数同时出现时，服务端会自动去重。
+
+```go
+// 待共享的用户id
+accountId := "your-accountId"
+//待共享的用户名
+account := "your-account"
+// 待共享的镜像ID
+imageId := "your-imageId"
+
+args := &api.SharedUser{
+	AccountId:  accountId,
+    Account:    account,
+}
+if  err := bbcClient.ShareImage(imageId,args); err != nil {
+    fmt.Println("ShareImage failed: ", err)
+} else {
+    fmt.Println("ShareImage success")
+}
+```
+
+### 取消共享自定义镜像
+
+- 该接口用于取消共享用户自己的指定的自定义镜像，仅限自定义镜像，系统镜像和服务集成镜像不能共享。
+- imageId 所指定的镜像不存在，提示404错误。
+- 镜像取消共享后，被取消共享的用户不能再使用此镜像创建、重置实例。
+- 请求参数中的account和accountId均为可选参数，但不能全部为空，当两个参数同时出现时，服务端会自动去重。
+
+```go
+// 待共享的用户id
+accountId := "your-accountId"
+//待共享的用户名
+account := "your-account"
+// 待共享的镜像ID
+imageId := "your-imageId"
+
+args := &api.SharedUser{
+	AccountId:  accountId,
+    Account:    account,
+}
+if  err := bbcClient.UnShareImage(imageId,args); err != nil {
+    fmt.Println("UnShareImage failed: ", err)
+} else {
+    fmt.Println("UnShareImage success")
+}
+```
+
 ## 操作日志
 ### 查询操作日志
 通过以下代码查询指定操作日志
