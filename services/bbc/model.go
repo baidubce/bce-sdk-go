@@ -77,7 +77,7 @@ type CreateInstanceArgs struct {
 	Tags              []model.TagModel `json:"tags,omitempty"`
 	InternalIps       []string         `json:"internalIps,omitempty"`
 	RequestToken      string           `json:"requestToken"`
-	EnableNuma        bool             `json:"enableNuma,omitempty"`
+	EnableNuma        bool             `json:"enableNuma"`
 }
 
 type Billing struct {
@@ -146,7 +146,7 @@ type ModifyInstanceDescArgs struct {
 type RebuildInstanceArgs struct {
 	ImageId        string `json:"imageId"`
 	AdminPass      string `json:"adminPass"`
-	IsPreserveData bool   `json:"isPreserveData,omitempty"`
+	IsPreserveData bool   `json:"isPreserveData"`
 	RaidId         string `json:"raidId,omitempty"`
 	SysRootSize    int    `json:"sysRootSize,omitempty"`
 }
