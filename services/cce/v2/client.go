@@ -11,6 +11,7 @@ package v2
 
 import (
 	"encoding/base64"
+	"fmt"
 
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/services/cce/v2/types"
@@ -50,6 +51,10 @@ const (
 	REQUEST_NET_RECOMMEND_CLSUTERIP_CIDR_URL = "/recommend_clusterip_cidr"
 
 	REQUEST_NET_RECOMMEND_CONTAINER_CIDR_URL = "/recommend_container_cidr"
+
+	REQUEST_AUTOSCALER = "/autoscaler"
+
+	REQUEST_KUBECONFIG = "/kubeconfig/%s/%s"
 )
 
 var _ Interface = &Client{}
@@ -138,6 +143,13 @@ func getQuotaNodeURI(clusterID string) string {
 	return URI_PREFIX + REQUEST_QUOTA_URL + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_NODE_URL
 }
 
+func getAutoscalerURI(clusterID string) string {
+	return URI_PREFIX + REQUEST_AUTOSCALER + "/" + clusterID
+}
+
+func getKubeconfigURI(clusterID string, kubeConfigType KubeConfigType) string {
+	return URI_PREFIX + fmt.Sprintf(REQUEST_KUBECONFIG, clusterID, kubeConfigType)
+}
 
 func encodeUserScriptInInstanceSet(instancesSets []*InstanceSet) error {
 	if instancesSets == nil {
@@ -150,7 +162,7 @@ func encodeUserScriptInInstanceSet(instancesSets []*InstanceSet) error {
 }
 
 func encodeUserScript(instanceSpec *types.InstanceSpec) {
-	if instanceSpec == nil{
+	if instanceSpec == nil {
 		return
 	}
 	if instanceSpec.DeployCustomConfig.PreUserScript != "" {

@@ -470,6 +470,20 @@ s, _ := json.MarshalIndent(resp, "", "\t")
 fmt.Println("Response:" + string(s))
 ```
 
+## 更新节点配置
+使用以下代码可以更新节点的配置信息。需要注意不是所有配置信息都是可更改的。
+```go
+args := &UpdateInstanceArgs{
+	ClusterID:  "your-cluster-id",
+	InstanceID: "your-instance-id",
+	InstanceSpec: YOUR_NEW_INSTANCE_SPEC,
+}
+respUpdate, err := CCE_CLIENT.UpdateInstance(args)
+
+s, _ := json.MarshalIndent(respUpdate, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
 ## 删除节点(集群缩容)
 使用以下代码可以删除集群内的一个节点
 ```go
@@ -714,6 +728,25 @@ s, _ := json.MarshalIndent(resp, "", "\t")
 fmt.Println("Response:" + string(s))
 ```
 
+## 修改节点组Autoscaler配置
+使用以下代码可以修改节点Autoscaler配置
+```go
+args := &UpdateInstanceGroupClusterAutoscalerSpecArgs{
+    ClusterID: "your-cluster0id",
+    InstanceGroupID: "cce-instance-group-id",
+    Request: &ClusterAutoscalerSpec{
+        Enabled: true,
+        MinReplicas: 2,
+        MaxReplicas: 5,
+        ScalingGroupPriority: 1,
+    },
+}
+
+resp, err := ccev2Client.UpdateInstanceGroupClusterAutoscalerSpec(args)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
 
 ## 删除节点组
 使用以下代码可以删除节点组
@@ -724,6 +757,64 @@ args := &DeleteInstanceGroupArgs{
     DeleteInstances: true,
 }
 resp, err := ccev2Client.DeleteInstanceGroup(args)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
+## 创建Autoscaler
+使用以下代码为集群创建Autoscaler
+```go	
+args := &CreateAutoscalerArgs{
+	ClusterID: "your-cce-cluster-id",
+}
+
+resp, err := ccev2Client.CreateAutoscaler(args)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
+## 查询Autoscaler
+使用以下代码可以查询集群的Autoscaler
+```go	
+args := &GetAutoscalerArgs{
+	ClusterID: "your-cce-cluster-id",
+}
+
+resp, err := ccev2Client.GetAutoscaler(args)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
+## 更新Autoscaler
+使用以下代码可以更新集群的Autoscaler
+```go	
+args := &UpdateAutoscalerArgs{
+	ClusterID: "your-cluster-id",
+	AutoscalerConfig: ClusterAutoscalerConfig{
+		ReplicaCount: 5,
+		ScaleDownEnabled: true,
+		Expander: "random",
+	},
+}
+
+resp, err := ccev2Client.UpdateAutoscaler(args)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
+## 获取Kubeconfig
+使用以下代码可以获取集群的Kubeconfig
+```go	
+args := &GetKubeConfigArgs{
+	ClusterID: "your-cluster-id",
+	KubeConfigType: "kubeconfig-type-you-need",
+}
+
+resp, err := ccev2Client.GetAdminKubeConfig(args)
 
 s, _ := json.MarshalIndent(resp, "", "\t")
 fmt.Println("Response:" + string(s))
@@ -826,8 +917,18 @@ myLogger.Info("this is my own logger from the CCE go sdk")
  - 支持查询集群配额、集群节点配额
  
  
- ## v1.1.0 [2020-08-20]
+## v1.1.0 [2020-08-20]
  
  增加节点组相关接口:
   - 支持节点组创建、获取节点组列表、查询节点组详情、修改节点组内节点副本数、删除节点组
   - 获取节点组的节点列表
+  
+  
+## v1.2.0 [2020-09-18]
+   
+增加Autoscaler相关接口:
+  - 支持集群Autoscaler的初始化、查询与更新
+增加Kubeconfig相关接口:
+  - 支持获取集群的kubeconfig
+增加Instance 相关接口：
+  - 支持对Instance部分属性的更新

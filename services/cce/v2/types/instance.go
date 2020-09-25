@@ -14,7 +14,6 @@ import (
 	"github.com/baidubce/bce-sdk-go/services/vpc"
 )
 
-// 作为sdk创建节点时输入参数的InstanceSpec
 // 已有节点需要用户提供：ClusterRole 、短ID，密码，镜像ID,镜像类型, docker storage(可选); BBC要额外加preservedData、raidId、sysRootSize
 type InstanceSpec struct {
 
@@ -39,17 +38,17 @@ type InstanceSpec struct {
 	ExistedOption ExistedOption `json:"existedOption,omitempty"`
 
 	// BCC, BBC, 裸金属
-	MachineType MachineType `json:"machineType,omitempty" valid:"Required"`
+	MachineType MachineType `json:"machineType,omitempty"`
 	// 机器规格: 普通一, 普通二 ...
-	InstanceType bccapi.InstanceType `json:"instanceType" valid:"Required"`
+	InstanceType bccapi.InstanceType `json:"instanceType"`
 	// BBC 选项
-	BBCOption BBCOption `json:"bbcOption,omitempty"`
+	BBCOption *BBCOption `json:"bbcOption,omitempty"`
 
 	// VPC 相关配置
-	VPCConfig `json:"vpcConfig,omitempty" valid:"Required"`
+	VPCConfig VPCConfig `json:"vpcConfig,omitempty"`
 
 	// 集群规格相关配置
-	InstanceResource `json:"instanceResource,omitempty" valid:"Required"`
+	InstanceResource InstanceResource `json:"instanceResource,omitempty"`
 
 	// 优先使用 ImageID, 如果用户传入 InstanceOS 信息, 由 service 计算 ImageID
 	ImageID    string     `json:"imageID,omitempty"`
@@ -57,18 +56,18 @@ type InstanceSpec struct {
 
 	// EIP
 	NeedEIP   bool `json:"needEIP,omitempty"`
-	EIPOption `json:"eipOption,omitempty"`
+	EIPOption *EIPOption `json:"eipOption,omitempty"`
 
 	// AdminPassword
-	AdminPassword string `json:"adminPassword,omitempty" valid:"Required"`
+	AdminPassword string `json:"adminPassword,omitempty"`
 	SSHKeyID      string `json:"sshKeyID,omitempty"`
 
 	// Charging Type, 通常只支持后付费
 	InstanceChargingType      bccapi.PaymentTimingType `json:"instanceChargingType,omitempty"` // 后付费或预付费
-	InstancePreChargingOption `json:"instancePreChargingOption,omitempty"`
+	InstancePreChargingOption InstancePreChargingOption `json:"instancePreChargingOption,omitempty"`
 
 	// 删除节点选项
-	DeleteOption DeleteOption `json:"deleteOption,omitempty"`
+	DeleteOption *DeleteOption `json:"deleteOption,omitempty"`
 
 	DeployCustomConfig DeployCustomConfig `json:"deployCustomConfig,omitempty"` // 部署相关高级配置
 
@@ -76,19 +75,15 @@ type InstanceSpec struct {
 
 	Labels InstanceLabels `json:"labels,omitempty"`
 	Taints InstanceTaints `json:"taints,omitempty"`
-}
 
-type InstanceStatus struct {
-	Machine Machine `json:"machine,omitempty"`
-
-	InstancePhase InstancePhase `json:"instancePhase,omitempty"`
+	CCEInstancePriority int `json:"cceInstancePriority,omitempty"`
 }
 
 // VPCConfig 定义 Instance VPC
 type VPCConfig struct {
-	VPCID           string `json:"vpcID,omitempty" valid:"Required"`
-	VPCSubnetID     string `json:"vpcSubnetID,omitempty" valid:"Required"`
-	SecurityGroupID string `json:"securityGroupID,omitempty" valid:"Required"`
+	VPCID           string `json:"vpcID,omitempty"`
+	VPCSubnetID     string `json:"vpcSubnetID,omitempty"`
+	SecurityGroupID string `json:"securityGroupID,omitempty"`
 
 	VPCSubnetType     vpc.SubnetType `json:"vpcSubnetType,omitempty"`
 	VPCSubnetCIDR     string         `json:"vpcSubnetCIDR,omitempty"`
@@ -99,16 +94,15 @@ type VPCConfig struct {
 
 // InstanceResource 定义 Instance CPU/MEM/Disk 配置
 type InstanceResource struct {
-	CPU int `json:"cpu,omitempty" valid:"Required"` // unit: Core
-	MEM int `json:"mem,omitempty" valid:"Required"` // unit: GB
+	CPU int `json:"cpu,omitempty"` // unit: Core
+	MEM int `json:"mem,omitempty"` // unit: GB
 
-	// 使用BCI场景需要指定，节点本身的规格和node汇报规格不一致
 	NodeCPUQuota int `json:"nodeCPUQuota,omitempty"` // unit: Core
 	NodeMEMQuota int `json:"nodeMEMQuota,omitempty"` // unit: GB
 
 	// RootDisk
-	RootDiskType bccapi.StorageType `json:"rootDiskType,omitempty" valid:"Required"`
-	RootDiskSize int             `json:"rootDiskSize,omitempty" valid:"Required"` // unit: GB
+	RootDiskType bccapi.StorageType `json:"rootDiskType,omitempty"`
+	RootDiskSize int             `json:"rootDiskSize,omitempty"` // unit: GB
 
 	// GPU 机器必须指定, 其他机器不用
 	LocalDiskSize int `json:"localDiskSize,omitempty"` // unit: GB
@@ -134,28 +128,6 @@ type InstancePreChargingOption struct {
 	AutoRenew         bool   `json:"autoRenew,omitempty"`                  // 是否自动续费
 	AutoRenewTimeUnit string `json:"autoRenewTimeUnit,omitempty"` // 续费单位：月
 	AutoRenewTime     int    `json:"autoRenewTime,omitempty"`         // 12 = 12 个月
-}
-
-// Machine 定义创建完 IaaS 资源(BCC, BBC) 后, 才能获取信息
-type Machine struct {
-	// InstanceID for OpenAPI public
-	InstanceID string `json:"instanceID,omitempty"`
-
-	MachineStatus ServerStatus `json:"machineStatus,omitempty"`
-
-	// 订单号
-	OrderID string `json:"orderID,omitempty"`
-
-	DCC     bool   `json:"dcc,omitempty"`
-	DCCID   string `json:"dccID,omitempty"`
-
-	MountList []MountConfig `json:"mountList,omitempty"`
-
-	VPCIP      string `json:"vpcIP,omitempty"`
-	VPCIPIPv6  string `json:"vpcIPIPv6,omitempty"`
-	FloatingIP string `json:"floatingIP,omitempty"`
-
-	EIP string `json:"eip,omitempty"`
 }
 
 // DeleteOption 删除节点选项

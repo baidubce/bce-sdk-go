@@ -20,12 +20,10 @@ var (
 	CCE_CLUSTER_ID         string
 	CCE_INSTANCE_GROUP_ID  string
 	CCE_INSTANCE_ID        string
-	VPC_TEST_ID            = "vpc-mwbgygrjb72w"
-	IMAGE_TEST_ID          = "m-gTpZ1k6n"
-	SECURITY_GROUP_TESI_ID = "g-xh04bcdkq5n6"
-	ADMIN_PASSWORD_TEST    = "test123!YT"
-	SSH_KEY_TEST_ID        = "k-3uvrdvVq"
-	VPC_SUBNET_TEST_ID     = "sbn-mnbvhnuupv1u"
+	VPC_TEST_ID            = ""
+	IMAGE_TEST_ID          = ""
+	SECURITY_GROUP_TEST_ID = ""
+	VPC_SUBNET_TEST_ID     = ""
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -33,6 +31,84 @@ type Conf struct {
 	AK       string
 	SK       string
 	Endpoint string
+}
+
+func TestMain(m *testing.M) {
+	setup()
+	code := m.Run()
+	teardown()
+	os.Exit(code)
+}
+
+func setup() {
+	_, f, _, _ := runtime.Caller(0)
+	for i := 0; i < 7; i++ {
+		f = filepath.Dir(f)
+	}
+	conf := filepath.Join(f, "config.json")
+	fmt.Println(conf)
+	fp, err := os.Open(conf)
+	if err != nil {
+		log.Fatal("config json file of ak/sk not given:", conf)
+		os.Exit(1)
+	}
+	decoder := json.NewDecoder(fp)
+	confObj := &Conf{}
+	decoder.Decode(confObj)
+
+	log.SetLogLevel(log.WARN)
+
+	CCE_CLIENT, err = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Info("Setup Complete")
+}
+
+//Try to clean environment
+func teardown() {
+	if CCE_INSTANCE_ID != "" && CCE_CLIENT != nil {
+		args := &DeleteInstancesArgs{
+			ClusterID: CCE_CLUSTER_ID,
+			DeleteInstancesRequest: &DeleteInstancesRequest{
+				InstanceIDs: []string{CCE_INSTANCE_ID},
+				DeleteOption: &types.DeleteOption{
+					MoveOut:           false,
+					DeleteCDSSnapshot: true,
+					DeleteResource:    true,
+				},
+			},
+		}
+		_, err := CCE_CLIENT.DeleteInstances(args)
+		if err != nil {
+			log.Error(err.Error())
+		}
+	}
+
+	if CCE_INSTANCE_GROUP_ID != "" && CCE_CLIENT != nil {
+		args := &DeleteInstanceGroupArgs{
+			ClusterID:       CCE_CLUSTER_ID,
+			InstanceGroupID: CCE_INSTANCE_GROUP_ID,
+			DeleteInstances: true,
+		}
+		_, err := CCE_CLIENT.DeleteInstanceGroup(args)
+		if err != nil {
+			log.Error(err.Error())
+		}
+	}
+
+	if CCE_CLUSTER_ID != "" && CCE_CLIENT != nil {
+		args := &DeleteClusterArgs{
+			ClusterID:         CCE_CLUSTER_ID,
+			DeleteResource:    true,
+			DeleteCDSSnapshot: true,
+		}
+		_, err := CCE_CLIENT.DeleteCluster(args)
+		if err != nil {
+			log.Error(err.Error())
+		}
+	}
 }
 
 // ExpectEqual is the helper function for test each case
@@ -60,30 +136,6 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 		return false
 	}
 	return true
-}
-
-//获取ak sk与endpoint并构建ccev2Client
-func init() {
-
-	_, f, _, _ := runtime.Caller(0)
-	for i := 0; i < 7; i++ {
-		f = filepath.Dir(f)
-	}
-	conf := filepath.Join(f, "config.json")
-	fmt.Println(conf)
-	fp, err := os.Open(conf)
-	if err != nil {
-		log.Fatal("config json file of ak/sk not given:", conf)
-		os.Exit(1)
-	}
-	decoder := json.NewDecoder(fp)
-	confObj := &Conf{}
-	decoder.Decode(confObj)
-
-	CCE_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
-	log.SetLogLevel(log.WARN)
-
-	CCE_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 }
 
 func TestClient_CheckClusterIPCIDR(t *testing.T) {
@@ -119,7 +171,7 @@ func TestClient_CheckContainerNetworkCIDR(t *testing.T) {
 
 func TestClient_RecommendClusterIPCIDR(t *testing.T) {
 	args := &RecommendClusterIPCIDRArgs{
-		ClusterMaxServiceNum: 2,
+		ClusterMaxServiceNum: 8,
 		ContainerCIDR:        "172.28.0.0/16",
 		IPVersion:            "ipv4",
 		PrivateNetCIDRs:      []PrivateNetString{PrivateIPv4Net172},
@@ -187,6 +239,10 @@ func TestClient_CreateCluster(t *testing.T) {
 	resp, err := CCE_CLIENT.CreateCluster(args)
 
 	ExpectEqual(t.Errorf, nil, err)
+	if resp.ClusterID == "" {
+		t.Fatalf("Request Fail. Cluster ID is empty.")
+	}
+
 	CCE_CLUSTER_ID = resp.ClusterID
 
 	s, _ := json.MarshalIndent(resp, "", "\t")
@@ -228,8 +284,8 @@ func TestClient_CreateInstanceGroup(t *testing.T) {
 		Request: &CreateInstanceGroupRequest{
 			types.InstanceGroupSpec{
 				InstanceGroupName: "jichao-sdk-testcase",
-				CleanPolicy: types.DeleteCleanPolicy,
-				Replicas: 3,
+				CleanPolicy:       types.DeleteCleanPolicy,
+				Replicas:          3,
 				InstanceTemplate: types.InstanceTemplate{
 					InstanceSpec: types.InstanceSpec{
 						ClusterRole:  types.ClusterRoleNode,
@@ -239,12 +295,12 @@ func TestClient_CreateInstanceGroup(t *testing.T) {
 						VPCConfig: types.VPCConfig{
 							VPCID:           VPC_TEST_ID,
 							VPCSubnetID:     VPC_SUBNET_TEST_ID,
-							SecurityGroupID: SECURITY_GROUP_TESI_ID,
+							SecurityGroupID: SECURITY_GROUP_TEST_ID,
 							AvailableZone:   types.AvailableZoneA,
 						},
 						DeployCustomConfig: types.DeployCustomConfig{
-							PreUserScript: "ls",
-							PostUserScript: "time",
+							PreUserScript:  "ls",
+							PostUserScript: "ls",
 						},
 						InstanceResource: types.InstanceResource{
 							CPU:           1,
@@ -257,8 +313,6 @@ func TestClient_CreateInstanceGroup(t *testing.T) {
 							ImageType: bccapi.ImageTypeSystem,
 						},
 						NeedEIP:              false,
-						AdminPassword:        ADMIN_PASSWORD_TEST,
-						SSHKeyID:             SSH_KEY_TEST_ID,
 						InstanceChargingType: bccapi.PaymentTimingPostPaid,
 						RuntimeType:          types.RuntimeTypeDocker,
 					},
@@ -269,8 +323,10 @@ func TestClient_CreateInstanceGroup(t *testing.T) {
 
 	resp, err := CCE_CLIENT.CreateInstanceGroup(args)
 
-
 	ExpectEqual(t.Errorf, nil, err)
+	if resp.InstanceGroupID == "" {
+		t.Fatalf("Request Fail. Instance Group ID is empty.")
+	}
 	CCE_INSTANCE_GROUP_ID = resp.InstanceGroupID
 
 	s, _ := json.MarshalIndent(resp, "", "\t")
@@ -283,7 +339,7 @@ func TestClient_ListInstanceGroups(t *testing.T) {
 	args := &ListInstanceGroupsArgs{
 		ClusterID: CCE_CLUSTER_ID,
 		ListOption: &InstanceGroupListOption{
-			PageNo: 0,
+			PageNo:   0,
 			PageSize: 0,
 		},
 	}
@@ -297,10 +353,10 @@ func TestClient_ListInstanceGroups(t *testing.T) {
 
 func TestClient_ListInstancesByInstanceGroupID(t *testing.T) {
 	args := &ListInstanceByInstanceGroupIDArgs{
-		ClusterID: CCE_CLUSTER_ID,
+		ClusterID:       CCE_CLUSTER_ID,
 		InstanceGroupID: CCE_INSTANCE_GROUP_ID,
-		PageSize: 0,
-		PageNo: 0,
+		PageSize:        0,
+		PageNo:          0,
 	}
 
 	resp, err := CCE_CLIENT.ListInstancesByInstanceGroupID(args)
@@ -313,7 +369,7 @@ func TestClient_ListInstancesByInstanceGroupID(t *testing.T) {
 
 func TestClient_GetInstanceGroup(t *testing.T) {
 	args := &GetInstanceGroupArgs{
-		ClusterID: CCE_CLUSTER_ID,
+		ClusterID:       CCE_CLUSTER_ID,
 		InstanceGroupID: CCE_INSTANCE_GROUP_ID,
 	}
 
@@ -327,15 +383,15 @@ func TestClient_GetInstanceGroup(t *testing.T) {
 
 func TestClient_UpdateInstanceGroupReplicas(t *testing.T) {
 	args := &UpdateInstanceGroupReplicasArgs{
-		ClusterID: CCE_CLUSTER_ID,
+		ClusterID:       CCE_CLUSTER_ID,
 		InstanceGroupID: CCE_INSTANCE_GROUP_ID,
-		Request:  &UpdateInstanceGroupReplicasRequest{
-			Replicas: 1,
+		Request: &UpdateInstanceGroupReplicasRequest{
+			Replicas:       1,
 			DeleteInstance: true,
 			DeleteOption: &types.DeleteOption{
-				MoveOut: false,
+				MoveOut:           false,
 				DeleteCDSSnapshot: true,
-				DeleteResource: true,
+				DeleteResource:    true,
 			},
 		},
 	}
@@ -350,9 +406,87 @@ func TestClient_UpdateInstanceGroupReplicas(t *testing.T) {
 	time.Sleep(time.Duration(120) * time.Second)
 }
 
+func TestClient_CreateAutoscaler(t *testing.T) {
+	args := &CreateAutoscalerArgs{
+		ClusterID: CCE_CLUSTER_ID,
+	}
+
+	resp, err := CCE_CLIENT.CreateAutoscaler(args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:" + string(s))
+}
+
+func TestClient_GetAutoscaler(t *testing.T) {
+	args := &GetAutoscalerArgs{
+		ClusterID: CCE_CLUSTER_ID,
+	}
+
+	resp, err := CCE_CLIENT.GetAutoscaler(args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:" + string(s))
+}
+
+func TestClient_UpdateAutoscaler(t *testing.T) {
+	args := &UpdateAutoscalerArgs{
+		ClusterID: CCE_CLUSTER_ID,
+		AutoscalerConfig: ClusterAutoscalerConfig{
+			ReplicaCount:     5,
+			ScaleDownEnabled: true,
+			Expander:         "random",
+		},
+	}
+
+	resp, err := CCE_CLIENT.UpdateAutoscaler(args)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:" + string(s))
+
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UpdateInstanceGroupClusterAutoscalerSpec(t *testing.T) {
+	args := &UpdateInstanceGroupClusterAutoscalerSpecArgs{
+		ClusterID:       CCE_CLUSTER_ID,
+		InstanceGroupID: CCE_INSTANCE_GROUP_ID,
+		Request: &ClusterAutoscalerSpec{
+			Enabled:              true,
+			MinReplicas:          2,
+			MaxReplicas:          5,
+			ScalingGroupPriority: 1,
+		},
+	}
+
+	resp, err := CCE_CLIENT.UpdateInstanceGroupClusterAutoscalerSpec(args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:" + string(s))
+}
+
+func TestClient_GetKubeConfig(t *testing.T) {
+	args := &GetKubeConfigArgs{
+		ClusterID:      CCE_CLUSTER_ID,
+		KubeConfigType: KubeConfigTypeVPC,
+	}
+
+	resp, err := CCE_CLIENT.GetKubeConfig(args)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:" + string(s))
+
+	ExpectEqual(t.Errorf, nil, err)
+}
+
 func TestClient_DeleteInstanceGroup(t *testing.T) {
 	args := &DeleteInstanceGroupArgs{
-		ClusterID: CCE_CLUSTER_ID,
+		ClusterID:       CCE_CLUSTER_ID,
 		InstanceGroupID: CCE_INSTANCE_GROUP_ID,
 		DeleteInstances: true,
 	}
@@ -381,11 +515,11 @@ func TestClient_CreateInstances(t *testing.T) {
 					VPCConfig: types.VPCConfig{
 						VPCID:           VPC_TEST_ID,
 						VPCSubnetID:     VPC_SUBNET_TEST_ID,
-						SecurityGroupID: SECURITY_GROUP_TESI_ID,
+						SecurityGroupID: SECURITY_GROUP_TEST_ID,
 						AvailableZone:   types.AvailableZoneA,
 					},
 					DeployCustomConfig: types.DeployCustomConfig{
-						PreUserScript: "ls",
+						PreUserScript:  "ls",
 						PostUserScript: "time",
 					},
 					InstanceResource: types.InstanceResource{
@@ -397,10 +531,12 @@ func TestClient_CreateInstances(t *testing.T) {
 					ImageID: IMAGE_TEST_ID,
 					InstanceOS: types.InstanceOS{
 						ImageType: bccapi.ImageTypeSystem,
+						OSType: types.OSTypeLinux,
+						OSName: types.OSNameCentOS,
+						OSVersion: "7.5",
+						OSArch: "x86_64 (64bit)",
 					},
 					NeedEIP:              false,
-					AdminPassword:        ADMIN_PASSWORD_TEST,
-					SSHKeyID:             SSH_KEY_TEST_ID,
 					InstanceChargingType: bccapi.PaymentTimingPostPaid,
 					RuntimeType:          types.RuntimeTypeDocker,
 				},
@@ -410,6 +546,9 @@ func TestClient_CreateInstances(t *testing.T) {
 	resp, err := CCE_CLIENT.CreateInstances(args)
 
 	ExpectEqual(t.Errorf, nil, err)
+	if resp.CCEInstanceIDs == nil || len(resp.CCEInstanceIDs) == 0 {
+		t.Fatalf("Request Fail. Instance ID is empty.")
+	}
 	CCE_INSTANCE_ID = resp.CCEInstanceIDs[0]
 
 	s, _ := json.MarshalIndent(resp, "", "\t")
@@ -448,6 +587,30 @@ func TestClient_GetInstance(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 
 	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:" + string(s))
+}
+
+func TestClient_UpdateInstance(t *testing.T) {
+	args := &GetInstanceArgs{
+		ClusterID:  CCE_CLUSTER_ID,
+		InstanceID: CCE_INSTANCE_ID,
+	}
+	respGet, err := CCE_CLIENT.GetInstance(args)
+
+	oldInstanceSpec := respGet.Instance.Spec
+
+	oldInstanceSpec.CCEInstancePriority = 1
+
+	argsUpdate := &UpdateInstanceArgs{
+		ClusterID:  CCE_CLUSTER_ID,
+		InstanceID: CCE_INSTANCE_ID,
+		InstanceSpec: oldInstanceSpec,
+	}
+
+	respUpdate, err := CCE_CLIENT.UpdateInstance(argsUpdate)
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(respUpdate, "", "\t")
 	fmt.Println("Response:" + string(s))
 }
 

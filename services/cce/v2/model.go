@@ -13,9 +13,9 @@ CCE V2 版本 GO SDK, Interface 定义
 package v2
 
 import (
+	"fmt"
 	"time"
 
-	bccapi "github.com/baidubce/bce-sdk-go/services/bcc/api"
 	"github.com/baidubce/bce-sdk-go/services/cce/v2/types"
 	"github.com/baidubce/bce-sdk-go/services/vpc"
 )
@@ -136,6 +136,12 @@ type ListClustersResponse struct {
 type CreateInstancesResponse struct {
 	CCEInstanceIDs []string `json:"cceInstanceIDs"`
 	RequestID      string   `json:"requestID"`
+}
+
+type UpdateInstanceArgs struct {
+	ClusterID string
+	InstanceID string
+	InstanceSpec *types.InstanceSpec
 }
 
 // UpdateInstancesResponse - 更新 Instances 返回
@@ -300,62 +306,11 @@ const (
 // Instance - 节点详情
 // 作为sdk返回结果的Instance
 type Instance struct {
-	Spec   *InstanceSpec   `json:"spec"`
+	Spec   *types.InstanceSpec   `json:"spec"`
 	Status *InstanceStatus `json:"status"`
 
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
-}
-
-// 作为sdk返回结果的InstanceSpec
-// InstanceSpec - Instance Spec
-type InstanceSpec struct {
-	CCEInstanceID string `json:"cceInstanceID"`
-	InstanceName  string `json:"instanceName"`
-
-	RuntimeType    types.RuntimeType `json:"runtimeType"`
-	RuntimeVersion string            `json:"runtimeVersion"`
-
-	// 由 cluster-service 生成并更新
-	ClusterID   string            `json:"clusterID"`
-	ClusterRole types.ClusterRole `json:"clusterRole"`
-	UserID      string            `json:"userID"`
-
-	InstanceGroupID   string `json:"instanceGroupID"`
-	InstanceGroupName string `json:"instanceGroupName"`
-
-	// BCC, BBC, 裸金属
-	MachineType types.MachineType `json:"machineType"`
-	// 机器规格: 普通一, 普通二 ...
-	InstanceType bccapi.InstanceType `json:"instanceType"`
-	// BBC 选项
-	BBCOption *types.BBCOption `json:"bbcOption,omitempty"`
-
-	// VPC 相关配置
-	types.VPCConfig `json:"vpcConfig"`
-
-	// 集群规格相关配置
-	InstanceResource types.InstanceResource `json:"instanceResource"`
-
-	// 部署相关高级配置
-	DeployCustomConfig types.DeployCustomConfig `json:"deployCustomConfig,omitempty"`
-
-	ImageID    string           `json:"imageID"`
-	InstanceOS types.InstanceOS `json:"instanceOS"`
-
-	// EIP
-	NeedEIP   bool             `json:"needEIP"`
-	EIPOption *types.EIPOption `json:"eipOption"`
-
-	SSHKeyID string `json:"sshKeyID"`
-
-	InstanceChargingType bccapi.PaymentTimingType `json:"instanceChargingType"`
-
-	DeleteOption *types.DeleteOption `json:"deleteOption"`
-
-	Tags   types.TagList        `json:"tags,omitempty"`
-	Labels types.InstanceLabels `json:"labels,omitempty"`
-	Taints types.InstanceTaints `json:"taints,omitempty"`
 }
 
 // InstanceStatus - Instance Status
@@ -563,7 +518,7 @@ type ConflictVPCRoute struct {
 }
 
 type InstanceTemplate struct {
-	InstanceSpec `json:",inline"`
+	types.InstanceSpec `json:",inline"`
 }
 
 type CommonResponse struct {
@@ -580,11 +535,11 @@ type InstanceGroupSpec struct {
 	CCEInstanceGroupID string `json:"cceInstanceGroupID,omitempty"`
 	InstanceGroupName  string `json:"instanceGroupName"`
 
-	ClusterID   string               `json:"clusterID,omitempty"`
-	ClusterRole types.ClusterRole `json:"clusterRole,omitempty"`
-	ShrinkPolicy ShrinkPolicy `json:"shrinkPolicy,omitempty"`
-	UpdatePolicy UpdatePolicy `json:"updatePolicy,omitempty"`
-	CleanPolicy  CleanPolicy  `json:"cleanPolicy,omitempty"`
+	ClusterID    string            `json:"clusterID,omitempty"`
+	ClusterRole  types.ClusterRole `json:"clusterRole,omitempty"`
+	ShrinkPolicy ShrinkPolicy      `json:"shrinkPolicy,omitempty"`
+	UpdatePolicy UpdatePolicy      `json:"updatePolicy,omitempty"`
+	CleanPolicy  CleanPolicy       `json:"cleanPolicy,omitempty"`
 
 	InstanceTemplate InstanceTemplate `json:"instanceTemplate"`
 	Replicas         int              `json:"replicas"`
@@ -643,9 +598,9 @@ type GetInstanceGroupResponse struct {
 }
 
 type UpdateInstanceGroupReplicasRequest struct {
-	Replicas       int                    `json:"replicas"`
-	InstanceIDs    []string               `json:"instanceIDs"`
-	DeleteInstance bool                   `json:"deleteInstance"`
+	Replicas       int                 `json:"replicas"`
+	InstanceIDs    []string            `json:"instanceIDs"`
+	DeleteInstance bool                `json:"deleteInstance"`
 	DeleteOption   *types.DeleteOption `json:"deleteOption,omitempty"`
 }
 
@@ -673,14 +628,35 @@ type ListInstancesByInstanceGroupIDResponse struct {
 	Page ListInstancesByInstanceGroupIDPage `json:"page"`
 }
 
+type GetAutoscalerArgs struct {
+	ClusterID string
+}
+
 type GetAutoscalerResponse struct {
 	Autoscaler *Autoscaler `json:"autoscaler"`
 	RequestID  string      `json:"requestID"`
 }
 
+type UpdateAutoscalerArgs struct {
+	ClusterID        string
+	AutoscalerConfig ClusterAutoscalerConfig
+}
+
+type UpdateAutoscalerResponse struct {
+	CommonResponse
+}
+
+type CreateAutoscalerArgs struct {
+	ClusterID string
+}
+
+type CreateAutoscalerResponse struct {
+	CommonResponse
+}
+
 type Autoscaler struct {
-	ClusterID   string                         `json:"clusterID"`
-	ClusterName string                         `json:"clusterName"`
+	ClusterID   string                  `json:"clusterID"`
+	ClusterName string                  `json:"clusterName"`
 	CAConfig    ClusterAutoscalerConfig `json:"caConfig,omitempty"`
 }
 
@@ -722,40 +698,75 @@ type InstanceGroupListOption struct {
 
 type CreateInstanceGroupArgs struct {
 	ClusterID string
-	Request *CreateInstanceGroupRequest
+	Request   *CreateInstanceGroupRequest
 }
 
 type ListInstanceGroupsArgs struct {
-	ClusterID string
+	ClusterID  string
 	ListOption *InstanceGroupListOption
 }
 
 type ListInstanceByInstanceGroupIDArgs struct {
-	ClusterID string
+	ClusterID       string
 	InstanceGroupID string
-	PageNo int
-	PageSize int
+	PageNo          int
+	PageSize        int
 }
 
 type GetInstanceGroupArgs struct {
-	ClusterID string
+	ClusterID       string
 	InstanceGroupID string
 }
 
 type UpdateInstanceGroupClusterAutoscalerSpecArgs struct {
-	ClusterID string
+	ClusterID       string
 	InstanceGroupID string
-	Request *ClusterAutoscalerSpec
+	Request         *ClusterAutoscalerSpec
 }
 
 type UpdateInstanceGroupReplicasArgs struct {
-	ClusterID string
+	ClusterID       string
 	InstanceGroupID string
-	Request *UpdateInstanceGroupReplicasRequest
+	Request         *UpdateInstanceGroupReplicasRequest
 }
 
 type DeleteInstanceGroupArgs struct {
-	ClusterID string
+	ClusterID       string
 	InstanceGroupID string
 	DeleteInstances bool
+}
+
+// KubeConfigType - kube config 类型
+type KubeConfigType string
+
+const (
+	// KubeConfigTypeInternal 使用 BLB FloatingIP
+	KubeConfigTypeInternal KubeConfigType = "internal"
+
+	// KubeConfigTypeVPC 使用 BLB VPCIP
+	KubeConfigTypeVPC KubeConfigType = "vpc"
+
+	// KubeConfigTypePublic 使用 BLB EIP
+	KubeConfigTypePublic KubeConfigType = "public"
+)
+
+type GetKubeConfigArgs struct {
+	ClusterID      string
+	KubeConfigType KubeConfigType
+}
+
+// GetKubeConfigResponse - 查询 KubeConfig 返回
+type GetKubeConfigResponse struct {
+	KubeConfigType KubeConfigType `json:"kubeConfigType"`
+	KubeConfig     string         `json:"kubeConfig"`
+	RequestID      string         `json:"requestID"`
+}
+
+func CheckKubeConfigType(kubeConfigType string) error {
+	if kubeConfigType != string(KubeConfigTypePublic) &&
+		kubeConfigType != string(KubeConfigTypeInternal) &&
+		kubeConfigType != string(KubeConfigTypeVPC) {
+		return fmt.Errorf("KubeConfigType %s not valid", kubeConfigType)
+	}
+	return nil
 }

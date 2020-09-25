@@ -16,22 +16,16 @@ func (c *Client) CreateCluster(args *CreateClusterArgs) (*CreateClusterResponse,
 	}
 
 	//给其中可能存在的user script用base64编码
-	err := encodeUserScriptInInstanceSet(args.CreateClusterRequest.MasterSpecs)
-	if err != nil{
-		return nil ,err
+	if err := encodeUserScriptInInstanceSet(args.CreateClusterRequest.MasterSpecs); err != nil {
+		return nil, err
 	}
 
-	err = encodeUserScriptInInstanceSet(args.CreateClusterRequest.NodeSpecs)
-	if err != nil{
-		return nil ,err
+	if err := encodeUserScriptInInstanceSet(args.CreateClusterRequest.NodeSpecs); err != nil {
+		return nil, err
 	}
-
-
-	s, _ := json.MarshalIndent(args, "", "\t")
-	fmt.Println("Args:" + string(s))
 
 	result := &CreateClusterResponse{}
-	err = bce.NewRequestBuilder(c).
+	err := bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
 		WithURL(getClusterURI()).
 		WithBody(args.CreateClusterRequest).
@@ -107,16 +101,15 @@ func (c *Client) CreateInstances(args *CreateInstancesArgs) (*CreateInstancesRes
 	}
 
 	//给其中可能存在的user script用base64编码
-	err := encodeUserScriptInInstanceSet(args.Instances)
-	if err != nil{
-		return nil ,err
+	if err := encodeUserScriptInInstanceSet(args.Instances); err != nil {
+		return nil, err
 	}
 
 	s, _ := json.MarshalIndent(args, "", "\t")
 	fmt.Println("Args:" + string(s))
 
 	result := &CreateInstancesResponse{}
-	err = bce.NewRequestBuilder(c).
+	err := bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
 		WithURL(getClusterInstanceListURI(args.ClusterID)).
 		WithBody(args.Instances).
@@ -136,6 +129,23 @@ func (c *Client) GetInstance(args *GetInstanceArgs) (*GetInstanceResponse, error
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
 		WithURL(getClusterInstanceURI(args.ClusterID, args.InstanceID)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+//更新节点配置
+func (c *Client) UpdateInstance(args *UpdateInstanceArgs) (*UpdateInstancesResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	result := &UpdateInstancesResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getClusterInstanceURI(args.ClusterID, args.InstanceID)).
+		WithBody(args.InstanceSpec).
 		WithResult(result).
 		Do()
 
@@ -305,7 +315,7 @@ func (c *Client) ListInstanceGroups(args *ListInstanceGroupsArgs) (*ListInstance
 	result := &ListInstanceGroupResponse{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithQueryParamFilter("pageNo",  strconv.Itoa(args.ListOption.PageNo)).
+		WithQueryParamFilter("pageNo", strconv.Itoa(args.ListOption.PageNo)).
 		WithQueryParamFilter("pageSize", strconv.Itoa(args.ListOption.PageSize)).
 		WithURL(getInstanceGroupListURI(args.ClusterID)).
 		WithResult(result).
@@ -314,6 +324,7 @@ func (c *Client) ListInstanceGroups(args *ListInstanceGroupsArgs) (*ListInstance
 	return result, err
 }
 
+//获取节点组的节点列表
 func (c *Client) ListInstancesByInstanceGroupID(args *ListInstanceByInstanceGroupIDArgs) (*ListInstancesByInstanceGroupIDResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -364,6 +375,34 @@ func (c *Client) UpdateInstanceGroupReplicas(args *UpdateInstanceGroupReplicasAr
 	return result, err
 }
 
+//修改节点组节点Autoscaler配置
+func (c *Client) UpdateInstanceGroupClusterAutoscalerSpec(args *UpdateInstanceGroupClusterAutoscalerSpecArgs) (*UpdateInstanceGroupClusterAutoscalerSpecResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+	if args.Request == nil {
+		return nil, fmt.Errorf("nil UpdateInstanceGroupReplicasRequest")
+	}
+	if args.Request.Enabled {
+		if args.Request.MinReplicas < 0 || args.Request.MaxReplicas < args.Request.MinReplicas {
+			return nil, fmt.Errorf("invalid minReplicas or maxReplicas")
+		}
+		if args.Request.ScalingGroupPriority < 0 {
+			return nil, fmt.Errorf("invalid scalingGroupPriority")
+		}
+	}
+
+	result := &UpdateInstanceGroupClusterAutoscalerSpecResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getInstanceGroupAutoScalerURI(args.ClusterID, args.InstanceGroupID)).
+		WithBody(args.Request).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
 //删除节点组
 func (c *Client) DeleteInstanceGroup(args *DeleteInstanceGroupArgs) (*DeleteInstanceGroupResponse, error) {
 	if args == nil {
@@ -374,6 +413,74 @@ func (c *Client) DeleteInstanceGroup(args *DeleteInstanceGroupArgs) (*DeleteInst
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
 		WithURL(getInstanceGroupWithIDURI(args.ClusterID, args.InstanceGroupID)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+//创建autoscaler配置
+func (c *Client) CreateAutoscaler(args *CreateAutoscalerArgs) (*CreateAutoscalerResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	result := &CreateAutoscalerResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getAutoscalerURI(args.ClusterID)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+//查询autoscaler配置
+func (c *Client) GetAutoscaler(args *GetAutoscalerArgs) (*GetAutoscalerResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	result := &GetAutoscalerResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getAutoscalerURI(args.ClusterID)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+//更新autoscaler配置
+func (c *Client) UpdateAutoscaler(args *UpdateAutoscalerArgs) (*UpdateAutoscalerResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	result := &UpdateAutoscalerResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getAutoscalerURI(args.ClusterID)).
+		WithBody(args.AutoscalerConfig).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+//获取kubeconfig
+func (c *Client) GetKubeConfig(args *GetKubeConfigArgs) (*GetKubeConfigResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+	if err := CheckKubeConfigType(string(args.KubeConfigType)); err != nil {
+		return nil, err
+	}
+
+	result := &GetKubeConfigResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getKubeconfigURI(args.ClusterID, args.KubeConfigType)).
 		WithResult(result).
 		Do()
 
