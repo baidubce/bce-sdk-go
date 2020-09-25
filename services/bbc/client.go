@@ -501,6 +501,16 @@ func (c *Client) ListDeploySets() (*ListDeploySetsResult, error) {
 	return ListDeploySets(c)
 }
 
+// ListDeploySets - list all deploy sets
+// PARAMS:
+//     - args: the arguments to filter
+// RETURNS:
+//     - *ListDeploySetsResult: the result of list all deploy sets
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListDeploySetsPage(args *ListDeploySetsArgs) (*ListDeploySetsResult, error) {
+	return ListDeploySetsPage(c, args)
+}
+
 // GetDeploySet - get details of the deploy set
 //
 // PARAMS:
@@ -756,7 +766,6 @@ func (c *Client) GetRepairTaskRecord(args *TaskIdArgs) (*GetRepairRecords, error
 	}
 	return GetRepairTaskReocrd(c, body)
 }
-
 
 // ListRule - list the repair plat rules
 //

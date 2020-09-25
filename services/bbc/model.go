@@ -333,7 +333,17 @@ type CreateDeploySetResult struct {
 	DeploySetId string `json:"deploySetId"`
 }
 
+type ListDeploySetsArgs struct {
+	Marker   string `json:"marker"`
+	MaxKeys  int    `json:"MaxKeys"`
+	Strategy string `json:"strategy"`
+}
+
 type ListDeploySetsResult struct {
+	Marker        string           `json:"marker"`
+	IsTruncated   bool             `json:"isTruncated"`
+	NextMarker    string           `json:"nextMarker"`
+	MaxKeys       int              `json:"maxKeys"`
 	DeploySetList []DeploySetModel `json:"deploySetList"`
 }
 
@@ -618,7 +628,7 @@ type BbcCreateAutoRenewArgs struct {
 }
 
 type BbcDeleteAutoRenewArgs struct {
-	InstanceId    string `json:"instanceId"`
+	InstanceId string `json:"instanceId"`
 }
 
 type DeleteInstanceIngorePaymentArgs struct {
@@ -629,13 +639,13 @@ type DeleteInstanceIngorePaymentArgs struct {
 }
 
 type DeleteInstanceModel struct {
-	InstanceId  string   `json:"instanceId"`
-	Eip         string   `json:"eip"`
+	InstanceId string `json:"instanceId"`
+	Eip        string `json:"eip"`
 }
 
 type DeleteInstanceResult struct {
 	SuccessResources *DeleteInstanceModel `json:"successResources"`
-	FailResources *DeleteInstanceModel `json:"failResources"`
+	FailResources    *DeleteInstanceModel `json:"failResources"`
 }
 
 type SharedUser struct {

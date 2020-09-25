@@ -20,6 +20,7 @@ package bbc
 import (
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
+	"strconv"
 )
 
 // CreateDeploySet - create a deploy set
@@ -70,6 +71,52 @@ func ListDeploySets(cli bce.Client) (*ListDeploySetsResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getDeploySetUri())
 	req.SetMethod(http.GET)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ListDeploySetsResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+// ListDeploySets - list all deploy sets
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - args: the filter of deployset
+// RETURNS:
+//     - *ListDeploySetsResult: the result of list all deploy sets
+//     - error: nil if success otherwise the specific error
+func ListDeploySetsPage(cli bce.Client, args *ListDeploySetsArgs) (*ListDeploySetsResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getDeploySetUri())
+	req.SetMethod(http.GET)
+
+	// Optional arguments settings
+	if args != nil {
+		if len(args.Marker) != 0 {
+			req.SetParam("marker", args.Marker)
+		}
+		if args.MaxKeys != 0 {
+			req.SetParam("maxKeys", strconv.Itoa(args.MaxKeys))
+		}
+		if len(args.Strategy) != 0 {
+			req.SetParam("strategy", args.Strategy)
+		}
+	}
+	if args == nil || args.MaxKeys == 0 {
+		req.SetParam("maxKeys", "500")
+	}
 
 	// Send request and get response
 	resp := &bce.BceResponse{}

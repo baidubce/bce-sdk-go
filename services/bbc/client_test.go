@@ -337,6 +337,13 @@ func TestListDeploySets(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestListDeploySetsPage(t *testing.T) {
+	queryArgs := &ListDeploySetsArgs{}
+	rep, err := BBC_CLIENT.ListDeploySetsPage(queryArgs)
+	fmt.Println(rep)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestGetDeploySet(t *testing.T) {
 	testDeploySetID := BBC_TestDeploySetId
 	rep, err := BBC_CLIENT.GetDeploySet(testDeploySetID)
@@ -434,7 +441,6 @@ func TestUnShareImage(t *testing.T) {
 	err := BBC_CLIENT.UnShareImage(BBC_TestImageId, args)
 	ExpectEqual(t.Errorf, err, nil)
 }
-
 
 func TestGetInstanceEni(t *testing.T) {
 	instanceId := "instanceId"
@@ -569,9 +575,9 @@ func TestEnableRule(t *testing.T) {
 
 func TestBatchCreateAutoRenewRules(t *testing.T) {
 	bccAutoRenewArgs := &BbcCreateAutoRenewArgs{
-		InstanceId: BBC_TestBbcId,
+		InstanceId:    BBC_TestBbcId,
 		RenewTimeUnit: "month",
-		RenewTime: 1,
+		RenewTime:     1,
 	}
 	err := BBC_CLIENT.BatchCreateAutoRenewRules(bccAutoRenewArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -587,7 +593,7 @@ func TestBatchDeleteAutoRenewRules(t *testing.T) {
 
 func TestDeleteInstanceIngorePayment(t *testing.T) {
 	args := &DeleteInstanceIngorePaymentArgs{
-		InstanceId:      "i-htkPgy0d",
+		InstanceId:         "i-htkPgy0d",
 		RelatedReleaseFlag: false,
 	}
 	if res, err := BBC_CLIENT.DeleteInstanceIngorePayment(args); err != nil {
