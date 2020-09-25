@@ -831,6 +831,26 @@ if res, err := bbcClient.ListDeploySets(); err != nil {
     fmt.Println("List deploy sets success, result: ", res)
 }
 ```
+
+### 查询部署集列表
+使用以下代码分页过滤查询所有部署集实例的列表及详情页面
+
+```go
+queryArgs := &ListDeploySetsArgs{
+    // 批量获取列表的查询起始位置，是一个由系统产生的字符串
+    Marker: "your-marker",
+    // 设置返回数据大小，缺省为1000
+    MaxKeys: 100,
+    // 通过internal Ip过滤维修任务列表
+    Strategy: "your-choose-strategy",
+}
+if res, err := bbcClient.ListDeploySetsPage(queryArgs); err != nil {
+    fmt.Println("List deploy sets failed: ", err)
+} else {
+    fmt.Println("List deploy sets success, result: ", res)
+}
+```
+
 ### 查询部署集详情
 使用以下代码可以查询指定套餐的详细信息
 

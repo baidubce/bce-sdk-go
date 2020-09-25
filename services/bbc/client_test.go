@@ -338,7 +338,11 @@ func TestListDeploySets(t *testing.T) {
 }
 
 func TestListDeploySetsPage(t *testing.T) {
-	queryArgs := &ListDeploySetsArgs{}
+	queryArgs := &ListDeploySetsArgs{
+		Strategy: "TOR_HA", // RACK_HA or TOR_HA
+		MaxKeys:  100,
+		Marker:   "your-marker",
+	}
 	rep, err := BBC_CLIENT.ListDeploySetsPage(queryArgs)
 	fmt.Println(rep)
 	ExpectEqual(t.Errorf, err, nil)
