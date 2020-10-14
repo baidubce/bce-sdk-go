@@ -233,10 +233,11 @@ args := &scs.CreateInstanceArgs{
     // 购买个数，最大不超过10，默认1
 	PurchaseCount: 1,
     // 实例名
+    // 要求：1）支持大小写字母、数字以及-_ /.等特殊字符，必须以字母开头；2）长度限制为1-64；
 	InstanceName:  "sdk-scs",
     // 端口号 1025<port<22222，22222<port<65535
 	Port:          6379,
-    // 引擎版本，集群：3.2 主从：3.2、4.0
+    // 引擎版本，集群：3.2、4.0、5.0 主从：2.8、3.2、4.0、5.0
 	EngineVersion: "3.2",
     // 节点规格
 	NodeType:      "cache.n1.micro",
@@ -246,7 +247,7 @@ args := &scs.CreateInstanceArgs{
 	ReplicationNum:  1,
     // 分片个数
 	ShardNum:      1,
-    // 代理节点数
+    // 代理节点数，主从版：0，集群版：代理节点数=分片个数
 	ProxyNum:      0,
 }
 
@@ -260,6 +261,8 @@ args.Billing = api.Billing{
 	}
 
 // 若要设置自动续费，可以按以下参数设置一年内自动续费
+// 按月付费或者按年付费 月是"month"，年是"year"
+// 自动续费的时间 按月是1-9 按年是 1-3
 args.AutoRenewTimeUnit = "year"
 args.AutoRenewTime = 1
 
@@ -323,6 +326,7 @@ if err != nil {
 ```
 
 > **提示：**
+>
 > - 只有实例Running状态时可以修改实例名称
 
 ### 释放实例
@@ -371,6 +375,267 @@ if err != nil {
     fmt.Println("list node type success: ", result)
 }
 ```
+
+### 获取子网列表
+
+如下代码可以获取子网列表
+
+```go
+args := &scs.ListSubnetsArgs{}
+_, err := client.ListSubnets(args)
+if err != nil {
+    fmt.Println("get subnet list failed:", err)
+} else {
+    fmt.Println("get subnet list success")
+}
+```
+
+> **提示：**
+>
+> - 请求参数 vpcId 和 zoneName 不是必须的
+
+### 修改实例域名
+
+如下代码可以修改实例域名
+
+```go
+args := &scs.UpdateInstanceDomainNameArgs{
+    Domain:  "newDomainName",
+}
+err := client.UpdateInstanceDomainName(instanceId, args)
+if err != nil {
+    fmt.Println("update instance domain name failed:", err)
+} else {
+    fmt.Println("update instance domain name success")
+}
+```
+
+> **提示：**
+>
+> - 只有实例Running状态时可以修改实例域名
+
+### 获取可用区列表
+
+使用以下代码可以获取可用区列表
+
+```go
+result, err := client.GetZoneList()
+if err != nil {
+    fmt.Println("get zone list failed:", err)
+} else 
+    fmt.Println("get zone list success ", result)
+}
+```
+
+### 修改访问密码
+
+如下代码可以修改访问密码
+
+```go
+args := &scs.ModifyPasswordArgs{
+    Password:  "newPassword",
+}
+result, err := client.ModifyPassword(instanceId, args)
+if err != nil {
+    fmt.Println("modify password failed:", err)
+} else 
+    fmt.Println("modify password success ", result)
+}
+```
+
+> **提示：**
+>
+> - 密码长度8～16位，至少包含字母、数字和特殊字符中两种。允许的特殊字符包括 $^*()_+-=
+
+### 清空实例
+
+如下代码可以清空实例
+
+```go
+args := &scs.FlushInstanceArgs{
+    Password:  "Password",
+}
+result, err := client.FlushInstance(instanceId, args)
+if err != nil {
+    fmt.Println("flush instance failed:", err)
+} else 
+    fmt.Println("flush instance success ", result)
+}
+```
+
+> **提示：**
+>
+> - 对redis实例，清空后表现为数据占用内存下降，数据被清空；对memcache实例，清空后表现为占用内存不会下降，但是数据被清空
+> - 如果没有设置密码，传递空字符串
+
+### 绑定标签
+
+如下代码可以绑定标签
+
+```go
+args := &scs.BindingTagArgs{
+    ChangeTags:  []model.TagModel{
+				{
+					TagKey:   "tag1",	
+					TagValue: "var1",
+				},
+	},
+}
+result, err := client.BindingTag(instanceId, args)
+if err != nil {
+    fmt.Println("bind tags failed:", err)
+} else 
+    fmt.Println("bind tags success ", result)
+}
+```
+
+### 解绑标签
+
+如下代码可以解绑标签
+
+```go
+args := &scs.BindingTagArgs{
+    ChangeTags:  []model.TagModel{
+				{
+					TagKey:   "tag1",	
+					TagValue: "var1",
+				},
+	},
+}
+result, err := client.UnBindingTag(instanceId, args)
+if err != nil {
+    fmt.Println("unbind tags failed:", err)
+} else 
+    fmt.Println("unbind tags success ", result)
+}
+```
+
+> **提示：**
+>
+> - 解绑实例上定义的标签
+> - 可以同时解绑多个标签
+
+### 查询IP白名单
+
+如下代码可以查询允许访问实例的IP白名单
+
+```go
+result, err := client.GetSecurityIp(instanceId)
+if err != nil {
+    fmt.Println("get security IP failed:", err)
+} else 
+    fmt.Println("get security IP success ", result)
+}
+```
+
+> **提示：**
+>
+> - 返回参数 IP白名单列表, 包括常规地址: 如192.168.0.1，CIDR地址: 如192.168.1.0/24，0.0.0.0/0代表允许所有地址
+
+### 增加IP白名单
+
+如下代码可以增加访问实例的IP白名单
+
+```go
+args := &scs.SecurityIpArgs{
+    SecurityIps:  []string{
+					"192.0.0.1",
+				},	
+}
+result, err := client.AddSecurityIp(instanceId, args)
+if err != nil {
+    fmt.Println("add security IP failed:", err)
+} else 
+    fmt.Println("add security IP success ", result)
+}
+```
+
+### 删除IP白名单
+
+如下代码可以删除访问实例的IP白名单
+
+```go
+args := &scs.SecurityIpArgs{
+    SecurityIps:  []string{
+					"192.0.0.1",
+				},	
+}
+result, err := client.DeleteSecurityIp(instanceId, args)
+if err != nil {
+    fmt.Println("delete security IP failed:", err)
+} else 
+    fmt.Println("delete security IP success ", result)
+}
+```
+
+### 获取参数列表
+
+使用以下代码可以获取Redis实例的配置参数和运行参数
+
+```go
+result, err := client.GetParameters(instanceId)
+if err != nil {
+    fmt.Println("get parameter list failed:", err)
+} else 
+    fmt.Println("get parameter list success ", result)
+}
+```
+
+### 修改参数
+
+如下代码可以修改redis实例参数值
+
+```go
+args := &scs.ModifyParametersArgs{
+				Parameter: InstanceParam{
+					Name: "parameter name",
+					Value: "new value",
+				},
+}
+result, err := client.ModifyParameters(instanceId, args)
+if err != nil {
+    fmt.Println("modify parameters failed:", err)
+} else 
+    fmt.Println("modify parameters success ", result)
+}
+```
+
+### 查看备份列表
+
+使用以下代码可以查询某个实例备份列表
+
+```go
+result, err := client.GetBackupList(instanceId)
+if err != nil {
+    fmt.Println("get backup list failed:", err)
+} else 
+    fmt.Println("get backup list success ", result)
+}
+```
+
+### 修改备份策略
+
+如下代码可以修改redis实例自动备份策略
+
+```go
+args := &scs.ModifyBackupPolicyArgs{
+				BackupDays: "Sun,Mon,Tue,Wed,Thu,Fri,Sta",
+				BackupTime: "01:05:00",
+				ExpireDay: 7,
+}
+result, err := client.ModifyBackupPolicy(instanceId, args)
+if err != nil {
+    fmt.Println("modify backup policy failed:", err)
+} else 
+    fmt.Println("modify backup policy success ", result)
+}
+```
+
+> **提示：**
+>
+> - BackupDays: 标识一周中哪几天进行备份备份周期：Mon（周一）Tue（周二）Wed（周三）Thu（周四）Fri（周五）Sat（周六）Sun（周日）逗号分隔，取值如：Sun,Wed,Thu,Fri,Sta
+> - BackupTime: 标识一天中何时进行备份，UTC时间（+8为北京时间）取值如：01:05:00
+> - ExpireDay: 备份文件过期时间，取值如：3
 
 # 错误处理
 

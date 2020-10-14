@@ -2,6 +2,7 @@ package scs
 
 import (
 	"encoding/json"
+	"github.com/baidubce/bce-sdk-go/model"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -90,12 +91,12 @@ func TestClient_CreateInstance(t *testing.T) {
 		PurchaseCount: 1,
 		InstanceName:  SDK_NAME_PREFIX + id,
 		Port:          6379,
-		EngineVersion: "3.2",
-		NodeType:      "cache.n1.micro",
-		ClusterType:   "master_slave",
-		ReplicationNum:  1,
-		ShardNum:      1,
-		ProxyNum:      0,
+		EngineVersion: "5.0",
+		NodeType:      "cache.n1.small",
+		ClusterType:   "cluster",
+		ReplicationNum:  2,
+		ShardNum:      2,
+		ProxyNum:      2,
 	}
 	result, err := SCS_CLIENT.CreateInstance(args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -103,6 +104,7 @@ func TestClient_CreateInstance(t *testing.T) {
 	if len(result.InstanceIds) > 0 {
 		SCS_TEST_ID = result.InstanceIds[0]
 	}
+	isAvailable(SCS_TEST_ID)
 }
 
 func TestClient_ListInstances(t *testing.T) {
@@ -114,6 +116,7 @@ func TestClient_ListInstances(t *testing.T) {
 			ExpectEqual(t.Errorf, "Postpaid", e.PaymentTiming)
 		}
 	}
+
 }
 
 func TestClient_GetInstanceDetail(t *testing.T) {
@@ -121,7 +124,9 @@ func TestClient_GetInstanceDetail(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
+
 func TestClient_UpdateInstanceName(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
 	listInstancesArgs := &ListInstancesArgs{}
 	result, err := SCS_CLIENT.ListInstances(listInstancesArgs)
 	ExpectEqual(t.Errorf, nil, err)
@@ -137,10 +142,12 @@ func TestClient_UpdateInstanceName(t *testing.T) {
 	}
 }
 
+
 func TestClient_ResizeInstance(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
 	args := &ResizeInstanceArgs{
-		NodeType:"cache.n1.small",
-		ShardNum:2,
+		NodeType:"cache.n1.medium",
+		ShardNum:4,
 		ClientToken:  getClientToken(),
 	}
 	result, err := SCS_CLIENT.GetInstanceDetail(SCS_TEST_ID)
@@ -151,7 +158,252 @@ func TestClient_ResizeInstance(t *testing.T) {
 	}
 }
 
+
+
+func TestClient_GetNodeTypeList(t *testing.T) {
+	_, err := SCS_CLIENT.GetNodeTypeList()
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+
+func getClientToken() string {
+	return util.NewUUID()
+}
+
+
+func TestClient_ListSubnets(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	args := &ListSubnetsArgs{}
+	_, err := SCS_CLIENT.ListSubnets(args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UpdateInstanceDomainName(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	listInstancesArgs := &ListInstancesArgs{}
+	result, err := SCS_CLIENT.ListInstances(listInstancesArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Running" == e.InstanceStatus {
+			args := &UpdateInstanceDomainNameArgs{
+				Domain:  "new" + e.Domain,
+				ClientToken:   getClientToken(),
+			}
+			err := SCS_CLIENT.UpdateInstanceDomainName(e.InstanceID, args)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+func TestClient_GetZoneList(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	_, err := SCS_CLIENT.GetZoneList()
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+
+func TestClient_ModifyPassword(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	listInstancesArgs := &ListInstancesArgs{}
+	result, err := SCS_CLIENT.ListInstances(listInstancesArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Running" == e.InstanceStatus {
+			args := &ModifyPasswordArgs{
+				Password:  "1234qweR",
+				ClientToken:   getClientToken(),
+			}
+			err := SCS_CLIENT.ModifyPassword(e.InstanceID, args)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+
+func TestClient_FlushInstance(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	time.Sleep(30*time.Second)
+	listInstancesArgs := &ListInstancesArgs{}
+	result, err := SCS_CLIENT.ListInstances(listInstancesArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Running" == e.InstanceStatus {
+			args := &FlushInstanceArgs{
+				Password:  "1234qweR",
+				ClientToken:   getClientToken(),
+			}
+			err := SCS_CLIENT.FlushInstance(e.InstanceID, args)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+func TestClient_BindingTag(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	listInstancesArgs := &ListInstancesArgs{}
+	result, err := SCS_CLIENT.ListInstances(listInstancesArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Running" == e.InstanceStatus {
+			args := &BindingTagArgs{
+				ChangeTags:  []model.TagModel{
+					{
+						TagKey:   "tag1",
+						TagValue: "var1",
+					},
+				},
+			}
+			err := SCS_CLIENT.BindingTag(e.InstanceID, args)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+func TestClient_UnBindingTag(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	time.Sleep(30*time.Second)
+	listInstancesArgs := &ListInstancesArgs{}
+	result, err := SCS_CLIENT.ListInstances(listInstancesArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Running" == e.InstanceStatus {
+			args := &BindingTagArgs{
+				ChangeTags:  []model.TagModel{
+					{
+						TagKey:   "tag1",
+						TagValue: "var1",
+					},
+				},
+			}
+			err := SCS_CLIENT.UnBindingTag(e.InstanceID, args)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+func TestClient_GetSecurityIp(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	listInstancesArgs := &ListInstancesArgs{}
+	result, err := SCS_CLIENT.ListInstances(listInstancesArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Running" == e.InstanceStatus {
+			_, err := SCS_CLIENT.GetSecurityIp(e.InstanceID)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+func TestClient_AddSecurityIp(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	listInstancesArgs := &ListInstancesArgs{}
+	result, err := SCS_CLIENT.ListInstances(listInstancesArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Running" == e.InstanceStatus {
+			args := &SecurityIpArgs{
+				SecurityIps:  []string{
+					"192.0.0.1",
+				},
+			}
+			err := SCS_CLIENT.AddSecurityIp(e.InstanceID, args)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+func TestClient_DeleteSecurityIp(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	time.Sleep(30*time.Second)
+	listInstancesArgs := &ListInstancesArgs{}
+	result, err := SCS_CLIENT.ListInstances(listInstancesArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Running" == e.InstanceStatus {
+			args := &SecurityIpArgs{
+				SecurityIps:  []string{
+					"192.0.0.1",
+				},
+			}
+			err := SCS_CLIENT.DeleteSecurityIp(e.InstanceID, args)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+
+
+
+func TestClient_GetParameters(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	listInstancesArgs := &ListInstancesArgs{}
+	result, err := SCS_CLIENT.ListInstances(listInstancesArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Running" == e.InstanceStatus {
+			_, err := SCS_CLIENT.GetParameters(e.InstanceID)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+
+func TestClient_ModifyParameters(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	listInstancesArgs := &ListInstancesArgs{}
+	result, err := SCS_CLIENT.ListInstances(listInstancesArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Running" == e.InstanceStatus {
+			args := &ModifyParametersArgs{
+				Parameter: InstanceParam{
+					Name: "timeout",
+					Value: "0",
+				},
+			}
+			err := SCS_CLIENT.ModifyParameters(e.InstanceID, args)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+
+func TestClient_GetBackupList(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	listInstancesArgs := &ListInstancesArgs{}
+	result, err := SCS_CLIENT.ListInstances(listInstancesArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Running" == e.InstanceStatus {
+			_, err := SCS_CLIENT.GetBackupList(e.InstanceID)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+
+func TestClient_ModifyBackupPolicy(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	listInstancesArgs := &ListInstancesArgs{}
+	result, err := SCS_CLIENT.ListInstances(listInstancesArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Running" == e.InstanceStatus {
+			args := &ModifyBackupPolicyArgs{
+				BackupDays: "Sun,Mon,Tue,Wed,Thu,Fri,Sta",
+				BackupTime: "01:05:00",
+				ExpireDay: 7,
+			}
+			err := SCS_CLIENT.ModifyBackupPolicy(e.InstanceID, args)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+
 func TestClient_DeleteInstance(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	time.Sleep(50*time.Second)
 	args := &ListInstancesArgs{}
 	result, err := SCS_CLIENT.ListInstances(args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -163,12 +415,12 @@ func TestClient_DeleteInstance(t *testing.T) {
 	}
 }
 
-func TestClient_GetNodeTypeList(t *testing.T) {
-	_, err := SCS_CLIENT.GetNodeTypeList()
-	ExpectEqual(t.Errorf, nil, err)
-}
 
-
-func getClientToken() string {
-	return util.NewUUID()
+func isAvailable(instanceId string) {
+	for {
+		result, err := SCS_CLIENT.GetInstanceDetail(instanceId)
+		if err == nil && result.InstanceStatus == "Running" {
+			break
+		}
+	}
 }

@@ -2576,12 +2576,12 @@ if res, err := bccClient.ResizeInstanceStockArgs(args); err != nil {
 使用以下代码可以查询实例绑定的弹性网卡列表
 
 ```go
-// 设置你要操作的zoneName
-zoneName := "cn-bj-a"
-if res, err := bccClient.GetAvailableDiskInfo(zoneName); err != nil {
-    fmt.Println("Get the specific zone flavor failed: ", err)
+// 设置你要操作的instanceId
+instanceId := "instanceId"
+if res, err := BCC_CLIENT.ListInstanceEnis(instanceId); err != nil {
+	fmt.Println("Get specific instance eni failed: ", err)
 } else {
-    fmt.Println("Get the specific zone flavor success, result: ", res)
+	fmt.Println("Get specific instance eni success, result: ", res)
 }
 ```
 

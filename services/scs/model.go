@@ -35,6 +35,8 @@ type Subnet struct {
 	SubnetID string `json:"subnetId"`
 }
 
+
+
 type CreateInstanceArgs struct {
 	Billing           Billing  `json:"billing"`
 	PurchaseCount     int      `json:"purchaseCount"`
@@ -135,4 +137,103 @@ type GetNodeTypeListResult struct {
 	ClusterNodeTypeList []NodeType `json:"clusterNodeTypeList"`
 	DefaultNodeTypeList []NodeType `json:"defaultNodeTypeList"`
 	HsdbNodeTypeList    []NodeType `json:"hsdbNodeTypeList"`
+}
+
+type ListSubnetsArgs struct {
+	VpcID               string         `json:"vpcId"`
+	ZoneName            string         `json:"zoneName"`
+}
+
+type ListSubnetsResult struct {
+	SubnetOriginals            []SubnetOriginal         `json:"subnets"`
+}
+
+type SubnetOriginal struct {
+	Name     string `json:"name"`
+	SubnetID string `json:"subnetId"`
+	ZoneName string `json:"zoneName"`
+	Cidr     string `json:"cidr"`
+	VpcID    string `json:"vpcId"`
+}
+
+type UpdateInstanceDomainNameArgs struct {
+	Domain              string `json:"domain"`
+	ClientToken         string `json:"-"`
+}
+
+type GetZoneListResult struct {
+	ZoneNames          []string         `json:"zoneNames"`
+}
+
+type FlushInstanceArgs struct {
+	Password           string `json:"password"`
+	ClientToken        string `json:"-"`
+}
+
+type BindingTagArgs struct {
+	ChangeTags           []model.TagModel         `json:"changeTags"`
+}
+
+type GetSecurityIpResult struct {
+	SecurityIps          []string         `json:"securityIps"`
+}
+
+type SecurityIpArgs struct {
+	SecurityIps          []string         `json:"securityIps"`
+	ClientToken          string           `json:"-"`
+}
+
+type ModifyPasswordArgs struct {
+	Password             string `json:"password"`
+	ClientToken          string `json:"-"`
+}
+
+type GetParametersResult struct {
+	Parameters           []Parameter         `json:"parameters"`
+}
+
+type Parameter struct {
+	Default              string           `json:"default"`
+	ForceRestart         int              `json:"forceRestart"`
+	Name                 string           `json:"name"`
+	Value                string           `json:"value"`
+}
+
+type ModifyParametersArgs struct {
+	Parameter            InstanceParam	  `json:"parameter"`
+	ClientToken          string           `json:"-"`
+}
+
+type InstanceParam struct {
+	Name                 string           `json:"name"`
+	Value                string           `json:"value"`
+}
+
+type GetBackupListResult struct {
+	TotalCount           string           `json:"totalCount"`
+	Backups              []Backup         `json:"backups"`
+}
+
+type Backup struct {
+	BackupType           string           `json:"backupType"`
+	Comment              string           `json:"comment"`
+	StartTime            string           `json:"startTime"`
+	Records              []Record         `json:"records"`
+}
+
+type Record struct {
+	BackupRecordId       string           `json:"backupRecordId"`
+	BackupStatus         string           `json:"backupStatus"`
+	Duration             string           `json:"duration"`
+	ObjectSize           string           `json:"objectSize"`
+	ShardName            string           `json:"shardName"`
+	StartTime            string           `json:"startTime"`
+}
+
+
+type ModifyBackupPolicyArgs struct {
+	BackupDays           string              `json:"backupDays"`
+	BackupTime           string              `json:"backupTime"`
+	ClientToken          string              `json:"clientToken"`
+	ExpireDay            int                 `json:"expireDay"`
 }
