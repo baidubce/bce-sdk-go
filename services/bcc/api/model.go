@@ -108,6 +108,38 @@ type InstanceModel struct {
 	SwitchId              string           `json:"switchId"`
 	HostId                string           `json:"hostId"`
 	RackId                string           `json:"rackId"`
+	NicInfo               NicInfo          `json:"nicInfo"`
+}
+
+type NicInfo struct {
+	Status         string    `json:"status"`
+	MacAddress     string    `json:"macAddress"`
+	DeviceId       string    `json:"deviceId"`
+	VpcId          string    `json:"vpcId"`
+	EniId          string    `json:"eniId"`
+	Name           string    `json:"name"`
+	Type           string    `json:"type"`
+	CreatedTime    string    `json:"createdTime"`
+	SubnetType     string    `json:"subnetType"`
+	SubnetId       string    `json:"subnetId"`
+	EniNum         int       `json:"eniNum"`
+	Az             string    `json:"az"`
+	EniUuid        string    `json:"eniUuid"`
+	Description    string    `json:"description"`
+	Ips            []IpModel `json:"ips"`
+	SecurityGroups []string  `json:"securityGroups"`
+}
+
+type IpModel struct {
+	Eip             string `json:"eip"`
+	EipStatus       string `json:"eipStatus"`
+	EipSize         string `json:"eipSize"`
+	EipId           string `json:"eipId"`
+	Primary         string `json:"primary"`
+	PrivateIp       string `json:"privateIp"`
+	EipAllocationId string `json:"eipAllocationId"`
+	EipType         string `json:"eipType"`
+	EipGroupId      string `json:"eipGroupId"`
 }
 
 type Reservation struct {
