@@ -387,6 +387,38 @@ func RebuildInstance(cli bce.Client, instanceId string, reqBody *bce.Body) error
 	return nil
 }
 
+// BatchRebuildInstances - batch rebuild instances
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: the request body to rebuild instance
+// RETURNS:
+//     - *BatchRebuildResponse: result of batch rebuild instances
+//     - error: nil if success otherwise the specific error
+func BatchRebuildInstances(cli bce.Client, reqBody *bce.Body) (*BatchRebuildResponse, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getRebuildBatchInstanceUri())
+	req.SetMethod(http.PUT)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &BatchRebuildResponse{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
 // DeleteInstance - delete a bbc instance
 //
 // PARAMS:
@@ -758,4 +790,8 @@ func getBatchCreateAutoRenewRulesUri() string {
 
 func getBatchDeleteAutoRenewRulesUri() string {
 	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + REQUEST_BATCH_Delete_AUTORENEW_RULES_URI
+}
+
+func getRebuildBatchInstanceUri() string {
+	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + REQUEST_BATCH_REBUILD_INSTANCE_URI;
 }

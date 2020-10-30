@@ -949,9 +949,9 @@ func TestDeleteKeypair(t *testing.T) {
 
 func TestBatchCreateAutoRenewRules(t *testing.T) {
 	bccAutoRenewArgs := &api.BccCreateAutoRenewArgs{
-		InstanceId: BCC_TestBccId,
+		InstanceId:    BCC_TestBccId,
 		RenewTimeUnit: "month",
-		RenewTime: 1,
+		RenewTime:     1,
 	}
 	err := BCC_CLIENT.BatchCreateAutoRenewRules(bccAutoRenewArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -967,14 +967,30 @@ func TestBatchDeleteAutoRenewRules(t *testing.T) {
 
 func TestDeleteInstanceIngorePayment(t *testing.T) {
 	args := &api.DeleteInstanceIngorePaymentArgs{
-		InstanceId:      "i-IydDpQFF",
-		RelatedReleaseFlag: true,
-		DeleteRelatedEnisFlag:true,
-		DeleteCdsSnapshotFlag:true,
+		InstanceId:            "i-IydDpQFF",
+		RelatedReleaseFlag:    true,
+		DeleteRelatedEnisFlag: true,
+		DeleteCdsSnapshotFlag: true,
 	}
 	if res, err := BCC_CLIENT.DeleteInstanceIngorePayment(args); err != nil {
 		fmt.Println("delete  instance failed: ", err)
 	} else {
 		fmt.Println("delete  instance success, result: ", res)
+	}
+}
+
+func TestRecoveryInstance(t *testing.T) {
+
+	args := &api.RecoveryInstanceArgs{
+		InstanceIds: []api.RecoveryInstanceModel{
+			{
+				InstanceId: "i-IydDpQFF",
+			},
+		},
+	}
+	if err := BCC_CLIENT.RecoveryInstance(args); err != nil {
+		fmt.Println("recovery instance failed: ", err)
+	} else {
+		fmt.Println("recovery instance success")
 	}
 }

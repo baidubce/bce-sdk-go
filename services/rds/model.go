@@ -191,3 +191,50 @@ type Account struct {
 type ListAccountResult struct {
 	Accounts []Account `json:"accounts"`
 }
+
+type UpdateInstanceNameArgs struct {
+	InstanceName string `json:"instanceName"`
+}
+
+type ModifySyncModeArgs struct {
+	SyncMode string `json:"syncMode"`
+}
+
+type ModifyEndpointArgs struct {
+	Address string `json:"address"`
+}
+
+type ModifyPublicAccessArgs struct {
+	PublicAccess bool `json:"publicAccess"`
+}
+
+type GetBackupListArgs struct {
+	Marker  string
+	MaxKeys int
+}
+
+type GetBackupListResult struct {
+	Marker      string     `json:"marker"`
+	MaxKeys     int        `json:"maxKeys"`
+	IsTruncated bool       `json:"isTruncated"`
+	NextMarker  string     `json:"nextMarker"`
+	Instances   []Instance `json:"instances"`
+}
+
+type GetZoneListResult struct {
+	Zones              []ZoneName         `json:"zones"`
+}
+
+type ZoneName struct {
+	ZoneNames          []string           `json:"zoneNames"`
+}
+
+type ListSubnetsArgs struct {
+	VpcId               string         `json:"vpcId"`
+	ZoneName            string         `json:"zoneName"`
+}
+
+type ListSubnetsResult struct {
+	Subnets             []Subnet       `json:"subnets"`
+}
+

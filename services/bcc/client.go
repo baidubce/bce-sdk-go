@@ -283,6 +283,19 @@ func (c *Client) RebootInstance(instanceId string, forceStop bool) error {
 	return api.RebootInstance(c, instanceId, body)
 }
 
+func (c *Client) RecoveryInstance(args *api.RecoveryInstanceArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.RecoveryInstance(c, body)
+}
+
 // ChangeInstancePass - change an instance's password
 //
 // PARAMS:

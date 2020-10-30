@@ -552,6 +552,106 @@ fmt.Println("resize rds success.")
 > - 实例扩缩容之后会重启一次。
 > - 为异步接口，可通过查询实例详情接口查看instanceStatus是否恢复。
 
+## 重启实例
+
+使用以下代码可以重启实例。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+
+err := client.RebootInstance(instanceId)
+if err != nil {
+    fmt.Printf("reboot rds error: %+v\n", err)
+    return
+}
+```
+
+## 修改实例名称
+
+使用以下代码可以修改RDS实例名称。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+
+args := &rds.UpdateInstanceNameArgs{
+    InstanceName: "instanceName",
+}
+err = client.UpdateInstanceName(instanceId, args)
+if err != nil {
+    fmt.Printf("update instance name error: %+v\n", err)
+    return
+}
+fmt.Printf("update instance name success\n")
+```
+
+> 注意:
+>
+> - 实例名称支持大小写字母、数字以及-_ /.等特殊字符，必须以字母开头，长度1-64。
+
+## 修改同步模式
+
+使用以下代码可以修改RDS实例同步模式。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+
+args := &rds.ModifySyncModeArgs{
+    //"Async"异步复制，"Semi_sync"半同步复制。
+    SyncMode: "Async",
+}
+err = client.ModifySyncMode(instanceId, args)
+if err != nil {
+    fmt.Printf("modify syncMode error: %+v\n", err)
+    return
+}
+fmt.Printf("modify syncMode success\n")
+```
+
+## 修改连接信息
+
+使用以下代码可以修改RDS域名前缀。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+
+args := &rds.ModifyEndpointArgs{
+    Address: "newAddress",
+}
+err = client.ModifyEndpoint(instanceId, args)
+if err != nil {
+    fmt.Printf("modify endpoint error: %+v\n", err)
+    return
+}
+fmt.Printf("modify endpoint success\n")
+```
+
+> 注意:
+>
+> - 只传输域名前缀即可。域名前缀由小写字母和数字组成，以小写字母开头，长度在3-30之间。
+
+## 开关公网访问
+
+使用以下代码可以修改RDS域名前缀。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+
+args := &rds.ModifyPublicAccessArgs{
+    // true or false
+    PublicAccess: true,
+}
+err = client.ModifyPublicAccess(instanceId, args)
+if err != nil {
+    fmt.Printf("modify public access error: %+v\n", err)
+    return
+}
+fmt.Printf("modify public access success\n")
+```
+
+> 注意:
+>
+> - true：开启公网访问； false：关闭公网访问。
+
 # 账号管理
 
 ## 创建账号
@@ -652,6 +752,61 @@ if err != nil {
 }
 fmt.Printf("delete account success\n")
 ```
+
+# 其它
+
+## 获取备份列表
+
+使用以下代码可以获取一个实例下的备份列表。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.GetBackupListArgs{}
+_, err := client.GetBackupList(instanceId, args)
+if err != nil {
+    fmt.Printf("get backup list error: %+v\n", err)
+    return
+}
+fmt.Printf("get backup list success\n")
+```
+
+> 注意:
+>
+> - 请求参数 marker 和 maxKeys 不是必须的。
+
+## 获取可用区列表
+
+使用以下代码可以获取可用区列表。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+err = client.GetZoneList()
+if err != nil {
+    fmt.Printf("get zone list error: %+v\n", err)
+    return
+}
+fmt.Printf("get zone list success\n")
+fmt.Println("rds instanceId: ", result.InstanceId)
+```
+
+## 获取子网列表
+
+使用以下代码可以获取一个实例下的子网列表。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.ListSubnetsArgs{}
+_, err := client.ListSubnets(args)
+if err != nil {
+    fmt.Printf("get subnet list error: %+v\n", err)
+    return
+}
+fmt.Printf("get subnet list success\n")
+```
+
+> 注意:
+>
+> - 请求参数 vpcId 和 zoneName 不是必须的。
 
 # 错误处理
 

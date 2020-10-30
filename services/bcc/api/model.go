@@ -64,6 +64,9 @@ const (
 	StorageTypeSSD           StorageType = "ssd"
 	StorageTypeHDDThroughput StorageType = "HDD_Throughput"
 	StorageTypeHdd           StorageType = "hdd"
+	StorageTypeLocalSSD      StorageType = "local-ssd"
+	StorageTypeLocalHDD      StorageType = "local-hdd"
+	StorageTypeLocalNVME     StorageType = "local-nvme"
 )
 
 type PaymentTimingType string
@@ -1184,7 +1187,7 @@ type BccCreateAutoRenewArgs struct {
 }
 
 type BccDeleteAutoRenewArgs struct {
-	InstanceId    string `json:"instanceId"`
+	InstanceId string `json:"instanceId"`
 }
 
 type DeleteInstanceIngorePaymentArgs struct {
@@ -1204,5 +1207,13 @@ type DeleteInstanceModel struct {
 
 type DeleteInstanceResult struct {
 	SuccessResources *DeleteInstanceModel `json:"successResources"`
-	FailResources *DeleteInstanceModel `json:"failResources"`
+	FailResources    *DeleteInstanceModel `json:"failResources"`
+}
+
+type RecoveryInstanceArgs struct {
+	InstanceIds []RecoveryInstanceModel `json:"instanceIds"`
+}
+
+type RecoveryInstanceModel struct {
+	InstanceId string `json:"instanceId"`
 }

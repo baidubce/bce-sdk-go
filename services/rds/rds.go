@@ -289,3 +289,165 @@ func (c *Client) DeleteAccount(instanceId, accountName string) error {
 		WithURL(getRdsUriWithInstanceId(instanceId) + "/account/" + accountName).
 		Do()
 }
+
+// RebootInstance - reboot a specified instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance to be rebooted
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) RebootInstance(instanceId string) error {
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getRdsUriWithInstanceId(instanceId)).
+		WithQueryParam("reboot", "").
+		Do()
+}
+
+// UpdateInstanceName - update name of a specified instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance
+//     - args: the arguments to update instanceName
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateInstanceName(instanceId string, args *UpdateInstanceNameArgs) error {
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getRdsUriWithInstanceId(instanceId)).
+		WithQueryParam("rename", "").
+		WithBody(args).
+		Do()
+}
+
+// UpdateSyncMode - update sync mode of a specified instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance
+//     - args: the arguments to update syncMode
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ModifySyncMode(instanceId string, args *ModifySyncModeArgs) error {
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getRdsUriWithInstanceId(instanceId)).
+		WithQueryParam("modifySyncMode", "").
+		WithBody(args).
+		Do()
+}
+
+// ModifyEndpoint - modify the prefix of endpoint
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance
+//     - args: the arguments to modify endpoint
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ModifyEndpoint(instanceId string, args *ModifyEndpointArgs) error {
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getRdsUriWithInstanceId(instanceId)).
+		WithQueryParam("modifyEndpoint", "").
+		WithBody(args).
+		Do()
+}
+
+// ModifyPublicAccess - modify public access
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance
+//     - args: the arguments to modify public access
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ModifyPublicAccess(instanceId string, args *ModifyPublicAccessArgs) error {
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getRdsUriWithInstanceId(instanceId)).
+		WithQueryParam("modifyPublicAccess", "").
+		WithBody(args).
+		Do()
+}
+
+// GetBackupList - get backup list of the instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance
+// RETURNS:
+//     - *GetBackupListResult: result of the backup list
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetBackupList(instanceId string, args *GetBackupListArgs) (*GetBackupListResult, error) {
+
+	if args == nil {
+		args = &GetBackupListArgs{}
+	}
+
+	if args.MaxKeys <= 0 || args.MaxKeys > 1000 {
+		args.MaxKeys = 1000
+	}
+
+	result := &GetBackupListResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getRdsUriWithInstanceId(instanceId) + "/backup").
+		WithQueryParamFilter("marker", args.Marker).
+		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// GetZoneList - list all zone
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+// RETURNS:
+//     - *GetZoneListResult: result of the zone list
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetZoneList() (*GetZoneListResult, error) {
+	result := &GetZoneListResult{}
+	err :=  bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(URI_PREFIX + "/zone").
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// ListsSubnet - list all Subnets
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - args: the arguments to list all subnets, not necessary
+// RETURNS:
+//     - *ListSubnetsResult: result of the subnet list
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListSubnets(args *ListSubnetsArgs) (*ListSubnetsResult, error) {
+	if args == nil {
+		args = &ListSubnetsArgs{}
+	}
+
+	result := &ListSubnetsResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(URI_PREFIX + "/subnet").
+		WithQueryParamFilter("vpcId", args.VpcId).
+		WithQueryParamFilter("zoneName", args.ZoneName).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+

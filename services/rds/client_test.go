@@ -2,14 +2,16 @@ package rds
 
 import (
 	"encoding/json"
-	"github.com/baidubce/bce-sdk-go/util"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
+	"strconv"
+	"strings"
 	"testing"
 	"time"
 
+	"github.com/baidubce/bce-sdk-go/util"
 	"github.com/baidubce/bce-sdk-go/util/log"
 )
 
@@ -28,6 +30,10 @@ type Conf struct {
 	SK       string
 	Endpoint string
 }
+
+const (
+	SDK_NAME_PREFIX = "sdk_rds_"
+)
 
 func init() {
 	_, f, _, _ := runtime.Caller(0)
@@ -76,9 +82,12 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 }
 
 func TestClient_CreateRds(t *testing.T) {
+	id := strconv.FormatInt(time.Now().Unix(),10)
 	args := &CreateRdsArgs{
 		Engine:         "mysql",
 		EngineVersion:  "5.6",
+		Category:       "Standard",
+		InstanceName:   SDK_NAME_PREFIX + id,
 		CpuCount:       1,
 		MemoryCapacity: 1,
 		VolumeCapacity: 5,
@@ -191,11 +200,115 @@ func TestClient_CreateRdsProxy(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
+func TestClient_RebootInstance(t *testing.T) {
+	isAvailable(RDS_ID)
+	err := RDS_CLIENT.RebootInstance(RDS_ID)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UpdateInstanceName(t *testing.T) {
+	isAvailable(RDS_ID)
+	listRdsArgs := &ListRdsArgs{}
+	result, err := RDS_CLIENT.ListRds(listRdsArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Available" == e.InstanceStatus {
+			args := &UpdateInstanceNameArgs{
+				InstanceName:  e.InstanceName + "_new",
+			}
+			err := RDS_CLIENT.UpdateInstanceName(e.InstanceId, args)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+func TestClient_ModifySyncMode(t *testing.T) {
+	isAvailable(RDS_ID)
+	listRdsArgs := &ListRdsArgs{}
+	result, err := RDS_CLIENT.ListRds(listRdsArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Available" == e.InstanceStatus {
+			args := &ModifySyncModeArgs{
+				SyncMode:  "Async",
+			}
+			err := RDS_CLIENT.ModifySyncMode(e.InstanceId, args)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+func TestClient_ModifyEndpoint(t *testing.T) {
+	isAvailable(RDS_ID)
+	listRdsArgs := &ListRdsArgs{}
+	result, err := RDS_CLIENT.ListRds(listRdsArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Available" == e.InstanceStatus {
+			args := &ModifyEndpointArgs{
+				Address:  "newsdkrds",
+			}
+			err := RDS_CLIENT.ModifyEndpoint(e.InstanceId, args)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+func TestClient_ModifyPublicAccess(t *testing.T) {
+	isAvailable(RDS_ID)
+	listRdsArgs := &ListRdsArgs{}
+	result, err := RDS_CLIENT.ListRds(listRdsArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Available" == e.InstanceStatus {
+			args := &ModifyPublicAccessArgs{
+				PublicAccess:  false,
+			}
+			err := RDS_CLIENT.ModifyPublicAccess(e.InstanceId, args)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+func TestClient_GetBackupList(t *testing.T) {
+	isAvailable(RDS_ID)
+	listRdsArgs := &ListRdsArgs{}
+	result, err := RDS_CLIENT.ListRds(listRdsArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Available" == e.InstanceStatus {
+			args := &GetBackupListArgs{}
+			_, err := RDS_CLIENT.GetBackupList(e.InstanceId, args)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+func TestClient_GetZoneList(t *testing.T) {
+	isAvailable(RDS_ID)
+	_, err := RDS_CLIENT.GetZoneList()
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_ListSubnets(t *testing.T) {
+	isAvailable(RDS_ID)
+	args := &ListSubnetsArgs{}
+	_, err := RDS_CLIENT.ListSubnets(args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
 func TestClient_DeleteRds(t *testing.T) {
 	time.Sleep(30*time.Second)
 	isAvailable(RDS_ID)
-	err := RDS_CLIENT.DeleteRds(RDS_ID)
+	listRdsArgs := &ListRdsArgs{}
+	result, err := RDS_CLIENT.ListRds(listRdsArgs)
 	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Available" == e.InstanceStatus {
+			err := RDS_CLIENT.DeleteRds(e.InstanceId)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
 }
 
 func getClientToken() string {

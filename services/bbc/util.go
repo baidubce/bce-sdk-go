@@ -36,6 +36,7 @@ const (
 	REQUEST_BATCHDELIP_URI = "/batchDelIp"
 	REQUEST_BATCH_CREATE_AUTORENEW_RULES_URI = "/batchCreateAutoRenewRules"
 	REQUEST_BATCH_Delete_AUTORENEW_RULES_URI = "/batchDeleteAutoRenewRules"
+	REQUEST_BATCH_REBUILD_INSTANCE_URI = "/batchRebuild";
 
 	REQUEST_FLAVOR_URI       = "/flavor"
 	REQUEST_FLAVOR_RAID_URI  = "/flavorRaid"

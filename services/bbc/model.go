@@ -151,6 +151,25 @@ type RebuildInstanceArgs struct {
 	SysRootSize    int    `json:"sysRootSize,omitempty"`
 }
 
+type RebuildBatchInstanceArgs struct {
+	InstanceIds    []string `json:"instanceIds"`
+	ImageId        string   `json:"imageId"`
+	AdminPass      string   `json:"adminPass"`
+	IsPreserveData bool     `json:"isPreserveData"`
+	RaidId         string   `json:"raidId,omitempty"`
+	SysRootSize    int      `json:"sysRootSize,omitempty"`
+}
+
+type BatchRebuildResponse struct {
+	Result []BatchRebuild `json:"result"`
+}
+
+type BatchRebuild struct {
+	InstanceIds []string `json:"instanceIds"`
+	ErrMsp      string   `json:"errMsg"`
+	Code        string   `json:"code"`
+}
+
 type GetVpcSubnetArgs struct {
 	BbcIds []string `json:"bbcIds"`
 }

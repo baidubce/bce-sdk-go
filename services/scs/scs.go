@@ -398,7 +398,7 @@ func (c *Client) GetParameters(instanceId string) (*GetParametersResult, error) 
 	result := &GetParametersResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithURL(INSTANCE_URL_V1 +  "/" + instanceId + "/securityIp").
+		WithURL(INSTANCE_URL_V1 +  "/" + instanceId + "/parameter").
 		WithResult(result).
 		Do()
 

@@ -63,6 +63,7 @@ const (
 	REQUEST_TAG_URI = "/tag"
 	REQUEST_NOCHARGE_URI = "/noCharge"
 	REQUEST_BID_URI = "/bid"
+	REQUEST_RECOVERY_URI = "/recovery"
 	REQUEST_CANCEL_BIDORDER_URI = "/cancelBidOrder"
 	REQUEST_BATCH_CREATE_AUTORENEW_RULES_URI = "/batchCreateAutoRenewRules"
 	REQUEST_BATCH_Delete_AUTORENEW_RULES_URI = "/batchDeleteAutoRenewRules"
@@ -78,6 +79,10 @@ func getInstanceBySpecUri() string {
 
 func getInstanceUriWithId(id string) string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/" + id
+}
+
+func getRecoveryInstanceUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_RECOVERY_URI
 }
 
 func getBatchAddIpUri() string {

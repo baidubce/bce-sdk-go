@@ -346,6 +346,34 @@ if err := bbcClient.RebuildInstance(instanceId, isPreserveData, rebuildArgs); er
 >- 当IsPreserveData设置为 false 时，RaidId 和 SysRootSize 是必填参数
 >- 当IsPreserveData设置为 true 时，RaidId 和 SysRootSize 参数不生效
 
+### 批量重装实例
+使用以下代码可以使用镜像批量重建指定BBC实例:
+```go
+rebuildArgs := &BatchRebuildInstanceArgs{
+    // 设置重装BBC的实例ID
+    InstanceIds:    []string{"your-choose-instance-id"},
+    // 设置使用的镜像id
+    ImageId:        "your-choose-image-id",
+    // 设置管理员密码
+    AdminPass:      "your-new-admin-pass",
+    // 是否保留数据。当该值为true时，raidId和sysRootSize字段不生效
+    IsPreserveData: false,
+    // 此参数在isPreserveData为false时为必填，在isPreserveData为true时不生效
+    RaidId:         "your_raid_id",
+    // 系统盘根分区大小，默认为20G，取值范围为20-100。此参数在isPreserveData为true时不生效
+    SysRootSize: 20,
+}
+if res, err := bbcClient.RebuildInstance(rebuildArgs); err != nil {
+    fmt.Println("batch rebuild instance failed: ", err)
+} else {
+    fmt.Println("batch rebuild instance success, result: %s", res)
+}
+```
+> **注意：**
+>IsPreserveData表示是否保留数据：
+>- 当IsPreserveData设置为 false 时，RaidId 和 SysRootSize 是必填参数
+>- 当IsPreserveData设置为 true 时，RaidId 和 SysRootSize 参数不生效
+
 ### 释放实例
 对于后付费Postpaid以及预付费Prepaid过期的BBC实例，可以使用以下代码将其释放:
 ```go

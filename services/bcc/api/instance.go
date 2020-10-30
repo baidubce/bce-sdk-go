@@ -429,6 +429,27 @@ func RebootInstance(cli bce.Client, instanceId string, reqBody *bce.Body) error 
 	return nil
 }
 
+
+func RecoveryInstance(cli bce.Client, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getRecoveryInstanceUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
 // ChangeInstancePass - change password of specified instance
 //
 // PARAMS:

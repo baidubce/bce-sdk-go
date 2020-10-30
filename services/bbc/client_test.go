@@ -186,6 +186,20 @@ func TestRebuildInstance(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestBatchRebuildInstances(t *testing.T) {
+	rebuildArgs := &RebuildBatchInstanceArgs{
+		ImageId:        "ImageId",
+		AdminPass:      "123qaz!@#",
+		InstanceIds:    []string{"BBC_TestBbcId"},
+		IsPreserveData: true,
+		RaidId:         BBC_TestRaidId,
+		SysRootSize:    20,
+	}
+	result, err := BBC_CLIENT.BatchRebuildInstances(rebuildArgs)
+	fmt.Println(result)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestReleaseInstance(t *testing.T) {
 	err := BBC_CLIENT.DeleteInstance(BBC_TestBbcId)
 	ExpectEqual(t.Errorf, err, nil)

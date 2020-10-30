@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"github.com/baidubce/bce-sdk-go/auth"
 	"github.com/baidubce/bce-sdk-go/bce"
+	"github.com/baidubce/bce-sdk-go/services/bcc/api"
 )
 
 const DEFAULT_SERVICE_DOMAIN = "bbc." + bce.DEFAULT_REGION + ".baidubce.com"
@@ -248,6 +249,32 @@ func (c *Client) RebuildInstance(instanceId string, isPreserveData bool, args *R
 	}
 
 	return RebuildInstance(c, instanceId, body)
+}
+
+// RebuildBatchInstance - batch rebuild instances
+//
+// PARAMS:
+//     - args: the arguments to batch rebuild instances
+// RETURNS:
+//     - *BatchRebuildResponse: the result of batch rebuild the instances
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchRebuildInstances(args *RebuildBatchInstanceArgs) (*BatchRebuildResponse, error) {
+	encryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
+	if err != nil {
+		return nil, err
+	}
+	args.AdminPass = encryptedPass
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return BatchRebuildInstances(c, body)
 }
 
 // DeleteInstance - delete an instance

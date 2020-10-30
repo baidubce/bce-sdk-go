@@ -1244,6 +1244,25 @@ if err := bccClient.BatchDeleteAutoRenewRules(bccDeleteAutoRenewArgs); err != ni
 }
 ```
 
+### 后付费资源从回收站恢复计费
+仅限预后付费产品，预付费资源走续费接口
+
+```go
+args := &api.RecoveryInstanceArgs{
+    InstanceIds: []api.RecoveryInstanceModel{
+        {
+            InstanceId: instanceId,
+        },
+    },
+}
+if err := BCC_CLIENT.RecoveryInstance(args); err != nil {
+    fmt.Println("recovery instance failed: ", err)
+} else {
+    fmt.Println("recovery instance success")
+}
+		
+```
+
 ## 计费变更-转预付费
 使用以下代码对实例计费变更-转预付费:
 
