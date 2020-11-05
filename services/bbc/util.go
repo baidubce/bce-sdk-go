@@ -31,9 +31,9 @@ const (
 	REQUEST_SUBNET_URI   = "/vpcSubnet"
 	SECURITY_GROUP_URI   = "/securitygroup"
 
-	REQUEST_IMAGE_URI      = "/image"
-	REQUEST_BATCHADDIP_URI = "/batchAddIp"
-	REQUEST_BATCHDELIP_URI = "/batchDelIp"
+	REQUEST_IMAGE_URI                        = "/image"
+	REQUEST_BATCHADDIP_URI                   = "/batchAddIp"
+	REQUEST_BATCHDELIP_URI                   = "/batchDelIp"
 	REQUEST_BATCH_CREATE_AUTORENEW_RULES_URI = "/batchCreateAutoRenewRules"
 	REQUEST_BATCH_Delete_AUTORENEW_RULES_URI = "/batchDeleteAutoRenewRules"
 	REQUEST_BATCH_REBUILD_INSTANCE_URI = "/batchRebuild";
@@ -51,7 +51,7 @@ const (
 	REQUEST_DEPLOY_SET_URI    = "/deployset"
 	REQUEST_INSTANCE_PORT_URI = "/vpcPort"
 
-	REQUEST_REPAIR_TASK_URI = "/task"
+	REQUEST_REPAIR_TASK_URI        = "/task"
 	REQUEST_REPAIR_CLOSED_TASK_URI = "/closedTask"
 
 	REQUEST_RULE_URI    = "/rule"
@@ -59,6 +59,7 @@ const (
 	REQUEST_DELETE_URI  = "/delete"
 	REQUEST_DISABLE_URI = "/disable"
 	REQUEST_ENABLE_URI  = "/enable"
+	REQUEST_VOLUME_URI  = "/volume"
 )
 
 func Aes128EncryptUseSecreteKey(sk string, data string) (string, error) {
@@ -72,4 +73,8 @@ func Aes128EncryptUseSecreteKey(sk string, data string) (string, error) {
 	}
 
 	return hex.EncodeToString(crypted), nil
+}
+
+func getVolumeUri() string {
+	return URI_PREFIX_V1 + REQUEST_VOLUME_URI
 }

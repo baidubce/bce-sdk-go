@@ -106,8 +106,10 @@ func TestCreateInstance(t *testing.T) {
 		RaidId:           BBC_TestRaidId,
 		RootDiskSizeInGb: 40,
 		PurchaseCount:    1,
+		AdminPass:        "AdminPass",
 		ZoneName:         BBC_TestZoneName,
 		SubnetId:         BBC_TestSubnetId,
+		SecurityGroupId:  BBC_TestSecurityGroupId,
 		ClientToken:      BBC_TestClientToken,
 		Billing: Billing{
 			PaymentTiming: PaymentTimingPostPaid,
@@ -130,7 +132,7 @@ func TestCreateInstance(t *testing.T) {
 
 func TestListInstances(t *testing.T) {
 	listArgs := &ListInstancesArgs{
-		MaxKeys: 100,
+		MaxKeys: 500,
 	}
 	res, err := BBC_CLIENT.ListInstances(listArgs)
 	fmt.Println(res)
@@ -433,7 +435,7 @@ func TestGetCommonImage(t *testing.T) {
 }
 
 func TestGetCustomImage(t *testing.T) {
-	flavorIds := []string{"BBC-S3-02"}
+	flavorIds := []string{"flavorId"}
 	queryArgs := &GetFlavorImageArgs{
 		FlavorIds: flavorIds,
 	}
@@ -611,12 +613,26 @@ func TestBatchDeleteAutoRenewRules(t *testing.T) {
 
 func TestDeleteInstanceIngorePayment(t *testing.T) {
 	args := &DeleteInstanceIngorePaymentArgs{
-		InstanceId:         "i-htkPgy0d",
-		RelatedReleaseFlag: false,
+		InstanceId:         "InstanceId",
+		RelatedReleaseFlag: true,
 	}
 	if res, err := BBC_CLIENT.DeleteInstanceIngorePayment(args); err != nil {
 		fmt.Println("delete instance failed: ", err)
 	} else {
 		fmt.Println("delelte instance success, result: ", res)
+	}
+}
+
+func TestListCDSVolume(t *testing.T) {
+	queryArgs := &ListCDSVolumeArgs{
+		MaxKeys:    100,
+		InstanceId: "InstanceId",
+		Marker:     "VolumeId",
+		ZoneName:   "zoneName",
+	}
+	if res, err := BBC_CLIENT.ListCDSVolume(queryArgs); err != nil {
+		fmt.Println("list volume failed: ", err)
+	} else {
+		fmt.Println("list volume success, result: ", res)
 	}
 }

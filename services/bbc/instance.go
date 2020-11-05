@@ -793,5 +793,5 @@ func getBatchDeleteAutoRenewRulesUri() string {
 }
 
 func getRebuildBatchInstanceUri() string {
-	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + REQUEST_BATCH_REBUILD_INSTANCE_URI;
+	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + REQUEST_BATCH_REBUILD_INSTANCE_URI
 }

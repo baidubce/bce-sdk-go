@@ -936,3 +936,14 @@ func (c *Client) BatchDeleteAutoRenewRules(args *BbcDeleteAutoRenewArgs) error {
 func (c *Client) DeleteInstanceIngorePayment(args *DeleteInstanceIngorePaymentArgs) (*DeleteInstanceResult, error) {
 	return DeleteBbcIngorePayment(c, args)
 }
+
+// ListCDSVolume - list all cds volume with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to list all cds
+// RETURNS:
+//     - *api.ListCDSVolumeResult: the result of list all CDS volume
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListCDSVolume(queryArgs *ListCDSVolumeArgs) (*ListCDSVolumeResult, error) {
+	return ListCDSVolume(c, queryArgs)
+}

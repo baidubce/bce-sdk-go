@@ -1238,6 +1238,22 @@ if err := bbcClient.CreateRule(args); err != nil {
 }
 ```
 
+### 获取bbc本地盘信息列表
+通过以下代码可以分页获取bbc本地盘信息列表
+```go
+queryArgs := &ListCDSVolumeArgs{
+	MaxKeys:    100,
+	InstanceId: "InstanceId",
+	Marker:     "VolumeId",
+	ZoneName:   "zoneName",
+}
+if res, err := BBC_CLIENT.ListCDSVolume(queryArgs); err != nil {
+	fmt.Println("list volume failed: ", err)
+} else {
+	fmt.Println("list volume success, result: ", res)
+}
+```
+
 ### 启用维修平台预授权规则
 通过以下代码启用维修平台预授权规则
 ```go
