@@ -164,10 +164,12 @@ type InstanceModel struct {
 	FlavorId              string           `json:"flavorId"`
 	Zone                  string           `json:"zone"`
 	Region                string           `json:"region"`
-	NetworkCapacityInMbps int              `json:"networkCapacityInMbps"`
+	HasAlive              int              `json:"hasAlive"`
 	Tags                  []model.TagModel `json:"tags"`
 	SwitchId              string           `json:"switchId"`
 	HostId                string           `json:"hostId"`
+	DeploysetId           string           `json:"deploysetId"`
+	NetworkCapacityInMbps int              `json:"networkCapacityInMbps"`
 	RackId                string           `json:"rackId"`
 }
 

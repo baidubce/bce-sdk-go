@@ -191,7 +191,7 @@ func (c *Client) ListSubnets(args *ListSubnetsArgs) (*ListSubnetsResult, error) 
 	result := &ListSubnetsResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithURL(INSTANCE_URL_V1).
+		WithURL("/v1/subnet").
 		WithQueryParamFilter("vpcId", args.VpcID).
 		WithQueryParamFilter("zoneName", args.ZoneName).
 		WithResult(result).

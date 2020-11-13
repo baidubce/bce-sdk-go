@@ -92,7 +92,7 @@ func TestClient_CreateInstance(t *testing.T) {
 		InstanceName:  SDK_NAME_PREFIX + id,
 		Port:          6379,
 		EngineVersion: "5.0",
-		NodeType:      "cache.n1.small",
+		NodeType:      "cache.n1.micro",
 		ClusterType:   "cluster",
 		ReplicationNum:  2,
 		ShardNum:      2,
@@ -102,7 +102,7 @@ func TestClient_CreateInstance(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 
 	if len(result.InstanceIds) > 0 {
-		SCS_TEST_ID = result.InstanceIds[0]
+		SCS_TEST_ID = result.InstanceIds[0].InstanceId
 	}
 	isAvailable(SCS_TEST_ID)
 }
@@ -124,7 +124,6 @@ func TestClient_GetInstanceDetail(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
-
 func TestClient_UpdateInstanceName(t *testing.T) {
 	isAvailable(SCS_TEST_ID)
 	listInstancesArgs := &ListInstancesArgs{}
@@ -142,11 +141,10 @@ func TestClient_UpdateInstanceName(t *testing.T) {
 	}
 }
 
-
 func TestClient_ResizeInstance(t *testing.T) {
 	isAvailable(SCS_TEST_ID)
 	args := &ResizeInstanceArgs{
-		NodeType:"cache.n1.medium",
+		NodeType:"cache.n1.mirco",
 		ShardNum:4,
 		ClientToken:  getClientToken(),
 	}
@@ -158,18 +156,14 @@ func TestClient_ResizeInstance(t *testing.T) {
 	}
 }
 
-
-
 func TestClient_GetNodeTypeList(t *testing.T) {
 	_, err := SCS_CLIENT.GetNodeTypeList()
 	ExpectEqual(t.Errorf, nil, err)
 }
 
-
 func getClientToken() string {
 	return util.NewUUID()
 }
-
 
 func TestClient_ListSubnets(t *testing.T) {
 	isAvailable(SCS_TEST_ID)
@@ -201,7 +195,6 @@ func TestClient_GetZoneList(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
-
 func TestClient_ModifyPassword(t *testing.T) {
 	isAvailable(SCS_TEST_ID)
 	listInstancesArgs := &ListInstancesArgs{}
@@ -218,7 +211,6 @@ func TestClient_ModifyPassword(t *testing.T) {
 		}
 	}
 }
-
 
 func TestClient_FlushInstance(t *testing.T) {
 	isAvailable(SCS_TEST_ID)
@@ -331,9 +323,6 @@ func TestClient_DeleteSecurityIp(t *testing.T) {
 	}
 }
 
-
-
-
 func TestClient_GetParameters(t *testing.T) {
 	isAvailable(SCS_TEST_ID)
 	listInstancesArgs := &ListInstancesArgs{}
@@ -346,7 +335,6 @@ func TestClient_GetParameters(t *testing.T) {
 		}
 	}
 }
-
 
 func TestClient_ModifyParameters(t *testing.T) {
 	isAvailable(SCS_TEST_ID)
@@ -367,7 +355,6 @@ func TestClient_ModifyParameters(t *testing.T) {
 	}
 }
 
-
 func TestClient_GetBackupList(t *testing.T) {
 	isAvailable(SCS_TEST_ID)
 	listInstancesArgs := &ListInstancesArgs{}
@@ -380,7 +367,6 @@ func TestClient_GetBackupList(t *testing.T) {
 		}
 	}
 }
-
 
 func TestClient_ModifyBackupPolicy(t *testing.T) {
 	isAvailable(SCS_TEST_ID)
@@ -400,15 +386,15 @@ func TestClient_ModifyBackupPolicy(t *testing.T) {
 	}
 }
 
-
 func TestClient_DeleteInstance(t *testing.T) {
-	isAvailable(SCS_TEST_ID)
-	time.Sleep(50*time.Second)
+	//isAvailable(SCS_TEST_ID)
+	//time.Sleep(50*time.Second)
 	args := &ListInstancesArgs{}
 	result, err := SCS_CLIENT.ListInstances(args)
 	ExpectEqual(t.Errorf, nil, err)
 	for _, e := range result.Instances {
-		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Running" == e.InstanceStatus && "Postpaid" == e.PaymentTiming {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Run" +
+			"ning" == e.InstanceStatus && "Postpaid" == e.PaymentTiming {
 			err := SCS_CLIENT.DeleteInstance(e.InstanceID, getClientToken())
 			ExpectEqual(t.Errorf, nil, err)
 		}

@@ -110,6 +110,7 @@ type InstanceModel struct {
 	Ipv6                  string           `json:"ipv6"`
 	SwitchId              string           `json:"switchId"`
 	HostId                string           `json:"hostId"`
+	DeploysetId           string           `json:"deploysetId"`
 	RackId                string           `json:"rackId"`
 	NicInfo               NicInfo          `json:"nicInfo"`
 }
