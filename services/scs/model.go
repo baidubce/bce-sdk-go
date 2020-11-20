@@ -30,7 +30,7 @@ type Billing struct {
 	Reservation   *Reservation `json:"reservation,omitempty"`
 }
 
-type SubnetMap struct {
+type Subnet struct {
 	ZoneName string `json:"zoneName"`
 	SubnetID string `json:"subnetId"`
 }
@@ -49,19 +49,16 @@ type CreateInstanceArgs struct {
 	Port              int         `json:"port"`
 	EngineVersion     string      `json:"engineVersion"`
 	VpcID             string      `json:"vpcId"`
-	Subnets           []SubnetMap `json:"subnets,omitempty"`
+	Subnets           []Subnet    `json:"subnets,omitempty"`
 	AutoRenewTimeUnit string      `json:"autoRenewTimeUnit,omitempty"`
 	AutoRenewTime     int         `json:"autoRenewTime,omitempty"`
 	ClientToken       string      `json:"-"`
 }
 
 type CreateInstanceResult struct {
-	InstanceIds []InstanceId `json:"instanceIds"`
+	InstanceIds []string `json:"instanceIds"`
 }
 
-type InstanceId struct {
-	InstanceId string `json:"instanceId"`
-}
 type InstanceModel struct {
 	InstanceID         string           `json:"instanceId"`
 	InstanceName       string           `json:"instanceName"`
@@ -73,11 +70,11 @@ type InstanceModel struct {
 	Domain             string           `json:"domain"`
 	Port               int              `json:"port"`
 	InstanceCreateTime string           `json:"instanceCreateTime"`
-	InstanceExpireTime string           `json:"instanceExpireTime"`
 	Capacity           int              `json:"capacity"`
 	UsedCapacity       float64          `json:"usedCapacity"`
 	PaymentTiming      string           `json:"paymentTiming"`
 	ZoneNames          []string         `json:"zoneNames"`
+	Tags               []model.TagModel `json:"tags"`
 }
 
 type ListInstancesArgs struct {
@@ -94,7 +91,6 @@ type ListInstancesResult struct {
 }
 
 type ResizeInstanceArgs struct {
-	Billing     Billing `json:"billing"`
 	NodeType    string  `json:"nodeType"`
 	ShardNum    int     `json:"shardNum"`
 	ClientToken string  `json:"-"`
@@ -118,7 +114,8 @@ type GetInstanceDetailResult struct {
 	VpcID              string           `json:"vpcId"`
 	ZoneNames          []string         `json:"zoneNames"`
 	Subnets            []Subnet         `json:"subnets"`
-	AutoRenew          bool             `json:"autoRenew"`
+	AutoRenew          int              `json:"autoRenew"`
+	Tags               []model.TagModel `json:"tags"`
 }
 
 type UpdateInstanceNameArgs struct {
@@ -143,15 +140,15 @@ type GetNodeTypeListResult struct {
 }
 
 type ListSubnetsArgs struct {
-	VpcID               string
-	ZoneName            string
+	VpcID               string  `json:"vpcId"`
+	ZoneName            string  `json:"zoneName"`
 }
 
 type ListSubnetsResult struct {
-	Subnets            []Subnet         `json:"subnets"`
+	SubnetOriginals            []SubnetOriginal         `json:"subnets"`
 }
 
-type Subnet struct {
+type SubnetOriginal struct {
 	Name     string `json:"name"`
 	SubnetID string `json:"subnetId"`
 	ZoneName string `json:"zoneName"`

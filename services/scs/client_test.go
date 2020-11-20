@@ -2,6 +2,7 @@ package scs
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/baidubce/bce-sdk-go/model"
 	"os"
 	"path/filepath"
@@ -102,15 +103,19 @@ func TestClient_CreateInstance(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 
 	if len(result.InstanceIds) > 0 {
-		SCS_TEST_ID = result.InstanceIds[0].InstanceId
+		SCS_TEST_ID = result.InstanceIds[0]
 	}
 	isAvailable(SCS_TEST_ID)
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
 }
 
 func TestClient_ListInstances(t *testing.T) {
 	args := &ListInstancesArgs{}
 	result, err := SCS_CLIENT.ListInstances(args)
 	ExpectEqual(t.Errorf, nil, err)
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
 	for _, e := range result.Instances {
 		if e.InstanceID == SCS_TEST_ID {
 			ExpectEqual(t.Errorf, "Postpaid", e.PaymentTiming)
@@ -120,8 +125,10 @@ func TestClient_ListInstances(t *testing.T) {
 }
 
 func TestClient_GetInstanceDetail(t *testing.T) {
-	_, err := SCS_CLIENT.GetInstanceDetail(SCS_TEST_ID)
+	result, err := SCS_CLIENT.GetInstanceDetail("scs-su-vizlxyjqkfnm")
 	ExpectEqual(t.Errorf, nil, err)
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
 }
 
 func TestClient_UpdateInstanceName(t *testing.T) {
@@ -297,6 +304,7 @@ func TestClient_AddSecurityIp(t *testing.T) {
 				SecurityIps:  []string{
 					"192.0.0.1",
 				},
+				ClientToken:   getClientToken(),
 			}
 			err := SCS_CLIENT.AddSecurityIp(e.InstanceID, args)
 			ExpectEqual(t.Errorf, nil, err)
@@ -316,6 +324,7 @@ func TestClient_DeleteSecurityIp(t *testing.T) {
 				SecurityIps:  []string{
 					"192.0.0.1",
 				},
+				ClientToken:   getClientToken(),
 			}
 			err := SCS_CLIENT.DeleteSecurityIp(e.InstanceID, args)
 			ExpectEqual(t.Errorf, nil, err)
@@ -348,6 +357,7 @@ func TestClient_ModifyParameters(t *testing.T) {
 					Name: "timeout",
 					Value: "0",
 				},
+				ClientToken:   getClientToken(),
 			}
 			err := SCS_CLIENT.ModifyParameters(e.InstanceID, args)
 			ExpectEqual(t.Errorf, nil, err)
@@ -379,6 +389,7 @@ func TestClient_ModifyBackupPolicy(t *testing.T) {
 				BackupDays: "Sun,Mon,Tue,Wed,Thu,Fri,Sta",
 				BackupTime: "01:05:00",
 				ExpireDay: 7,
+				ClientToken:   getClientToken(),
 			}
 			err := SCS_CLIENT.ModifyBackupPolicy(e.InstanceID, args)
 			ExpectEqual(t.Errorf, nil, err)
