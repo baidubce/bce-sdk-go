@@ -363,7 +363,7 @@ rebuildArgs := &BatchRebuildInstanceArgs{
     // 系统盘根分区大小，默认为20G，取值范围为20-100。此参数在isPreserveData为true时不生效
     SysRootSize: 20,
 }
-if res, err := bbcClient.RebuildInstance(rebuildArgs); err != nil {
+if res, err := bbcClient.BatchRebuildInstance(rebuildArgs); err != nil {
     fmt.Println("batch rebuild instance failed: ", err)
 } else {
     fmt.Println("batch rebuild instance success, result: %s", res)
