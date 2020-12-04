@@ -82,6 +82,7 @@ type InstanceModel struct {
 	InstanceId            string           `json:"id"`
 	SerialNumber          string           `json:"serialNumber"`
 	InstanceName          string           `json:"name"`
+	Hostname              string           `json:"hostname"`
 	InstanceType          InstanceType     `json:"instanceType"`
 	Description           string           `json:"desc"`
 	Status                InstanceStatus   `json:"status"`
@@ -194,6 +195,9 @@ type CreateInstanceArgs struct {
 	DedicateHostId        string           `json:"dedicatedHostId,omitempty"`
 	PurchaseCount         int              `json:"purchaseCount,omitempty"`
 	Name                  string           `json:"name,omitempty"`
+	Hostname              string           `json:"hostname,omitempty"`
+	IsOpenHostnameDomain  bool             `json:"isOpenHostnameDomain,omitempty"`
+	AutoSeqSuffix         bool             `json:"autoSeqSuffix,omitempty"`
 	AdminPass             string           `json:"adminPass,omitempty"`
 	ZoneName              string           `json:"zoneName,omitempty"`
 	SubnetId              string           `json:"subnetId,omitempty"`
@@ -279,6 +283,9 @@ type CreateInstanceBySpecArgs struct {
 	InternetChargeType    string           `json:"internetChargeType,omitempty"`
 	PurchaseCount         int              `json:"purchaseCount,omitempty"`
 	Name                  string           `json:"name,omitempty"`
+	Hostname              string           `json:"hostname,omitempty"`
+	IsOpenHostnameDomain  bool             `json:"isOpenHostnameDomain,omitempty"`
+	AutoSeqSuffix         bool             `json:"autoSeqSuffix,omitempty"`
 	AdminPass             string           `json:"adminPass,omitempty"`
 	Billing               Billing          `json:"billing"`
 	ZoneName              string           `json:"zoneName,omitempty"`
@@ -316,6 +323,42 @@ type ListInstanceResult struct {
 	NextMarker  string          `json:"nextMarker"`
 	MaxKeys     int             `json:"maxKeys"`
 	Instances   []InstanceModel `json:"instances"`
+}
+
+type ListRecycleInstanceArgs struct {
+	Marker        string `json:"marker,omitempty"`
+	MaxKeys       int    `json:"maxKeys,omitempty"`
+	InstanceId    string `json:"instanceId,omitempty"`
+	Name          string `json:"name,omitempty"`
+	PaymentTiming string `json:"paymentTiming,omitempty"`
+	RecycleBegin  string `json:"recycleBegin,omitempty"`
+	RecycleEnd    string `json:"recycleEnd,omitempty"`
+}
+
+type ListRecycleInstanceResult struct {
+	Marker      string                 `json:"marker"`
+	IsTruncated bool                   `json:"isTruncated"`
+	NextMarker  string                 `json:"nextMarker"`
+	MaxKeys     int                    `json:"maxKeys"`
+	Instances   []RecycleInstanceModel `json:"instances"`
+}
+
+type RecycleInstanceModel struct {
+	InstanceId    string   `json:"id"`
+	SerialNumber  string   `json:"serialNumber"`
+	InstanceName  string   `json:"name"`
+	RecycleTime   string   `json:"recycleTime"`
+	DeleteTime    string   `json:"deleteTime"`
+	PaymentTiming string   `json:"paymentTiming"`
+	ServiceName   string   `json:"serviceName"`
+	ServiceType   string   `json:"serviceType"`
+	ConfigItems   []string `json:"configItems"`
+}
+
+type ModifyInstanceHostnameArgs struct {
+	Hostname             string `json:"hostname"`
+	IsOpenHostnameDomain bool   `json:"isOpenHostnameDomain"`
+	Reboot               bool   `json:"reboot"`
 }
 
 type GetInstanceDetailResult struct {
@@ -408,6 +451,7 @@ const (
 type DeleteInstanceWithRelateResourceArgs struct {
 	RelatedReleaseFlag    bool `json:"relatedReleaseFlag"`
 	DeleteCdsSnapshotFlag bool `json:"deleteCdsSnapshotFlag"`
+	BccRecycleFlag        bool `json:"bccRecycleFlag"`
 }
 
 type InstanceChangeSubnetArgs struct {
@@ -420,6 +464,7 @@ type BatchAddIpArgs struct {
 	InstanceId                     string   `json:"instanceId"`
 	PrivateIps                     []string `json:"privateIps"`
 	SecondaryPrivateIpAddressCount int      `json:"secondaryPrivateIpAddressCount"`
+	ClientToken                    string   `json:"-"`
 }
 
 type BatchAddIpResponse struct {
@@ -427,8 +472,9 @@ type BatchAddIpResponse struct {
 }
 
 type BatchDelIpArgs struct {
-	InstanceId string   `json:"instanceId"`
-	PrivateIps []string `json:"privateIps"`
+	InstanceId  string   `json:"instanceId"`
+	PrivateIps  []string `json:"privateIps"`
+	ClientToken string   `json:"-"`
 }
 
 type VolumeStatus string

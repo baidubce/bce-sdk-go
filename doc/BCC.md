@@ -257,6 +257,13 @@ args := &api.CreateInstanceArgs{
     AdminPass: "123qaz!@#",
 	// 设置实例名称 
 	Name:      "terraform_sdkTest",
+    // 实例主机名,可选参数,若不选则主机名和实例名称保持一致(实例名称不包含中文名时)
+    // 仅支持小写字母、数字以及- . 特殊字符，不可连续使用特殊符号，不支持特殊符号开头或结尾，长度2-64
+    Hostname:        "your-choose-instance-hostname",
+    // 设置是否自动生成hostname和name有序后缀 是:true 否:false
+    AutoSeqSuffix:        false,
+    // 设置是否开启hostname domain 是：true 否：false
+    IsOpenHostnameDomain:   false,
 	// 设置创建BCC使用的网络带宽大小
     NetWorkCapacityInMbps int              networkCapacityInMbps
     // 设置需要创建BCC使用的DCC服务器id
@@ -378,6 +385,13 @@ createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
 		PaymentTiming: api.PaymentTimingPostPaid,
     },
     Name:                  "sdkTest",
+    // 实例主机名,可选参数,若不选则主机名和实例名称保持一致(实例名称不包含中文名时)
+    // 仅支持小写字母、数字以及- . 特殊字符，不可连续使用特殊符号，不支持特殊符号开头或结尾，长度2-64
+    Hostname:        "your-choose-instance-hostname",
+    // 设置是否自动生成hostname和name有序后缀 是:true 否:false
+    AutoSeqSuffix:        false,
+    // 设置是否开启hostname domain 是：true 否：false
+    IsOpenHostnameDomain:   false,
     AdminPass:             "123qaz!@#",
     // 临时盘数据盘大小
     EphemeralDisks        []EphemeralDisk  "ephemeralDisks"
@@ -470,6 +484,13 @@ createInstanceArgs := &CreateInstanceArgs{
     PurchaseCount         int              purchaseCount
 	// 实例名称
     Name                  string           "name"
+    // 实例主机名,可选参数,若不选则主机名和实例名称保持一致(实例名称不包含中文名时)
+    // 仅支持小写字母、数字以及- . 特殊字符，不可连续使用特殊符号，不支持特殊符号开头或结尾，长度2-64
+    Hostname:        "your-choose-instance-hostname",
+    // 设置是否自动生成hostname和name有序后缀 是:true 否:false
+    AutoSeqSuffix:        false,
+    // 设置是否开启hostname domain 是：true 否：false
+    IsOpenHostnameDomain:   false,
 	// 设置BCC虚机密码
     AdminPass             string           "adminPass"
 	// 设置可用区
@@ -738,6 +759,42 @@ if err != nil {
 }
 ```
 
+### 查询回收站实例列表
+
+以下代码可以查询回收站中的BCC虚机实例列表,支持通过虚机id，名字进行筛选
+```go
+// 批量获取列表的查询的起始位置，是一个由系统生成的字符串,可选参数
+marker := "your-marker"
+// 每页包含的最大数量，最大数量通常不超过1000。缺省值为1000,可选参数
+maxKeys := your-maxKeys
+// 设置想要查询的付费类型,可选参数 Prepaid表示预付费，Postpaid表示后付费，不传表示都选
+paymentTiming := "Postpaid"
+// 设置想要查询的虚机id,可选参数
+instanceId := "your-choose-instance-id"
+// 设置想要查询的虚机名称,可选参数
+name := "your-choose-name"
+// 设置想要查询虚机的回收开始时间(北京时间),可选参数 （闭区间）
+recycleBegin := "2020-11-19T09:12:35Z"
+// 设置想要查询虚机的回收结束时间(北京时间),可选参数 （开区间）
+recycleEnd := "2020-11-26T09:12:35Z"
+args := &api.ListRecycleInstanceArgs{
+    Marker:         marker,
+    MaxKeys:        maxKeys,
+    PaymentTiming:  paymentTiming,
+    InstanceId:     instanceId,
+    Name:           name,
+    RecycleBegin:   recycleBegin,
+    RecycleEnd:     recycleEnd, 
+}
+result, err := client.ListRecycleInstances(args)
+if err != nil {
+    fmt.Println("list instance failed:", err)
+} else {
+    fmt.Println("list instance success: ", result)
+}
+```
+
+
 ### 查询指定实例详情
 
 使用以下代码可以查询指定BCC虚机的详细信息
@@ -829,6 +886,8 @@ if err != nil {
 
 如下代码可以修改实例密码
 ```go
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
 args := &api.ChangeInstancePassArgs{
 	AdminPass: "321zaq#@!",
 }
@@ -847,6 +906,8 @@ if err != nil {
 
 如下代码可以修改实例属性
 ```go
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
 args := &api.ModifyInstanceAttributeArgs{
     Name: "newInstanceName",
 }
@@ -865,6 +926,8 @@ if err != nil {
 
 如下代码可以修改实例描述
 ```go
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
 args := &api.ModifyInstanceDescArgs{
     Description: "new Instance description",
 }
@@ -873,6 +936,28 @@ if err != nil {
     fmt.Println("modify instance failed:", err)
 } else {
     fmt.Println("modify instance success")
+}
+```
+
+### 修改实例主机名
+
+如下代码可以修改实例主机名
+```go
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+args := &api.ModifyInstanceHostnameArgs{
+    // 设置想要修改的新主机名
+    Hostname:               "new Instance hostname",
+    // 设置是否开启domain，可选参数 true表示开启 false和null 表示关闭
+    IsOpenHostnameDomain:   true,
+    // 设置是否自动重启，可选参数 true表示重启，false和null表示不重启
+    Reboot:                 true,
+}
+err := client.ModifyInstanceHostname(instanceId, args)
+if err != nil {
+    fmt.Println("modify instance hostname failed:", err)
+} else {
+    fmt.Println("modify instance hostname success")
 }
 ```
 
@@ -932,7 +1017,7 @@ if err != nil {
 ```
 
 ## 释放实例（POST）
-使用以下代码修改实例描述:
+使用以下代码释放实例:
 ```go
 deleteInstanceWithRelateResourceArgs := &DeleteInstanceWithRelateResourceArgs{
     // 设置释放的时候是否关联释放当前时刻，实例挂载的eip+数据盘 false代表否 true代表是
@@ -940,6 +1025,8 @@ deleteInstanceWithRelateResourceArgs := &DeleteInstanceWithRelateResourceArgs{
     RelatedReleaseFlag    bool "relatedReleaseFlag"
 	// 设置是否释放云磁盘快照 false代表否 true代表是
     DeleteCdsSnapshotFlag bool "deleteCdsSnapshotFlag"
+    // 设置是否进入回收站 true表示进入回收站， false和null表示不进入回收站
+    bccRecycleFlag        bool "bccRecycleFlag"
 }
 // 设置你要操作的instanceId
 instanceId := "your-choose-instance-id"
@@ -1183,6 +1270,8 @@ batchAddIpArgs := &BatchAddIpArgs{
 	PrivateIps []string "privateIps"
     // 自动分配IP数量，和PrivateIps不可同时使用
     SecondaryPrivateIpAddressCount int 1
+    // 幂等性Token，使用 uuid 生成一个长度不超过64位的ASCII字符串，可选参数
+    ClietnToken string "clientToken"
 }
 
 if res, err := bccClient.BatchAddIP(batchAddIpArgs); err != nil {
@@ -1197,9 +1286,12 @@ if res, err := bccClient.BatchAddIP(batchAddIpArgs); err != nil {
 ```go
 privateIps := []string{"192.168.1.25"}
 instanceId := "your-choose-instance-id"
+// 幂等性Token，使用 uuid 生成一个长度不超过64位的ASCII字符串，可选参数
+clientToken := "clientToken"
 batchDelIpArgs := &api.BatchDelIpArgs{
-	InstanceId: instanceId,
-	PrivateIps: privateIps,
+	InstanceId:     instanceId,
+	PrivateIps:     privateIps,
+    ClientToken:    clientToken,
 }
 if err := client.BatchDelIP(batchDelIpArgs); err != nil {
     fmt.Println("delete ips failed: ", err)
@@ -1245,7 +1337,7 @@ if err := bccClient.BatchDeleteAutoRenewRules(bccDeleteAutoRenewArgs); err != ni
 ```
 
 ### 后付费资源从回收站恢复计费
-仅限预后付费产品，预付费资源走续费接口
+仅限后付费产品，预付费资源走续费接口
 
 ```go
 args := &api.RecoveryInstanceArgs{
@@ -1383,7 +1475,7 @@ if err != nil {
 
 ### 查询磁盘列表
 
-以下代码可以查询所有的磁盘列表，不包含临时数据盘，支持分页查询以及通过次磁盘所挂载的BCC实例id进行过滤筛选:
+以下代码可以查询所有的磁盘列表，支持分页查询以及通过次磁盘所挂载的BCC实例id进行过滤筛选:
 
 ```go
 args := &api.ListCDSVolumeArgs{}

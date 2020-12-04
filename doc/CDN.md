@@ -47,6 +47,28 @@ func GetDefaultClient() *cdn.Client {
 }
 ```
 
+## 自定义HTTP请求
+
+> 支持对任何开放接口自定义HTTP请求
+
+示例展示了不通过SDK的方法，而是自行根据[文档](https://cloud.baidu.com/doc/CDN/s/qjwvyexh6)构造请求，查询某个域名是否可以添加到百度云CDN系统。
+
+```go
+cli := GetDefaultClient()
+method := "GET"
+urlPath := fmt.Sprintf("/v2/domain/%s/valid", testDomain)
+var params map[string]string
+// 此请求头非必须，仅测试发送请求头
+reqHeaders := map[string]string{
+	"X-Test": "go-sdk-test",
+}
+var bodyObj interface{}
+var respObj interface{}
+err := cli.SendCustomRequest(method, urlPath, params, reqHeaders, bodyObj, &respObj)
+fmt.Printf("err:%+v\n", err) 
+fmt.Printf("respObj details:\n\ttype:%T\n\tvalue:%+v", respObj, respObj)
+```
+
 ## 域名操作接口
 
 ### 域名列表查询 ListDomains
@@ -340,6 +362,32 @@ fmt.Printf("errorPages:%+v\n", errorPages)
 | RedirectCode | int    | 重定向状态码，当出现code错误码时，重定向的类型。支持301和302，默认302。 |
 | Url          | string | 重定向目标地址 ，当出现code错误码是，重定向到这个用户自定义的url，即301或302重定向中HTTP报文中的Location的值为了Url。 |
 
+### 设置/查询和其他域名共享缓存配置 SetCacheShared/GetCacheShared
+
+> 用户可以设置域名与另外一个域名共享缓存，提升命中率，前提是两个域名必须属于同一账户。
+
+```go
+cli := client.GetDefaultClient()                        
+testDomain := "test_go_sdk.baidu.com"
+
+// 设置test_go_sdk.baidu.com和www.baidu.com共享缓存
+err := cli.SetCacheShared(testDomain, &api.CacheShared{
+		Enabled:    true,
+		SharedWith: "www.baidu.com",
+})
+fmt.Printf("err:%+v\n", err)
+
+// 取消test_go_sdk.baidu.com和任何域名共享缓存
+err := cli.SetCacheShared(testDomain, &api.CacheShared{
+		Enabled:    false,
+})
+fmt.Printf("err:%+v\n", err)
+
+// 查询test_go_sdk.baidu.com的共享缓存配置
+cacheSharedConfig, err := cli.GetCacheShared(testDomain)
+fmt.Printf("err:%+v\n", err)     
+fmt.Printf("cacheSharedConfig:%+v\n", cacheSharedConfig)     
+```
 
 ### 设置/查询访问Referer控制 SetRefererACL/GetRefererACL
 
@@ -416,6 +464,39 @@ fmt.Printf("err:%+v\n", err)
 | BlackList | []string | IP黑名单列表，当设置黑名单生效时，当客户端的IP属于BlackList，CDN系统返回403。BlackList不可与WhiteList同时设置。 |
 | WhiteList | []string | IP白名单列表，当设置白名单生效时，当WhiteList为空时，没有白名单效果。当WhiteList非空时，只有客户端的IP属于WhiteList才允许访问。同样不可与BlackList同时设置。 |
 
+### 设置/查询访问UA控制 SetUaACL/GetUaACL
+
+> CDN获取HTTP请求头中的User-Agent，同配置中的黑/白名单进行匹配，对匹配上的请求进行拒绝/放过。
+
+```go
+cli := client.GetDefaultClient()              
+testDomain := "test_go_sdk.baidu.com"         
+                                              
+// 设置UA白名单                                    
+err = cli.SetUaACL(testDomain, nil, []string{
+		"curl/7.73.0",
+})                                 
+fmt.Printf("err:%+v\n", err)                  
+                                              
+// 设置UA黑名单                 
+err := cli.SetUaACL(testDomain, []string{
+		"Test-Bad-UA",
+}, nil)                              
+fmt.Printf("err:%+v\n", err)   
+
+// 查询UA黑白设置                           
+uaACL, err := cli.GetUaACL(testDomain)
+fmt.Printf("uaACL:%+v\n", uaACL)      
+fmt.Printf("err:%+v\n", err)          
+```
+
+`ipACL`是`api.IpACL`类型对象，详细说明如下：
+
+| 字段      | 类型     | 说明                                                         |
+| --------- | -------- | ------------------------------------------------------------ |
+| BlackList | []string | IP黑名单列表，当设置黑名单生效时，当客户端的IP属于BlackList，CDN系统返回403。BlackList不可与WhiteList同时设置。 |
+| WhiteList | []string | IP白名单列表，当设置白名单生效时，当WhiteList为空时，没有白名单效果。当WhiteList非空时，只有客户端的IP属于WhiteList才允许访问。同样不可与BlackList同时设置。 |
+
 ### 设置访问鉴权 SetDomainRequestAuth
 
 > 高级鉴权也是为了防止客户源站内容被盗用，比Referer黑白名单和IP黑白名单更加安全。
@@ -440,7 +521,7 @@ fmt.Printf("err:%+v\n", err)
 
 示例代码设置一个C类鉴权方式，对应的字段在[高级鉴权](https://cloud.baidu.com/doc/CDN/s/ujwvyeo0t)。有非常消息的说明。
 
-### 设置域名限速 SetLimitRate
+### 设置域名限速 SetLimitRate (废弃，请使用SetTrafficLimit)
 
 > 限定此域名下向客户端传输的每份请求的最大响应速率。该速率是针对单个请求的，多请求自动翻倍。
 
@@ -456,6 +537,40 @@ fmt.Printf("err:%+v\n", err)
 err = cli.SetLimitRate(testDomain, 0)           
 fmt.Printf("err:%+v\n", err)                                          
 ```
+
+### 设置单连接限速 SetTrafficLimit/GetTrafficLimit
+
+```go
+cli := client.GetDefaultClient()
+// 开启单连接限速，开启时间为北京时间上午10～12点之间，单链接限速值为1000KB左右。
+trafficLimit := &api.TrafficLimit{
+		Enable:           true,
+		LimitRate:        1000,
+		LimitStartHour:   10,
+		LimitEndHour:     12,
+		TrafficLimitUnit: "k",
+	}
+// 设置单连接限速
+err := cli.SetTrafficLimit(testDomain, trafficLimit)
+
+// 查询单连接限速配置
+trafficLimit, err := cli.GetTrafficLimit(testDomain)
+fmt.Printf("err:%+v\n", err)
+fmt.Printf("trafficLimit:%+v\n", trafficLimit)                         
+```
+
+`trafficLimit`是`api.TrafficLimit`类型的对象，详细说明如下：
+
+
+| 字段    | 类型 | 说明                                                         |
+| ------- | ---- | ------------------------------------------------------------ |
+| Enabled | bool | true表示开启单链接限速，false表示关闭。当enable为false时，下面的配置均无效 |
+| limitRate   | int  | 限速值，建议显示设置，否则效果未定义。单位为limitRateUnit设置的值，默认为Byte/s。 |
+| limitStartHour | int | 限速开始时间，请输入0 - 24范围的数字，小于限速结束时间，默认值为0(可选) |
+| limitEndHour | int | 限速结束时间，请输入0 - 24范围的数字，大于限速开始时间，默认值为24(可选) |
+| limitRateAfter | int | 在发送了多少数据之后限速，单位Byte(可选) |
+| trafficLimitArg | string | 限速参数名称，根据url中提取的arg进行限速(可选) |
+| trafficLimitUnit | string | 限速参数单位，支持m、k、g，默认为Byte(可选) |
 
 ### 设置/查询Cors跨域 SetCors/GetCors
 
@@ -558,6 +673,25 @@ fmt.Printf("clientIp:%+v\n", clientIp)
 | Enabled | bool   | true表示开启，false表示关闭。                                |
 | Name    | string | 只能设置为"True-Client-Ip"或"X-Real-IP"两种之一，默认为"True-Client-Ip"，enabled为false时此项无意义。 |
 
+### 设置/查询回源重试条件 
+
+```go
+cli := client.GetDefaultClient()
+testDomain := "test_go_sdk.baidu.com"
+
+// 设置当回源遇到429、500、502或者503错误码时进行重试
+err := client.SetRetryOrigin(testDomain, &api.RetryOrigin{
+		Codes: []int{429, 500, 502},
+})
+fmt.Printf("err:%+v\n", err)
+
+// 查询回源重试策略
+retryOrigin, err := client.GetRetryOrigin(testDomain)
+fmt.Printf("err:%+v\n", err)
+fmt.Printf("retryOrigin:%+v\n", retryOrigin)
+```
+
+
 ### 更新加速域名回源地址 SetDomainOrigin
 
 > 加速域名的回源地址可以在创建域名的时候设置好，也可以在创建完成后进行更新。
@@ -594,19 +728,19 @@ cli := client.GetDefaultClient()
 testDomain := "test_go_sdk.baidu.com"  
 
 // 设置回源协议为HTTP
-err := testCli.SetOriginProtocol(testAuthorityDomain, "http")
+err := cli.SetOriginProtocol(testDomain, "http")
 fmt.Printf("err:%+v\n", err)  
 
 // 设置回源协议为HTTPS（域名必须HTTPS，否则以下请求失败）
-err = testCli.SetOriginProtocol(testAuthorityDomain, "https")
+err = cli.SetOriginProtocol(testDomain, "https")
 fmt.Printf("err:%+v\n", err)
 
 // 设置回源跟随协议
-err = testCli.SetOriginProtocol(testAuthorityDomain, "*")
+err = cli.SetOriginProtocol(testDomain, "*")
 fmt.Printf("err:%+v\n", err)
 
 // 查询回源协议
-originProtocol, err := testCli.GetOriginProtocol(testAuthorityDomain)
+originProtocol, err := cli.GetOriginProtocol(testDomain)
 fmt.Printf("err:%+v\n", err)
 fmt.Printf("originProtocol:%s\n", originProtocol)
 ```
@@ -749,21 +883,87 @@ fmt.Printf("err:%+v\n", err)
 > 用户开启页面优化功能，将自动删除 html中的注释以及重复的空白符，这样可以有效地去除页面的冗余内容，减小文件体积，提高加速分发效率。
 
 ```go
-cli := client.GetDefaultClient()          
-testDomain := "test_go_sdk.baidu.com"     
-                                          
+cli := client.GetDefaultClient()     
+testDomain := "test_go_sdk.baidu.com"
+
 // 设置页面优化                                 
-err := cli.SetFileTrim(testDomain, true)  
-fmt.Printf("err:%+v\n", err)              
-                                          
-// 取消页面优化                                 
-err = cli.SetFileTrim(testDomain, false)  
-fmt.Printf("err:%+v\n", err)              
-                                          
+err := cli.SetFileTrim(testDomain, true)
+fmt.Printf("err:%+v\n", err)  
+
+// 取消页面优化        
+err = cli.SetFileTrim(testDomain, false)
+fmt.Printf("err:%+v\n", err)
+
 // 查询页面优化设置                               
-fileTrim, err := cli.GetFileTrim(testDomai
+fileTrim, err := cli.GetFileTrim(testDomain)
+fmt.Printf("err:%+v\n", err)
 fmt.Printf("fileTrim:%+v\n", fileTrim)    
-fmt.Printf("err:%+v\n", err)              
+```
+
+### 设置/查询IPv6开关 SetIPv6/GetIPv6
+
+> 开启后，IPv6的客户端请求将支持以IPv6协议访问CDN，CDN也将携带IPv6的客户端IP信息访问您的源站。
+
+```go
+cli := client.GetDefaultClient()     
+testDomain := "test_go_sdk.baidu.com"
+
+// 开启IPv6
+err := cli.SetIPv6(testDomain, true)
+fmt.Printf("err:%+v\n", err)
+
+// 关闭IPv6
+err = cli.SetIPv6(testDomain, false)  
+fmt.Printf("err:%+v\n", err)
+
+// 查询IPv6开关
+ipv6Switch, err := cli.GetIPv6(testDomain)
+fmt.Printf("err:%+v\n", err)      
+fmt.Printf("ipv6Switch:%+v\n", ipv6Switch)    
+```
+
+### 设置/查询QUIC开关 SetQUIC/GetQUIC
+
+> Quick UDP Internet Connection(QUIC)协议是Google公司提出基于UDP的高效可靠的互联网传输层协议。 本接口用于查询特定域名的QUIC启用状态。
+
+```go
+cli := client.GetDefaultClient()     
+testDomain := "test_go_sdk.baidu.com"
+
+// 开启QUIC
+err := cli.SetQUIC(testDomain, true)
+fmt.Printf("err:%+v\n", err)
+
+// 关闭QUIC
+err = cli.SetQUIC(testDomain, false)  
+fmt.Printf("err:%+v\n", err)
+
+// 查询QUIC开关
+quicSwitch, err := cli.GetQUIC(testDomain)
+fmt.Printf("err:%+v\n", err)      
+fmt.Printf("quicSwitch:%+v\n", quicSwitch)    
+```
+
+### 设置/查询离线模式 SetOfflineMode/GetOfflineMode
+
+> 离线模式指的是在资源过期回源的时候，如果源站异常，那么CDN会响应之前缓存的资源，响应客户端200，但是回源日志中还是显示5xx。
+
+```go
+cli := client.GetDefaultClient()     
+testDomain := "test_go_sdk.baidu.com"
+
+// 开启离线模式
+err := cli.SetOfflineMode(testDomain, true)
+fmt.Printf("err:%+v\n", err)
+
+// 关闭离线模式
+err = cli.SetOfflineMode(testDomain, false)  
+fmt.Printf("err:%+v\n", err)
+
+// 查询离线模式
+offlineMode, err := cli.GetOfflineMode(testDomain)
+fmt.Printf("err:%+v\n", err)      
+fmt.Printf("offlineMode:%+v\n", offlineMode)    
 ```
 
 ### 设置/查询视屏拖拽 SetMediaDrag/GetMediaDrag
@@ -877,6 +1077,26 @@ fmt.Printf("err:%+v\n", err)
 | Http2Enabled      | bool   | 开启HTTP2特性，当enabled=false此项无效。必须要注意go的bool对象零值为false。 |
 | ~~HttpOrigin~~        | bool   | **已弃用**，设置回源协议请参考**SetOriginProtocol**。 |
 | SslVersion        | string | 设置TLS版本，默认为支持从TLSv1.0到TLSv1.3的版本，也可以设置为以下四个之一，SSLV3,TLSV1,TLSV11,TLSV12，当enabled=false时此项无效，此项一般取默认值，无需设置。 |
+
+### 设置/查询OCSP SetOCSP/GetOCSP
+
+```go
+cli := client.GetDefaultClient()     
+testDomain := "test_go_sdk.baidu.com"
+
+// 开启OCSP
+err := cli.SetOCSP(testDomain, true)
+fmt.Printf("err:%+v\n", err)
+
+// 关闭OCSP
+err = cli.SetOCSP(testDomain, false)  
+fmt.Printf("err:%+v\n", err)
+
+// 查询OCSP
+ocspSwitch, err := cli.GetOCSP(testDomain)
+fmt.Printf("err:%+v\n", err)      
+fmt.Printf("ocspSwitch:%+v\n", ocspSwitch)    
+```
 
 ## 缓存管理接口
 
@@ -1086,6 +1306,30 @@ fmt.Printf("err:%+v\n", err)
 
 其中GetIpInfo的第二个参数只能为**"describeIp"**，ipInfo包含IP的详细信息，包括区域和ISP，如果不属于百度开放云CDN的节点，区域和ISP都为空。
 
+### 批量IP检测接口 GetIpListInfo
+
+> 验证多个IP是否属于百度开放云CDN服务节点。
+
+```go
+cli := client.GetDefaultClient()                     
+ipStr := "1.2.3.4"                                   
+ipsInfo, err := cli.GetIpListInfo([]string{"116.114.98.35", "59.24.3.174"}, "describeIp")
+                                                     
+fmt.Printf("ipsInfo:%+v\n", ipInfo)                   
+fmt.Printf("err:%+v\n", err)                         
+```
+
+第二个参数只能为**"describeIp"**
+
+### 获取百度云CDN的回源节点信息 GetBackOriginNodes
+
+```go
+cli := client.GetDefaultClient()                     
+backOriginNodes, err := testCli.GetBackOriginNodes()
+                                                     
+fmt.Printf("backOriginNodes:%+v\n", backOriginNodes)                   
+fmt.Printf("err:%+v\n", err)                         
+```
 
 ## 统计查询
 
@@ -1137,8 +1381,8 @@ fmt.Printf("err:%+v\n", err)
 | --------- | -------- | ------------------------------------------------------------ |
 | StartTime | string   | 查询的时间范围起始值，默认为endTime前推24小时。格式为UTC时间字符串，如："2019-09-01T07:12:00Z"。 |
 | EndTime   | string   | 查询的时间范围结束值，默认为当前时间。时间跨度最长90天，时间格式和StartTime一样。 |
-| domains   | []string | 域名集合，和tags互斥存在，设置了domains请设置tags为nil | 
-| tags      | []string | tag集合，和domains互斥存在，设置了tags请设置domains为nil | 
+| domains   | []string | 域名集合，和tags互斥存在，设置了domains请设置tags为nil |
+| tags      | []string | tag集合，和domains互斥存在，设置了tags请设置domains为nil |
 
 请求示例：
 

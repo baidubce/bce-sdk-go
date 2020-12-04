@@ -120,6 +120,11 @@ func (c *Client) GetInstanceDetailWithDeploySet(instanceId string, isDeploySet b
 	return GetInstanceDetailWithDeploySet(c, instanceId, isDeploySet)
 }
 
+func (c *Client) GetInstanceDetailWithDeploySetAndFailed(instanceId string,
+	isDeploySet bool, containsFailed bool) (*InstanceModel, error) {
+	return GetInstanceDetailWithDeploySetAndFailed(c, instanceId, isDeploySet, containsFailed)
+}
+
 // StartInstance - start an instance
 //
 // PARAMS:
@@ -214,8 +219,9 @@ func (c *Client) ModifyInstanceDesc(instanceId string, args *ModifyInstanceDescA
 	if err != nil {
 		return err
 	}
+	clientToken := args.ClientToken
 
-	return ModifyInstanceDesc(c, instanceId, body)
+	return ModifyInstanceDesc(c, instanceId, clientToken, body)
 }
 
 // RebuildInstance - rebuild an instance
@@ -287,6 +293,62 @@ func (c *Client) DeleteInstance(instanceId string) error {
 	return DeleteInstance(c, instanceId)
 }
 
+// ListInstances - list all instance with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to list all instance
+// RETURNS:
+//     - *ListInstanceResult: the result of list Instance
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListRecycledInstances(args *ListRecycledInstancesArgs) (*ListRecycledInstancesResult, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return ListRecycledInstances(c, body)
+}
+
+// ListInstances - list all instance with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to list all instance
+// RETURNS:
+//     - *ListInstanceResult: the result of list Instance
+//     - error: nil if success otherwise the specific error
+func (c *Client) RecoveryInstances(args *RecoveryInstancesArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return RecoveryInstances(c, body)
+}
+
+// DeleteInstance - delete an instance
+//
+// PARAMS:
+//     - instanceId: the specific instance ID
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeleteInstances(args *DeleteInstanceArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return DeleteInstances(c, body)
+}
+
 // ModifyInstancePassword - modify an instance's password
 //
 // PARAMS:
@@ -348,7 +410,7 @@ func (c *Client) BatchAddIP(args *BatchAddIpArgs) (*BatchAddIpResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	return BatchAddIp(c, body)
+	return BatchAddIp(c, args, body)
 }
 
 // BatchDelIP - Delete ips of instance
@@ -366,7 +428,7 @@ func (c *Client) BatchDelIP(args *BatchDelIpArgs) error {
 	if err != nil {
 		return err
 	}
-	return BatchDelIp(c, body)
+	return BatchDelIp(c, args, body)
 }
 
 // BindTags - bind an instance tags

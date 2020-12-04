@@ -48,6 +48,22 @@ func NewClient(ak, sk, endpoint string) (*Client, error) {
 	return client, nil
 }
 
+// SendCustomRequest - send a HTTP request, and response data or error, it use the default times for retrying
+//
+// PARAMS:
+//     - method: the HTTP requested method, e.g. "GET", "POST", "PUT" ...
+//     - urlPath: a path component, consisting of a sequence of path segments separated by a slash ( / ).
+//     - params: the query params, which will be append to the query path, and separate by "&"
+//         e.g. http://www.baidu.com?query_param1=value1&query_param2=value2
+//     - reqHeaders: the request http headers
+//     - bodyObj: the HTTP requested body content transferred to a goland object
+//     - respObj: the HTTP response content transferred to a goland object
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (cli *Client) SendCustomRequest(method string, urlPath string, params, reqHeaders map[string]string, bodyObj interface{}, respObj interface{}) error {
+	return api.SendCustomRequest(cli, method, urlPath, params, reqHeaders, bodyObj, respObj)
+}
+
 // ListDomains - list all domains that in CDN service
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/sjwvyewt1
 //
@@ -143,6 +159,28 @@ func (cli *Client) DeleteDomain(domain string) error {
 //     - error: nil if success otherwise the specific error
 func (cli *Client) GetIpInfo(ip string, action string) (*api.IpInfo, error) {
 	return api.GetIpInfo(cli, ip, action)
+}
+
+// GetIpListInfo - retrieves information about the specified IP list
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/8jwvyeunq#ip-list-%E6%9F%A5%E8%AF%A2%E6%8E%A5%E5%8F%A3
+//
+// PARAMS:
+//     - ips: IP list
+//     - action: the action for operating the ip addr
+// RETURNS:
+//     - []IpInfo: IP list's information
+//     - error: nil if success otherwise the specific error
+func (cli *Client) GetIpListInfo(ips []string, action string) ([]api.IpInfo, error) {
+	return api.GetIpListInfo(cli, ips, action)
+}
+
+// GetBackOriginNodes - get CDN nodes that may request the origin server if cache missed
+//
+// RETURNS:
+//     - []BackOriginNode: list of CDN node
+//     - error: nil if success otherwise the specific error
+func (cli *Client) GetBackOriginNodes() ([]api.BackOriginNode, error) {
+	return api.GetBackOriginNodes(cli)
 }
 
 // GetDomainConfig - get the configuration for the specified domain.
@@ -278,7 +316,7 @@ func (cli *Client) GetRefererACL(domain string) (*api.RefererACL, error) {
 	return api.GetRefererACL(cli, domain)
 }
 
-// SetRefererACL - set a rule for filter some HTTP request, blackList and whiteList only one can be set
+// SetIpACL - set a rule for filter some HTTP request, blackList and whiteList only one can be set
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/8jxzhwc4d
 //
 // PARAMS:
@@ -303,8 +341,35 @@ func (cli *Client) GetIpACL(domain string) (*api.IpACL, error) {
 	return api.GetIpACL(cli, domain)
 }
 
+// SetUaACL - set a rule for filter the specified HTTP header named "User-Agent"
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/uk88i2a86
+//
+// PARAMS:
+//     - cli: the client agent can execute sending request
+//     - domain: the specified domain
+//     - blackList: the forbidden UA
+//     - whiteList: the available UA
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (cli *Client) SetUaACL(domain string, blackList []string, whiteList []string) error {
+	return api.SetUaACL(cli, domain, blackList, whiteList)
+}
+
+// GetUaACL - get black UA or white UA
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/ak88ix19h
+//
+// PARAMS:
+//     - cli: the client agent can execute sending request
+//     - domain: the specified domain
+// RETURNS:
+//     - *api.UaACL: filter config for UA
+//     - error: nil if success otherwise the specific error
+func (cli *Client) GetUaACL(domain string) (*api.UaACL, error) {
+	return api.GetUaACL(cli, domain)
+}
+
+// Deprecated, please use SetTrafficLimit as substitute
 // SetLimitRate - set limited speed
-// For details, please refer https://cloud.baidu.com/doc/CDN/s/Kjy6v02wt
 //
 // PARAMS:
 //     - domain: the specified domain
@@ -313,6 +378,30 @@ func (cli *Client) GetIpACL(domain string) (*api.IpACL, error) {
 //     - error: nil if success otherwise the specific error
 func (cli *Client) SetLimitRate(domain string, limitRate int) error {
 	return api.SetLimitRate(cli, domain, limitRate)
+}
+
+// SetTrafficLimit - set the traffic limitation for the specified domain
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/ujxzi418e
+//
+// PARAMS:
+//     - domain: the specified domain
+//     - trafficLimit: config of traffic limitation
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (cli *Client) SetTrafficLimit(domain string, trafficLimit *api.TrafficLimit) error {
+	return api.SetTrafficLimit(cli, domain, trafficLimit)
+}
+
+// GetTrafficLimit - get the traffic limitation of the specified domain
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/7k4npdru0
+//
+// PARAMS:
+//     - domain: the specified domain
+// RETURNS:
+//     - *TrafficLimit: config of traffic limitation
+//     - error: nil if success otherwise the specific error
+func (cli *Client) GetTrafficLimit(domain string) (*api.TrafficLimit, error) {
+	return api.GetTrafficLimit(cli, domain)
 }
 
 // SetDomainHttps - set a rule for speed HTTPS' request
@@ -336,6 +425,29 @@ func (cli *Client) SetDomainHttps(domain string, httpsConfig *api.HTTPSConfig) e
 //     - error: nil if success otherwise the specific error
 func (cli *Client) GetDomainHttps(domain string) (*api.HTTPSConfig, error) {
 	return api.GetDomainHttps(cli, domain)
+}
+
+// SetOCSP - set "OCSP" for the specified domain,
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Pkf2c0ugn
+//
+// PARAMS:
+//     - domain: the specified domain
+//     - enabled: true for "OCSP" opening otherwise closed
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (cli *Client) SetOCSP(domain string, enabled bool) error {
+	return api.SetOCSP(cli, domain, enabled)
+}
+
+// GetOCSP - get "OCSP" switch details for the specified domain
+//
+// PARAMS:
+//     - domain: the specified domain
+// RETURNS:
+//     - bool: true for "OCSP" opening otherwise closed
+//     - error: nil if success otherwise the specific error
+func (cli *Client) GetOCSP(domain string) (bool, error) {
+	return api.GetOCSP(cli, domain)
 }
 
 // SetDomainRequestAuth - set the authorized rules for requesting
@@ -411,6 +523,34 @@ func (cli *Client) GetErrorPage(domain string) ([]api.ErrorPage, error) {
 	return api.GetErrorPage(cli, domain)
 }
 
+// SetCacheShared - set sharing cache with the other domain.
+// For example, 1.test.com shared cache with 2.test.com.
+// First, we query http://2.test.com/index.html and got missed.
+// Secondly, we query http://1.test.com/index.html and got hit
+// because of the CacheShared setting before.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/0kf272ds7
+//
+// PARAMS:
+//     - domain: the specified domain
+//     - cacheSharedConfig: enabled sets true for shared with the specified domain, otherwise no shared.
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (cli *Client) SetCacheShared(domain string, config *api.CacheShared) error {
+	return api.SetCacheShared(cli, domain, config)
+}
+
+// GetCacheShared - get shared cache setting
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Mjy6vo9z2
+//
+// PARAMS:
+//     - domain: the specified domain
+// RETURNS:
+//     - *CacheShared: shared cache setting
+//     - error: nil if success otherwise the specific error
+func (cli *Client) GetCacheShared(domain string) (*api.CacheShared, error) {
+	return api.GetCacheShared(cli, domain)
+}
+
 // SetMediaDrag - set the media setting about mp4 and flv
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/4jy6v6xk3
 //
@@ -459,6 +599,80 @@ func (cli *Client) GetFileTrim(domain string) (bool, error) {
 	return api.GetFileTrim(cli, domain)
 }
 
+// SetIPv6 - open/close IPv6
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/qkggncsxp
+//
+// PARAMS:
+//     - domain: the specified domain
+//     - enabled: true for setting IPv6 switch on otherwise closed
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (cli *Client) SetIPv6(domain string, enabled bool) error {
+	return api.SetIPv6(cli, domain, enabled)
+}
+
+// GetIPv6 - get IPv6 switch details for the specified domain
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Ykggnobxd
+//
+// PARAMS:
+//     - domain: the specified domain
+// RETURNS:
+//     - bool: true for setting IPv6 switch on otherwise closed
+//     - error: nil if success otherwise the specific error
+func (cli *Client) GetIPv6(domain string) (bool, error) {
+	return api.GetIPv6(cli, domain)
+}
+
+// SetQUIC - open or close QUIC. open QUIC require enabled HTTPS first
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Qkggmoz7p
+//
+// PARAMS:
+//     - domain: the specified domain
+//     - enabled: true for QUIC opening otherwise closed
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (cli *Client) SetQUIC(domain string, enabled bool) error {
+	return api.SetQUIC(cli, domain, enabled)
+}
+
+// GetQUIC - get QUIC switch details for the specified domain
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/pkggn6l1f
+//
+// PARAMS:
+//     - domain: the specified domain
+// RETURNS:
+//     - bool: true for QUIC opening otherwise closed
+//     - error: nil if success otherwise the specific error
+func (cli *Client) GetQUIC(domain string) (bool, error) {
+	return api.GetQUIC(cli, domain)
+}
+
+// SetOfflineMode - set "offlineMode" for the specified domain,
+// setting true means also response old cached object when got origin server error
+// instead of response error to client directly.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/xkhopuj48
+//
+// PARAMS:
+//     - domain: the specified domain
+//     - enabled: true for offlineMode opening otherwise closed
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (cli *Client) SetOfflineMode(domain string, enabled bool) error {
+	return api.SetOfflineMode(cli, domain, enabled)
+}
+
+// GetOfflineMode - get "offlineMode" switch details for the specified domain
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/tkhopvlkj
+//
+// PARAMS:
+//     - domain: the specified domain
+// RETURNS:
+//     - bool: true for offlineMode opening otherwise closed
+//     - error: nil if success otherwise the specific error
+func (cli *Client) GetOfflineMode(domain string) (bool, error) {
+	return api.GetOfflineMode(cli, domain)
+}
+
 // SetMobileAccess - distinguish the client or not
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Mjy6vmv6g
 //
@@ -505,6 +719,30 @@ func (cli *Client) SetClientIp(domain string, clientIp *api.ClientIp) error {
 //     - error: nil if success otherwise the specific error
 func (cli *Client) GetClientIp(domain string) (*api.ClientIp, error) {
 	return api.GetClientIp(cli, domain)
+}
+
+// SetRetryOrigin - set the policy for retry origin servers if got failed
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/ukhopl3bq
+//
+// PARAMS:
+//     - domain: the specified domain
+//     - retryOrigin: retry policy
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (cli *Client) SetRetryOrigin(domain string, retryOrigin *api.RetryOrigin) error {
+	return api.SetRetryOrigin(cli, domain, retryOrigin)
+}
+
+// GetRetryOrigin - get the policy for retry origin servers
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/bkhoppbhd
+//
+// PARAMS:
+//     - domain: the specified domain
+// RETURNS:
+//     - *RetryOrigin: policy of retry origin servers
+//     - error: nil if success otherwise the specific error
+func (cli *Client) GetRetryOrigin(domain string) (*api.RetryOrigin, error) {
+	return api.GetRetryOrigin(cli, domain)
 }
 
 // SetAccessLimit - set the qps for on one client

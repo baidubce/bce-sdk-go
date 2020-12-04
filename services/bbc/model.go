@@ -110,6 +110,7 @@ type CreateInstanceArgs struct {
 	AutoRenewTime     int              `json:"autoRenewTime,omitempty"`
 	Billing           Billing          `json:"billing"`
 	Name              string           `json:"name,omitempty"`
+	Hostname          string           `json:"hostname,omitempty"`
 	AdminPass         string           `json:"adminPass,omitempty"`
 	DeploySetId       string           `json:"deploySetId,omitempty"`
 	ClientToken       string           `json:"-"`
@@ -141,6 +142,40 @@ type ListInstancesArgs struct {
 	VpcId      string `json:"vpcId"`
 }
 
+type RecoveryInstancesArgs struct {
+	InstanceIds []string `json:"instanceIds"`
+}
+
+type ListRecycledInstancesArgs struct {
+	Marker        string `json:"marker,omitempty"`
+	MaxKeys       int    `json:"maxKeys,omitempty"`
+	InstanceId    string `json:"instanceId,omitempty"`
+	Name          string `json:"name,omitempty"`
+	PaymentTiming string `json:"paymentTiming,omitempty"`
+	RecycleBegin  string `json:"recycleBegin,omitempty"`
+	RecycleEnd    string `json:"recycleEnd,omitempty"`
+}
+
+type ListRecycledInstancesResult struct {
+	Marker            string                   `json:"marker"`
+	IsTruncated       bool                     `json:"isTruncated"`
+	NextMarker        string                   `json:"nextMarker"`
+	MaxKeys           int                      `json:"maxKeys"`
+	RecycledInstances []RecycledInstancesModel `json:"instances"`
+}
+
+type RecycledInstancesModel struct {
+	ServiceType   string   `json:"serviceType"`
+	ServiceName   string   `json:"serviceName"`
+	Name          string   `json:"name"`
+	Id            string   `json:"id"`
+	SerialNumber  string   `json:"serialNumber"`
+	RecycleTime   string   `json:"recycleTime"`
+	DeleteTime    string   `json:"deleteTime"`
+	PaymentTiming string   `json:"paymentTiming"`
+	ConfigItems   []string `json:"configItems"`
+}
+
 type ListInstancesResult struct {
 	Marker      string          `json:"marker"`
 	IsTruncated bool            `json:"isTruncated"`
@@ -152,6 +187,7 @@ type ListInstancesResult struct {
 type InstanceModel struct {
 	Id                    string           `json:"id"`
 	Name                  string           `json:"name"`
+	Hostname              string           `json:"hostname"`
 	Uuid                  string           `json:"uuid"`
 	Desc                  string           `json:"desc"`
 	Status                InstanceStatus   `json:"status"`
@@ -183,6 +219,12 @@ type ModifyInstanceNameArgs struct {
 
 type ModifyInstanceDescArgs struct {
 	Description string `json:"desc"`
+	ClientToken string `json:"clientToken"`
+}
+
+type ModifyInstanceHostnameArgs struct {
+	Hostname string `json:"hostname"`
+	Reboot   bool   `json:"reboot"`
 }
 
 type RebuildInstanceArgs struct {
@@ -251,6 +293,7 @@ type BatchAddIpArgs struct {
 	InstanceId                     string   `json:"instanceId"`
 	PrivateIps                     []string `json:"privateIps"`
 	SecondaryPrivateIpAddressCount int      `json:"secondaryPrivateIpAddressCount"`
+	ClientToken                    string   `json:"-"`
 }
 
 type BatchAddIpResponse struct {
@@ -258,8 +301,9 @@ type BatchAddIpResponse struct {
 }
 
 type BatchDelIpArgs struct {
-	InstanceId string   `json:"instanceId"`
-	PrivateIps []string `json:"privateIps"`
+	InstanceId  string   `json:"instanceId"`
+	PrivateIps  []string `json:"privateIps"`
+	ClientToken string   `json:"-"`
 }
 
 type BindTagsArgs struct {
@@ -770,4 +814,9 @@ type AutoSnapshotPolicyModel struct {
 	Name            string `json:"name"`
 	TimePoints      []int  `json:"timePoints"`
 	RepeatWeekdays  []int  `json:"repeatWeekdays"`
+}
+
+type DeleteInstanceArgs struct {
+	BbcRecycleFlag bool     `json:"bbcRecycleFlag"`
+	InstanceIds    []string `json:"instanceIds"`
 }

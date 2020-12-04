@@ -145,6 +145,12 @@ func TestGetInstanceDetail(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestGetInstanceDetailWithDeploySetAndFailed(t *testing.T) {
+	res, err := BBC_CLIENT.GetInstanceDetailWithDeploySetAndFailed(BBC_TestBbcId, false, true)
+	fmt.Println(res)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestStopInstance(t *testing.T) {
 	err := BBC_CLIENT.StopInstance(BBC_TestBbcId, false)
 	ExpectEqual(t.Errorf, err, nil)
@@ -170,7 +176,8 @@ func TestModifyInstanceName(t *testing.T) {
 
 func TestModifyInstanceDesc(t *testing.T) {
 	modifyInstanceDescArgs := &ModifyInstanceDescArgs{
-		Description: "new_bbc_description",
+		Description: "new_bbc_description_02",
+		ClientToken: "be31b98c-5e42-4838-9230-9be700de5a20",
 	}
 	err := BBC_CLIENT.ModifyInstanceDesc(BBC_TestBbcId, modifyInstanceDescArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -225,11 +232,11 @@ func TestGetVpcSubnet(t *testing.T) {
 }
 
 func TestBatchAddIp(t *testing.T) {
-	privateIps := []string{"192.168.1.25"}
+	privateIps := []string{"192.168.200.25"}
 	batchAddIpArgs := &BatchAddIpArgs{
-		InstanceId:                     BBC_TestBbcId,
-		SecondaryPrivateIpAddressCount: 2,
-		PrivateIps:                     privateIps,
+		InstanceId:  BBC_TestBbcId,
+		PrivateIps:  privateIps,
+		ClientToken: "be31b98c-5e41-4838-9230-9be700de5a20",
 	}
 	result, err := BBC_CLIENT.BatchAddIP(batchAddIpArgs)
 	fmt.Println(result)
@@ -239,8 +246,9 @@ func TestBatchAddIp(t *testing.T) {
 func TestBatchDelIp(t *testing.T) {
 	privateIps := []string{"192.168.1.25"}
 	batchDelIpArgs := &BatchDelIpArgs{
-		InstanceId: BBC_TestBbcId,
-		PrivateIps: privateIps,
+		InstanceId:  BBC_TestBbcId,
+		PrivateIps:  privateIps,
+		ClientToken: "be31b98c-5e41-4e38-9230-9be700de5120",
 	}
 	err := BBC_CLIENT.BatchDelIP(batchDelIpArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -286,7 +294,7 @@ func TestGetFlavorDetail(t *testing.T) {
 }
 
 func TestGetFlavorRaid(t *testing.T) {
-	testFlavorId := BBC_TestFlavorId
+	testFlavorId := "BBC-G4-01S"
 	rep, err := BBC_CLIENT.GetFlavorRaid(testFlavorId)
 	fmt.Println(rep)
 	ExpectEqual(t.Errorf, err, nil)
@@ -634,5 +642,47 @@ func TestListCDSVolume(t *testing.T) {
 		fmt.Println("list volume failed: ", err)
 	} else {
 		fmt.Println("list volume success, result: ", res)
+	}
+}
+
+func TestDeleteInstanceV2(t *testing.T) {
+	instanceIds := []string{"instanceId"}
+	queryArgs := &DeleteInstanceArgs{
+		BbcRecycleFlag: true,
+		InstanceIds:    instanceIds,
+	}
+	if err := BBC_CLIENT.DeleteInstances(queryArgs); err != nil {
+		fmt.Println("delete instance failed: ", err)
+	} else {
+		fmt.Println("delete instance success")
+	}
+}
+
+func TestListRecycledInstances(t *testing.T) {
+	queryArgs := &ListRecycledInstancesArgs{
+		Marker:        "your marker",
+		PaymentTiming: "your paymentTiming",
+		RecycleBegin:  "RecycleBegin", // recycled begin time ,eg: 2020-11-23T17:18:24Z
+		RecycleEnd:    "RecycleEnd",
+		MaxKeys:       10,
+		InstanceId:    "InstanceId",
+		Name:          "InstanceName",
+	}
+	if res, err := BBC_CLIENT.ListRecycledInstances(queryArgs); err != nil {
+		fmt.Println("list recycled bbc failed: ", err)
+	} else {
+		fmt.Println("list recycled bbc success, result: ", res)
+	}
+}
+
+func TestRecoveryInstances(t *testing.T) {
+	instanceIds := []string{"instanceId"}
+	queryArgs := &RecoveryInstancesArgs{
+		InstanceIds: instanceIds,
+	}
+	if err := BBC_CLIENT.RecoveryInstances(queryArgs); err != nil {
+		fmt.Println("recovery instance failed: ", err)
+	} else {
+		fmt.Println("recovery instance success")
 	}
 }

@@ -177,6 +177,9 @@ createInstanceArgs := &CreateInstanceArgs{
     AdminPass:   "your-admin-pass",
     // 实例名称
     Name:        "your-choose-instance-name",
+    // 实例主机名,可选参数,若不选则主机名和实例名称保持一致(实例名称不包含中文名时)
+    // 仅支持小写字母、数字以及- . 特殊字符，不可连续使用特殊符号，不支持特殊符号开头或结尾，长度2-64
+    Hostname:        "your-choose-instance-hostname",
     // 支持幂等的token
     RequestToken: "requestToken",
     // 指定是否开启numa true为开启，false为关闭
@@ -400,6 +403,54 @@ if err := bbcClient.DeleteInstance(instanceId); err != nil {
 	}
 ```
 
+### 批量释放或进入回收站实例（包含预付费实例）
+不区分后付费还是预付费实例，释放或者进入回收站bbc实例，可以使用以下代码将其释放:
+```go
+	instanceIds := []string{"instanceId"}
+	queryArgs := &DeleteInstanceArgs{
+		BbcRecycleFlag: bbcRecycleFlag,  // true or false, true recycled the bbc
+		InstanceIds:    instanceIds,
+	}
+	if err := BBC_CLIENT.DeleteInstances(queryArgs); err != nil {
+		fmt.Println("delete instances failed: ", err)
+	} else {
+		fmt.Println("delete instances success")
+	}
+```
+
+### 查询回收站实例列表
+使用以下代码查询所有BBC回收站实例的列表及详情信息
+```go
+	queryArgs := &ListRecycledInstancesArgs{
+		Marker:        "your marker",
+		PaymentTiming: "your paymentTiming",   
+		RecycleBegin:  "RecycleBegin",  // recycled begin time ,eg: 2020-11-23T17:18:24Z
+		RecycleEnd:    "RecycleEnd",
+		MaxKeys:       10,
+		InstanceId:    "InstanceId",
+		Name:          "InstanceName",
+	}
+	if res, err := BBC_CLIENT.ListRecycledInstances(queryArgs); err != nil {
+		fmt.Println("list recycled bbc failed: ", err)
+	} else {
+		fmt.Println("list recycled bbc success, result: ", res)
+	}
+```
+
+### 后付费回收站bbc实例恢复计费
+使用以下代码可以恢复后付费回收站bbc实例，再次使用。 备注： 预付费回收站实例使用预付费续费接口即可
+```go
+	instanceIds := []string{"instanceId"}
+	queryArgs := &RecoveryInstancesArgs{
+		InstanceIds: instanceIds,
+	}
+	if err := BBC_CLIENT.RecoveryInstances(queryArgs); err != nil {
+		fmt.Println("recovery instance failed: ", err)
+	} else {
+		fmt.Println("recovery instance success")
+	}
+```
+
 ### 修改实例密码
 使用以下代码可以修改指定BBC实例的管理员密码：
 ```go
@@ -476,6 +527,8 @@ batchAddIpArgs := &BatchAddIpArgs{
 	PrivateIps []string "privateIps"
     // 自动分配IP数量，和PrivateIps不可同时使用
     SecondaryPrivateIpAddressCount int 1
+    // 幂等性Token，使用 uuid 生成一个长度不超过64位的ASCII字符串，可选参数
+    ClietnToken string "clientToken"
 }
 
 if res, err := bbcClient.BatchAddIP(batchAddIpArgs); err != nil {
@@ -489,9 +542,12 @@ if res, err := bbcClient.BatchAddIP(batchAddIpArgs); err != nil {
 ```go
 privateIps := []string{"192.168.1.25"}
 instanceId := "your-choose-instance-id"
+// 幂等性Token，使用 uuid 生成一个长度不超过64位的ASCII字符串，可选参数
+clientToken := "clientToken"
 batchDelIpArgs := &BatchDelIpArgs{
-	InstanceId: instanceId,
-	PrivateIps: privateIps,
+	InstanceId:     instanceId,
+	PrivateIps:     privateIps,
+    ClientToken:    clientToken,
 }
 if err := bbcClient.BatchDelIP(batchDelIpArgs); err != nil {
     fmt.Println("delete ips failed: ", err)
@@ -1267,3 +1323,5 @@ if err := bbcClient.EnableRule(args); err != nil {
     fmt.Println("enable rule success")
 }
 ```
+
+

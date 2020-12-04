@@ -27,16 +27,19 @@ const (
 	URI_PREFIX_V1 = bce.URI_PREFIX + "v1"
 	URI_PREFIX_V2 = bce.URI_PREFIX + "v2"
 
-	REQUEST_INSTANCE_URI = "/instance"
-	REQUEST_SUBNET_URI   = "/vpcSubnet"
-	SECURITY_GROUP_URI   = "/securitygroup"
+	REQUEST_INSTANCE_URI     = "/instance"
+	REQUEST_BATCH_DELETE_URI = "/batchDelete"
+	REQUEST_RECYCLE_URI      = "/recycle"
+	REQUEST_RECOVERY_URI     = "/recovery"
+	REQUEST_SUBNET_URI       = "/vpcSubnet"
+	SECURITY_GROUP_URI       = "/securitygroup"
 
 	REQUEST_IMAGE_URI                        = "/image"
 	REQUEST_BATCHADDIP_URI                   = "/batchAddIp"
 	REQUEST_BATCHDELIP_URI                   = "/batchDelIp"
 	REQUEST_BATCH_CREATE_AUTORENEW_RULES_URI = "/batchCreateAutoRenewRules"
 	REQUEST_BATCH_Delete_AUTORENEW_RULES_URI = "/batchDeleteAutoRenewRules"
-	REQUEST_BATCH_REBUILD_INSTANCE_URI = "/batchRebuild";
+	REQUEST_BATCH_REBUILD_INSTANCE_URI       = "/batchRebuild"
 
 	REQUEST_FLAVOR_URI       = "/flavor"
 	REQUEST_FLAVOR_RAID_URI  = "/flavorRaid"

@@ -19,6 +19,7 @@ package bbc
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"github.com/baidubce/bce-sdk-go/bce"
@@ -147,6 +148,46 @@ func GetInstanceDetailWithDeploySet(cli bce.Client, instanceId string, isDeployS
 	return jsonBody, nil
 }
 
+// GetInstanceDetail - get a bbc instance detail msg
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: the id of the instance
+// RETURNS:
+//     - *InstanceModel: instance detail msg
+//     - error: nil if success otherwise the specific error
+func GetInstanceDetailWithDeploySetAndFailed(cli bce.Client, instanceId string,
+	isDeploySet bool, containsFailed bool) (*InstanceModel, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getInstanceUriWithId(instanceId))
+	req.SetMethod(http.GET)
+	if isDeploySet == true {
+		req.SetParam("isDeploySet", "true")
+	}
+	if containsFailed == true {
+		req.SetParam("containsFailed", "true")
+	} else {
+		req.SetParam("containsFailed", "false")
+	}
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &InstanceModel{}
+	print(jsonBody)
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
 func GetInstanceDetail(cli bce.Client, instanceId string) (*InstanceModel, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -212,6 +253,57 @@ func StopInstance(cli bce.Client, instanceId string, reqBody *bce.Body) error {
 	req.SetUri(getInstanceUriWithId(instanceId))
 	req.SetMethod(http.PUT)
 	req.SetParam("stop", "")
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// ListInstances - list all bbc instances
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - args: the arguments to list bbc instances
+// RETURNS:
+//     - *ListInstanceResult: results of list bbc instances
+//     - error: nil if success otherwise the specific error
+func ListRecycledInstances(cli bce.Client, reqBody *bce.Body) (*ListRecycledInstancesResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getRecycledInstanceUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ListRecycledInstancesResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+func RecoveryInstances(cli bce.Client, reqBody *bce.Body) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getRecoveryInstancesUri())
+	req.SetMethod(http.POST)
 	req.SetBody(reqBody)
 
 	// Send request and get response
@@ -337,13 +429,16 @@ func ModifyInstanceName(cli bce.Client, instanceId string, reqBody *bce.Body) er
 //     - reqBody: http request body
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func ModifyInstanceDesc(cli bce.Client, instanceId string, reqBody *bce.Body) error {
+func ModifyInstanceDesc(cli bce.Client, instanceId string, clientToken string, reqBody *bce.Body) error {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getInstanceUriWithId(instanceId))
 	req.SetMethod(http.PUT)
 	req.SetParam("updateDesc", "")
 	req.SetBody(reqBody)
+	if clientToken != "" {
+		req.SetParam("clientToken", clientToken)
+	}
 
 	// Send request and get response
 	resp := &bce.BceResponse{}
@@ -410,7 +505,7 @@ func BatchRebuildInstances(cli bce.Client, reqBody *bce.Body) (*BatchRebuildResp
 	if resp.IsFail() {
 		return nil, resp.ServiceError()
 	}
-
+	fmt.Println(resp)
 	jsonBody := &BatchRebuildResponse{}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
@@ -431,6 +526,33 @@ func DeleteInstance(cli bce.Client, instanceId string) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getInstanceUriWithIdV2(instanceId))
 	req.SetMethod(http.DELETE)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// DeleteInstance - delete a bbc instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: the id of the instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func DeleteInstances(cli bce.Client, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getBatchDeleteInstanceUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
 
 	// Send request and get response
 	resp := &bce.BceResponse{}
@@ -513,13 +635,17 @@ func ModifyInstancePassword(cli bce.Client, instanceId string, reqBody *bce.Body
 //     - reqBody: http request body
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func BatchAddIp(cli bce.Client, reqBody *bce.Body) (*BatchAddIpResponse, error) {
+func BatchAddIp(cli bce.Client, args *BatchAddIpArgs, reqBody *bce.Body) (*BatchAddIpResponse, error) {
 	// Build the request
+	clientToken := args.ClientToken
 	req := &bce.BceRequest{}
 	req.SetUri(getBatchAddIpUri())
-
 	req.SetMethod(http.PUT)
 	req.SetBody(reqBody)
+
+	if clientToken != "" {
+		req.SetParam("clientToken", clientToken)
+	}
 
 	// Send request and get response
 	resp := &bce.BceResponse{}
@@ -545,13 +671,17 @@ func BatchAddIp(cli bce.Client, reqBody *bce.Body) (*BatchAddIpResponse, error) 
 //     - reqBody: http request body
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func BatchDelIp(cli bce.Client, reqBody *bce.Body) error {
+func BatchDelIp(cli bce.Client, args *BatchDelIpArgs, reqBody *bce.Body) error {
 	// Build the request
+	clientToken := args.ClientToken
 	req := &bce.BceRequest{}
 	req.SetUri(getBatchDelIpUri())
-
 	req.SetMethod(http.PUT)
 	req.SetBody(reqBody)
+
+	if clientToken != "" {
+		req.SetParam("clientToken", clientToken)
+	}
 
 	// Send request and get response
 	resp := &bce.BceResponse{}
@@ -752,6 +882,14 @@ func getInstanceUri() string {
 	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI
 }
 
+func getRecycledInstanceUri() string {
+	return URI_PREFIX_V1 + REQUEST_RECYCLE_URI + REQUEST_INSTANCE_URI
+}
+
+func getRecoveryInstancesUri() string {
+	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + REQUEST_RECOVERY_URI
+}
+
 func getInstanceUriWithId(id string) string {
 	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + "/" + id
 }
@@ -762,6 +900,10 @@ func getBatchAddIpUri() string {
 
 func getBatchDelIpUri() string {
 	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + REQUEST_BATCHDELIP_URI
+}
+
+func getBatchDeleteInstanceUri() string {
+	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + REQUEST_BATCH_DELETE_URI
 }
 
 func getInstanceUriWithIdV2(id string) string {

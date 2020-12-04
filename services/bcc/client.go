@@ -129,6 +129,17 @@ func (c *Client) ListInstances(args *api.ListInstanceArgs) (*api.ListInstanceRes
 	return api.ListInstances(c, args)
 }
 
+// ListRecycleInstances - list all instance in the recycle bin with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to list all instance in the recycle bin
+// RETURNS:
+//     - *api.ListRecycleInstanceResult: the result of list Instance in the recycle bin
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListRecycleInstances(args *api.ListRecycleInstanceArgs) (*api.ListRecycleInstanceResult, error) {
+	return api.ListRecycleInstances(c, args)
+}
+
 // GetInstanceDetail - get a specific instance detail info
 //
 // PARAMS:
@@ -143,6 +154,12 @@ func (c *Client) GetInstanceDetail(instanceId string) (*api.GetInstanceDetailRes
 func (c *Client) GetInstanceDetailWithDeploySet(instanceId string, isDeploySet bool) (*api.GetInstanceDetailResult,
 	error) {
 	return api.GetInstanceDetailWithDeploySet(c, instanceId, isDeploySet)
+}
+
+func (c *Client) GetInstanceDetailWithDeploySetAndFailed(instanceId string,
+	isDeploySet bool, containsFailed bool) (*api.GetInstanceDetailResult,
+	error) {
+	return api.GetInstanceDetailWithDeploySetAndFailed(c, instanceId, isDeploySet, containsFailed)
 }
 
 // DeleteInstance - delete a specific instance
@@ -362,6 +379,26 @@ func (c *Client) ModifyInstanceDesc(instanceId string, args *api.ModifyInstanceD
 	return api.ModifyInstanceDesc(c, instanceId, body)
 }
 
+// ModifyInstanceHostname - modify an instance's hostname
+//
+// PARAMS:
+//     - instanceId: the specific instance ID
+//     - args: the arguments of now instance's hostname
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ModifyInstanceHostname(instanceId string, args *api.ModifyInstanceHostnameArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.ModifyInstanceHostname(c, instanceId, body)
+}
+
 // BindSecurityGroup - bind a security group to an instance
 //
 // PARAMS:
@@ -528,7 +565,7 @@ func (c *Client) BatchAddIP(args *api.BatchAddIpArgs) (*api.BatchAddIpResponse, 
 		return nil, err
 	}
 
-	return api.BatchAddIp(c, body)
+	return api.BatchAddIp(c,args, body)
 }
 
 // BatchDelIP - Delete ips of instance
@@ -546,7 +583,7 @@ func (c *Client) BatchDelIP(args *api.BatchDelIpArgs) error {
 	if err != nil {
 		return err
 	}
-	return api.BatchDelIp(c, body)
+	return api.BatchDelIp(c, args, body)
 }
 
 //cds sdk

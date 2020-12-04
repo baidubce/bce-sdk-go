@@ -51,6 +51,7 @@ func init() {
 	BCC_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
 	//log.SetLogLevel(log.DEBUG)
+	BCC_TestBccId = "bcc_id"
 }
 
 // ExpectEqual is the helper function for test each case
@@ -158,8 +159,22 @@ func TestListInstances(t *testing.T) {
 	fmt.Println(res)
 }
 
+func TestListRecycleInstances(t *testing.T) {
+	listArgs := &api.ListRecycleInstanceArgs{
+	}
+	res, err := BCC_CLIENT.ListRecycleInstances(listArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
 func TestGetInstanceDetail(t *testing.T) {
 	res, err := BCC_CLIENT.GetInstanceDetail(BCC_TestBccId)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestGetInstanceDetailWithDeploySetAndFailed(t *testing.T) {
+	res, err := BCC_CLIENT.GetInstanceDetailWithDeploySetAndFailed("i-OMNCbRg1", false, true)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(res)
 }
@@ -223,6 +238,16 @@ func TestModifyInstanceDesc(t *testing.T) {
 		Description: "test modify",
 	}
 	err := BCC_CLIENT.ModifyInstanceDesc(BCC_TestBccId, modifyArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestModifyInstanceHostname(t *testing.T) {
+	modifyArgs := &api.ModifyInstanceHostnameArgs{
+		Hostname: "test-modify-domain",
+		IsOpenHostnameDomain: false,
+		Reboot: true,
+	}
+	err := BCC_CLIENT.ModifyInstanceHostname(BCC_TestBccId, modifyArgs)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -623,6 +648,14 @@ func TestDeleteInstance(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestDeleteInstanceWithRelateResource(t *testing.T) {
+	args := &api.DeleteInstanceWithRelateResourceArgs{
+		BccRecycleFlag: true,
+	}
+	err := BCC_CLIENT.DeleteInstanceWithRelateResource(BCC_TestBccId, args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestListSpec(t *testing.T) {
 	_, err := BCC_CLIENT.ListSpec()
 	ExpectEqual(t.Errorf, err, nil)
@@ -800,11 +833,12 @@ func TestInstancePurchaseReserved(t *testing.T) {
 			PaymentTiming: api.PaymentTimingPrePaid,
 			Reservation: &api.Reservation{
 				ReservationLength: 1,
+				ReservationTimeUnit: "MONTH",
 			},
 		},
 		RelatedRenewFlag: "CDS",
 	}
-	err := BCC_CLIENT.InstancePurchaseReserved("i-4brEpBx1", purchaseReservedArgs)
+	err := BCC_CLIENT.InstancePurchaseReserved(BCC_TestBccId, purchaseReservedArgs)
 	//fmt.Print(err)
 	ExpectEqual(t.Errorf, err, nil)
 }
@@ -984,7 +1018,7 @@ func TestRecoveryInstance(t *testing.T) {
 	args := &api.RecoveryInstanceArgs{
 		InstanceIds: []api.RecoveryInstanceModel{
 			{
-				InstanceId: "i-IydDpQFF",
+				InstanceId: BCC_TestBccId,
 			},
 		},
 	}

@@ -100,6 +100,20 @@ func checkClientErr(t *testing.T, funcName string, err error) {
 	t.Logf("%s: UT is ok, but there is a logic error:\n%s", funcName, err.Error())
 }
 
+func TestSendCustomRequest(t *testing.T) {
+	method := "GET"
+	urlPath := fmt.Sprintf("/v2/domain/%s/valid", testAuthorityDomain)
+	var params map[string]string
+	reqHeaders := map[string]string{
+		"X-Test": "go-sdk-test",
+	}
+	var bodyObj interface{}
+	var respObj interface{}
+	err := testCli.SendCustomRequest(method, urlPath, params, reqHeaders, bodyObj, &respObj)
+	t.Logf("respObj details:\n\ttype:%T\n\tvalue:%+v", respObj, respObj)
+	checkClientErr(t, "SendCustomRequest", err)
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Test function about operating domain.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -155,9 +169,21 @@ func TestEnableDomain(t *testing.T) {
 //}
 
 func TestGetIpInfo(t *testing.T) {
-	ipInfo, err := testCli.GetIpInfo("1.2.3.4", "describeIp")
+	ipInfo, err := testCli.GetIpInfo("116.114.98.35", "describeIp")
 	t.Logf("ipInfo: %v", ipInfo)
 	checkClientErr(t, "GetIpInfo", err)
+}
+
+func TestGetIpListInfo(t *testing.T) {
+	ipsInfo, err := testCli.GetIpListInfo([]string{"116.114.98.35", "59.24.3.174"}, "describeIp")
+	t.Logf("ipsInfo: %+v", ipsInfo)
+	checkClientErr(t, "GetIpListInfo", err)
+}
+
+func TestGetBackOriginNodes(t *testing.T) {
+	backOriginNodes, err := testCli.GetBackOriginNodes()
+	t.Logf("backOriginNodes: %+v", backOriginNodes)
+	checkClientErr(t, "GetBackOriginNodes", err)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -290,9 +316,45 @@ func TestGetIpACL(t *testing.T) {
 	checkClientErr(t, "GetIpACL", err)
 }
 
-func TestSetLimitRate(t *testing.T) {
-	err := testCli.SetLimitRate(testAuthorityDomain, 1024)
-	checkClientErr(t, "SetLimitRate", err)
+func TestSetUaACL(t *testing.T) {
+	err := testCli.SetUaACL(testAuthorityDomain, []string{
+		"Test-Bad-UA",
+	}, nil)
+
+	checkClientErr(t, "SetUaACL", err)
+
+	err = testCli.SetUaACL(testAuthorityDomain, nil, []string{
+		"curl/7.73.0",
+	})
+
+	checkClientErr(t, "SetUaACL", err)
+}
+
+func TestGetUaACL(t *testing.T) {
+	uaACL, err := testCli.GetUaACL(testAuthorityDomain)
+	data, _ := json.Marshal(uaACL)
+	t.Logf("uaACL: %s", string(data))
+	checkClientErr(t, "GetUaACL", err)
+}
+
+func TestSetTrafficLimit(t *testing.T) {
+	trafficLimit := &api.TrafficLimit{
+		Enabled:          false,
+		LimitRate:        10000,
+		LimitStartHour:   10,
+		LimitEndHour:     12,
+		TrafficLimitUnit: "k",
+	}
+	err := testCli.SetTrafficLimit(testAuthorityDomain, trafficLimit)
+	checkClientErr(t, "SetTrafficLimit", err)
+}
+
+func TestGetTrafficLimit(t *testing.T) {
+	trafficLimit, err := testCli.GetTrafficLimit(testAuthorityDomain)
+
+	data, _ := json.Marshal(trafficLimit)
+	t.Logf("trafficLimit: %s", string(data))
+	checkClientErr(t, "GetTrafficLimit", err)
 }
 
 func TestSetDomainHttps(t *testing.T) {
@@ -305,6 +367,18 @@ func TestSetDomainHttps(t *testing.T) {
 	})
 
 	checkClientErr(t, "SetDomainHttps", err)
+}
+
+func TestSetOCSP(t *testing.T) {
+	err := testCli.SetOCSP(testAuthorityDomain, false)
+	checkClientErr(t, "SetOCSP", err)
+}
+
+func TestGetOCSP(t *testing.T) {
+	ocspSwitch, err := testCli.GetOCSP(testAuthorityDomain)
+
+	t.Logf("ocspSwitch: %v", ocspSwitch)
+	checkClientErr(t, "GetOCSP", err)
 }
 
 func TestSetDomainRequestAuth(t *testing.T) {
@@ -379,6 +453,20 @@ func TestGetErrorPage(t *testing.T) {
 	checkClientErr(t, "GetErrorPage", err)
 }
 
+func TestSetCacheCached(t *testing.T) {
+	err := testCli.SetCacheShared(testAuthorityDomain, &api.CacheShared{
+		Enabled: false,
+	})
+	checkClientErr(t, "SetCacheShared", err)
+}
+
+func TestGetCacheCached(t *testing.T) {
+	cacheSharedConfig, err := testCli.GetCacheShared(testAuthorityDomain)
+	data, _ := json.Marshal(cacheSharedConfig)
+	t.Logf("cacheSharedConfig: %s", string(data))
+	checkClientErr(t, "GetCacheShared", err)
+}
+
 func TestSetMediaDrag(t *testing.T) {
 	err := testCli.SetMediaDrag(testAuthorityDomain, &api.MediaDragConf{
 		Mp4: &api.MediaCfg{
@@ -416,7 +504,43 @@ func TestGetFileTrim(t *testing.T) {
 	fileTrim, err := testCli.GetFileTrim(testAuthorityDomain)
 
 	t.Logf("fileTrim: %v", fileTrim)
-	checkClientErr(t, "GetFiletrim", err)
+	checkClientErr(t, "GetFileTrim", err)
+}
+
+func TestSetIPv6(t *testing.T) {
+	err := testCli.SetIPv6(testAuthorityDomain, false)
+	checkClientErr(t, "SetIPv6", err)
+}
+
+func TestGetIPv6(t *testing.T) {
+	ipv6Switch, err := testCli.GetIPv6(testAuthorityDomain)
+
+	t.Logf("ipv6Switch: %v", ipv6Switch)
+	checkClientErr(t, "GetIPv6", err)
+}
+
+func TestSetQUIC(t *testing.T) {
+	err := testCli.SetQUIC(testAuthorityDomain, false)
+	checkClientErr(t, "SetQUIC", err)
+}
+
+func TestGetQUIC(t *testing.T) {
+	quicSwitch, err := testCli.GetQUIC(testAuthorityDomain)
+
+	t.Logf("quicSwitch: %v", quicSwitch)
+	checkClientErr(t, "GetQUIC", err)
+}
+
+func TestSetOfflineMode(t *testing.T) {
+	err := testCli.SetOfflineMode(testAuthorityDomain, true)
+	checkClientErr(t, "SetOfflineMode", err)
+}
+
+func TestGetOfflineMode(t *testing.T) {
+	offlineMode, err := testCli.GetOfflineMode(testAuthorityDomain)
+
+	t.Logf("offlineMode: %v", offlineMode)
+	checkClientErr(t, "GetOfflineMode", err)
 }
 
 func TestSetMobileAccess(t *testing.T) {
@@ -443,8 +567,25 @@ func TestSetClientIp(t *testing.T) {
 func TestGetClientIp(t *testing.T) {
 	clientIp, err := testCli.GetClientIp(testAuthorityDomain)
 
-	t.Logf("clientIp: %v", clientIp)
+	data, _ := json.Marshal(clientIp)
+	t.Logf("clientIp: %s", data)
 	checkClientErr(t, "GetClientIp", err)
+}
+
+func TestSetRetryOrigin(t *testing.T) {
+	err := testCli.SetRetryOrigin(testAuthorityDomain, &api.RetryOrigin{
+		Codes: []int{429, 500, 502, 503},
+	})
+
+	checkClientErr(t, "SetRetryOrigin", err)
+}
+
+func TestGetRetryOrigin(t *testing.T) {
+	retryOrigin, err := testCli.GetRetryOrigin(testAuthorityDomain)
+
+	data, _ := json.Marshal(retryOrigin)
+	t.Logf("retryOrigin: %s", data)
+	checkClientErr(t, "GetRetryOrigin", err)
 }
 
 func TestSetAccessLimit(t *testing.T) {
@@ -459,7 +600,8 @@ func TestSetAccessLimit(t *testing.T) {
 func TestGetAccessLimit(t *testing.T) {
 	accessLimit, err := testCli.GetAccessLimit(testAuthorityDomain)
 
-	t.Logf("accessLimit: %v", accessLimit)
+	data, _ := json.Marshal(accessLimit)
+	t.Logf("accessLimit: %s", data)
 	checkClientErr(t, "GetAccessLimit", err)
 }
 

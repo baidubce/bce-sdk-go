@@ -39,38 +39,43 @@ const (
 	REQUEST_LIST_URI             = "/list"
 	REQUEST_SECURITYGROUP_URI    = "/securityGroup"
 	REQUEST_SNAPSHOT_URI         = "/snapshot"
-	REQUEST_CHAIN_URI             = "/chain"
+	REQUEST_CHAIN_URI            = "/chain"
 	REQUEST_SPEC_URI             = "/instance/spec"
 	REQUEST_SUBNET_URI           = "/subnet"
 	REQUEST_VNC_SUFFIX           = "/vnc"
 	REQUEST_VOLUME_URI           = "/volume"
 	REQUEST_ZONE_URI             = "/zone"
+	REQUEST_RECYCLE              = "/recycle"
 	//
-	REQUEST_FLAVOR_SPEC_URI      = "/instance/flavorSpec"
+	REQUEST_FLAVOR_SPEC_URI       = "/instance/flavorSpec"
 	REQUEST_PRICE_URI             = "/price"
 	REQUEST_AUTO_RENEW_URI        = "/autoRenew"
 	REQUEST_CANCEL_AUTO_RENEW_URI = "/cancelAutoRenew"
 	REQUEST_BID_PRICE_URI         = "/bidPrice"
 	REQUEST_BID_FLAVOR_URI        = "/bidFlavor"
 	//
-	REQUEST_INSTANCE_PRICE_URI   = "/instance/price"
-	REQUEST_INSTANCE_BY_SPEC_URI = "/instanceBySpec"
-	REQUEST_VOLUME_DISK_URI       = "/volume/disk"
-	REQUEST_TYPE_ZONE_URI         = "/instance/flavorZones"
-	REQUEST_ENI_URI               = "/eni"
-	REQUEST_KEYPAIR_URI           = "/keypair"
-	REQUEST_REBUILD_URI = "/rebuild"
-	REQUEST_TAG_URI = "/tag"
-	REQUEST_NOCHARGE_URI = "/noCharge"
-	REQUEST_BID_URI = "/bid"
-	REQUEST_RECOVERY_URI = "/recovery"
-	REQUEST_CANCEL_BIDORDER_URI = "/cancelBidOrder"
+	REQUEST_INSTANCE_PRICE_URI               = "/instance/price"
+	REQUEST_INSTANCE_BY_SPEC_URI             = "/instanceBySpec"
+	REQUEST_VOLUME_DISK_URI                  = "/volume/disk"
+	REQUEST_TYPE_ZONE_URI                    = "/instance/flavorZones"
+	REQUEST_ENI_URI                          = "/eni"
+	REQUEST_KEYPAIR_URI                      = "/keypair"
+	REQUEST_REBUILD_URI                      = "/rebuild"
+	REQUEST_TAG_URI                          = "/tag"
+	REQUEST_NOCHARGE_URI                     = "/noCharge"
+	REQUEST_BID_URI                          = "/bid"
+	REQUEST_RECOVERY_URI                     = "/recovery"
+	REQUEST_CANCEL_BIDORDER_URI              = "/cancelBidOrder"
 	REQUEST_BATCH_CREATE_AUTORENEW_RULES_URI = "/batchCreateAutoRenewRules"
 	REQUEST_BATCH_Delete_AUTORENEW_RULES_URI = "/batchDeleteAutoRenewRules"
 )
 
 func getInstanceUri() string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI
+}
+
+func getRecycleInstanceListUri() string {
+	return URI_PREFIXV2 + REQUEST_RECYCLE + REQUEST_INSTANCE_URI
 }
 
 func getInstanceBySpecUri() string {

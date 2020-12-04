@@ -44,13 +44,6 @@ type DomainCreatedInfo struct {
 	Cname  string `json:"cname"`
 }
 
-// IpInfo defined a struct for IP info
-type IpInfo struct {
-	IsCdnIp bool   `json:"cdnIP"`
-	Isp     string `json:"isp"`
-	Region  string `json:"region"`
-}
-
 // ListDomains - list all domains that in CDN service
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/sjwvyewt1
 //
@@ -242,29 +235,4 @@ func DeleteDomain(cli bce.Client, domain string) error {
 	}
 
 	return nil
-}
-
-// GetIpInfo - retrieves information about the specified IP
-// For details, please refer https://cloud.baidu.com/doc/CDN/s/8jwvyeunq
-//
-// PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - ip: the specified ip addr
-//     - action: the action for operating the ip addr
-// RETURNS:
-//     - *IpInfo: the information about the specified ip addr
-//     - error: nil if success otherwise the specific error
-func GetIpInfo(cli bce.Client, ip string, action string) (*IpInfo, error) {
-	params := map[string]string{
-		"ip":     ip,
-		"action": action,
-	}
-
-	respObj := &IpInfo{}
-	err := httpRequest(cli, "GET", "/v2/utils", params, nil, respObj)
-	if err != nil {
-		return nil, err
-	}
-
-	return respObj, nil
 }

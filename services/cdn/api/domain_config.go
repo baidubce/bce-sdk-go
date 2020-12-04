@@ -36,6 +36,12 @@ type CacheTTL struct {
 	TTL    int    `json:"ttl"`
 }
 
+// CacheShared defined a struct for sharing cache with the other domain
+type CacheShared struct {
+	Enabled    bool   `json:"enabled"`
+	SharedWith string `json:"domain,omitempty"`
+}
+
 // RequestAuth defined a struct for the authorization setting
 type RequestAuth struct {
 	Type      string   `json:"type"`
@@ -69,6 +75,17 @@ type SeoSwitch struct {
 	PushRecord     string `json:"pushRecord"`
 }
 
+// TrafficLimit defined a struct for configure the traffic limitation
+type TrafficLimit struct {
+	Enabled          bool   `json:"enable"`
+	LimitRate        int    `json:"limitRate,omitempty"`
+	LimitStartHour   int    `json:"limitStartHour,omitempty"`
+	LimitEndHour     int    `json:"limitEndHour,omitempty"`
+	LimitRateAfter   int    `json:"limitRateAfter,omitempty"`
+	TrafficLimitArg  string `json:"trafficLimitArg,omitempty"`
+	TrafficLimitUnit string `json:"trafficLimitUnit,omitempty"`
+}
+
 // HttpHeader defined a struct for a operation about HTTP header
 type HttpHeader struct {
 	Type     string `json:"type"`
@@ -87,6 +104,12 @@ type RefererACL struct {
 
 // IpACL defined a struct for black IP and white IP
 type IpACL struct {
+	BlackList []string `json:"blackList,omitempty"`
+	WhiteList []string `json:"whiteList,omitempty"`
+}
+
+// UaACL defined a struct for black UA and white UA
+type UaACL struct {
 	BlackList []string `json:"blackList,omitempty"`
 	WhiteList []string `json:"whiteList,omitempty"`
 }
@@ -116,6 +139,11 @@ type MediaDragConf struct {
 type ClientIp struct {
 	Enabled bool   `json:"enabled"`
 	Name    string `json:"name,omitempty"`
+}
+
+// RetryOrigin defined a struct for how to retry origin servers
+type RetryOrigin struct {
+	Codes []int `json:"codes"`
 }
 
 // AccessLimit defined a struct for access restriction in one client
@@ -524,8 +552,78 @@ func GetIpACL(cli bce.Client, domain string) (*IpACL, error) {
 	return ipACLObj, nil
 }
 
+// SetUaACL - set a rule for filter the specified HTTP header named "User-Agent"
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/uk88i2a86
+//
+// PARAMS:
+//     - cli: the client agent can execute sending request
+//     - domain: the specified domain
+//     - blackList: the forbidden UA
+//     - whiteList: the available UA
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func SetUaACL(cli bce.Client, domain string, blackList []string, whiteList []string) error {
+	if len(blackList) != 0 && len(whiteList) != 0 {
+		return errors.New("blackList and whiteList cannot exist at the same time")
+	}
+
+	uaAclObj := &UaACL{}
+
+	if blackList != nil {
+		uaAclObj.BlackList = blackList
+	} else if whiteList != nil {
+		uaAclObj.WhiteList = whiteList
+	} else {
+		return errors.New("blackList and whiteList cannot be nil at the same time")
+	}
+
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"uaAcl": "",
+	}
+	err := httpRequest(cli, "PUT", urlPath, params, &struct {
+		UaACL *UaACL `json:"uaAcl"`
+	}{
+		UaACL: uaAclObj,
+	}, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetUaACL - get black UA or white UA
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/ak88ix19h
+//
+// PARAMS:
+//     - cli: the client agent can execute sending request
+//     - domain: the specified domain
+// RETURNS:
+//     - *api.UaACL: filter config for UA
+//     - error: nil if success otherwise the specific error
+func GetUaACL(cli bce.Client, domain string) (*UaACL, error) {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"uaAcl": "",
+	}
+
+	uaACLObj := &UaACL{}
+	err := httpRequest(cli, "GET", urlPath, params, nil, &struct {
+		UaACL *UaACL `json:"uaAcl"`
+	}{
+		UaACL: uaACLObj,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return uaACLObj, nil
+}
+
+// Deprecated
 // SetLimitRate - set limited speed
-// For details, please refer https://cloud.baidu.com/doc/CDN/s/Kjy6v02wt
 //
 // PARAMS:
 //     - cli: the client agent which can perform sending request
@@ -549,6 +647,59 @@ func SetLimitRate(cli bce.Client, domain string, limitRate int) error {
 	}
 
 	return nil
+}
+
+// SetTrafficLimit - set the traffic limitation for the specified domain
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/ujxzi418e
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - domain: the specified domain
+//     - trafficLimit: config of traffic limitation
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func SetTrafficLimit(cli bce.Client, domain string, trafficLimit *TrafficLimit) error {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"trafficLimit": "",
+	}
+
+	err := httpRequest(cli, "PUT", urlPath, params, &struct {
+		TrafficLimit *TrafficLimit `json:"trafficLimit"`
+	}{
+		TrafficLimit: trafficLimit,
+	}, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetTrafficLimit - get the traffic limitation of the specified domain
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/7k4npdru0
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - domain: the specified domain
+// RETURNS:
+//     - *TrafficLimit: config of traffic limitation
+//     - error: nil if success otherwise the specific error
+func GetTrafficLimit(cli bce.Client, domain string) (*TrafficLimit, error) {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"trafficLimit": "",
+	}
+
+	respObj := &struct {
+		TrafficLimit TrafficLimit `json:"trafficLimit"`
+	}{}
+	err := httpRequest(cli, "GET", urlPath, params, nil, respObj)
+	if err != nil {
+		return nil, err
+	}
+
+	return &respObj.TrafficLimit, nil
 }
 
 // SetDomainHttps - set a rule for speed HTTPS' request
@@ -617,6 +768,59 @@ func GetDomainHttps(cli bce.Client, domain string) (*HTTPSConfig, error) {
 	}
 
 	return respObj.HttpsConfig, nil
+}
+
+// SetOCSP - set "OCSP" for the specified domain,
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Pkf2c0ugn
+//
+// PARAMS:
+//     - cli: the client agent can execute sending request
+//     - domain: the specified domain
+//     - enabled: true for "OCSP" opening otherwise closed
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func SetOCSP(cli bce.Client, domain string, enabled bool) error {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"ocsp": "",
+	}
+
+	reqObj := map[string]interface{}{
+		"ocsp": enabled,
+	}
+	err := httpRequest(cli, "PUT", urlPath, params, reqObj, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetOCSP - get "OCSP" switch details for the specified domain
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Xkhyjzcvd
+//
+// PARAMS:
+//     - cli: the client agent can execute sending request
+//     - domain: the specified domain
+// RETURNS:
+//     - bool: true for "OCSP" opening otherwise closed
+//     - error: nil if success otherwise the specific error
+func GetOCSP(cli bce.Client, domain string) (bool, error) {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"ocsp": "",
+	}
+
+	respObj := &struct {
+		OfflineMode bool `json:"ocsp"`
+	}{}
+
+	err := httpRequest(cli, "GET", urlPath, params, nil, respObj)
+	if err != nil {
+		return false, err
+	}
+
+	return respObj.OfflineMode, nil
 }
 
 // SetDomainRequestAuth - set the authorized rules for requesting
@@ -781,6 +985,61 @@ func GetErrorPage(cli bce.Client, domain string) ([]ErrorPage, error) {
 	return respObj.ErrorPage, nil
 }
 
+// SetCacheShared - set sharing cache with the other domain.
+// For example, 1.test.com shared cache with 2.test.com.
+// First, we query http://2.test.com/index.html and got missed.
+// Secondly, we query http://1.test.com/index.html and got hit
+// because of the CacheShared setting before.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/0kf272ds7
+//
+// PARAMS:
+//     - cli: the client agent can execute sending request
+//     - domain: the specified domain
+//     - cacheSharedConfig: enabled sets true for shared with the specified domain, otherwise no shared.
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func SetCacheShared(cli bce.Client, domain string, cacheSharedConfig *CacheShared) error {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"cacheShare": "",
+	}
+
+	err := httpRequest(cli, "PUT", urlPath, params, map[string]interface{}{
+		"cacheShare": cacheSharedConfig,
+	}, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetCacheShared - get shared cache setting
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Mjy6vo9z2
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - domain: the specified domain
+// RETURNS:
+//     - *CacheShared: shared cache setting
+//     - error: nil if success otherwise the specific error
+func GetCacheShared(cli bce.Client, domain string) (*CacheShared, error) {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"cacheShare": "",
+	}
+
+	respObj := &struct {
+		CacheShared CacheShared `json:"cacheShare"`
+	}{}
+	err := httpRequest(cli, "GET", urlPath, params, nil, respObj)
+	if err != nil {
+		return nil, err
+	}
+
+	return &respObj.CacheShared, nil
+}
+
 // SetMediaDrag - set the media setting about mp4 and flv
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/4jy6v6xk3
 //
@@ -887,6 +1146,171 @@ func GetFileTrim(cli bce.Client, domain string) (bool, error) {
 	}
 
 	return respObj.FileTrim, nil
+}
+
+// SetIPv6 - open/close IPv6
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/qkggncsxp
+//
+// PARAMS:
+//     - cli: the client agent can execute sending request
+//     - domain: the specified domain
+//     - enabled: true for setting IPv6 switch on otherwise closed
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func SetIPv6(cli bce.Client, domain string, enabled bool) error {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"ipv6Dispatch": "",
+	}
+
+	reqObj := map[string]interface{}{
+		"ipv6Dispatch": map[string]interface{}{
+			"enable": enabled,
+		},
+	}
+	err := httpRequest(cli, "PUT", urlPath, params, reqObj, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetIPv6 - get IPv6 switch details for the specified domain
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Ykggnobxd
+//
+// PARAMS:
+//     - cli: the client agent can execute sending request
+//     - domain: the specified domain
+// RETURNS:
+//     - bool: true for setting IPv6 switch on otherwise closed
+//     - error: nil if success otherwise the specific error
+func GetIPv6(cli bce.Client, domain string) (bool, error) {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"ipv6Dispatch": "",
+	}
+
+	respObj := &struct {
+		Ipv6Dispatch struct {
+			Enabled bool `json:"enable"`
+		} `json:"ipv6Dispatch"`
+	}{}
+
+	err := httpRequest(cli, "GET", urlPath, params, nil, respObj)
+	if err != nil {
+		return false, err
+	}
+
+	return respObj.Ipv6Dispatch.Enabled, nil
+}
+
+// SetQUIC - open or close QUIC. open QUIC require enabled HTTPS first
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Qkggmoz7p
+//
+// PARAMS:
+//     - cli: the client agent can execute sending request
+//     - domain: the specified domain
+//     - enabled: true for QUIC opening otherwise closed
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func SetQUIC(cli bce.Client, domain string, enabled bool) error {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"quic": "",
+	}
+
+	reqObj := map[string]interface{}{
+		"quic": enabled,
+	}
+	err := httpRequest(cli, "PUT", urlPath, params, reqObj, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetQUIC - get QUIC switch details for the specified domain
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/pkggn6l1f
+//
+// PARAMS:
+//     - cli: the client agent can execute sending request
+//     - domain: the specified domain
+// RETURNS:
+//     - bool: true for QUIC opening otherwise closed
+//     - error: nil if success otherwise the specific error
+func GetQUIC(cli bce.Client, domain string) (bool, error) {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"quic": "",
+	}
+
+	respObj := &struct {
+		QUIC bool `json:"quic"`
+	}{}
+
+	err := httpRequest(cli, "GET", urlPath, params, nil, respObj)
+	if err != nil {
+		return false, err
+	}
+
+	return respObj.QUIC, nil
+}
+
+// SetOfflineMode - set "offlineMode" for the specified domain,
+// setting true means also response old cached object when got origin server error
+// instead of response error to client directly.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/xkhopuj48
+//
+// PARAMS:
+//     - cli: the client agent can execute sending request
+//     - domain: the specified domain
+//     - enabled: true for offlineMode opening otherwise closed
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func SetOfflineMode(cli bce.Client, domain string, enabled bool) error {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"offlineMode": "",
+	}
+
+	reqObj := map[string]interface{}{
+		"offlineMode": enabled,
+	}
+	err := httpRequest(cli, "PUT", urlPath, params, reqObj, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetOfflineMode - get "offlineMode" switch details for the specified domain
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/tkhopvlkj
+//
+// PARAMS:
+//     - cli: the client agent can execute sending request
+//     - domain: the specified domain
+// RETURNS:
+//     - bool: true for offlineMode opening otherwise closed
+//     - error: nil if success otherwise the specific error
+func GetOfflineMode(cli bce.Client, domain string) (bool, error) {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"offlineMode": "",
+	}
+
+	respObj := &struct {
+		OfflineMode bool `json:"offlineMode"`
+	}{}
+
+	err := httpRequest(cli, "GET", urlPath, params, nil, respObj)
+	if err != nil {
+		return false, err
+	}
+
+	return respObj.OfflineMode, nil
 }
 
 // SetMobileAccess - distinguish the client or not
@@ -997,6 +1421,57 @@ func GetClientIp(cli bce.Client, domain string) (*ClientIp, error) {
 	}
 
 	return respObj.ClientIp, nil
+}
+
+// SetRetryOrigin - set the policy for retry origin servers if got failed
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/ukhopl3bq
+//
+// PARAMS:
+//     - cli: the client agent can execute sending request
+//     - domain: the specified domain
+//     - retryOrigin: retry policy
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func SetRetryOrigin(cli bce.Client, domain string, retryOrigin *RetryOrigin) error {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"retryOrigin": "",
+	}
+
+	err := httpRequest(cli, "PUT", urlPath, params, &struct {
+		RetryOrigin *RetryOrigin `json:"retryOrigin"`
+	}{
+		RetryOrigin: retryOrigin,
+	}, nil)
+
+	return err
+}
+
+// GetRetryOrigin - get the policy for retry origin servers
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/bkhoppbhd
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - domain: the specified domain
+// RETURNS:
+//     - *RetryOrigin: policy of retry origin servers
+//     - error: nil if success otherwise the specific error
+func GetRetryOrigin(cli bce.Client, domain string) (*RetryOrigin, error) {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"retryOrigin": "",
+	}
+
+	respObj := &struct {
+		RetryOrigin *RetryOrigin `json:"retryOrigin"`
+	}{}
+
+	err := httpRequest(cli, "GET", urlPath, params, nil, respObj)
+	if err != nil {
+		return nil, err
+	}
+
+	return respObj.RetryOrigin, nil
 }
 
 // SetAccessLimit - set the qps for on one client
