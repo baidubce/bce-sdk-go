@@ -15,7 +15,7 @@ import (
 var (
 	EIP_CLIENT  *Client
 	EIP_ADDRESS string
-
+	CLUSTER_ID  string
 	// set this value before start test
 	BCC_TEST_ID = ""
 )
@@ -136,12 +136,38 @@ func TestClient_ListEip(t *testing.T) {
 			ExpectEqual(t.Errorf, "ByTraffic", e.BillingMethod)
 			ExpectEqual(t.Errorf, 2, e.BandWidthInMbps)
 		}
+		ExpectEqual(t.Errorf, "c-76a34e7b", e.ClusterId)
 	}
 }
 
 func TestClient_DeleteEip(t *testing.T) {
 	err := EIP_CLIENT.DeleteEip(EIP_ADDRESS, getClientToken())
 	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_ListEipCluster(t *testing.T) {
+	args := &ListEipArgs{}
+	result, err := EIP_CLIENT.ListEipCluster(args)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.ClusterList {
+		ExpectEqual(t.Errorf, "zone-A|zone-C", e.ClusterAz)
+		ExpectEqual(t.Errorf, "c-76a34e7b", e.ClusterId)
+		ExpectEqual(t.Errorf, "su-eip-pdd", e.ClusterName)
+		ExpectEqual(t.Errorf, "su", e.ClusterRegion)
+	}
+}
+
+func TestClient_GetEipCluster(t *testing.T) {
+	result, err := EIP_CLIENT.GetEipCluster(CLUSTER_ID)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, "zone-A|zone-C", result.ClusterAz)
+	ExpectEqual(t.Errorf, "c-76a34e7b", result.ClusterId)
+	ExpectEqual(t.Errorf, "su-eip-pdd", result.ClusterName)
+	ExpectEqual(t.Errorf, "su", result.ClusterRegion)
+	ExpectEqual(t.Errorf, 240000000000, result.NetworkInBps)
+	ExpectEqual(t.Errorf, 240000000000, result.NetworkOutBps)
+	ExpectEqual(t.Errorf, 48000000, result.NetworkInPps)
+	ExpectEqual(t.Errorf, 48000000, result.NetworkOutPps)
 }
 
 func getClientToken() string {

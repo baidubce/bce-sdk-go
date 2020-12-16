@@ -38,12 +38,13 @@ type DescribeResultMeta struct {
 }
 
 type CreateLoadBalancerArgs struct {
-	ClientToken string           `json:"-"`
-	Name        string           `json:"name,omitempty"`
-	Description string           `json:"desc,omitempty"`
-	SubnetId    string           `json:"subnetId"`
-	VpcId       string           `json:"vpcId"`
-	Tags        []model.TagModel `json:"tags,omitempty"`
+	ClientToken 	string           `json:"-"`
+	Name        	string           `json:"name,omitempty"`
+	Description 	string           `json:"desc,omitempty"`
+	SubnetId    	string           `json:"subnetId"`
+	VpcId       	string           `json:"vpcId"`
+	ClusterProperty string     		 `json:"clusterProperty"`
+	Tags        	[]model.TagModel `json:"tags,omitempty"`
 }
 
 type CreateLoadBalancerResult struct {
@@ -70,15 +71,17 @@ type DescribeLoadBalancersArgs struct {
 }
 
 type BLBModel struct {
-	BlbId       string           `json:"blbId"`
-	Name        string           `json:"name"`
-	Description string           `json:"desc"`
-	Address     string           `json:"address"`
-	Status      BLBStatus        `json:"status"`
-	VpcId       string           `json:"vpcId"`
-	SubnetId    string           `json:"subnetId"`
-	PublicIp    string           `json:"publicIp"`
-	Tags        []model.TagModel `json:"tags"`
+	BlbId       	string           `json:"blbId"`
+	Name        	string           `json:"name"`
+	Description 	string           `json:"desc"`
+	Address     	string           `json:"address"`
+	Status      	BLBStatus        `json:"status"`
+	VpcId       	string           `json:"vpcId"`
+	SubnetId    	string           `json:"subnetId"`
+	PublicIp    	string           `json:"publicIp"`
+	Layer4ClusterId string    		 `json:"layer4ClusterId"`
+	Layer7ClusterId string     		 `json:"layer7ClusterId"`
+	Tags        	[]model.TagModel `json:"tags"`
 }
 
 type DescribeLoadBalancersResult struct {
@@ -92,17 +95,19 @@ type ListenerModel struct {
 }
 
 type DescribeLoadBalancerDetailResult struct {
-	BlbId       string           `json:"blbId"`
-	Status      BLBStatus        `json:"status"`
-	Name        string           `json:"name"`
-	Description string           `json:"desc"`
-	Address     string           `json:"address"`
-	PublicIp    string           `json:"publicIp"`
-	Cidr        string           `json:"cidr"`
-	VpcName     string           `json:"vpcName"`
-	CreateTime  string           `json:"createTime"`
-	Listener    []ListenerModel  `json:"listener"`
-	Tags        []model.TagModel `json:"tags"`
+	BlbId       	string           `json:"blbId"`
+	Status      	BLBStatus        `json:"status"`
+	Name        	string           `json:"name"`
+	Description 	string           `json:"desc"`
+	Address     	string           `json:"address"`
+	PublicIp    	string           `json:"publicIp"`
+	Cidr        	string           `json:"cidr"`
+	VpcName     	string           `json:"vpcName"`
+	CreateTime  	string           `json:"createTime"`
+	Layer4ClusterId string     	 	 `json:"layer4ClusterId"`
+	Layer7ClusterId string     	 	 `json:"layer7ClusterId"`
+	Listener    	[]ListenerModel  `json:"listener"`
+	Tags        	[]model.TagModel `json:"tags"`
 }
 
 type CreateTCPListenerArgs struct {
@@ -422,6 +427,7 @@ type AddBackendServersArgs struct {
 type BackendServerModel struct {
 	InstanceId string `json:"instanceId"`
 	Weight     int    `json:"weight"`
+	PrivateIp  string `json:"privateIp"`
 }
 
 type BackendServerStatus struct {
@@ -463,4 +469,42 @@ type DescribeHealthStatusResult struct {
 type RemoveBackendServersArgs struct {
 	ClientToken       string   `json:"-"`
 	BackendServerList []string `json:"backendServerList"`
+}
+
+
+type DescribeLbClusterDetailResult struct {
+	ClusterId       string       `json:"clusterId"`
+	ClusterName     string       `json:"clusterName"`
+	ClusterType     string       `json:"clusterType"`
+	ClusterRegion   string       `json:"clusterRegion"`
+	ClusterAz       string       `json:"clusterAz"`
+	ActiveConnCount uint64       `json:"activeConnCount"`
+	NewConnectCps   uint64       `json:"newConnectCps"`
+	NetworkInBps    uint64       `json:"networkInBps"`
+	NetworkOutBps   uint64       `json:"networkOutBps"`
+	NetworkInPps    uint64       `json:"networkInPps"`
+	NetworkOutPps   uint64       `json:"networkOutPps"`
+	HttpsQps        uint64       `json:"httpsQps"`
+	HttpQps         uint64       `json:"httpQps"`
+}
+
+type DescribeLbClustersArgs struct {
+	ClusterName  string
+	ClusterId    string
+	ExactlyMatch bool
+	Marker       string
+	MaxKeys      int
+}
+
+type DescribeLbClustersResult struct {
+	ClusterList []ClusterModel `json:"clusterList"`
+	DescribeResultMeta
+}
+
+type ClusterModel struct {
+	ClusterId       string     `json:"clusterId"`
+	ClusterName     string     `json:"clusterName"`
+	ClusterType     string     `json:"clusterType"`
+	ClusterRegion   string     `json:"clusterRegion"`
+	ClusterAz       string     `json:"clusterAz"`
 }

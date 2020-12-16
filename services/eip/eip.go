@@ -220,3 +220,55 @@ func (c *Client) StopAutoRenew(eip string, clientToken string) error {
 		WithQueryParamFilter("clientToken", clientToken).
 		Do()
 }
+
+// ListEipCluster - list all EIP Cluster with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to list all eip cluster
+// RETURNS:
+//     - *ListClusterResult: the result of list all eip cluster
+//     - error: nil if success otherwise the specific error
+
+func (c *Client) ListEipCluster(args *ListEipArgs) (*ListClusterResult, error) {
+	if args == nil {
+		args = &ListEipArgs{}
+	}
+
+	if args.MaxKeys <= 0 || args.MaxKeys > 1000 {
+		args.MaxKeys = 1000
+	}
+	result := &ListClusterResult{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getEipClusterUri()).
+		WithQueryParamFilter("marker", args.Marker).
+		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// GetEipCluster - get the eip cluster detail with the clusterId
+//
+// PARAMS:
+//     - clusterId: the specific clusterId
+// RETURNS:
+//     - *ClusterDetail: the result of eip cluster detail
+//     - error: nil if success otherwise the specific error
+
+func (c *Client) GetEipCluster(clusterId string) (*ClusterDetail, error) {
+	if len(clusterId) == 0 {
+		return nil, fmt.Errorf("please set clusterId argment")
+	}
+	result := &ClusterDetail{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getEipClusterUriWithId(clusterId)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}

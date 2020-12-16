@@ -25,6 +25,8 @@ const (
 	DEFAULT_ENDPOINT = "eip." + bce.DEFAULT_REGION + ".baidubce.com"
 
 	REQUEST_EIP_URL = "/eip"
+
+	REQUEST_EIP_CLUSTER_URL = "/eipcluster"
 )
 
 // Client of EIP service is a kind of BceClient, so derived from BceClient
@@ -49,4 +51,12 @@ func getEipUri() string {
 
 func getEipUriWithEip(eip string) string {
 	return URI_PREFIX + REQUEST_EIP_URL + "/" + eip
+}
+
+func getEipClusterUri() string {
+	return URI_PREFIX + REQUEST_EIP_CLUSTER_URL
+}
+
+func getEipClusterUriWithId(clusterId string) string {
+	return URI_PREFIX + REQUEST_EIP_CLUSTER_URL + "/" + clusterId
 }

@@ -540,7 +540,7 @@ type GetInstanceEniResult struct {
 }
 
 type CreateInstanceStockArgs struct {
-	FlaovrId string `json:"flavorId"`
+	FlavorId string `json:"flavorId"`
 	ZoneName string `json:"zoneName,omitempty"`
 }
 

@@ -1011,7 +1011,7 @@ args := &api.CreateInstanceStockArgs{
     FlavorId:     flavorId,
     ZoneName: zoneName,
 }
-if res, err := bccClient.GetInstanceCreateStock(args); err != nil {
+if res, err := bbcClient.GetInstanceCreateStock(args); err != nil {
     fmt.Println("GetInstanceCreateStock failed: ", err)
 } else {
     fmt.Println("GetInstanceCreateStock success: ", res)
@@ -1039,7 +1039,7 @@ args := &api.InstancePirceArgs{
     PurchaseCount: purchaseCount,
     Billing: billing,
 }
-if res, err := bccClient.GetInstancePirce(args); err != nil {
+if res, err := bbcClient.GetInstancePirce(args); err != nil {
     fmt.Println("GetInstancePirce failed: ", err)
 } else {
     fmt.Println("GetInstancePirce success: ", res)
@@ -1056,7 +1056,7 @@ instanceIds := []string{"your-instanceId"}
 args := &api.SimpleFlavorArgs{
     InstanceIds:    instanceIds,
 }
-if res, err := bccClient.GetSimpleFlavor(args); err != nil {
+if res, err := bbcClient.GetSimpleFlavor(args); err != nil {
     fmt.Println("GetSimpleFlavor failed: ", err)
 } else {
     fmt.Println("GetSimpleFlavor success: ", res)

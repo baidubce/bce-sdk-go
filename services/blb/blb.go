@@ -144,7 +144,58 @@ func (c *Client) DeleteLoadBalancer(blbId string) error {
 }
 
 
+// DescribeLbClusterDetail - describe a LoadBalancer cluster
+//
+// PARAMS:
+//     - clusterId: describe LoadBalancer cluster's ID
+// RETURNS:
+//     - *DescribeLbClusterDetailResult: the result LoadBalancer cluster detail
+//     - error: nil if ok otherwise the specific error
+func (c *Client) DescribeLbClusterDetail(clusterId string) (*DescribeLbClusterDetailResult, error) {
+	result := &DescribeLbClusterDetailResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getBlbClusterUriWithId(clusterId)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
 
 
+// DescribeLbClusters - describe all LoadBalancerClusters
+//
+// PARAMS:
+//     - args: parameters to describe all LoadBalancerClusters
+// RETURNS:
+//     - *DescribeLbClustersResult: the result all LoadBalancerClusters's detail
+//     - error: nil if ok otherwise the specific error
+func (c *Client) DescribeLbClusters(args *DescribeLbClustersArgs) (*DescribeLbClustersResult, error) {
+	if args == nil {
+		args = &DescribeLbClustersArgs{}
+	}
+
+	if args.MaxKeys > 1000 || args.MaxKeys <= 0 {
+		args.MaxKeys = 1000
+	}
+
+	result := &DescribeLbClustersResult{}
+	request := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getBlbClusterUri()).
+		WithQueryParamFilter("clusterName", args.ClusterName).
+		WithQueryParamFilter("clusterId", args.ClusterId).
+		WithQueryParamFilter("marker", args.Marker).
+		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithResult(result)
+
+	if args.ExactlyMatch {
+		request.WithQueryParam("exactlyMatch", "true")
+	}
+
+	err := request.Do()
+
+	return result, err
+}
 
 

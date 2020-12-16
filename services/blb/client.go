@@ -32,6 +32,8 @@ const (
 	SSLLISTENER_URL   = "/SSLlistener"
 
 	BACKENDSERVER_URL   = "/backendserver"
+
+	REQUEST_BLB_CLUSTER_URL   = "/blbcluster"
 )
 
 // Client of APPBLB service is a kind of BceClient, so derived from BceClient
@@ -84,4 +86,12 @@ func getSSLListenerUri(id string) string {
 
 func getBackendServerUri(id string) string {
 	return URI_PREFIX + REQUEST_BLB_URL + "/" + id + BACKENDSERVER_URL
+}
+
+func getBlbClusterUri() string {
+	return URI_PREFIX + REQUEST_BLB_CLUSTER_URL
+}
+
+func getBlbClusterUriWithId(id string) string {
+	return URI_PREFIX + REQUEST_BLB_CLUSTER_URL + "/" + id
 }

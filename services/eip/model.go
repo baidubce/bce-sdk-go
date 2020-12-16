@@ -80,6 +80,7 @@ type EipModel struct {
 	InstanceType    string           `json:"instanceType"`
 	InstanceId      string           `json:"instanceId"`
 	ShareGroupId    string           `json:"shareGroupId"`
+	ClusterId       string           `json:"clusterId"`
 	BandWidthInMbps int              `json:"bandwidthInMbps"`
 	PaymentTiming   string           `json:"paymentTiming"`
 	BillingMethod   string           `json:"billingMethod"`
@@ -97,4 +98,30 @@ type StartAutoRenewArgs struct {
 	AutoRenewTimeUnit string `json:"autoRenewTimeUnit,omitempty"`
 	AutoRenewTime     int    `json:"autoRenewTime,omitempty"`
 	ClientToken       string `json:"-"`
+}
+
+type ListClusterResult struct {
+	Marker      string         `json:"marker"`
+	MaxKeys     int            `json:"maxKeys"`
+	NextMarker  string         `json:"nextMarker"`
+	IsTruncated bool           `json:"isTruncated"`
+	ClusterList []ClusterModel `json:"clusterList"`
+}
+
+type ClusterModel struct {
+	ClusterId     string `json:"clusterId"`
+	ClusterName   string `json:"clusterName"`
+	ClusterRegion string `json:"clusterRegion"`
+	ClusterAz     string `json:"clusterAz"`
+}
+
+type ClusterDetail struct {
+	ClusterId     string `json:"clusterId"`
+	ClusterName   string `json:"clusterName"`
+	ClusterRegion string `json:"clusterRegion"`
+	ClusterAz     string `json:"clusterAz"`
+	NetworkInBps  int64  `json:"networkInBps"`
+	NetworkOutBps int64  `json:"networkOutBps"`
+	NetworkInPps  int64  `json:"networkInPps"`
+	NetworkOutPps int64  `json:"networkOutPps"`
 }

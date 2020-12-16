@@ -2,6 +2,7 @@ package appblb
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -24,6 +25,7 @@ var (
 	SUBNET_TEST_ID = ""
 	INSTANCE_ID    = ""
 	CERT_ID        = ""
+	CLUSTER_PROPERTY_TEST = ""
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -82,10 +84,11 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 
 func TestClient_CreateLoadBalancer(t *testing.T) {
 	createArgs := &CreateLoadBalancerArgs{
-		ClientToken: getClientToken(),
-		Name:        "sdkBlb",
-		VpcId:       VPC_TEST_ID,
-		SubnetId:    SUBNET_TEST_ID,
+		ClientToken: 		getClientToken(),
+		Name:        		"sdkBlb",
+		VpcId:       		VPC_TEST_ID,
+		SubnetId:    		SUBNET_TEST_ID,
+		ClusterProperty:    CLUSTER_PROPERTY_TEST,
 	}
 
 	createResult, err := APPBLB_CLIENT.CreateLoadBalancer(createArgs)
@@ -105,12 +108,14 @@ func TestClient_UpdateLoadBalancer(t *testing.T) {
 
 func TestClient_DescribeLoadBalancers(t *testing.T) {
 	describeArgs := &DescribeLoadBalancersArgs{}
-	_, err := APPBLB_CLIENT.DescribeLoadBalancers(describeArgs)
+	res, err := APPBLB_CLIENT.DescribeLoadBalancers(describeArgs)
+	fmt.Println(res)
 	ExpectEqual(t.Errorf, nil, err)
 }
 
 func TestClient_DescribeLoadBalancerDetail(t *testing.T) {
-	_, err := APPBLB_CLIENT.DescribeLoadBalancerDetail(APPBLB_ID)
+	res, err := APPBLB_CLIENT.DescribeLoadBalancerDetail(APPBLB_ID)
+	fmt.Println(res)
 	ExpectEqual(t.Errorf, nil, err)
 }
 

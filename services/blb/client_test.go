@@ -2,6 +2,7 @@ package blb
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -22,6 +23,8 @@ var (
 	SUBNET_TEST_ID = ""
 	INSTANCE_ID    = ""
 	CERT_ID        = ""
+	CLUSTER_ID     = ""
+	CLUSTER_PROPERTY_TEST = ""
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -81,10 +84,11 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 
 func TestClient_CreateLoadBalancer(t *testing.T) {
 	createArgs := &CreateLoadBalancerArgs{
-		ClientToken: getClientToken(),
-		Name:        "sdkBlb",
-		VpcId:       VPC_TEST_ID,
-		SubnetId:    SUBNET_TEST_ID,
+		ClientToken: 		getClientToken(),
+		Name:        		"sdkBlb",
+		VpcId:       		VPC_TEST_ID,
+		SubnetId:    		SUBNET_TEST_ID,
+		ClusterProperty:    CLUSTER_PROPERTY_TEST,
 	}
 
 	createResult, err := BLB_CLIENT.CreateLoadBalancer(createArgs)
@@ -104,13 +108,15 @@ func TestClient_UpdateLoadBalancer(t *testing.T) {
 
 func TestClient_DescribeLoadBalancers(t *testing.T) {
 	describeArgs := &DescribeLoadBalancersArgs{}
-	_, err := BLB_CLIENT.DescribeLoadBalancers(describeArgs)
+	res, err := BLB_CLIENT.DescribeLoadBalancers(describeArgs)
+	fmt.Print(res)
 	ExpectEqual(t.Errorf, nil, err)
-	time.Sleep(time.Duration(50) * time.Second)
+	time.Sleep(time.Duration(1) * time.Second)
 }
 
 func TestClient_DescribeLoadBalancerDetail(t *testing.T) {
-	_, err := BLB_CLIENT.DescribeLoadBalancerDetail(BLB_ID)
+	res, err := BLB_CLIENT.DescribeLoadBalancerDetail(BLB_ID)
+	fmt.Print(res)
 	ExpectEqual(t.Errorf, nil, err)
 }
 
@@ -326,6 +332,19 @@ func TestClient_DeleteListeners(t *testing.T) {
 
 func TestClient_DeleteLoadBalancer(t *testing.T) {
 	err := BLB_CLIENT.DeleteLoadBalancer(BLB_ID)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DescribeLbClusters(t *testing.T) {
+	describeArgs := &DescribeLbClustersArgs{}
+	res, err := BLB_CLIENT.DescribeLbClusters(describeArgs)
+	fmt.Println(res)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DescribeLbClusterDetail(t *testing.T) {
+	res, err := BLB_CLIENT.DescribeLbClusterDetail(CLUSTER_ID)
+	fmt.Println(res)
 	ExpectEqual(t.Errorf, nil, err)
 }
 
