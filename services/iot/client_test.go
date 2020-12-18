@@ -85,3 +85,47 @@ func TestClientDevice(t *testing.T) {
 	err = client.DeleteDevice(config.CoreId, t.Name())
 	ExpectEqual(t.Errorf, nil, err)
 }
+
+func TestClientDeviceException(t *testing.T) {
+	result, err := client.CreateDevice("", "", "", "", "")
+	ExpectEqual(t.Errorf, os.ErrInvalid, err)
+	ExpectEqual(t.Errorf, nil, result)
+
+	result, err = client.CreateDevice("1", "", "", "", "")
+	ExpectEqual(t.Errorf, os.ErrInvalid, err)
+	ExpectEqual(t.Errorf, nil, result)
+
+	result, err = client.CreateDevice("1", "2", "", "", "")
+	ExpectEqual(t.Errorf, os.ErrInvalid, err)
+	ExpectEqual(t.Errorf, nil, result)
+
+	result, err = client.CreateDevice("1", "", "", "", "")
+	ExpectEqual(t.Errorf, os.ErrInvalid, err)
+	ExpectEqual(t.Errorf, nil, result)
+
+	result, err = client.CreateDevice("1", "2", "", "", "")
+	ExpectEqual(t.Errorf, os.ErrInvalid, err)
+	ExpectEqual(t.Errorf, nil, result)
+
+	result, err = client.CreateDevice("1", "2", "3", "", "")
+	ExpectEqual(t.Errorf, os.ErrInvalid, err)
+	ExpectEqual(t.Errorf, nil, result)
+
+	result, err = client.CreateDevice("1", "2", "3", "4", "")
+	ExpectEqual(t.Errorf, true, strings.Contains(err.Error(), "Bad IotCoreId"))
+	ExpectEqual(t.Errorf, nil, result)
+
+	result, err = client.CreateDevice("1", "2", "3", "4", "5")
+	ExpectEqual(t.Errorf, true, strings.Contains(err.Error(), "Bad IotCoreId"))
+	ExpectEqual(t.Errorf, nil, result)
+
+
+	err = client.DeleteDevice("", "")
+	ExpectEqual(t.Errorf, os.ErrInvalid, err)
+
+	err = client.DeleteDevice("1", "")
+	ExpectEqual(t.Errorf, os.ErrInvalid, err)
+
+	err = client.DeleteDevice("1", "2")
+	ExpectEqual(t.Errorf, true, strings.Contains(err.Error(), "Bad IotCoreId"))
+}
