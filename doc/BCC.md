@@ -1473,6 +1473,47 @@ if err != nil {
 > **提示：**
 > - 创建CDS磁盘接口为异步接口，可通过[查询磁盘详情](#查询磁盘详情)接口查询磁盘状态，详细接口使用请参考BCC API 文档[查询磁盘详情](https://cloud.baidu.com/doc/BCC/s/1jwvyo4ly)
 
+### 创建CDS磁盘(V3)
+
+支持新建空白CDS磁盘或者从CDS数据盘快照创建CDS磁盘，参考以下代码可以创建CDS磁盘：
+
+```go
+// 新建CDS磁盘
+args := &api.CreateCDSVolumeV3Args{
+    // 创建一个CDS磁盘，若要同时创建多个相同配置的磁盘，可以修改此参数
+	PurchaseCount: 1, 
+    // 磁盘空间大小
+    VolumeSizeInGB:   50,
+    // 设置磁盘存储介质 
+    StorageType:   api.StorageTypeV3CloudSSDGeneral, 
+    // 设置磁盘付费模式为后付费
+    Billing: &api.Billing{
+        PaymentTiming: api.PaymentTimingPostPaid,
+    }, 
+    // 设置磁盘名称
+    VolumeName:        "sdkCreate", 
+    // 设置磁盘描述
+    Description: "sdk test",
+    // 快照ID
+    SnapshotId    string      "snapshotId",
+    // 可用区
+    ZoneName      string      "zoneName",
+	// 设置磁盘加密密钥
+	EncryptKey    string      "encryptKey",
+    // 设置自动快照策略id
+    AutoSnapshotPolicyId string "autoSnapshotPolicyId",
+}
+result, err := client.CreateCDSVolumeV3(args)
+if err != nil {
+    fmt.Println("create CDS volume failed:", err)
+} else {
+    fmt.Println("create CDS volume success: ", result)
+}
+```
+
+> **提示：**
+> - 创建CDS磁盘接口为异步接口，可通过[查询磁盘详情](#查询磁盘详情)接口查询磁盘状态
+
 ### 查询磁盘列表
 
 以下代码可以查询所有的磁盘列表，支持分页查询以及通过次磁盘所挂载的BCC实例id进行过滤筛选:
@@ -1491,6 +1532,24 @@ if err != nil {
 }
 ```
 
+### 查询磁盘列表(V3)
+
+以下代码可以查询所有的磁盘列表，支持分页查询以及通过次磁盘所挂载的BCC实例id进行过滤筛选:
+
+```go
+args := &api.ListCDSVolumeArgs{}
+
+// 设置查询绑定了特定实例的CDS磁盘
+args.InstanceId = instanceId
+
+result, err := client.ListCDSVolumeV3(args)
+if err != nil {
+    fmt.Println("list CDS volume failed:", err)
+} else {
+    fmt.Println("list CDS volume success: ", result)
+}
+```
+
 ### 查询磁盘详情
 
 通过磁盘id可以获取对应磁盘的详细信息，以下代码可以查询磁盘详情：
@@ -1501,6 +1560,19 @@ if err != nil {
     fmt.Println("get CDS volume detail failed:", err)
 } else {
     fmt.Println("get CDS volume detail success: ", result)
+}
+```
+
+### 查询磁盘详情(V3)
+
+通过磁盘id可以获取对应磁盘的详细信息，以下代码可以查询磁盘详情：
+
+```go
+result, err := client.GetCDSVolumeDetailV3(volumeId)
+if err != nil {
+    fmt.Println("get CDS volume detail failed:", err)
+} else {
+    fmt.Println("get CDS volume detail success: ", result.Volume)
 }
 ```
 

@@ -69,6 +69,50 @@ func CreateCDSVolume(cli bce.Client, args *CreateCDSVolumeArgs) (*CreateCDSVolum
 	return jsonBody, nil
 }
 
+// CreateCDSVolumeV3 - create a specified count of cds volumes
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - args: the arguments to create cds volumes
+// RETURNS:
+//     - *CreateCDSVolumeResult: the result of volume ids newly created
+//     - error: nil if success otherwise the specific error
+func CreateCDSVolumeV3(cli bce.Client, args *CreateCDSVolumeV3Args) (*CreateCDSVolumeResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getVolumeV3Uri())
+	req.SetMethod(http.POST)
+
+	if args.ClientToken != "" {
+		req.SetParam("clientToken", args.ClientToken)
+	}
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return nil, err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &CreateCDSVolumeResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
 // ListCDSVolume - list all cds volumes with the given parameters
 //
 // PARAMS:
@@ -118,6 +162,55 @@ func ListCDSVolume(cli bce.Client, queryArgs *ListCDSVolumeArgs) (*ListCDSVolume
 	return jsonBody, nil
 }
 
+// ListCDSVolumeV3 - list all cds volumes with the given parameters
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - queryArgs: the optional arguments to list cds volumes
+// RETURNS:
+//     - *ListCDSVolumeResultV3: the result of cds volume list
+//     - error: nil if success otherwise the specific error
+func ListCDSVolumeV3(cli bce.Client, queryArgs *ListCDSVolumeArgs) (*ListCDSVolumeResultV3, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getVolumeV3Uri())
+	req.SetMethod(http.GET)
+
+	if queryArgs != nil {
+		if len(queryArgs.InstanceId) != 0 {
+			req.SetParam("instanceId", queryArgs.InstanceId)
+		}
+		if len(queryArgs.ZoneName) != 0 {
+			req.SetParam("zoneName", queryArgs.ZoneName)
+		}
+		if len(queryArgs.Marker) != 0 {
+			req.SetParam("marker", queryArgs.Marker)
+		}
+		if queryArgs.MaxKeys != 0 {
+			req.SetParam("maxKeys", strconv.Itoa(queryArgs.MaxKeys))
+		}
+	}
+
+	if queryArgs == nil || queryArgs.MaxKeys == 0 {
+		req.SetParam("maxKeys", "1000")
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ListCDSVolumeResultV3{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
 // GetCDSVolumeDetail - get details of the specified cds volume
 //
 // PARAMS:
@@ -142,6 +235,36 @@ func GetCDSVolumeDetail(cli bce.Client, volumeId string) (*GetVolumeDetailResult
 	}
 
 	jsonBody := &GetVolumeDetailResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
+// GetCDSVolumeDetail - get details of the specified cds volume
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - volumeId: id of the cds volume
+// RETURNS:
+//     - *GetVolumeDetailResultV3: the result of the specified cds volume details
+//     - error: nil if success otherwise the specific error
+func GetCDSVolumeDetailV3(cli bce.Client, volumeId string) (*GetVolumeDetailResultV3, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getVolumeV3UriWithId(volumeId))
+	req.SetMethod(http.GET)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &GetVolumeDetailResultV3{}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}

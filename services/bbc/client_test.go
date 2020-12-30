@@ -479,6 +479,18 @@ func TestGetInstanceEni(t *testing.T) {
 	}
 }
 
+func TestGetInstanceStock(t *testing.T) {
+	args := &CreateInstanceStockArgs {
+		FlavorId: "BBC-G4-PDDAS",
+		ZoneName: "cn-su-a",
+	}
+	if res, err := BBC_CLIENT.GetInstanceCreateStock(args); err != nil {
+		fmt.Println("Get specific instance eni failed: ", err)
+	} else {
+		fmt.Println("Get specific instance eni success, result: ", res)
+	}
+}
+
 func TestListRepairTasks(t *testing.T) {
 	listArgs := &ListRepairTaskArgs{
 		MaxKeys: 100,

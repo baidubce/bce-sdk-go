@@ -598,6 +598,18 @@ func (c *Client) CreateCDSVolume(args *api.CreateCDSVolumeArgs) (*api.CreateCDSV
 	return api.CreateCDSVolume(c, args)
 }
 
+//cds sdk
+// CreateCDSVolumeV3 - create a CDS volume
+//
+// PARAMS:
+//     - args: the arguments to create CDS
+// RETURNS:
+//     - *api.CreateCDSVolumeResult: the result of create CDS volume, contains new volume ID
+//     - error: nil if success otherwise the specific error
+func (c *Client) CreateCDSVolumeV3(args *api.CreateCDSVolumeV3Args) (*api.CreateCDSVolumeResult, error) {
+	return api.CreateCDSVolumeV3(c, args)
+}
+
 // ListCDSVolume - list all cds volume with the specific parameters
 //
 // PARAMS:
@@ -609,6 +621,17 @@ func (c *Client) ListCDSVolume(queryArgs *api.ListCDSVolumeArgs) (*api.ListCDSVo
 	return api.ListCDSVolume(c, queryArgs)
 }
 
+// ListCDSVolumeV3 - list all cds volume with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to list all cds
+// RETURNS:
+//     - *api.ListCDSVolumeResultV3: the result of list all CDS volume
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListCDSVolumeV3(queryArgs *api.ListCDSVolumeArgs) (*api.ListCDSVolumeResultV3, error) {
+	return api.ListCDSVolumeV3(c, queryArgs)
+}
+
 // GetCDSVolumeDetail - get a CDS volume's detail info
 //
 // PARAMS:
@@ -618,6 +641,17 @@ func (c *Client) ListCDSVolume(queryArgs *api.ListCDSVolumeArgs) (*api.ListCDSVo
 //     - error: nil if success otherwise the specific error
 func (c *Client) GetCDSVolumeDetail(volumeId string) (*api.GetVolumeDetailResult, error) {
 	return api.GetCDSVolumeDetail(c, volumeId)
+}
+
+// GetCDSVolumeDetailV3 - get a CDS volume's detail info
+//
+// PARAMS:
+//     - volumeId: the specific CDS volume ID
+// RETURNS:
+//     - *api.GetVolumeDetailResultV3: the result of get a specific CDS volume's info
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetCDSVolumeDetailV3(volumeId string) (*api.GetVolumeDetailResultV3, error) {
+	return api.GetCDSVolumeDetailV3(c, volumeId)
 }
 
 // AttachCDSVolume - attach a CDS volume to an instance

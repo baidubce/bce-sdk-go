@@ -52,6 +52,7 @@ func init() {
 	log.SetLogLevel(log.WARN)
 	//log.SetLogLevel(log.DEBUG)
 	BCC_TestBccId = "bcc_id"
+	BCC_TestCdsId = "cds_id"
 }
 
 // ExpectEqual is the helper function for test each case
@@ -304,6 +305,25 @@ func TestCreateCDSVolume(t *testing.T) {
 	BCC_TestCdsId = result.VolumeIds[0]
 }
 
+func TestCreateCDSVolumeV3(t *testing.T) {
+	args := &api.CreateCDSVolumeV3Args{
+		ZoneName: "cn-bj-a",
+		VolumeName : "volumeV3Test",
+		Description: "v3 test",
+		PurchaseCount: 1,
+		VolumeSizeInGB:   50,
+		StorageType:   api.StorageTypeV3CloudSSDGeneral,
+		Billing: &api.Billing{
+			PaymentTiming: api.PaymentTimingPostPaid,
+		},
+	}
+
+	result, err := BCC_CLIENT.CreateCDSVolumeV3(args)
+	fmt.Println(result)
+	ExpectEqual(t.Errorf, err, nil)
+	BCC_TestCdsId = result.VolumeIds[0]
+}
+
 func TestGetBidInstancePrice(t *testing.T) {
 	args := &api.GetBidInstancePriceArgs{
 		InstanceType:        api.InstanceTypeN1,
@@ -424,8 +444,22 @@ func TestListCDSVolume(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestListCDSVolumeV3(t *testing.T) {
+	queryArgs := &api.ListCDSVolumeArgs{}
+	res, err := BCC_CLIENT.ListCDSVolumeV3(queryArgs)
+	fmt.Println(res)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestGetCDSVolumeDetail(t *testing.T) {
-	_, err := BCC_CLIENT.GetCDSVolumeDetail(BCC_TestCdsId)
+	res, err := BCC_CLIENT.GetCDSVolumeDetail(BCC_TestCdsId)
+	fmt.Println(res.Volume)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestGetCDSVolumeDetailV3(t *testing.T) {
+	res, err := BCC_CLIENT.GetCDSVolumeDetailV3(BCC_TestCdsId)
+	fmt.Println(res.Volume)
 	ExpectEqual(t.Errorf, err, nil)
 }
 

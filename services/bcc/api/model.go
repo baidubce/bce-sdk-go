@@ -69,6 +69,23 @@ const (
 	StorageTypeLocalNVME     StorageType = "local-nvme"
 )
 
+type StorageTypeV3 string
+
+const (
+	StorageTypeV3CloudSATA          StorageTypeV3 = "Cloud_Sata"
+	StorageTypeV3CloudHDDGeneral    StorageTypeV3 = "Cloud_HDD_General"
+	StorageTypeV3CloudHDDThroughput StorageTypeV3 = "Cloud_HDD_Throughput"
+	StorageTypeV3CloudPremium       StorageTypeV3 = "Cloud_Premium"
+	StorageTypeV3CloudSSDGeneral    StorageTypeV3 = "Cloud_SSD_General"
+	StorageTypeV3CloudSSDEnhanced   StorageTypeV3 = "Cloud_SSD_Enhanced"
+	StorageTypeV3LocalHDD           StorageTypeV3 = "Local_HDD"
+	StorageTypeV3LocalSSD           StorageTypeV3 = "Local_SSD"
+	StorageTypeV3LocalNVME          StorageTypeV3 = "Local_NVME"
+	StorageTypeV3LocalPVHDD         StorageTypeV3 = "Local_PV_HDD"
+	StorageTypeV3LocalPVSSD         StorageTypeV3 = "Local_PV_SSD"
+	StorageTypeV3LocalPVNVME        StorageTypeV3 = "Local_PV_NVME"
+)
+
 type PaymentTimingType string
 
 const (
@@ -496,12 +513,39 @@ const (
 	VolumeStatusERROR              VolumeStatus = "Error"
 )
 
+type VolumeStatusV3 string
+
+const (
+	VolumeStatusV3AVAILABLE          VolumeStatusV3 = "Available"
+	VolumeStatusV3INUSE              VolumeStatusV3 = "InUse"
+	VolumeStatusV3SNAPSHOTPROCESSING VolumeStatusV3 = "SnapshotProcessing"
+	VolumeStatusV3RECHARGING         VolumeStatusV3 = "Recharging"
+	VolumeStatusV3DETACHING          VolumeStatusV3 = "Detaching"
+	VolumeStatusV3DELETING           VolumeStatusV3 = "Deleting"
+	VolumeStatusV3EXPIRED            VolumeStatusV3 = "Expired"
+	VolumeStatusV3NOTAVAILABLE       VolumeStatusV3 = "NotAvailable"
+	VolumeStatusV3DELETED            VolumeStatusV3 = "Deleted"
+	VolumeStatusV3SCALING            VolumeStatusV3 = "Scaling"
+	VolumeStatusV3IMAGEPROCESSING    VolumeStatusV3 = "ImageProcessing"
+	VolumeStatusV3CREATING           VolumeStatusV3 = "Creating"
+	VolumeStatusV3ATTACHING          VolumeStatusV3 = "Attaching"
+	VolumeStatusV3ERROR              VolumeStatusV3 = "Error"
+	VolumeStatusV3Recycled           VolumeStatusV3 = "Recycled"
+)
+
 type VolumeType string
 
 const (
 	VolumeTypeSYSTEM    VolumeType = "System"
 	VolumeTypeEPHEMERAL VolumeType = "Ephemeral"
 	VolumeTypeCDS       VolumeType = "Cds"
+)
+
+type VolumeTypeV3 string
+
+const (
+	VolumeTypeV3SYSTEM VolumeTypeV3 = "SYSTEM"
+	VolumeTypeV3DATA   VolumeTypeV3 = "DATA"
 )
 
 type RenameCSDVolumeArgs struct {
@@ -539,6 +583,14 @@ type ListCDSVolumeResult struct {
 	Volumes     []VolumeModel `json:"volumes"`
 }
 
+type ListCDSVolumeResultV3 struct {
+	Marker      string          `json:"marker"`
+	IsTruncated bool            `json:"isTruncated"`
+	NextMarker  string          `json:"nextMarker"`
+	MaxKeys     int             `json:"maxKeys"`
+	Volumes     []VolumeModelV3 `json:"volumes"`
+}
+
 type VolumeModel struct {
 	Type               VolumeType               `json:"type"`
 	StorageType        StorageType              `json:"storageType"`
@@ -559,6 +611,35 @@ type VolumeModel struct {
 	SnapshotNum        string                   `json:"snapshotNum"`
 	Tags               []model.TagModel         `json:"tags"`
 	Encrypted          bool                     `json:"encrypted"`
+}
+
+type VolumeModelV3 struct {
+	Id                   string                   `json:"volumeId"`
+	Name                 string                   `json:"volumeName"`
+	VolumeSizeInGB       int                      `json:"volumeSizeInGB"`
+	VolumeStatus         VolumeStatusV3           `json:"volumeStatus"`
+	VolumeType           VolumeTypeV3             `json:"volumeType"`
+	StorageType          StorageTypeV3            `json:"storageType"`
+	CreateTime           string                   `json:"createTime"`
+	ExpireTime           string                   `json:"expireTime"`
+	Desc                 string                   `json:"description"`
+	PaymentTiming        string                   `json:"paymentTiming"`
+	EnableAutoRenew      bool                     `json:"enableAutoRenew"`
+	AutoRenewTime        int                      `json:"autoRenewTime"`
+	ZoneName             string                   `json:"zoneName"`
+	SourceSnapshotId     string                   `json:"sourceSnapshotId"`
+	Region               string                   `json:"region"`
+	SnapshotCount        int                      `json:"snapshotCount"`
+	AutoSnapshotPolicyId string                   `json:"autoSnapshotPolicyId"`
+	Encrypted            bool                     `json:"encrypted"`
+	Tags                 []model.TagModel         `json:"tags"`
+	Attachments          []VolumeAttachmentsModel `json:"volumeAttachments"`
+}
+
+type VolumeAttachmentsModel struct {
+	InstanceId string `json:"instanceId"`
+	Device     string `json:"device"`
+	AttachTime string `json:"attachTime"`
 }
 
 type VolumeAttachmentModel struct {
@@ -585,12 +666,30 @@ type CreateCDSVolumeArgs struct {
 	ClientToken   string      `json:"-"`
 }
 
+type CreateCDSVolumeV3Args struct {
+	VolumeName           string        `json:"volumeName,omitempty"`
+	Description          string        `json:"description,omitempty"`
+	SnapshotId           string        `json:"snapshotId,omitempty"`
+	ZoneName             string        `json:"zoneName,omitempty"`
+	PurchaseCount        int           `json:"purchaseCount,omitempty"`
+	VolumeSizeInGB       int           `json:"volumeSizeInGB,omitempty"`
+	StorageType          StorageTypeV3 `json:"storageType,omitempty"`
+	Billing              *Billing      `json:"billing"`
+	EncryptKey           string        `json:"encryptKey"`
+	AutoSnapshotPolicyId string        `json:"autoSnapshotPolicyId"`
+	ClientToken          string        `json:"-"`
+}
+
 type CreateCDSVolumeResult struct {
 	VolumeIds []string `json:"volumeIds"`
 }
 
 type GetVolumeDetailResult struct {
 	Volume *VolumeModel `json:"volume"`
+}
+
+type GetVolumeDetailResultV3 struct {
+	Volume *VolumeModelV3 `json:"volume"`
 }
 
 type GetAvailableDiskInfoResult struct {

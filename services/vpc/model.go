@@ -492,3 +492,28 @@ type PeerConnSyncDNSArgs struct {
 	Role        PeerConnRoleType `json:"role"`
 	ClientToken string           `json:"-"`
 }
+
+/* Get VpcPrivateIpAddressedInfo args
+   VpcId:the vpc you want to query ips
+   PrivateIpAddresses:the privateIp list you want to query
+   PrivateIpRange:the range of privateIp .ex:"192.168.0.1-192.168.0.5"
+   pay attention that the size of PrivateIpAddresses and PrivateIpRange must less than 100
+   if both PrivateIpAddresses and PrivateIpRange ,the PrivateIpRange will effect
+*/
+type GetVpcPrivateIpArgs struct {
+	VpcId              string   `json:"vpcId"`
+	PrivateIpAddresses []string `json:"privateIpAddresses",omitempty`
+	PrivateIpRange     string   `json:"privateIpRange,omitempty"`
+}
+
+type VpcPrivateIpAddress struct {
+	PrivateIpAddress     string `json:"privateIpAddress"`
+	Cidr                 string `json:"cidr"`
+	PrivateIpAddressType string `json:"privateIpAddressType`
+	CreatedTime          string `json:"createdTime"`
+}
+
+// VpcPrivateIpAddressesResult defines the structure of the output parameters for the GetPrivateIpAddressInfo api
+type VpcPrivateIpAddressesResult struct {
+	VpcPrivateIpAddresses []VpcPrivateIpAddress `json:"vpcPrivateIpAddresses"`
+}

@@ -147,6 +147,17 @@ func TestUpdateVPC(t *testing.T) {
 	ExpectEqual(t.Errorf, "vpc update", result.VPC.Description)
 }
 
+func TestGetPrivateIpAddressInfo(t *testing.T) {
+	args := &GetVpcPrivateIpArgs{
+		VpcId:              "vpc-2pa2x0bjt26i",
+		PrivateIpAddresses: []string{"192.168.0.1,192.168.0.2"},
+		PrivateIpRange:     "192.168.0.0-192.168.0.45",
+	}
+	result, err := VPC_CLIENT.GetPrivateIpAddressesInfo(args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(result)
+	fmt.Println(string(r))
+}
 func TestCreateSubnet(t *testing.T) {
 	args := &CreateSubnetArgs{
 		Name:        "TestSDK-Subnet",

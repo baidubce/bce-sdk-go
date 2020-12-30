@@ -135,3 +135,27 @@ func (c *Client) DeleteVPC(vpcId, clientToken string) error {
 		WithQueryParamFilter("clientToken", clientToken).
 		Do()
 }
+
+// GetPrivateIpAddressesInfo - get the privateIpAddressesInfo from vpc
+//
+// PARAMS:
+//     - getVpcPrivateIpArgs: the arguments to GetPrivateIpAddressInfo
+// RETURNS:
+//     - *VpcPrivateIpAddressesResult: the privateIpAddresses info of the specified privateIps in specified vpc
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetPrivateIpAddressesInfo(args *GetVpcPrivateIpArgs) (*VpcPrivateIpAddressesResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("The GetVpcPrivateIpArgs cannot be nil.")
+	}
+	result := &VpcPrivateIpAddressesResult{}
+	builder := bce.NewRequestBuilder(c).
+		WithURL(getURLForVPCId(args.VpcId)+"/privateIpAddressInfo").
+		WithMethod(http.GET).WithQueryParamFilter("privateIpRange", args.PrivateIpRange)
+	if len(args.PrivateIpAddresses) != 0 {
+		for i := range args.PrivateIpAddresses {
+			builder.WithQueryParam("privateIpAddresses", args.PrivateIpAddresses[i])
+		}
+	}
+	err := builder.WithResult(result).Do()
+	return result, err
+}

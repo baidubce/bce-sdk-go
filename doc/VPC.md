@@ -377,6 +377,31 @@ fmt.Printf("update vpc %s success.", vpcId)
 > 注意: 更新VPC时，对name和description字段的规范要求参考`创建VPC`一节。
 
 
+## 查询VPC内内网Ip的信息
+使用以下代码可以更新指定VPC的名称和描述信息。
+>PrivateIpRange的格式为"192.168.0.1-192.168.0-5"
+ 参数中PrivateIpAddresses或PrivateIpRange的ip数量大小不能超过100.
+ 若PrivateIpAddresses和PrivateIpRange同时存在，PrivateIpRange优先。
+
+```go
+//import "github.com/baidubce/bce-sdk-go/services/vpc"
+
+args := &GetVpcPrivateIpArgs{
+		VpcId:              "vpc-2pa2x0bjt26i",
+		PrivateIpAddresses: []string{"192.168.0.1,192.168.0.2"},
+		PrivateIpRange:     "192.168.0.0-192.168.0.45",
+	}
+
+result, err := client.GetVPCDetail(vpcId)
+if err != nil {
+	fmt.Println("get vpc privateIp address info error: ", err)
+    return 
+}
+
+
+fmt.Println("privateIpAddresses size is : ", len(result.VpcPrivateIpAddresses))
+
+```
 # 子网管理
 
 子网是 VPC 内的用户可定义的IP地址范围，根据业务需求，通过CIDR(无类域间路由)可以指定不同的地址空间和IP段。未来用户可以将子网作为一个单位，用来定义Internet访问权限、路由规则和安全策略。
@@ -1455,7 +1480,8 @@ myLogger.Info("this is my own logger from the VPC go sdk")
 
 
 # 版本变更记录
-
+## v0.9.6 [2020-12-27]
+- 增加vpc查询PrivateIpAddress信息接口
 ## v0.9.5 [2019-09-24]
 
 首次发布:

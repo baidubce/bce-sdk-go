@@ -24,6 +24,7 @@ import (
 )
 
 const (
+	URI_PREFIXV3 = bce.URI_PREFIX + "v3"
 	URI_PREFIXV2 = bce.URI_PREFIX + "v2"
 	URI_PREFIXV1 = bce.URI_PREFIX + "v1"
 
@@ -127,8 +128,16 @@ func getVolumeUri() string {
 	return URI_PREFIXV2 + REQUEST_VOLUME_URI
 }
 
+func getVolumeV3Uri() string {
+	return URI_PREFIXV3 + REQUEST_VOLUME_URI
+}
+
 func getVolumeUriWithId(id string) string {
 	return URI_PREFIXV2 + REQUEST_VOLUME_URI + "/" + id
+}
+
+func getVolumeV3UriWithId(id string) string {
+	return URI_PREFIXV3 + REQUEST_VOLUME_URI + "/" + id
 }
 
 func getAutoRenewVolumeUri() string {
