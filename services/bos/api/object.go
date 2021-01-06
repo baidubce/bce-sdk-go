@@ -674,9 +674,9 @@ func GeneratePresignedUrl(conf *bce.BceClientConfiguration, signer auth.Signer, 
 		domain = domain[:pos]
 	}
 	if len(bucket) != 0 && net.ParseIP(domain) == nil { // not use an IP as the endpoint by client
-		req.SetUri(bce.URI_PREFIX + object)
+		req.SetUri(bce.URI_PREFIX + bucket + bce.URI_PREFIX + object)
 		if !conf.CnameEnabled && !isCnameLikeHost(conf.Endpoint) {
-			req.SetHost(bucket + "." + req.Host())
+			req.SetHost(req.Host())
 		}
 	} else {
 		req.SetUri(getObjectUri(bucket, object))
