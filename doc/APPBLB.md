@@ -344,7 +344,7 @@ if err != nil {
 
 ### 更新服务器组
 
-通过以下代码，更新指定LoadBalancer下的TCP监听器参数，所有请求参数中指定的域都会被更新，未指定的域保持不变，监听器通过端口指定
+通过以下代码，更新指定LoadBalancer下的服务器组参数，所有请求参数中指定的域都会被更新，未指定的域保持不变
 ```go
 args := &appblb.UpdateAppServerGroupArgs{
     // 设置要更新的服务器组ID
@@ -963,6 +963,276 @@ if err != nil {
 }
 ```
 
+### 创建应用型IP组
+
+通过以下代码，在指定应用型BLB下，创建一个IP组，用来添加IP组成员和IP组协议
+```go
+args := &appblb.CreateAppIpGroupArgs{
+    // 设置IP组名称
+    Name: "sdkTest", 
+    // 设置IP组描述
+    Desc: "sdk test desc",
+}
+
+// 若想直接添加IP组成员，可以设置以下参数
+args.MemberList = []appblb.AppIpGroupMember{
+    {
+        Ip: "192.168.0.25",
+        Port: 80,  
+        Weight: 50,
+    },
+}
+
+result, err := client.CreateAppIpGroup(blbId, args)
+if err != nil {
+    fmt.Println("create ip group failed:", err)
+} else {
+    fmt.Println("create ip group success: ", result)
+}
+```
+
+### 更新IP组
+
+通过以下代码，更新指定LoadBalancer下的IP组，所有请求参数中指定的域都会被更新，未指定的域保持不变
+```go
+args := &appblb.UpdateAppIpGroupArgs{
+    // 设置要更新的IP组ID
+    IpGroupId:     ipGroupId, 
+    // 设置新的IP组名称
+    Name:        "testSdk",
+    // 设置新的IP组描述
+    Desc:   "test desc",
+}
+err := client.UpdateAppIpGroup(blbId, args)
+if err != nil {
+    fmt.Println("update ip group failed:", err)
+} else {
+    fmt.Println("update ip group success: ")
+}
+```
+
+### 查询IP组
+
+通过以下代码，查询指定LoadBalancer下所有IP组的信息
+```go
+args := &appblb.DescribeAppIpGroupArgs{}
+
+// 按blbId、name为条件进行全局查询
+args.Name = ipgroupName
+args.ExactlyMatch = true
+
+result, err := client.DescribeAppIpGroup(blbId, args)
+if err != nil {
+    fmt.Println("describe ip group failed:", err)
+} else {
+    fmt.Println("describe ip group success: ", result)
+}
+```
+
+### 删除IP组
+
+通过以下代码，删除IP组，通过IP组id指定
+```go
+args := &appblb.DeleteAppIpGroupArgs{
+    // 要删除的IP组ID
+    IpGroupId: ipGroupId,
+}
+err := client.DeleteAppIpGroup(blbId, args)
+if err != nil {
+    fmt.Println("delete ip group failed:", err)
+} else {
+    fmt.Println("delete ip group success: ")
+}
+```
+
+### 创建应用型IP组协议
+
+通过以下代码，在指定应用型BLB下，创建一个IP组协议，定义IP组和后端ip之间传输协议
+```go
+args := &appblb.CreateAppIpGroupBackendPolicyArgs{
+    // 端口所属IP组ID
+    IpGroupId: ipGroupId,
+    // IP组协议类型
+    Type: "TCP",
+}
+
+// 可以选择设置相应健康检查协议的参数
+args.HealthCheckPort = 30
+args.HealthCheckIntervalInSecond = 10
+args.HealthCheckTimeoutInSecond = 10
+args.HealthCheckDownRetry = 3
+args.HealthCheckUpRetry = 3
+args.HealthCheckNormalStatus = "http_2xx|http_3xx"
+args.HealthCheckUrlPath = "/"
+args.UdpHealthCheckString = "udp"
+
+err := client.CreateAppIpGroupBackendPolicy(blbId, args)
+if err != nil {
+    fmt.Println("create ip group backend policy failed:", err)
+} else {
+    fmt.Println("create ip group backend policy success: ")
+}
+```
+
+### 更新应用型IP组协议
+
+通过以下代码，根据ID更新IP组协议
+```go
+args := &appblb.UpdateAppIpGroupBackendPolicyArgs{
+	// IP组ID
+    IpGroupId: ipGroupId, 
+    // IP组协议的ID
+    Id: id,
+    // 设置健康检查协议参数
+    HealthCheckPort:             30,
+    HealthCheckIntervalInSecond: 10, 
+    HealthCheckTimeoutInSecond:  10,
+    HealthCheckDownRetry: 3,
+    HealthCheckUpRetry: 3,
+    HealthCheckNormalStatus = "http_2xx|http_3xx",
+    HealthCheckUrlPath = "/",
+    UdpHealthCheckString = "udp"
+    
+}
+err := client.UpdateAppIpGroupBackendPolicy(blbId, args)
+if err != nil {
+    fmt.Println("update ip group backend policy failed:", err)
+} else {
+    fmt.Println("update ip group backend policy success: ")
+}
+```
+
+### 删除IP组协议
+
+通过以下代码，删除IP组协议，通过IP组id指定
+```go
+args := &appblb.DeleteAppIpGroupBackendPolicyArgs{
+	// 端口所属IP组ID
+    IpGroupId:   ipGroupId,
+	// 要删除的IP组协议ID列表
+    BackendPolicyIdList:  []string{backendPolicyId}, 
+}
+err := client.DeleteAppIpGroupBackendPolicy(blbId, args)
+if err != nil {
+    fmt.Println("delete ip group backend policy failed:", err)
+} else {
+    fmt.Println("delete ip group backend policy success: ")
+}
+```
+
+### 创建IP组成员
+
+通过以下代码，在指定应用型BLB和IP组下创建IP组成员
+```go
+args := &appblb.CreateAppIpGroupMemberArgs{
+    AppIpGroupMemberWriteOpArgs: appblb.AppIpGroupMemberWriteOpArgs{
+        // IP组成员所属IP组ID
+        IpGroupId:        ipGroupId, 
+        // 配置IP组列表IP、端口以及权重
+        MemberList: []appblb.AppIpGroupMember{  
+            {Ip: "192.168.0.25", Port: 80, Weight: 30},
+        },
+    },
+}
+err := client.CreateAppIpGroupMember(blbId, args)
+if err != nil {
+    fmt.Println("create ip group member failed:", err)
+} else {
+    fmt.Println("create ip group member success: ")
+}
+```
+
+### 更新IP组成员
+
+通过以下代码，更新指定IP组下的IP组成员信息
+```go
+args := &appblb.UpdateAppIpGroupMemberArgs{
+    AppIpGroupMemberWriteOpArgs: appblb.AppIpGroupMemberWriteOpArgs{
+        // IP组成员所属IP组ID
+    	IpGroupId:        ipGroupId, 
+        // IP组列表IP、端口以及权重
+        MemberList: []appblb.AppIpGroupMember{  
+    		{MemberId: memberId, Port: 80, Weight: 30},
+    	},
+    },
+}
+err := client.UpdateAppIpGroupMember(blbId, args)
+if err != nil {
+    fmt.Println("update ip group member failed:", err)
+} else {
+    fmt.Println("update ip group member success: ")
+}
+```
+
+### 查询IP组成员列表信息
+
+通过以下代码，查询指定LoadBalancer下所有IP组的信息
+```go
+args := &appblb.DescribeAppIpGroupMemberArgs{
+	// 成员所属IP组ID
+    IpGroupId: ipGroupId,
+}
+result, err := client.DescribeAppIpGroupMember(blbId, args)
+if err != nil {
+    fmt.Println("describe ip group member failed:", err)
+} else {
+    fmt.Println("describe ip group member success: ", result)
+}
+```
+
+### 删除IP组成员
+
+通过以下代码，删除IP组成员，通过IP组id指定
+```go
+args := &appblb.DeleteAppIpGroupMemberArgs{
+	// 成员所属IP组ID
+    IpGroupId: ipGroupId, 
+    // 要删除的IP组成员id
+    MemberIdList: []string{memberId},
+}
+err := client.DeleteAppIpGroupMember(blbId, args)
+if err != nil {
+    fmt.Println("delete ip group member failed:", err)
+} else {
+    fmt.Println("delete ip group member success: ")
+}
+```
+
+### 创建策略(策略绑定IP组id)
+
+通过以下代码，在指定应用型BLB监听器端口下创建策略
+```go
+args := &appblb.CreatePolicysArgs{
+    // 需要绑定策略的监听器监听的端口
+    ListenerPort: 80,
+    // 需要绑定的策略，其中TCP/UDP/SSL仅支持绑定一个策略，HTTP/HTTPS支持绑定多个策略 
+    AppPolicyVos: []appblb.AppPolicy{
+    {
+        // 策略描述
+        Description:      "test policy", 
+        // 策略绑定的服务器组ID
+        AppIpGroupId:  ipGroupId,
+        // 策略的优先级，有效取值范围为1-32768
+        Priority:         301, 
+        // 策略的规则列表，TCP/UDP/SSL仅支持{*：*}策略
+        RuleList: []appblb.AppRule{
+                {
+                    Key:   "*",
+                    Value: "*",	
+                },
+            },
+        },
+    },
+}
+err := client.CreatePolicys(blbId, args)
+if err != nil {
+    fmt.Println("create policy failed:", err)
+} else {
+    fmt.Println("create policy success")
+}
+```
+
+
 # 错误处理
 
 GO语言以error类型标识错误，BLB支持两种错误见下表：
@@ -1011,3 +1281,8 @@ if err != nil {
  - 创建、列表、更新、删除服务器组后端RS，并支持查询已绑定和未绑定的服务器
  - 创建、查看、更新、删除监听器端口，支持TCP/UDP/HTTP/HTTPS/SSL协议
  - 创建、查看、删除监听器相关策略
+
+再次发布：
+ - 创建、列表、更新、删除IP组
+ - 创建、更新、删除IP组协议
+ - 创建、列表、更新、删除IP组成员

@@ -2,6 +2,7 @@ package rds
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -295,6 +296,82 @@ func TestClient_ListSubnets(t *testing.T) {
 	args := &ListSubnetsArgs{}
 	_, err := RDS_CLIENT.ListSubnets(args)
 	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GetSecurityIps(t *testing.T) {
+	//isAvailable(RDS_ID)
+	listRdsArgs := &ListRdsArgs{}
+	result, err := RDS_CLIENT.ListRds(listRdsArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Available" == e.InstanceStatus {
+			res, err := RDS_CLIENT.GetSecurityIps(e.InstanceId)
+			fmt.Println(res.SecurityIps)
+			fmt.Println(res.Etag)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+func TestClient_SecurityIps(t *testing.T) {
+	//isAvailable(RDS_ID)
+	listRdsArgs := &ListRdsArgs{}
+	result, err := RDS_CLIENT.ListRds(listRdsArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Available" == e.InstanceStatus {
+			res, err := RDS_CLIENT.GetSecurityIps(e.InstanceId)
+			ExpectEqual(t.Errorf, nil, err)
+			args := &UpdateSecurityIpsArgs{
+				SecurityIps:  []string{
+					"%",
+					"192.0.0.1",
+					"192.0.0.2",
+				},
+			}
+			er := RDS_CLIENT.UpdateSecurityIps(e.InstanceId, res.Etag, args)
+			ExpectEqual(t.Errorf, nil, er)
+		}
+	}
+}
+
+func TestClient_ListParameters(t *testing.T) {
+	//isAvailable(RDS_ID)
+	listRdsArgs := &ListRdsArgs{}
+	result, err := RDS_CLIENT.ListRds(listRdsArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Available" == e.InstanceStatus {
+			res, err := RDS_CLIENT.ListParameters(e.InstanceId)
+			data, _ := json.Marshal(res)
+			fmt.Println(string(data))
+			fmt.Println(res.Etag)
+			ExpectEqual(t.Errorf, nil, err)
+		}
+	}
+}
+
+func TestClient_UpdateParameter(t *testing.T) {
+	//isAvailable(RDS_ID)
+	listRdsArgs := &ListRdsArgs{}
+	result, err := RDS_CLIENT.ListRds(listRdsArgs)
+	ExpectEqual(t.Errorf, nil, err)
+	for _, e := range result.Instances {
+		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Available" == e.InstanceStatus {
+			res, err := RDS_CLIENT.ListParameters(e.InstanceId)
+			ExpectEqual(t.Errorf, nil, err)
+			args := &UpdateParameterArgs{
+				Parameters:  []KVParameter{
+					{
+						Name: "connect_timeout",
+						Value: "15",
+					},
+				},
+			}
+			er := RDS_CLIENT.UpdateParameter(e.InstanceId, res.Etag, args)
+			ExpectEqual(t.Errorf, nil, er)
+		}
+	}
 }
 
 func TestClient_DeleteRds(t *testing.T) {

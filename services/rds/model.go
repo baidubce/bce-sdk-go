@@ -16,7 +16,9 @@
 
 package rds
 
-import "github.com/baidubce/bce-sdk-go/model"
+import (
+	"github.com/baidubce/bce-sdk-go/model"
+)
 
 type CreateRdsArgs struct {
 	ClientToken    string           `json:"-"`
@@ -237,4 +239,41 @@ type ListSubnetsArgs struct {
 type ListSubnetsResult struct {
 	Subnets             []Subnet       `json:"subnets"`
 }
+
+type GetSecurityIpsResult struct {
+	Etag                string         `json:"etag"`
+	SecurityIps         []string       `json:"securityIps"`
+}
+
+type UpdateSecurityIpsArgs struct {
+	SecurityIps         []string       `json:"securityIps"`
+}
+
+type ListParametersResult struct {
+	Etag                string          `json:"etag"`
+	Parameters          []Parameter     `json:"parameters"`
+}
+
+type Parameter struct {
+	Name                string          `json:"name"`
+	DefaultValue        string          `json:"defaultValue"`
+	Value               string          `json:"value"`
+	PendingValue        string          `json:"pendingValue"`
+	Type                string          `json:"type"`
+	Dynamic             string          `json:"dynamic"`
+	Modifiable          string          `json:"modifiable"`
+	AllowedValues       string          `json:"allowedValues"`
+	Desc                string          `json:"desc"`
+}
+
+type UpdateParameterArgs struct {
+	Parameters          []KVParameter   `json:"parameters"`
+}
+
+type KVParameter struct {
+	Name                string          `json:"name"`
+	Value               string          `json:"value"`
+}
+
+
 

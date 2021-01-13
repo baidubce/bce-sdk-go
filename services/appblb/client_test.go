@@ -14,17 +14,21 @@ import (
 )
 
 var (
-	APPBLB_CLIENT             *Client
-	APPBLB_ID                 string
-	APPBLB_SERVERGROUP_ID     string
-	APPBLB_SERVERGROUPPORT_ID string
-	APPBLB_POLICY_ID          string
+	APPBLB_CLIENT                    *Client
+	APPBLB_ID                        string
+	APPBLB_SERVERGROUP_ID            string
+	APPBLB_SERVERGROUPPORT_ID        string
+	APPBLB_POLICY_ID                 string
+	APPBLB_IPGROUP_ID                string
+	IPGROUP_MEMBER_ID                string
+	APPBLB_IPGROUPP_BACKENDPOLICY_ID string
 
 	// set these values before start test
-	VPC_TEST_ID    = ""
-	SUBNET_TEST_ID = ""
-	INSTANCE_ID    = ""
-	CERT_ID        = ""
+	VPC_TEST_ID           = ""
+	SUBNET_TEST_ID        = ""
+	INSTANCE_ID           = ""
+	CERT_ID               = ""
+	IPGROUP_MEMBER_IP     = ""
 	CLUSTER_PROPERTY_TEST = ""
 )
 
@@ -84,11 +88,11 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 
 func TestClient_CreateLoadBalancer(t *testing.T) {
 	createArgs := &CreateLoadBalancerArgs{
-		ClientToken: 		getClientToken(),
-		Name:        		"sdkBlb",
-		VpcId:       		VPC_TEST_ID,
-		SubnetId:    		SUBNET_TEST_ID,
-		ClusterProperty:    CLUSTER_PROPERTY_TEST,
+		ClientToken:     getClientToken(),
+		Name:            "sdkBlb",
+		VpcId:           VPC_TEST_ID,
+		SubnetId:        SUBNET_TEST_ID,
+		ClusterProperty: CLUSTER_PROPERTY_TEST,
 	}
 
 	createResult, err := APPBLB_CLIENT.CreateLoadBalancer(createArgs)
@@ -250,6 +254,115 @@ func TestClient_DeleteAppServerGroup(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
+func TestClient_CreateAppIpGroup(t *testing.T) {
+	createArgs := &CreateAppIpGroupArgs{
+		ClientToken: getClientToken(),
+		Name:        "sdkTest",
+	}
+	createResult, err := APPBLB_CLIENT.CreateAppIpGroup(APPBLB_ID, createArgs)
+	ExpectEqual(t.Errorf, nil, err)
+
+	APPBLB_IPGROUP_ID = createResult.Id
+}
+
+func TestClient_UpdateAppIpGroup(t *testing.T) {
+	updateArgs := &UpdateAppIpGroupArgs{
+		IpGroupId:   APPBLB_IPGROUP_ID,
+		Name:        "testSdk",
+		Desc:        "test desc",
+		ClientToken: getClientToken(),
+	}
+	err := APPBLB_CLIENT.UpdateAppIpGroup(APPBLB_ID, updateArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DescribeAppIpGroup(t *testing.T) {
+	describeArgs := &DescribeAppIpGroupArgs{}
+	res, err := APPBLB_CLIENT.DescribeAppIpGroup(APPBLB_ID, describeArgs)
+	fmt.Println(res)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_CreateAppIpGroupBackendPolicy(t *testing.T) {
+	createArgs := &CreateAppIpGroupBackendPolicyArgs{
+		ClientToken: getClientToken(),
+		IpGroupId:   APPBLB_IPGROUP_ID,
+		Type:        "TCP",
+	}
+	err := APPBLB_CLIENT.CreateAppIpGroupBackendPolicy(APPBLB_ID, createArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UpdateAppIpGroupBackendPolicy(t *testing.T) {
+	updateArgs := &UpdateAppIpGroupBackendPolicyArgs{
+		ClientToken:                 getClientToken(),
+		IpGroupId:                   APPBLB_IPGROUP_ID,
+		Id:                          APPBLB_IPGROUPP_BACKENDPOLICY_ID,
+		HealthCheckIntervalInSecond: 10,
+		HealthCheckTimeoutInSecond:  10,
+	}
+	err := APPBLB_CLIENT.UpdateAppIpGroupBackendPolicy(APPBLB_ID, updateArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DeleteAppIpGroupBackendPolicy(t *testing.T) {
+	deleteArgs := &DeleteAppIpGroupBackendPolicyArgs{
+		IpGroupId:           APPBLB_IPGROUP_ID,
+		BackendPolicyIdList: []string{APPBLB_IPGROUPP_BACKENDPOLICY_ID},
+		ClientToken:         getClientToken(),
+	}
+	err := APPBLB_CLIENT.DeleteAppIpGroupBackendPolicy(APPBLB_ID, deleteArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_CreateAppIpGroupMember(t *testing.T) {
+	createArgs := &CreateAppIpGroupMemberArgs{
+		AppIpGroupMemberWriteOpArgs: AppIpGroupMemberWriteOpArgs{
+			ClientToken: getClientToken(),
+			IpGroupId:   APPBLB_IPGROUP_ID,
+			MemberList: []AppIpGroupMember{
+				{Ip: IPGROUP_MEMBER_IP, Port: 30},
+			},
+		},
+	}
+	err := APPBLB_CLIENT.CreateAppIpGroupMember(APPBLB_ID, createArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UpdateAppIpGroupMember(t *testing.T) {
+	updateArgs := &UpdateAppIpGroupMemberArgs{
+		AppIpGroupMemberWriteOpArgs: AppIpGroupMemberWriteOpArgs{
+			ClientToken: getClientToken(),
+			IpGroupId:   APPBLB_IPGROUP_ID,
+			MemberList: []AppIpGroupMember{
+				{Ip: IPGROUP_MEMBER_IP, Port: 50, MemberId: IPGROUP_MEMBER_ID},
+			},
+		},
+	}
+	err := APPBLB_CLIENT.UpdateAppIpGroupMember(APPBLB_ID, updateArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DescribeAppIpGroupMember(t *testing.T) {
+	describeArgs := &DescribeAppIpGroupMemberArgs{
+		IpGroupId: APPBLB_IPGROUP_ID,
+	}
+	res, err := APPBLB_CLIENT.DescribeAppIpGroupMember(APPBLB_ID, describeArgs)
+	fmt.Println(res)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DeleteAppIpGroupMember(t *testing.T) {
+	deleteArgs := &DeleteAppIpGroupMemberArgs{
+		IpGroupId:    APPBLB_IPGROUP_ID,
+		MemberIdList: []string{IPGROUP_MEMBER_ID},
+		ClientToken:  getClientToken(),
+	}
+	err := APPBLB_CLIENT.DeleteAppIpGroupMember(APPBLB_ID, deleteArgs)
+
+	ExpectEqual(t.Errorf, nil, err)
+}
+
 func TestClient_CreateAppTCPListener(t *testing.T) {
 	createArgs := &CreateAppTCPListenerArgs{
 		ClientToken:  getClientToken(),
@@ -352,14 +465,37 @@ func TestClient_CreatePolicys(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
+func TestClient_CreatePolicysIpGroup(t *testing.T) {
+	createArgs := &CreatePolicysArgs{
+		ListenerPort: 80,
+		ClientToken:  getClientToken(),
+		AppPolicyVos: []AppPolicy{
+			{
+				Description:  "test policy",
+				AppIpGroupId: APPBLB_IPGROUP_ID,
+				Priority:     100,
+				RuleList: []AppRule{
+					{
+						Key:   "*",
+						Value: "*",
+					},
+				},
+			},
+		},
+	}
+	err := APPBLB_CLIENT.CreatePolicys(APPBLB_ID, createArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
 func TestClient_DescribePolicys(t *testing.T) {
 	describeArgs := &DescribePolicysArgs{
 		Port: 80,
 	}
-	result, err := APPBLB_CLIENT.DescribePolicys(APPBLB_ID, describeArgs)
+	res, err := APPBLB_CLIENT.DescribePolicys(APPBLB_ID, describeArgs)
+	fmt.Println(res)
 	ExpectEqual(t.Errorf, nil, err)
 
-	APPBLB_POLICY_ID = result.PolicyList[0].Id
+	APPBLB_POLICY_ID = res.PolicyList[0].Id
 }
 
 func TestClient_DeletePolicys(t *testing.T) {

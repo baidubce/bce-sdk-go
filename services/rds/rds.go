@@ -451,3 +451,79 @@ func (c *Client) ListSubnets(args *ListSubnetsArgs) (*ListSubnetsResult, error) 
 	return result, err
 }
 
+// GetSecurityIps - get all SecurityIps
+//
+// PARAMS:
+//     - instanceId: the specific rds Instance's ID
+// RETURNS:
+//     - *GetSecurityIpsResult: all security IP
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetSecurityIps(instanceId string) (*GetSecurityIpsResult, error) {
+	result := &GetSecurityIpsResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getRdsUriWithInstanceId(instanceId)+"/securityIp").
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// UpdateSecurityIps - update SecurityIps
+//
+// PARAMS:
+//     - instanceId: the specific rds Instance's ID
+//     - Etag: get latest etag by GetSecurityIps
+//     - Args: all SecurityIps
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateSecurityIps(instanceId, Etag string, args *UpdateSecurityIpsArgs) error {
+
+	headers := map[string]string{"x-bce-if-match":Etag}
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getRdsUriWithInstanceId(instanceId)+"/securityIp").
+		WithHeaders(headers).
+		WithBody(args).
+		Do()
+}
+
+// ListParameters - list all parameters of a RDS instance
+//
+// PARAMS:
+//     - instanceId: the specific rds Instance's ID
+// RETURNS:
+//     - *ListParametersResult: the result of list all parameters
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListParameters(instanceId string) (*ListParametersResult, error) {
+	result := &ListParametersResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getRdsUriWithInstanceId(instanceId)+"/parameter").
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// UpdateParameter - update Parameter
+//
+// PARAMS:
+//     - instanceId: the specific rds Instance's ID
+//     - Etag: get latest etag by ListParameters
+//     - Args: *UpdateParameterArgs
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateParameter(instanceId, Etag string, args *UpdateParameterArgs) error {
+
+	headers := map[string]string{"x-bce-if-match":Etag}
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getRdsUriWithInstanceId(instanceId)+"/parameter").
+		WithHeaders(headers).
+		WithBody(args).
+		Do()
+}
+

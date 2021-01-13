@@ -38,6 +38,10 @@ const (
 	APP_SSLLISTENER_URL   = "/SSLlistener"
 
 	POLICYS_URL = "/policys"
+
+	APP_IP_GROUP_URL      = "/ipgroup"
+	APP_IP_GROUP_BACKEND_POLICY_URL = "/ipgroup/backendpolicy"
+	APP_IP_GROUP_MEMBER_URL = "/ipgroup/member"
 )
 
 // Client of APPBLB service is a kind of BceClient, so derived from BceClient
@@ -110,4 +114,16 @@ func getAppSSLListenerUri(id string) string {
 
 func getPolicysUrl(id string) string {
 	return URI_PREFIX + REQUEST_APPBLB_URL + "/" + id + POLICYS_URL
+}
+
+func getAppIpGroupUri(id string) string {
+	return URI_PREFIX + REQUEST_APPBLB_URL + "/" + id + APP_IP_GROUP_URL
+}
+
+func getAppIpGroupBackendPolicyUri(id string) string {
+	return URI_PREFIX + REQUEST_APPBLB_URL + "/" + id + APP_IP_GROUP_BACKEND_POLICY_URL
+}
+
+func getAppIpGroupMemberUri(id string) string {
+	return URI_PREFIX + REQUEST_APPBLB_URL + "/" + id + APP_IP_GROUP_MEMBER_URL
 }

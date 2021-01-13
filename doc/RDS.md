@@ -753,6 +753,63 @@ if err != nil {
 fmt.Printf("delete account success\n")
 ```
 
+# 参数管理
+
+## 获取参数列表
+
+使用以下代码可以获取一个实例下的数据库参数列表。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.ListParameters(instanceId)
+if err != nil {
+    fmt.Printf("get parameter list error: %+v\n", err)
+    return
+}
+data, _ := json.Marshal(result)
+fmt.Println(string(data))
+fmt.Printf("get parameter list success\n")
+fmt.Println(result.Etag)
+```
+
+> 注意:
+>
+> - 在修改配置参数时需要通过该接口获取Etag。
+
+## 修改配置参数
+
+使用以下代码可以云数据库 RDS for MySQL 的参数配置。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.ListParameters(instanceId)
+if err != nil {
+    fmt.Printf("get parameter list error: %+v\n", err)
+    return
+}
+fmt.Printf("get parameter list success\n")
+fmt.Println(result.Etag)
+
+args := &rds.UpdateParameterArgs{
+				Parameters:  []rds.KVParameter{
+					{
+						Name: "connect_timeout",
+						Value: "15",
+					},
+				},
+			}
+er := client.UpdateParameter(instanceId, result.Etag, args)
+if er != nil {
+    fmt.Printf("update parameter error: %+v\n", er)
+    return
+}
+fmt.Printf("update parameter success\n")
+```
+
+> 注意:
+>
+> - 在修改配置参数时需要通过获取参数列表接口获取最新的Etag。
+
 # 其它
 
 ## 获取备份列表
@@ -807,6 +864,61 @@ fmt.Printf("get subnet list success\n")
 > 注意:
 >
 > - 请求参数 vpcId 和 zoneName 不是必须的。
+
+## 查看白名单
+
+使用以下代码可以获取一个实例下的白名单列表。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetSecurityIps(instanceId)
+if err != nil {
+    fmt.Printf("get securityIp list error: %+v\n", err)
+    return
+}
+data, _ := json.Marshal(result)
+fmt.Println(string(data))
+fmt.Println(result.Etag)
+fmt.Printf("get securityIp list success\n")
+```
+
+> 注意:
+>
+> - 在更新白名单时需要通过该接口获取最新的Etag。
+
+## 更新白名单
+
+使用以下代码可以更新一个实例下的白名单列表。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetSecurityIps(instanceId)
+if err != nil {
+    fmt.Printf("get securityIp list error: %+v\n", err)
+    return
+}
+fmt.Println(result.Etag)
+fmt.Printf("get securityIp list success\n")
+
+args := &rds.UpdateSecurityIpsArgs{
+				SecurityIps:  []string{
+					"%",
+					"192.0.0.1",
+					"192.0.0.2",
+				},
+			}
+er := client.UpdateSecurityIps(instanceId, result.Etag, args)
+if er != nil {
+    fmt.Printf("update securityIp list error: %+v\n", er)
+    return
+}
+fmt.Printf("update securityIp list success\n")
+```
+
+> 注意:
+>
+> - 在更新白名单时需要通过查看白名单接口获取最新的Etag。
+> - 白名单需要全量更新，每次更新需要把全部白名单列表都添加上。
 
 # 错误处理
 

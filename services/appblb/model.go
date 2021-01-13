@@ -196,13 +196,13 @@ type DescribeRsMountResult struct {
 }
 
 type CreateLoadBalancerArgs struct {
-	ClientToken 		string           `json:"-"`
-	Name        		string           `json:"name,omitempty"`
-	Description 		string           `json:"desc,omitempty"`
-	SubnetId    		string           `json:"subnetId"`
-	VpcId       		string           `json:"vpcId"`
-	ClusterProperty     string     		 `json:"clusterProperty"`
-	Tags        		[]model.TagModel `json:"tags,omitempty"`
+	ClientToken     string           `json:"-"`
+	Name            string           `json:"name,omitempty"`
+	Description     string           `json:"desc,omitempty"`
+	SubnetId        string           `json:"subnetId"`
+	VpcId           string           `json:"vpcId"`
+	ClusterProperty string           `json:"clusterProperty"`
+	Tags            []model.TagModel `json:"tags,omitempty"`
 }
 
 type CreateLoadBalanceResult struct {
@@ -229,17 +229,17 @@ type DescribeLoadBalancersArgs struct {
 }
 
 type AppBLBModel struct {
-	BlbId       	string           `json:"blbId"`
-	Name        	string           `json:"name"`
-	Description 	string           `json:"desc"`
-	Address     	string           `json:"address"`
-	Status      	BLBStatus        `json:"status"`
-	VpcId       	string           `json:"vpcId"`
-	SubnetId    	string           `json:"subnetId"`
-	PublicIp    	string           `json:"publicIp"`
-	Layer4ClusterId string    	 	 `json:"layer4ClusterId"`
-	Layer7ClusterId string     	 	 `json:"layer7ClusterId"`
-	Tags        	[]model.TagModel `json:"tags"`
+	BlbId           string           `json:"blbId"`
+	Name            string           `json:"name"`
+	Description     string           `json:"desc"`
+	Address         string           `json:"address"`
+	Status          BLBStatus        `json:"status"`
+	VpcId           string           `json:"vpcId"`
+	SubnetId        string           `json:"subnetId"`
+	PublicIp        string           `json:"publicIp"`
+	Layer4ClusterId string           `json:"layer4ClusterId"`
+	Layer7ClusterId string           `json:"layer7ClusterId"`
+	Tags            []model.TagModel `json:"tags"`
 }
 
 type DescribeLoadBalancersResult struct {
@@ -253,21 +253,21 @@ type ListenerModel struct {
 }
 
 type DescribeLoadBalancerDetailResult struct {
-	BlbId       	string           `json:"blbId"`
-	Status      	BLBStatus        `json:"status"`
-	Description 	string           `json:"desc"`
-	Address     	string           `json:"address"`
-	PublicIp    	string           `json:"publicIp"`
-	Cidr        	string           `json:"cidr"`
-	VpcName     	string           `json:"vpcName"`
-	SubnetCider 	string           `json:"subnetCider"`
-	SubnetName  	string           `json:"subnetName"`
-	CreateTime  	string           `json:"createTime"`
-	ReleaseTime 	string           `json:"releaseTime"`
-	Layer4ClusterId string    		 `json:"layer4ClusterId"`
-	Layer7ClusterId string     		 `json:"layer7ClusterId"`
-	Listener    	[]ListenerModel  `json:"listener"`
-	Tags        	[]model.TagModel `json:"tags"`
+	BlbId           string           `json:"blbId"`
+	Status          BLBStatus        `json:"status"`
+	Description     string           `json:"desc"`
+	Address         string           `json:"address"`
+	PublicIp        string           `json:"publicIp"`
+	Cidr            string           `json:"cidr"`
+	VpcName         string           `json:"vpcName"`
+	SubnetCider     string           `json:"subnetCider"`
+	SubnetName      string           `json:"subnetName"`
+	CreateTime      string           `json:"createTime"`
+	ReleaseTime     string           `json:"releaseTime"`
+	Layer4ClusterId string           `json:"layer4ClusterId"`
+	Layer7ClusterId string           `json:"layer7ClusterId"`
+	Listener        []ListenerModel  `json:"listener"`
+	Tags            []model.TagModel `json:"tags"`
 }
 
 type CreateAppTCPListenerArgs struct {
@@ -480,11 +480,15 @@ type AppRule struct {
 }
 
 type AppPolicy struct {
-	Description      string    `json:"desc"`
-	AppServerGroupId string    `json:"appServerGroupId"`
-	BackendPort      uint16    `json:"backendPort"`
-	Priority         int       `json:"priority"`
-	RuleList         []AppRule `json:"ruleList"`
+	Description      string `json:"desc"`
+	AppServerGroupId string `json:"appServerGroupId"`
+	AppIpGroupId     string `json:"appIpGroupId"`
+	AppIpGroupName   string `json:"appIpGroupName"`
+	GroupType        string `json:"groupType"`
+
+	BackendPort uint16    `json:"backendPort,omitempty"`
+	Priority    int       `json:"priority"`
+	RuleList    []AppRule `json:"ruleList"`
 
 	Id                 string `json:"id"`
 	FrontendPort       int    `json:"frontendPort"`
@@ -513,4 +517,134 @@ type DeletePolicysArgs struct {
 	ClientToken  string   `json:"-"`
 	Port         uint16   `json:"port"`
 	PolicyIdList []string `json:"policyIdList"`
+}
+
+type CreateAppIpGroupArgs struct {
+	Name        string             `json:"name,omitempty"`
+	Desc        string             `json:"desc,omitempty"`
+	MemberList  []AppIpGroupMember `json:"memberList,omitempty"`
+	ClientToken string             `json:"-"`
+}
+
+type AppIpGroupMember struct {
+	Ip     string `json:"ip,omitempty"`
+	Port   int    `json:"port,omitempty"`
+	Weight int    `json:"weight,omitempty"`
+	MemberId     string `json:"memberId,omitempty"`
+}
+
+type CreateAppIpGroupResult struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+	Desc string `json:"desc"`
+}
+
+type UpdateAppIpGroupArgs struct {
+	IpGroupId   string `json:"ipGroupId"`
+	Name        string `json:"name,omitempty"`
+	Desc        string `json:"desc,omitempty"`
+	ClientToken string `json:"-"`
+}
+
+type DescribeAppIpGroupArgs struct {
+	Name         string
+	ExactlyMatch bool
+	Marker       string
+	MaxKeys      int
+}
+
+type DescribeAppIpGroupResult struct {
+	DescribeResultMeta
+	AppIpGroupList []AppIpGroup `json:"appIpGroupList"`
+}
+
+type AppIpGroup struct {
+	Id                string                    `json:"id"`
+	Name              string                    `json:"name"`
+	Desc              string                    `json:"desc"`
+	BackendPolicyList []AppIpGroupBackendPolicy `json:"backendPolicyList"`
+}
+
+type AppIpGroupBackendPolicy struct {
+	Id                          string `json:"id"`
+	Type                        string `json:"type"`
+	HealthCheck                 string `json:"healthCheck"`
+	HealthCheckPort             int    `json:"healthCheckPort"`
+	HealthCheckTimeoutInSecond  int    `json:"healthCheckTimeoutInSecond"`
+	HealthCheckIntervalInSecond int    `json:"healthCheckIntervalInSecond"`
+	HealthCheckDownRetry        int    `json:"healthCheckDownRetry"`
+	HealthCheckUpRetry          int    `json:"healthCheckUpRetry"`
+	HealthCheckNormalStatus     string `json:"healthCheckNormalStatus"`
+	HealthCheckUrlPath          string `json:"healthCheckUrlPath"`
+	UdpHealthCheckString        string `json:"udpHealthCheckString"`
+}
+
+type DeleteAppIpGroupArgs struct {
+	IpGroupId   string `json:"ipGroupId"`
+	ClientToken string `json:"-"`
+}
+
+type CreateAppIpGroupBackendPolicyArgs struct {
+	ClientToken                 string `json:"-"`
+	IpGroupId                   string `json:"ipGroupId"`
+	Type                        string `json:"type"`
+	HealthCheckPort             int    `json:"healthCheckPort,omitempty"`
+	HealthCheckTimeoutInSecond  int    `json:"healthCheckTimeoutInSecond,omitempty"`
+	HealthCheckIntervalInSecond int    `json:"healthCheckIntervalInSecond,omitempty"`
+	HealthCheckDownRetry        int    `json:"healthCheckDownRetry,omitempty"`
+	HealthCheckUpRetry          int    `json:"healthCheckUpRetry,omitempty"`
+	HealthCheckNormalStatus     string `json:"healthCheckNormalStatus,omitempty"`
+	HealthCheckUrlPath          string `json:"healthCheckUrlPath,omitempty"`
+	UdpHealthCheckString        string `json:"udpHealthCheckString,omitempty"`
+}
+
+type UpdateAppIpGroupBackendPolicyArgs struct {
+	ClientToken                 string `json:"-"`
+	IpGroupId                   string `json:"ipGroupId"`
+	Id                          string `json:"id"`
+	HealthCheckPort             int    `json:"healthCheckPort,omitempty"`
+	HealthCheckUrlPath          string `json:"healthCheckUrlPath,omitempty"`
+	HealthCheckTimeoutInSecond  int    `json:"healthCheckTimeoutInSecond,omitempty"`
+	HealthCheckIntervalInSecond int    `json:"healthCheckIntervalInSecond,omitempty"`
+	HealthCheckDownRetry        int    `json:"healthCheckDownRetry,omitempty"`
+	HealthCheckUpRetry          int    `json:"healthCheckUpRetry,omitempty"`
+	HealthCheckNormalStatus     string `json:"healthCheckNormalStatus,omitempty"`
+	UdpHealthCheckString        string `json:"udpHealthCheckString,omitempty"`
+}
+
+type DeleteAppIpGroupBackendPolicyArgs struct {
+	IpGroupId           string   `json:"ipGroupId"`
+	BackendPolicyIdList []string `json:"backendPolicyIdList"`
+	ClientToken         string   `json:"-"`
+}
+
+type AppIpGroupMemberWriteOpArgs struct {
+	IpGroupId   string             `json:"ipGroupId"`
+	MemberList  []AppIpGroupMember `json:"memberList"`
+	ClientToken string             `json:"-"`
+}
+
+type CreateAppIpGroupMemberArgs struct {
+	AppIpGroupMemberWriteOpArgs
+}
+
+type UpdateAppIpGroupMemberArgs struct {
+	AppIpGroupMemberWriteOpArgs
+}
+
+type DescribeAppIpGroupMemberArgs struct {
+	Marker    string
+	MaxKeys   int
+	IpGroupId string
+}
+
+type DescribeAppIpGroupMemberResult struct {
+	MemberList []AppIpGroupMember `json:"memberList"`
+	DescribeResultMeta
+}
+
+type DeleteAppIpGroupMemberArgs struct {
+	IpGroupId    string   `json:"ipGroupId"`
+	MemberIdList []string `json:"memberIdList"`
+	ClientToken  string   `json:"-"`
 }

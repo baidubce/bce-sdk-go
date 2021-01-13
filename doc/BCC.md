@@ -801,10 +801,8 @@ if err != nil {
 ```go
 // 设置你要操作的instanceId
 instanceId := "your-choose-instance-id"
-//设置是否展示部署集字段
-isDeploySet := "your-isDeploySet"
 
-result, err := client.GetInstanceDetail(instanceId,isDeploySet)
+result, err := client.GetInstanceDetail(instanceId)
 if err != nil {
     fmt.Println("get instance detail failed:", err)
 } else 
