@@ -1062,3 +1062,11 @@ func TestRecoveryInstance(t *testing.T) {
 		fmt.Println("recovery instance success")
 	}
 }
+
+func TestGetAllStocks(t *testing.T) {
+	if res, err := BCC_CLIENT.GetAllStocks(); err != nil {
+		fmt.Println("get all stocks failed: ", err)
+	} else {
+		fmt.Println("get all stocks success, result: ", res)
+	}
+}

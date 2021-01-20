@@ -257,6 +257,17 @@ func (c *Client) RebuildInstance(instanceId string, isPreserveData bool, args *R
 	return RebuildInstance(c, instanceId, body)
 }
 
+// GetInstanceVNC - get an instance's VNC url
+//
+// PARAMS:
+//     - instanceId: the specific instance ID
+// RETURNS:
+//     - *api.GetInstanceVNCResult: the result of get instance's VNC url
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetInstanceVNC(instanceId string) (*GetInstanceVNCResult, error) {
+	return GetInstanceVNC(c, instanceId)
+}
+
 // RebuildBatchInstance - batch rebuild instances
 //
 // PARAMS:

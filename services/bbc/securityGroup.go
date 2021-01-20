@@ -36,8 +36,6 @@ func BindSecurityGroups(cli bce.Client, reqBody *bce.Body) error {
 	return nil
 }
 
-
-
 // UnBindSecurityGroups - UnBind Security Groups
 //
 // PARAMS:
@@ -66,10 +64,10 @@ func UnBindSecurityGroups(cli bce.Client, reqBody *bce.Body) error {
 	return nil
 }
 
-func getBindSecurityGroupsUri() string  {
+func getBindSecurityGroupsUri() string {
 	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + SECURITY_GROUP_URI
 }
 
-func getUnBindSecurityGroupsUri() string  {
+func getUnBindSecurityGroupsUri() string {
 	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + SECURITY_GROUP_URI
 }

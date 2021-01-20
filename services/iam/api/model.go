@@ -1,0 +1,152 @@
+/*
+ * Copyright 2021 Baidu, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
+ */
+
+package api
+
+import "time"
+
+type UserModel struct {
+	Id          string    `json:"id"`
+	Name        string    `json:"name"`
+	CreateTime  time.Time `json:"createTime"`
+	Description string    `json:"description"`
+	Enabled     bool      `json:"enabled"`
+}
+
+type CreateUserArgs struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+type CreateUserResult UserModel
+
+type GetUserResult UserModel
+
+type UpdateUserArgs struct {
+	Name        string `json:"name,omitempty"`
+	Description string `json:"description,omitempty"`
+}
+
+type UpdateUserResult UserModel
+
+type ListUserResult struct {
+	Users []UserModel `json:"users"`
+}
+
+type LoginProfileModel struct {
+	Password          string `json:"password,omitempty"`
+	NeedResetPassword bool   `json:"needResetPassword"`
+	EnabledLoginMfa   bool   `json:"enabledLoginMfa"`
+	LoginMfaType      string `json:"loginMfaType,omitempty"`
+	ThirdPartyType    bool   `json:"thirdPartyType,omitempty"`
+	ThirdPartyAccount bool   `json:"thirdPartyAccount,omitempty"`
+}
+
+type UpdateUserLoginProfileArgs LoginProfileModel
+
+type UpdateUserLoginProfileResult LoginProfileModel
+
+type GetUserLoginProfileResult LoginProfileModel
+
+type GroupModel struct {
+	Id          string    `json:"id"`
+	Name        string    `json:"name"`
+	CreateTime  time.Time `json:"createTime"`
+	Description string    `json:"description"`
+}
+
+type CreateGroupArgs struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+type CreateGroupResult GroupModel
+
+type GetGroupResult GroupModel
+
+type UpdateGroupArgs struct {
+	Name        string `json:"name,omitempty"`
+	Description string `json:"description,omitempty"`
+}
+
+type UpdateGroupResult GroupModel
+
+type ListGroupResult struct {
+	Groups []GroupModel `json:"groups"`
+}
+
+type ListUsersInGroupResult ListUserResult
+
+type ListGroupsForUserResult ListGroupResult
+
+type AclEntry struct {
+	Eid        string   `json:"eid,omitempty"`
+	Service    string   `json:"service"`
+	Region     string   `json:"region"`
+	Permission []string `json:"permission"`
+	Resource   []string `json:"resource"`
+	Effect     string   `json:"effect"`
+}
+
+type Acl struct {
+	Id                string     `json:"id,omitempty"`
+	AccessControlList []AclEntry `json:"accessControlList"`
+}
+
+type PolicyModel struct {
+	Id          string    `json:"id"`
+	Name        string    `json:"name"`
+	Type        string    `json:"type"`
+	CreateTime  time.Time `json:"createTime"`
+	Description string    `json:"description"`
+	Document    string    `json:"document"`
+}
+
+type CreatePolicyArgs struct {
+	Name        string `json:"name"`
+	Description string `json:"description,omitempty"`
+	Document    string `json:"document"`
+}
+
+type CreatePolicyResult PolicyModel
+
+type GetPolicyResult PolicyModel
+
+type ListPolicyResult struct {
+	Policies []PolicyModel `json:"policies"`
+}
+
+type AttachPolicyToUserArgs struct {
+	UserName   string `json:"userName"`
+	PolicyName string `json:"policyName"`
+	PolicyType string `json:"policyType,omitempty"`
+}
+
+type DetachPolicyFromUserArgs struct {
+	UserName   string `json:"userName"`
+	PolicyName string `json:"policyName"`
+	PolicyType string `json:"policyType,omitempty"`
+}
+
+type AttachPolicyToGroupArgs struct {
+	GroupName  string `json:"groupName"`
+	PolicyName string `json:"policyName"`
+	PolicyType string `json:"policyType,omitempty"`
+}
+
+type DetachPolicyFromGroupArgs struct {
+	GroupName  string `json:"groupName"`
+	PolicyName string `json:"policyName"`
+	PolicyType string `json:"policyType,omitempty"`
+}

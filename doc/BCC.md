@@ -35,7 +35,7 @@ import (
 
 func main() {
 	// 用户的Access Key ID和Secret Access Key
-	ACCESS_KEY_ID, SECRET_ACCESS_KEY := <your-access-key-id>, <your-secret-access-key>
+	AK, SK := <your-access-key-id>, <your-secret-access-key>
 
 	// 用户指定的Endpoint
 	ENDPOINT := <domain-name>
@@ -45,7 +45,7 @@ func main() {
 }
 ```
 
-在上面代码中，`ACCESS_KEY_ID`对应控制台中的“Access Key ID”，`SECRET_ACCESS_KEY`对应控制台中的“Access Key Secret”，获取方式请参考《操作指南 [管理ACCESSKEY](https://cloud.baidu.com/doc/BCC/s/ojwvynrqn)》。第三个参数`ENDPOINT`支持用户自己指定域名，如果设置为空字符串，会使用默认域名作为BCC的服务地址。
+在上面代码中，`AK`对应控制台中的“Access Key ID”，`SK`对应控制台中的“Access Key Secret”，获取方式请参考《操作指南 [管理ACCESSKEY](https://cloud.baidu.com/doc/BCC/s/ojwvynrqn)》。第三个参数`ENDPOINT`支持用户自己指定域名，如果设置为空字符串，会使用默认域名作为BCC的服务地址。
 
 > **注意：**`ENDPOINT`参数需要用指定区域的域名来进行定义，如服务所在区域为北京，则为`bcc.bj.baidubce.com`。
 
@@ -2692,6 +2692,19 @@ if res, err := BCC_CLIENT.ListTypeZones(args); err != nil {
     fmt.Println("Get the specific zone flavor success, result: ", res)
 }
 ```
+
+### 查询bcc、bbc套餐库存
+同时查询bcc、bbc套餐的最大库存。
+只查询用户在console界面上可见的套餐库存。
+查询时需要用户开启查询库存白名单。
+```go
+if res, err := BCC_CLIENT.GetAllStocks(); err != nil {
+    fmt.Println("get all stocks failed: ", err)
+} else {
+    fmt.Println("get all stocks success, result: ", res)
+}
+```
+
 ### 查询实例套餐库存
 查询实例资源套餐规格对应的库存。
 ```go

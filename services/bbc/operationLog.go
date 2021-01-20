@@ -18,6 +18,7 @@
 package bbc
 
 import (
+	"fmt"
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
 )
@@ -41,7 +42,7 @@ func GetOperationLog(cli bce.Client, args *GetOperationLogArgs) (*GetOperationLo
 	}
 
 	if args.MaxKeys != 0 {
-		req.SetParam("maxKeys", string(args.MaxKeys))
+		req.SetParam("maxKeys", fmt.Sprintf("%d", args.MaxKeys))
 	}
 
 	if args.StartTime != "" {

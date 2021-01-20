@@ -1250,6 +1250,35 @@ func GetInstanceResizeStock(cli bce.Client, args *ResizeInstanceStockArgs) (*Ins
 	return jsonBody, nil
 }
 
+// GetAllStocks - get the bcc and bbc's stock
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+// RETURNS:
+//     - *GetAllStocksResult: the result of the bcc and bbc's stock
+//     - error: nil if success otherwise the specific error
+func GetAllStocks(cli bce.Client) (*GetAllStocksResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getAllStocks())
+	req.SetMethod(http.GET)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &GetAllStocksResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
 func GetInstanceCreateStock(cli bce.Client, args *CreateInstanceStockArgs) (*InstanceStockResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}

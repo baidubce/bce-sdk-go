@@ -46,6 +46,7 @@ func init() {
 	conf := filepath.Join(f, "config.json")
 	fp, err := os.Open(conf)
 	if err != nil {
+		fmt.Println("config json file of ak/sk not given: ", conf)
 		log.Fatal("config json file of ak/sk not given:", conf)
 		os.Exit(1)
 	}
@@ -480,7 +481,7 @@ func TestGetInstanceEni(t *testing.T) {
 }
 
 func TestGetInstanceStock(t *testing.T) {
-	args := &CreateInstanceStockArgs {
+	args := &CreateInstanceStockArgs{
 		FlavorId: "BBC-G4-PDDAS",
 		ZoneName: "cn-su-a",
 	}
@@ -697,4 +698,10 @@ func TestRecoveryInstances(t *testing.T) {
 	} else {
 		fmt.Println("recovery instance success")
 	}
+}
+
+func TestGetInstanceVnc(t *testing.T) {
+	res, err := BBC_CLIENT.GetInstanceVNC(BBC_TestBbcId)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println("get instance vnc success: ", res.VNCUrl)
 }

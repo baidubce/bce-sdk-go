@@ -39,7 +39,7 @@ import "github.com/baidubce/bce-sdk-go/services/bbc"
 
 func main() {
 	// 用户的Access Key ID和Secret Access Key
-	ACCESS_KEY_ID, SECRET_ACCESS_KEY := <your-access-key-id>, <your-secret-access-key>
+	AK, SK := <your-access-key-id>, <your-secret-access-key>
 
 	// 用户指定的Endpoint
 	ENDPOINT := <domain-name>
@@ -48,7 +48,7 @@ func main() {
 	bbcClient, err := bbc.NewClient(AK, SK, ENDPOINT)
 }
 ```
-在上面代码中，`ACCESS_KEY_ID`对应控制台中的“Access Key ID”，`SECRET_ACCESS_KEY`对应控制台中的“Access Key Secret”，
+在上面代码中，`AK`对应控制台中的“Access Key ID”，`SK`对应控制台中的“Access Key Secret”，
 获取方式请参考[获取AKSK](https://cloud.baidu.com/doc/Reference/s/9jwvz2egb)。
 第三个参数`ENDPOINT`支持用户自己指定域名，如果设置为空字符串，会使用默认域名作为BBC的服务地址。
 
@@ -465,6 +465,22 @@ if err := bbcClient.ModifyInstancePassword(instanceId, modifyInstancePasswordArg
     fmt.Println("modify instance password success.")
 }
 ```
+
+### 查询实例VNC地址
+
+如下代码可以查询实例的VNC地址
+```go
+result, err := client.GetInstanceVNC(instanceId)
+if err != nil {
+    fmt.Println("get instance VNC url failed:", err)
+} else {
+    fmt.Println("get instance VNC url success: ", result)
+}
+```
+
+> **提示：**
+> -   VNC地址一次使用后即失效
+> -   URL地址有效期为10分钟
 
 > **注意：**
 >BBC 实例密码要求：

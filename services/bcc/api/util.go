@@ -69,6 +69,7 @@ const (
 	REQUEST_CANCEL_BIDORDER_URI              = "/cancelBidOrder"
 	REQUEST_BATCH_CREATE_AUTORENEW_RULES_URI = "/batchCreateAutoRenewRules"
 	REQUEST_BATCH_Delete_AUTORENEW_RULES_URI = "/batchDeleteAutoRenewRules"
+	REQUEST_GET_ALL_STOCKS                   = "/getAllStocks"
 )
 
 func getInstanceUri() string {
@@ -225,6 +226,10 @@ func getKeypairUri() string {
 
 func getKeypairWithId(id string) string {
 	return URI_PREFIXV2 + REQUEST_KEYPAIR_URI + "/" + id
+}
+
+func getAllStocks() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_GET_ALL_STOCKS
 }
 
 func getCreateInstanceStock() string {

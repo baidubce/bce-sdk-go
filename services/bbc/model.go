@@ -414,6 +414,10 @@ type GetOperationLogResult struct {
 	OperationLogs []OperationLogModel `json:"operationLogs"`
 }
 
+type GetInstanceVNCResult struct {
+	VNCUrl string `json:"vncUrl"`
+}
+
 type OperationLogModel struct {
 	OperationStatus bool   `json:"operationStatus"`
 	OperationTime   string `json:"operationTime"`

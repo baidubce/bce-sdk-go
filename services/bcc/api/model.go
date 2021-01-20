@@ -133,6 +133,28 @@ type InstanceModel struct {
 	NicInfo               NicInfo          `json:"nicInfo"`
 }
 
+type GetAllStocksResult struct {
+	BccStocks []BccStock `json:"bccStocks"`
+	BbcStocks []BbcStock `json:"bbcStocks"`
+}
+
+type BccStock struct {
+	Spec              string `json:"spec"`
+	SpecId            string `json:"specId"`
+	InventoryQuantity int    `json:"inventoryQuantity"`
+	UpdatedTime       string `json:"updatedTime"`
+	CollectionTime    string `json:"collectionTime"`
+	ZoneName          string `json:"logicalZone"`
+}
+
+type BbcStock struct {
+	FlavorId          string `json:"flavorId"`
+	InventoryQuantity int    `json:"inventoryQuantity"`
+	UpdatedTime       string `json:"updatedTime"`
+	CollectionTime    string `json:"collectionTime"`
+	ZoneName          string `json:"logicalZone"`
+}
+
 type NicInfo struct {
 	Status         string    `json:"status"`
 	MacAddress     string    `json:"macAddress"`

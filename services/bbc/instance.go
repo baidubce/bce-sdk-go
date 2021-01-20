@@ -194,6 +194,7 @@ func GetInstanceDetail(cli bce.Client, instanceId string) (*InstanceModel, error
 	req.SetUri(getInstanceUriWithId(instanceId))
 	req.SetMethod(http.GET)
 	req.SetParam("isDeploySet", "false")
+
 	// Send request and get response
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
@@ -820,6 +821,36 @@ func GetInstanceEni(cli bce.Client, instanceId string) (*GetInstanceEniResult, e
 	return jsonBody, nil
 }
 
+// GetInstanceVNC - get VNC address of the specified instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance
+// RETURNS:
+//     - *GetInstanceVNCResult: result of the VNC address of the instance
+//     - error: nil if success otherwise the specific error
+func GetInstanceVNC(cli bce.Client, instanceId string) (*GetInstanceVNCResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getInstanceVNCUri(instanceId))
+	req.SetMethod(http.GET)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &GetInstanceVNCResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
 // BatchCreateAutoRenewRules - Batch Create AutoRenew Rules
 //
 // PARAMS:
@@ -872,6 +903,10 @@ func BatchDeleteAutoRenewRules(cli bce.Client, reqBody *bce.Body) error {
 
 	defer func() { resp.Body().Close() }()
 	return nil
+}
+
+func getInstanceVNCUri(instanceId string) string {
+	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + "/" + instanceId + "/vnc"
 }
 
 func getInstanceEniUri(instanceId string) string {

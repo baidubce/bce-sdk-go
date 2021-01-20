@@ -32,6 +32,7 @@ bce-sdk-go
 |  |--bbc                 //物理服务器
 |  |--bcc                 //云服务器
 |  |--bie                 //百度边缘计算
+|  |--bls                 //日志服务
 |  |--bos                 //BOS服务目录
 |  |  |--bos_client.go    //BOS客户端入口
 |  |  |--api              //BOS相关API目录
@@ -231,6 +232,7 @@ myLogger.Info("this is my own logger from the sdk")
 云服务器 | BCC | github.com/baidubce/bce-sdk-go/services/bcc | [BCC.md](./doc/BCC.md)
 百度边缘计算 |  BIE   | github.com/baidubce/bce-sdk-go/services/bie |
 负载均衡 | BLB | github.com/baidubce/bce-sdk-go/services/blb | [BLB.md](./doc/BLB.md)
+日志服务 | BLS | github.com/baidubce/bce-sdk-go/services/bls | [BLS.md](./doc/BLS.md)
 百度对象存储 |  BOS   | github.com/baidubce/bce-sdk-go/services/bos | [BOS.md](./doc/BOS.md)
 容器引擎 |  CCE   | github.com/baidubce/bce-sdk-go/services/cce | [CCE.md](./doc/CCE.md)
 内容分布网络 |  CDN   | github.com/baidubce/bce-sdk-go/services/cdn | [CDN.md](./doc/CDN.md)

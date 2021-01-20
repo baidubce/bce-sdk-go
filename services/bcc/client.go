@@ -1420,6 +1420,15 @@ func (c *Client) UpdateKeypairDescription(args *api.KeypairUpdateDescArgs) error
 	return api.UpdateKeypairDescription(c, args)
 }
 
+// GetAllStocks - get the bcc and bbc's stock
+//
+// RETURNS:
+//     - *GetAllStocksResult: the result of the bcc and bbc's stock
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetAllStocks() (*api.GetAllStocksResult, error) {
+	return api.GetAllStocks(c)
+}
+
 func (c *Client) GetInstanceCreateStock(args *api.CreateInstanceStockArgs) (*api.InstanceStockResult, error) {
 	return api.GetInstanceCreateStock(c, args)
 }
