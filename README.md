@@ -56,6 +56,7 @@ bce-sdk-go
 |  |--vcr                 //VCR服务目录
 |  |--vpc                 //私有网络
 |  |--vpn                 //VPN网关
+|  |--mms                 //多模态媒资检索目录
 |--util                   //BCE公用的工具实现
 ```
 
@@ -249,3 +250,4 @@ SMS简单消息服务 | SMS | github.com/baidubce/bce-sdk-go/services/sms | [SMS
 视频内容审核 |  VCR   | github.com/baidubce/bce-sdk-go/services/vcr |
 私有网络 | VPC | github.com/baidubce/bce-sdk-go/services/vpc | [VPC.md](./doc/VPC.md)
 VPN网关 | VPN | github.com/baidubce/bce-sdk-go/services/vpn | [VPN.md](./doc/VPN.md)
+多模态媒资检索 | MMS | github.com/baidubce/bce-sdk-go/services/mms | [MMS.md](./doc/MMS.md)

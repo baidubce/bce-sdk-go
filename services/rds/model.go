@@ -21,21 +21,23 @@ import (
 )
 
 type CreateRdsArgs struct {
-	ClientToken    string           `json:"-"`
-	Billing        Billing          `json:"billing"`
-	PurchaseCount  int              `json:"purchaseCount,omitempty"`
-	InstanceName   string           `json:"instanceName,omitempty"`
-	Engine         string           `json:"engine"`
-	EngineVersion  string           `json:"engineVersion"`
-	Category       string           `json:"category,omitempty"`
-	CpuCount       int              `json:"cpuCount"`
-	MemoryCapacity float64          `json:"memoryCapacity"`
-	VolumeCapacity int              `json:"volumeCapacity"`
-	ZoneNames      []string         `json:"zoneNames,omitempty"`
-	VpcId          string           `json:"vpcId,omitempty"`
-	IsDirectPay    bool             `json:"isDirectPay,omitempty"`
-	Subnets        []SubnetMap      `json:"subnets,omitempty"`
-	Tags           []model.TagModel `json:"tags,omitempty"`
+	ClientToken       string           `json:"-"`
+	Billing           Billing          `json:"billing"`
+	PurchaseCount     int              `json:"purchaseCount,omitempty"`
+	InstanceName      string           `json:"instanceName,omitempty"`
+	Engine            string           `json:"engine"`
+	EngineVersion     string           `json:"engineVersion"`
+	Category          string           `json:"category,omitempty"`
+	CpuCount          int              `json:"cpuCount"`
+	MemoryCapacity    float64          `json:"memoryCapacity"`
+	VolumeCapacity    int              `json:"volumeCapacity"`
+	ZoneNames         []string         `json:"zoneNames,omitempty"`
+	VpcId             string           `json:"vpcId,omitempty"`
+	IsDirectPay       bool             `json:"isDirectPay,omitempty"`
+	Subnets           []SubnetMap      `json:"subnets,omitempty"`
+	Tags              []model.TagModel `json:"tags,omitempty"`
+	AutoRenewTimeUnit string           `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime     int              `json:"autoRenewTime,omitempty"`
 }
 
 type Billing struct {

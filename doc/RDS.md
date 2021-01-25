@@ -244,6 +244,11 @@ args := &rds.CreateRdsArgs{
         PaymentTiming: "Postpaid",
         //Reservation: rds.Reservation{ReservationLength: 1, ReservationTimeUnit: "Month"},
     },
+    // 预付费时可指定自动续费参数 AutoRenewTime 和 AutoRenewTimeUnit
+    // 自动续费时长（续费单位为year 不大于3，续费单位为mouth 不大于9）
+    // AutoRenewTime: 1,
+    // 自动续费单位（"year";"mouth"）
+    // AutoRenewTimeUnit: "year",
     // CPU核数，必选
     CpuCount: 1,
     //套餐内存大小，单位GB，必选
