@@ -33,6 +33,7 @@ import (
 	_ "github.com/baidubce/bce-sdk-go/services/cert"
 	_ "github.com/baidubce/bce-sdk-go/services/cfc"
 	_ "github.com/baidubce/bce-sdk-go/services/dcc"
+	_ "github.com/baidubce/bce-sdk-go/services/ddc"
 	_ "github.com/baidubce/bce-sdk-go/services/eip"
 	_ "github.com/baidubce/bce-sdk-go/services/etGateway"
 	_ "github.com/baidubce/bce-sdk-go/services/mms"
