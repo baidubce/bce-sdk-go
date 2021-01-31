@@ -2,13 +2,12 @@
 
 # 概述
 
-本文档主要介绍DDC GO SDK的使用。在使用本文档前，您需要先了解DDC的一些基本知识，并已开通了DDC服务。若您还不了解DDC，可以参考[产品描述](https://cloud.baidu.com/doc/RDS/s/ujwvyzdzg)和[操作指南](https://cloud.baidu.com/doc/RDS/s/Qjwvz0ikk)。
+本文档主要介绍DDC GO SDK的使用。在使用本文档前，您需要先了解DDC的一些基本知识，并已开通了DDC服务。若您还不了解DDC，可以参考[产品描述](https://cloud.baidu.com/doc/ddc/s/ujwvyzdzg)和[操作指南](https://cloud.baidu.com/doc/ddc/s/Qjwvz0ikk)。
 
 # 初始化
 
 ## 确认Endpoint
 
-在确认您使用SDK时配置的Endpoint时，可先阅读开发人员指南中关于[RDS服务域名](https://cloud.baidu.com/doc/RDS/s/Ejwvz0uoq)的部分，理解Endpoint相关的概念。百度云目前开放了多区域支持，请参考[区域选择说明](https://cloud.baidu.com/doc/Reference/s/2jwvz23xx/)。
 
 目前支持“华东-苏州”区域。对应信息为：
 
@@ -103,7 +102,7 @@ func main() {
 	fmt.Println("  expiration:", stsObj.Expiration)
 	fmt.Println("  userId:", stsObj.UserId)
 
-	// 使用申请的临时STS创建RDS服务的Client对象，Endpoint使用默认值
+	// 使用申请的临时STS创建DDC服务的Client对象，Endpoint使用默认值
 	ddcClient, err := ddc.NewClient(stsObj.AccessKeyId, stsObj.SecretAccessKey, "ddc.su.baidubce.com")
 	if err != nil {
 		fmt.Println("create ddc client failed:", err)
@@ -142,7 +141,7 @@ ddcClient, _ := ddc.NewClient(AK, SK, ENDPOINT)
 
 ### 使用代理
 
-下面一段代码可以让客户端使用代理访问RDS服务：
+下面一段代码可以让客户端使用代理访问DDC服务：
 
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/ddc"
@@ -424,7 +423,7 @@ fmt.Println("ddc accountName: ", result.AccountName)
 fmt.Println("ddc remark: ", result.Remark)
 // 账号状态（创建中：creating；可用中：available；更新中：updating；删除中：deleting；已删除：deleted）
 fmt.Println("ddc accountStatus: ", result.AccountStatus)
-// 账号类型（super账号：rdssuper；普通账号：common）
+// 账号类型（super账号：ddcsuper；普通账号：common）
 fmt.Println("ddc accountType: ", result.AccountType)
 fmt.Println("ddc databasePrivileges: ", result.DatabasePrivileges)
 ```
@@ -447,7 +446,7 @@ for _, account := range result.Accounts {
     fmt.Println("ddc remark: ", account.Remark)
     // 账号状态（创建中：creating；可用中：available；更新中：updating；删除中：deleting；已删除：deleted）
     fmt.Println("ddc accountStatus: ", account.AccountStatus)
-    // 账号类型（super账号：rdssuper；普通账号：common）
+    // 账号类型（super账号：ddcsuper；普通账号：common）
     fmt.Println("ddc accountType: ", account.AccountType)
     fmt.Println("ddc databasePrivileges: ", account.DatabasePrivileges)
 }
@@ -484,14 +483,6 @@ args := &ddc.CreateDatabaseArgs{
     CharacterSetName: "utf8",
     // 数据库备注，最多256个字符（一个汉字等于三个字符）
     Remark: "remark",
-    // 权限设置，可选
-    AccountPrivileges: []ddc.AccountPrivilege{
-            {
-                AccountName: "user_photo_001",
-                //授权类型。AuthType_ReadOnly：只读，AuthType_ReadWrite：读写
-                AuthType: ddc.AuthType_ReadOnly,
-            },   
-        },
 }
 err = client.CreateDatabase(instanceId, args)
 if err != nil {
@@ -598,7 +589,7 @@ args := &ddc.CreateInstanceArgs{
 	Number: 1,
     // 权限设置，可选
     Instance: ddc.Instance{
-            // rds实例名称，允许小写字母、数字，中文，长度限制为1~64，可选	
+            // ddc实例名称，允许小写字母、数字，中文，长度限制为1~64，可选	
             InstanceName 		 :"mysql_5.7",	
 			// 主实例id （创建只读实例时需要）
 			SourceInstanceId	 :"sourceInstanceId",
@@ -658,7 +649,7 @@ if err != nil {
 }
 
 // 获取实例详情信息
-fmt.Println("ddc dbName: ", resp.Instance.InstanceId)
+fmt.Println("ddc instanceId: ", resp.Instance.InstanceId)
 fmt.Println("ddc instanceName: ", resp.Instance.InstanceName)
 fmt.Println("ddc engine: ", resp.Instance.Engine)
 fmt.Println("ddc engineVersion: ", resp.Instance.EngineVersion)
@@ -684,6 +675,8 @@ fmt.Println("ddc applicationType: ", resp.Instance.ApplicationType)
 fmt.Println("ddc roGroupList: ", resp.Instance.RoGroupList)
 fmt.Println("ddc nodeMaster: ", resp.Instance.NodeMaster)
 fmt.Println("ddc nodeSlave: ", resp.Instance.NodeSlave)
+fmt.Println("ddc nodeReadReplica: ", resp.Instance.NodeReadReplica)
+fmt.Println("ddc deployId: ", resp.Instance.DeployId)
 ```
 
 ## 实例列表
@@ -691,14 +684,13 @@ fmt.Println("ddc nodeSlave: ", resp.Instance.NodeSlave)
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/ddc"
 
-resp, err := client.ListDdcInstance(instanceId)
-
-args := &ddc.ListRdsArgs{
-    // 批量获取列表的查询的起始位置，是一个由系统生成的字符串，可选
-    Marker: "marker",
+args := &ddc.Marker{
+    // 批量获取列表的查询的起始位置，实例列表中Marker需要指定实例Id，可选
+    // Marker: "marker",
     // 指定每页包含的最大数量(主实例)，最大数量不超过1000，缺省值为1000，可选
     MaxKeys: 1,
 }
+resp, err := client.ListDdcInstance(args)
 
 if err != nil {
     fmt.Printf("get instance error: %+v\n", err)
@@ -706,13 +698,13 @@ if err != nil {
 }
 
 // 返回标记查询的起始位置
-fmt.Println("rds list marker: ", resp.Marker)
+fmt.Println("ddc list marker: ", resp.Marker)
 // true表示后面还有数据，false表示已经是最后一页
-fmt.Println("rds list isTruncated: ", resp.IsTruncated)
+fmt.Println("ddc list isTruncated: ", resp.IsTruncated)
 // 获取下一页所需要传递的marker值。当isTruncated为false时，该域不出现
-fmt.Println("rds list nextMarker: ", resp.NextMarker)
+fmt.Println("ddc list nextMarker: ", resp.NextMarker)
 // 每页包含的最大数量
-fmt.Println("rds list maxKeys: ", resp.MaxKeys)
+fmt.Println("ddc list maxKeys: ", resp.MaxKeys)
 
 // 获取account的列表信息
 for _, e := range resp.Result {
@@ -762,7 +754,7 @@ fmt.Printf("delete instance success\n")
 // import "github.com/baidubce/bce-sdk-go/services/ddc"
 
 args := &ddc.UpdateInstanceNameArgs{
-	// rds实例名称，允许小写字母、数字，中文，长度限制为1~64
+	// DDC实例名称，允许小写字母、数字，中文，长度限制为1~64
 	InstanceName: "instanceName",
 }
 err := client.UpdateInstanceName(instanceId, args)
@@ -831,7 +823,7 @@ for _, e := range* resp {
 ## 可用区列表
 使用以下代码可以获取可用区列表。
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/rds"
+// import "github.com/baidubce/bce-sdk-go/services/ddc"
 resp, err = client.GetZoneList()
 if err != nil {
 	fmt.Printf("get zone list error: %+v\n", err)
@@ -848,7 +840,7 @@ for _, e := range resp.Zones {
 ## 子网列表
 使用以下代码可以获取一个实例下的子网列表。
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/rds"
+// import "github.com/baidubce/bce-sdk-go/services/ddc"
 resp, err := client.ListSubnets()
 if err != nil {
 	fmt.Printf("get subnet list error: %+v\n", err)
@@ -894,7 +886,7 @@ for _, e := range resp.Items {
 ```
 
 ## 修改实例参数
-使用以下代码可以云数据库 RDS for MySQL 的参数配置。
+使用以下代码可以修改云数据库 DDC 的参数配置。
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/ddc"
 
@@ -934,7 +926,7 @@ fmt.Printf("get securityIp list success\n")
 ## 更新白名单
 使用以下代码可以更新一个实例下的白名单列表。
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/rds"
+// import "github.com/baidubce/bce-sdk-go/services/ddc"
 
 args := &ddc.UpdateSecurityIpsArgs{
 SecurityIps:  []string{
@@ -955,12 +947,16 @@ fmt.Printf("update securityIp list success\n")
 ## 	获取备份列表
 使用以下代码可以获取一个实例下的备份列表。
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/rds"
+// import "github.com/baidubce/bce-sdk-go/services/ddc"
 resp, err := client.GetBackupList(instanceId)
 if err != nil {
 	fmt.Printf("get backup list error: %+v\n", err)
 	return
 }
+// 返回标记查询的起始位置
+fmt.Println("ddc usedSpaceInMB: ", resp.UsedSpaceInMB)
+// true表示后面还有数据，false表示已经是最后一页
+fmt.Println("ddc freeSpaceInMB: ", resp.FreeSpaceInMB)
 // 获取参数列表信息
 for _, e := range resp.Snapshots {
     fmt.Println("ddc snapshotId: ", e.SnapshotId)
@@ -996,7 +992,7 @@ if err != nil {
     return
 }
 
-fmt.Println("ddc dbName: ", resp.Snapshot.SnapshotId)
+fmt.Println("ddc snapshotId: ", resp.Snapshot.SnapshotId)
 fmt.Println("ddc instanceName: ", resp.Snapshot.SnapshotSizeInBytes)
 fmt.Println("ddc engine: ", resp.Snapshot.SnapshotType)
 fmt.Println("ddc engineVersion: ", resp.Snapshot.SnapshotStatus)
@@ -1032,8 +1028,9 @@ fmt.Printf("modify instance's backupPolicy success\n")
 ## binlog列表
 使用以下代码可以获取一个实例下的binlog列表。
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/rds"
-resp, err := client.GetBinlogList(instanceId)
+// import "github.com/baidubce/bce-sdk-go/services/ddc"
+// datetime UTC时间
+resp, err := client.GetBinlogList(instanceId, datetime)
 if err != nil {
 	fmt.Printf("get binlog list error: %+v\n", err)
 	return
@@ -1076,13 +1073,13 @@ GO语言以error类型标识错误，DDC支持两种错误见下表：
 错误类型        |  说明
 ----------------|-------------------
 BceClientError  | 用户操作产生的错误
-BceServiceError | RDS服务返回的错误
+BceServiceError | DDC服务返回的错误
 
 用户使用SDK调用DDC相关接口，除了返回所需的结果之外还会返回错误，用户可以获取相关错误进行处理。实例如下：
 
 ```
 // ddcClient 为已创建的DDC Client对象
-result, err := client.ListRds()
+result, err := client.ListDdcInstance()
 if err != nil {
 	switch realErr := err.(type) {
 	case *bce.BceClientError:
@@ -1142,14 +1139,14 @@ log.SetLogFormat([]string{log.FMT_LEVEL, log.FMT_MSG})
 ```
 // 直接使用包级别全局日志对象（会和GO SDK自身日志一并输出）
 log.SetLogHandler(log.STDERR)
-log.Debugf("%s", "logging message using the log package in the RDS go sdk")
+log.Debugf("%s", "logging message using the log package in the DDC go sdk")
 
 // 创建新的日志对象（依据自定义设置输出日志，与GO SDK日志输出分离）
 myLogger := log.NewLogger()
 myLogger.SetLogHandler(log.FILE)
 myLogger.SetLogDir("/home/log")
 myLogger.SetRotateType(log.ROTATE_SIZE)
-myLogger.Info("this is my own logger from the RDS go sdk")
+myLogger.Info("this is my own logger from the DDC go sdk")
 ```
 
 

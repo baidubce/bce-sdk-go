@@ -45,6 +45,7 @@ bce-sdk-go
 |  |--cdn                 //内容分布网络
 |  |--cert                //SSL证书服务
 |  |--cfc                 //函数计算
+|  |--ddc                 //DDC数据库专属集群
 |  |--dts                 //数据传输服务
 |  |--eip                 //弹性公网IP
 |  |--etGateway           //专线网关
@@ -57,7 +58,6 @@ bce-sdk-go
 |  |--vpc                 //私有网络
 |  |--vpn                 //VPN网关
 |  |--mms                 //多模态媒资检索目录
-|  |--ddc                 //DDC数据库专属集群
 |--util                   //BCE公用的工具实现
 ```
 

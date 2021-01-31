@@ -14,7 +14,7 @@ import (
 
 var (
 	DDC_CLIENT            *Client
-	DDC_ID                string = "rdsm2h07068gw39"
+	DDC_ID                string = "ddc-mlhxpsff"
 	ACCOUNT_NAME          string = "go_sdk_account_1"
 	ACCOUNT_PASSWORD      string = "go_sdk_password_1"
 	ACCOUNT_REMARK        string = "go-sdk-remark-1"
@@ -128,7 +128,7 @@ func TestClient_DeleteDeploySet(t *testing.T) {
 func TestClient_CreateDeploySet(t *testing.T) {
 	err := DDC_CLIENT.CreateDeploySet(POOL, &CreateDeployRequest{
 		DeployName: "api-from-go",
-		Strategy:   "distribute",
+		Strategy:   "distributed",
 	})
 	ExpectEqual(t.Errorf, nil, err)
 }
@@ -184,9 +184,6 @@ func TestClient_UpdateSecurityIps(t *testing.T) {
 	})
 }
 
-
-
-
 func TestClient_GetBackupList(t *testing.T) {
 	list, err := DDC_CLIENT.GetBackupList(INSTANCE_ID)
 	ExpectEqual(t.Errorf, list.Snapshots, list.Snapshots)
@@ -228,7 +225,7 @@ func TestClient_ListSubnets(t *testing.T) {
 }
 
 func TestClient_GetBinlogList(t *testing.T) {
-	list, err := DDC_CLIENT.GetBinlogList(INSTANCE_ID)
+	list, err := DDC_CLIENT.GetBinlogList(INSTANCE_ID, "")
 	ExpectEqual(t.Errorf, nil, err)
 	ExpectEqual(t.Errorf, list, list)
 	fmt.Println(list.Binlogs)

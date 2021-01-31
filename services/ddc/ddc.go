@@ -80,9 +80,9 @@ func (cli *Client) CreateDeploySet(poolId string, args *CreateDeployRequest) err
 
 // ListDdcInstance - list all instances
 // RETURNS:
-//     - *ListDdsResult: the result of list instances with marker
+//     - *ListDdcResult: the result of list instances with marker
 //     - error: nil if success otherwise the specific error
-func (c *Client) ListDdcInstance(marker *Marker) (*ListDdsResult, error) {
+func (c *Client) ListDdcInstance(marker *Marker) (*ListDdcResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getDdcInstanceUri() + "/list")
 	req.SetMethod(http.GET)
@@ -99,7 +99,7 @@ func (c *Client) ListDdcInstance(marker *Marker) (*ListDdsResult, error) {
 		return nil, resp.ServiceError()
 	}
 
-	jsonBody := &ListDdsResult{}
+	jsonBody := &ListDdcResult{}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
@@ -443,12 +443,13 @@ func (c *Client) ModifyBackupPolicy(instanceId string, args *BackupPolicy) error
 // RETURNS:
 //     - *GetBackupListResult: result of the backup list
 //     - error: nil if success otherwise the specific error
-func (c *Client) GetBinlogList(instanceId string) (*BinlogListResult, error) {
+func (c *Client) GetBinlogList(instanceId string, datetime string) (*BinlogListResult, error) {
 
 	result := &BinlogListResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithURL(getDdcUriWithInstanceId(instanceId) + "/binlog").
+		WithURL(getDdcUriWithInstanceId(instanceId)+"/binlog").
+		WithQueryParam("datetime", datetime).
 		WithResult(result).
 		Do()
 

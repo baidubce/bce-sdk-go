@@ -32,25 +32,24 @@ type InstanceModelResult struct {
 }
 
 type Instance struct {
-	InstanceName         	string  `json:"instanceName"`
-	SourceInstanceId	 	string	 `json:"sourceInstanceId"`
-	Engine               	string  `json:"engine"`
-	EngineVersion        	string  `json:"engineVersion"`
-	CpuCount             	int     `json:"cpuCount"`
-	AllocatedMemoryInGB  	int	 	`json:"allocatedMemoryInGB"`
-	AllocatedStorageInGB 	int 	`json:"allocatedStorageInGB"`
-	AZone                	string  `json:"azone"`
-	VpcId                	string  `json:"vpcId"`
-	SubnetId             	string  `json:"subnetId"`
-	DiskIoType           	string  `json:"diskIoType"`
-	DeployId             	string  `json:"deployId"`
-	PoolId               	string  `json:"poolId"`
-	RoGroupId               string  `json:"roGroupId"`
-	EnableDelayOff          string  `json:"enableDelayOff"`
-	DelayThreshold          int  	`json:"delayThreshold"`
-	LeastInstanceAmount     int  	`json:"leastInstanceAmount"`
-	RoGroupWeight           int  	`json:"roGroupWeight"`
-
+	InstanceName         string `json:"instanceName"`
+	SourceInstanceId     string `json:"sourceInstanceId"`
+	Engine               string `json:"engine"`
+	EngineVersion        string `json:"engineVersion"`
+	CpuCount             int    `json:"cpuCount"`
+	AllocatedMemoryInGB  int    `json:"allocatedMemoryInGB"`
+	AllocatedStorageInGB int    `json:"allocatedStorageInGB"`
+	AZone                string `json:"azone"`
+	VpcId                string `json:"vpcId"`
+	SubnetId             string `json:"subnetId"`
+	DiskIoType           string `json:"diskIoType"`
+	DeployId             string `json:"deployId"`
+	PoolId               string `json:"poolId"`
+	RoGroupId            string `json:"roGroupId"`
+	EnableDelayOff       string `json:"enableDelayOff"`
+	DelayThreshold       int    `json:"delayThreshold"`
+	LeastInstanceAmount  int    `json:"leastInstanceAmount"`
+	RoGroupWeight        int    `json:"roGroupWeight"`
 }
 
 type Pool struct {
@@ -158,80 +157,80 @@ type ListDeploySetResult struct {
 	Result []DeploySet `json:"result"`
 }
 
-
 type InstanceModel struct {
-	InstanceId         		string       `json:"instanceId"`
-	InstanceName       		string       `json:"instanceName"`
-	Engine             		string       `json:"engine"`
-	EngineVersion      		string       `json:"engineVersion"`
-	InstanceStatus     		string       `json:"instanceStatus"`
-	CpuCount           		int          `json:"cpuCount"`
-	AllocatedMemoryInGB  	float64	 	 `json:"allocatedMemoryInGB"`
-	AllocatedStorageInGB 	int 	 	 `json:"allocatedStorageInGB"`
-	NodeAmount         		int          `json:"nodeAmount"`
-	UsedStorageInGB        	float64      `json:"usedStorageInGB"`
-	PublicAccessStatus 		string       `json:"publicAccessStatus"`
-	InstanceCreateTime 		string       `json:"instanceCreateTime"`
-	InstanceExpireTime 		string       `json:"instanceExpireTime"`
-	Endpoint           		Endpoint     `json:"endpoint"`
-	SyncMode           		string       `json:"syncMode"`
-	BackupPolicy       		BackupPolicy `json:"backupPolicy"`
-	Region             		string       `json:"region"`
-	InstanceType       		string       `json:"instanceType"`
-	SourceInstanceId   		string       `json:"sourceInstanceId"`
-	SourceRegion       		string       `json:"sourceRegion"`
-	ZoneNames          		[]string     `json:"zoneNames"`
-	VpcId              		string       `json:"vpcId"`
-	Subnets            		[]SubnetVo   `json:"subnets"`
-	NodeMaster				NodeInfo	 `json:"nodeMaster"`
-	NodeSlave				NodeInfo	 `json:"nodeSlave"`
-	Topology           		Topology     `json:"topology"`
-	DiskType				string		 `json:"diskType"`
-	Type					string		 `json:"type"`
-	ApplicationType			string		 `json:"applicationType"`
-	RoGroupList				[]RoGroup    `json:"roGroupList"`
+	InstanceId           string       `json:"instanceId"`
+	InstanceName         string       `json:"instanceName"`
+	Engine               string       `json:"engine"`
+	EngineVersion        string       `json:"engineVersion"`
+	InstanceStatus       string       `json:"instanceStatus"`
+	CpuCount             int          `json:"cpuCount"`
+	AllocatedMemoryInGB  float64      `json:"allocatedMemoryInGB"`
+	AllocatedStorageInGB int          `json:"allocatedStorageInGB"`
+	NodeAmount           int          `json:"nodeAmount"`
+	UsedStorageInGB      float64      `json:"usedStorageInGB"`
+	PublicAccessStatus   string       `json:"publicAccessStatus"`
+	InstanceCreateTime   string       `json:"instanceCreateTime"`
+	InstanceExpireTime   string       `json:"instanceExpireTime"`
+	Endpoint             Endpoint     `json:"endpoint"`
+	SyncMode             string       `json:"syncMode"`
+	BackupPolicy         BackupPolicy `json:"backupPolicy"`
+	Region               string       `json:"region"`
+	InstanceType         string       `json:"instanceType"`
+	SourceInstanceId     string       `json:"sourceInstanceId"`
+	SourceRegion         string       `json:"sourceRegion"`
+	ZoneNames            []string     `json:"zoneNames"`
+	VpcId                string       `json:"vpcId"`
+	Subnets              []SubnetVo   `json:"subnets"`
+	NodeMaster           NodeInfo     `json:"nodeMaster"`
+	NodeSlave            NodeInfo     `json:"nodeSlave"`
+	NodeReadReplica      NodeInfo     `json:"nodeReadReplica"`
+	DeployId             string       `json:"deployId"`
+	Topology             Topology     `json:"topology"`
+	DiskType             string       `json:"diskType"`
+	Type                 string       `json:"type"`
+	ApplicationType      string       `json:"applicationType"`
+	RoGroupList          []RoGroup    `json:"roGroupList"`
 }
 
 type SubnetVo struct {
-	Name     		string 	`json:"name"`
-	SubnetId 		string 	`json:"subnetId"`
-	Az				string	`json:"az"`
-	Cidr     		string 	`json:"cidr"`
-	ShortId			string	`json:"shortId"`
+	Name     string `json:"name"`
+	SubnetId string `json:"subnetId"`
+	Az       string `json:"az"`
+	Cidr     string `json:"cidr"`
+	ShortId  string `json:"shortId"`
 }
 
 type RoGroup struct {
-	RoGroupId     		string 		`json:"roGroupId"`
-	VnetIp 				string 		`json:"vnetIp"`
-	ReplicaList 		[]Replica 	`json:"replicaList"`
+	RoGroupId   string    `json:"roGroupId"`
+	VnetIp      string    `json:"vnetIp"`
+	ReplicaList []Replica `json:"replicaList"`
 }
 
 type Replica struct {
-	InstanceId     		string 		`json:"instanceId"`
-	Status 				string 		`json:"status"`
-	RoGroupWeight 		int 		`json:"roGroupWeight"`
+	InstanceId    string `json:"instanceId"`
+	Status        string `json:"status"`
+	RoGroupWeight int    `json:"roGroupWeight"`
 }
 
 type NodeInfo struct {
-	Id				string			`json:"id"`
-	Azone			string			`json:"azone"`
-	SubnetId		string			`json:"subnetId"`
-	Cidr			string			`json:"cidr"`
-	Name			string			`json:"name"`
+	Id       string `json:"id"`
+	Azone    string `json:"azone"`
+	SubnetId string `json:"subnetId"`
+	Cidr     string `json:"cidr"`
+	Name     string `json:"name"`
 }
 
-
 type Subnet struct {
-	Name     		string 	`json:"name"`
-	SubnetId 		string 	`json:"subnetId"`
-	ZoneName 		string 	`json:"zoneName"`
-	Cidr     		string 	`json:"cidr"`
-	ShortId			string	`json:"shortId"`
-	VpcId    		string 	`json:"vpcId"`
-	VpcShortId		string	`json:"vpcShortId"`
-	Az				string	`json:"az"`
-	CreatedTime		string	`json:"createdTime"`
-	UpdatedTime		string	`json:"updatedTime"`
+	Name        string `json:"name"`
+	SubnetId    string `json:"subnetId"`
+	ZoneName    string `json:"zoneName"`
+	Cidr        string `json:"cidr"`
+	ShortId     string `json:"shortId"`
+	VpcId       string `json:"vpcId"`
+	VpcShortId  string `json:"vpcShortId"`
+	Az          string `json:"az"`
+	CreatedTime string `json:"createdTime"`
+	UpdatedTime string `json:"updatedTime"`
 }
 
 type Endpoint struct {
@@ -245,7 +244,7 @@ type BackupPolicy struct {
 	BackupDays    string `json:"backupDays"`
 	BackupTime    string `json:"backupTime"`
 	Persistent    bool   `json:"persistent"`
-	ExpireInDays  int 	 `json:"expireInDays"`
+	ExpireInDays  int    `json:"expireInDays"`
 	FreeSpaceInGB int    `json:"freeSpaceInGb"`
 }
 
@@ -263,155 +262,152 @@ type UpdateInstanceNameArgs struct {
 	InstanceName string `json:"instanceName"`
 }
 
-type ListRdsArgs struct {
-	Marker  string
-	MaxKeys int
-}
-
-type ListDdsResult struct {
-	Marker      string      	`json:"marker"`
-	MaxKeys     int         	`json:"maxKeys"`
-	IsTruncated bool        	`json:"isTruncated"`
-	NextMarker  string      	`json:"nextMarker"`
-	Result   	[]InstanceModel `json:"result"`
+type ListDdcResult struct {
+	Marker      string          `json:"marker"`
+	MaxKeys     int             `json:"maxKeys"`
+	IsTruncated bool            `json:"isTruncated"`
+	NextMarker  string          `json:"nextMarker"`
+	Result      []InstanceModel `json:"result"`
 }
 
 type GetBackupListResult struct {
-	Snapshots   []Snapshot `json:"snapshots"`
+	Snapshots     []Snapshot `json:"snapshots"`
+	FreeSpaceInMB int64      `json:"freeSpaceInMB"`
+	UsedSpaceInMB int64      `json:"usedSpaceInMB"`
 }
 
 type GetZoneListResult struct {
-	Zones              []ZoneName         `json:"zones"`
+	Zones []ZoneName `json:"zones"`
 }
 
 type ZoneName struct {
-	ZoneNames          	[]string            `json:"apiZoneNames"`
-	ApiZoneNames	   	[]string			`json:"zoneNames"`
-	Available		   	bool				`json:"bool"`
-	DefaultSubnetId		string				`json:"defaultSubnetId"`
+	ZoneNames       []string `json:"apiZoneNames"`
+	ApiZoneNames    []string `json:"zoneNames"`
+	Available       bool     `json:"bool"`
+	DefaultSubnetId string   `json:"defaultSubnetId"`
 }
 
 type ListSubnetsArgs struct {
-	VpcId               string         `json:"vpcId"`
-	ZoneName            string         `json:"zoneName"`
+	VpcId    string `json:"vpcId"`
+	ZoneName string `json:"zoneName"`
 }
 
 type ListSubnetsResult struct {
-	Subnets             []Subnet       `json:"subnets"`
+	Subnets []Subnet `json:"subnets"`
 }
 
 type GetSecurityIpsResult struct {
-	SecurityIps        []string       `json:"ip"`
+	SecurityIps []string `json:"ip"`
 }
 
 type UpdateSecurityIpsArgs struct {
-	InstanceId 			string		   `json:"instanceId"`
-	SecurityIps         []string       `json:"securityIps"`
+	InstanceId  string   `json:"instanceId"`
+	SecurityIps []string `json:"securityIps"`
 }
 
 type ListParametersResult struct {
-	Items          []Parameter     `json:"items"`
+	Items []Parameter `json:"items"`
 }
 
 type Parameter struct {
-	Name                string          `json:"name"`
-	DefaultValue        string          `json:"defaultValue"`
-	Value               string          `json:"value"`
-	PendingValue        string          `json:"pendingValue"`
-	Type                string          `json:"type"`
-	Dynamic             bool          	`json:"dynamic"`
-	Modifiable          bool          	`json:"modifiable"`
-	AllowedValues       string          `json:"allowedValues"`
-	Desc                string          `json:"desc"`
+	Name          string `json:"name"`
+	DefaultValue  string `json:"defaultValue"`
+	Value         string `json:"value"`
+	PendingValue  string `json:"pendingValue"`
+	Type          string `json:"type"`
+	Dynamic       bool   `json:"dynamic"`
+	Modifiable    bool   `json:"modifiable"`
+	AllowedValues string `json:"allowedValues"`
+	Desc          string `json:"desc"`
 }
 
 type UpdateParameterArgs struct {
-	Parameters          []KVParameter   `json:"parameters"`
+	Parameters []KVParameter `json:"parameters"`
 }
 
 type KVParameter struct {
-	Name                string          `json:"name"`
-	Value               string          `json:"value"`
+	Name  string `json:"name"`
+	Value string `json:"value"`
 }
 
 type Snapshot struct {
-	SnapshotId				string		`json:"snapshotId"`
-	SnapshotSizeInBytes 	string		`json:"snapshotSizeInBytes"`
-	SnapshotType			string		`json:"snapshotType"`
-	SnapshotStatus			string		`json:"snapshotStatus"`
-	SnapshotStartTime		string		`json:"snapshotStartTime"`
-	SnapshotEndTime			string		`json:"snapshotEndTime"`
+	SnapshotId          string `json:"snapshotId"`
+	SnapshotSizeInBytes string `json:"snapshotSizeInBytes"`
+	SnapshotType        string `json:"snapshotType"`
+	SnapshotStatus      string `json:"snapshotStatus"`
+	SnapshotStartTime   string `json:"snapshotStartTime"`
+	SnapshotEndTime     string `json:"snapshotEndTime"`
 }
 
 type SnapshotModel struct {
-	SnapshotId				string		`json:"snapshotId"`
-	SnapshotSizeInBytes 	string		`json:"snapshotSizeInBytes"`
-	SnapshotType			string		`json:"snapshotType"`
-	SnapshotStatus			string		`json:"snapshotStatus"`
-	SnapshotStartTime		string		`json:"snapshotStartTime"`
-	SnapshotEndTime			string		`json:"snapshotEndTime"`
-	DownloadUrl				string		`json:"downloadUrl"`
-	DownloadExpires			string		`json:"downloadExpires"`
+	SnapshotId          string `json:"snapshotId"`
+	SnapshotSizeInBytes string `json:"snapshotSizeInBytes"`
+	SnapshotType        string `json:"snapshotType"`
+	SnapshotStatus      string `json:"snapshotStatus"`
+	SnapshotStartTime   string `json:"snapshotStartTime"`
+	SnapshotEndTime     string `json:"snapshotEndTime"`
+	DownloadUrl         string `json:"downloadUrl"`
+	DownloadExpires     string `json:"downloadExpires"`
 }
 
 type BackupDetailResult struct {
-	Snapshot  	SnapshotModel 	`json:"snapshot"`
+	Snapshot SnapshotModel `json:"snapshot"`
 }
 
 type Binlog struct {
-	BinlogId				string		`json:"binlogId"`
-	BinlogSizeInBytes		int64		`json:"binlogSizeInBytes"`
-	BinlogStatus			string		`json:"binlogStatus"`
-	BinlogStartTime			string		`json:"binlogStartTime"`
-	BinlogEndTime			string		`json:"binlogEndTime"`
+	BinlogId          string `json:"binlogId"`
+	BinlogSizeInBytes int64  `json:"binlogSizeInBytes"`
+	BinlogStatus      string `json:"binlogStatus"`
+	BinlogStartTime   string `json:"binlogStartTime"`
+	BinlogEndTime     string `json:"binlogEndTime"`
 }
 
 type BinlogModel struct {
-	BinlogId				string		`json:"binlogId"`
-	BinlogSizeInBytes		int64		`json:"binlogSizeInBytes"`
-	BinlogStatus			string		`json:"binlogStatus"`
-	BinlogStartTime			string		`json:"binlogStartTime"`
-	BinlogEndTime			string		`json:"binlogEndTime"`
-	DownloadUrl				string		`json:"downloadUrl"`
-	DownloadExpires			string		`json:"downloadExpires"`
+	BinlogId          string `json:"binlogId"`
+	BinlogSizeInBytes int64  `json:"binlogSizeInBytes"`
+	BinlogStatus      string `json:"binlogStatus"`
+	BinlogStartTime   string `json:"binlogStartTime"`
+	BinlogEndTime     string `json:"binlogEndTime"`
+	DownloadUrl       string `json:"downloadUrl"`
+	DownloadExpires   string `json:"downloadExpires"`
 }
 
 type BinlogListResult struct {
-	Binlogs		[]Binlog  `json:"binlogs"`
+	Binlogs []Binlog `json:"binlogs"`
 }
 
 type BinlogDetailResult struct {
-	Binlog  	BinlogModel 	`json:"binlog"`
+	Binlog BinlogModel `json:"binlog"`
 }
 
 type AuthType string
+
 const (
-	AuthType_ReadOnly AuthType = "readOnly"
+	AuthType_ReadOnly  AuthType = "readOnly"
 	AuthType_ReadWrite AuthType = "readWrite"
 )
 
 type AccountPrivilege struct {
-	AccountName string		`json:"accountName"`
-	AuthType AuthType		`json:"authType"`
+	AccountName string   `json:"accountName"`
+	AuthType    AuthType `json:"authType"`
 }
 
 type CreateDatabaseArgs struct {
-	ClientToken string						`json:"-"`
-	DbName string							`json:"dbName"`
-	CharacterSetName string					`json:"characterSetName"`
-	Remark string							`json:"remark"`
-	AccountPrivileges []AccountPrivilege	`json:"accountPrivileges,omitempty"`
+	ClientToken      string `json:"-"`
+	DbName           string `json:"dbName"`
+	CharacterSetName string `json:"characterSetName"`
+	Remark           string `json:"remark"`
 }
 
 type UpdateDatabaseRemarkArgs struct {
-	Remark           string              `json:"remark"`
+	Remark string `json:"remark"`
 }
 
 type Database struct {
-	DbName        string              `json:"dbName"`
-	CharacterSetName        string              `json:"characterSetName"`
-	DbStatus        string              `json:"dbStatus"`
-	Remark             string              `json:"remark"`
+	DbName            string             `json:"dbName"`
+	CharacterSetName  string             `json:"characterSetName"`
+	DbStatus          string             `json:"dbStatus"`
+	Remark            string             `json:"remark"`
 	AccountPrivileges []AccountPrivilege `json:"accountPrivileges"`
 }
 
@@ -425,8 +421,9 @@ type ListDatabaseResult struct {
 
 // Account
 type AccountType string
+
 const (
-	AccountType_Super AccountType = "rdssuper"
+	AccountType_Super  AccountType = "rdssuper"
 	AccountType_Common AccountType = "common"
 )
 
@@ -440,14 +437,14 @@ type CreateAccountArgs struct {
 }
 
 type DatabasePrivilege struct {
-	DbName   string 	`json:"dbName"`
-	AuthType AuthType 	`json:"authType"`
+	DbName   string   `json:"dbName"`
+	AuthType AuthType `json:"authType"`
 }
 
 type Account struct {
 	AccountName        string              `json:"accountName"`
 	Remark             string              `json:"remark"`
-	AccountStatus             string              `json:"accountStatus"`
+	AccountStatus      string              `json:"accountStatus"`
 	AccountType        string              `json:"accountType"`
 	DatabasePrivileges []DatabasePrivilege `json:"databasePrivileges"`
 }
@@ -461,11 +458,11 @@ type ListAccountResult struct {
 }
 
 type UpdateAccountPasswordArgs struct {
-	Password           string              `json:"password"`
+	Password string `json:"password"`
 }
 
 type UpdateAccountRemarkArgs struct {
-	Remark           string              `json:"remark"`
+	Remark string `json:"remark"`
 }
 
 type UpdateAccountPrivilegesArgs struct {
@@ -477,16 +474,15 @@ type ListRoGroupResult struct {
 }
 
 type VpcVo struct {
-	VpcId 			string 		`json:"vpcId"`
-	ShortId 		string 		`json:"shortId"`
-	Name 			string 		`json:"name"`
-	Cidr 			string 		`json:"cidr"`
-	Status 			int 		`json:"status"`
-	CreateTime 		string 		`json:"createTime"`
-	Description 	string 		`json:"description"`
-	DefaultVpc 		bool 		`json:"defaultVpc"`
-	Ipv6Cidr 		string 		`json:"ipv6Cidr"`
-	AuxiliaryCidr 	[]string 	`json:"auxiliaryCidr"`
-	Relay 			bool	 	`json:"relay"`
+	VpcId         string   `json:"vpcId"`
+	ShortId       string   `json:"shortId"`
+	Name          string   `json:"name"`
+	Cidr          string   `json:"cidr"`
+	Status        int      `json:"status"`
+	CreateTime    string   `json:"createTime"`
+	Description   string   `json:"description"`
+	DefaultVpc    bool     `json:"defaultVpc"`
+	Ipv6Cidr      string   `json:"ipv6Cidr"`
+	AuxiliaryCidr []string `json:"auxiliaryCidr"`
+	Relay         bool     `json:"relay"`
 }
-
