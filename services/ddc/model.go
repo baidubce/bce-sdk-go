@@ -16,11 +16,107 @@
 
 package ddc
 
+import "github.com/baidubce/bce-sdk-go/model"
+
 type CreateInstanceArgs struct {
-	ClientToken  string   `json:"-"`
-	InstanceType string   `json:"instanceType"`
-	Number       int      `json:"number"`
-	Instance     Instance `json:"instance"`
+	ClientToken  string         `json:"-"`
+	InstanceType string         `json:"instanceType"`
+	Number       int            `json:"number"`
+	Instance     CreateInstance `json:"instance"`
+}
+
+type CreateRdsArgs struct {
+	ClientToken       string           `json:"-"`
+	Billing           Billing          `json:"billing"`
+	PurchaseCount     int              `json:"purchaseCount,omitempty"`
+	InstanceName      string           `json:"instanceName,omitempty"`
+	Engine            string           `json:"engine"`
+	EngineVersion     string           `json:"engineVersion"`
+	Category          string           `json:"category,omitempty"`
+	CpuCount          int              `json:"cpuCount"`
+	MemoryCapacity    int              `json:"memoryCapacity"`
+	VolumeCapacity    int              `json:"volumeCapacity"`
+	ZoneNames         []string         `json:"zoneNames,omitempty"`
+	VpcId             string           `json:"vpcId,omitempty"`
+	IsDirectPay       bool             `json:"isDirectPay,omitempty"`
+	Subnets           []SubnetMap      `json:"subnets,omitempty"`
+	Tags              []model.TagModel `json:"tags,omitempty"`
+	AutoRenewTimeUnit string           `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime     int              `json:"autoRenewTime,omitempty"`
+	DeployId          string           `json:"deployId"`
+	PoolId            string           `json:"poolId "`
+}
+
+type CreateReadReplicaArgs struct {
+	ClientToken         string           `json:"-"`
+	Billing             Billing          `json:"billing"`
+	PurchaseCount       int              `json:"purchaseCount,omitempty"`
+	SourceInstanceId    string           `json:"sourceInstanceId"`
+	InstanceName        string           `json:"instanceName,omitempty"`
+	CpuCount            int              `json:"cpuCount"`
+	MemoryCapacity      int              `json:"memoryCapacity"`
+	VolumeCapacity      int              `json:"volumeCapacity"`
+	ZoneNames           []string         `json:"zoneNames,omitempty"`
+	VpcId               string           `json:"vpcId,omitempty"`
+	IsDirectPay         bool             `json:"isDirectPay,omitempty"`
+	Subnets             []SubnetMap      `json:"subnets,omitempty"`
+	Tags                []model.TagModel `json:"tags,omitempty"`
+	DeployId            string           `json:"deployId"`
+	PoolId              string           `json:"poolId"`
+	RoGroupId           string           `json:"roGroupId"`
+	EnableDelayOff      bool             `json:"enableDelayOff"`
+	DelayThreshold      int              `json:"delayThreshold"`
+	LeastInstanceAmount int              `json:"leastInstanceAmount"`
+	RoGroupWeight       int              `json:"roGroupWeight"`
+}
+
+type Instance struct {
+	InstanceId         string       `json:"instanceId"`
+	InstanceName       string       `json:"instanceName"`
+	Engine             string       `json:"engine"`
+	EngineVersion      string       `json:"engineVersion"`
+	Category           string       `json:"category"`
+	InstanceStatus     string       `json:"instanceStatus"`
+	CpuCount           int          `json:"cpuCount"`
+	MemoryCapacity     float64      `json:"allocatedMemoryInGB"`
+	VolumeCapacity     int          `json:"allocatedStorageInGB"`
+	NodeAmount         int          `json:"nodeAmount"`
+	UsedStorage        float64      `json:"usedStorageInGB"`
+	PublicAccessStatus bool         `json:"publicAccessStatus"`
+	InstanceCreateTime string       `json:"instanceCreateTime"`
+	InstanceExpireTime string       `json:"instanceExpireTime"`
+	Endpoint           Endpoint     `json:"endpoint"`
+	SyncMode           string       `json:"syncMode"`
+	BackupPolicy       BackupPolicy `json:"backupPolicy"`
+	Region             string       `json:"region"`
+	InstanceType       string       `json:"type"`
+	SourceInstanceId   string       `json:"sourceInstanceId"`
+	SourceRegion       string       `json:"sourceRegion"`
+	ZoneNames          []string     `json:"zoneNames"`
+	VpcId              string       `json:"vpcId"`
+	Subnets            []Subnet     `json:"subnets"`
+	Topology           Topology     `json:"topology"`
+	PaymentTiming      string       `json:"paymentTiming"`
+	RoGroupList        []RoGroup    `json:"roGroupList"`
+	NodeMaster         NodeInfo     `json:"nodeMaster"`
+	NodeSlave          NodeInfo     `json:"nodeSlave"`
+	NodeReadReplica    NodeInfo     `json:"nodeReadReplica"`
+	DeployId           string       `json:"deployId"`
+}
+
+type SubnetMap struct {
+	ZoneName string `json:"zoneName"`
+	SubnetId string `json:"subnetId"`
+}
+
+type Billing struct {
+	PaymentTiming string      `json:"paymentTiming"`
+	Reservation   Reservation `json:"reservation,omitempty"`
+}
+
+type Reservation struct {
+	ReservationLength   int    `json:"reservationLength,omitempty"`
+	ReservationTimeUnit string `json:"reservationTimeUnit,omitempty"`
 }
 
 type CreateResult struct {
@@ -31,25 +127,32 @@ type InstanceModelResult struct {
 	Instance InstanceModel `json:"instance"`
 }
 
-type Instance struct {
-	InstanceName         string `json:"instanceName"`
-	SourceInstanceId     string `json:"sourceInstanceId"`
-	Engine               string `json:"engine"`
-	EngineVersion        string `json:"engineVersion"`
-	CpuCount             int    `json:"cpuCount"`
-	AllocatedMemoryInGB  int    `json:"allocatedMemoryInGB"`
-	AllocatedStorageInGB int    `json:"allocatedStorageInGB"`
-	AZone                string `json:"azone"`
-	VpcId                string `json:"vpcId"`
-	SubnetId             string `json:"subnetId"`
-	DiskIoType           string `json:"diskIoType"`
-	DeployId             string `json:"deployId"`
-	PoolId               string `json:"poolId"`
-	RoGroupId            string `json:"roGroupId"`
-	EnableDelayOff       string `json:"enableDelayOff"`
-	DelayThreshold       int    `json:"delayThreshold"`
-	LeastInstanceAmount  int    `json:"leastInstanceAmount"`
-	RoGroupWeight        int    `json:"roGroupWeight"`
+type CreateInstance struct {
+	InstanceId           string           `json:"instanceId"`
+	InstanceName         string           `json:"instanceName"`
+	SourceInstanceId     string           `json:"sourceInstanceId"`
+	Engine               string           `json:"engine"`
+	EngineVersion        string           `json:"engineVersion"`
+	CpuCount             int              `json:"cpuCount"`
+	AllocatedMemoryInGB  int              `json:"allocatedMemoryInGB"`
+	AllocatedStorageInGB int              `json:"allocatedStorageInGB"`
+	AZone                string           `json:"azone"`
+	VpcId                string           `json:"vpcId"`
+	SubnetId             string           `json:"subnetId"`
+	DiskIoType           string           `json:"diskIoType"`
+	DeployId             string           `json:"deployId"`
+	PoolId               string           `json:"poolId"`
+	RoGroupId            string           `json:"roGroupId"`
+	EnableDelayOff       bool             `json:"enableDelayOff"`
+	DelayThreshold       int              `json:"delayThreshold"`
+	LeastInstanceAmount  int              `json:"leastInstanceAmount"`
+	RoGroupWeight        int              `json:"roGroupWeight"`
+	IsDirectPay          bool             `json:"IsDirectPay"`
+	Billing              Billing          `json:"billing"`
+	AutoRenewTimeUnit    string           `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime        int              `json:"autoRenewTime,omitempty"`
+	Category             string           `json:"category,omitempty"`
+	Tags                 []model.TagModel `json:"tags,omitempty"`
 }
 
 type Pool struct {
@@ -168,7 +271,7 @@ type InstanceModel struct {
 	AllocatedStorageInGB int          `json:"allocatedStorageInGB"`
 	NodeAmount           int          `json:"nodeAmount"`
 	UsedStorageInGB      float64      `json:"usedStorageInGB"`
-	PublicAccessStatus   string       `json:"publicAccessStatus"`
+	PublicAccessStatus   bool         `json:"publicAccessStatus"`
 	InstanceCreateTime   string       `json:"instanceCreateTime"`
 	InstanceExpireTime   string       `json:"instanceExpireTime"`
 	Endpoint             Endpoint     `json:"endpoint"`
@@ -180,7 +283,7 @@ type InstanceModel struct {
 	SourceRegion         string       `json:"sourceRegion"`
 	ZoneNames            []string     `json:"zoneNames"`
 	VpcId                string       `json:"vpcId"`
-	Subnets              []SubnetVo   `json:"subnets"`
+	Subnets              []Subnet     `json:"subnets"`
 	NodeMaster           NodeInfo     `json:"nodeMaster"`
 	NodeSlave            NodeInfo     `json:"nodeSlave"`
 	NodeReadReplica      NodeInfo     `json:"nodeReadReplica"`
@@ -190,6 +293,7 @@ type InstanceModel struct {
 	Type                 string       `json:"type"`
 	ApplicationType      string       `json:"applicationType"`
 	RoGroupList          []RoGroup    `json:"roGroupList"`
+	PaymentTiming        string       `json:"paymentTiming"`
 }
 
 type SubnetVo struct {
@@ -262,12 +366,17 @@ type UpdateInstanceNameArgs struct {
 	InstanceName string `json:"instanceName"`
 }
 
-type ListDdcResult struct {
-	Marker      string          `json:"marker"`
-	MaxKeys     int             `json:"maxKeys"`
-	IsTruncated bool            `json:"isTruncated"`
-	NextMarker  string          `json:"nextMarker"`
-	Result      []InstanceModel `json:"result"`
+type ListRdsResult struct {
+	Marker      string     `json:"marker"`
+	MaxKeys     int        `json:"maxKeys"`
+	IsTruncated bool       `json:"isTruncated"`
+	NextMarker  string     `json:"nextMarker"`
+	Result      []Instance `json:"result"`
+}
+
+type ListRdsArgs struct {
+	Marker  string
+	MaxKeys int
 }
 
 type GetBackupListResult struct {
@@ -296,12 +405,11 @@ type ListSubnetsResult struct {
 	Subnets []Subnet `json:"subnets"`
 }
 
-type GetSecurityIpsResult struct {
+type SecurityIpsRawResult struct {
 	SecurityIps []string `json:"ip"`
 }
 
 type UpdateSecurityIpsArgs struct {
-	InstanceId  string   `json:"instanceId"`
 	SecurityIps []string `json:"securityIps"`
 }
 
@@ -428,23 +536,24 @@ const (
 )
 
 type CreateAccountArgs struct {
-	ClientToken        string              `json:"-"`
-	AccountName        string              `json:"accountName"`
-	Password           string              `json:"password"`
-	Type               AccountType         `json:"type"`
-	Remark             string              `json:"remark"`
+	ClientToken string `json:"-"`
+	AccountName string `json:"accountName"`
+	Password    string `json:"password"`
+	// 为了兼容 RDS 参数结构
+	AccountType        AccountType         `json:"type"`
+	Desc               string              `json:"remark"`
 	DatabasePrivileges []DatabasePrivilege `json:"databasePrivileges,omitempty"`
 }
 
 type DatabasePrivilege struct {
-	DbName   string   `json:"dbName"`
-	AuthType AuthType `json:"authType"`
+	DbName   string `json:"dbName"`
+	AuthType string `json:"authType"`
 }
 
 type Account struct {
 	AccountName        string              `json:"accountName"`
-	Remark             string              `json:"remark"`
-	AccountStatus      string              `json:"accountStatus"`
+	Desc               string              `json:"remark"`
+	Status             string              `json:"accountStatus"`
 	AccountType        string              `json:"accountType"`
 	DatabasePrivileges []DatabasePrivilege `json:"databasePrivileges"`
 }
@@ -461,8 +570,8 @@ type UpdateAccountPasswordArgs struct {
 	Password string `json:"password"`
 }
 
-type UpdateAccountRemarkArgs struct {
-	Remark string `json:"remark"`
+type UpdateAccountDescArgs struct {
+	Desc string `json:"remark"`
 }
 
 type UpdateAccountPrivilegesArgs struct {
@@ -485,4 +594,12 @@ type VpcVo struct {
 	Ipv6Cidr      string   `json:"ipv6Cidr"`
 	AuxiliaryCidr []string `json:"auxiliaryCidr"`
 	Relay         bool     `json:"relay"`
+}
+type GetBackupListArgs struct {
+	Marker  string
+	MaxKeys int
+}
+type GetSecurityIpsResult struct {
+	Etag        string   `json:"etag"`
+	SecurityIps []string `json:"securityIps"`
 }

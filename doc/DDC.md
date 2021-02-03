@@ -315,19 +315,19 @@ args := &ddc.CreateAccountArgs{
     AccountName: "accountName",
     // 账号的密码，由字母、数字和特殊字符（!@#%^_）中的至少两种组成，长度8-32位，必选
     Password: "password",
-    // 账号权限类型，AccountType_Common：普通帐号,AccountType_Super：super账号。必选
-    Type: ddc.AccountType_Common,
+    // 账号权限类型，Common：普通帐号,Super：super账号。可选，默认为 Common
+    AccountType: "Common",
     // 权限设置，可选
     DatabasePrivileges: []ddc.DatabasePrivilege{
             {
                 // 数据库名称
                 DbName: "user_photo_001",
-                // 授权类型。AuthType_ReadOnly：只读，AuthType_ReadWrite：读写
-                AuthType: ddc.AuthType_ReadOnly,
+                // 授权类型。ReadOnly：只读，ReadWrite：读写
+                AuthType: "ReadOnly",
             },   
         },
     // 帐号备注，最多256个字符（一个汉字等于三个字符），可选
-    Remark: "账号user1",
+    Desc: "账号user1",
 }
 err = client.CreateAccount(instanceId, args)
 if err != nil {
@@ -339,7 +339,7 @@ fmt.Println("create account success.")
 ```
 
 > 注意:
-> - 实例状态为available，实例必须是主实例。
+> - 实例状态为Available，实例必须是主实例。
 > - 没有超出实例最大账号数量。
 
 ## 更新账号密码
@@ -367,17 +367,17 @@ fmt.Println("update account password success.")
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/ddc"
 
-args := &ddc.UpdateAccountRemarkArgs{
+args := &ddc.UpdateAccountDescArgs{
     // 帐号备注，最多256个字符（一个汉字等于三个字符），可选
-    Remark: "remark",
+    Desc: "desc",
 }
-err = client.UpdateAccountRemark(instanceId, accountName, args)
+err = client.UpdateAccountDesc(instanceId, accountName, args)
 if err != nil {
-    fmt.Printf("update account remark error: %+v\n", err)
+    fmt.Printf("update account desc error: %+v\n", err)
     return
 }
 
-fmt.Println("update account remark success.")
+fmt.Println("update account desc success.")
 ```
 
 ## 更新账号权限
@@ -389,8 +389,8 @@ fmt.Println("update account remark success.")
 databasePrivileges := []ddc.DatabasePrivilege{
     {
         DbName:   "hello",
-		// 授权类型。AuthType_ReadOnly：只读，AuthType_ReadWrite：读写
-        AuthType: ddc.AuthType_ReadWrite,
+		// 授权类型。ReadOnly：只读，ReadWrite：读写
+        AuthType: "ReadOnly",
     },
 }
 
@@ -420,10 +420,10 @@ if err != nil {
 
 // 获取account的信息
 fmt.Println("ddc accountName: ", result.AccountName)
-fmt.Println("ddc remark: ", result.Remark)
-// 账号状态（创建中：creating；可用中：available；更新中：updating；删除中：deleting；已删除：deleted）
+fmt.Println("ddc desc: ", result.Desc)
+// 账号状态（创建中：Creating；可用中：Available；更新中：Updating；删除中：Deleting；已删除：Deleted）
 fmt.Println("ddc accountStatus: ", result.AccountStatus)
-// 账号类型（super账号：ddcsuper；普通账号：common）
+// 账号类型（super账号：Super；普通账号：Common）
 fmt.Println("ddc accountType: ", result.AccountType)
 fmt.Println("ddc databasePrivileges: ", result.DatabasePrivileges)
 ```
@@ -443,10 +443,10 @@ if err != nil {
 // 获取account的列表信息
 for _, account := range result.Accounts {
 	fmt.Println("ddc accountName: ", account.AccountName)
-    fmt.Println("ddc remark: ", account.Remark)
-    // 账号状态（创建中：creating；可用中：available；更新中：updating；删除中：deleting；已删除：deleted）
+    fmt.Println("ddc desc: ", account.Desc)
+    // 账号状态（创建中：Creating；可用中：Available；更新中：Updating；删除中：Deleting；已删除：Deleted）
     fmt.Println("ddc accountStatus: ", account.AccountStatus)
-    // 账号类型（super账号：ddcsuper；普通账号：common）
+    // 账号类型（super账号：Super；普通账号：Common）
     fmt.Println("ddc accountType: ", account.AccountType)
     fmt.Println("ddc databasePrivileges: ", account.DatabasePrivileges)
 }
@@ -576,64 +576,121 @@ fmt.Printf("delete database success\n")
 # 实例管理
 
 ## 创建实例
-使用以下代码可以创建一个实例。
+使用以下代码可以创建主实例。
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/ddc"
-
-args := &ddc.CreateInstanceArgs{
-	// 幂等 Token
-    ClientToken: "xxxyyyzzz",
-    // 实例类型 必选
-	InstanceType: "RDS",
-	// 创建数量 必选
-	Number: 1,
-    // 权限设置，可选
-    Instance: ddc.Instance{
-            // ddc实例名称，允许小写字母、数字，中文，长度限制为1~64，可选	
-            InstanceName 		 :"mysql_5.7",	
-			// 主实例id （创建只读实例时需要）
-			SourceInstanceId	 :"sourceInstanceId",
-			Engine               :"mysql",
-			// 数据库版本 必选
-			EngineVersion        :"engineVersion",
-			// CPU核数 必选
-			CpuCount             :1,
-			// 套餐内存大小，单位GB，必选
-			AllocatedMemoryInGB  :8,
-			//套餐磁盘大小，单位GB，每5G递增，必选
-			AllocatedStorageInGB :10,
-			// 可用区 必选 调用可用区列表获取
-			AZone                :"zoneA",
-			// vpc，必选 （只读实例必须和主实例一致）
-			VpcId                :"vpcId",
-			// vpc内，每个可用区的subnetId；必选
-			SubnetId             :"zoneA:71cfc441-fd54-484e-8ea7-192c6649dc18",
-			// 磁盘类型 必选
-			DiskIoType           :"ssd",
-			// 部署集id 必选
-			DeployId             :"deployId",
-			// 资源池id 必选
-			PoolId             :"poolId",
-            // RO组ID。(创建只读实例时) 可选
-			// 如果不传，默认会创建一个RO组，并将该只读加入RO组中
-			RoGroupId             :"roGroupId",
-            // RO组是否启用延迟剔除，默认不启动。（创建只读实例时）可选
-			EnableDelayOff        :false,
-            // 延迟阈值。（创建只读实例时）可选
-			DelayThreshold         : 1,
-            // RO组最少保留实例数目。默认为1. （创建只读实例时）可选
-			LeastInstanceAmount    : 1,
-            // 只读实例在RO组中的读流量权重。默认为1（创建只读实例时）可选
-			RoGroupWeight          : 1,
+args := &ddc.CreateRdsArgs{
+    // 指定ddc的数据库引擎，取值mysql,必选
+    Engine:            "mysql",
+    // 指定ddc的数据库版本，必选
+    EngineVersion:  "5.6",
+    // 计费相关参数，PaymentTiming取值为 预付费：Prepaid，后付费：Postpaid；Reservation：支付方式为后支付时不需要设置，预支付时必须设置；必选
+    Billing: ddc.Billing{
+        PaymentTiming: "Postpaid",
+        //Reservation: ddc.Reservation{ReservationLength: 1, ReservationTimeUnit: "Month"},
+    },
+    // 预付费时可指定自动续费参数 AutoRenewTime 和 AutoRenewTimeUnit
+    // 自动续费时长（续费单位为year 不大于3，续费单位为mouth 不大于9）
+    // AutoRenewTime: 1,
+    // 自动续费单位（"year";"mouth"）
+    // AutoRenewTimeUnit: "year",
+    // CPU核数，必选
+    CpuCount: 1,
+    //套餐内存大小，单位GB，必选
+    MemoryCapacity: 1,
+    //套餐磁盘大小，单位GB，每5G递增，必选
+    VolumeCapacity: 5,
+    //批量创建云数据库 ddc 实例个数, 最大不超过10，默认1，可选
+    PurchaseCount: 1,
+    //ddc实例名称，允许小写字母、数字，长度限制为1~32，默认命名规则:{engine} + {engineVersion}，可选
+    InstanceName: "instanceName",
+    //所属系列，Basic：单机基础版，Standard：双机高可用版。仅SQLServer 2012sp3 支持单机基础版。默认Standard，可选
+    Category: "Standard",
+    //指定zone信息，默认为空，由系统自动选择，可选
+    //zoneName命名规范是小写的“国家-region-可用区序列"，例如北京可用区A为"cn-bj-a"。
+    ZoneNames: ["cn-bj-a"],
+    //vpc，如果不提供则属于默认vpc，可选
+    VpcId: "vpc-IyrqYIQ7",
+    //是否进行直接支付，默认false，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑，可选
+    IsDirectPay: false,
+    //vpc内，每个可用区的subnetId；如果不是默认vpc则必须指定 subnetId，可选
+    Subnets: []ddc.SubnetMap{
+        {
+        ZoneName: "cn-bj-a",
+        SubnetId: "sbn-IyWRnII7",
         },
+    },
+// 实例绑定的标签信息，可选
+    Tags: []model.TagModel{
+        {
+        TagKey:   "tagK",
+        TagValue: "tagV",
+        },
+    },
 }
-resp,err := client.CreateInstance(args)
+result, err := client.CreateRds(args)
 if err != nil {
-    fmt.Printf("create instance error: %+v\n", err)
+    fmt.Printf("create ddc error: %+v\n", err)
     return
 }
-fmt.Println(resp)
-fmt.Println("create instance success.")
+
+for _, e := range result.InstanceIds {
+    fmt.Println("create ddc success, instanceId: ", e)
+}
+```
+
+## 创建只读实例
+使用以下代码可以创建只读实例。
+```go
+// import "github.com/baidubce/bce-sdk-go/services/ddc"
+args := &ddc.CreateReadReplicaArgs{
+    //主实例ID，必选
+    SourceInstanceId: "sourceInstanceId"
+    // 计费相关参数，只读实例只支持后付费Postpaid，必选
+    Billing: ddc.Billing{
+        PaymentTiming: "Postpaid",
+    },
+    // CPU核数，必选
+    CpuCount: 1,
+    //套餐内存大小，单位GB，必选
+    MemoryCapacity: 1,
+    //套餐磁盘大小，单位GB，每5G递增，必选
+    VolumeCapacity: 5,
+    //批量创建云数据库 ddc 只读实例个数, 目前只支持一次创建一个,可选
+    PurchaseCount: 1,
+    //实例名称，允许小写字母、数字，长度限制为1~32，默认命名规则:{engine} + {engineVersion}，可选
+    InstanceName: "instanceName",
+    //指定zone信息，默认为空，由系统自动选择，可选
+    //zoneName命名规范是小写的“国家-region-可用区序列"，例如北京可用区A为"cn-bj-a"。
+    ZoneNames: ["cn-bj-a"],
+    //与主实例 vpcId 相同，可选
+    VpcId: "vpc-IyrqYIQ7",
+    //是否进行直接支付，默认false，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑，可选
+    IsDirectPay: false,
+    //vpc内，每个可用区的subnetId；如果不是默认vpc则必须指定 subnetId，可选
+    Subnets: []ddc.SubnetMap{
+        {
+        ZoneName: "cn-bj-a",
+        SubnetId: "sbn-IyWRnII7",
+        },
+    },
+    // 实例绑定的标签信息，可选
+    Tags: []model.TagModel{
+        {
+        TagKey:   "tagK",
+        TagValue: "tagV",
+        },
+    },
+}
+result, err := client.CreateReadReplica(args)
+if err != nil {
+    fmt.Printf("create ddc readReplica error: %+v\n", err)
+    return
+}
+
+for _, e := range result.InstanceIds {
+    fmt.Println("create ddc readReplica success, instanceId: ", e)
+}
 ```
 
 ## 实例详情
@@ -642,41 +699,34 @@ fmt.Println("create instance success.")
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/ddc"
 
-resp, err := client.GetDetail(instanceId)
+result, err := client.GetDetail(instanceId)
 if err != nil {
     fmt.Printf("get instance error: %+v\n", err)
     return
 }
-
 // 获取实例详情信息
-fmt.Println("ddc instanceId: ", resp.Instance.InstanceId)
-fmt.Println("ddc instanceName: ", resp.Instance.InstanceName)
-fmt.Println("ddc engine: ", resp.Instance.Engine)
-fmt.Println("ddc engineVersion: ", resp.Instance.EngineVersion)
-fmt.Println("ddc instanceStatus: ", resp.Instance.InstanceStatus)
-fmt.Println("ddc cpuCount: ", resp.Instance.CpuCount)
-fmt.Println("ddc allocatedMemoryInGB: ", resp.Instance.AllocatedMemoryInGB)
-fmt.Println("ddc allocatedStorageInGB: ", resp.Instance.AllocatedStorageInGB)
-fmt.Println("ddc nodeAmount: ", resp.Instance.NodeAmount)
-fmt.Println("ddc usedStorageInGB: ", resp.Instance.UsedStorageInGB)
-fmt.Println("ddc publicAccessStatus: ", resp.Instance.PublicAccessStatus)
-fmt.Println("ddc endpoint: ", resp.Instance.Endpoint)
-fmt.Println("ddc backupPolicy: ", resp.Instance.BackupPolicy)
-fmt.Println("ddc region: ", resp.Instance.Region)
-fmt.Println("ddc instanceType: ", resp.Instance.InstanceType)
-fmt.Println("ddc sourceInstanceId: ", resp.Instance.SourceInstanceId)
-fmt.Println("ddc zoneNames: ", resp.Instance.ZoneNames)
-fmt.Println("ddc vpcId: ", resp.Instance.VpcId)
-fmt.Println("ddc subnets: ", resp.Instance.Subnets)
-fmt.Println("ddc topology: ", resp.Instance.Topology)
-fmt.Println("ddc diskType: ", resp.Instance.DiskType)
-fmt.Println("ddc type: ", resp.Instance.Type)
-fmt.Println("ddc applicationType: ", resp.Instance.ApplicationType)
-fmt.Println("ddc roGroupList: ", resp.Instance.RoGroupList)
-fmt.Println("ddc nodeMaster: ", resp.Instance.NodeMaster)
-fmt.Println("ddc nodeSlave: ", resp.Instance.NodeSlave)
-fmt.Println("ddc nodeReadReplica: ", resp.Instance.NodeReadReplica)
-fmt.Println("ddc deployId: ", resp.Instance.DeployId)
+fmt.Println("ddc instanceId: ", result.InstanceId)
+fmt.Println("ddc instanceName: ", result.InstanceName)
+fmt.Println("ddc engine: ", result.Engine)
+fmt.Println("ddc engineVersion: ", result.EngineVersion)
+fmt.Println("ddc instanceStatus: ", result.InstanceStatus)
+fmt.Println("ddc cpuCount: ", result.CpuCount)
+fmt.Println("ddc memoryCapacity: ", result.MemoryCapacity)
+fmt.Println("ddc volumeCapacity: ", result.VolumeCapacity)
+fmt.Println("ddc usedStorage: ", result.UsedStorage)
+fmt.Println("ddc paymentTiming: ", result.PaymentTiming)
+fmt.Println("ddc instanceType: ", result.InstanceType)
+fmt.Println("ddc instanceCreateTime: ", result.InstanceCreateTime)
+fmt.Println("ddc instanceExpireTime: ", result.InstanceExpireTime)
+fmt.Println("ddc publicAccessStatus: ", result.PublicAccessStatus)
+fmt.Println("ddc vpcId: ", result.VpcId)
+fmt.Println("ddc Subnets: ", result.Subnets)
+fmt.Println("ddc BackupPolicy: ", result.BackupPolicy)
+fmt.Println("ddc RoGroupList: ", result.RoGroupList)
+fmt.Println("ddc NodeMaster: ", result.NodeMaster)
+fmt.Println("ddc NodeSlave: ", result.NodeSlave)
+fmt.Println("ddc NodeReadReplica: ", result.NodeReadReplica)
+fmt.Println("ddc DeployId: ", result.DeployId)
 ```
 
 ## 实例列表
@@ -684,13 +734,13 @@ fmt.Println("ddc deployId: ", resp.Instance.DeployId)
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/ddc"
 
-args := &ddc.Marker{
+args := &ddc.ListRdsArgs{
     // 批量获取列表的查询的起始位置，实例列表中Marker需要指定实例Id，可选
     // Marker: "marker",
     // 指定每页包含的最大数量(主实例)，最大数量不超过1000，缺省值为1000，可选
     MaxKeys: 1,
 }
-resp, err := client.ListDdcInstance(args)
+resp, err := client.ListRds(args)
 
 if err != nil {
     fmt.Printf("get instance error: %+v\n", err)
@@ -706,31 +756,23 @@ fmt.Println("ddc list nextMarker: ", resp.NextMarker)
 // 每页包含的最大数量
 fmt.Println("ddc list maxKeys: ", resp.MaxKeys)
 
-// 获取account的列表信息
+// 获取instance的列表信息
 for _, e := range resp.Result {
-	fmt.Println("ddc instanceId: ", e.InstanceId)
+    fmt.Println("ddc instanceId: ", e.InstanceId)
     fmt.Println("ddc instanceName: ", e.InstanceName)
     fmt.Println("ddc engine: ", e.Engine)
     fmt.Println("ddc engineVersion: ", e.EngineVersion)
     fmt.Println("ddc instanceStatus: ", e.InstanceStatus)
     fmt.Println("ddc cpuCount: ", e.CpuCount)
-    fmt.Println("ddc allocatedMemoryInGB: ", e.AllocatedMemoryInGB)
-    fmt.Println("ddc allocatedStorageInGB: ", e.AllocatedStorageInGB)
-    fmt.Println("ddc nodeAmount: ", e.NodeAmount)
-    fmt.Println("ddc usedStorageInGB: ", e.UsedStorageInGB)
-    fmt.Println("ddc publicAccessStatus: ", e.PublicAccessStatus)
-    fmt.Println("ddc endpoint: ", e.Endpoint)
-    fmt.Println("ddc backupPolicy: ", e.BackupPolicy)
-    fmt.Println("ddc region: ", e.Region)
+    fmt.Println("ddc memoryCapacity: ", e.MemoryCapacity)
+    fmt.Println("ddc volumeCapacity: ", e.VolumeCapacity)
+    fmt.Println("ddc usedStorage: ", e.UsedStorage)
+    fmt.Println("ddc paymentTiming: ", e.PaymentTiming)
     fmt.Println("ddc instanceType: ", e.InstanceType)
-    fmt.Println("ddc sourceInstanceId: ", e.SourceInstanceId)
-    fmt.Println("ddc zoneNames: ", e.ZoneNames)
+    fmt.Println("ddc instanceCreateTime: ", e.InstanceCreateTime)
+    fmt.Println("ddc instanceExpireTime: ", e.InstanceExpireTime)
+    fmt.Println("ddc publicAccessStatus: ", e.PublicAccessStatus)
     fmt.Println("ddc vpcId: ", e.VpcId)
-    fmt.Println("ddc subnets: ", e.Subnets)
-    fmt.Println("ddc topology: ", e.Topology)
-    fmt.Println("ddc diskType: ", e.DiskType)
-    fmt.Println("ddc type: ", e.Type)
-    fmt.Println("ddc applicationType: ", e.ApplicationType)
 }
 ```
 
@@ -740,7 +782,7 @@ for _, e := range resp.Result {
 // import "github.com/baidubce/bce-sdk-go/services/ddc"
 
 // 多个实例间用英文半角逗号","隔开，最多可输入10个
-err := client.DeleteDdcInstance(instanceIds)
+err := client.DeleteRds(instanceIds)
 if err != nil {
     fmt.Printf("delete instance error: %+v\n", err)
     return
@@ -766,7 +808,7 @@ fmt.Printf("update instance name success\n")
 ```
 
 ## 主备切换
-使用以下代码主备切换。
+使用以下代码可以进行主备切换。
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/ddc"
 
@@ -841,10 +883,11 @@ for _, e := range resp.Zones {
 使用以下代码可以获取一个实例下的子网列表。
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/ddc"
-resp, err := client.ListSubnets()
+args := &rds.ListSubnetsArgs{}
+resp, err := client.ListSubnets(args)
 if err != nil {
-	fmt.Printf("get subnet list error: %+v\n", err)
-	return
+    fmt.Printf("get subnet list error: %+v\n", err)
+    return
 }
 for _, e := range resp.Subnets {
     fmt.Println("ddc name: ", e.Name)

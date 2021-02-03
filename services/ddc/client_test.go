@@ -14,8 +14,8 @@ import (
 
 var (
 	DDC_CLIENT            *Client
-	DDC_ID                string = "ddc-mlhxpsff"
-	ACCOUNT_NAME          string = "go_sdk_account_1"
+	DDC_ID                string = "ddc-m8rs4yjz"
+	ACCOUNT_NAME          string = "go_sdk_account_2"
 	ACCOUNT_PASSWORD      string = "go_sdk_password_1"
 	ACCOUNT_REMARK        string = "go-sdk-remark-1"
 	DB_NAME               string = "go_sdk_db_1"
@@ -90,7 +90,7 @@ func TestClient_CreateInstance(t *testing.T) {
 
 		InstanceType: "RDS",
 		Number:       1,
-		Instance: Instance{
+		Instance: CreateInstance{
 			Engine:               "mysql",
 			EngineVersion:        "5.7",
 			CpuCount:             1,
@@ -170,10 +170,11 @@ func TestClient_ListVpc(t *testing.T) {
 }
 
 func TestClient_GetDetail(t *testing.T) {
-	detail, err := DDC_CLIENT.GetDetail("rdsm2bpbozmj59z")
+	detail, err := DDC_CLIENT.GetDetail("ddc-mmqptugx")
 	ExpectEqual(t.Errorf, detail, detail)
 	ExpectEqual(t.Errorf, err, nil)
-	fmt.Println(detail)
+	res, _ := json.Marshal(detail)
+	fmt.Println(string(res))
 }
 
 func TestClient_UpdateSecurityIps(t *testing.T) {
@@ -218,10 +219,12 @@ func TestClient_GetZoneList(t *testing.T) {
 }
 
 func TestClient_ListSubnets(t *testing.T) {
-	subnets, err := DDC_CLIENT.ListSubnets()
+	args := &ListSubnetsArgs{ZoneName: "zoneA"}
+	subnets, err := DDC_CLIENT.ListSubnets(args)
 	ExpectEqual(t.Errorf, nil, err)
 	ExpectEqual(t.Errorf, subnets, subnets)
-	fmt.Println(subnets)
+	result, _ := json.Marshal(subnets.Subnets)
+	fmt.Println(string(result))
 }
 
 func TestClient_GetBinlogList(t *testing.T) {
@@ -239,8 +242,8 @@ func TestClient_GetBinlogDetail(t *testing.T) {
 }
 
 func TestClient_DeleteDdcInstance(t *testing.T) {
-	instanceId := "rdsmvn9mmomzaw"
-	DDC_CLIENT.DeleteDdcInstance(instanceId)
+	instanceId := "ddc-m8rs4yjz"
+	DDC_CLIENT.DeleteRds(instanceId)
 }
 
 func TestClient_SwitchInstance(t *testing.T) {
@@ -295,8 +298,14 @@ func TestClient_CreateAccount(t *testing.T) {
 		ClientToken: getClientToken(),
 		AccountName: ACCOUNT_NAME,
 		Password:    ACCOUNT_PASSWORD,
-		Type:        AccountType_Common,
-		Remark:      ACCOUNT_REMARK,
+		AccountType: "Common",
+		Desc:        ACCOUNT_REMARK,
+		DatabasePrivileges: []DatabasePrivilege{
+			{
+				DbName:   "hello",
+				AuthType: "ReadOnly",
+			},
+		},
 	}
 
 	err := DDC_CLIENT.CreateAccount(DDC_ID, args)
@@ -306,7 +315,7 @@ func TestClient_CreateAccount(t *testing.T) {
 func TestClient_GetAccount(t *testing.T) {
 	result, err := DDC_CLIENT.GetAccount(DDC_ID, ACCOUNT_NAME)
 	ExpectEqual(t.Errorf, nil, err)
-	ExpectEqual(t.Errorf, "available", result.AccountStatus)
+	ExpectEqual(t.Errorf, "Available", result.Status)
 }
 
 func TestClient_ListAccount(t *testing.T) {
@@ -314,7 +323,7 @@ func TestClient_ListAccount(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 	for _, e := range result.Accounts {
 		if e.AccountName == ACCOUNT_NAME {
-			ExpectEqual(t.Errorf, "available", e.AccountStatus)
+			ExpectEqual(t.Errorf, "Available", e.Status)
 		}
 	}
 }
@@ -327,11 +336,11 @@ func TestClient_UpdateAccountPassword(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
-func TestClient_UpdateAccountRemark(t *testing.T) {
-	args := &UpdateAccountRemarkArgs{
-		Remark: ACCOUNT_REMARK + "_update",
+func TestClient_UpdateAccountDesc(t *testing.T) {
+	args := &UpdateAccountDescArgs{
+		Desc: ACCOUNT_REMARK + "_update",
 	}
-	err := DDC_CLIENT.UpdateAccountRemark(DDC_ID, ACCOUNT_NAME, args)
+	err := DDC_CLIENT.UpdateAccountDesc(DDC_ID, ACCOUNT_NAME, args)
 	ExpectEqual(t.Errorf, nil, err)
 }
 
@@ -339,7 +348,7 @@ func TestClient_UpdateAccountPrivileges(t *testing.T) {
 	databasePrivileges := []DatabasePrivilege{
 		{
 			DbName:   "hello",
-			AuthType: AuthType_ReadWrite,
+			AuthType: "ReadWrite",
 		},
 	}
 	args := &UpdateAccountPrivilegesArgs{
@@ -357,4 +366,123 @@ func TestClient_DeleteAccount(t *testing.T) {
 // util
 func getClientToken() string {
 	return util.NewUUID()
+}
+
+func TestClient_CreateRds(t *testing.T) {
+	args := &CreateRdsArgs{
+		PurchaseCount: 1,
+		InstanceName: "mysql_5.7",
+		//SourceInstanceId: "ddc-mmqptugx",
+		Engine: "mysql",
+		EngineVersion: "5.7",
+		CpuCount: 1,
+		MemoryCapacity: 1,
+		VolumeCapacity: 5,
+		Billing: Billing{
+			PaymentTiming: "Postpaid",
+			Reservation: Reservation{ReservationLength: 1, ReservationTimeUnit: "Month"},
+		},
+		VpcId: "vpc-80m2ksi6sv0f",
+		ZoneNames: []string{
+			"cn-su-c",
+		},
+		Subnets: []SubnetMap{
+			{
+				ZoneName: "cn-su-c",
+				SubnetId: "sbn-8v3p33vhyhq5",
+			},
+
+		},
+	}
+	rds, err := DDC_CLIENT.CreateRds(args)
+	ExpectEqual(t.Errorf, nil, err)
+	fmt.Println(rds)
+}
+
+func TestClient_ListDdcInstance(t *testing.T) {
+	args := &ListRdsArgs{
+		// 批量获取列表的查询的起始位置，实例列表中Marker需要指定实例Id，可选
+		// Marker: "marker",
+		// 指定每页包含的最大数量(主实例)，最大数量不超过1000，缺省值为1000，可选
+		MaxKeys: 100,
+	}
+	resp, err := DDC_CLIENT.ListRds(args)
+
+	if err != nil {
+		fmt.Printf("get instance error: %+v\n", err)
+		return
+	}
+
+	// 返回标记查询的起始位置
+	fmt.Println("ddc list marker: ", resp.Marker)
+	// true表示后面还有数据，false表示已经是最后一页
+	fmt.Println("ddc list isTruncated: ", resp.IsTruncated)
+	// 获取下一页所需要传递的marker值。当isTruncated为false时，该域不出现
+	fmt.Println("ddc list nextMarker: ", resp.NextMarker)
+	// 每页包含的最大数量
+	fmt.Println("ddc list maxKeys: ", resp.MaxKeys)
+
+	// 获取instance的列表信息
+	for _, e := range resp.Result {
+		fmt.Println("ddc instanceId: ", e.InstanceId)
+		fmt.Println("ddc instanceName: ", e.InstanceName)
+		fmt.Println("ddc engine: ", e.Engine)
+		fmt.Println("ddc engineVersion: ", e.EngineVersion)
+		fmt.Println("ddc instanceStatus: ", e.InstanceStatus)
+		fmt.Println("ddc cpuCount: ", e.CpuCount)
+		fmt.Println("ddc memoryCapacity: ", e.MemoryCapacity)
+		fmt.Println("ddc volumeCapacity: ", e.VolumeCapacity)
+		fmt.Println("ddc usedStorage: ", e.UsedStorage)
+		fmt.Println("ddc paymentTiming: ", e.PaymentTiming)
+		fmt.Println("ddc instanceType: ", e.InstanceType)
+		fmt.Println("ddc instanceCreateTime: ", e.InstanceCreateTime)
+		fmt.Println("ddc instanceExpireTime: ", e.InstanceExpireTime)
+		fmt.Println("ddc publicAccessStatus: ", e.PublicAccessStatus)
+		fmt.Println("ddc vpcId: ", e.VpcId)
+	}
+
+}
+func TestClient_GetDetail2(t *testing.T) {
+	result, err := DDC_CLIENT.GetDetail("ddc-m67du0mh")
+	if err != nil {
+		fmt.Printf("get instance error: %+v\n", err)
+		return
+	}
+	// 获取实例详情信息
+	fmt.Println("ddc instanceId: ", result.InstanceId)
+	fmt.Println("ddc instanceName: ", result.InstanceName)
+	fmt.Println("ddc engine: ", result.Engine)
+	fmt.Println("ddc engineVersion: ", result.EngineVersion)
+	fmt.Println("ddc instanceStatus: ", result.InstanceStatus)
+	fmt.Println("ddc cpuCount: ", result.CpuCount)
+	fmt.Println("ddc memoryCapacity: ", result.MemoryCapacity)
+	fmt.Println("ddc volumeCapacity: ", result.VolumeCapacity)
+	fmt.Println("ddc usedStorage: ", result.UsedStorage)
+	fmt.Println("ddc paymentTiming: ", result.PaymentTiming)
+	fmt.Println("ddc instanceType: ", result.InstanceType)
+	fmt.Println("ddc instanceCreateTime: ", result.InstanceCreateTime)
+	fmt.Println("ddc instanceExpireTime: ", result.InstanceExpireTime)
+	fmt.Println("ddc publicAccessStatus: ", result.PublicAccessStatus)
+	fmt.Println("ddc vpcId: ", result.VpcId)
+	fmt.Println("ddc Subnets: ", result.Subnets)
+	fmt.Println("ddc BackupPolicy: ", result.BackupPolicy)
+	fmt.Println("ddc RoGroupList: ", result.RoGroupList)
+	fmt.Println("ddc NodeMaster: ", result.NodeMaster)
+	fmt.Println("ddc NodeSlave: ", result.NodeSlave)
+	fmt.Println("ddc NodeReadReplica: ", result.NodeReadReplica)
+	fmt.Println("ddc DeployId: ", result.DeployId)
+
+}
+
+func TestClient_UpdateInstanceName(t *testing.T) {
+	args := &UpdateInstanceNameArgs{
+		// DDC实例名称，允许小写字母、数字，中文，长度限制为1~64
+		InstanceName: "ssss",
+	}
+	err := DDC_CLIENT.UpdateInstanceName("ddc-m67du0mh", args)
+	if err != nil {
+		fmt.Printf("update instance name error: %+v\n", err)
+		return
+	}
+	fmt.Printf("update instance name success\n")
 }

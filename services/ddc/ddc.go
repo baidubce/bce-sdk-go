@@ -16,10 +16,13 @@
 package ddc
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -53,6 +56,305 @@ func (c *Client) CreateInstance(args *CreateInstanceArgs) (*CreateResult, error)
 	return result, err
 }
 
+// CreateRds - create a DDC with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to create a ddc
+// RETURNS:
+//     - *InstanceIds: the result of create DDC, contains new DDC's instanceIds
+//     - error: nil if success otherwise the specific error
+func (c *Client) CreateRds(args *CreateRdsArgs) (*CreateResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("unset args")
+	}
+
+	if args.Engine == "" {
+		return nil, fmt.Errorf("unset Engine")
+	}
+
+	if args.EngineVersion == "" {
+		return nil, fmt.Errorf("unset EngineVersion")
+	}
+
+	if args.Billing.PaymentTiming == "" {
+		return nil, fmt.Errorf("unset PaymentTiming")
+	}
+
+	newArgs := &CreateInstanceArgs {
+		InstanceType: "RDS",
+		Number: args.PurchaseCount,
+		ClientToken: args.ClientToken,
+		Instance: CreateInstance{
+			InstanceName: args.InstanceName,
+			Engine: args.Engine,
+			EngineVersion: args.EngineVersion,
+			CpuCount: args.CpuCount,
+			AllocatedMemoryInGB: args.MemoryCapacity,
+			AllocatedStorageInGB: args.VolumeCapacity,
+			DiskIoType: "ssd",
+			DeployId: args.DeployId,
+			PoolId: args.PoolId,
+			IsDirectPay: args.IsDirectPay,
+			Billing: args.Billing,
+			AutoRenewTime: args.AutoRenewTime,
+			AutoRenewTimeUnit: args.AutoRenewTimeUnit,
+			Tags: args.Tags,
+			Category: args.Category,
+
+		},
+	}
+
+	info, err := c.SupplyVpcInfo(newArgs, args)
+	if err != nil {
+		return nil, err
+	}
+	result, err2 := c.CreateInstance(info)
+	if err2 != nil {
+		return nil, err2
+	}
+	//list, err4 := c.GetZoneList()
+	//if err4 != nil {
+	//	fmt.Printf("get zone list error: %+v\n", err4)
+	//	return nil, err4
+	//}
+	//if args.ZoneNames != nil {
+	//	newZoneName := ""
+	//	for _, e1 := range list.Zones {
+	//		if strings.Join(args.ZoneNames, ",") == strings.Join(e1.ZoneNames, ",") {
+	//			newZoneName = strings.Join(e1.ZoneNames, ",")
+	//		}
+	//	}
+	//	newArgs.Instance.AZone = newZoneName
+	//}
+	return result, nil
+}
+
+func (c *Client) SupplyVpcInfo(newArgs *CreateInstanceArgs, args *CreateRdsArgs) (*CreateInstanceArgs, error) {
+
+	info := newArgs
+	vpc, err := c.ListVpc()
+	if err != nil {
+		fmt.Printf("list vpc error: %+v\n", err)
+		return nil, err
+	}
+	defaultVpcId := ""
+	if args.VpcId == "" {
+		for _, e := range* vpc {
+			defaultVpcId = e.VpcId
+			info.Instance.VpcId = e.VpcId
+			args.VpcId = e.VpcId
+		}
+	}
+	if args.VpcId == defaultVpcId {
+		for _, e := range* vpc {
+			if e.VpcId == args.VpcId {
+				info.Instance.VpcId = e.VpcId
+				args.VpcId = e.VpcId
+			}
+		}
+		info, err = c.UnDefaultVpcInfo(info, args)
+		if err != nil {
+			fmt.Printf("set vpc error: %+v\n", err)
+			return nil, err
+		}
+	} else {
+		for _, e := range* vpc {
+			if args.VpcId == e.ShortId {
+				info.Instance.VpcId = e.VpcId
+				args.VpcId = e.VpcId
+			}
+		}
+		info, err = c.UnDefaultVpcInfo(info, args)
+		if err != nil {
+			fmt.Printf("supply zoneAndSubnet info error: %+v\n", err)
+			return nil, err
+		}
+	}
+	return info, nil
+}
+
+
+func (c *Client) SupplyZoneAndSubnetInfo(newArgs *CreateInstanceArgs, args *CreateRdsArgs) (*CreateInstanceArgs, error) {
+	newZoneName := ""
+	if args.Subnets != nil {
+		for _, e := range args.Subnets {
+			newZoneName += e.ZoneName + ","
+		}
+		if  newZoneName != "" && newZoneName[0 : len(newZoneName) - 1] != strings.Join(args.ZoneNames, ","){
+			fmt.Printf("subnets and zoneNames not matcher: %+v\n", nil)
+			return nil, errors.New("subnets and zoneNames not matcher")
+		} else {
+			subnets, err1 := c.ListSubnets(nil)
+			if err1 != nil {
+				fmt.Printf("list subnets error: %+v\n", err1)
+				return nil, err1
+			}
+			subnetId := ""
+			if args.Subnets != nil {
+				for _, e := range subnets.Subnets {
+					for _, e1 := range args.Subnets {
+						if e.ShortId == e1.SubnetId {
+							subnetId += e.Az + ":" + e.SubnetId + ","
+						}
+					}
+				}
+				if subnetId == "" {
+					return nil, errors.New("subnetId no match")
+				}
+				newArgs.Instance.SubnetId = subnetId[0 : len(subnetId)-1]
+			}
+		}
+	} else {
+		var subnetStr string
+		for _, e := range args.ZoneNames {
+			if !strings.Contains(e, ",") {
+				listSubnetsArgs := &ListSubnetsArgs{
+					VpcId: args.VpcId,
+					ZoneName: e,
+				}
+				subnets, err := c.ListSubnets(listSubnetsArgs)
+				if err != nil {
+					fmt.Printf("list subnets error: %+v\n", err)
+					return nil, err
+				}
+				if subnets != nil && len(subnets.Subnets) > 0 {
+					subnetId := subnets.Subnets[0].SubnetId
+					subnetStr += e + ":" + subnetId + ","
+				}
+			}
+		}
+		if len(subnetStr) < 1 {
+			return nil, errors.New("Have no available subnet")
+		}
+		newArgs.Instance.SubnetId = subnetStr[:len(subnetStr) - 1]
+	}
+	return newArgs, nil
+}
+
+func (c *Client) UnDefaultVpcInfo(newArgs *CreateInstanceArgs, args *CreateRdsArgs) (*CreateInstanceArgs, error) {
+	info := newArgs
+	list, err2 := c.GetZoneList()
+	if err2 != nil {
+		fmt.Printf("get zone list error: %+v\n", err2)
+		return nil, err2
+	}
+	newZoneName := ""
+	if args.ZoneNames == nil {
+		if args.Subnets == nil {
+			subnets, _ := c.ListSubnets(nil)
+			if subnets == nil || len(subnets.Subnets) == 0 {
+				return nil, errors.New("Have no available subnet or zone")
+			}
+
+			for _, e := range subnets.Subnets{
+				info.Instance.AZone = e.Az
+				args.ZoneNames = append(args.ZoneNames, e.Az)
+				break
+			}
+			//for _, e := range list.Zones {
+			//	info.Instance.AZone = e.ApiZoneNames[0]
+			//	args.ZoneNames = append(args.ZoneNames, e.ApiZoneNames[0])
+			//	break
+			//}
+		} else {
+			for _, e := range args.Subnets {
+				newZoneName += e.ZoneName + ","
+				args.ZoneNames = append(args.ZoneNames, e.ZoneName)
+			}
+			for _, e := range list.Zones {
+				if newZoneName == strings.Join(e.ApiZoneNames, ",") {
+					info.Instance.AZone = strings.Join(e.ApiZoneNames, ",")
+				}
+			}
+		}
+		if args.ZoneNames == nil {
+			return nil, errors.New("Have no available zone for your operation.")
+		}
+	} else {
+		newZoneName = ""
+		for _, e1 := range list.Zones {
+			if strings.Join(args.ZoneNames, ",") == strings.Join(e1.ZoneNames, ",") {
+				newZoneName = strings.Join(e1.ApiZoneNames, ",")
+			}
+		}
+		info.Instance.AZone = newZoneName
+	}
+
+	info, err2 = c.SupplyZoneAndSubnetInfo(info, args)
+	if err2 != nil {
+		return nil, err2
+	}
+	return info, nil
+}
+
+// CreateReadReplica - create a readReplica ddc with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to create a readReplica ddc
+// RETURNS:
+//     - *InstanceIds: the result of create a readReplica ddc, contains the readReplica DDC's instanceIds
+//     - error: nil if success otherwise the specific error
+func (c *Client) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("unset args")
+	}
+
+	if args.SourceInstanceId == "" {
+		return nil, fmt.Errorf("unset SourceInstanceId")
+	}
+
+	if args.Billing.PaymentTiming == "" {
+		return nil, fmt.Errorf("unset PaymentTiming")
+	}
+	detail, err2 := c.GetDdcDetail(args.SourceInstanceId)
+	if err2 != nil {
+		 return nil, err2
+	}
+	newArgs := &CreateInstanceArgs {
+		InstanceType: "RDS",
+		Number: args.PurchaseCount,
+		ClientToken: args.ClientToken,
+		Instance: CreateInstance{
+			InstanceName: args.InstanceName,
+			Engine: detail.Instance.Engine,
+			EngineVersion: detail.Instance.EngineVersion,
+			CpuCount: args.CpuCount,
+			AllocatedMemoryInGB: args.MemoryCapacity,
+			AllocatedStorageInGB: args.VolumeCapacity,
+			DiskIoType: "ssd",
+			DeployId: args.DeployId,
+			PoolId: args.PoolId,
+			RoGroupId: args.RoGroupId,
+			RoGroupWeight: args.RoGroupWeight,
+			EnableDelayOff: args.EnableDelayOff,
+			DelayThreshold: args.DelayThreshold,
+			LeastInstanceAmount: args.LeastInstanceAmount,
+			Billing: args.Billing,
+			IsDirectPay: args.IsDirectPay,
+			Tags: args.Tags,
+		},
+	}
+
+	createRdsArgs := &CreateRdsArgs {
+		VpcId: args.VpcId,
+		Subnets: args.Subnets,
+		ZoneNames: args.ZoneNames,
+	}
+
+	info, err := c.SupplyVpcInfo(newArgs, createRdsArgs)
+	if err != nil {
+		return nil, err
+	}
+	result, err2 := c.CreateInstance(info)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	return result, err
+}
+
+
+
 // CreateDeploySet - create a deploy set
 //
 // PARAMS:
@@ -78,11 +380,11 @@ func (cli *Client) CreateDeploySet(poolId string, args *CreateDeployRequest) err
 	return err
 }
 
-// ListDdcInstance - list all instances
+// ListRds - list all instances
 // RETURNS:
-//     - *ListDdcResult: the result of list instances with marker
+//     - *ListRdsResult: the result of list instances with marker
 //     - error: nil if success otherwise the specific error
-func (c *Client) ListDdcInstance(marker *Marker) (*ListDdcResult, error) {
+func (c *Client) ListRds(marker *ListRdsArgs) (*ListRdsResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getDdcInstanceUri() + "/list")
 	req.SetMethod(http.GET)
@@ -99,21 +401,21 @@ func (c *Client) ListDdcInstance(marker *Marker) (*ListDdcResult, error) {
 		return nil, resp.ServiceError()
 	}
 
-	jsonBody := &ListDdcResult{}
+	jsonBody := &ListRdsResult{}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
 	return jsonBody, nil
 }
 
-// GetDetail - get details of the instance
+// GetDdcDetail - get details of the instance
 //
 // PARAMS:
 //     - instanceId: the id of the instance
 // RETURNS:
 //     - *InstanceModelResult: the detail of the instance
 //     - error: nil if success otherwise the specific error
-func (c *Client) GetDetail(instanceId string) (*InstanceModelResult, error) {
+func (c *Client) GetDdcDetail(instanceId string) (*InstanceModelResult, error) {
 	result := &InstanceModelResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
@@ -124,13 +426,55 @@ func (c *Client) GetDetail(instanceId string) (*InstanceModelResult, error) {
 	return result, err
 }
 
-// DeleteDdsInstance - delete instances
+// GetDetail - get a specific ddc Instance's detail
 //
 // PARAMS:
-//     - DeleteDdcArgs: the id list of the instance
+//     - instanceId: the specific ddc Instance's ID
+// RETURNS:
+//     - *Instance: the specific ddc Instance's detail
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetDetail(instanceId string) (*Instance, error) {
+	detail, err := c.GetDdcDetail(instanceId)
+	instanceJson, _ := json.Marshal(detail.Instance)
+	args := &Instance {
+		InstanceName: detail.Instance.InstanceName,
+		InstanceId: detail.Instance.InstanceId,
+		SourceInstanceId: detail.Instance.SourceInstanceId,
+		Endpoint: detail.Instance.Endpoint,
+		Engine: detail.Instance.Engine,
+		EngineVersion: detail.Instance.EngineVersion,
+		InstanceStatus: detail.Instance.InstanceStatus,
+		CpuCount: detail.Instance.CpuCount,
+		MemoryCapacity: detail.Instance.AllocatedMemoryInGB,
+		VolumeCapacity: detail.Instance.AllocatedStorageInGB,
+		UsedStorage: detail.Instance.UsedStorageInGB,
+		InstanceType: detail.Instance.Type,
+		InstanceCreateTime: detail.Instance.InstanceCreateTime,
+		InstanceExpireTime: detail.Instance.InstanceExpireTime,
+		PublicAccessStatus: detail.Instance.PublicAccessStatus,
+		PaymentTiming: detail.Instance.PaymentTiming,
+		SyncMode: detail.Instance.SyncMode,
+		Region: detail.Instance.Region,
+		VpcId: detail.Instance.VpcId,
+		BackupPolicy: detail.Instance.BackupPolicy,
+		RoGroupList: detail.Instance.RoGroupList,
+		NodeMaster: detail.Instance.NodeMaster,
+		NodeSlave: detail.Instance.NodeSlave,
+		NodeReadReplica: detail.Instance.NodeReadReplica,
+		Subnets: detail.Instance.Subnets,
+		DeployId: detail.Instance.DeployId,
+	}
+	err = json.Unmarshal(instanceJson, &args)
+	return args, err
+}
+
+// DeleteRds - delete instances
+//
+// PARAMS:
+//    - instanceIds: id of the instance
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) DeleteDdcInstance(instanceIds string) error {
+func (c *Client) DeleteRds(instanceIds string) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
 		WithURL(getDdcInstanceUri()+"/delete").
@@ -138,7 +482,7 @@ func (c *Client) DeleteDdcInstance(instanceIds string) error {
 		Do()
 }
 
-// UpdateInstanceNameArgs - update name of a specified instance
+// UpdateInstanceName - update name of a specified instance
 //
 // PARAMS:
 //     - instanceId: id of the instance
@@ -166,7 +510,6 @@ func (c *Client) UpdateInstanceName(instanceId string, args *UpdateInstanceNameA
 //     - *GetBackupListResult: result of the backup list
 //     - error: nil if success otherwise the specific error
 func (c *Client) GetBackupList(instanceId string) (*GetBackupListResult, error) {
-
 	result := &GetBackupListResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
@@ -203,14 +546,32 @@ func (c *Client) GetZoneList() (*GetZoneListResult, error) {
 // RETURNS:
 //     - *ListSubnetsResult: result of the subnet list
 //     - error: nil if success otherwise the specific error
-func (c *Client) ListSubnets() (*ListSubnetsResult, error) {
+func (c *Client) ListSubnets(args *ListSubnetsArgs) (*ListSubnetsResult, error) {
 	result := &ListSubnetsResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
 		WithURL(URI_PREFIX + "/subnet").
 		WithResult(result).
 		Do()
-
+	if args == nil {
+		return result, err
+	}
+	if args.ZoneName == "" {
+		return result, err
+	}
+	// to compat rds api, filter by zone and vpcId
+	if result.Subnets != nil && len(result.Subnets) > 0 {
+		var filterd = []Subnet{}
+		for _, subnet := range result.Subnets {
+			// subnet az is logical zone
+			if subnet.Az == args.ZoneName {
+				if args.VpcId == "" || args.VpcId == subnet.VpcId {
+					filterd = append(filterd, subnet)
+				}
+			}
+		}
+		result.Subnets = filterd
+	}
 	return result, err
 }
 
@@ -311,13 +672,16 @@ func (cli *Client) GetDeploySet(poolId string, deploySetId string) (*DeploySet, 
 //     - *GetSecurityIpsResult: all security IP
 //     - error: nil if success otherwise the specific error
 func (c *Client) GetSecurityIps(instanceId string) (*GetSecurityIpsResult, error) {
-	result := &GetSecurityIpsResult{}
+	rowResult := &SecurityIpsRawResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
 		WithURL(getDdcUriWithInstanceId(instanceId) + "/authIp").
-		WithResult(result).
+		WithResult(rowResult).
 		Do()
-
+	// to compat rds api,json annotations for SecurityIps are different
+	result := &GetSecurityIpsResult{
+		SecurityIps: rowResult.SecurityIps,
+	}
 	return result, err
 }
 
@@ -436,12 +800,12 @@ func (c *Client) ModifyBackupPolicy(instanceId string, args *BackupPolicy) error
 	return err
 }
 
-// GetBackupList - get backup list of the instance
+// GetBinlogList - get backup list of the instance
 //
 // PARAMS:
 //     - instanceId: id of the instance
 // RETURNS:
-//     - *GetBackupListResult: result of the backup list
+//     - *BinlogListResult: result of the backup list
 //     - error: nil if success otherwise the specific error
 func (c *Client) GetBinlogList(instanceId string, datetime string) (*BinlogListResult, error) {
 
@@ -456,13 +820,13 @@ func (c *Client) GetBinlogList(instanceId string, datetime string) (*BinlogListR
 	return result, err
 }
 
-// GetBackupDetail - get details of the instance'Binlog
+// GetBinlogDetail - get details of the instance'Binlog
 //
 // PARAMS:
 //     - instanceId: the id of the instance
 //     - binlog: the id of the binlog
 // RETURNS:
-//     - *BackupDetailResult: the detail of the binlog
+//     - *BinlogDetailResult: the detail of the binlog
 //     - error: nil if success otherwise the specific error
 func (c *Client) GetBinlogDetail(instanceId string, binlog string) (*BinlogDetailResult, error) {
 	result := &BinlogDetailResult{}
@@ -618,8 +982,23 @@ func (c *Client) CreateAccount(instanceId string, args *CreateAccountArgs) error
 		return fmt.Errorf("unset Password")
 	}
 
-	if args.Type == "" {
-		return fmt.Errorf("unset Type")
+	if args.AccountType == "" {
+		args.AccountType = "common"
+	}
+	if args.AccountType == "Super" {
+		args.AccountType = "rdssuper"
+	}
+	if args.AccountType == "Common" {
+		args.AccountType = "common"
+	}
+	if args.DatabasePrivileges != nil {
+		for idx, _ := range args.DatabasePrivileges {
+			if args.DatabasePrivileges[idx].AuthType == "ReadOnly" {
+				args.DatabasePrivileges[idx].AuthType = "readOnly"
+			} else if args.DatabasePrivileges[idx].AuthType == "ReadWrite" {
+				args.DatabasePrivileges[idx].AuthType = "readWrite"
+			}
+		}
 	}
 
 	return bce.NewRequestBuilder(c).
@@ -671,7 +1050,7 @@ func (c *Client) UpdateAccountPassword(instanceId string, accountName string, ar
 		Do()
 }
 
-// UpdateAccountRemark - update a account remark with the specific parameters
+// UpdateAccountDesc - update a account desc with the specific parameters
 //
 // PARAMS:
 //     - instanceId: the specific instanceId
@@ -679,7 +1058,7 @@ func (c *Client) UpdateAccountPassword(instanceId string, accountName string, ar
 //     - args: the arguments to update a account remark
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) UpdateAccountRemark(instanceId string, accountName string, args *UpdateAccountRemarkArgs) error {
+func (c *Client) UpdateAccountDesc(instanceId string, accountName string, args *UpdateAccountDescArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
 	}
@@ -710,6 +1089,14 @@ func (c *Client) UpdateAccountPrivileges(instanceId string, accountName string, 
 		return fmt.Errorf("unset args")
 	}
 
+	for idx, _ := range args.DatabasePrivileges {
+		if args.DatabasePrivileges[idx].AuthType == "ReadOnly" {
+			args.DatabasePrivileges[idx].AuthType = "readOnly"
+		} else if args.DatabasePrivileges[idx].AuthType == "ReadWrite" {
+			args.DatabasePrivileges[idx].AuthType = "readWrite"
+		}
+	}
+
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
 		WithURL(getAccountUriWithAccountName(instanceId, accountName)).
@@ -735,6 +1122,20 @@ func (c *Client) GetAccount(instanceId, accountName string) (*Account, error) {
 		WithResult(result).
 		Do()
 
+	if result.Account.AccountType == "common" {
+		result.Account.AccountType = "Common"
+	} else if result.Account.AccountType == "rdssuper" {
+		result.Account.AccountType = "Super"
+	}
+
+	for idx, _ := range result.Account.DatabasePrivileges {
+		if result.Account.DatabasePrivileges[idx].AuthType == "readOnly" {
+			result.Account.DatabasePrivileges[idx].AuthType = "ReadOnly"
+		} else if result.Account.DatabasePrivileges[idx].AuthType == "readWrite" {
+			result.Account.DatabasePrivileges[idx].AuthType = "ReadWrite"
+		}
+	}
+	result.Account.Status = strings.Title(result.Account.Status)
 	return &result.Account, err
 }
 
@@ -752,7 +1153,22 @@ func (c *Client) ListAccount(instanceId string) (*ListAccountResult, error) {
 		WithURL(getAccountUriWithInstanceId(instanceId)).
 		WithResult(result).
 		Do()
+	for idx, _ := range result.Accounts {
+		if result.Accounts[idx].AccountType == "common" {
+			result.Accounts[idx].AccountType = "Common"
+		} else if result.Accounts[idx].AccountType == "rdssuper" {
+			result.Accounts[idx].AccountType = "Super"
+		}
+		result.Accounts[idx].Status = strings.Title(result.Accounts[idx].Status)
 
+		for iidx, _ := range result.Accounts[idx].DatabasePrivileges {
+			if result.Accounts[idx].DatabasePrivileges[iidx].AuthType == "readOnly" {
+				result.Accounts[idx].DatabasePrivileges[iidx].AuthType = "ReadOnly"
+			} else if result.Accounts[idx].DatabasePrivileges[iidx].AuthType == "readWrite" {
+				result.Accounts[idx].DatabasePrivileges[iidx].AuthType = "ReadWrite"
+			}
+		}
+	}
 	return result, err
 }
 
