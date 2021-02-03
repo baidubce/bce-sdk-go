@@ -459,6 +459,8 @@ type ListDeploySetsResult struct {
 type AzIntstanceStatis struct {
 	ZoneName string `json:"zoneName"`
 	Count    int    `json:"instanceCount"`
+	BbcCount int    `json:"bbcInstanceCnt"`
+	BccCount int    `json:"bccInstanceCnt"`
 	Total    int    `json:"instanceTotal"`
 }
 
@@ -724,10 +726,14 @@ type DeploySetResult struct {
 }
 
 type AzIntstanceStatisDetail struct {
-	ZoneName    string   `json:"zoneName"`
-	Count       int      `json:"instanceCount"`
-	Total       int      `json:"instanceTotal"`
-	InstanceIds []string `json:"instanceIds"`
+	ZoneName       string   `json:"zoneName"`
+	Count          int      `json:"instanceCount"`
+	BccCount       int      `json:"bccInstanceCnt"`
+	BbcCount       int      `json:"bbcInstanceCnt"`
+	Total          int      `json:"instanceTotal"`
+	InstanceIds    []string `json:"instanceIds"`
+	BccInstanceIds []string `json:"bccInstanceIds"`
+	BbcInstanceIds []string `json:"bbcInstanceIds"`
 }
 
 type BbcCreateAutoRenewArgs struct {
