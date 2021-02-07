@@ -38,7 +38,7 @@ const (
 
 func init() {
 	_, f, _, _ := runtime.Caller(0)
-	for i := 0; i < 7; i++ {
+	for i := 0; i < 1; i++ {
 		f = filepath.Dir(f)
 	}
 	conf := filepath.Join(f, "config.json")
@@ -129,7 +129,7 @@ func TestClient_ListRds(t *testing.T) {
 }
 
 func TestClient_GetDetail(t *testing.T) {
-	result, err := RDS_CLIENT.GetDetail(RDS_ID)
+	result, err := RDS_CLIENT.GetDetail("rds-TTDYFqXr")
 	ExpectEqual(t.Errorf, nil, err)
 	ExpectEqual(t.Errorf, "MySQL", result.Engine)
 	ExpectEqual(t.Errorf, "5.6", result.EngineVersion)
@@ -272,7 +272,7 @@ func TestClient_ModifyPublicAccess(t *testing.T) {
 }
 
 func TestClient_GetBackupList(t *testing.T) {
-	isAvailable(RDS_ID)
+	isAvailable("rds-ZLlMF0c3")
 	listRdsArgs := &ListRdsArgs{}
 	result, err := RDS_CLIENT.ListRds(listRdsArgs)
 	ExpectEqual(t.Errorf, nil, err)
@@ -282,6 +282,7 @@ func TestClient_GetBackupList(t *testing.T) {
 			_, err := RDS_CLIENT.GetBackupList(e.InstanceId, args)
 			ExpectEqual(t.Errorf, nil, err)
 		}
+		fmt.Println(e)
 	}
 }
 
@@ -399,4 +400,15 @@ func isAvailable(instanceId string) {
 			break
 		}
 	}
+}
+
+func TestClient_AutoRenew(t *testing.T) {
+	err := RDS_CLIENT.AutoRenew(&AutoRenewArgs{
+		AutoRenewTimeUnit: "month",
+		AutoRenewTime:     1,
+		InstanceIds: []string{
+			"rds-rbmh6gJl",
+		},
+	})
+	ExpectEqual(t.Errorf, nil, err)
 }

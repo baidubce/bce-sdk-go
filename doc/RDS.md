@@ -466,6 +466,7 @@ for _, e := range result.Instances {
     fmt.Println("rds instanceCreateTime: ", e.InstanceCreateTime)
     fmt.Println("rds instanceExpireTime: ", e.InstanceExpireTime)
     fmt.Println("rds publicAccessStatus: ", e.PublicAccessStatus)
+    fmt.Println("rds task: ", e.Task)
     fmt.Println("rds vpcId: ", e.VpcId)
 }
 ```
@@ -588,10 +589,38 @@ if err != nil {
 }
 fmt.Printf("update instance name success\n")
 ```
-
 > 注意:
 >
 > - 实例名称支持大小写字母、数字以及-_ /.等特殊字符，必须以字母开头，长度1-64。
+
+## 已创建实例自动续费
+
+使用以下代码可以为已创建的预付费实例创建自动续费
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+
+args := &rds.AutoRenewArgs{
+    // 自动续费时长（续费单位为year 不大于3，续费单位为month 不大于9）必选
+	AutoRenewTime: 1,
+    // 自动续费单位（"year";"month"）必选
+	AutoRenewTimeUnit: "year",
+    // 实例id集合 必选
+    InstanceIds: []string{
+        "rds-y9dJu77d", 
+        "rds-aQFOoncr",
+    },
+}
+err := client.AutoRenew(args)
+if err != nil {
+    fmt.Printf("create auto renew error: %+v\n", err)
+    return
+}
+```
+> 注意:
+>
+> - 用于已创建的实例开启自动续费。
+> - 可以传入多个实例id，多个实例需保证在同一地域。
+
 
 ## 修改同步模式
 

@@ -627,6 +627,10 @@ args := &ddc.CreateRdsArgs{
         TagValue: "tagV",
         },
     },
+    // 部署集id 可选
+    DeployId:"xxxyyy-123",
+    // 资源池id 必选
+    PoolId:"xxxyzzzyy-123",
 }
 result, err := client.CreateRds(args)
 if err != nil {
@@ -681,6 +685,21 @@ args := &ddc.CreateReadReplicaArgs{
         TagValue: "tagV",
         },
     },
+    // 部署集id 可选
+    DeployId:"xxxyyy-123",
+    // 资源池id 必选与主实例保持一致
+    PoolId:"xxxyzzzyy-123",
+    // RO组ID。(创建只读实例时) 可选
+    // 如果不传，默认会创建一个RO组，并将该只读加入RO组中
+    RoGroupId:"yyzzcc",
+    // RO组是否启用延迟剔除，默认不启动。（创建只读实例时）可选
+    EnableDelayOff:false,
+    // 延迟阈值。（创建只读实例时）可选
+    DelayThreshold: 1,
+    // RO组最少保留实例数目。默认为1. （创建只读实例时）可选
+    LeastInstanceAmount: 1,
+    // 只读实例在RO组中的读流量权重。默认为1（创建只读实例时）可选
+    RoGroupWeight: 1,
 }
 result, err := client.CreateReadReplica(args)
 if err != nil {

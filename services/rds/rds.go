@@ -527,3 +527,18 @@ func (c *Client) UpdateParameter(instanceId, Etag string, args *UpdateParameterA
 		Do()
 }
 
+// autoRenew - create autoRenew
+//
+// PARAMS:
+//     - Args: *autoRenewArgs
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) AutoRenew(args *AutoRenewArgs) error {
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getRdsUri()).
+		WithQueryParam("autoRenew","").
+		WithBody(args).
+		Do()
+}

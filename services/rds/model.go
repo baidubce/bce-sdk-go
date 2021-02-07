@@ -119,6 +119,7 @@ type Instance struct {
 	VpcId              string       `json:"vpcId"`
 	Subnets            []Subnet     `json:"subnets"`
 	Topology           Topology     `json:"topology"`
+	Task               string       `json:"task"`
 	PaymentTiming      string       `json:"paymentTiming"`
 }
 
@@ -218,64 +219,67 @@ type GetBackupListArgs struct {
 }
 
 type GetBackupListResult struct {
-	Marker      string     `json:"marker"`
-	MaxKeys     int        `json:"maxKeys"`
-	IsTruncated bool       `json:"isTruncated"`
-	NextMarker  string     `json:"nextMarker"`
-	Instances   []Instance `json:"instances"`
+	Marker      string         `json:"marker"`
+	MaxKeys     int            `json:"maxKeys"`
+	IsTruncated bool           `json:"isTruncated"`
+	NextMarker  string         `json:"nextMarker"`
+	Backups     []BackupPolicy `json:"backups"`
 }
 
 type GetZoneListResult struct {
-	Zones              []ZoneName         `json:"zones"`
+	Zones []ZoneName `json:"zones"`
 }
 
 type ZoneName struct {
-	ZoneNames          []string           `json:"zoneNames"`
+	ZoneNames []string `json:"zoneNames"`
 }
 
 type ListSubnetsArgs struct {
-	VpcId               string         `json:"vpcId"`
-	ZoneName            string         `json:"zoneName"`
+	VpcId    string `json:"vpcId"`
+	ZoneName string `json:"zoneName"`
 }
 
 type ListSubnetsResult struct {
-	Subnets             []Subnet       `json:"subnets"`
+	Subnets []Subnet `json:"subnets"`
 }
 
 type GetSecurityIpsResult struct {
-	Etag                string         `json:"etag"`
-	SecurityIps         []string       `json:"securityIps"`
+	Etag        string   `json:"etag"`
+	SecurityIps []string `json:"securityIps"`
 }
 
 type UpdateSecurityIpsArgs struct {
-	SecurityIps         []string       `json:"securityIps"`
+	SecurityIps []string `json:"securityIps"`
 }
 
 type ListParametersResult struct {
-	Etag                string          `json:"etag"`
-	Parameters          []Parameter     `json:"parameters"`
+	Etag       string      `json:"etag"`
+	Parameters []Parameter `json:"parameters"`
 }
 
 type Parameter struct {
-	Name                string          `json:"name"`
-	DefaultValue        string          `json:"defaultValue"`
-	Value               string          `json:"value"`
-	PendingValue        string          `json:"pendingValue"`
-	Type                string          `json:"type"`
-	Dynamic             string          `json:"dynamic"`
-	Modifiable          string          `json:"modifiable"`
-	AllowedValues       string          `json:"allowedValues"`
-	Desc                string          `json:"desc"`
+	Name          string `json:"name"`
+	DefaultValue  string `json:"defaultValue"`
+	Value         string `json:"value"`
+	PendingValue  string `json:"pendingValue"`
+	Type          string `json:"type"`
+	Dynamic       string `json:"dynamic"`
+	Modifiable    string `json:"modifiable"`
+	AllowedValues string `json:"allowedValues"`
+	Desc          string `json:"desc"`
 }
 
 type UpdateParameterArgs struct {
-	Parameters          []KVParameter   `json:"parameters"`
+	Parameters []KVParameter `json:"parameters"`
 }
 
 type KVParameter struct {
-	Name                string          `json:"name"`
-	Value               string          `json:"value"`
+	Name  string `json:"name"`
+	Value string `json:"value"`
 }
 
-
-
+type AutoRenewArgs struct {
+	InstanceIds       []string `json:"instanceIds"`
+	AutoRenewTimeUnit string   `json:"autoRenewTimeUnit"`
+	AutoRenewTime     int      `json:"autoRenewTime"`
+}

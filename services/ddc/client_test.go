@@ -85,26 +85,36 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 }
 
 func TestClient_CreateInstance(t *testing.T) {
-	//id := strconv.FormatInt(time.Now().Unix(),10)
-	args := &CreateInstanceArgs{
-
-		InstanceType: "RDS",
-		Number:       1,
-		Instance: CreateInstance{
-			Engine:               "mysql",
-			EngineVersion:        "5.7",
-			CpuCount:             1,
-			AllocatedMemoryInGB:  8,
-			AllocatedStorageInGB: 10,
-			AZone:                "zoneA",
-			SubnetId:             "zoneA:11c4f322-3a0e-4f26-8883-285cf64d0f03",
-			DiskIoType:           "normal_io",
-			DeployId:             "",
-			PoolId:               "",
+	args := &CreateRdsArgs{
+		PurchaseCount: 1,
+		InstanceName: "mysql_5.7",
+		//SourceInstanceId: "ddc-mmqptugx",
+		Engine: "mysql",
+		EngineVersion: "5.7",
+		CpuCount: 1,
+		MemoryCapacity: 1,
+		VolumeCapacity: 5,
+		Billing: Billing{
+			PaymentTiming: "Postpaid",
+			Reservation: Reservation{ReservationLength: 1, ReservationTimeUnit: "Month"},
 		},
-	}
-	DDC_CLIENT.CreateInstance(args)
+		VpcId: "vpc-80m2ksi6sv0f",
+		ZoneNames: []string{
+			"cn-su-c",
+		},
+		Subnets: []SubnetMap{
+			{
+				ZoneName: "cn-su-c",
+				SubnetId: "sbn-8v3p33vhyhq5",
+			},
 
+		},
+		DeployId: "",
+		PoolId: "xdb_gaiabase_pool",
+	}
+	rds, err := DDC_CLIENT.CreateRds(args)
+	ExpectEqual(t.Errorf, nil, err)
+	fmt.Println(rds)
 }
 
 func TestClient_ListDeploySets(t *testing.T) {
@@ -391,8 +401,10 @@ func TestClient_CreateRds(t *testing.T) {
 				ZoneName: "cn-su-c",
 				SubnetId: "sbn-8v3p33vhyhq5",
 			},
-
 		},
+		DeployId: "",
+		PoolId: "xdb_gaiabase_pool",
+
 	}
 	rds, err := DDC_CLIENT.CreateRds(args)
 	ExpectEqual(t.Errorf, nil, err)
