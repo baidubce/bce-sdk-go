@@ -87,16 +87,16 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 func TestClient_CreateInstance(t *testing.T) {
 	args := &CreateRdsArgs{
 		PurchaseCount: 1,
-		InstanceName: "mysql_5.7",
+		InstanceName:  "mysql_5.7",
 		//SourceInstanceId: "ddc-mmqptugx",
-		Engine: "mysql",
-		EngineVersion: "5.7",
-		CpuCount: 1,
+		Engine:         "mysql",
+		EngineVersion:  "5.7",
+		CpuCount:       1,
 		MemoryCapacity: 1,
 		VolumeCapacity: 5,
 		Billing: Billing{
 			PaymentTiming: "Postpaid",
-			Reservation: Reservation{ReservationLength: 1, ReservationTimeUnit: "Month"},
+			Reservation:   Reservation{ReservationLength: 1, ReservationTimeUnit: "Month"},
 		},
 		VpcId: "vpc-80m2ksi6sv0f",
 		ZoneNames: []string{
@@ -107,10 +107,9 @@ func TestClient_CreateInstance(t *testing.T) {
 				ZoneName: "cn-su-c",
 				SubnetId: "sbn-8v3p33vhyhq5",
 			},
-
 		},
 		DeployId: "",
-		PoolId: "xdb_gaiabase_pool",
+		PoolId:   "xdb_gaiabase_pool",
 	}
 	rds, err := DDC_CLIENT.CreateRds(args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -381,16 +380,16 @@ func getClientToken() string {
 func TestClient_CreateRds(t *testing.T) {
 	args := &CreateRdsArgs{
 		PurchaseCount: 1,
-		InstanceName: "mysql_5.7",
+		InstanceName:  "mysql_5.7",
 		//SourceInstanceId: "ddc-mmqptugx",
-		Engine: "mysql",
-		EngineVersion: "5.7",
-		CpuCount: 1,
+		Engine:         "mysql",
+		EngineVersion:  "5.7",
+		CpuCount:       1,
 		MemoryCapacity: 1,
 		VolumeCapacity: 5,
 		Billing: Billing{
 			PaymentTiming: "Postpaid",
-			Reservation: Reservation{ReservationLength: 1, ReservationTimeUnit: "Month"},
+			Reservation:   Reservation{ReservationLength: 1, ReservationTimeUnit: "Month"},
 		},
 		VpcId: "vpc-80m2ksi6sv0f",
 		ZoneNames: []string{
@@ -403,8 +402,7 @@ func TestClient_CreateRds(t *testing.T) {
 			},
 		},
 		DeployId: "",
-		PoolId: "xdb_gaiabase_pool",
-
+		PoolId:   "xdb_gaiabase_pool",
 	}
 	rds, err := DDC_CLIENT.CreateRds(args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -435,7 +433,7 @@ func TestClient_ListDdcInstance(t *testing.T) {
 	fmt.Println("ddc list maxKeys: ", resp.MaxKeys)
 
 	// 获取instance的列表信息
-	for _, e := range resp.Result {
+	for _, e := range resp.Instances {
 		fmt.Println("ddc instanceId: ", e.InstanceId)
 		fmt.Println("ddc instanceName: ", e.InstanceName)
 		fmt.Println("ddc engine: ", e.Engine)

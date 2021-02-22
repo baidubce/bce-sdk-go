@@ -12,11 +12,12 @@
  * and limitations under the License.
  */
 
-// model.go - definitions of the request arguments and results data structure model
+package ddcrds
 
-package ddc
-
-import "github.com/baidubce/bce-sdk-go/model"
+type TagModel struct {
+	TagKey   string `json:"tagKey"`
+	TagValue string `json:"tagValue"`
+}
 
 type CreateInstanceArgs struct {
 	ClientToken  string         `json:"-"`
@@ -26,48 +27,48 @@ type CreateInstanceArgs struct {
 }
 
 type CreateRdsArgs struct {
-	ClientToken       string           `json:"-"`
-	Billing           Billing          `json:"billing"`
-	PurchaseCount     int              `json:"purchaseCount,omitempty"`
-	InstanceName      string           `json:"instanceName,omitempty"`
-	Engine            string           `json:"engine"`
-	EngineVersion     string           `json:"engineVersion"`
-	Category          string           `json:"category,omitempty"`
-	CpuCount          int              `json:"cpuCount"`
-	MemoryCapacity    int              `json:"memoryCapacity"`
-	VolumeCapacity    int              `json:"volumeCapacity"`
-	ZoneNames         []string         `json:"zoneNames,omitempty"`
-	VpcId             string           `json:"vpcId,omitempty"`
-	IsDirectPay       bool             `json:"isDirectPay,omitempty"`
-	Subnets           []SubnetMap      `json:"subnets,omitempty"`
-	Tags              []model.TagModel `json:"tags,omitempty"`
-	AutoRenewTimeUnit string           `json:"autoRenewTimeUnit,omitempty"`
-	AutoRenewTime     int              `json:"autoRenewTime,omitempty"`
-	DeployId          string           `json:"deployId"`
-	PoolId            string           `json:"poolId "`
+	ClientToken       string      `json:"-"`
+	Billing           Billing     `json:"billing"`
+	PurchaseCount     int         `json:"purchaseCount,omitempty"`
+	InstanceName      string      `json:"instanceName,omitempty"`
+	Engine            string      `json:"engine"`
+	EngineVersion     string      `json:"engineVersion"`
+	Category          string      `json:"category,omitempty"`
+	CpuCount          int         `json:"cpuCount"`
+	MemoryCapacity    float64     `json:"memoryCapacity"`
+	VolumeCapacity    int         `json:"volumeCapacity"`
+	ZoneNames         []string    `json:"zoneNames,omitempty"`
+	VpcId             string      `json:"vpcId,omitempty"`
+	IsDirectPay       bool        `json:"isDirectPay,omitempty"`
+	Subnets           []SubnetMap `json:"subnets,omitempty"`
+	Tags              []TagModel  `json:"tags,omitempty"`
+	AutoRenewTimeUnit string      `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime     int         `json:"autoRenewTime,omitempty"`
+	DeployId          string      `json:"deployId"`
+	PoolId            string      `json:"poolId "`
 }
 
 type CreateReadReplicaArgs struct {
-	ClientToken         string           `json:"-"`
-	Billing             Billing          `json:"billing"`
-	PurchaseCount       int              `json:"purchaseCount,omitempty"`
-	SourceInstanceId    string           `json:"sourceInstanceId"`
-	InstanceName        string           `json:"instanceName,omitempty"`
-	CpuCount            int              `json:"cpuCount"`
-	MemoryCapacity      int              `json:"memoryCapacity"`
-	VolumeCapacity      int              `json:"volumeCapacity"`
-	ZoneNames           []string         `json:"zoneNames,omitempty"`
-	VpcId               string           `json:"vpcId,omitempty"`
-	IsDirectPay         bool             `json:"isDirectPay,omitempty"`
-	Subnets             []SubnetMap      `json:"subnets,omitempty"`
-	Tags                []model.TagModel `json:"tags,omitempty"`
-	DeployId            string           `json:"deployId"`
-	PoolId              string           `json:"poolId"`
-	RoGroupId           string           `json:"roGroupId"`
-	EnableDelayOff      bool             `json:"enableDelayOff"`
-	DelayThreshold      int              `json:"delayThreshold"`
-	LeastInstanceAmount int              `json:"leastInstanceAmount"`
-	RoGroupWeight       int              `json:"roGroupWeight"`
+	ClientToken         string      `json:"-"`
+	Billing             Billing     `json:"billing"`
+	PurchaseCount       int         `json:"purchaseCount,omitempty"`
+	SourceInstanceId    string      `json:"sourceInstanceId"`
+	InstanceName        string      `json:"instanceName,omitempty"`
+	CpuCount            int         `json:"cpuCount"`
+	MemoryCapacity      float64     `json:"memoryCapacity"`
+	VolumeCapacity      int         `json:"volumeCapacity"`
+	ZoneNames           []string    `json:"zoneNames,omitempty"`
+	VpcId               string      `json:"vpcId,omitempty"`
+	IsDirectPay         bool        `json:"isDirectPay,omitempty"`
+	Subnets             []SubnetMap `json:"subnets,omitempty"`
+	Tags                []TagModel  `json:"tags,omitempty"`
+	DeployId            string      `json:"deployId"`
+	PoolId              string      `json:"poolId"`
+	RoGroupId           string      `json:"roGroupId"`
+	EnableDelayOff      bool        `json:"enableDelayOff"`
+	DelayThreshold      int         `json:"delayThreshold"`
+	LeastInstanceAmount int         `json:"leastInstanceAmount"`
+	RoGroupWeight       int         `json:"roGroupWeight"`
 }
 
 type Instance struct {
@@ -82,7 +83,7 @@ type Instance struct {
 	VolumeCapacity     int          `json:"allocatedStorageInGB"`
 	NodeAmount         int          `json:"nodeAmount"`
 	UsedStorage        float64      `json:"usedStorageInGB"`
-	PublicAccessStatus bool         `json:"publicAccessStatus"`
+	PublicAccessStatus string       `json:"publicAccessStatus"`
 	InstanceCreateTime string       `json:"instanceCreateTime"`
 	InstanceExpireTime string       `json:"instanceExpireTime"`
 	Endpoint           Endpoint     `json:"endpoint"`
@@ -97,11 +98,20 @@ type Instance struct {
 	Subnets            []Subnet     `json:"subnets"`
 	Topology           Topology     `json:"topology"`
 	PaymentTiming      string       `json:"paymentTiming"`
-	RoGroupList        []RoGroup    `json:"roGroupList"`
-	NodeMaster         NodeInfo     `json:"nodeMaster"`
-	NodeSlave          NodeInfo     `json:"nodeSlave"`
-	NodeReadReplica    NodeInfo     `json:"nodeReadReplica"`
-	DeployId           string       `json:"deployId"`
+
+	PubliclyAccessible bool      `json:"publiclyAccessible"`
+	RoGroupList        []RoGroup `json:"roGroupList"`
+	NodeMaster         NodeInfo  `json:"nodeMaster"`
+	NodeSlave          NodeInfo  `json:"nodeSlave"`
+	NodeReadReplica    NodeInfo  `json:"nodeReadReplica"`
+	DeployId           string    `json:"deployId"`
+}
+
+func (instance *Instance) ProductType() string {
+	if isDDCId(instance.InstanceId) {
+		return "ddc"
+	}
+	return "rds"
 }
 
 type SubnetMap struct {
@@ -128,31 +138,31 @@ type InstanceModelResult struct {
 }
 
 type CreateInstance struct {
-	InstanceId           string           `json:"instanceId"`
-	InstanceName         string           `json:"instanceName"`
-	SourceInstanceId     string           `json:"sourceInstanceId"`
-	Engine               string           `json:"engine"`
-	EngineVersion        string           `json:"engineVersion"`
-	CpuCount             int              `json:"cpuCount"`
-	AllocatedMemoryInGB  int              `json:"allocatedMemoryInGB"`
-	AllocatedStorageInGB int              `json:"allocatedStorageInGB"`
-	AZone                string           `json:"azone"`
-	VpcId                string           `json:"vpcId"`
-	SubnetId             string           `json:"subnetId"`
-	DiskIoType           string           `json:"diskIoType"`
-	DeployId             string           `json:"deployId"`
-	PoolId               string           `json:"poolId"`
-	RoGroupId            string           `json:"roGroupId"`
-	EnableDelayOff       bool             `json:"enableDelayOff"`
-	DelayThreshold       int              `json:"delayThreshold"`
-	LeastInstanceAmount  int              `json:"leastInstanceAmount"`
-	RoGroupWeight        int              `json:"roGroupWeight"`
-	IsDirectPay          bool             `json:"IsDirectPay"`
-	Billing              Billing          `json:"billing"`
-	AutoRenewTimeUnit    string           `json:"autoRenewTimeUnit,omitempty"`
-	AutoRenewTime        int              `json:"autoRenewTime,omitempty"`
-	Category             string           `json:"category,omitempty"`
-	Tags                 []model.TagModel `json:"tags,omitempty"`
+	InstanceId           string     `json:"instanceId"`
+	InstanceName         string     `json:"instanceName"`
+	SourceInstanceId     string     `json:"sourceInstanceId"`
+	Engine               string     `json:"engine"`
+	EngineVersion        string     `json:"engineVersion"`
+	CpuCount             int        `json:"cpuCount"`
+	AllocatedMemoryInGB  int        `json:"allocatedMemoryInGB"`
+	AllocatedStorageInGB int        `json:"allocatedStorageInGB"`
+	AZone                string     `json:"azone"`
+	VpcId                string     `json:"vpcId"`
+	SubnetId             string     `json:"subnetId"`
+	DiskIoType           string     `json:"diskIoType"`
+	DeployId             string     `json:"deployId"`
+	PoolId               string     `json:"poolId"`
+	RoGroupId            string     `json:"roGroupId"`
+	EnableDelayOff       bool       `json:"enableDelayOff"`
+	DelayThreshold       int        `json:"delayThreshold"`
+	LeastInstanceAmount  int        `json:"leastInstanceAmount"`
+	RoGroupWeight        int        `json:"roGroupWeight"`
+	IsDirectPay          bool       `json:"IsDirectPay"`
+	Billing              Billing    `json:"billing"`
+	AutoRenewTimeUnit    string     `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime        int        `json:"autoRenewTime,omitempty"`
+	Category             string     `json:"category,omitempty"`
+	Tags                 []TagModel `json:"tags,omitempty"`
 }
 
 type Pool struct {
@@ -326,7 +336,7 @@ type NodeInfo struct {
 
 type Subnet struct {
 	Name        string `json:"name"`
-	SubnetId    string `json:"subnetId"`
+	LongId      string `json:"subnetId"`
 	ZoneName    string `json:"zoneName"`
 	Cidr        string `json:"cidr"`
 	ShortId     string `json:"shortId"`
@@ -348,8 +358,10 @@ type BackupPolicy struct {
 	BackupDays    string `json:"backupDays"`
 	BackupTime    string `json:"backupTime"`
 	Persistent    bool   `json:"persistent"`
-	ExpireInDays  int    `json:"expireInDays"`
+	ExpireInDays  string `json:"expireInDaysStr"`
 	FreeSpaceInGB int    `json:"freeSpaceInGb"`
+
+	ExpireInDaysInt int `json:"expireInDays"`
 }
 
 type Topology struct {
@@ -380,7 +392,11 @@ type ListRdsArgs struct {
 }
 
 type GetBackupListResult struct {
-	Snapshots     []Snapshot `json:"snapshots"`
+	Marker        string     `json:"marker"`
+	MaxKeys       int        `json:"maxKeys"`
+	IsTruncated   bool       `json:"isTruncated"`
+	NextMarker    string     `json:"nextMarker"`
+	Backups       []Snapshot `json:"snapshots"`
 	FreeSpaceInMB int64      `json:"freeSpaceInMB"`
 	UsedSpaceInMB int64      `json:"usedSpaceInMB"`
 }
@@ -414,7 +430,8 @@ type UpdateSecurityIpsArgs struct {
 }
 
 type ListParametersResult struct {
-	Items []Parameter `json:"items"`
+	Etag       string      `json:"etag"`
+	Parameters []Parameter `json:"items"`
 }
 
 type Parameter struct {
@@ -423,10 +440,13 @@ type Parameter struct {
 	Value         string `json:"value"`
 	PendingValue  string `json:"pendingValue"`
 	Type          string `json:"type"`
-	Dynamic       bool   `json:"dynamic"`
-	Modifiable    bool   `json:"modifiable"`
+	IsDynamic     bool   `json:"dynamic"`
+	ISModifiable  bool   `json:"modifiable"`
 	AllowedValues string `json:"allowedValues"`
 	Desc          string `json:"desc"`
+	// 多加字段，兼容RDS
+	Dynamic    string `json:"dynamicStr"`
+	Modifiable string `json:"modifiableStr"`
 }
 
 type UpdateParameterArgs struct {
@@ -602,4 +622,45 @@ type GetBackupListArgs struct {
 type GetSecurityIpsResult struct {
 	Etag        string   `json:"etag"`
 	SecurityIps []string `json:"securityIps"`
+}
+
+// struct for rds
+
+type CreateRdsProxyArgs struct {
+	ClientToken      string      `json:"-"`
+	Billing          Billing     `json:"billing"`
+	SourceInstanceId string      `json:"sourceInstanceId"`
+	InstanceName     string      `json:"instanceName,omitempty"`
+	NodeAmount       int         `json:"nodeAmount"`
+	ZoneNames        []string    `json:"zoneNames,omitempty"`
+	VpcId            string      `json:"vpcId,omitempty"`
+	IsDirectPay      bool        `json:"isDirectPay,omitempty"`
+	Subnets          []SubnetMap `json:"subnets,omitempty"`
+	Tags             []TagModel  `json:"tags,omitempty"`
+}
+
+type ResizeRdsArgs struct {
+	CpuCount       int     `json:"cpuCount"`
+	MemoryCapacity float64 `json:"memoryCapacity"`
+	VolumeCapacity int     `json:"volumeCapacity"`
+	NodeAmount     int     `json:"nodeAmount,omitempty"`
+	IsDirectPay    bool    `json:"isDirectPay,omitempty"`
+}
+
+type ModifySyncModeArgs struct {
+	SyncMode string `json:"syncMode"`
+}
+
+type ModifyEndpointArgs struct {
+	Address string `json:"address"`
+}
+
+type ModifyPublicAccessArgs struct {
+	PublicAccess bool `json:"publicAccess"`
+}
+
+type AutoRenewArgs struct {
+	InstanceIds       []string `json:"instanceIds"`
+	AutoRenewTimeUnit string   `json:"autoRenewTimeUnit"`
+	AutoRenewTime     int      `json:"autoRenewTime"`
 }

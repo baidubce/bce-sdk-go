@@ -218,12 +218,21 @@ type GetBackupListArgs struct {
 	MaxKeys int
 }
 
+type Snapshot struct {
+	SnapshotId          string `json:"backupId"`
+	SnapshotSizeInBytes string `json:"backupSize"`
+	SnapshotType        string `json:"backupType"`
+	SnapshotStatus      string `json:"backupStatus"`
+	SnapshotStartTime   string `json:"backupStartTime"`
+	SnapshotEndTime     string `json:"backupEndTime"`
+}
+
 type GetBackupListResult struct {
-	Marker      string         `json:"marker"`
-	MaxKeys     int            `json:"maxKeys"`
-	IsTruncated bool           `json:"isTruncated"`
-	NextMarker  string         `json:"nextMarker"`
-	Backups     []BackupPolicy `json:"backups"`
+	Marker      string     `json:"marker"`
+	MaxKeys     int        `json:"maxKeys"`
+	IsTruncated bool       `json:"isTruncated"`
+	NextMarker  string     `json:"nextMarker"`
+	Backups     []Snapshot `json:"backups"`
 }
 
 type GetZoneListResult struct {

@@ -2,7 +2,7 @@
 
 # 概述
 
-本文档主要介绍DDC GO SDK的使用。在使用本文档前，您需要先了解DDC的一些基本知识，并已开通了DDC服务。若您还不了解DDC，可以参考[产品描述](https://cloud.baidu.com/doc/ddc/s/ujwvyzdzg)和[操作指南](https://cloud.baidu.com/doc/ddc/s/Qjwvz0ikk)。
+本文档主要介绍DDC GO SDK的使用。在使用本文档前，您需要先了解DDC的一些基本知识，并已开通了DDC服务。
 
 # 初始化
 
