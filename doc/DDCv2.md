@@ -993,15 +993,15 @@ if err != nil {
 ```go
 // import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
 
-maintenTime,err := client.GetMaintainTime(instanceId)
+maintainTime,err := client.GetMaintainTime(instanceId)
 if err != nil {
-    fmt.Printf("get mainten time error: %+v\n", err)
+    fmt.Printf("get maintain time error: %+v\n", err)
     return
 }
-fmt.Println("maintenTime duration", maintenTime.Duration)
-fmt.Println("maintenTime period", maintenTime.Period)
-fmt.Println("maintenTime startTime", maintenTime.StartTime)
-fmt.Printf("get mainten time success\n")
+fmt.Println("maintainTime duration", maintainTime.Duration)
+fmt.Println("maintainTime period", maintainTime.Period)
+fmt.Println("maintainTime startTime", maintainTime.StartTime)
+fmt.Printf("get maintain time success\n")
 ```
 
 > 注意:
@@ -1013,7 +1013,7 @@ fmt.Printf("get mainten time success\n")
 ```go
 // import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
 
-args := &ddcrds.MaintenTime{
+args := &ddcrds.MaintainTime{
     // 时长间隔,单位为小时
     Duration: 3,
     // 1-0分别代表周一到周日
@@ -1023,7 +1023,7 @@ args := &ddcrds.MaintenTime{
 }
 err := client.UpdateMaintainTime(instanceId, args)
 if err != nil {
-    fmt.Printf("update mainten time error: %+v\n", err)
+    fmt.Printf("update maintain time error: %+v\n", err)
 }
 ```
 

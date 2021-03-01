@@ -1313,7 +1313,7 @@ func (c *Client) ListVpc() (*[]VpcVo, error) {
 // RETURNS:
 //     - *DeploySet: the detail of the deploy set
 //     - error: nil if success otherwise the specific error
-func (c *Client) GetMaintainTime(instanceId string) (*MaintenTime, error) {
+func (c *Client) GetMaintainTime(instanceId string) (*MaintainTime, error) {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getMaintainTimeUriWithInstanceId(instanceId))
@@ -1328,12 +1328,12 @@ func (c *Client) GetMaintainTime(instanceId string) (*MaintenTime, error) {
 		return nil, resp.ServiceError()
 	}
 
-	jsonBody := &MaintenWindow{}
+	jsonBody := &MaintainWindow{}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
 
-	return &jsonBody.MaintenTime, nil
+	return &jsonBody.MaintainTime, nil
 }
 
 // UpdateMaintenTime - update UpdateMaintenTime of instance
@@ -1342,7 +1342,7 @@ func (c *Client) GetMaintainTime(instanceId string) (*MaintenTime, error) {
 //     - body: http request body
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) UpdateMaintainTime(instanceId string, args *MaintenTime) error {
+func (c *Client) UpdateMaintainTime(instanceId string, args *MaintainTime) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
 	}

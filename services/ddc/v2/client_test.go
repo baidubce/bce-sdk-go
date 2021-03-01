@@ -41,7 +41,7 @@ const (
 	ETAG            = "v0"
 )
 
-var instanceId = "ddc-me4mtqdi"
+var instanceId = "ddc-mnvw691i"
 var client = DDCRDS_CLIENT
 
 func init() {
@@ -1009,31 +1009,28 @@ func TestClient_AutoRenew(t *testing.T) {
 }
 
 func TestClient_GetMaintainTime(t *testing.T) {
-	maintenTime, err := client.GetMaintainTime(instanceId)
+	maintainTime, err := client.GetMaintainTime(instanceId)
 	if err != nil {
-		fmt.Printf("get mainten time error: %+v\n", err)
+		fmt.Printf("get maintain time error: %+v\n", err)
 		return
 	}
-	fmt.Println("maintenTime duration", maintenTime.Duration)
-	fmt.Println("maintenTime period", maintenTime.Period)
-	fmt.Println("maintenTime startTime", maintenTime.StartTime)
-	fmt.Printf("get mainten time success\n")
-
-	fmt.Println(Json(maintenTime))
+	fmt.Println("maintainTime duration", maintainTime.Duration)
+	fmt.Println("maintainTime period", maintainTime.Period)
+	fmt.Println("maintainTime startTime", maintainTime.StartTime)
 }
 
 func TestClient_UpdateMaintainTime(t *testing.T) {
 	client := DDCRDS_CLIENT
-	args := &MaintenTime{
+	args := &MaintainTime{
 		// 时长间隔
-		Duration: 3,
+		Duration: 2,
 		// 1-7分别代表周一到周日
-		Period: "1,2,3,4,5,6,7",
+		Period: "1,2,3,4,5,0",
 		// 所有涉及的时间皆为北京时间24小时制
-		StartTime: "14:06",
+		StartTime: "14:07",
 	}
 	err := client.UpdateMaintainTime(instanceId, args)
 	if err != nil {
-		fmt.Printf("update mainten time error: %+v\n", err)
+		fmt.Printf("update maintain time error: %+v\n", err)
 	}
 }

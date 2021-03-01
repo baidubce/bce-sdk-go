@@ -112,12 +112,12 @@ func getRoGroupUriWithInstanceId(instanceId string) string {
 	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_DDC_ROGROUP_URL
 }
 
-// MaintenTime URL
+// MaintainTime URL
 func getMaintainTimeUriWithInstanceId(instanceId string) string {
 	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_DDC_MAINTAINTIME_URL
 }
 
-// MaintenTime URL
+// MaintainTime URL
 func getUpdateMaintainTimeUriWithInstanceId(instanceId string) string {
 	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_UPDATE_MAINTAINTIME_URL
 }

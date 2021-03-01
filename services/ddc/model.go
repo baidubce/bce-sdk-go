@@ -639,11 +639,11 @@ type RebootArgs struct {
 	IsRebootNow bool `json:"isRebootNow"`
 }
 
-type MaintenWindow struct {
-	MaintenTime MaintenTime `json:"maintentime"`
+type MaintainWindow struct {
+	MaintainTime MaintainTime `json:"maintentime"`
 }
 
-type MaintenTime struct {
+type MaintainTime struct {
 	Period    string `json:"period"`
 	StartTime string `json:"startTime"`
 	Duration  int    `json:"duration"`
