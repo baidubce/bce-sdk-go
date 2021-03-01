@@ -80,27 +80,26 @@ func (c *Client) CreateRds(args *CreateRdsArgs) (*CreateResult, error) {
 		return nil, fmt.Errorf("unset PaymentTiming")
 	}
 
-	newArgs := &CreateInstanceArgs {
+	newArgs := &CreateInstanceArgs{
 		InstanceType: "RDS",
-		Number: args.PurchaseCount,
-		ClientToken: args.ClientToken,
+		Number:       args.PurchaseCount,
+		ClientToken:  args.ClientToken,
 		Instance: CreateInstance{
-			InstanceName: args.InstanceName,
-			Engine: args.Engine,
-			EngineVersion: args.EngineVersion,
-			CpuCount: args.CpuCount,
-			AllocatedMemoryInGB: args.MemoryCapacity,
+			InstanceName:         args.InstanceName,
+			Engine:               args.Engine,
+			EngineVersion:        args.EngineVersion,
+			CpuCount:             args.CpuCount,
+			AllocatedMemoryInGB:  args.MemoryCapacity,
 			AllocatedStorageInGB: args.VolumeCapacity,
-			DiskIoType: "ssd",
-			DeployId: args.DeployId,
-			PoolId: args.PoolId,
-			IsDirectPay: args.IsDirectPay,
-			Billing: args.Billing,
-			AutoRenewTime: args.AutoRenewTime,
-			AutoRenewTimeUnit: args.AutoRenewTimeUnit,
-			Tags: args.Tags,
-			Category: args.Category,
-
+			DiskIoType:           "ssd",
+			DeployId:             args.DeployId,
+			PoolId:               args.PoolId,
+			IsDirectPay:          args.IsDirectPay,
+			Billing:              args.Billing,
+			AutoRenewTime:        args.AutoRenewTime,
+			AutoRenewTimeUnit:    args.AutoRenewTimeUnit,
+			Tags:                 args.Tags,
+			Category:             args.Category,
 		},
 	}
 
@@ -139,14 +138,14 @@ func (c *Client) SupplyVpcInfo(newArgs *CreateInstanceArgs, args *CreateRdsArgs)
 	}
 	defaultVpcId := ""
 	if args.VpcId == "" {
-		for _, e := range* vpc {
+		for _, e := range *vpc {
 			defaultVpcId = e.VpcId
 			info.Instance.VpcId = e.VpcId
 			args.VpcId = e.VpcId
 		}
 	}
 	if args.VpcId == defaultVpcId {
-		for _, e := range* vpc {
+		for _, e := range *vpc {
 			if e.VpcId == args.VpcId {
 				info.Instance.VpcId = e.VpcId
 				args.VpcId = e.VpcId
@@ -158,7 +157,7 @@ func (c *Client) SupplyVpcInfo(newArgs *CreateInstanceArgs, args *CreateRdsArgs)
 			return nil, err
 		}
 	} else {
-		for _, e := range* vpc {
+		for _, e := range *vpc {
 			if args.VpcId == e.ShortId {
 				info.Instance.VpcId = e.VpcId
 				args.VpcId = e.VpcId
@@ -173,14 +172,13 @@ func (c *Client) SupplyVpcInfo(newArgs *CreateInstanceArgs, args *CreateRdsArgs)
 	return info, nil
 }
 
-
 func (c *Client) SupplyZoneAndSubnetInfo(newArgs *CreateInstanceArgs, args *CreateRdsArgs) (*CreateInstanceArgs, error) {
 	newZoneName := ""
 	if args.Subnets != nil {
 		for _, e := range args.Subnets {
 			newZoneName += e.ZoneName + ","
 		}
-		if  newZoneName != "" && newZoneName[0 : len(newZoneName) - 1] != strings.Join(args.ZoneNames, ","){
+		if newZoneName != "" && newZoneName[0:len(newZoneName)-1] != strings.Join(args.ZoneNames, ",") {
 			fmt.Printf("subnets and zoneNames not matcher: %+v\n", nil)
 			return nil, errors.New("subnets and zoneNames not matcher")
 		} else {
@@ -209,7 +207,7 @@ func (c *Client) SupplyZoneAndSubnetInfo(newArgs *CreateInstanceArgs, args *Crea
 		for _, e := range args.ZoneNames {
 			if !strings.Contains(e, ",") {
 				listSubnetsArgs := &ListSubnetsArgs{
-					VpcId: args.VpcId,
+					VpcId:    args.VpcId,
 					ZoneName: e,
 				}
 				subnets, err := c.ListSubnets(listSubnetsArgs)
@@ -226,7 +224,7 @@ func (c *Client) SupplyZoneAndSubnetInfo(newArgs *CreateInstanceArgs, args *Crea
 		if len(subnetStr) < 1 {
 			return nil, errors.New("Have no available subnet")
 		}
-		newArgs.Instance.SubnetId = subnetStr[:len(subnetStr) - 1]
+		newArgs.Instance.SubnetId = subnetStr[:len(subnetStr)-1]
 	}
 	return newArgs, nil
 }
@@ -246,7 +244,7 @@ func (c *Client) UnDefaultVpcInfo(newArgs *CreateInstanceArgs, args *CreateRdsAr
 				return nil, errors.New("Have no available subnet or zone")
 			}
 
-			for _, e := range subnets.Subnets{
+			for _, e := range subnets.Subnets {
 				info.Instance.AZone = e.Az
 				args.ZoneNames = append(args.ZoneNames, e.Az)
 				break
@@ -308,36 +306,36 @@ func (c *Client) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResult, 
 	}
 	detail, err2 := c.GetDdcDetail(args.SourceInstanceId)
 	if err2 != nil {
-		 return nil, err2
+		return nil, err2
 	}
-	newArgs := &CreateInstanceArgs {
+	newArgs := &CreateInstanceArgs{
 		InstanceType: "RDS",
-		Number: args.PurchaseCount,
-		ClientToken: args.ClientToken,
+		Number:       args.PurchaseCount,
+		ClientToken:  args.ClientToken,
 		Instance: CreateInstance{
-			InstanceName: args.InstanceName,
-			Engine: detail.Instance.Engine,
-			EngineVersion: detail.Instance.EngineVersion,
-			CpuCount: args.CpuCount,
-			AllocatedMemoryInGB: args.MemoryCapacity,
+			InstanceName:         args.InstanceName,
+			Engine:               detail.Instance.Engine,
+			EngineVersion:        detail.Instance.EngineVersion,
+			CpuCount:             args.CpuCount,
+			AllocatedMemoryInGB:  args.MemoryCapacity,
 			AllocatedStorageInGB: args.VolumeCapacity,
-			DiskIoType: "ssd",
-			DeployId: args.DeployId,
-			PoolId: args.PoolId,
-			RoGroupId: args.RoGroupId,
-			RoGroupWeight: args.RoGroupWeight,
-			EnableDelayOff: args.EnableDelayOff,
-			DelayThreshold: args.DelayThreshold,
-			LeastInstanceAmount: args.LeastInstanceAmount,
-			Billing: args.Billing,
-			IsDirectPay: args.IsDirectPay,
-			Tags: args.Tags,
+			DiskIoType:           "ssd",
+			DeployId:             args.DeployId,
+			PoolId:               args.PoolId,
+			RoGroupId:            args.RoGroupId,
+			RoGroupWeight:        args.RoGroupWeight,
+			EnableDelayOff:       args.EnableDelayOff,
+			DelayThreshold:       args.DelayThreshold,
+			LeastInstanceAmount:  args.LeastInstanceAmount,
+			Billing:              args.Billing,
+			IsDirectPay:          args.IsDirectPay,
+			Tags:                 args.Tags,
 		},
 	}
 
-	createRdsArgs := &CreateRdsArgs {
-		VpcId: args.VpcId,
-		Subnets: args.Subnets,
+	createRdsArgs := &CreateRdsArgs{
+		VpcId:     args.VpcId,
+		Subnets:   args.Subnets,
 		ZoneNames: args.ZoneNames,
 	}
 
@@ -353,7 +351,64 @@ func (c *Client) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResult, 
 	return result, err
 }
 
+// UpdateRoGroup - update a roGroup
+//
+// PARAMS:
+//     - body: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateRoGroup(roGroupId string, args *UpdateRoGroupArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
 
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getUpdateRoGroupUriWithId(roGroupId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// UpdateRoGroupReplicaWeight- update repica weight in roGroup
+//
+// PARAMS:
+//     - body: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateRoGroupReplicaWeight(roGroupId string, args *UpdateRoGroupWeightArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	if len(args.ReplicaList) < 1 {
+		return fmt.Errorf("unset replicaList")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getUpdateRoGroupWeightUriWithId(roGroupId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// ReBalanceRoGroup- Initiate a rebalance for foGroup
+//
+// PARAMS:
+//     - body: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ReBalanceRoGroup(roGroupId string) error {
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getReBalanceRoGroupUriWithId(roGroupId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		Do()
+	return err
+}
 
 // CreateDeploySet - create a deploy set
 //
@@ -376,6 +431,29 @@ func (cli *Client) CreateDeploySet(poolId string, args *CreateDeployRequest) err
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		WithResult(result).
+		Do()
+	return err
+}
+
+// UpdateDeploySet - update a deploy set
+//
+// PARAMS:
+//     - body: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateDeploySet(poolId string, deployId string, args *UpdateDeployRequest) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	if !(args.Strategy == "distributed" || args.Strategy == "centralized") {
+		return fmt.Errorf("Only support strategy distributed/centralized, current strategy: %v", args.Strategy)
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getDeploySetUriWithId(poolId, deployId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
 		Do()
 	return err
 }
@@ -436,33 +514,34 @@ func (c *Client) GetDdcDetail(instanceId string) (*InstanceModelResult, error) {
 func (c *Client) GetDetail(instanceId string) (*Instance, error) {
 	detail, err := c.GetDdcDetail(instanceId)
 	instanceJson, _ := json.Marshal(detail.Instance)
-	args := &Instance {
-		InstanceName: detail.Instance.InstanceName,
-		InstanceId: detail.Instance.InstanceId,
-		SourceInstanceId: detail.Instance.SourceInstanceId,
-		Endpoint: detail.Instance.Endpoint,
-		Engine: detail.Instance.Engine,
-		EngineVersion: detail.Instance.EngineVersion,
-		InstanceStatus: detail.Instance.InstanceStatus,
-		CpuCount: detail.Instance.CpuCount,
-		MemoryCapacity: detail.Instance.AllocatedMemoryInGB,
-		VolumeCapacity: detail.Instance.AllocatedStorageInGB,
-		UsedStorage: detail.Instance.UsedStorageInGB,
-		InstanceType: detail.Instance.Type,
+	args := &Instance{
+		InstanceName:       detail.Instance.InstanceName,
+		InstanceId:         detail.Instance.InstanceId,
+		SourceInstanceId:   detail.Instance.SourceInstanceId,
+		Endpoint:           detail.Instance.Endpoint,
+		Engine:             detail.Instance.Engine,
+		EngineVersion:      detail.Instance.EngineVersion,
+		InstanceStatus:     detail.Instance.InstanceStatus,
+		CpuCount:           detail.Instance.CpuCount,
+		MemoryCapacity:     detail.Instance.AllocatedMemoryInGB,
+		VolumeCapacity:     detail.Instance.AllocatedStorageInGB,
+		UsedStorage:        detail.Instance.UsedStorageInGB,
+		InstanceType:       detail.Instance.Type,
 		InstanceCreateTime: detail.Instance.InstanceCreateTime,
 		InstanceExpireTime: detail.Instance.InstanceExpireTime,
 		PublicAccessStatus: detail.Instance.PublicAccessStatus,
-		PaymentTiming: detail.Instance.PaymentTiming,
-		SyncMode: detail.Instance.SyncMode,
-		Region: detail.Instance.Region,
-		VpcId: detail.Instance.VpcId,
-		BackupPolicy: detail.Instance.BackupPolicy,
-		RoGroupList: detail.Instance.RoGroupList,
-		NodeMaster: detail.Instance.NodeMaster,
-		NodeSlave: detail.Instance.NodeSlave,
-		NodeReadReplica: detail.Instance.NodeReadReplica,
-		Subnets: detail.Instance.Subnets,
-		DeployId: detail.Instance.DeployId,
+		PaymentTiming:      detail.Instance.PaymentTiming,
+		SyncMode:           detail.Instance.SyncMode,
+		Region:             detail.Instance.Region,
+		VpcId:              detail.Instance.VpcId,
+		BackupPolicy:       detail.Instance.BackupPolicy,
+		RoGroupList:        detail.Instance.RoGroupList,
+		NodeMaster:         detail.Instance.NodeMaster,
+		NodeSlave:          detail.Instance.NodeSlave,
+		NodeReadReplica:    detail.Instance.NodeReadReplica,
+		Subnets:            detail.Instance.Subnets,
+		DeployId:           detail.Instance.DeployId,
+		ZoneNames:          detail.Instance.ZoneNames,
 	}
 	err = json.Unmarshal(instanceJson, &args)
 	return args, err
@@ -479,6 +558,24 @@ func (c *Client) DeleteRds(instanceIds string) error {
 		WithMethod(http.DELETE).
 		WithURL(getDdcInstanceUri()+"/delete").
 		WithQueryParam("instanceIds", instanceIds).
+		Do()
+}
+
+// RebootInstance - reboot a specified instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance to be rebooted
+//     - args: reboot args
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) RebootInstance(instanceId string, args *RebootArgs) error {
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getDdcUriWithInstanceId(instanceId)).
+		WithQueryParam("reboot", "").
+		WithBody(args).
 		Do()
 }
 
@@ -1205,4 +1302,56 @@ func (c *Client) ListVpc() (*[]VpcVo, error) {
 		Do()
 
 	return result, err
+}
+
+// GetMaintenTime - get details of the maintenTime
+//
+// PARAMS:
+//     - poolId: the id of the pool
+//     - cli: the client agent which can perform sending request
+//     - deploySetId: the id of the deploy set
+// RETURNS:
+//     - *DeploySet: the detail of the deploy set
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetMaintainTime(instanceId string) (*MaintenTime, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getMaintainTimeUriWithInstanceId(instanceId))
+	req.SetMethod(http.GET)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := c.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &MaintenWindow{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return &jsonBody.MaintenTime, nil
+}
+
+// UpdateMaintenTime - update UpdateMaintenTime of instance
+//
+// PARAMS:
+//     - body: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateMaintainTime(instanceId string, args *MaintenTime) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getUpdateMaintainTimeUriWithInstanceId(instanceId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
 }

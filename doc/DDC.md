@@ -530,7 +530,7 @@ if err != nil {
 // 获取account的列表信息
 fmt.Println("ddc dbName: ", result.DbName)
 fmt.Println("ddc characterSetName: ", result.CharacterSetName)
-// 数据库状态（创建中：creating；可用中：available；删除中：deleting；已删除：deleted）
+// 数据库状态（创建中：Creating；可用中：Available；删除中：Deleting；已删除：Deleted）
 fmt.Println("ddc dbStatus: ", result.DbStatus)
 fmt.Println("ddc remark: ", result.Remark)
 fmt.Println("ddc accountPrivileges: ", result.AccountPrivileges)
@@ -552,7 +552,7 @@ if err != nil {
 for _, database := range result.Databases {
 	fmt.Println("ddc dbName: ", database.DbName)
     fmt.Println("ddc characterSetName: ", database.CharacterSetName)
-	// 数据库状态（创建中：creating；可用中：available；删除中：deleting；已删除：deleted）
+	// 数据库状态（创建中：Creating；可用中：Available；删除中：Deleting；已删除：Deleted）
     fmt.Println("ddc dbStatus: ", database.DbStatus)
     fmt.Println("ddc remark: ", database.Remark)
     fmt.Println("ddc accountPrivileges: ", database.AccountPrivileges)

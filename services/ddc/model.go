@@ -44,7 +44,7 @@ type CreateRdsArgs struct {
 	AutoRenewTimeUnit string           `json:"autoRenewTimeUnit,omitempty"`
 	AutoRenewTime     int              `json:"autoRenewTime,omitempty"`
 	DeployId          string           `json:"deployId"`
-	PoolId            string           `json:"poolId "`
+	PoolId            string           `json:"poolId"`
 }
 
 type CreateReadReplicaArgs struct {
@@ -219,18 +219,26 @@ type Container struct {
 }
 
 type DeploySet struct {
-	CreateTime string   `json:"createTime"`
-	DeployID   string   `json:"deployId"`
-	DeployName string   `json:"deployName"`
-	Instances  []string `json:"instances"`
-	PoolID     string   `json:"poolId"`
-	Strategy   string   `json:"strategy"`
+	CreateTime          string   `json:"createTime"`
+	DeployID            string   `json:"deployId"`
+	DeployName          string   `json:"deployName"`
+	Instances           []string `json:"instances"`
+	PoolID              string   `json:"poolId"`
+	Strategy            string   `json:"strategy"`
+	CentralizeThreshold int      `json:"centralizeThreshold"`
 }
 
 type CreateDeployRequest struct {
-	ClientToken string `json:"-"`
-	DeployName  string `json:"deployName"`
-	Strategy    string `json:"strategy"`
+	ClientToken         string `json:"-"`
+	DeployName          string `json:"deployName"`
+	Strategy            string `json:"strategy"`
+	CentralizeThreshold int    `json:"centralizeThreshold"`
+}
+
+type UpdateDeployRequest struct {
+	ClientToken         string `json:"-"`
+	Strategy            string `json:"strategy"`
+	CentralizeThreshold int    `json:"centralizeThreshold"`
 }
 
 type Marker struct {
@@ -305,13 +313,36 @@ type SubnetVo struct {
 }
 
 type RoGroup struct {
-	RoGroupId   string    `json:"roGroupId"`
-	VnetIp      string    `json:"vnetIp"`
-	ReplicaList []Replica `json:"replicaList"`
+	RoGroupID           string    `json:"roGroupId"`
+	RoGroupName         string    `json:"roGroupName"`
+	VnetIP              string    `json:"vnetIp"`
+	IsBalanceRoLoad     int       `json:"isBalanceRoLoad"`
+	EnableDelayOff      int       `json:"enableDelayOff"`
+	DelayThreshold      int       `json:"delayThreshold"`
+	LeastInstanceAmount int       `json:"leastInstanceAmount"`
+	ReplicaList         []Replica `json:"replicaList"`
+}
+
+type UpdateRoGroupArgs struct {
+	RoGroupName         string `json:"roGroupName"`
+	IsBalanceRoLoad     int    `json:"isBalanceRoLoad"`
+	EnableDelayOff      int    `json:"enableDelayOff"`
+	DelayThreshold      int    `json:"delayThreshold"`
+	LeastInstanceAmount int    `json:"leastInstanceAmount"`
+}
+
+type UpdateRoGroupWeightArgs struct {
+	IsBalanceRoLoad int             `json:"isBalanceRoLoad"`
+	ReplicaList     []ReplicaWeight `json:"replicaList"`
+}
+type ReplicaWeight struct {
+	InstanceId string `json:"instanceId"`
+	Weight     int    `json:"weight"`
 }
 
 type Replica struct {
 	InstanceId    string `json:"instanceId"`
+	InstanceName  string `json:"instanceName"`
 	Status        string `json:"status"`
 	RoGroupWeight int    `json:"roGroupWeight"`
 }
@@ -602,4 +633,18 @@ type GetBackupListArgs struct {
 type GetSecurityIpsResult struct {
 	Etag        string   `json:"etag"`
 	SecurityIps []string `json:"securityIps"`
+}
+
+type RebootArgs struct {
+	IsRebootNow bool `json:"isRebootNow"`
+}
+
+type MaintenWindow struct {
+	MaintenTime MaintenTime `json:"maintentime"`
+}
+
+type MaintenTime struct {
+	Period    string `json:"period"`
+	StartTime string `json:"startTime"`
+	Duration  int    `json:"duration"`
 }

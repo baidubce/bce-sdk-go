@@ -36,10 +36,13 @@ const (
 	POOL            = "xdb_gaiabase_pool"
 	PNETIP          = "100.88.65.121"
 	DEPLOY_ID       = "ab89d829-9068-d88e-75bc-64bb6367d036"
-	DDC_INSTANCE_ID = "ddc-mxyirxr3"
+	DDC_INSTANCE_ID = "ddc-me4mtqdi"
 	RDS_INSTANCE_ID = "rds-OtTkC1OD"
 	ETAG            = "v0"
 )
+
+var instanceId = "ddc-me4mtqdi"
+var client = DDCRDS_CLIENT
 
 func init() {
 	_, f, _, _ := runtime.Caller(0)
@@ -57,6 +60,7 @@ func init() {
 	decoder.Decode(confObj)
 
 	DDCRDS_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
+	client = DDCRDS_CLIENT
 	log.SetLogLevel(log.WARN)
 }
 
@@ -134,10 +138,21 @@ func TestClient_CreateInstance(t *testing.T) {
 }
 
 func TestClient_ListDeploySets(t *testing.T) {
-	deploys, err := DDCRDS_CLIENT.ListDeploySets(POOL, &Marker{MaxKeys: 1})
-	ExpectEqual(t.Errorf, nil, err)
-	ExpectEqual(t.Errorf, deploys.MaxKeys, 1)
-	fmt.Println(deploys.Result[0].DeployName)
+	result, err := client.ListDeploySets(POOL, nil)
+	if err != nil {
+		fmt.Printf("list deploy set error: %+v\n", err)
+		return
+	}
+
+	for i := range result.Result {
+		deploy := result.Result[i]
+		fmt.Println("ddc deploy id: ", deploy.DeployID)
+		fmt.Println("ddc deploy name: ", deploy.DeployName)
+		fmt.Println("ddc deploy strategy: ", deploy.Strategy)
+		fmt.Println("ddc deploy create time: ", deploy.CreateTime)
+		fmt.Println("ddc deploy centralizeThreshold: ", deploy.CentralizeThreshold)
+		fmt.Println("ddc instance ids: ", deploy.Instances)
+	}
 }
 
 func TestClient_GetDeploySet(t *testing.T) {
@@ -152,11 +167,39 @@ func TestClient_DeleteDeploySet(t *testing.T) {
 }
 
 func TestClient_CreateDeploySet(t *testing.T) {
-	err := DDCRDS_CLIENT.CreateDeploySet(POOL, &CreateDeployRequest{
-		DeployName: "api-from-go2",
-		Strategy:   "distributed",
+	result, err := DDCRDS_CLIENT.CreateDeploySet(POOL, &CreateDeployRequest{
+		DeployName:          "api-from-go3",
+		Strategy:            "distributed",
+		CentralizeThreshold: 10,
 	})
 	ExpectEqual(t.Errorf, nil, err)
+	fmt.Println(result.DeployID)
+}
+
+func TestClient_UpdateDeploySet(t *testing.T) {
+	deployId := "1424c210-f998-1072-9608-9def4d93dec7"
+	//err := DDCRDS_CLIENT.UpdateDeploySet(POOL, deployId, &UpdateDeployRequest{
+	//	Strategy:   "centralized",
+	//	CentralizeThreshold: 23,
+	//})
+	//ExpectEqual(t.Errorf, nil, err)
+
+	client := DDCRDS_CLIENT
+	args := &UpdateDeployRequest{
+		// 幂等 Token
+		ClientToken: "xxxyyyzzz",
+		// 部署策略 支持集中部署(centralized)/完全打散(distributed)
+		Strategy: "distributed",
+		// 亲和度阈值 取值范围【0-96】，必须大于原亲和度阈值
+		CentralizeThreshold: 30,
+	}
+	err := client.UpdateDeploySet(POOL, deployId, args)
+	if err != nil {
+		fmt.Printf("update deploy set error: %+v\n", err)
+		return
+	}
+
+	fmt.Println("update deploy set success.")
 }
 
 func TestClient_ListParameters(t *testing.T) {
@@ -227,6 +270,85 @@ func TestClient_ListRoGroup(t *testing.T) {
 }
 
 // Only DDC
+func TestClient_UpdateRoGroup(t *testing.T) {
+	detail, err := client.GetDetail(instanceId)
+	if err != nil {
+		fmt.Printf("get ddc detail error: %+v\n", err)
+		return
+	}
+	roGroupList := detail.RoGroupList
+	if len(roGroupList) < 1 {
+		fmt.Printf("the ddc instance %s do not have roGroup \n", instanceId)
+	}
+	roGroupId := roGroupList[0].RoGroupID
+	fmt.Println(roGroupId)
+	args := &UpdateRoGroupArgs{
+		RoGroupName:         "testRo",
+		IsBalanceRoLoad:     1,
+		EnableDelayOff:      1,
+		DelayThreshold:      0,
+		LeastInstanceAmount: 0,
+	}
+	err = client.UpdateRoGroup(roGroupId, args, "ddc")
+	if err != nil {
+		fmt.Printf("update ddc roGroup error: %+v\n", err)
+		return
+	}
+	fmt.Println("update ddc roGroup success")
+}
+
+// Only DDC
+func TestClient_UpdateRoGroupReplicaWeight(t *testing.T) {
+	detail, err := client.GetDetail(instanceId)
+	if err != nil {
+		fmt.Printf("get ddc detail error: %+v\n", err)
+		return
+	}
+	roGroupList := detail.RoGroupList
+	if len(roGroupList) < 1 {
+		fmt.Printf("the ddc instance %s do not have roGroup \n", instanceId)
+	}
+	roGroupId := roGroupList[0].RoGroupID
+	fmt.Println(roGroupId)
+	replicaId := roGroupList[0].ReplicaList[0].InstanceId
+	replicaWeight := ReplicaWeight{
+		InstanceId: replicaId,
+		Weight:     20,
+	}
+	args := &UpdateRoGroupWeightArgs{
+		IsBalanceRoLoad: 0,
+		ReplicaList:     []ReplicaWeight{replicaWeight},
+	}
+	err = client.UpdateRoGroupReplicaWeight(roGroupId, args, "ddc")
+	if err != nil {
+		fmt.Printf("update ddc roGroup replica weight error: %+v\n", err)
+		return
+	}
+	fmt.Println("update ddc roGroup replica weight success")
+}
+
+// Only DDC
+func TestClient_ReBalanceRoGroup(t *testing.T) {
+	detail, err := client.GetDetail(instanceId)
+	if err != nil {
+		fmt.Printf("get ddc detail error: %+v\n", err)
+		return
+	}
+	roGroupList := detail.RoGroupList
+	if len(roGroupList) < 1 {
+		fmt.Printf("the ddc instance %s do not have roGroup \n", instanceId)
+	}
+	roGroupId := roGroupList[0].RoGroupID
+	fmt.Println(roGroupId)
+	err = client.ReBalanceRoGroup(roGroupId, "ddc")
+	if err != nil {
+		fmt.Printf("reBalance ddc roGroup error: %+v\n", err)
+		return
+	}
+	fmt.Println("reBalance ddc roGroup success")
+}
+
+// Only DDC
 func TestClient_ListVpc(t *testing.T) {
 	vpc, err := DDCRDS_CLIENT.ListVpc("ddc")
 	ExpectEqual(t.Errorf, vpc, vpc)
@@ -235,16 +357,38 @@ func TestClient_ListVpc(t *testing.T) {
 }
 
 func TestClient_GetDetail(t *testing.T) {
-	detail, err := DDCRDS_CLIENT.GetDetail(DDC_INSTANCE_ID)
-	ExpectEqual(t.Errorf, detail, detail)
+	result, err := DDCRDS_CLIENT.GetDetail(DDC_INSTANCE_ID)
 	ExpectEqual(t.Errorf, err, nil)
-	res, _ := json.Marshal(detail)
-	fmt.Println(string(res))
+	fmt.Println("ddc instanceId: ", result.InstanceId)
+	fmt.Println("ddc instanceName: ", result.InstanceName)
+	fmt.Println("ddc engine: ", result.Engine)
+	fmt.Println("ddc engineVersion: ", result.EngineVersion)
+	fmt.Println("ddc instanceStatus: ", result.InstanceStatus)
+	fmt.Println("ddc cpuCount: ", result.CpuCount)
+	fmt.Println("ddc memoryCapacity: ", result.MemoryCapacity)
+	fmt.Println("ddc volumeCapacity: ", result.VolumeCapacity)
+	fmt.Println("ddc usedStorage: ", result.UsedStorage)
+	fmt.Println("ddc paymentTiming: ", result.PaymentTiming)
+	fmt.Println("ddc instanceType: ", result.InstanceType)
+	fmt.Println("ddc instanceCreateTime: ", result.InstanceCreateTime)
+	fmt.Println("ddc instanceExpireTime: ", result.InstanceExpireTime)
+	fmt.Println("ddc publicAccessStatus: ", result.PublicAccessStatus)
+	fmt.Println("ddc vpcId: ", result.VpcId)
+	fmt.Println("ddc Subnets: ", result.Subnets)
+	fmt.Println("ddc BackupPolicy: ", result.BackupPolicy)
+	fmt.Println("ddc RoGroupList: ", result.RoGroupList)
+	fmt.Println("ddc NodeMaster: ", result.NodeMaster)
+	fmt.Println("ddc NodeSlave: ", result.NodeSlave)
+	fmt.Println("ddc NodeReadReplica: ", result.NodeReadReplica)
+	fmt.Println("ddc DeployId: ", result.DeployId)
+	fmt.Println("ddc SyncMode: ", result.SyncMode)
+	fmt.Println("ddc Category: ", result.Category)
+	fmt.Println("ddc ZoneNames: ", result.ZoneNames)
+	fmt.Println("ddc Endpoint: ", result.Endpoint)
 
-	detail, err = DDCRDS_CLIENT.GetDetail(RDS_INSTANCE_ID)
-	ExpectEqual(t.Errorf, detail, detail)
+	result, err = DDCRDS_CLIENT.GetDetail(RDS_INSTANCE_ID)
 	ExpectEqual(t.Errorf, err, nil)
-	res, _ = json.Marshal(detail)
+	res, _ := json.Marshal(result)
 	fmt.Println(string(res))
 }
 
@@ -411,7 +555,7 @@ func TestClient_CreateDatabase(t *testing.T) {
 func TestClient_GetDatabase(t *testing.T) {
 	result, err := DDCRDS_CLIENT.GetDatabase(DDC_INSTANCE_ID, DB_NAME)
 	ExpectEqual(t.Errorf, nil, err)
-	ExpectEqual(t.Errorf, "available", result.DbStatus)
+	ExpectEqual(t.Errorf, "Available", result.DbStatus)
 
 	result, err = DDCRDS_CLIENT.GetDatabase(RDS_INSTANCE_ID, DB_NAME)
 	ExpectEqual(t.Errorf, RDSNotSupportError(), err)
@@ -424,6 +568,9 @@ func TestClient_ListDatabase(t *testing.T) {
 		if e.DbName == DB_NAME {
 			ExpectEqual(t.Errorf, "available", e.DbStatus)
 		}
+		fmt.Println("ddc dbStatus: ", e.DbStatus)
+		fmt.Println("ddc remark: ", e.Remark)
+		fmt.Println("ddc accountPrivileges: ", e.AccountPrivileges)
 	}
 
 	result, err = DDCRDS_CLIENT.ListDatabase(RDS_INSTANCE_ID)
@@ -613,7 +760,7 @@ func TestClient_CreateRds(t *testing.T) {
 
 func TestClient_CreateReadReplica(t *testing.T) {
 	client := DDCRDS_CLIENT
-	instanceId := "ddc-mpoajls8"
+	instanceId := "ddc-mpsb5qre"
 	args := &CreateReadReplicaArgs{
 		//主实例ID，必选
 		SourceInstanceId: instanceId,
@@ -650,7 +797,7 @@ func TestClient_CreateReadReplica(t *testing.T) {
 		// 如果不传，默认会创建一个RO组，并将该只读加入RO组中
 		RoGroupId: "yyzzcc2",
 		// RO组是否启用延迟剔除，默认不启动。（创建只读实例时）可选
-		EnableDelayOff: false,
+		EnableDelayOff: 0,
 		// 延迟阈值。（创建只读实例时）可选
 		DelayThreshold: 1,
 		// RO组最少保留实例数目。默认为1. （创建只读实例时）可选
@@ -674,7 +821,7 @@ func TestClient_ListRds(t *testing.T) {
 		// 批量获取列表的查询的起始位置，实例列表中Marker需要指定实例Id，可选
 		// Marker: "marker",
 		// 指定每页包含的最大数量(主实例)，最大数量不超过1000，缺省值为1000，可选
-		MaxKeys: 4,
+		MaxKeys: 20,
 	}
 	resp, err := DDCRDS_CLIENT.ListRds(args)
 
@@ -694,25 +841,27 @@ func TestClient_ListRds(t *testing.T) {
 
 	// 获取instance的列表信息
 	for _, e := range resp.Instances {
-		fmt.Println("=====================================>")
-		fmt.Println("instance productType: ", e.ProductType())
-		fmt.Println("instanceId: ", e.InstanceId)
-		fmt.Println("instanceName: ", e.InstanceName)
-		fmt.Println("engine: ", e.Engine)
-		fmt.Println("engineVersion: ", e.EngineVersion)
-		fmt.Println("instanceStatus: ", e.InstanceStatus)
-		fmt.Println("cpuCount: ", e.CpuCount)
-		fmt.Println("memoryCapacity: ", e.MemoryCapacity)
-		fmt.Println("volumeCapacity: ", e.VolumeCapacity)
-		fmt.Println("usedStorage: ", e.UsedStorage)
-		fmt.Println("paymentTiming: ", e.PaymentTiming)
-		fmt.Println("instanceType: ", e.InstanceType)
-		fmt.Println("instanceCreateTime: ", e.InstanceCreateTime)
-		fmt.Println("instanceExpireTime: ", e.InstanceExpireTime)
-		fmt.Println("publiclyAccessible: ", e.PubliclyAccessible)
-		fmt.Println("backup expireInDays: ", e.BackupPolicy.ExpireInDaysInt)
-		fmt.Println("backup expireInDays: ", e.BackupPolicy.ExpireInDays)
-		fmt.Println("vpcId: ", e.VpcId)
+		if len(e.RoGroupList) > 0 {
+			fmt.Println("=====================================>")
+			fmt.Println("instance productType: ", e.ProductType())
+			fmt.Println("instanceId: ", e.InstanceId)
+			fmt.Println("instanceName: ", e.InstanceName)
+			fmt.Println("engine: ", e.Engine)
+			fmt.Println("engineVersion: ", e.EngineVersion)
+			fmt.Println("instanceStatus: ", e.InstanceStatus)
+			fmt.Println("cpuCount: ", e.CpuCount)
+			fmt.Println("memoryCapacity: ", e.MemoryCapacity)
+			fmt.Println("volumeCapacity: ", e.VolumeCapacity)
+			fmt.Println("usedStorage: ", e.UsedStorage)
+			fmt.Println("paymentTiming: ", e.PaymentTiming)
+			fmt.Println("instanceType: ", e.InstanceType)
+			fmt.Println("instanceCreateTime: ", e.InstanceCreateTime)
+			fmt.Println("instanceExpireTime: ", e.InstanceExpireTime)
+			fmt.Println("publiclyAccessible: ", e.PubliclyAccessible)
+			fmt.Println("backup expireInDays: ", e.BackupPolicy.ExpireInDaysInt)
+			fmt.Println("backup expireInDays: ", e.BackupPolicy.ExpireInDays)
+			fmt.Println("vpcId: ", e.VpcId)
+		}
 	}
 }
 
@@ -769,11 +918,23 @@ func TestClient_ResizeRds(t *testing.T) {
 	assertAvailable(RDS_INSTANCE_ID, t)
 }
 
-// Only RDS
 func TestClient_RebootInstance(t *testing.T) {
-	assertAvailable(RDS_INSTANCE_ID, t)
-	err := DDCRDS_CLIENT.RebootInstance(RDS_INSTANCE_ID)
-	ExpectEqual(t.Errorf, nil, err)
+	client := DDCRDS_CLIENT
+	err := client.RebootInstance("rds-deaaDuV9")
+	if err != nil {
+		fmt.Printf("reboot error: %+v\n", err)
+		return
+	}
+
+	// 延迟重启(仅支持DDC)
+	args := &RebootArgs{
+		IsRebootNow: true,
+	}
+	err = client.RebootInstanceWithArgs(instanceId, args)
+	if err != nil {
+		fmt.Printf("reboot ddc error: %+v\n", err)
+		return
+	}
 }
 
 // Only RDS
@@ -828,7 +989,6 @@ func TestClient_ModifyPublicAccess(t *testing.T) {
 }
 
 func TestClient_AutoRenew(t *testing.T) {
-	client := DDCRDS_CLIENT
 	args := &AutoRenewArgs{
 		// 自动续费时长（续费单位为year 不大于3，续费单位为month 不大于9）必选
 		AutoRenewTime: 1,
@@ -846,4 +1006,34 @@ func TestClient_AutoRenew(t *testing.T) {
 		return
 	}
 	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GetMaintainTime(t *testing.T) {
+	maintenTime, err := client.GetMaintainTime(instanceId)
+	if err != nil {
+		fmt.Printf("get mainten time error: %+v\n", err)
+		return
+	}
+	fmt.Println("maintenTime duration", maintenTime.Duration)
+	fmt.Println("maintenTime period", maintenTime.Period)
+	fmt.Println("maintenTime startTime", maintenTime.StartTime)
+	fmt.Printf("get mainten time success\n")
+
+	fmt.Println(Json(maintenTime))
+}
+
+func TestClient_UpdateMaintainTime(t *testing.T) {
+	client := DDCRDS_CLIENT
+	args := &MaintenTime{
+		// 时长间隔
+		Duration: 3,
+		// 1-7分别代表周一到周日
+		Period: "1,2,3,4,5,6,7",
+		// 所有涉及的时间皆为北京时间24小时制
+		StartTime: "14:06",
+	}
+	err := client.UpdateMaintainTime(instanceId, args)
+	if err != nil {
+		fmt.Printf("update mainten time error: %+v\n", err)
+	}
 }

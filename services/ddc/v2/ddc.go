@@ -85,7 +85,7 @@ func (c *DDCClient) CreateRds(args *CreateRdsArgs) (*CreateResult, error) {
 		ClientToken:  args.ClientToken,
 		Instance: CreateInstance{
 			InstanceName:         args.InstanceName,
-			Engine:               args.Engine,
+			Engine:               strings.ToLower(args.Engine),
 			EngineVersion:        args.EngineVersion,
 			CpuCount:             args.CpuCount,
 			AllocatedMemoryInGB:  int(args.MemoryCapacity),
@@ -300,7 +300,7 @@ func (c *DDCClient) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResul
 		Instance: CreateInstance{
 			SourceInstanceId:     args.SourceInstanceId,
 			InstanceName:         args.InstanceName,
-			Engine:               detail.Instance.Engine,
+			Engine:               strings.ToLower(detail.Instance.Engine),
 			EngineVersion:        detail.Instance.EngineVersion,
 			CpuCount:             args.CpuCount,
 			AllocatedMemoryInGB:  int(args.MemoryCapacity),
@@ -337,13 +337,97 @@ func (c *DDCClient) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResul
 	return result, err
 }
 
+// UpdateRoGroup - update a roGroup
+//
+// PARAMS:
+//     - body: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) UpdateRoGroup(roGroupId string, args *UpdateRoGroupArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getUpdateRoGroupUriWithId(roGroupId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// UpdateRoGroupReplicaWeight- update repica weight in roGroup
+//
+// PARAMS:
+//     - body: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) UpdateRoGroupReplicaWeight(roGroupId string, args *UpdateRoGroupWeightArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	if len(args.ReplicaList) < 1 {
+		return fmt.Errorf("unset replicaList")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getUpdateRoGroupWeightUriWithId(roGroupId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// ReBalanceRoGroup- Initiate a rebalance for foGroup
+//
+// PARAMS:
+//     - body: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) ReBalanceRoGroup(roGroupId string) error {
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getReBalanceRoGroupUriWithId(roGroupId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		Do()
+	return err
+}
+
 // CreateDeploySet - create a deploy set
 //
 // PARAMS:
 //     - body: http request body
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *DDCClient) CreateDeploySet(poolId string, args *CreateDeployRequest) error {
+func (c *DDCClient) CreateDeploySet(poolId string, args *CreateDeployRequest) (*CreateDeployResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("unset args")
+	}
+	if !(args.Strategy == "distributed" || args.Strategy == "centralized") {
+		return nil, fmt.Errorf("Only support strategy distributed/centralized, current strategy: %v", args.Strategy)
+	}
+
+	result := &CreateDeployResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getDeploySetUri(poolId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// UpdateDeploySet - update a deploy set
+//
+// PARAMS:
+//     - body: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) UpdateDeploySet(poolId string, deployId string, args *UpdateDeployRequest) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
 	}
@@ -351,13 +435,11 @@ func (c *DDCClient) CreateDeploySet(poolId string, args *CreateDeployRequest) er
 		return fmt.Errorf("Only support strategy distributed/centralized, current strategy: %v", args.Strategy)
 	}
 
-	result := &bce.BceResponse{}
 	err := bce.NewRequestBuilder(c).
-		WithMethod(http.POST).
-		WithURL(getDeploySetUri(poolId)).
+		WithMethod(http.PUT).
+		WithURL(getDeploySetUriWithId(poolId, deployId)).
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
-		WithResult(result).
 		Do()
 	return err
 }
@@ -444,6 +526,8 @@ func (c *DDCClient) GetDetail(instanceId string) (*Instance, error) {
 		NodeReadReplica:    detail.Instance.NodeReadReplica,
 		Subnets:            detail.Instance.Subnets,
 		DeployId:           detail.Instance.DeployId,
+		ZoneNames:          detail.Instance.ZoneNames,
+		Category:           detail.Instance.Category,
 	}
 	// 兼容RDS字段
 	result.PublicAccessStatus = strconv.FormatBool(result.PubliclyAccessible)
@@ -461,6 +545,24 @@ func (c *DDCClient) DeleteRds(instanceIds string) error {
 		WithMethod(http.DELETE).
 		WithURL(getDdcInstanceUri()+"/delete").
 		WithQueryParam("instanceIds", instanceIds).
+		Do()
+}
+
+// RebootInstance - reboot a specified instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance to be rebooted
+//     - args: reboot args
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) RebootInstanceWithArgs(instanceId string, args *RebootArgs) error {
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getDdcUriWithInstanceId(instanceId)+"/reboot").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
 		Do()
 }
 
@@ -958,6 +1060,7 @@ func (c *DDCClient) GetDatabase(instanceId, dbName string) (*Database, error) {
 		WithResult(result).
 		Do()
 
+	result.Database.DbStatus = strings.Title(result.Database.DbStatus)
 	return &result.Database, err
 }
 
@@ -976,6 +1079,11 @@ func (c *DDCClient) ListDatabase(instanceId string) (*ListDatabaseResult, error)
 		WithResult(result).
 		Do()
 
+	if result.Databases != nil {
+		for idx, _ := range result.Databases {
+			result.Databases[idx].DbStatus = strings.Title(result.Databases[idx].DbStatus)
+		}
+	}
 	return result, err
 }
 
@@ -1222,4 +1330,56 @@ func (c *DDCClient) ListVpc() (*[]VpcVo, error) {
 		Do()
 
 	return result, err
+}
+
+// GetMaintenTime - get details of the maintenTime
+//
+// PARAMS:
+//     - poolId: the id of the pool
+//     - cli: the client agent which can perform sending request
+//     - deploySetId: the id of the deploy set
+// RETURNS:
+//     - *DeploySet: the detail of the deploy set
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetMaintainTime(instanceId string) (*MaintenTime, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getMaintainTimeUriWithInstanceId(instanceId))
+	req.SetMethod(http.GET)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := c.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &MaintenWindow{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return &jsonBody.MaintenTime, nil
+}
+
+// UpdateMaintenTime - update UpdateMaintenTime of instance
+//
+// PARAMS:
+//     - body: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) UpdateMaintainTime(instanceId string, args *MaintenTime) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getUpdateMaintainTimeUriWithInstanceId(instanceId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
 }

@@ -20,15 +20,18 @@ package ddc
 import "github.com/baidubce/bce-sdk-go/bce"
 
 const (
-	URI_PREFIX               = bce.URI_PREFIX + "v1/ddc"
-	DEFAULT_ENDPOINT         = "ddc.su.baidubce.com"
-	REQUEST_DDC_INSTANCE_URL = "/instance"
-	REQUEST_DDC_POOL_URL     = "/pool"
-	REQUEST_DDC_HOST_URL     = "/host"
-	REQUEST_DDC_DEPLOY_URL   = "/deploy"
-	REQUEST_DDC_DATABASE_URL   = "/database"
-	REQUEST_DDC_ACCOUNT_URL   = "/account"
-	REQUEST_DDC_RoGroup_URL   = "/roGroup"
+	URI_PREFIX                      = bce.URI_PREFIX + "v1/ddc"
+	DEFAULT_ENDPOINT                = "ddc.su.baidubce.com"
+	REQUEST_DDC_INSTANCE_URL        = "/instance"
+	REQUEST_DDC_POOL_URL            = "/pool"
+	REQUEST_DDC_HOST_URL            = "/host"
+	REQUEST_DDC_DEPLOY_URL          = "/deploy"
+	REQUEST_DDC_DATABASE_URL        = "/database"
+	REQUEST_DDC_ACCOUNT_URL         = "/account"
+	REQUEST_DDC_ROGROUP_URL         = "/roGroup"
+	REQUEST_DDC_UPDATE_ACTION       = "/update"
+	REQUEST_DDC_MAINTAINTIME_URL    = "/maintenTimeInfo"
+	REQUEST_UPDATE_MAINTAINTIME_URL = "/updateMaintenTime"
 )
 
 // Client of DDC service is a kind of BceClient, so derived from BceClient
@@ -106,5 +109,30 @@ func getAccountUriWithAccountName(instanceId string, accountName string) string 
 
 // RoGroup URL
 func getRoGroupUriWithInstanceId(instanceId string) string {
-	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_DDC_RoGroup_URL
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_DDC_ROGROUP_URL
+}
+
+// MaintenTime URL
+func getMaintainTimeUriWithInstanceId(instanceId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_DDC_MAINTAINTIME_URL
+}
+
+// MaintenTime URL
+func getUpdateMaintainTimeUriWithInstanceId(instanceId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_UPDATE_MAINTAINTIME_URL
+}
+
+// RoGroup URL
+func getUpdateRoGroupUriWithId(roGroupId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + REQUEST_DDC_ROGROUP_URL + "/" + roGroupId + REQUEST_DDC_UPDATE_ACTION
+}
+
+// RoGroupWeight URL
+func getUpdateRoGroupWeightUriWithId(roGroupId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + REQUEST_DDC_ROGROUP_URL + "/" + roGroupId + "/updateWeight"
+}
+
+// ReBalance RoGroup URL
+func getReBalanceRoGroupUriWithId(roGroupId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + REQUEST_DDC_ROGROUP_URL + "/" + roGroupId + "/balanceRoLoad"
 }

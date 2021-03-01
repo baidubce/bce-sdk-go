@@ -116,6 +116,48 @@ func (c *Client) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResult, 
 	return result, err
 }
 
+// UpdateRoGroup - update a roGroup
+//
+// PARAMS:
+//     - body: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateRoGroup(roGroupId string, args *UpdateRoGroupArgs, productType string) error {
+	if isDDC(productType) {
+		return c.ddcClient.UpdateRoGroup(roGroupId, args)
+	}
+	return RDSNotSupportError()
+}
+
+// UpdateRoGroupReplicaWeight- update repica weight in roGroup
+//
+// PARAMS:
+//     - body: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateRoGroupReplicaWeight(roGroupId string, args *UpdateRoGroupWeightArgs, productType string) error {
+	if isDDC(productType) {
+		return c.ddcClient.UpdateRoGroupReplicaWeight(roGroupId, args)
+	}
+	return RDSNotSupportError()
+}
+
+// ReBalanceRoGroup- Initiate a rebalance for foGroup
+//
+// PARAMS:
+//     - body: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ReBalanceRoGroup(roGroupId, productType string) error {
+	if len(roGroupId) < 1 {
+		return fmt.Errorf("unset roGroupId")
+	}
+	if isDDC(productType) {
+		return c.ddcClient.ReBalanceRoGroup(roGroupId)
+	}
+	return RDSNotSupportError()
+}
+
 // CreateRdsProxy - create a proxy RDS with the specific parameters
 //
 // PARAMS:
@@ -408,10 +450,26 @@ func (c *Client) DeleteAccount(instanceId, accountName string) error {
 //     - error: nil if success otherwise the specific error
 func (c *Client) RebootInstance(instanceId string) error {
 	if isDDCId(instanceId) {
-		return DDCNotSupportError()
+		args := &RebootArgs{IsRebootNow: true}
+		return c.ddcClient.RebootInstanceWithArgs(instanceId, args)
 	}
 	err := c.rdsClient.RebootInstance(instanceId)
 	return err
+}
+
+// RebootInstance - reboot a specified instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance to be rebooted
+//     - args: reboot args
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) RebootInstanceWithArgs(instanceId string, args *RebootArgs) error {
+	if isDDCId(instanceId) {
+		return c.ddcClient.RebootInstanceWithArgs(instanceId, args)
+	}
+	return RDSNotSupportError()
 }
 
 // UpdateInstanceName - update name of a specified instance
@@ -659,8 +717,18 @@ func (c *Client) UpdateParameter(instanceId, Etag string, args *UpdateParameterA
 //     - body: http request body
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) CreateDeploySet(poolId string, args *CreateDeployRequest) error {
+func (c *Client) CreateDeploySet(poolId string, args *CreateDeployRequest) (*CreateDeployResult, error) {
 	return c.ddcClient.CreateDeploySet(poolId, args)
+}
+
+// UpdateDeploySet - create a deploy set
+//
+// PARAMS:
+//     - body: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateDeploySet(poolId, deployId string, args *UpdateDeployRequest) error {
+	return c.ddcClient.UpdateDeploySet(poolId, deployId, args)
 }
 
 // ListDeploySets - list all deploy sets
@@ -944,4 +1012,36 @@ func (c *Client) AutoRenew(args *AutoRenewArgs, productType string) error {
 		return err
 	}
 	return c.rdsClient.AutoRenew(rdsArgs)
+}
+
+// GetMaintenTime - get details of the maintenTime
+//
+// PARAMS:
+//     - poolId: the id of the pool
+//     - cli: the client agent which can perform sending request
+//     - deploySetId: the id of the deploy set
+// RETURNS:
+//     - *DeploySet: the detail of the deploy set
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetMaintainTime(instanceId string) (*MaintenTime, error) {
+	if !isDDCId(instanceId) {
+		return nil, RDSNotSupportError()
+	}
+	return c.ddcClient.GetMaintainTime(instanceId)
+}
+
+// UpdateMaintenTime - update UpdateMaintenTime of instance
+//
+// PARAMS:
+//     - body: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateMaintainTime(instanceId string, args *MaintenTime) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	if !isDDCId(instanceId) {
+		return RDSNotSupportError()
+	}
+	return c.ddcClient.UpdateMaintainTime(instanceId, args)
 }
