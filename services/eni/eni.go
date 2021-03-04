@@ -1,0 +1,286 @@
+/*
+ * Copyright 2021 Baidu, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
+ */
+
+// eni.go - the eni APIs definition supported by the eni service
+package eni
+
+import (
+	"fmt"
+	"strconv"
+
+	"github.com/baidubce/bce-sdk-go/bce"
+	"github.com/baidubce/bce-sdk-go/http"
+)
+
+// CreateEni - create an eni with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to create an eni
+// RETURNS:
+//     - *CreateEniResult: the result of create eni
+//     - error: nil if success otherwise the specific error
+func (c *Client) CreateEni(args *CreateEniArgs) (*CreateEniResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("The createEniArgs cannot be nil.")
+	}
+
+	result := &CreateEniResult{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForEni()).
+		WithMethod(http.POST).
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// UpdateEni - update an eni
+//
+// PARAMS:
+//     - UpdateEniArgs: the arguments to update an eni
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateEni(args *UpdateEniArgs) error {
+	if args == nil {
+		return fmt.Errorf("The updateEniArgs cannot be nil.")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForEniId(args.EniId)).
+		WithMethod(http.PUT).
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithQueryParam("modifyAttribute", "").
+		Do()
+}
+
+// DeleteEni - delete an eni
+//
+// PARAMS:
+//     - DeleteEniArgs: the arguments to delete an eni
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeleteEni(args *DeleteEniArgs) error {
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForEniId(args.EniId)).
+		WithMethod(http.DELETE).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
+}
+
+// ListEnis - list all eni with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to list all eni
+// RETURNS:
+//     - *ListEniResult: the result of list all eni
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListEni(args *ListEniArgs) (*ListEniResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("The ListEniArgs cannot be nil.")
+	}
+	if args.MaxKeys == 0 {
+		args.MaxKeys = 1000
+	}
+
+	result := &ListEniResult{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForEni()).
+		WithMethod(http.GET).
+		WithQueryParam("vpcId", args.VpcId).
+		WithQueryParamFilter("marker", args.Marker).
+		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// GetEniDetail - get the eni detail
+//
+// PARAMS:
+//     - eniId: the specific eniId
+// RETURNS:
+//     - *Eni: the eni
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetEniDetail(eniId string) (*Eni, error) {
+	if eniId == "" {
+		return nil, fmt.Errorf("The eniId cannot be empty.")
+	}
+
+	result := &Eni{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForEniId(eniId)).
+		WithMethod(http.GET).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// AddPrivateId - add private ip
+//
+// PARAMS:
+//     - args: the arguments to add private ip
+// RETURNS:
+//     - *AddPrivateIdResult: the private ip
+//     - error: nil if success otherwise the specific error
+func (c *Client) AddPrivateId(args *EniPrivateIdArgs) (*AddPrivateIdResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("The EniPrivateIdArgs cannot be nil.")
+	}
+
+	result := &AddPrivateIdResult{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForEniId(args.EniId)+"/privateIp").
+		WithMethod(http.POST).
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// DeletePrivateId - delete private ip
+//
+// PARAMS:
+//     - args: the arguments to delete private ip
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeletePrivateId(args *EniPrivateIdArgs) error {
+	if args == nil {
+		return fmt.Errorf("The EniPrivateIdArgs cannot be nil.")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForEniId(args.EniId)+"/privateIp/"+args.PrivateIpAddress).
+		WithMethod(http.DELETE).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
+
+	return err
+}
+
+// AttachEniInstance - eni attach instance
+//
+// PARAMS:
+//     - args: the arguments to attach instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) AttachEniInstance(args *EniInstance) error {
+	if args == nil {
+		return fmt.Errorf("The EniInstance cannot be nil.")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForEniId(args.EniId)).
+		WithMethod(http.PUT).
+		WithQueryParam("attach", "").
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
+
+	return err
+}
+
+// DetachEniInstance - eni detach instance
+//
+// PARAMS:
+//     - args: the arguments to detach instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DetachEniInstance(args *EniInstance) error {
+	if args == nil {
+		return fmt.Errorf("The EniInstance cannot be nil.")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForEniId(args.EniId)).
+		WithMethod(http.PUT).
+		WithQueryParam("detach", "").
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
+
+	return err
+}
+
+// BindEniPublicIp - eni bind public ip
+//
+// PARAMS:
+//     - args: the arguments to bind public ip
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BindEniPublicIp(args *BindEniPublicIpArgs) error {
+	if args == nil {
+		return fmt.Errorf("The BindEniPublicIpArgs cannot be nil.")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForEniId(args.EniId)).
+		WithMethod(http.PUT).
+		WithQueryParam("bind", "").
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
+
+	return err
+}
+
+// UnBindEniPublicIp - eni unbind public ip
+//
+// PARAMS:
+//     - args: the arguments to bind public ip
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UnBindEniPublicIp(args *UnBindEniPublicIpArgs) error {
+	if args == nil {
+		return fmt.Errorf("The UnBindEniPublicIpArgs cannot be nil.")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForEniId(args.EniId)).
+		WithMethod(http.PUT).
+		WithQueryParam("unBind", "").
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
+
+	return err
+}
+
+// UpdateEniSecurityGroup - update eni sg
+//
+// PARAMS:
+//     - args: the arguments to update eni sg
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateEniSecurityGroup(args *UpdateEniSecurityGroupArgs) error {
+	if args == nil {
+		return fmt.Errorf("The UpdateEniSecurityGroupArgs cannot be nil.")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForEniId(args.EniId)).
+		WithMethod(http.PUT).
+		WithQueryParam("bindSg", "").
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
+
+	return err
+}

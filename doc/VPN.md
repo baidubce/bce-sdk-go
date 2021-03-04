@@ -170,7 +170,7 @@ client.Config.ProxyUrl = "127.0.0.1:8080"
 
 AK, SK := <your-access-key-id>, <your-secret-access-key>
 ENDPOINT := "bcc.bj.baidubce.com"
-client, _ := bcc.NewClient(AK, SK, ENDPOINT)
+client, _ := vpn.NewClient(AK, SK, ENDPOINT)
 
 // 配置不进行重试，默认为Back Off重试
 client.Config.Retry = bce.NewNoRetryPolicy()
@@ -186,7 +186,7 @@ client.Config.ConnectionTimeoutInMillis = 30 * 1000
 
 AK, SK := <your-access-key-id>, <your-secret-access-key>
 ENDPOINT := "bcc.bj.baidubce.com"
-client, _ := bcc.NewClient(AK, SK, ENDPOINT)
+client, _ := vpn.NewClient(AK, SK, ENDPOINT)
 
 // 配置签名使用的HTTP请求头为`Host`
 headersToSign := map[string]struct{}{"Host": struct{}{}}
