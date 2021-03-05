@@ -20,6 +20,8 @@ const (
 	REQUEST_DDC_DATABASE_URL        = "/database"
 	REQUEST_DDC_ACCOUNT_URL         = "/account"
 	REQUEST_DDC_ROGROUP_URL         = "/roGroup"
+	REQUEST_DDC_RECYCLER_URL        = "/recycler"
+	REQUEST_DDC_SECURITYGROUP_URL   = "/security"
 	REQUEST_DDC_UPDATE_ACTION       = "/update"
 	REQUEST_DDC_MAINTAINTIME_URL    = "/maintenTimeInfo"
 	REQUEST_UPDATE_MAINTAINTIME_URL = "/updateMaintenTime"
@@ -213,4 +215,44 @@ func getUpdateRoGroupWeightUriWithId(roGroupId string) string {
 // ReBalance RoGroup URL
 func getReBalanceRoGroupUriWithId(roGroupId string) string {
 	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + REQUEST_DDC_ROGROUP_URL + "/" + roGroupId + "/balanceRoLoad"
+}
+
+// Recycler URL
+func getRecyclerUrl() string {
+	return URI_PREFIX + REQUEST_DDC_RECYCLER_URL
+}
+
+// Recycler Recover URL
+func getRecyclerRecoverUrl() string {
+	return URI_PREFIX + REQUEST_DDC_RECYCLER_URL + "/batchRecover"
+}
+
+// Recycler Recover URL
+func getRecyclerDeleteUrl() string {
+	return URI_PREFIX + REQUEST_DDC_RECYCLER_URL + "/batchDelete"
+}
+
+// List Security Group By Vpc URL
+func getSecurityGroupWithVpcIdUrl(vpcId string) string {
+	return URI_PREFIX + REQUEST_DDC_SECURITYGROUP_URL + "/" + vpcId + "/listByVpc"
+}
+
+// List Security Group By Instance URL
+func getSecurityGroupWithInstanceIdUrl(instanceId string) string {
+	return URI_PREFIX + REQUEST_DDC_SECURITYGROUP_URL + "/" + instanceId + "/list"
+}
+
+// Bind Security Group To Instance URL
+func getBindSecurityGroupWithUrl() string {
+	return URI_PREFIX + REQUEST_DDC_SECURITYGROUP_URL + "/bind"
+}
+
+// UnBind Security Group To Instance URL
+func getUnBindSecurityGroupWithUrl() string {
+	return URI_PREFIX + REQUEST_DDC_SECURITYGROUP_URL + "/unbind"
+}
+
+// Batch Replace Security Group URL
+func getReplaceSecurityGroupWithUrl() string {
+	return URI_PREFIX + REQUEST_DDC_SECURITYGROUP_URL + "/updateSecurityGroup"
 }

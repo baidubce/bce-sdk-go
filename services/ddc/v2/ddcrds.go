@@ -1045,3 +1045,142 @@ func (c *Client) UpdateMaintainTime(instanceId string, args *MaintainTime) error
 	}
 	return c.ddcClient.UpdateMaintainTime(instanceId, args)
 }
+
+// ListRecycleInstances - list all instances in recycler with marker
+//
+// PARAMS:
+//     - marker: marker page
+// RETURNS:
+//     - *RecyclerInstanceList: the result of instances in recycler
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListRecycleInstances(marker *Marker, productType string) (*RecyclerInstanceList, error) {
+	if !isDDC(productType) {
+		return nil, RDSNotSupportError()
+	}
+	return c.ddcClient.ListRecycleInstances(marker)
+}
+
+// RecoverRecyclerInstances - batch recover instances that in recycler
+//
+// PARAMS:
+//     - instanceIds: instanceId list to recover
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) RecoverRecyclerInstances(instanceIds []string) error {
+	if instanceIds == nil || len(instanceIds) < 1 {
+		return fmt.Errorf("unset instanceIds")
+	}
+	if len(instanceIds) > 10 {
+		return fmt.Errorf("the instanceIds length max value is 10")
+	}
+
+	for _, id := range instanceIds {
+		if !isDDCId(id) {
+			return RDSNotSupportError()
+		}
+	}
+	return c.ddcClient.RecoverRecyclerInstances(instanceIds)
+}
+
+// DeleteRecyclerInstances - batch delete instances that in recycler
+//
+// PARAMS:
+//     - instanceIds: instanceId list to delete
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeleteRecyclerInstances(instanceIds []string) error {
+	if instanceIds == nil || len(instanceIds) < 1 {
+		return fmt.Errorf("unset instanceIds")
+	}
+	if len(instanceIds) > 10 {
+		return fmt.Errorf("the instanceIds length max value is 10")
+	}
+
+	for _, id := range instanceIds {
+		if !isDDCId(id) {
+			return RDSNotSupportError()
+		}
+	}
+	return c.ddcClient.DeleteRecyclerInstances(instanceIds)
+}
+
+// ListSecurityGroupByVpcId - list security groups by vpc id
+//
+// PARAMS:
+//     - vpcId: id of vpc
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListSecurityGroupByVpcId(vpcId string) (*[]SecurityGroup, error) {
+	return c.ddcClient.ListSecurityGroupByVpcId(vpcId)
+}
+
+// ListSecurityGroupByInstanceId - list security groups by instance id
+//
+// PARAMS:
+//     - instanceId: id of instance
+// RETURNS:
+//     - *ListSecurityGroupResult: list secrity groups result of instance
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListSecurityGroupByInstanceId(instanceId string) (*ListSecurityGroupResult, error) {
+	if !isDDCId(instanceId) {
+		return nil, RDSNotSupportError()
+	}
+	return c.ddcClient.ListSecurityGroupByInstanceId(instanceId)
+}
+
+// BindSecurityGroups - bind SecurityGroup to instances
+//
+// PARAMS:
+//     - args: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BindSecurityGroups(args *SecurityGroupArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+
+	for _, id := range args.InstanceIds {
+		if !isDDCId(id) {
+			return RDSNotSupportError()
+		}
+	}
+	return c.ddcClient.BindSecurityGroups(args)
+}
+
+// UnBindSecurityGroups - unbind SecurityGroup to instances
+//
+// PARAMS:
+//     - args: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UnBindSecurityGroups(args *SecurityGroupArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+
+	for _, id := range args.InstanceIds {
+		if !isDDCId(id) {
+			return RDSNotSupportError()
+		}
+	}
+	return c.ddcClient.UnBindSecurityGroups(args)
+}
+
+// ReplaceSecurityGroups - replace SecurityGroup to instances
+//
+// PARAMS:
+//     - args: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ReplaceSecurityGroups(args *SecurityGroupArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+
+	for _, id := range args.InstanceIds {
+		if !isDDCId(id) {
+			return RDSNotSupportError()
+		}
+	}
+	return c.ddcClient.ReplaceSecurityGroups(args)
+}

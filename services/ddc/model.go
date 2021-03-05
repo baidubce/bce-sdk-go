@@ -648,3 +648,81 @@ type MaintainTime struct {
 	StartTime string `json:"startTime"`
 	Duration  int    `json:"duration"`
 }
+
+type RecycleInstance struct {
+	EngineVersion      string  `json:"engineVersion"`
+	VolumeCapacity     int     `json:"volumeCapacity"`
+	ApplicationType    string  `json:"applicationType"`
+	InstanceName       string  `json:"instanceName"`
+	PublicAccessStatus string  `json:"publicAccessStatus"`
+	InstanceCreateTime string  `json:"instanceCreateTime"`
+	InstanceType       string  `json:"instanceType"`
+	Type               string  `json:"type"`
+	InstanceStatus     string  `json:"instanceStatus"`
+	MemoryCapacity     float64 `json:"memoryCapacity"`
+	InstanceId         string  `json:"instanceId"`
+	Engine             string  `json:"engine"`
+	VpcId              string  `json:"vpcId"`
+	PubliclyAccessible bool    `json:"publiclyAccessible"`
+	InstanceExpireTime string  `json:"instanceExpireTime"`
+	DiskType           string  `json:"diskType"`
+	Region             string  `json:"region"`
+	CpuCount           int     `json:"cpuCount"`
+	UsedStorage        float64 `json:"usedStorage"`
+}
+
+type RecyclerInstanceList struct {
+	ListResultWithMarker
+	Result []RecycleInstance `json:"result"`
+}
+
+type BatchInstanceIds struct {
+	InstanceIds string `json:"instanceIds"`
+}
+
+type SecurityGroup struct {
+	Name                 string `json:"name"`
+	SecurityGroupID      string `json:"securityGroupId"`
+	Description          string `json:"description"`
+	TenantID             string `json:"tenantId"`
+	AssociateNum         int    `json:"associateNum"`
+	VpcID                string `json:"vpcId"`
+	VpcShortID           string `json:"vpcShortId"`
+	VpcName              string `json:"vpcName"`
+	CreatedTime          string `json:"createdTime"`
+	Version              int    `json:"version"`
+	DefaultSecurityGroup int    `json:"defaultSecurityGroup"`
+}
+
+type SecurityGroupArgs struct {
+	InstanceIds      []string `json:"instanceIds"`
+	SecurityGroupIds []string `json:"securityGroupIds"`
+}
+
+type ListSecurityGroupResult struct {
+	Groups []SecurityGroupDetail `json:"groups"`
+}
+
+type SecurityGroupRule struct {
+	PortRange           string `json:"portRange"`
+	Protocol            string `json:"protocol"`
+	RemoteGroupID       string `json:"remoteGroupId"`
+	RemoteIP            string `json:"remoteIP"`
+	Ethertype           string `json:"ethertype"`
+	TenantID            string `json:"tenantId"`
+	Name                string `json:"name"`
+	ID                  string `json:"id"`
+	SecurityGroupRuleID string `json:"securityGroupRuleId"`
+	Direction           string `json:"direction"`
+}
+
+type SecurityGroupDetail struct {
+	SecurityGroupName   string              `json:"securityGroupName"`
+	SecurityGroupID     string              `json:"securityGroupId"`
+	SecurityGroupRemark string              `json:"securityGroupRemark"`
+	Inbound             []SecurityGroupRule `json:"inbound"`
+	Outbound            []SecurityGroupRule `json:"outbound"`
+	VpcName             string              `json:"vpcName"`
+	VpcID               string              `json:"vpcId"`
+	ProjectID           string              `json:"projectId"`
+}

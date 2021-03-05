@@ -399,9 +399,9 @@ args := &ddcrds.CreateRdsArgs{
         TagValue: "tagV",
     },
     },
-    // 部署集id 可选
+    // 部署集id 产品类型为DDC时必选,产品类型为RDS忽略该参数
     DeployId:"xxxyyy-123",
-    // 资源池id 产品类型为DDC时必选,产品类型为RDS可选
+    // 资源池id 产品类型为DDC时必选,产品类型为RDS忽略该参数
     PoolId:"xxxyzzzyy-123",
 }
 // 创建DDC数据库专属集群产品，需要传入产品类型参数ddc
@@ -471,9 +471,9 @@ args := &ddcrds.CreateReadReplicaArgs{
         TagValue: "tagV",
     },
     },
-    // 部署集id 可选
+    // 部署集id 产品类型为DDC时必选,产品类型为RDS忽略该参数
     DeployId:"xxxyyy-123",
-    // 资源池id 必选与主实例保持一致
+    // 资源池id 产品类型为DDC时必选,产品类型为RDS忽略该参数 与主实例保持一致
     PoolId:"xxxyzzzyy-123",
     // RO组ID。(创建只读实例时) 可选
     // 如果不传，默认会创建一个RO组，并将该只读加入RO组中
@@ -634,7 +634,7 @@ for _, e := range resp.Instances {
 ```
 
 ## 删除实例
-使用以下代码可以批量删除实例。
+使用以下代码可以批量删除实例,RDS产品将删除实例,DDC产品会将实例放入回收站。
 ```go
 // import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
 
@@ -1030,6 +1030,72 @@ if err != nil {
 > 注意:
 >
 > - startTime 为北京时间24小时制，例如14:00。
+
+## 获取回收站中的实例列表
+使用以下代码可以获取回收站中的实例列表(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+// marker分页参数
+marker := &ddcrds.Marker{MaxKeys: 10}
+instances, err := client.ListRecycleInstances(marker, "ddc")
+if err != nil {
+    fmt.Printf("list recycler instances error: %+v\n", err)
+    return
+}
+for _, instance := range instances.Result {
+    fmt.Println("instanceId: ", instance.InstanceId)
+    fmt.Println("instanceName: ", instance.InstanceName)
+    fmt.Println("engine: ", instance.Engine)
+    fmt.Println("engineVersion: ", instance.EngineVersion)
+    fmt.Println("instanceStatus: ", instance.InstanceStatus)
+    fmt.Println("cpuCount: ", instance.CpuCount)
+    fmt.Println("memoryCapacity: ", instance.MemoryCapacity)
+    fmt.Println("volumeCapacity: ", instance.VolumeCapacity)
+    fmt.Println("usedStorage: ", instance.UsedStorage)
+    fmt.Println("instanceType: ", instance.InstanceType)
+    fmt.Println("instanceCreateTime: ", instance.InstanceCreateTime)
+    fmt.Println("instanceExpireTime: ", instance.InstanceExpireTime)
+    fmt.Println("publicAccessStatus: ", instance.PublicAccessStatus)
+    fmt.Println("vpcId: ", instance.VpcId)
+}
+```
+
+## 从回收站中批量恢复实例
+使用以下代码可以从回收站中批量恢复实例(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+// 要恢复的实例Id列表
+instanceIds := []string{
+    instanceId_1,
+	instanceId_2,
+}
+err := client.RecoverRecyclerInstances(instanceIds)
+if err != nil {
+    fmt.Printf("recover recycler instances error: %+v\n", err)
+    return
+}
+fmt.Println("recover recycler instances success.")
+```
+
+## 从回收站中批量删除实例
+使用以下代码可以从回收站中批量删除实例,实例将被彻底删除(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+// 要删除的实例Id列表
+instanceIds := []string{
+    instanceId_1,
+    instanceId_2,
+}
+err := client.DeleteRecyclerInstances(instanceIds)
+if err != nil {
+    fmt.Printf("delete recycler instances error: %+v\n", err)
+    return
+}
+fmt.Println("delete recycler instances success.")
+```
 
 
 # 数据库管理
@@ -1500,6 +1566,109 @@ if er != nil {
 }
 fmt.Printf("update securityIp list success\n")
 ```
+
+## 获取VPC下的安全组
+使用以下代码可以获取指定VPC下的安全组列表(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+// vpcId := "vpc-j1vaxw1cx2mw"
+securityGroups, err := client.ListSecurityGroupByVpcId(vpcId)
+if err != nil {
+    fmt.Printf("list security group by vpcId error: %+v\n", err)
+    return
+}
+for _, group := range *securityGroups {
+    fmt.Println("securityGroup id: ", group.SecurityGroupID)
+    fmt.Println("name: ", group.Name)
+    fmt.Println("description: ", group.Description)
+    fmt.Println("associateNum: ", group.AssociateNum)
+    fmt.Println("createdTime: ", group.CreatedTime)
+    fmt.Println("version: ", group.Version)
+    fmt.Println("defaultSecurityGroup: ", group.DefaultSecurityGroup)
+    fmt.Println("vpc name: ", group.VpcName)
+    fmt.Println("vpc id: ", group.VpcShortID)
+    fmt.Println("tenantId: ", group.TenantID)
+}
+fmt.Println("list security group by vpcId success.")
+```
+
+## 获取实例已绑定安全组
+使用以下代码可以获取指定实例已绑定的安全组列表(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+// instanceId := "ddc-m1h4mma5"
+result, err := client.ListSecurityGroupByInstanceId(instanceId)
+if err != nil {
+    fmt.Printf("list security group by instanceId error: %+v\n", err)
+    return
+}
+for _, group := range result.Groups {
+    fmt.Println("securityGroupId: ", group.SecurityGroupID)
+    fmt.Println("securityGroupName: ", group.SecurityGroupName)
+    fmt.Println("securityGroupRemark: ", group.SecurityGroupRemark)
+    fmt.Println("projectId: ", group.ProjectID)
+    fmt.Println("vpcId: ", group.VpcID)
+    fmt.Println("vpcName: ", group.VpcName)
+    fmt.Println("inbound: ", group.Inbound)
+    fmt.Println("outbound: ", group.Outbound)
+}
+fmt.Println("list security group by instanceId success.")
+```
+
+## 绑定安全组
+使用以下代码可以批量将指定的安全组绑定到实例上(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+// instanceIds := []string{
+//     "ddc-mjafcdu0",
+// }
+// securityGroupIds := []string{
+//     "g-iutg5rtcydsk",
+// }
+args := &ddcrds.SecurityGroupArgs{
+    InstanceIds: instanceIds,
+    SecurityGroupIds: securityGroupIds,
+}
+
+err := client.BindSecurityGroups(args)
+if err != nil {
+    fmt.Printf("bind security groups to instances error: %+v\n", err)
+    return
+}
+fmt.Println("bind security groups to instances success.")
+```
+> 注意:
+> - 实例状态必须为Available。
+> - 实例ID最多可以传入10个。
+> - 安全组ID最多可以传入10个。
+> - 每个实例最多可以绑定10个安全组。
+
+## 解绑安全组
+使用以下代码可以从实例上批量解绑指定的安全组(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+// instanceIds := []string{
+//     "ddc-mjafcdu0",
+// }
+// securityGroupIds := []string{
+//     "g-iutg5rtcydsk",
+// }
+args := &ddcrds.SecurityGroupArgs{
+    InstanceIds: instanceIds,
+    SecurityGroupIds: securityGroupIds,
+}
+
+err := client.UnBindSecurityGroups(args)
+if err != nil {
+    fmt.Printf("unbind security groups to instances error: %+v\n", err)
+    return
+}
+fmt.Println("unbind security groups to instances success.")
+```
+> 注意:
+> - 实例状态必须为Available。
+> - 当前版本实例ID最多可以传入1个。
+> - 安全组ID最多可以传入10个。
 
 # 备份管理
 ## 	获取备份列表

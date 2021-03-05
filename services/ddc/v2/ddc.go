@@ -27,8 +27,22 @@ import (
 const (
 	KEY_CLIENT_TOKEN = "clientToken"
 	KEY_MARKER       = "marker"
-	KEY_MAXKEYS      = "maxKeys"
+	KEY_MAX_KEYS     = "maxKeys"
+	COMMA            = ","
 )
+
+// Convert marker to request params
+func getMarkerParams(marker *Marker) map[string]string {
+	if marker == nil {
+		marker = &Marker{Marker: "-1"}
+	}
+	params := make(map[string]string, 2)
+	params[KEY_MARKER] = marker.Marker
+	if marker.MaxKeys > 0 {
+		params[KEY_MAX_KEYS] = strconv.Itoa(marker.MaxKeys)
+	}
+	return params
+}
 
 // CreateInstance - create a Instance with the specific parameters
 //
@@ -454,7 +468,7 @@ func (c *DDCClient) ListRds(marker *ListRdsArgs) (*ListRdsResult, error) {
 	req.SetMethod(http.GET)
 	if marker != nil {
 		req.SetParam(KEY_MARKER, marker.Marker)
-		req.SetParam(KEY_MAXKEYS, strconv.Itoa(marker.MaxKeys))
+		req.SetParam(KEY_MAX_KEYS, strconv.Itoa(marker.MaxKeys))
 	}
 	// Send request and get response
 	resp := &bce.BceResponse{}
@@ -705,7 +719,7 @@ func (c *DDCClient) ListDeploySets(poolId string, marker *Marker) (*ListDeploySe
 	req.SetMethod(http.GET)
 	if marker != nil {
 		req.SetParam(KEY_MARKER, marker.Marker)
-		req.SetParam(KEY_MAXKEYS, strconv.Itoa(marker.MaxKeys))
+		req.SetParam(KEY_MAX_KEYS, strconv.Itoa(marker.MaxKeys))
 	}
 	// Send request and get response
 	resp := &bce.BceResponse{}
@@ -1332,14 +1346,14 @@ func (c *DDCClient) ListVpc() (*[]VpcVo, error) {
 	return result, err
 }
 
-// GetMaintenTime - get details of the maintenTime
+// GetMaintainTime - get details of the maintainTime
 //
 // PARAMS:
 //     - poolId: the id of the pool
 //     - cli: the client agent which can perform sending request
 //     - deploySetId: the id of the deploy set
 // RETURNS:
-//     - *DeploySet: the detail of the deploy set
+//     - *MaintainTime: the maintainTime of the instance
 //     - error: nil if success otherwise the specific error
 func (c *DDCClient) GetMaintainTime(instanceId string) (*MaintainTime, error) {
 	// Build the request
@@ -1364,7 +1378,7 @@ func (c *DDCClient) GetMaintainTime(instanceId string) (*MaintainTime, error) {
 	return &jsonBody.MaintainTime, nil
 }
 
-// UpdateMaintenTime - update UpdateMaintenTime of instance
+// UpdateMaintainTime - update UpdateMaintainTime of instance
 //
 // PARAMS:
 //     - body: http request body
@@ -1378,6 +1392,198 @@ func (c *DDCClient) UpdateMaintainTime(instanceId string, args *MaintainTime) er
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
 		WithURL(getUpdateMaintainTimeUriWithInstanceId(instanceId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// ListRecycleInstances - list all instances in recycler with marker
+//
+// PARAMS:
+//     - marker: marker page
+// RETURNS:
+//     - *RecyclerInstanceList: the result of instances in recycler
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) ListRecycleInstances(marker *Marker) (*RecyclerInstanceList, error) {
+	result := &RecyclerInstanceList{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithQueryParams(getMarkerParams(marker)).
+		WithURL(getRecyclerUrl()).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// RecoverRecyclerInstances - batch recover instances that in recycler
+//
+// PARAMS:
+//     - instanceIds: instanceId list to recover
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) RecoverRecyclerInstances(instanceIds []string) error {
+	if instanceIds == nil || len(instanceIds) < 1 {
+		return fmt.Errorf("unset instanceIds")
+	}
+	if len(instanceIds) > 10 {
+		return fmt.Errorf("the instanceIds length max value is 10")
+	}
+
+	args := &BatchInstanceIds{
+		InstanceIds: strings.Join(instanceIds, COMMA),
+	}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getRecyclerRecoverUrl()).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// DeleteRecyclerInstances - batch delete instances that in recycler
+//
+// PARAMS:
+//     - instanceIds: instanceId list to delete
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) DeleteRecyclerInstances(instanceIds []string) error {
+	if instanceIds == nil || len(instanceIds) < 1 {
+		return fmt.Errorf("unset instanceIds")
+	}
+	if len(instanceIds) > 10 {
+		return fmt.Errorf("the instanceIds length max value is 10")
+	}
+
+	// delete use query params
+	instanceIdsParam := strings.Join(instanceIds, COMMA)
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(getRecyclerDeleteUrl()).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithQueryParam("instanceIds", instanceIdsParam).
+		Do()
+	return err
+}
+
+// ListSecurityGroupByVpcId - list security groups by vpc id
+//
+// PARAMS:
+//     - vpcId: id of vpc
+// RETURNS:
+//     - *[]SecurityGroup:security groups of vpc
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) ListSecurityGroupByVpcId(vpcId string) (*[]SecurityGroup, error) {
+	if len(vpcId) < 1 {
+		return nil, fmt.Errorf("unset vpcId")
+	}
+	result := &[]SecurityGroup{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getSecurityGroupWithVpcIdUrl(vpcId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// ListSecurityGroupByInstanceId - list security groups by instance id
+//
+// PARAMS:
+//     - instanceId: id of instance
+// RETURNS:
+//     - *ListSecurityGroupResult: list secrity groups result of instance
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) ListSecurityGroupByInstanceId(instanceId string) (*ListSecurityGroupResult, error) {
+	if len(instanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+	result := &ListSecurityGroupResult{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getSecurityGroupWithInstanceIdUrl(instanceId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// BindSecurityGroups - bind SecurityGroup to instances
+//
+// PARAMS:
+//     - args: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) BindSecurityGroups(args *SecurityGroupArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	if len(args.InstanceIds) < 1 {
+		return fmt.Errorf("unset instanceIds")
+	}
+	if len(args.SecurityGroupIds) < 1 {
+		return fmt.Errorf("unset securityGroupIds")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getBindSecurityGroupWithUrl()).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// UnBindSecurityGroups - unbind SecurityGroup to instances
+//
+// PARAMS:
+//     - args: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) UnBindSecurityGroups(args *SecurityGroupArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	if len(args.InstanceIds) < 1 {
+		return fmt.Errorf("unset instanceIds")
+	}
+	if len(args.SecurityGroupIds) < 1 {
+		return fmt.Errorf("unset securityGroupIds")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getUnBindSecurityGroupWithUrl()).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// ReplaceSecurityGroups - replace SecurityGroup to instances
+//
+// PARAMS:
+//     - args: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) ReplaceSecurityGroups(args *SecurityGroupArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	if len(args.InstanceIds) < 1 {
+		return fmt.Errorf("unset instanceIds")
+	}
+	if len(args.SecurityGroupIds) < 1 {
+		return fmt.Errorf("unset securityGroupIds")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getReplaceSecurityGroupWithUrl()).
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		Do()

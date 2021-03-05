@@ -108,7 +108,7 @@ func assertAvailable(instanceId string, t *testing.T) {
 func TestClient_CreateInstance(t *testing.T) {
 	args := &CreateRdsArgs{
 		PurchaseCount: 1,
-		InstanceName:  "mysql_5.7",
+		InstanceName:  "mysql_sdk",
 		//SourceInstanceId: "ddc-mmqptugx",
 		Engine:         "mysql",
 		EngineVersion:  "5.7",
@@ -819,7 +819,7 @@ func TestClient_CreateReadReplica(t *testing.T) {
 func TestClient_ListRds(t *testing.T) {
 	args := &ListRdsArgs{
 		// 批量获取列表的查询的起始位置，实例列表中Marker需要指定实例Id，可选
-		// Marker: "marker",
+		Marker: "-1",
 		// 指定每页包含的最大数量(主实例)，最大数量不超过1000，缺省值为1000，可选
 		MaxKeys: 20,
 	}
@@ -841,27 +841,24 @@ func TestClient_ListRds(t *testing.T) {
 
 	// 获取instance的列表信息
 	for _, e := range resp.Instances {
-		if len(e.RoGroupList) > 0 {
-			fmt.Println("=====================================>")
-			fmt.Println("instance productType: ", e.ProductType())
-			fmt.Println("instanceId: ", e.InstanceId)
-			fmt.Println("instanceName: ", e.InstanceName)
-			fmt.Println("engine: ", e.Engine)
-			fmt.Println("engineVersion: ", e.EngineVersion)
-			fmt.Println("instanceStatus: ", e.InstanceStatus)
-			fmt.Println("cpuCount: ", e.CpuCount)
-			fmt.Println("memoryCapacity: ", e.MemoryCapacity)
-			fmt.Println("volumeCapacity: ", e.VolumeCapacity)
-			fmt.Println("usedStorage: ", e.UsedStorage)
-			fmt.Println("paymentTiming: ", e.PaymentTiming)
-			fmt.Println("instanceType: ", e.InstanceType)
-			fmt.Println("instanceCreateTime: ", e.InstanceCreateTime)
-			fmt.Println("instanceExpireTime: ", e.InstanceExpireTime)
-			fmt.Println("publiclyAccessible: ", e.PubliclyAccessible)
-			fmt.Println("backup expireInDays: ", e.BackupPolicy.ExpireInDaysInt)
-			fmt.Println("backup expireInDays: ", e.BackupPolicy.ExpireInDays)
-			fmt.Println("vpcId: ", e.VpcId)
-		}
+		fmt.Println("=====================================>")
+		fmt.Println("instance productType: ", e.ProductType())
+		fmt.Println("instanceId: ", e.InstanceId)
+		fmt.Println("instanceName: ", e.InstanceName)
+		fmt.Println("engine: ", e.Engine)
+		fmt.Println("engineVersion: ", e.EngineVersion)
+		fmt.Println("instanceStatus: ", e.InstanceStatus)
+		fmt.Println("cpuCount: ", e.CpuCount)
+		fmt.Println("memoryCapacity: ", e.MemoryCapacity)
+		fmt.Println("volumeCapacity: ", e.VolumeCapacity)
+		fmt.Println("usedStorage: ", e.UsedStorage)
+		fmt.Println("paymentTiming: ", e.PaymentTiming)
+		fmt.Println("instanceType: ", e.InstanceType)
+		fmt.Println("instanceCreateTime: ", e.InstanceCreateTime)
+		fmt.Println("instanceExpireTime: ", e.InstanceExpireTime)
+		fmt.Println("publiclyAccessible: ", e.PubliclyAccessible)
+		fmt.Println("backup expireInDays: ", e.BackupPolicy.ExpireInDays)
+		fmt.Println("vpcId: ", e.VpcId)
 	}
 }
 
@@ -1020,7 +1017,6 @@ func TestClient_GetMaintainTime(t *testing.T) {
 }
 
 func TestClient_UpdateMaintainTime(t *testing.T) {
-	client := DDCRDS_CLIENT
 	args := &MaintainTime{
 		// 时长间隔
 		Duration: 2,
@@ -1033,4 +1029,160 @@ func TestClient_UpdateMaintainTime(t *testing.T) {
 	if err != nil {
 		fmt.Printf("update maintain time error: %+v\n", err)
 	}
+}
+func TestClient_ListRecycleInstances(t *testing.T) {
+	marker := &Marker{MaxKeys: 10}
+	instances, err := client.ListRecycleInstances(marker, "ddc")
+	if err != nil {
+		fmt.Printf("list recycler instances error: %+v\n", err)
+		return
+	}
+	fmt.Println(Json(instances))
+	for _, instance := range instances.Result {
+		fmt.Println("+-------------------------------------------+")
+		fmt.Println("instanceId: ", instance.InstanceId)
+		fmt.Println("instanceName: ", instance.InstanceName)
+		fmt.Println("engine: ", instance.Engine)
+		fmt.Println("engineVersion: ", instance.EngineVersion)
+		fmt.Println("instanceStatus: ", instance.InstanceStatus)
+		fmt.Println("cpuCount: ", instance.CpuCount)
+		fmt.Println("memoryCapacity: ", instance.MemoryCapacity)
+		fmt.Println("volumeCapacity: ", instance.VolumeCapacity)
+		fmt.Println("usedStorage: ", instance.UsedStorage)
+		fmt.Println("instanceType: ", instance.InstanceType)
+		fmt.Println("instanceCreateTime: ", instance.InstanceCreateTime)
+		fmt.Println("instanceExpireTime: ", instance.InstanceExpireTime)
+		fmt.Println("publicAccessStatus: ", instance.PublicAccessStatus)
+		fmt.Println("vpcId: ", instance.VpcId)
+	}
+}
+
+func TestClient_RecoverRecyclerInstances(t *testing.T) {
+	instanceIds := []string{
+		"ddc-mv8zcy6u",
+		"ddc-mof1m3hb",
+	}
+	err := client.RecoverRecyclerInstances(instanceIds)
+	if err != nil {
+		fmt.Printf("recover recycler instances error: %+v\n", err)
+		return
+	}
+	fmt.Println("recover recycler instances success.")
+}
+
+func TestClient_DeleteRecyclerInstances(t *testing.T) {
+	instanceIds := []string{
+		"ddc-mof1m3hb",
+		"ddc-moxgq5dm",
+	}
+	err := client.DeleteRecyclerInstances(instanceIds)
+	if err != nil {
+		fmt.Printf("delete recycler instances error: %+v\n", err)
+		return
+	}
+	fmt.Println("delete recycler instances success.")
+}
+
+func TestClient_ListSecurityGroupByVpcId(t *testing.T) {
+	vpcId := "vpc-j1vaxw1cx2mw"
+	securityGroups, err := client.ListSecurityGroupByVpcId(vpcId)
+	if err != nil {
+		fmt.Printf("list security group by vpcId error: %+v\n", err)
+		return
+	}
+	for _, group := range *securityGroups {
+		fmt.Println("+-------------------------------------------+")
+		fmt.Println("id: ", group.SecurityGroupID)
+		fmt.Println("name: ", group.Name)
+		fmt.Println("description: ", group.Description)
+		fmt.Println("associateNum: ", group.AssociateNum)
+		fmt.Println("createdTime: ", group.CreatedTime)
+		fmt.Println("version: ", group.Version)
+		fmt.Println("defaultSecurityGroup: ", group.DefaultSecurityGroup)
+		fmt.Println("vpc name: ", group.VpcName)
+		fmt.Println("vpc id: ", group.VpcShortID)
+		fmt.Println("tenantId: ", group.TenantID)
+	}
+	fmt.Println("list security group by vpcId success.")
+}
+
+func TestClient_ListSecurityGroupByInstanceId(t *testing.T) {
+	instanceId := "ddc-m1h4mma5"
+	result, err := client.ListSecurityGroupByInstanceId(instanceId)
+	if err != nil {
+		fmt.Printf("list security group by instanceId error: %+v\n", err)
+		return
+	}
+	for _, group := range result.Groups {
+		fmt.Println("+-------------------------------------------+")
+		fmt.Println("securityGroupId: ", group.SecurityGroupID)
+		fmt.Println("securityGroupName: ", group.SecurityGroupName)
+		fmt.Println("securityGroupRemark: ", group.SecurityGroupRemark)
+		fmt.Println("projectId: ", group.ProjectID)
+		fmt.Println("vpcId: ", group.VpcID)
+		fmt.Println("vpcName: ", group.VpcName)
+		fmt.Println("inbound: ", group.Inbound)
+		fmt.Println("outbound: ", group.Outbound)
+	}
+	fmt.Println("list security group by instanceId success.")
+}
+
+func TestClient_BindSecurityGroups(t *testing.T) {
+	instanceIds := []string{
+		"ddc-mjafcdu0",
+	}
+	securityGroupIds := []string{
+		"g-iutg5rtcydsk",
+	}
+	args := &SecurityGroupArgs{
+		InstanceIds:      instanceIds,
+		SecurityGroupIds: securityGroupIds,
+	}
+
+	err := client.BindSecurityGroups(args)
+	if err != nil {
+		fmt.Printf("bind security groups to instances error: %+v\n", err)
+		return
+	}
+	fmt.Println("bind security groups to instances success.")
+}
+
+func TestClient_UnBindSecurityGroups(t *testing.T) {
+	instanceIds := []string{
+		"ddc-mjafcdu0",
+	}
+	securityGroupIds := []string{
+		"g-iutg5rtcydsk",
+	}
+	args := &SecurityGroupArgs{
+		InstanceIds:      instanceIds,
+		SecurityGroupIds: securityGroupIds,
+	}
+
+	err := client.UnBindSecurityGroups(args)
+	if err != nil {
+		fmt.Printf("unbind security groups to instances error: %+v\n", err)
+		return
+	}
+	fmt.Println("unbind security groups to instances success.")
+}
+
+func TestClient_ReplaceSecurityGroups(t *testing.T) {
+	instanceIds := []string{
+		"ddc-mjafcdu0",
+	}
+	securityGroupIds := []string{
+		"g-iutg5rtcydsk",
+	}
+	args := &SecurityGroupArgs{
+		InstanceIds:      instanceIds,
+		SecurityGroupIds: securityGroupIds,
+	}
+
+	err := client.ReplaceSecurityGroups(args)
+	if err != nil {
+		fmt.Printf("replace security groups to instances error: %+v\n", err)
+		return
+	}
+	fmt.Println("replace security groups to instances success.")
 }
