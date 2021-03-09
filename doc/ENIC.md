@@ -331,12 +331,12 @@ fmt.Println("select enic success", string(r))
 ## 增加ENIC内网IP
 
 ```go
-args := &client.EniPrivateIdArgs{
+args := &client.EniPrivateIpArgs{
         EniId: "eniId",
         ClientToken: getClientToken(),
         PrivateIpAddress: "192.168.0.53",
 }
-result, err := client.AddPrivateId(args)
+result, err := client.AddPrivateIp(args)
 if err != nil {
     fmt.Printf("add enic private ip error: %+v\n", err)
     return
@@ -348,12 +348,12 @@ fmt.Println("add private ip success", string(r))
 ## 删除ENIC内网IP
 
 ```go
-args := &client.EniPrivateIdArgs{
+args := &client.EniPrivateIpArgs{
         EniId: "eniId",
         ClientToken: getClientToken(),
         PrivateIpAddress: "192.168.0.53",
 }
-err := client.DeletePrivateId(args)
+err := client.DeletePrivateIp(args)
 if err != nil {
     fmt.Printf("delete enic private ip error: %+v\n", err)
     return

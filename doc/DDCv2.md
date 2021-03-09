@@ -1066,7 +1066,7 @@ for _, instance := range instances.Result {
 ```go
 // import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
 
-// 要恢复的实例Id列表
+// 要恢删除的实例Id列表
 instanceIds := []string{
     instanceId_1,
 	instanceId_2,

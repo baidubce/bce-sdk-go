@@ -155,25 +155,25 @@ func TestClient_GetEniDetail(t *testing.T) {
 	fmt.Println(string(r))
 }
 
-func TestClient_AddPrivateId(t *testing.T) {
-	args := &EniPrivateIdArgs{
+func TestClient_AddPrivateIp(t *testing.T) {
+	args := &EniPrivateIpArgs{
 		EniId:            "eni-mmwvvbvfjch3",
 		ClientToken:      getClientToken(),
 		PrivateIpAddress: "192.168.0.53",
 	}
-	result, err := ENI_CLIENT.AddPrivateId(args)
+	result, err := ENI_CLIENT.AddPrivateIp(args)
 	ExpectEqual(t.Errorf, nil, err)
 	r, err := json.Marshal(result)
 	fmt.Println(string(r))
 }
 
-func TestClient_DeletePrivateId(t *testing.T) {
-	args := &EniPrivateIdArgs{
+func TestClient_DeletePrivateIp(t *testing.T) {
+	args := &EniPrivateIpArgs{
 		EniId:            "eni-mmwvvbvfjch3",
 		ClientToken:      getClientToken(),
 		PrivateIpAddress: "192.168.0.53",
 	}
-	err := ENI_CLIENT.DeletePrivateId(args)
+	err := ENI_CLIENT.DeletePrivateIp(args)
 	ExpectEqual(t.Errorf, nil, err)
 }
 

@@ -74,13 +74,13 @@ type PrivateIp struct {
 	PrivateIpAddress string `json:"privateIpAddress"`
 }
 
-type EniPrivateIdArgs struct {
+type EniPrivateIpArgs struct {
 	EniId            string `json:"-"`
 	ClientToken      string `json:"-"`
 	PrivateIpAddress string `json:"privateIpAddress"`
 }
 
-type AddPrivateIdResult struct {
+type AddPrivateIpResult struct {
 	PrivateIpAddress string `json:"privateIpAddress"`
 }
 

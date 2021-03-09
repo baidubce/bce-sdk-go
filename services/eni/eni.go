@@ -131,19 +131,19 @@ func (c *Client) GetEniDetail(eniId string) (*Eni, error) {
 	return result, err
 }
 
-// AddPrivateId - add private ip
+// AddPrivateIp - add private ip
 //
 // PARAMS:
 //     - args: the arguments to add private ip
 // RETURNS:
-//     - *AddPrivateIdResult: the private ip
+//     - *AddPrivateIpResult: the private ip
 //     - error: nil if success otherwise the specific error
-func (c *Client) AddPrivateId(args *EniPrivateIdArgs) (*AddPrivateIdResult, error) {
+func (c *Client) AddPrivateIp(args *EniPrivateIpArgs) (*AddPrivateIpResult, error) {
 	if args == nil {
-		return nil, fmt.Errorf("The EniPrivateIdArgs cannot be nil.")
+		return nil, fmt.Errorf("The EniPrivateIpArgs cannot be nil.")
 	}
 
-	result := &AddPrivateIdResult{}
+	result := &AddPrivateIpResult{}
 	err := bce.NewRequestBuilder(c).
 		WithURL(getURLForEniId(args.EniId)+"/privateIp").
 		WithMethod(http.POST).
@@ -155,15 +155,15 @@ func (c *Client) AddPrivateId(args *EniPrivateIdArgs) (*AddPrivateIdResult, erro
 	return result, err
 }
 
-// DeletePrivateId - delete private ip
+// DeletePrivateIp - delete private ip
 //
 // PARAMS:
 //     - args: the arguments to delete private ip
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) DeletePrivateId(args *EniPrivateIdArgs) error {
+func (c *Client) DeletePrivateIp(args *EniPrivateIpArgs) error {
 	if args == nil {
-		return fmt.Errorf("The EniPrivateIdArgs cannot be nil.")
+		return fmt.Errorf("The EniPrivateIpArgs cannot be nil.")
 	}
 
 	err := bce.NewRequestBuilder(c).
