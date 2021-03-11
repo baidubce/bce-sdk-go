@@ -27,10 +27,13 @@ const (
 	REQUEST_DDC_HOST_URL            = "/host"
 	REQUEST_DDC_DEPLOY_URL          = "/deploy"
 	REQUEST_DDC_DATABASE_URL        = "/database"
+	REQUEST_DDC_TABLE_URL           = "/table"
+	REQUEST_DDC_HARDLINK_URL        = "/link"
 	REQUEST_DDC_ACCOUNT_URL         = "/account"
 	REQUEST_DDC_ROGROUP_URL         = "/roGroup"
 	REQUEST_DDC_RECYCLER_URL        = "/recycler"
 	REQUEST_DDC_SECURITYGROUP_URL   = "/security"
+	REQUEST_DDC_LOG_URL             = "/logs"
 	REQUEST_DDC_UPDATE_ACTION       = "/update"
 	REQUEST_DDC_MAINTAINTIME_URL    = "/maintenTimeInfo"
 	REQUEST_UPDATE_MAINTAINTIME_URL = "/updateMaintenTime"
@@ -177,4 +180,24 @@ func getUnBindSecurityGroupWithUrl() string {
 // Batch Replace Security Group URL
 func getReplaceSecurityGroupWithUrl() string {
 	return URI_PREFIX + REQUEST_DDC_SECURITYGROUP_URL + "/updateSecurityGroup"
+}
+
+func getLogsUrlWithInstanceId(instanceId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_DDC_LOG_URL
+}
+
+func getLogsUrlWithLogId(instanceId, logId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_DDC_LOG_URL + "/" + logId
+}
+
+func getCreateTableHardLinkUrl(instanceId, dbName string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId +
+		REQUEST_DDC_DATABASE_URL + "/" + dbName +
+		REQUEST_DDC_TABLE_URL + REQUEST_DDC_HARDLINK_URL
+}
+
+func getTableHardLinkUrl(instanceId, dbName, tableName string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId +
+		REQUEST_DDC_DATABASE_URL + "/" + dbName +
+		REQUEST_DDC_TABLE_URL + "/" + tableName + REQUEST_DDC_HARDLINK_URL
 }

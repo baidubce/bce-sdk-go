@@ -36,12 +36,12 @@ const (
 	POOL            = "xdb_gaiabase_pool"
 	PNETIP          = "100.88.65.121"
 	DEPLOY_ID       = "ab89d829-9068-d88e-75bc-64bb6367d036"
-	DDC_INSTANCE_ID = "ddc-me4mtqdi"
+	DDC_INSTANCE_ID = "ddc-mlmernft"
 	RDS_INSTANCE_ID = "rds-OtTkC1OD"
 	ETAG            = "v0"
 )
 
-var instanceId = "ddc-mnvw691i"
+var instanceId = DDC_INSTANCE_ID
 var client = DDCRDS_CLIENT
 
 func init() {
@@ -357,7 +357,8 @@ func TestClient_ListVpc(t *testing.T) {
 }
 
 func TestClient_GetDetail(t *testing.T) {
-	result, err := DDCRDS_CLIENT.GetDetail(DDC_INSTANCE_ID)
+	instanceId = "ddc-mn6c8fy5"
+	result, err := DDCRDS_CLIENT.GetDetail(instanceId)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println("ddc instanceId: ", result.InstanceId)
 	fmt.Println("ddc instanceName: ", result.InstanceName)
@@ -385,11 +386,7 @@ func TestClient_GetDetail(t *testing.T) {
 	fmt.Println("ddc Category: ", result.Category)
 	fmt.Println("ddc ZoneNames: ", result.ZoneNames)
 	fmt.Println("ddc Endpoint: ", result.Endpoint)
-
-	result, err = DDCRDS_CLIENT.GetDetail(RDS_INSTANCE_ID)
-	ExpectEqual(t.Errorf, err, nil)
-	res, _ := json.Marshal(result)
-	fmt.Println(string(res))
+	fmt.Println("ddc Endpoint vnetIpBackup: ", result.Endpoint.VnetIpBackup)
 }
 
 func TestClient_UpdateSecurityIps(t *testing.T) {
@@ -529,11 +526,16 @@ func TestClient_DeleteDdcInstance(t *testing.T) {
 
 // Only DDC
 func TestClient_SwitchInstance(t *testing.T) {
-	err := DDCRDS_CLIENT.SwitchInstance(DDC_INSTANCE_ID)
-	ExpectEqual(t.Errorf, nil, err)
-
-	err = DDCRDS_CLIENT.SwitchInstance(RDS_INSTANCE_ID)
-	ExpectEqual(t.Errorf, RDSNotSupportError(), err)
+	instanceId = "ddc-m8xc5hmz"
+	args := &SwitchArgs{
+		IsSwitchNow: false,
+	}
+	err := client.SwitchInstance(instanceId, args)
+	if err != nil {
+		fmt.Printf(" main standby switching of the instance error: %+v\n", err)
+		return
+	}
+	fmt.Printf(" main standby switching of the instance success\n")
 }
 
 // Database
@@ -821,7 +823,7 @@ func TestClient_ListRds(t *testing.T) {
 		// 批量获取列表的查询的起始位置，实例列表中Marker需要指定实例Id，可选
 		Marker: "-1",
 		// 指定每页包含的最大数量(主实例)，最大数量不超过1000，缺省值为1000，可选
-		MaxKeys: 20,
+		MaxKeys: 5,
 	}
 	resp, err := DDCRDS_CLIENT.ListRds(args)
 
@@ -859,6 +861,9 @@ func TestClient_ListRds(t *testing.T) {
 		fmt.Println("publiclyAccessible: ", e.PubliclyAccessible)
 		fmt.Println("backup expireInDays: ", e.BackupPolicy.ExpireInDays)
 		fmt.Println("vpcId: ", e.VpcId)
+		fmt.Println("endpoint: ", e.Endpoint)
+		fmt.Println("vnetIp: ", e.Endpoint.VnetIp)
+		fmt.Println("vnetIpBackup: ", e.Endpoint.VnetIpBackup)
 	}
 }
 
@@ -1185,4 +1190,71 @@ func TestClient_ReplaceSecurityGroups(t *testing.T) {
 		return
 	}
 	fmt.Println("replace security groups to instances success.")
+}
+
+func TestClient_ListLogByInstanceId(t *testing.T) {
+	// 两天前
+	date := time.Now().
+		AddDate(0, 0, -2).
+		Format("2006-01-02")
+	fmt.Println(date)
+	args := &ListLogArgs{
+		LogType:  "error",
+		Datetime: date,
+	}
+	logs, err := client.ListLogByInstanceId(instanceId, args)
+	if err != nil {
+		fmt.Printf("list logs of instance error: %+v\n", err)
+		return
+	}
+	fmt.Println("list logs of instance success.")
+	for _, log := range *logs {
+		fmt.Println("+-------------------------------------------+")
+		fmt.Println("id: ", log.LogID)
+		fmt.Println("size: ", log.LogSizeInBytes)
+		fmt.Println("start time: ", log.LogStartTime)
+		fmt.Println("end time: ", log.LogEndTime)
+	}
+}
+
+func TestClient_GetLogById(t *testing.T) {
+	args := &GetLogArgs{
+		ValidSeconds: 20,
+	}
+	logId := "errlog.202103091300"
+	log, err := client.GetLogById(instanceId, logId, args)
+	if err != nil {
+		fmt.Printf("get log detail of instance error: %+v\n", err)
+		return
+	}
+	fmt.Println("list logs of instances success.")
+	fmt.Println("+-------------------------------------------+")
+	fmt.Println("id: ", log.LogID)
+	fmt.Println("size: ", log.LogSizeInBytes)
+	fmt.Println("start time: ", log.LogStartTime)
+	fmt.Println("end time: ", log.LogEndTime)
+	fmt.Println("download url: ", log.DownloadURL)
+	fmt.Println("download url expires: ", log.DownloadExpires)
+}
+
+func TestClient_LazyDropCreateHardLink(t *testing.T) {
+	dbName := "yangxue"
+	tableName := "apps_6"
+	err := client.LazyDropCreateHardLink(instanceId, dbName, tableName)
+	if err != nil {
+		fmt.Printf("[lazy drop] create hard link error: %+v\n", err)
+		return
+	}
+	fmt.Println("[lazy drop] create hard link success.")
+}
+
+func TestClient_LazyDropDeleteHardLink(t *testing.T) {
+	dbName := "yangxue"
+	tableName := "apps_6"
+	err := client.LazyDropDeleteHardLink(instanceId, dbName, tableName)
+	if err != nil {
+		fmt.Printf("[lazy drop] delete hard link error: %+v\n", err)
+		return
+	}
+	fmt.Println("[lazy drop] delete hard link success.")
 }

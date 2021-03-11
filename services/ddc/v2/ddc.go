@@ -22,6 +22,7 @@ import (
 	"github.com/baidubce/bce-sdk-go/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const (
@@ -976,13 +977,19 @@ func (c *DDCClient) GetBinlogDetail(instanceId string, binlog string) (*BinlogDe
 //
 // PARAMS:
 //     - instanceId: the id of the instance
+//     - args: switch now or wait to the maintain time
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *DDCClient) SwitchInstance(instanceId string) error {
+func (c *DDCClient) SwitchInstance(instanceId string, args *SwitchArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
 	result := &bce.BceResponse{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
-		WithURL(getDdcUriWithInstanceId(instanceId) + "/switchMaster").
+		WithURL(getDdcUriWithInstanceId(instanceId)+"/switchMaster").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
 		WithResult(result).
 		Do()
 
@@ -1586,6 +1593,127 @@ func (c *DDCClient) ReplaceSecurityGroups(args *SecurityGroupArgs) error {
 		WithURL(getReplaceSecurityGroupWithUrl()).
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
+		Do()
+	return err
+}
+
+// ListLogByInstanceId - list error or slow logs of instance
+//
+// PARAMS:
+//     - instanceId: id of instance
+// RETURNS:
+//     - *[]Log:logs of instance
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) ListLogByInstanceId(instanceId string, args *ListLogArgs) (*[]Log, error) {
+	if len(instanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+	if args == nil {
+		return nil, fmt.Errorf("unset list args")
+	}
+	if "error" != args.LogType && "slow" != args.LogType {
+		return nil, fmt.Errorf("invalid logType, should be 'error' or 'slow'")
+	}
+	result := &[]Log{}
+	_, err := time.Parse("2006-01-02", args.Datetime)
+	if err != nil {
+		return nil, err
+	}
+	err = bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getLogsUrlWithInstanceId(instanceId)).
+		WithQueryParam("logType", strings.ToLower(args.LogType)).
+		WithQueryParam("datetime", args.Datetime).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GetLogById - get log's detail of instance
+//
+// PARAMS:
+//     - instanceId: id of instance
+// RETURNS:
+//     - *Log:log's detail of instance
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetLogById(instanceId, logId string, args *GetLogArgs) (*LogDetail, error) {
+	if len(instanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+	if len(logId) < 1 {
+		return nil, fmt.Errorf("unset logId")
+	}
+	if args == nil {
+		return nil, fmt.Errorf("unset get log args")
+	}
+
+	result := &LogDetail{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getLogsUrlWithLogId(instanceId, logId)).
+		WithQueryParam("downloadValidTimeInSec", strconv.Itoa(args.ValidSeconds)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// LazyDropCreateHardLink - create a hard link for specified large table
+//
+// PARAMS:
+//     - instanceId: id of instance
+//     - dbName: name of database
+//     - tableName: name of table
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) LazyDropCreateHardLink(instanceId, dbName, tableName string) error {
+	if len(instanceId) < 1 {
+		return fmt.Errorf("unset instanceId")
+	}
+	if len(dbName) < 1 {
+		return fmt.Errorf("unset dbName")
+	}
+	if len(tableName) < 1 {
+		return fmt.Errorf("unset tableName")
+	}
+
+	args := &CreateTableHardLinkArgs{
+		TableName: tableName,
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getCreateTableHardLinkUrl(instanceId, dbName)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// LazyDropDeleteHardLink - delete the hard link for specified large table
+//
+// PARAMS:
+//     - instanceId: id of instance
+//     - dbName: name of database
+//     - tableName: name of table
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) LazyDropDeleteHardLink(instanceId, dbName, tableName string) error {
+	if len(instanceId) < 1 {
+		return fmt.Errorf("unset instanceId")
+	}
+	if len(dbName) < 1 {
+		return fmt.Errorf("unset dbName")
+	}
+	if len(tableName) < 1 {
+		return fmt.Errorf("unset tableName")
+	}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(getTableHardLinkUrl(instanceId, dbName, tableName)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		Do()
 	return err
 }

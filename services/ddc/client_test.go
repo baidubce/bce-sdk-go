@@ -256,7 +256,8 @@ func TestClient_DeleteDdcInstance(t *testing.T) {
 }
 
 func TestClient_SwitchInstance(t *testing.T) {
-	DDC_CLIENT.SwitchInstance("rdsma7fcyu2anvi")
+	args := &SwitchArgs{IsSwitchNow: false}
+	DDC_CLIENT.SwitchInstance("rdsma7fcyu2anvi", args)
 }
 
 // Database

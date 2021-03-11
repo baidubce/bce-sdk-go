@@ -841,11 +841,11 @@ func (c *Client) GetBinlogDetail(instanceId string, binlog string) (*BinlogDetai
 //     - instanceId: the id of the instance
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) SwitchInstance(instanceId string) error {
+func (c *Client) SwitchInstance(instanceId string, args *SwitchArgs) error {
 	if !isDDCId(instanceId) {
 		return RDSNotSupportError()
 	}
-	return c.ddcClient.SwitchInstance(instanceId)
+	return c.ddcClient.SwitchInstance(instanceId, args)
 }
 
 // CreateDatabase - create a database with the specific parameters
@@ -1183,4 +1183,62 @@ func (c *Client) ReplaceSecurityGroups(args *SecurityGroupArgs) error {
 		}
 	}
 	return c.ddcClient.ReplaceSecurityGroups(args)
+}
+
+// ListLogByInstanceId - list error or slow logs of instance
+//
+// PARAMS:
+//     - instanceId: id of instance
+// RETURNS:
+//     - *[]Log:logs of instance
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListLogByInstanceId(instanceId string, args *ListLogArgs) (*[]Log, error) {
+	if !isDDCId(instanceId) {
+		return nil, RDSNotSupportError()
+	}
+	return c.ddcClient.ListLogByInstanceId(instanceId, args)
+}
+
+// GetLogById - list log's detail of instance
+//
+// PARAMS:
+//     - instanceId: id of instance
+// RETURNS:
+//     - *Log:log's detail of instance
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetLogById(instanceId, logId string, args *GetLogArgs) (*LogDetail, error) {
+	if !isDDCId(instanceId) {
+		return nil, RDSNotSupportError()
+	}
+	return c.ddcClient.GetLogById(instanceId, logId, args)
+}
+
+// LazyDropCreateHardLink - create a hard link for specified large table
+//
+// PARAMS:
+//     - instanceId: id of instance
+//     - dbName: name of database
+//     - tableName: name of table
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) LazyDropCreateHardLink(instanceId, dbName, tableName string) error {
+	if !isDDCId(instanceId) {
+		return RDSNotSupportError()
+	}
+	return c.ddcClient.LazyDropCreateHardLink(instanceId, dbName, tableName)
+}
+
+// LazyDropDeleteHardLink - delete the hard link for specified large table
+//
+// PARAMS:
+//     - instanceId: id of instance
+//     - dbName: name of database
+//     - tableName: name of table
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) LazyDropDeleteHardLink(instanceId, dbName, tableName string) error {
+	if !isDDCId(instanceId) {
+		return RDSNotSupportError()
+	}
+	return c.ddcClient.LazyDropDeleteHardLink(instanceId, dbName, tableName)
 }

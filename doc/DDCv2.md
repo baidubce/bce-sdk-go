@@ -548,6 +548,8 @@ fmt.Println("ddc SyncMode: ", result.SyncMode)
 fmt.Println("ddc Category: ", result.Category)
 fmt.Println("ddc ZoneNames: ", result.ZoneNames)
 fmt.Println("ddc Endpoint: ", result.Endpoint)
+fmt.Println("ddc vnetIp: ", result.Endpoint.VnetIp)
+fmt.Println("ddc vnetIpBackup: ", result.Endpoint.VnetIpBackup)
 
 // RDS
 result, err := client.GetDetail(instanceId)
@@ -630,6 +632,9 @@ for _, e := range resp.Instances {
     fmt.Println("instanceExpireTime: ", e.InstanceExpireTime)
     fmt.Println("publicAccessStatus: ", e.PublicAccessStatus)
     fmt.Println("vpcId: ", e.VpcId)
+    fmt.Println("endpoint: ", e.Endpoint)
+    fmt.Println("vnetIp: ", e.Endpoint.VnetIp)
+    fmt.Println("vnetIpBackup: ", e.Endpoint.VnetIpBackup)
 }
 ```
 
@@ -684,11 +689,15 @@ fmt.Printf("update instance name success\n")
 ```
 
 ## 主备切换
-使用以下代码可以进行主备切换(仅支持DDC)。
+使用以下代码可以进行主备切换,支持立即切换或者下一个操作窗口内切换(仅支持DDC)。
 ```go
 // import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
 
-err := client.SwitchInstance(instanceId)
+args := &ddcrds.SwitchArgs{
+	// 立即切换
+    IsSwitchNow: true,
+}
+err := client.SwitchInstance(instanceId, args)
 if err != nil {
     fmt.Printf(" main standby switching of the instance error: %+v\n", err)
     return
@@ -1066,7 +1075,7 @@ for _, instance := range instances.Result {
 ```go
 // import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
 
-// 要恢删除的实例Id列表
+// 要恢复的实例Id列表
 instanceIds := []string{
     instanceId_1,
 	instanceId_2,
@@ -1209,6 +1218,7 @@ if err != nil {
 }
 fmt.Printf("delete database success\n")
 ```
+
 # 账号管理
 
 ## 创建账号
@@ -1820,6 +1830,65 @@ fmt.Println("ddc binlogStartTime: ", resp.Binlog.BinlogStartTime)
 fmt.Println("ddc binlogEndTime: ", resp.Binlog.BinlogEndTime)
 fmt.Println("ddc downloadUrl: ", resp.Binlog.DownloadUrl)
 fmt.Println("ddc downloadExpires: ", resp.Binlog.DownloadExpires)
+```
+
+# 日志管理
+
+## 日志列表
+使用以下代码可以获取一个实例下的错误日志或者慢日志列表(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+// import "time"
+
+// datetime UTC时间
+// 获取两天前的错误日志,传入日期即可
+date := time.Now().
+AddDate(0, 0, -2).
+Format("2006-01-02")
+args := &ddcrds.ListLogArgs{
+    // 日志类型 错误日志为error 慢日志为slow
+    LogType:  "error",
+    Datetime: date,
+}
+logs, err := client.ListLogByInstanceId(instanceId, args)
+if err != nil {
+    fmt.Printf("list logs of instance error: %+v\n", err)
+    return
+}
+fmt.Println("list logs of instance success.")
+for _, log := range *logs {
+    fmt.Println("id: ", log.LogID)
+    fmt.Println("size: ", log.LogSizeInBytes)
+    fmt.Println("start time: ", log.LogStartTime)
+    fmt.Println("end time: ", log.LogEndTime)
+}
+```
+
+## 日志详情
+使用以下代码可以查询日志的详细信息，包括该日志文件有效的下载链接(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+// DDC
+args := &ddcrds.GetLogArgs{
+    // 下载链接有效时间，单位为秒
+    ValidSeconds: 20,
+}
+logId := "errlog.202103091300"
+log, err := client.GetLogById(instanceId, logId, args)
+if err != nil {
+    fmt.Printf("get log detail of instance error: %+v\n", err)
+    return
+}
+fmt.Println("list logs of instances success.")
+fmt.Println("id: ", log.LogID)
+fmt.Println("size: ", log.LogSizeInBytes)
+fmt.Println("start time: ", log.LogStartTime)
+fmt.Println("end time: ", log.LogEndTime)
+// 日志文件下载链接
+fmt.Println("download url: ", log.DownloadURL)
+// 下载链接截止该时间有效
+fmt.Println("download url expires: ", log.DownloadExpires)
 ```
 
 # 其他

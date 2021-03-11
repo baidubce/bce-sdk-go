@@ -385,10 +385,11 @@ type Subnet struct {
 }
 
 type Endpoint struct {
-	Address string `json:"address"`
-	Port    int    `json:"port"`
-	VnetIp  string `json:"vnetIp"`
-	InetIp  string `json:"inetIp"`
+	Address      string `json:"address"`
+	Port         int    `json:"port"`
+	VnetIp       string `json:"vnetIp"`
+	VnetIpBackup string `json:"vnetIpBackup"`
+	InetIp       string `json:"inetIp"`
 }
 
 type BackupPolicy struct {
@@ -706,6 +707,10 @@ type RebootArgs struct {
 	IsRebootNow bool `json:"isRebootNow"`
 }
 
+type SwitchArgs struct {
+	IsSwitchNow bool `json:"isSwitchNow"`
+}
+
 type MaintainWindow struct {
 	MaintainTime MaintainTime `json:"maintentime"`
 }
@@ -792,4 +797,30 @@ type SecurityGroupDetail struct {
 	VpcName             string              `json:"vpcName"`
 	VpcID               string              `json:"vpcId"`
 	ProjectID           string              `json:"projectId"`
+}
+
+type ListLogArgs struct {
+	LogType  string `json:"logType"`
+	Datetime string `json:"datetime"`
+}
+
+type Log struct {
+	LogStartTime   string `json:"logStartTime"`
+	LogEndTime     string `json:"logEndTime"`
+	LogID          string `json:"logId"`
+	LogSizeInBytes int    `json:"logSizeInBytes"`
+}
+
+type LogDetail struct {
+	Log
+	DownloadURL     string `json:"downloadUrl"`
+	DownloadExpires string `json:"downloadExpires"`
+}
+
+type GetLogArgs struct {
+	ValidSeconds int `json:"downloadValidTimeInSec"`
+}
+
+type CreateTableHardLinkArgs struct {
+	TableName string `json:"tableName"`
 }
