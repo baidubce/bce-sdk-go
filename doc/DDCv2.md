@@ -1219,6 +1219,37 @@ if err != nil {
 fmt.Printf("delete database success\n")
 ```
 
+## 延迟删除数据表:创建硬链接
+
+使用以下代码可以为数据库下的指定数据表创建硬链接(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+// DDC
+err := client.LazyDropCreateHardLink(instanceId, dbName, tableName)
+if err != nil {
+    fmt.Printf("[lazy drop] create hard link error: %+v\n", err)
+    return
+}
+fmt.Println("[lazy drop] create hard link success.")
+```
+
+
+## 延迟删除数据表:删除硬链接
+
+使用以下代码可以删除数据库下特定数据表创建的硬链接(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+// DDC
+err := client.LazyDropDeleteHardLink(instanceId, dbName, tableName)
+if err != nil {
+    fmt.Printf("[lazy drop] delete hard link error: %+v\n", err)
+    return
+}
+fmt.Println("[lazy drop] delete hard link success.")
+```
+
 # 账号管理
 
 ## 创建账号
