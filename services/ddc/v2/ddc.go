@@ -324,10 +324,10 @@ func (c *DDCClient) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResul
 			DeployId:             args.DeployId,
 			PoolId:               args.PoolId,
 			RoGroupId:            args.RoGroupId,
-			RoGroupWeight:        args.RoGroupWeight,
-			EnableDelayOff:       args.EnableDelayOff,
-			DelayThreshold:       args.DelayThreshold,
-			LeastInstanceAmount:  args.LeastInstanceAmount,
+			RoGroupWeight:        Int(args.RoGroupWeight),
+			EnableDelayOff:       Int(args.EnableDelayOff),
+			DelayThreshold:       Int(args.DelayThreshold),
+			LeastInstanceAmount:  Int(args.LeastInstanceAmount),
 			Billing:              args.Billing,
 			IsDirectPay:          args.IsDirectPay,
 			Tags:                 args.Tags,
@@ -363,11 +363,19 @@ func (c *DDCClient) UpdateRoGroup(roGroupId string, args *UpdateRoGroupArgs) err
 		return fmt.Errorf("unset args")
 	}
 
+	body := &UpdateRoGroupRealArgs{
+		RoGroupName: args.RoGroupName,
+		// 处理零值序列化问题
+		EnableDelayOff:      Int(args.EnableDelayOff),
+		DelayThreshold:      Int(args.DelayThreshold),
+		LeastInstanceAmount: Int(args.LeastInstanceAmount),
+		IsBalanceRoLoad:     Int(args.IsBalanceRoLoad),
+	}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
 		WithURL(getUpdateRoGroupUriWithId(roGroupId)).
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
-		WithBody(args).
+		WithBody(body).
 		Do()
 	return err
 }
@@ -382,15 +390,21 @@ func (c *DDCClient) UpdateRoGroupReplicaWeight(roGroupId string, args *UpdateRoG
 	if args == nil {
 		return fmt.Errorf("unset args")
 	}
-	if len(args.ReplicaList) < 1 {
-		return fmt.Errorf("unset replicaList")
-	}
 
+	body := &UpdateRoGroupWeightRealArgs{
+		RoGroupName: args.RoGroupName,
+		// 处理零值序列化问题
+		EnableDelayOff:      Int(args.EnableDelayOff),
+		DelayThreshold:      Int(args.DelayThreshold),
+		LeastInstanceAmount: Int(args.LeastInstanceAmount),
+		IsBalanceRoLoad:     Int(args.IsBalanceRoLoad),
+		ReplicaList:         args.ReplicaList,
+	}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
 		WithURL(getUpdateRoGroupWeightUriWithId(roGroupId)).
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
-		WithBody(args).
+		WithBody(body).
 		Do()
 	return err
 }
@@ -1716,4 +1730,24 @@ func (c *DDCClient) LazyDropDeleteHardLink(instanceId, dbName, tableName string)
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		Do()
 	return err
+}
+
+// ResizeRds - resize an RDS with the specific parameters
+//
+// PARAMS:
+//     - instanceId: the specific instanceId
+//     - args: the arguments to resize an RDS
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) ResizeRds(instanceId string, args *ResizeRdsArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getDdcUriWithInstanceId(instanceId)+"/resize").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
 }

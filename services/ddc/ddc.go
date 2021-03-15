@@ -395,9 +395,6 @@ func (c *Client) UpdateRoGroupReplicaWeight(roGroupId string, args *UpdateRoGrou
 	if args == nil {
 		return fmt.Errorf("unset args")
 	}
-	if len(args.ReplicaList) < 1 {
-		return fmt.Errorf("unset replicaList")
-	}
 
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
@@ -1667,4 +1664,23 @@ func (c *Client) LazyDropDeleteHardLink(instanceId, dbName, tableName string) er
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		Do()
 	return err
+}
+
+// ResizeRds - resize an RDS with the specific parameters
+//
+// PARAMS:
+//     - instanceId: the specific instanceId
+//     - args: the arguments to resize an RDS
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ResizeRds(instanceId string, args *ResizeRdsArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getDdcUriWithInstanceId(instanceId) + "/resize").
+		WithBody(args).
+		Do()
 }

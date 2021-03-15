@@ -636,6 +636,15 @@ type GetSecurityIpsResult struct {
 	SecurityIps []string `json:"securityIps"`
 }
 
+type ResizeRdsArgs struct {
+	CpuCount       int     `json:"cpuCount"`
+	MemoryCapacity float64 `json:"memoryCapacity"`
+	VolumeCapacity int     `json:"volumeCapacity"`
+	NodeAmount     int     `json:"nodeAmount,omitempty"`
+	IsDirectPay    bool    `json:"isDirectPay,omitempty"`
+	IsResizeNow    bool    `json:"isResizeNow,omitempty"`
+}
+
 type RebootArgs struct {
 	IsRebootNow bool `json:"isRebootNow"`
 }

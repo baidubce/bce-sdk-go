@@ -1,12 +1,33 @@
 package ddcrds
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/baidubce/bce-sdk-go/services/ddc/ddc_util"
 	"github.com/baidubce/bce-sdk-go/services/rds"
 	"strconv"
 	"strings"
 )
+
+// Int int point helper
+func Int(value string) *int {
+	if len(value) < 1 {
+		return nil
+	}
+	intPtr, err := strconv.Atoi(value)
+	if err != nil {
+		panic("please pass valid int value ")
+	}
+	return &intPtr
+}
+
+func Json(v interface{}) string {
+	jsonStr, err := json.Marshal(v)
+	if err != nil {
+		panic("convert to json faild")
+	}
+	return string(jsonStr)
+}
 
 func isDDC(productType string) bool {
 	return productType == "ddc" || productType == "DDC"
@@ -337,7 +358,7 @@ func (c *Client) DeleteRds(instanceIds string) error {
 //     - error: nil if success otherwise the specific error
 func (c *Client) ResizeRds(instanceId string, args *ResizeRdsArgs) error {
 	if isDDCId(instanceId) {
-		return DDCNotSupportError()
+		return c.ddcClient.ResizeRds(instanceId, args)
 	}
 	// copy请求参数
 	resReq := &rds.ResizeRdsArgs{}

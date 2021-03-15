@@ -479,13 +479,13 @@ args := &ddcrds.CreateReadReplicaArgs{
     // 如果不传，默认会创建一个RO组，并将该只读加入RO组中
     RoGroupId:"yyzzcc",
     // RO组是否启用延迟剔除，默认为0。可选值0和1,0代表不开启,1代表开启（创建只读实例时）可选
-    EnableDelayOff:0,
+    EnableDelayOff:"1",
     // 延迟阈值，单位为秒。（创建只读实例时）可选
-    DelayThreshold: 1,
+    DelayThreshold: "1",
     // RO组最少保留实例数目。默认为1. （创建只读实例时）可选
-    LeastInstanceAmount: 1,
+    LeastInstanceAmount: "1",
     // 只读实例在RO组中的读流量权重，取值范围为[0-100]。默认为50（创建只读实例时）可选
-    RoGroupWeight: 50,
+    RoGroupWeight: "50",
 }
 result, err := client.CreateReadReplica(args)
 if err != nil {
@@ -724,34 +724,9 @@ for _, e := range resp.RoGroups {
 > 注意:
 > - 实例状态为Available，实例必须是主实例。
 
-## 更新只读组信息
-使用以下代码可以更新只读组信息(仅支持DDC)。
-```go
-// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
-// DDC
-args := &ddcrds.UpdateRoGroupArgs{
-	// 只读实例组名称
-    RoGroupName:         "testRo",
-	// RO组是否启用延迟剔除，默认为0。取值为0或1,0代表不开启（创建只读实例时）可选
-	EnableDelayOff:0,
-	// 延迟阈值,单位为秒。（创建只读实例时）必选
-	DelayThreshold: 1,
-    // RO组最少保留实例数目。默认为1. （创建只读实例时）必选
-    LeastInstanceAmount: 1,
-    // 是否重新进行负载均衡,可选
-    IsBalanceRoLoad: 0,
-}
-err := client.UpdateRoGroup(roGroupId, args, "ddc")
-if err != nil {
-    fmt.Printf("update ddc roGroup error: %+v\n", err)
-    return
-}
-fmt.Println("update ddc roGroup success")
-```
 
-
-## 更新只读实例在Ro组中的权重
-使用以下代码可以更新只读实例在Ro组中的权重(仅支持DDC)。
+## 更新只读组并分配权重
+用于更新只读组的信息，包括设置实例延迟剔除，设置只读实例权重等(仅支持DDC)。
 ```go
 // import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
 // DDC
@@ -759,11 +734,19 @@ replicaWeight := ddcrds.ReplicaWeight{
     // 只读实例ID
     InstanceId: replicaId,
     // 新权重
-    Weight:     20,
+    Weight: 20,
 }
 args := &ddcrds.UpdateRoGroupWeightArgs{
-    // 是否重新进行负载均衡
-    IsBalanceRoLoad: 0,
+    // 只读实例组名称
+    RoGroupName: "testRo",
+    // RO组是否启用延迟剔除。需传入数字,取值为0或1,0代表不开启,可选
+    EnableDelayOff: "0",
+    // 延迟阈值,单位为秒。需传入数字,可选，启用延迟剔除时必选
+    DelayThreshold: "0",
+    // RO组最少保留实例数目。需传入数字,可选,启用延迟剔除时必选
+    LeastInstanceAmount: "1",
+    // 是否重新进行负载均衡,需传入数字,取值为0或1,可选
+    IsBalanceRoLoad: "0",
     // 只读副本新权重数组
     ReplicaList: []ddcrds.ReplicaWeight{replicaWeight},
 }
@@ -848,7 +831,7 @@ for _, e := range result.InstanceIds {
 
 ## RDS实例扩缩容
 
-使用以下代码可以对RDS实例扩缩容操作(仅支持RDS)。
+使用以下代码可以对RDS实例扩缩容操作。
 ```go
 // import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
 
@@ -863,6 +846,8 @@ args := &ddcrds.ResizeRdsArgs{
     NodeAmount: 2,
     // 是否进行直接支付，默认false，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑，可选
     IsDirectPay: false,
+    // 是否立即变配 RDS只支持立即变配
+    IsResizeNow: true,
 }
 err = client.ResizeRds(instanceId, args)
 if err != nil {

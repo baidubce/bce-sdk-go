@@ -14,6 +14,8 @@
 
 package ddcrds
 
+type Integer *int
+
 type TagModel struct {
 	TagKey   string `json:"tagKey"`
 	TagValue string `json:"tagValue"`
@@ -21,22 +23,22 @@ type TagModel struct {
 
 type CreateInstanceArgs struct {
 	ClientToken  string         `json:"-"`
-	InstanceType string         `json:"instanceType"`
-	Number       int            `json:"number"`
-	Instance     CreateInstance `json:"instance"`
+	InstanceType string         `json:"instanceType,omitempty"`
+	Number       int            `json:"number,omitempty"`
+	Instance     CreateInstance `json:"instance,omitempty"`
 }
 
 type CreateRdsArgs struct {
 	ClientToken       string      `json:"-"`
-	Billing           Billing     `json:"billing"`
+	Billing           Billing     `json:"billing,omitempty"`
 	PurchaseCount     int         `json:"purchaseCount,omitempty"`
 	InstanceName      string      `json:"instanceName,omitempty"`
-	Engine            string      `json:"engine"`
-	EngineVersion     string      `json:"engineVersion"`
+	Engine            string      `json:"engine,omitempty"`
+	EngineVersion     string      `json:"engineVersion,omitempty"`
 	Category          string      `json:"category,omitempty"`
-	CpuCount          int         `json:"cpuCount"`
-	MemoryCapacity    float64     `json:"memoryCapacity"`
-	VolumeCapacity    int         `json:"volumeCapacity"`
+	CpuCount          int         `json:"cpuCount,omitempty"`
+	MemoryCapacity    float64     `json:"memoryCapacity,omitempty"`
+	VolumeCapacity    int         `json:"volumeCapacity,omitempty"`
 	ZoneNames         []string    `json:"zoneNames,omitempty"`
 	VpcId             string      `json:"vpcId,omitempty"`
 	IsDirectPay       bool        `json:"isDirectPay,omitempty"`
@@ -50,25 +52,25 @@ type CreateRdsArgs struct {
 
 type CreateReadReplicaArgs struct {
 	ClientToken         string      `json:"-"`
-	Billing             Billing     `json:"billing"`
+	Billing             Billing     `json:"billing,omitempty"`
 	PurchaseCount       int         `json:"purchaseCount,omitempty"`
 	SourceInstanceId    string      `json:"sourceInstanceId"`
 	InstanceName        string      `json:"instanceName,omitempty"`
-	CpuCount            int         `json:"cpuCount"`
-	MemoryCapacity      float64     `json:"memoryCapacity"`
-	VolumeCapacity      int         `json:"volumeCapacity"`
+	CpuCount            int         `json:"cpuCount,omitempty"`
+	MemoryCapacity      float64     `json:"memoryCapacity,omitempty"`
+	VolumeCapacity      int         `json:"volumeCapacity,omitempty"`
 	ZoneNames           []string    `json:"zoneNames,omitempty"`
 	VpcId               string      `json:"vpcId,omitempty"`
 	IsDirectPay         bool        `json:"isDirectPay,omitempty"`
 	Subnets             []SubnetMap `json:"subnets,omitempty"`
 	Tags                []TagModel  `json:"tags,omitempty"`
-	DeployId            string      `json:"deployId"`
-	PoolId              string      `json:"poolId"`
-	RoGroupId           string      `json:"roGroupId"`
-	EnableDelayOff      int         `json:"enableDelayOff"`
-	DelayThreshold      int         `json:"delayThreshold"`
-	LeastInstanceAmount int         `json:"leastInstanceAmount"`
-	RoGroupWeight       int         `json:"roGroupWeight"`
+	DeployId            string      `json:"deployId,omitempty"`
+	PoolId              string      `json:"poolId,omitempty"`
+	RoGroupId           string      `json:"roGroupId,omitempty"`
+	EnableDelayOff      string      `json:"enableDelayOff,omitempty"`
+	DelayThreshold      string      `json:"delayThreshold,omitempty"`
+	LeastInstanceAmount string      `json:"leastInstanceAmount,omitempty"`
+	RoGroupWeight       string      `json:"roGroupWeight,omitempty"`
 }
 
 type Instance struct {
@@ -138,28 +140,28 @@ type InstanceModelResult struct {
 }
 
 type CreateInstance struct {
-	InstanceId           string     `json:"instanceId"`
-	InstanceName         string     `json:"instanceName"`
-	SourceInstanceId     string     `json:"sourceInstanceId"`
-	Engine               string     `json:"engine"`
-	EngineVersion        string     `json:"engineVersion"`
-	CpuCount             int        `json:"cpuCount"`
-	AllocatedMemoryInGB  int        `json:"allocatedMemoryInGB"`
-	AllocatedStorageInGB int        `json:"allocatedStorageInGB"`
-	AZone                string     `json:"azone"`
-	VpcId                string     `json:"vpcId"`
-	SubnetId             string     `json:"subnetId"`
-	DiskIoType           string     `json:"diskIoType"`
-	DeployId             string     `json:"deployId"`
-	PoolId               string     `json:"poolId"`
-	RoGroupId            string     `json:"roGroupId"`
-	IsBalanceRoLoad      int        `json:"isBalanceRoLoad"`
-	EnableDelayOff       int        `json:"enableDelayOff"`
-	DelayThreshold       int        `json:"delayThreshold"`
-	LeastInstanceAmount  int        `json:"leastInstanceAmount"`
-	RoGroupWeight        int        `json:"roGroupWeight"`
-	IsDirectPay          bool       `json:"IsDirectPay"`
-	Billing              Billing    `json:"billing"`
+	InstanceId           string     `json:"instanceId,omitempty"`
+	InstanceName         string     `json:"instanceName,omitempty"`
+	SourceInstanceId     string     `json:"sourceInstanceId,omitempty"`
+	Engine               string     `json:"engine,omitempty"`
+	EngineVersion        string     `json:"engineVersion,omitempty"`
+	CpuCount             int        `json:"cpuCount,omitempty"`
+	AllocatedMemoryInGB  int        `json:"allocatedMemoryInGB,omitempty"`
+	AllocatedStorageInGB int        `json:"allocatedStorageInGB,omitempty"`
+	AZone                string     `json:"azone,omitempty"`
+	VpcId                string     `json:"vpcId,omitempty"`
+	SubnetId             string     `json:"subnetId,omitempty"`
+	DiskIoType           string     `json:"diskIoType,omitempty"`
+	DeployId             string     `json:"deployId,omitempty"`
+	PoolId               string     `json:"poolId,omitempty"`
+	RoGroupId            string     `json:"roGroupId,omitempty"`
+	IsBalanceRoLoad      Integer    `json:"isBalanceRoLoad,omitempty"`
+	EnableDelayOff       Integer    `json:"enableDelayOff,omitempty"`
+	DelayThreshold       Integer    `json:"delayThreshold,omitempty"`
+	LeastInstanceAmount  Integer    `json:"leastInstanceAmount,omitempty"`
+	RoGroupWeight        Integer    `json:"roGroupWeight,omitempty"`
+	IsDirectPay          bool       `json:"IsDirectPay,omitempty"`
+	Billing              Billing    `json:"billing,omitempty"`
 	AutoRenewTimeUnit    string     `json:"autoRenewTimeUnit,omitempty"`
 	AutoRenewTime        int        `json:"autoRenewTime,omitempty"`
 	Category             string     `json:"category,omitempty"`
@@ -340,17 +342,39 @@ type RoGroup struct {
 }
 
 type UpdateRoGroupArgs struct {
-	RoGroupName         string `json:"roGroupName"`
-	IsBalanceRoLoad     int    `json:"isBalanceRoLoad"`
-	EnableDelayOff      int    `json:"enableDelayOff"`
-	DelayThreshold      int    `json:"delayThreshold"`
-	LeastInstanceAmount int    `json:"leastInstanceAmount"`
+	RoGroupName         string `json:"roGroupName,omitempty"`
+	IsBalanceRoLoad     string `json:"isBalanceRoLoad,omitempty"`
+	EnableDelayOff      string `json:"enableDelayOff,omitempty"`
+	DelayThreshold      string `json:"delayThreshold,omitempty"`
+	LeastInstanceAmount string `json:"leastInstanceAmount,omitempty"`
+}
+
+type UpdateRoGroupRealArgs struct {
+	RoGroupName         string  `json:"roGroupName,omitempty"`
+	IsBalanceRoLoad     Integer `json:"isBalanceRoLoad,omitempty"`
+	EnableDelayOff      Integer `json:"enableDelayOff,omitempty"`
+	DelayThreshold      Integer `json:"delayThreshold,omitempty"`
+	LeastInstanceAmount Integer `json:"leastInstanceAmount,omitempty"`
 }
 
 type UpdateRoGroupWeightArgs struct {
-	IsBalanceRoLoad int             `json:"isBalanceRoLoad"`
-	ReplicaList     []ReplicaWeight `json:"replicaList"`
+	RoGroupName         string          `json:"roGroupName,omitempty"`
+	EnableDelayOff      string          `json:"enableDelayOff,omitempty"`
+	DelayThreshold      string          `json:"delayThreshold,omitempty"`
+	LeastInstanceAmount string          `json:"leastInstanceAmount,omitempty"`
+	IsBalanceRoLoad     string          `json:"isBalanceRoLoad,omitempty"`
+	ReplicaList         []ReplicaWeight `json:"replicaList,omitempty"`
 }
+
+type UpdateRoGroupWeightRealArgs struct {
+	RoGroupName         string          `json:"roGroupName,omitempty"`
+	EnableDelayOff      Integer         `json:"enableDelayOff,omitempty"`
+	DelayThreshold      Integer         `json:"delayThreshold,omitempty"`
+	LeastInstanceAmount Integer         `json:"leastInstanceAmount,omitempty"`
+	IsBalanceRoLoad     Integer         `json:"isBalanceRoLoad,omitempty"`
+	ReplicaList         []ReplicaWeight `json:"replicaList,omitempty"`
+}
+
 type ReplicaWeight struct {
 	InstanceId string `json:"instanceId"`
 	Weight     int    `json:"weight"`
@@ -683,6 +707,7 @@ type ResizeRdsArgs struct {
 	VolumeCapacity int     `json:"volumeCapacity"`
 	NodeAmount     int     `json:"nodeAmount,omitempty"`
 	IsDirectPay    bool    `json:"isDirectPay,omitempty"`
+	IsResizeNow    bool    `json:"isResizeNow,omitempty"`
 }
 
 type ModifySyncModeArgs struct {

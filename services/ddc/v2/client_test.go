@@ -36,7 +36,7 @@ const (
 	POOL            = "xdb_gaiabase_pool"
 	PNETIP          = "100.88.65.121"
 	DEPLOY_ID       = "ab89d829-9068-d88e-75bc-64bb6367d036"
-	DDC_INSTANCE_ID = "ddc-mlmernft"
+	DDC_INSTANCE_ID = "ddc-mcxcf0zd"
 	RDS_INSTANCE_ID = "rds-OtTkC1OD"
 	ETAG            = "v0"
 )
@@ -89,14 +89,6 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 		return false
 	}
 	return true
-}
-
-func Json(v interface{}) string {
-	jsonStr, err := json.Marshal(v)
-	if err != nil {
-		panic("convert to json faild")
-	}
-	return string(jsonStr)
 }
 
 func assertAvailable(instanceId string, t *testing.T) {
@@ -284,10 +276,10 @@ func TestClient_UpdateRoGroup(t *testing.T) {
 	fmt.Println(roGroupId)
 	args := &UpdateRoGroupArgs{
 		RoGroupName:         "testRo",
-		IsBalanceRoLoad:     1,
-		EnableDelayOff:      1,
-		DelayThreshold:      0,
-		LeastInstanceAmount: 0,
+		IsBalanceRoLoad:     "1",
+		EnableDelayOff:      "1",
+		DelayThreshold:      "0",
+		LeastInstanceAmount: "1",
 	}
 	err = client.UpdateRoGroup(roGroupId, args, "ddc")
 	if err != nil {
@@ -316,8 +308,12 @@ func TestClient_UpdateRoGroupReplicaWeight(t *testing.T) {
 		Weight:     20,
 	}
 	args := &UpdateRoGroupWeightArgs{
-		IsBalanceRoLoad: 0,
-		ReplicaList:     []ReplicaWeight{replicaWeight},
+		RoGroupName:         "testRo",
+		EnableDelayOff:      "1",
+		DelayThreshold:      "",
+		LeastInstanceAmount: "0",
+		IsBalanceRoLoad:     "0",
+		ReplicaList:         []ReplicaWeight{replicaWeight},
 	}
 	err = client.UpdateRoGroupReplicaWeight(roGroupId, args, "ddc")
 	if err != nil {
@@ -799,13 +795,13 @@ func TestClient_CreateReadReplica(t *testing.T) {
 		// 如果不传，默认会创建一个RO组，并将该只读加入RO组中
 		RoGroupId: "yyzzcc2",
 		// RO组是否启用延迟剔除，默认不启动。（创建只读实例时）可选
-		EnableDelayOff: 0,
+		EnableDelayOff: "0",
 		// 延迟阈值。（创建只读实例时）可选
-		DelayThreshold: 1,
+		DelayThreshold: "1",
 		// RO组最少保留实例数目。默认为1. （创建只读实例时）可选
-		LeastInstanceAmount: 1,
+		LeastInstanceAmount: "1",
 		// 只读实例在RO组中的读流量权重。默认为1（创建只读实例时）可选
-		RoGroupWeight: 1,
+		RoGroupWeight: "1",
 	}
 	result, err := client.CreateReadReplica(args)
 	if err != nil {
@@ -913,11 +909,13 @@ func TestClient_ResizeRds(t *testing.T) {
 		CpuCount:       1,
 		MemoryCapacity: 2,
 		VolumeCapacity: 10,
+		IsResizeNow:    true,
+		IsDirectPay:    true,
 	}
-	err := DDCRDS_CLIENT.ResizeRds(RDS_INSTANCE_ID, args)
+	err := DDCRDS_CLIENT.ResizeRds(DDC_INSTANCE_ID, args)
 	ExpectEqual(t.Errorf, nil, err)
 	time.Sleep(30 * time.Second)
-	assertAvailable(RDS_INSTANCE_ID, t)
+	assertAvailable(DDC_INSTANCE_ID, t)
 }
 
 func TestClient_RebootInstance(t *testing.T) {
