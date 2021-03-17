@@ -760,6 +760,17 @@ func (c *Client) ListDeploySets(poolId string, marker *Marker) (*ListDeploySetRe
 	return c.ddcClient.ListDeploySets(poolId, marker)
 }
 
+// ListPool - list current pools
+// RETURNS:
+//     - *ListResultWithMarker: the result of list hosts with marker
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListPool(marker *Marker, productType string) (*ListPoolResult, error) {
+	if !isDDC(productType) {
+		return nil, RDSNotSupportError()
+	}
+	return c.ddcClient.ListPool(marker)
+}
+
 // GetDeploySet - get details of the deploy set
 //
 // PARAMS:

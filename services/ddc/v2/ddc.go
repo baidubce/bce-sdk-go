@@ -182,7 +182,10 @@ func (c *DDCClient) SupplyZoneAndSubnetInfo(newArgs *CreateInstanceArgs, args *C
 			fmt.Printf("subnets and zoneNames not matcher: %+v\n", nil)
 			return nil, errors.New("subnets and zoneNames not matcher")
 		} else {
-			subnets, err1 := c.ListSubnets(nil)
+			listSubnetsArgs := &ListSubnetsArgs{
+				VpcId: args.VpcId,
+			}
+			subnets, err1 := c.ListSubnets(listSubnetsArgs)
 			if err1 != nil {
 				fmt.Printf("list subnets error: %+v\n", err1)
 				return nil, err1
@@ -197,7 +200,7 @@ func (c *DDCClient) SupplyZoneAndSubnetInfo(newArgs *CreateInstanceArgs, args *C
 					}
 				}
 				if subnetId == "" {
-					return nil, errors.New("subnetId no match")
+					return nil, errors.New("subnetId no match vpc or pool")
 				}
 				newArgs.Instance.SubnetId = subnetId[0 : len(subnetId)-1]
 			}
@@ -239,7 +242,7 @@ func (c *DDCClient) UnDefaultVpcInfo(newArgs *CreateInstanceArgs, args *CreateRd
 	newZoneName := ""
 	if args.ZoneNames == nil {
 		if args.Subnets == nil {
-			subnets, _ := c.ListSubnets(nil)
+			subnets, _ := c.ListSubnets(&ListSubnetsArgs{VpcId: args.VpcId})
 			if subnets == nil || len(subnets.Subnets) == 0 {
 				return nil, errors.New("Have no available subnet or zone")
 			}
@@ -557,6 +560,7 @@ func (c *DDCClient) GetDetail(instanceId string) (*Instance, error) {
 		DeployId:           detail.Instance.DeployId,
 		ZoneNames:          detail.Instance.ZoneNames,
 		Category:           detail.Instance.Category,
+		LongBBCId:          detail.Instance.LongBBCId,
 	}
 	// 兼容RDS字段
 	result.PublicAccessStatus = strconv.FormatBool(result.PubliclyAccessible)
@@ -695,15 +699,16 @@ func (c *DDCClient) GetZoneList() (*GetZoneListResult, error) {
 //     - *ListSubnetsResult: result of the subnet list
 //     - error: nil if success otherwise the specific error
 func (c *DDCClient) ListSubnets(args *ListSubnetsArgs) (*ListSubnetsResult, error) {
+	if args == nil {
+		args = &ListSubnetsArgs{}
+	}
 	result := &ListSubnetsResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithURL(URI_PREFIX + "/subnet").
+		WithURL(URI_PREFIX+"/subnet").
+		WithQueryParam("vpcId", args.VpcId).
 		WithResult(result).
 		Do()
-	if args == nil {
-		return result, err
-	}
 	if args.ZoneName == "" {
 		return result, err
 	}
@@ -721,6 +726,35 @@ func (c *DDCClient) ListSubnets(args *ListSubnetsArgs) (*ListSubnetsResult, erro
 		result.Subnets = filterd
 	}
 	return result, err
+}
+
+// ListPool - list current pools
+// RETURNS:
+//     - *ListResultWithMarker: the result of list hosts with marker
+//     - error: nil if success otherwise the specific error
+func (cli *DDCClient) ListPool(marker *Marker) (*ListPoolResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getPoolUri())
+	req.SetMethod(http.GET)
+	if marker != nil {
+		req.SetParam(KEY_MARKER, marker.Marker)
+		req.SetParam(KEY_MAX_KEYS, strconv.Itoa(marker.MaxKeys))
+	}
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	jsonBody := &ListPoolResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
 }
 
 // ListDeploySets - list all deploy sets

@@ -345,6 +345,25 @@ func TestClient_ReBalanceRoGroup(t *testing.T) {
 }
 
 // Only DDC
+func TestClient_ListPool(t *testing.T) {
+	//pools, err := DDCRDS_CLIENT.ListPool(nil, "ddc")
+	result, err := client.ListPool(nil, "ddc")
+	if err != nil {
+		fmt.Printf("list pool error: %+v\n", err)
+		return
+	}
+
+	for i := range result.Result {
+		pool := result.Result[i]
+		fmt.Println("ddc pool id: ", pool.PoolID)
+		fmt.Println("ddc pool vpc id: ", pool.VpcID)
+		fmt.Println("ddc pool engine: ", pool.Engine)
+		fmt.Println("ddc pool create time: ", pool.CreateTime)
+		fmt.Println("ddc pool hosts: ", pool.Hosts)
+	}
+}
+
+// Only DDC
 func TestClient_ListVpc(t *testing.T) {
 	vpc, err := DDCRDS_CLIENT.ListVpc("ddc")
 	ExpectEqual(t.Errorf, vpc, vpc)
@@ -353,7 +372,7 @@ func TestClient_ListVpc(t *testing.T) {
 }
 
 func TestClient_GetDetail(t *testing.T) {
-	instanceId = "ddc-mn6c8fy5"
+	instanceId = "ddc-m1imxfws"
 	result, err := DDCRDS_CLIENT.GetDetail(instanceId)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println("ddc instanceId: ", result.InstanceId)
@@ -383,6 +402,7 @@ func TestClient_GetDetail(t *testing.T) {
 	fmt.Println("ddc ZoneNames: ", result.ZoneNames)
 	fmt.Println("ddc Endpoint: ", result.Endpoint)
 	fmt.Println("ddc Endpoint vnetIpBackup: ", result.Endpoint.VnetIpBackup)
+	fmt.Println("ddc long BBC Id: ", result.LongBBCId)
 }
 
 func TestClient_UpdateSecurityIps(t *testing.T) {
@@ -477,16 +497,16 @@ func TestClient_GetZoneList(t *testing.T) {
 
 // rds使用apiZoneNames,ddc使用zoneNames逻辑可用区
 func TestClient_ListSubnets(t *testing.T) {
-	args := &ListSubnetsArgs{ZoneName: "zoneC"}
-	subnets, err := DDCRDS_CLIENT.ListSubnets(args, "ddc")
+	//args := &ListSubnetsArgs{VpcId: "vpc-fhsajv3w2j7h"}
+	subnets, err := DDCRDS_CLIENT.ListSubnets(nil, "ddc")
 	ExpectEqual(t.Errorf, nil, err)
 	ExpectEqual(t.Errorf, subnets, subnets)
 	fmt.Println(Json(subnets))
 
-	args = &ListSubnetsArgs{ZoneName: "cn-su-a"}
-	subnets, err = DDCRDS_CLIENT.ListSubnets(args, "rds")
-	ExpectEqual(t.Errorf, nil, err)
-	fmt.Println(Json(subnets))
+	//args = &ListSubnetsArgs{ZoneName: "cn-su-a"}
+	//subnets, err = DDCRDS_CLIENT.ListSubnets(args, "rds")
+	//ExpectEqual(t.Errorf, nil, err)
+	//fmt.Println(Json(subnets))
 }
 
 // Only DDC
@@ -710,25 +730,26 @@ func TestClient_CreateRds(t *testing.T) {
 		EngineVersion:  "5.7",
 		CpuCount:       1,
 		MemoryCapacity: 1,
-		VolumeCapacity: 5,
+		VolumeCapacity: 50,
 		Billing: Billing{
 			PaymentTiming: "Postpaid",
 			Reservation:   Reservation{ReservationLength: 1, ReservationTimeUnit: "Month"},
 		},
-		VpcId: "vpc-80m2ksi6sv0f",
+		VpcId: "vpc-fhsajv3w2j7h",
 		ZoneNames: []string{
-			"cn-su-c",
+			"cn-bj-a",
 		},
 		Subnets: []SubnetMap{
 			{
-				ZoneName: "cn-su-c",
-				SubnetId: "sbn-8v3p33vhyhq5",
+				ZoneName: "cn-bj-a",
+				SubnetId: "sbn-7zdak3vr8jv2",
 			},
 		},
 		//DeployId: "86be443c-a40d-be6a-58d5-e3aedc966cc1",
-		PoolId: "xdb_5cf97afb-ee06-4b80-9146-4a840e5d0288_pool",
+		PoolId:   "xdb_005a2d79-a4f4-4bfb-8284-0ffe9ddaa307_pool",
+		Category: STANDARD,
 	}
-	subnetArgs := &ListSubnetsArgs{ZoneName: "zoneC"}
+	subnetArgs := &ListSubnetsArgs{VpcId: args.VpcId}
 	resp, err := DDCRDS_CLIENT.ListSubnets(subnetArgs, "ddc")
 	ExpectEqual(t.Errorf, nil, err)
 	if len(resp.Subnets) > 0 {
@@ -742,18 +763,18 @@ func TestClient_CreateRds(t *testing.T) {
 	fmt.Println(Json(ddc))
 
 	// 修改VPCId和子网Id
-	subnetArgs = &ListSubnetsArgs{ZoneName: "cn-su-c"}
-	resp, err = DDCRDS_CLIENT.ListSubnets(subnetArgs, "rds")
-	ExpectEqual(t.Errorf, nil, err)
-	if len(resp.Subnets) > 0 {
-		subnet := resp.Subnets[0]
-		fmt.Printf("rds use subnet: %s\n", Json(subnet))
-		args.VpcId = subnet.VpcId
-		args.Subnets[0].SubnetId = subnet.ShortId
-	}
-	rds, err := DDCRDS_CLIENT.CreateRds(args, "rds")
-	ExpectEqual(t.Errorf, nil, err)
-	fmt.Println(Json(rds))
+	//subnetArgs = &ListSubnetsArgs{ZoneName: "cn-su-c"}
+	//resp, err = DDCRDS_CLIENT.ListSubnets(subnetArgs, "rds")
+	//ExpectEqual(t.Errorf, nil, err)
+	//if len(resp.Subnets) > 0 {
+	//	subnet := resp.Subnets[0]
+	//	fmt.Printf("rds use subnet: %s\n", Json(subnet))
+	//	args.VpcId = subnet.VpcId
+	//	args.Subnets[0].SubnetId = subnet.ShortId
+	//}
+	//rds, err := DDCRDS_CLIENT.CreateRds(args, "rds")
+	//ExpectEqual(t.Errorf, nil, err)
+	//fmt.Println(Json(rds))
 }
 
 func TestClient_CreateReadReplica(t *testing.T) {
@@ -860,6 +881,7 @@ func TestClient_ListRds(t *testing.T) {
 		fmt.Println("endpoint: ", e.Endpoint)
 		fmt.Println("vnetIp: ", e.Endpoint.VnetIp)
 		fmt.Println("vnetIpBackup: ", e.Endpoint.VnetIpBackup)
+		fmt.Println("long BBC Id: ", e.LongBBCId)
 	}
 }
 

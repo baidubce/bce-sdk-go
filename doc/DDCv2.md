@@ -242,6 +242,29 @@ DDC-RDS服务可以管理以下两种服务
 - 云数据库专属集群 DDC （Dedicated Database Cluster）是专业、高性能、高可靠的云数据库服务。云数据库 DDC 提供 Web 界面进行配置、操作数据库实例，还为您提供可靠的数据备份和恢复、完备的安全管理、完善的监控、轻松扩展等功能支持。相对于自建数据库，云数据库 DDC 具有更经济、更专业、更高效、更可靠、简单易用等特点，使您能更专注于核心业务。
 - 云数据库 RDS （Relational Database Service）是专业、高性能、高可靠的云数据库服务。云数据库 RDS 提供 Web 界面进行配置、操作数据库实例，还为您提供可靠的数据备份和恢复、完备的安全管理、完善的监控、轻松扩展等功能支持。相对于自建数据库，云数据库 RDS 具有更经济、更专业、更高效、更可靠、简单易用等特点，使您能更专注于核心业务。
 
+# 资源池管理
+
+## 查询资源池列表
+使用以下代码可以查询当前用户的资源池列表(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+result, err := client.ListPool(nil, "ddc")
+if err != nil {
+    fmt.Printf("list pool error: %+v\n", err)
+    return
+}
+
+for i := range result.Result {
+    pool := result.Result[i]
+    fmt.Println("ddc pool id: ", pool.PoolID)
+    fmt.Println("ddc pool vpc id: ", pool.VpcID)
+    fmt.Println("ddc pool engine: ", pool.Engine)
+    fmt.Println("ddc pool create time: ", pool.CreateTime)
+    fmt.Println("ddc pool hosts: ", pool.Hosts)
+}
+```
+
 # 部署集管理
 
 ## 创建部署集
@@ -375,7 +398,7 @@ args := &ddcrds.CreateRdsArgs{
     PurchaseCount: 1,
     //ddc实例名称，允许小写字母、数字，长度限制为1~32，默认命名规则:{engine} + {engineVersion}，可选
     InstanceName: "instanceName",
-    //所属系列，Basic：单机基础版，Standard：双机高可用版。仅SQLServer 2012sp3 支持单机基础版。默认Standard，可选
+    //所属系列，Singleton:单机版，Basic：单机基础版，Standard：双机高可用版。仅SQLServer 2012sp3 支持单机基础版。默认Standard，可选
     Category: "Standard",
     //指定zone信息，默认为空，由系统自动选择，可选
     //zoneName命名规范是小写的“国家-region-可用区序列"，例如北京可用区A为"cn-bj-a"。
@@ -394,10 +417,10 @@ args := &ddcrds.CreateRdsArgs{
     },
     // 实例绑定的标签信息，可选
     Tags: []ddcrds.TagModel{
-    {
-        TagKey:   "tagK",
-        TagValue: "tagV",
-    },
+        {
+            TagKey:   "tagK",
+            TagValue: "tagV",
+        },
     },
     // 部署集id 产品类型为DDC时必选,产品类型为RDS忽略该参数
     DeployId:"xxxyyy-123",

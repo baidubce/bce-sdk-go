@@ -454,7 +454,7 @@ func TestClient_ListDdcInstance(t *testing.T) {
 
 }
 func TestClient_GetDetail2(t *testing.T) {
-	result, err := DDC_CLIENT.GetDetail("ddc-m67du0mh")
+	result, err := DDC_CLIENT.GetDetail("ddc-mrjnghx8")
 	if err != nil {
 		fmt.Printf("get instance error: %+v\n", err)
 		return
@@ -482,7 +482,6 @@ func TestClient_GetDetail2(t *testing.T) {
 	fmt.Println("ddc NodeSlave: ", result.NodeSlave)
 	fmt.Println("ddc NodeReadReplica: ", result.NodeReadReplica)
 	fmt.Println("ddc DeployId: ", result.DeployId)
-
 }
 
 func TestClient_UpdateInstanceName(t *testing.T) {

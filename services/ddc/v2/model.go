@@ -14,6 +14,11 @@
 
 package ddcrds
 
+const (
+	STANDARD  string = "Standard"
+	SINGLETON string = "Singleton"
+)
+
 type Integer *int
 
 type TagModel struct {
@@ -107,6 +112,7 @@ type Instance struct {
 	NodeSlave          NodeInfo  `json:"nodeSlave"`
 	NodeReadReplica    NodeInfo  `json:"nodeReadReplica"`
 	DeployId           string    `json:"deployId"`
+	LongBBCId          string    `json:"longBBCId"`
 }
 
 func (instance *Instance) ProductType() string {
@@ -320,6 +326,7 @@ type InstanceModel struct {
 	RoGroupList          []RoGroup    `json:"roGroupList"`
 	PaymentTiming        string       `json:"paymentTiming"`
 	Category             string       `json:"category"`
+	LongBBCId            string       `json:"longBBCId"`
 }
 
 type SubnetVo struct {
@@ -766,6 +773,7 @@ type RecycleInstance struct {
 	Region             string  `json:"region"`
 	CpuCount           int     `json:"cpuCount"`
 	UsedStorage        float64 `json:"usedStorage"`
+	LongBBCId          string  `json:"longBBCId"`
 }
 
 type RecyclerInstanceList struct {

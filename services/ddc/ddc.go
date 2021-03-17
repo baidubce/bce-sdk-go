@@ -683,6 +683,35 @@ func (c *Client) ListSubnets(args *ListSubnetsArgs) (*ListSubnetsResult, error) 
 	return result, err
 }
 
+// ListPool - list current pools
+// RETURNS:
+//     - *ListResultWithMarker: the result of list hosts with marker
+//     - error: nil if success otherwise the specific error
+func (cli *Client) ListPool(marker *Marker) (*ListPoolResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getPoolUri())
+	req.SetMethod(http.GET)
+	if marker != nil {
+		req.SetParam(KEY_MARKER, marker.Marker)
+		req.SetParam(KEY_MAX_KEYS, strconv.Itoa(marker.MaxKeys))
+	}
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	jsonBody := &ListPoolResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
 // ListDeploySets - list all deploy sets
 // RETURNS:
 //     - *ListResultWithMarker: the result of list deploy sets with marker
