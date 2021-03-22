@@ -118,6 +118,35 @@ func (c *Client) CreateInstanceBySpec(args *api.CreateInstanceBySpecArgs) (*api.
 	return api.CreateInstanceBySpec(c, args, body)
 }
 
+// CreateInstanceV3 - create an instance with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to create instance
+// RETURNS:
+//     - *api.CreateInstanceV3Result: the result of create Instance, contains new Instance ID
+//     - error: nil if success otherwise the specific error
+func (c *Client) CreateInstanceV3(args *api.CreateInstanceV3Args) (*api.CreateInstanceV3Result, error) {
+	if len(args.Password) > 0 {
+		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.Password)
+		if err != nil {
+			return nil, err
+		}
+
+		args.Password = cryptedPass
+	}
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.CreateInstanceV3(c, args, body)
+}
+
 // ListInstances - list all instance with the specific parameters
 //
 // PARAMS:

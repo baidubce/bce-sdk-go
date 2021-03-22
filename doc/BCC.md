@@ -431,7 +431,7 @@ createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
     RequestToken          string           "requestToken"
 
 }
-result, err := client.TestCreateInstanceBySpec(args)
+result, err := client.CreateInstanceBySpec(args)
 if err != nil {
     fmt.Println("create instance failed:", err)
 } else {
@@ -455,6 +455,134 @@ if err != nil {
 > 14. 每个实例最多只能购买一块临时数据盘。
 > 15. 实例的临时数据盘默认只有hp1类型。
 > 16. 创建存储优化型实例必须购买临时数据盘，通过ephemeralDisks指定临时盘数据盘大小，默认nvme类型数据盘，无需指定。
+
+### 创建实例（V3）
+使用以下代码可以创建BCC实例，包括普通型BCC、存储优化型BCC、计算优化型BCC、大数据机型BCC、GPU机型BCC、FPGA机型BCC：
+
+```go
+createInstanceV3Args := &api.CreateInstanceV3Args{
+    // 选择创建BCC的套餐规格
+	InstanceSpec: "bcc.ic3.c1m1",
+    // 系统盘类型，大小
+    // 选择40GB大小的Cloud_SSD_General类型磁盘作为系统盘
+    SystemVolume: api.SystemVolume{
+        StorageType: api.StorageTypeV3CloudSSDGeneral,
+        VolumeSize:  40,
+    },
+    // 本地盘&CDS数据盘
+    // 选择创建5GB大小Cloud_Premium类型CDS云磁盘并挂载到实例上 
+    DataVolumes: []api.DataVolume{
+        {
+            StorageType: api.StorageTypeV3CloudPremium,
+            VolumeSize:  5,
+            // 快照ID，当磁盘类型属于CDS云磁盘时，此属性有效
+            SnapshotId: "snapshotId",
+            // 加密密钥，当磁盘类型属于CDS云磁盘时，此属性有效
+            EncryptKey: "encryptKey",
+        },
+    },
+    // 实例名称
+    InstanceName: "sdkTest",
+    // 实例购买数量
+    PurchaseCount: 1,
+    // 实例主机名,可选参数,若不选则主机名和实例名称保持一致(实例名称不包含中文名时)
+    // 仅支持小写字母、数字以及- . 特殊字符，不可连续使用特殊符号，不支持特殊符号开头或结尾，长度2-64
+    HostName: "hostName",
+    // 设置是否开启hostname domain 是：true 否：false
+    AutoSeqSuffix: false,
+    // 设置是否开启hostname domain 是：true 否：false
+    HostNameDomain: false,
+    // 实例管理员密码
+    Password: "123qaz!@#",
+    // 选择付款方式，可以选择预付费：Prepaid，后付费：Postpaid，竞价付费：Spotpaid（选择竞价付费时需配置InstanceMarketOptions参数）
+    // 选择购买时长1，默认单位：月
+    Billing: api.Billing{
+		PaymentTiming: api.PaymentTimingPrePaid,
+		Reservation: &api.Reservation{
+            ReservationLength: 1,
+        },
+    },
+    // 设置可用区
+    ZoneName: "zoneName"
+    // 指定子网和安全组，要求子网和安全组必须同时指定或同时不指定，
+    // 同时指定的子网和安全组必须同属于一个VPC，都不指定会使用默认子网和默认安全组。
+    // 设置创建BCC使用的子网
+    SubnetId: "subnetId"
+    // 设置创建BCC使用的安全组
+    SecurityGroupIds: []string{
+        "securityGroup1",
+        "securityGroup2",
+    },
+    // 联合购买资源CDS，EIP统一关联标签，默认：false
+    AssociatedResourceTag: false,
+    // 待创建的标签列表
+    Tags: []model.TagModel{
+        {
+            TagKey:   "tagKey",
+            TagValue: "tagValue",
+        },
+    },
+    // 设置要绑定的密钥对ID
+    KeypairId: "keypairId",
+    // 设置自动续费的时间，单位：月
+    // 取值范围：1,2,3,4,5,6,7,8,9,12,24,36
+    AutoRenewTime: 1,
+    // CDS数据盘是否自动续费 是:true 否:false
+    CdsAutoRenew: true,
+    // 设置要绑定的自动快照策略ID
+    AutoSnapshotPolicyId: "autoSnapshotPolicyId",
+    // 部署集
+    DeploymentSetId: "deploymentSetId",
+    // 镜像id
+    ImageId: "imageId",
+    // 竞价实例出价模型
+    // SpotOption. 市场价: "market" 自定义："custom"
+    // SpotPrice. 竞价实例出价金额，若是自定义出价，且出价金额小于市场价，则不允许创建。当spotOption='custom'时才有效。
+    InstanceMarketOptions: api.InstanceMarketOptions{
+        SpotOption: "custom",
+        SpotPrice:  "spotPrice",
+    },
+    // 待创建实例是否开启ipv6，只有当镜像和子网都支持ipv6时才可开启，true表示开启，false表示关闭，不传表示自动适配镜像和子网的ipv6支持情况
+    Ipv6: false,
+    // 专属服务器ID
+    DedicatedHostId: "dedicatedHostId",
+    // 公网带宽
+    // InternetMaxBandwidthOut. 设置创建BCC使用的网络带宽大小，单位为Mbps。必须为0~200之间的整数，为0表示不分配公网IP，默认为0Mbps
+    // InternetChargeType. 公网带宽计费方式，若不指定internetChargeType，默认付费方式同BCC，预付费默认为包年包月按带宽，
+    // 后付费默认为按使用带宽计费。（BANDWIDTH_PREPAID：预付费按带宽结算；TRAFFIC_POSTPAID_BY_HOUR：流量按小时后付费；
+    // BANDWIDTH_POSTPAID_BY_HOUR：带宽按小时后付费）
+    InternetAccessible: api.InternetAccessible{
+        InternetMaxBandwidthOut: 5,
+        InternetChargeType:      api.TrafficPostpaidByHour,
+    },
+    // 使用 uuid 生成一个长度不超过64位的ASCII字符串
+    ClientToken: "random-uuid",
+	// 创建实例支持幂等的token,成功后永久有效
+    RequestToken: "requestToken",
+}
+result, err := client.CreateInstanceV3(args)
+if err != nil {
+    fmt.Println("create instance failed:", err)
+} else {
+    fmt.Println("create instance success: ", result)
+}
+```
+> **提示：**
+> 1.  创建BCC请求是一个异步请求，返回200表明订单生成，后续可以通过查询返回的实例id信息了解BCC虚机的创建进度。
+> 2.  本接口用于创建一个或多个同配虚拟机实例。
+> 3.  创建实例需要实名认证，没有通过实名认证的可以前往百度开放云官网控制台中的安全认证下的实名认证中进行认证。
+> 4.  创建计费方式为后付费的实例需要账户现金余额+通用代金券大于100；预付费方式的实例则需要账户现金余额大于等于实例费用。
+> 5.  支持批量创建，且如果创建过程中有一个实例创建失败，所有实例将全部回滚，均创建失败，如果创建时包含CDS，CDS也会回滚。
+> 6.  缺省情形下，一个实例最多只能挂载5个云磁盘。
+> 7.  创建CDS磁盘和本地数据盘时，磁盘容量大小限制为5的倍数。
+> 8.  创建实例支持创建和添加本地数据盘，但不支持单独创建或添加临时数据盘。
+> 9.  本地数据盘不支持挂载、卸载、删除。
+> 10. 普通实例的临时数据盘最大不能超过500G。
+> 11. 指定子网和安全组创建，要求子网和安全组必须同时指定或同时不指定，同时指定的子网和安全组必须同属于一个VPC，都不指定会使用默认子网和默认安全组。
+> 12. 指定公网IP带宽创建，计费方式为按照带宽计费。
+> 13. 创建接口为异步创建，可通过查询实例详情接口查询实例状态
+> 14. 每个实例最多只能购买一块本地数据盘。
+> 15. 创建存储优化型实例必须购买本地数据盘，通过DataVolumes指定本地数据盘大小，需指定属于本地数据盘的磁盘类型。
 
 ## 创建竞价实例
 使用以下代码可以创建BCC实例：
@@ -1481,7 +1609,7 @@ args := &api.CreateCDSVolumeV3Args{
     // 创建一个CDS磁盘，若要同时创建多个相同配置的磁盘，可以修改此参数
 	PurchaseCount: 1, 
     // 磁盘空间大小
-    VolumeSizeInGB:   50,
+    VolumeSize:   50,
     // 设置磁盘存储介质 
     StorageType:   api.StorageTypeV3CloudSSDGeneral, 
     // 设置磁盘付费模式为后付费

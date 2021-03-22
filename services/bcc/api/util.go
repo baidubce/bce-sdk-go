@@ -76,6 +76,10 @@ func getInstanceUri() string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI
 }
 
+func getInstanceUriV3() string {
+	return URI_PREFIXV3 + REQUEST_INSTANCE_URI
+}
+
 func getRecycleInstanceListUri() string {
 	return URI_PREFIXV2 + REQUEST_RECYCLE + REQUEST_INSTANCE_URI
 }

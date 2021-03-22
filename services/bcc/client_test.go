@@ -124,6 +124,57 @@ func TestCreateInstanceBySpec(t *testing.T) {
 	BCC_TestBccId = createResult.InstanceIds[0]
 }
 
+func TestCreateInstanceV3(t *testing.T) {
+	createInstanceV3Args := &api.CreateInstanceV3Args{
+		InstanceSpec: "bcc.ic3.c1m1",
+		SystemVolume: api.SystemVolume{
+			StorageType: api.StorageTypeV3CloudSSDGeneral,
+			VolumeSize:  30,
+		},
+		DataVolumes: []api.DataVolume{
+			{
+				StorageType: api.StorageTypeV3CloudPremium,
+				VolumeSize:  5,
+			},
+		},
+		PurchaseCount: 1,
+		InstanceName: "sdkTest8",
+		Password:     "123qaz!@#",
+		ZoneName:     "cn-bj-b",
+		Billing: api.Billing{
+			PaymentTiming: api.PaymentTimingPostPaid,
+			Reservation: &api.Reservation{
+				ReservationLength: 1,
+			},
+		},
+		AssociatedResourceTag: true,
+		Tags: []model.TagModel{
+			{
+				TagKey:   "v3",
+				TagValue: "1",
+			},
+		},
+		AutoRenewTime: 12,
+		CdsAutoRenew:  true,
+		// 私有网络子网 IP 数组，当前仅支持批量创建多台实例时支持传入相同子网的多个 IP。
+		PrivateIpAddresses: []string{
+			"ip",
+		},
+		ImageId: "m-xxi8Xdl7",
+		InternetAccessible: api.InternetAccessible{
+			InternetMaxBandwidthOut: 5,
+			InternetChargeType:      api.TrafficPostpaidByHour,
+		},
+		InstanceMarketOptions: api.InstanceMarketOptions{
+			SpotOption: "custom",
+			SpotPrice:  "10",
+		},
+	}
+	createResult, err := BCC_CLIENT.CreateInstanceV3(createInstanceV3Args)
+	ExpectEqual(t.Errorf, err, nil)
+	BCC_TestBccId = createResult.InstanceIds[0]
+}
+
 func TestCreateSecurityGroup(t *testing.T) {
 	args := &api.CreateSecurityGroupArgs{
 		Name: "testSecurityGroup",
@@ -244,9 +295,9 @@ func TestModifyInstanceDesc(t *testing.T) {
 
 func TestModifyInstanceHostname(t *testing.T) {
 	modifyArgs := &api.ModifyInstanceHostnameArgs{
-		Hostname: "test-modify-domain",
+		Hostname:             "test-modify-domain",
 		IsOpenHostnameDomain: false,
-		Reboot: true,
+		Reboot:               true,
 	}
 	err := BCC_CLIENT.ModifyInstanceHostname(BCC_TestBccId, modifyArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -307,11 +358,11 @@ func TestCreateCDSVolume(t *testing.T) {
 
 func TestCreateCDSVolumeV3(t *testing.T) {
 	args := &api.CreateCDSVolumeV3Args{
-		ZoneName: "cn-bj-a",
-		VolumeName : "volumeV3Test",
-		Description: "v3 test",
+		ZoneName:      "cn-bj-a",
+		VolumeName:    "volumeV3Test",
+		Description:   "v3 test",
 		PurchaseCount: 1,
-		VolumeSizeInGB:   50,
+		VolumeSize:    50,
 		StorageType:   api.StorageTypeV3CloudSSDGeneral,
 		Billing: &api.Billing{
 			PaymentTiming: api.PaymentTimingPostPaid,
@@ -866,7 +917,7 @@ func TestInstancePurchaseReserved(t *testing.T) {
 		Billing: api.Billing{
 			PaymentTiming: api.PaymentTimingPrePaid,
 			Reservation: &api.Reservation{
-				ReservationLength: 1,
+				ReservationLength:   1,
 				ReservationTimeUnit: "MONTH",
 			},
 		},
