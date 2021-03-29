@@ -16,6 +16,7 @@
 package scs
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 
@@ -24,9 +25,44 @@ import (
 )
 
 const (
-	INSTANCE_URL_V1 = bce.URI_PREFIX + "v1" + "/instance"
-	INSTANCE_URL_V2 = bce.URI_PREFIX + "v2" + "/instance"
+	INSTANCE_URL_V1           = bce.URI_PREFIX + "v1" + "/instance"
+	INSTANCE_URL_V2           = bce.URI_PREFIX + "v2" + "/instance"
+	URI_PREFIX_V2             = bce.URI_PREFIX + "v2"
+	REQUEST_SECURITYGROUP_URL = "/security"
 )
+
+// List Security Group By Vpc URL
+func getSecurityGroupWithVpcIdUrl(vpcId string) string {
+	return URI_PREFIX_V2 + REQUEST_SECURITYGROUP_URL + "/vpc/" + vpcId
+}
+
+// List Security Group By Instance URL
+func getSecurityGroupWithInstanceIdUrl(instanceId string) string {
+	return URI_PREFIX_V2 + REQUEST_SECURITYGROUP_URL + "/instance/" + instanceId
+}
+
+// Bind Security Group To Instance URL
+func getBindSecurityGroupWithUrl() string {
+	return URI_PREFIX_V2 + REQUEST_SECURITYGROUP_URL + "/bind"
+}
+
+// UnBind Security Group To Instance URL
+func getUnBindSecurityGroupWithUrl() string {
+	return URI_PREFIX_V2 + REQUEST_SECURITYGROUP_URL + "/unbind"
+}
+
+// Batch Replace Security Group URL
+func getReplaceSecurityGroupWithUrl() string {
+	return URI_PREFIX_V2 + REQUEST_SECURITYGROUP_URL + "/update"
+}
+
+func Json(v interface{}) string {
+	jsonStr, err := json.Marshal(v)
+	if err != nil {
+		panic("convert to json faild")
+	}
+	return string(jsonStr)
+}
 
 // CreateInstance - create an instance with specified parameters
 //
@@ -94,13 +130,12 @@ func (c *Client) GetInstanceDetail(instanceId string) (*GetInstanceDetailResult,
 	result := &GetInstanceDetailResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithURL(INSTANCE_URL_V2 +  "/" + instanceId).
+		WithURL(INSTANCE_URL_V2 + "/" + instanceId).
 		WithResult(result).
 		Do()
 
 	return result, err
 }
-
 
 // ResizeInstance - resize a specified instance
 //
@@ -114,7 +149,7 @@ func (c *Client) ResizeInstance(instanceId string, args *ResizeInstanceArgs) err
 
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
-		WithURL(INSTANCE_URL_V1 +  "/" + instanceId  + "/resize").
+		WithURL(INSTANCE_URL_V1+"/"+instanceId+"/resize").
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		WithBody(args).
 		Do()
@@ -131,11 +166,10 @@ func (c *Client) DeleteInstance(instanceId string, clientToken string) error {
 
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
-		WithURL(INSTANCE_URL_V1 +  "/" + instanceId).
+		WithURL(INSTANCE_URL_V1+"/"+instanceId).
 		WithQueryParamFilter("clientToken", clientToken).
 		Do()
 }
-
 
 // UpdateInstanceName - update name of a specified instance
 //
@@ -149,7 +183,7 @@ func (c *Client) UpdateInstanceName(instanceId string, args *UpdateInstanceNameA
 
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
-		WithURL(INSTANCE_URL_V1 +  "/" + instanceId + "/rename").
+		WithURL(INSTANCE_URL_V1+"/"+instanceId+"/rename").
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		WithBody(args).
 		Do()
@@ -163,9 +197,9 @@ func (c *Client) UpdateInstanceName(instanceId string, args *UpdateInstanceNameA
 //     - args: the arguments to Update instanceName
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) GetNodeTypeList() (*GetNodeTypeListResult, error){
+func (c *Client) GetNodeTypeList() (*GetNodeTypeListResult, error) {
 	getNodeTypeListResult := &GetNodeTypeListResult{}
-	err :=  bce.NewRequestBuilder(c).
+	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
 		WithURL("/v2/nodetypes").
 		WithResult(getNodeTypeListResult).
@@ -173,7 +207,6 @@ func (c *Client) GetNodeTypeList() (*GetNodeTypeListResult, error){
 
 	return getNodeTypeListResult, err
 }
-
 
 // ListsSubnet - list all Subnets
 //
@@ -215,12 +248,11 @@ func (c *Client) UpdateInstanceDomainName(instanceId string, args *UpdateInstanc
 	}
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
-		WithURL(INSTANCE_URL_V1 +  "/" + instanceId + "/renameDomain").
+		WithURL(INSTANCE_URL_V1+"/"+instanceId+"/renameDomain").
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		WithBody(args).
 		Do()
 }
-
 
 // GetZoneList - list all zone
 //
@@ -231,7 +263,7 @@ func (c *Client) UpdateInstanceDomainName(instanceId string, args *UpdateInstanc
 //     - error: nil if success otherwise the specific error
 func (c *Client) GetZoneList() (*GetZoneListResult, error) {
 	result := &GetZoneListResult{}
-	err :=  bce.NewRequestBuilder(c).
+	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
 		WithURL("/v1/zone").
 		WithResult(result).
@@ -258,12 +290,11 @@ func (c *Client) FlushInstance(instanceId string, args *FlushInstanceArgs) error
 
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
-		WithURL(INSTANCE_URL_V1 +  "/" + instanceId + "/flush").
+		WithURL(INSTANCE_URL_V1+"/"+instanceId+"/flush").
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		WithBody(args).
 		Do()
 }
-
 
 // BindingTags - bind tags to a specified instance
 //
@@ -277,11 +308,10 @@ func (c *Client) BindingTag(instanceId string, args *BindingTagArgs) error {
 
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
-		WithURL(INSTANCE_URL_V1 +  "/" + instanceId + "/bindTag").
+		WithURL(INSTANCE_URL_V1 + "/" + instanceId + "/bindTag").
 		WithBody(args).
 		Do()
 }
-
 
 // UnBindingTags - unbind tags to a specified instance
 //
@@ -295,11 +325,10 @@ func (c *Client) UnBindingTag(instanceId string, args *BindingTagArgs) error {
 
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
-		WithURL(INSTANCE_URL_V1 +  "/" + instanceId + "/unBindTag").
+		WithURL(INSTANCE_URL_V1 + "/" + instanceId + "/unBindTag").
 		WithBody(args).
 		Do()
 }
-
 
 // GetSecurityIp - list all securityIps
 //
@@ -314,13 +343,12 @@ func (c *Client) GetSecurityIp(instanceId string) (*GetSecurityIpResult, error) 
 	result := &GetSecurityIpResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithURL(INSTANCE_URL_V1 +  "/" + instanceId + "/securityIp").
+		WithURL(INSTANCE_URL_V1 + "/" + instanceId + "/securityIp").
 		WithResult(result).
 		Do()
 
 	return result, err
 }
-
 
 // AddSecurityIp - add securityIp to access a specified instance
 //
@@ -334,12 +362,11 @@ func (c *Client) AddSecurityIp(instanceId string, args *SecurityIpArgs) error {
 
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
-		WithURL(INSTANCE_URL_V1 +  "/" + instanceId + "/securityIp").
+		WithURL(INSTANCE_URL_V1+"/"+instanceId+"/securityIp").
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		WithBody(args).
 		Do()
 }
-
 
 // DeleteSecurityIp - delete securityIp to access a specified instance
 //
@@ -353,12 +380,11 @@ func (c *Client) DeleteSecurityIp(instanceId string, args *SecurityIpArgs) error
 
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
-		WithURL(INSTANCE_URL_V1 +  "/" + instanceId + "/securityIp").
+		WithURL(INSTANCE_URL_V1+"/"+instanceId+"/securityIp").
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		WithBody(args).
 		Do()
 }
-
 
 // ModifyPassword - modify the password of a specified instance
 //
@@ -378,12 +404,11 @@ func (c *Client) ModifyPassword(instanceId string, args *ModifyPasswordArgs) err
 
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
-		WithURL(INSTANCE_URL_V1 +  "/" + instanceId + "/modifyPassword").
+		WithURL(INSTANCE_URL_V1+"/"+instanceId+"/modifyPassword").
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		WithBody(args).
 		Do()
 }
-
 
 // GetParameters - query the configuration parameters and running parameters of redis instance
 //
@@ -398,13 +423,12 @@ func (c *Client) GetParameters(instanceId string) (*GetParametersResult, error) 
 	result := &GetParametersResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithURL(INSTANCE_URL_V1 +  "/" + instanceId + "/parameter").
+		WithURL(INSTANCE_URL_V1 + "/" + instanceId + "/parameter").
 		WithResult(result).
 		Do()
 
 	return result, err
 }
-
 
 // ModifyParameters - modify the parameters of a specified instance
 //
@@ -418,12 +442,11 @@ func (c *Client) ModifyParameters(instanceId string, args *ModifyParametersArgs)
 
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
-		WithURL(INSTANCE_URL_V1 +  "/" + instanceId + "/parameter").
+		WithURL(INSTANCE_URL_V1+"/"+instanceId+"/parameter").
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		WithBody(args).
 		Do()
 }
-
 
 // GetBackupList - get backup list of the instance
 //
@@ -438,13 +461,12 @@ func (c *Client) GetBackupList(instanceId string) (*GetBackupListResult, error) 
 	result := &GetBackupListResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithURL(INSTANCE_URL_V1 +  "/" + instanceId + "/backup").
+		WithURL(INSTANCE_URL_V1 + "/" + instanceId + "/backup").
 		WithResult(result).
 		Do()
 
 	return result, err
 }
-
 
 // ModifyBackupPolicy - modify the BackupPolicy of a specified instance
 //
@@ -458,9 +480,130 @@ func (c *Client) ModifyBackupPolicy(instanceId string, args *ModifyBackupPolicyA
 
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
-		WithURL(INSTANCE_URL_V1 +  "/" + instanceId + "/modifyBackupPolicy").
+		WithURL(INSTANCE_URL_V1+"/"+instanceId+"/modifyBackupPolicy").
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		WithBody(args).
 		Do()
 }
 
+// ListSecurityGroupByVpcId - list security groups by vpc id
+//
+// PARAMS:
+//     - vpcId: id of vpc
+// RETURNS:
+//     - *[]SecurityGroup:security groups of vpc
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListSecurityGroupByVpcId(vpcId string) (*ListVpcSecurityGroupsResult, error) {
+	if len(vpcId) < 1 {
+		return nil, fmt.Errorf("unset vpcId")
+	}
+	result := &ListVpcSecurityGroupsResult{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getSecurityGroupWithVpcIdUrl(vpcId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// ListSecurityGroupByInstanceId - list security groups by instance id
+//
+// PARAMS:
+//     - instanceId: id of instance
+// RETURNS:
+//     - *ListSecurityGroupResult: list secrity groups result of instance
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListSecurityGroupByInstanceId(instanceId string) (*ListSecurityGroupResult, error) {
+	if len(instanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+	result := &ListSecurityGroupResult{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getSecurityGroupWithInstanceIdUrl(instanceId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// BindSecurityGroups - bind SecurityGroup to instances
+//
+// PARAMS:
+//     - args: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BindSecurityGroups(args *SecurityGroupArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	if len(args.InstanceIds) < 1 {
+		return fmt.Errorf("unset instanceIds")
+	}
+	if len(args.SecurityGroupIds) < 1 {
+		return fmt.Errorf("unset securityGroupIds")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getBindSecurityGroupWithUrl()).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// UnBindSecurityGroups - unbind SecurityGroup to instances
+//
+// PARAMS:
+//     - args: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UnBindSecurityGroups(args *UnbindSecurityGroupArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	if len(args.InstanceId) < 1 {
+		return fmt.Errorf("unset instanceId")
+	}
+	if len(args.SecurityGroupIds) < 1 {
+		return fmt.Errorf("unset securityGroupIds")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getUnBindSecurityGroupWithUrl()).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// ReplaceSecurityGroups - replace SecurityGroup to instances
+//
+// PARAMS:
+//     - args: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ReplaceSecurityGroups(args *SecurityGroupArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	if len(args.InstanceIds) < 1 {
+		return fmt.Errorf("unset instanceIds")
+	}
+	if len(args.SecurityGroupIds) < 1 {
+		return fmt.Errorf("unset securityGroupIds")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getReplaceSecurityGroupWithUrl()).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}

@@ -36,7 +36,7 @@ const (
 	POOL            = "xdb_gaiabase_pool"
 	PNETIP          = "100.88.65.121"
 	DEPLOY_ID       = "ab89d829-9068-d88e-75bc-64bb6367d036"
-	DDC_INSTANCE_ID = "ddc-mcxcf0zd"
+	DDC_INSTANCE_ID = "ddc-mkxvakqc"
 	RDS_INSTANCE_ID = "rds-OtTkC1OD"
 	ETAG            = "v0"
 )
@@ -959,9 +959,8 @@ func TestClient_RebootInstance(t *testing.T) {
 	}
 }
 
-// Only RDS
 func TestClient_ModifySyncMode(t *testing.T) {
-	assertAvailable(RDS_INSTANCE_ID, t)
+	assertAvailable(DDC_INSTANCE_ID, t)
 	listRdsArgs := &ListRdsArgs{}
 	result, err := DDCRDS_CLIENT.ListRds(listRdsArgs)
 	ExpectEqual(t.Errorf, nil, err)

@@ -766,3 +766,7 @@ type GetLogArgs struct {
 type CreateTableHardLinkArgs struct {
 	TableName string `json:"tableName"`
 }
+
+type ModifySyncModeArgs struct {
+	SyncMode string `json:"syncMode"`
+}

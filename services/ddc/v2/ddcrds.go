@@ -523,8 +523,11 @@ func (c *Client) UpdateInstanceName(instanceId string, args *UpdateInstanceNameA
 // RETURNS:
 //     - error: nil if success otherwise the specific error
 func (c *Client) ModifySyncMode(instanceId string, args *ModifySyncModeArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
 	if isDDCId(instanceId) {
-		return DDCNotSupportError()
+		return c.ddcClient.ModifySyncMode(instanceId, args)
 	}
 	rdsArgs := &rds.ModifySyncModeArgs{SyncMode: args.SyncMode}
 	err := c.rdsClient.ModifySyncMode(instanceId, rdsArgs)

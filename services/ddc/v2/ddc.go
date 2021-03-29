@@ -1785,3 +1785,21 @@ func (c *DDCClient) ResizeRds(instanceId string, args *ResizeRdsArgs) error {
 		WithBody(args).
 		Do()
 }
+
+// UpdateSyncMode - update sync mode of a specified instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance
+//     - args: the arguments to update syncMode
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) ModifySyncMode(instanceId string, args *ModifySyncModeArgs) error {
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getChangeSemiSyncStatusUrlWithId(instanceId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+}

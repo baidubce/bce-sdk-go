@@ -917,16 +917,18 @@ if err != nil {
 
 ## 修改同步模式
 
-使用以下代码可以修改RDS实例同步模式(仅支持RDS)。
+使用以下代码可以修改实例同步模式。
 
 ```go
 // import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
 
 args := &ddcrds.ModifySyncModeArgs{
-    //"Async"异步复制，"Semi_sync"半同步复制。
+    //"Async"异步复制
+	//"Semi_sync"半同步复制。
     SyncMode: "Async",
 }
-err = client.ModifySyncMode(instanceId, args)
+// instanceId为DDC实例ID或RDS实例ID
+err := client.ModifySyncMode(instanceId, args)
 if err != nil {
     fmt.Printf("modify syncMode error: %+v\n", err)
     return

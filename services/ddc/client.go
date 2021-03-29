@@ -201,3 +201,7 @@ func getTableHardLinkUrl(instanceId, dbName, tableName string) string {
 		REQUEST_DDC_DATABASE_URL + "/" + dbName +
 		REQUEST_DDC_TABLE_URL + "/" + tableName + REQUEST_DDC_HARDLINK_URL
 }
+
+func getChangeSemiSyncStatusUrlWithId(instanceId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + "/semisync"
+}

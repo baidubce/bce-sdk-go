@@ -568,6 +568,104 @@ if err != nil {
 }
 ```
 
+## 获取VPC下的安全组
+使用以下代码可以获取指定VPC下的安全组列表。
+```go
+
+// vpcId := "vpc-j1vaxw1cx2mw"
+securityGroups, err := client.ListSecurityGroupByVpcId(vpcId)
+if err != nil {
+    fmt.Printf("list security group by vpcId error: %+v\n", err)
+    return
+}
+for _, group := range securityGroups.Groups {
+    fmt.Println("securityGroup id: ", group.SecurityGroupID)
+    fmt.Println("name: ", group.Name)
+    fmt.Println("description: ", group.Description)
+    fmt.Println("associateNum: ", group.AssociateNum)
+    fmt.Println("createdTime: ", group.CreatedTime)
+    fmt.Println("version: ", group.Version)
+    fmt.Println("defaultSecurityGroup: ", group.DefaultSecurityGroup)
+    fmt.Println("vpc name: ", group.VpcName)
+    fmt.Println("vpc id: ", group.VpcShortID)
+    fmt.Println("tenantId: ", group.TenantID)
+}
+fmt.Println("list security group by vpcId success.")
+```
+
+## 获取实例已绑定安全组
+使用以下代码可以获取指定实例已绑定的安全组列表。
+```go
+
+// instanceId := "scs-m1h4mma5"
+result, err := client.ListSecurityGroupByInstanceId(instanceId)
+if err != nil {
+    fmt.Printf("list security group by instanceId error: %+v\n", err)
+    return
+}
+for _, group := range result.Groups {
+    fmt.Println("securityGroupId: ", group.SecurityGroupID)
+    fmt.Println("securityGroupName: ", group.SecurityGroupName)
+    fmt.Println("securityGroupRemark: ", group.SecurityGroupRemark)
+    fmt.Println("projectId: ", group.ProjectID)
+    fmt.Println("vpcId: ", group.VpcID)
+    fmt.Println("vpcName: ", group.VpcName)
+    fmt.Println("inbound: ", group.Inbound)
+    fmt.Println("outbound: ", group.Outbound)
+}
+fmt.Println("list security group by instanceId success.")
+```
+
+## 绑定安全组
+使用以下代码可以批量将指定的安全组绑定到实例上。
+```go
+
+// instanceIds := []string{
+//     "scs-mjafcdu0",
+// }
+// securityGroupIds := []string{
+//     "g-iutg5rtcydsk",
+// }
+args := &scs.SecurityGroupArgs{
+    InstanceIds: instanceIds,
+    SecurityGroupIds: securityGroupIds,
+}
+
+err := client.BindSecurityGroups(args)
+if err != nil {
+    fmt.Printf("bind security groups to instances error: %+v\n", err)
+    return
+}
+fmt.Println("bind security groups to instances success.")
+```
+> 注意:
+> - 实例状态必须为Available。
+> - 实例ID最多可以传入10个。
+> - 安全组ID最多可以传入10个。
+> - 每个实例最多可以绑定10个安全组。
+
+## 解绑安全组
+使用以下代码可以从实例上批量解绑指定的安全组。
+```go
+// securityGroupIds := []string{
+//     "g-iutg5rtcydsk",
+// }
+args := &scs.UnbindSecurityGroupArgs{
+    InstanceId:      "scs-su-bbjhgxyqyddd",
+    SecurityGroupIds: securityGroupIds,
+}
+err := client.UnBindSecurityGroups(args)
+if err != nil {
+    fmt.Printf("unbind security groups to instances error: %+v\n", err)
+    return
+}
+fmt.Println("unbind security groups to instances success.")
+```
+> 注意:
+> - 实例状态必须为Available。
+> - 当前版本实例ID最多可以传入1个。
+> - 安全组ID最多可以传入10个。
+
 ### 获取参数列表
 
 使用以下代码可以获取Redis实例的配置参数和运行参数

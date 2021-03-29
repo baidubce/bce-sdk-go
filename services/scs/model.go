@@ -196,7 +196,7 @@ type GetParametersResult struct {
 
 type Parameter struct {
 	Default      string `json:"default"`
-	ForceRestart int    `json:"forceRestart"`
+	ForceRestart string `json:"forceRestart"`
 	Name         string `json:"name"`
 	Value        string `json:"value"`
 }
@@ -237,4 +237,60 @@ type ModifyBackupPolicyArgs struct {
 	BackupTime  string `json:"backupTime"`
 	ClientToken string `json:"clientToken"`
 	ExpireDay   int    `json:"expireDay"`
+}
+
+type ListVpcSecurityGroupsResult struct {
+	Groups []SecurityGroup `json:"groups"`
+}
+
+type SecurityGroup struct {
+	Name                 string `json:"name"`
+	SecurityGroupID      string `json:"securityGroupId"`
+	Description          string `json:"description"`
+	TenantID             string `json:"tenantId"`
+	AssociateNum         int    `json:"associateNum"`
+	VpcID                string `json:"vpcId"`
+	VpcShortID           string `json:"vpcShortId"`
+	VpcName              string `json:"vpcName"`
+	CreatedTime          string `json:"createdTime"`
+	Version              int    `json:"version"`
+	DefaultSecurityGroup int    `json:"defaultSecurityGroup"`
+}
+
+type SecurityGroupArgs struct {
+	InstanceIds      []string `json:"instanceIds"`
+	SecurityGroupIds []string `json:"securityGroupIds"`
+}
+
+type UnbindSecurityGroupArgs struct {
+	InstanceId       string   `json:"instanceId"`
+	SecurityGroupIds []string `json:"securityGroupIds"`
+}
+
+type ListSecurityGroupResult struct {
+	Groups []SecurityGroupDetail `json:"groups"`
+}
+
+type SecurityGroupRule struct {
+	PortRange           string `json:"portRange"`
+	Protocol            string `json:"protocol"`
+	RemoteGroupID       string `json:"remoteGroupId"`
+	RemoteIP            string `json:"remoteIP"`
+	Ethertype           string `json:"ethertype"`
+	TenantID            string `json:"tenantId"`
+	Name                string `json:"name"`
+	ID                  string `json:"id"`
+	SecurityGroupRuleID string `json:"securityGroupRuleId"`
+	Direction           string `json:"direction"`
+}
+
+type SecurityGroupDetail struct {
+	SecurityGroupName   string              `json:"securityGroupName"`
+	SecurityGroupID     string              `json:"securityGroupId"`
+	SecurityGroupRemark string              `json:"securityGroupRemark"`
+	Inbound             []SecurityGroupRule `json:"inbound"`
+	Outbound            []SecurityGroupRule `json:"outbound"`
+	VpcName             string              `json:"vpcName"`
+	VpcID               string              `json:"vpcId"`
+	ProjectID           string              `json:"projectId"`
 }
