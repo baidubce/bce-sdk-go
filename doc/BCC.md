@@ -296,6 +296,8 @@ args := &api.CreateInstanceArgs{
     Tags                  []model.TagModel tags
     // 指定实例所在的部署集id
     DeployId              string           "deployId"
+    // 指定实例所在的部署集id 列表
+	DeployIdList          []string         `json:"deployIdList"`
     // 设置要绑定的密钥对ID
     KeypairId             string           "keypairId"
     // 设置要绑定的自动快照策略ID
@@ -413,6 +415,8 @@ createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
     AutoRenewTime         int              autoRenewTime
     // cds是否自动续费 是:true 否:false
     CdsAutoRenew          bool             cdsAutoRenew
+	// 指定实例所在的部署集id 列表
+	DeployIdList          []string         `json:"deployIdList"`
     // 待创建实例指定的标签是否需要和已有标签键进行关联，默认为false。注意值为true时要保证该标签键已存在
     RelationTag           bool             relationTag
     // 待创建的标签列表

@@ -98,41 +98,50 @@ const (
 
 // Instance define instance model
 type InstanceModel struct {
-	InstanceId            string           `json:"id"`
-	SerialNumber          string           `json:"serialNumber"`
-	InstanceName          string           `json:"name"`
-	Hostname              string           `json:"hostname"`
-	InstanceType          InstanceType     `json:"instanceType"`
-	Description           string           `json:"desc"`
-	Status                InstanceStatus   `json:"status"`
-	PaymentTiming         string           `json:"paymentTiming"`
-	CreationTime          string           `json:"createTime"`
-	ExpireTime            string           `json:"expireTime"`
-	PublicIP              string           `json:"publicIp"`
-	InternalIP            string           `json:"internalIp"`
-	CpuCount              int              `json:"cpuCount"`
-	GpuCard               string           `json:"gpuCard"`
-	FpgaCard              string           `json:"fpgaCard"`
-	CardCount             string           `json:"cardCount"`
-	MemoryCapacityInGB    int              `json:"memoryCapacityInGB"`
-	LocalDiskSizeInGB     int              `json:"localDiskSizeInGB"`
-	ImageId               string           `json:"imageId"`
-	NetworkCapacityInMbps int              `json:"networkCapacityInMbps"`
-	PlacementPolicy       string           `json:"placementPolicy"`
-	ZoneName              string           `json:"zoneName"`
-	SubnetId              string           `json:"subnetId"`
-	VpcId                 string           `json:"vpcId"`
-	AutoRenew             bool             `json:"autoRenew"`
-	KeypairId             string           `json:"keypairId"`
-	KeypairName           string           `json:"keypairName"`
-	DedicatedHostId       string           `json:"dedicatedHostId"`
-	Tags                  []model.TagModel `json:"tags"`
-	Ipv6                  string           `json:"ipv6"`
-	SwitchId              string           `json:"switchId"`
-	HostId                string           `json:"hostId"`
-	DeploysetId           string           `json:"deploysetId"`
-	RackId                string           `json:"rackId"`
-	NicInfo               NicInfo          `json:"nicInfo"`
+	InstanceId            string                 `json:"id"`
+	SerialNumber          string                 `json:"serialNumber"`
+	InstanceName          string                 `json:"name"`
+	Hostname              string                 `json:"hostname"`
+	InstanceType          InstanceType           `json:"instanceType"`
+	Description           string                 `json:"desc"`
+	Status                InstanceStatus         `json:"status"`
+	PaymentTiming         string                 `json:"paymentTiming"`
+	CreationTime          string                 `json:"createTime"`
+	ExpireTime            string                 `json:"expireTime"`
+	PublicIP              string                 `json:"publicIp"`
+	InternalIP            string                 `json:"internalIp"`
+	CpuCount              int                    `json:"cpuCount"`
+	GpuCard               string                 `json:"gpuCard"`
+	FpgaCard              string                 `json:"fpgaCard"`
+	CardCount             string                 `json:"cardCount"`
+	MemoryCapacityInGB    int                    `json:"memoryCapacityInGB"`
+	LocalDiskSizeInGB     int                    `json:"localDiskSizeInGB"`
+	ImageId               string                 `json:"imageId"`
+	NetworkCapacityInMbps int                    `json:"networkCapacityInMbps"`
+	PlacementPolicy       string                 `json:"placementPolicy"`
+	ZoneName              string                 `json:"zoneName"`
+	SubnetId              string                 `json:"subnetId"`
+	VpcId                 string                 `json:"vpcId"`
+	AutoRenew             bool                   `json:"autoRenew"`
+	KeypairId             string                 `json:"keypairId"`
+	KeypairName           string                 `json:"keypairName"`
+	DedicatedHostId       string                 `json:"dedicatedHostId"`
+	Tags                  []model.TagModel       `json:"tags"`
+	Ipv6                  string                 `json:"ipv6"`
+	SwitchId              string                 `json:"switchId"`
+	HostId                string                 `json:"hostId"`
+	DeploysetId           string                 `json:"deploysetId"`
+	RackId                string                 `json:"rackId"`
+	NicInfo               NicInfo                `json:"nicInfo"`
+	DeploySetList         []DeploySetSimpleModel `json:"deploysetList"`
+}
+
+type DeploySetSimpleModel struct {
+	Strategy    string `json:"strategy"`
+	Name        string `json:"name"`
+	Desc        string `json:"desc"`
+	DeploySetId string `json:"deploysetId"`
+	Concurrency int    `json:"concurrency"`
 }
 
 type GetAllStocksResult struct {
@@ -272,6 +281,7 @@ type CreateInstanceArgs struct {
 	InternalIps           []string         `json:"internalIps,omitempty"`
 	ClientToken           string           `json:"-"`
 	RequestToken          string           `json:"requestToken"`
+	DeployIdList          []string         `json:"deployIdList"`
 }
 
 type CreateInstanceStockArgs struct {
@@ -355,6 +365,7 @@ type CreateInstanceBySpecArgs struct {
 	DeployId              string           `json:"deployId,omitempty"`
 	ClientToken           string           `json:"-"`
 	RequestToken          string           `json:"requestToken"`
+	DeployIdList          []string         `json:"deployIdList"`
 }
 
 type CreateInstanceV3Args struct {
@@ -1216,6 +1227,18 @@ type DeploySetResult struct {
 	DeploySetId  string                    `json:"shortId"`
 	Concurrency  int                       `json:"concurrency"`
 	InstanceList []AzIntstanceStatisDetail `json:"azIntstanceStatisList"`
+}
+
+type UpdateInstanceDeployArgs struct {
+	ClientToken  string   `json:"-"`
+	InstanceId   string   `json:"instanceId,omitempty"`
+	DeploySetIds []string `json:"deploysetIdList,omitempty"`
+}
+
+type DelInstanceDeployArgs struct {
+	ClientToken string   `json:"-"`
+	InstanceIds []string `json:"instanceIdList,omitempty"`
+	DeploySetId string   `json:"deployId,omitempty"`
 }
 
 type AzIntstanceStatisDetail struct {

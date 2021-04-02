@@ -32,6 +32,8 @@ const (
 	REQUEST_BATCHADDIP_URI       = "/batchAddIp"
 	REQUEST_BATCHDELIP_URI       = "/batchDelIp"
 	REQUEST_CREATE_URI           = "/create"
+	REQUEST_UPDATE_URI           = "/updateRelation"
+	REQUEST_DEL_URI              = "/delRelation"
 	REQUEST_DEPLOYSET_URI        = "/deployset"
 	REQUEST_IMAGE_URI            = "/image"
 	REQUEST_IMAGE_SHAREDUSER_URI = "/sharedUsers"

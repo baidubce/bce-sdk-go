@@ -594,7 +594,7 @@ func (c *Client) BatchAddIP(args *api.BatchAddIpArgs) (*api.BatchAddIpResponse, 
 		return nil, err
 	}
 
-	return api.BatchAddIp(c,args, body)
+	return api.BatchAddIp(c, args, body)
 }
 
 // BatchDelIP - Delete ips of instance
@@ -1213,6 +1213,42 @@ func (c *Client) DeleteDeploySet(deploySetId string) error {
 func (c *Client) GetDeploySet(deploySetId string) (*api.DeploySetResult, error) {
 	return api.GetDeploySet(c, deploySetId)
 }
+
+// UpdateInstanceDeploySet - update deployset and instance relation
+//
+// PARAMS:
+//     - args: the arguments to update deployset and instance relation
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+//func (c *Client) UpdateInstanceDeploySet(args *api.UpdateInstanceDeployArgs) (error, error) {
+//	jsonBytes, jsonErr := json.Marshal(args)
+//	if jsonErr != nil {
+//		return nil, jsonErr
+//	}
+//	body, err := bce.NewBodyFromBytes(jsonBytes)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return api.UpdateInstanceDeploy(c, args.ClientToken, body), nil
+//}
+
+// DelInstanceDeploySet - delete deployset and instance relation
+//
+// PARAMS:
+//     - args: the arguments to delete deployset and instance relation
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+//func (c *Client) DelInstanceDeploySet(args *api.DelInstanceDeployArgs) (error, error) {
+//	jsonBytes, jsonErr := json.Marshal(args)
+//	if jsonErr != nil {
+//		return nil, jsonErr
+//	}
+//	body, err := bce.NewBodyFromBytes(jsonBytes)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return api.DelInstanceDeploy(c, args.ClientToken, body), nil
+//}
 
 // ResizeInstanceBySpec - resize a specific instance
 //

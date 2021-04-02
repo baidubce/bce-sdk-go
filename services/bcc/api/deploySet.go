@@ -186,6 +186,54 @@ func GetDeploySet(cli bce.Client, deploySetId string) (*DeploySetResult, error) 
 	return jsonBody, nil
 }
 
+//func UpdateInstanceDeploy(cli bce.Client, clientToken string, reqBody *bce.Body) error {
+//	// Build the request
+//	req := &bce.BceRequest{}
+//	req.SetUri(getUpdateInstanceDeployUri())
+//	req.SetMethod(http.POST)
+//	req.SetBody(reqBody)
+//
+//	if clientToken != "" {
+//		req.SetParam("clientToken", clientToken)
+//	}
+//
+//	// Send request and get response
+//	resp := &bce.BceResponse{}
+//	if err := cli.SendRequest(req, resp); err != nil {
+//		return err
+//	}
+//	if resp.IsFail() {
+//		return resp.ServiceError()
+//	}
+//
+//	defer func() { resp.Body().Close() }()
+//	return nil
+//}
+//
+//func DelInstanceDeploy(cli bce.Client, clientToken string, reqBody *bce.Body) error {
+//	// Build the request
+//	req := &bce.BceRequest{}
+//	req.SetUri(getDelInstanceDeployUri())
+//	req.SetMethod(http.POST)
+//	req.SetBody(reqBody)
+//
+//	if clientToken != "" {
+//		req.SetParam("clientToken", clientToken)
+//	}
+//
+//	// Send request and get response
+//	resp := &bce.BceResponse{}
+//	if err := cli.SendRequest(req, resp); err != nil {
+//		return err
+//	}
+//	if resp.IsFail() {
+//		return resp.ServiceError()
+//	}
+//
+//	defer func() { resp.Body().Close() }()
+//	return nil
+//}
+
 func getDeploySetCreateUri() string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_DEPLOYSET_URI + REQUEST_CREATE_URI
 }
@@ -200,4 +248,12 @@ func getDeploySetUriWithId(id string) string {
 
 func getDeploySetUrl(id string) string {
 	return URI_PREFIXV2 + REQUEST_DEPLOYSET_URI + "/" + id
+}
+
+func getUpdateInstanceDeployUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_DEPLOYSET_URI + REQUEST_UPDATE_URI
+}
+
+func getDelInstanceDeployUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_DEPLOYSET_URI + REQUEST_DEL_URI
 }

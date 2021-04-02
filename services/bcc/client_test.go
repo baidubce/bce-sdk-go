@@ -84,6 +84,7 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 
 func TestCreateInstance(t *testing.T) {
 	InternalIps := []string{"ip"}
+	DeploySetIds := []string{"DeploySetId1", "DeploySetId2"}
 	createInstanceArgs := &api.CreateInstanceArgs{
 		ImageId: "ImageId",
 		Billing: api.Billing{
@@ -102,6 +103,7 @@ func TestCreateInstance(t *testing.T) {
 		Name:                "sdkTest",
 		KeypairId:           "KeypairId",
 		InternalIps:         InternalIps,
+		DeployIdList:        DeploySetIds,
 	}
 	createResult, err := BCC_CLIENT.CreateInstance(createInstanceArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -109,18 +111,21 @@ func TestCreateInstance(t *testing.T) {
 }
 
 func TestCreateInstanceBySpec(t *testing.T) {
+	DeploySetIds := []string{"DeploySetId"}
 	createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
-		ImageId:   "m-xpTjObRS",
-		Spec:      "bcc.ic3.c2m2",
+		ImageId:   "ImageId",
+		Spec:      "bcc.g4.c2m8",
 		Name:      "sdkTest2",
 		AdminPass: "123qaz!@#",
 		ZoneName:  "cn-bj-a",
 		Billing: api.Billing{
 			PaymentTiming: api.PaymentTimingPostPaid,
 		},
+		DeployIdList: DeploySetIds,
 	}
 	createResult, err := BCC_CLIENT.CreateInstanceBySpec(createInstanceBySpecArgs)
 	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(createResult)
 	BCC_TestBccId = createResult.InstanceIds[0]
 }
 
@@ -138,9 +143,9 @@ func TestCreateInstanceV3(t *testing.T) {
 			},
 		},
 		PurchaseCount: 1,
-		InstanceName: "sdkTest8",
-		Password:     "123qaz!@#",
-		ZoneName:     "cn-bj-b",
+		InstanceName:  "sdkTest8",
+		Password:      "123qaz!@#",
+		ZoneName:      "cn-bj-b",
 		Billing: api.Billing{
 			PaymentTiming: api.PaymentTimingPostPaid,
 			Reservation: &api.Reservation{
@@ -209,11 +214,11 @@ func TestListInstances(t *testing.T) {
 	res, err := BCC_CLIENT.ListInstances(listArgs)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(res)
+	fmt.Println(res.Instances[0].DeploySetList)
 }
 
 func TestListRecycleInstances(t *testing.T) {
-	listArgs := &api.ListRecycleInstanceArgs{
-	}
+	listArgs := &api.ListRecycleInstanceArgs{}
 	res, err := BCC_CLIENT.ListRecycleInstances(listArgs)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(res)
@@ -222,6 +227,7 @@ func TestListRecycleInstances(t *testing.T) {
 func TestGetInstanceDetail(t *testing.T) {
 	res, err := BCC_CLIENT.GetInstanceDetail(BCC_TestBccId)
 	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res.Instance.DeploysetId)
 	fmt.Println(res)
 }
 
@@ -729,15 +735,15 @@ func TestDeleteImage(t *testing.T) {
 }
 
 func TestDeleteInstance(t *testing.T) {
-	err := BCC_CLIENT.DeleteInstance(BCC_TestBccId)
+	err := BCC_CLIENT.DeleteInstance("BCC_TestBccId")
 	ExpectEqual(t.Errorf, err, nil)
 }
 
 func TestDeleteInstanceWithRelateResource(t *testing.T) {
 	args := &api.DeleteInstanceWithRelateResourceArgs{
-		BccRecycleFlag: true,
+		BccRecycleFlag: false,
 	}
-	err := BCC_CLIENT.DeleteInstanceWithRelateResource(BCC_TestBccId, args)
+	err := BCC_CLIENT.DeleteInstanceWithRelateResource("BCC_TestBccId", args)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -760,10 +766,10 @@ func TestListFlavorSpec(t *testing.T) {
 
 func TestGetPriceBySpec(t *testing.T) {
 	args := &api.GetPriceBySpecArgs{
-		SpecId:         "g1",
+		SpecId:         "bcc.b1.c8m16",
 		Spec:           "",
 		PaymentTiming:  "Postpaid",
-		ZoneName:       "cn-gz-b",
+		ZoneName:       "cn-bj-c",
 		PurchaseCount:  1,
 		PurchaseLength: 1,
 	}
@@ -819,6 +825,26 @@ func TestGetDeploySet(t *testing.T) {
 	fmt.Println(rep)
 	ExpectEqual(t.Errorf, err, nil)
 }
+
+//func TestUpdateInstanceDeploySet(t *testing.T) {
+//	queryArgs := &api.UpdateInstanceDeployArgs{
+//		InstanceId:   "i-p5AgGD2V",
+//		DeploySetIds: []string{"dset-wFhQIXid", "dset-NxOwQacM"},
+//	}
+//	rep, err := BCC_CLIENT.UpdateInstanceDeploySet(queryArgs)
+//	fmt.Println(rep)
+//	ExpectEqual(t.Errorf, err, nil)
+//}
+//
+//func TestDelInstanceDeploySet(t *testing.T) {
+//	queryArgs := &api.DelInstanceDeployArgs{
+//		DeploySetId: "dset-2mekjKVo",
+//		InstanceIds: []string{"i-D73858x1"},
+//	}
+//	rep, err := BCC_CLIENT.DelInstanceDeploySet(queryArgs)
+//	fmt.Println(rep)
+//	ExpectEqual(t.Errorf, err, nil)
+//}
 
 func TestResizeInstanceBySpec(t *testing.T) {
 	resizeArgs := &api.ResizeInstanceArgs{
@@ -921,9 +947,9 @@ func TestInstancePurchaseReserved(t *testing.T) {
 				ReservationTimeUnit: "MONTH",
 			},
 		},
-		RelatedRenewFlag: "CDS",
+		RelatedRenewFlag: "",
 	}
-	err := BCC_CLIENT.InstancePurchaseReserved(BCC_TestBccId, purchaseReservedArgs)
+	err := BCC_CLIENT.InstancePurchaseReserved("i-C2NZiShJ", purchaseReservedArgs)
 	//fmt.Print(err)
 	ExpectEqual(t.Errorf, err, nil)
 }
