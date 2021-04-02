@@ -1731,3 +1731,26 @@ func (c *Client) ModifySyncMode(instanceId string, args *ModifySyncModeArgs) err
 		WithBody(args).
 		Do()
 }
+
+// GetDisk - get disk detail of instance
+//
+// PARAMS:
+//     - instanceId: id of instance
+// RETURNS:
+//     - *Disk:disk of instance
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetDisk(instanceId string) (*Disk, error) {
+	if len(instanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+
+	result := &Disk{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getDdcUriWithInstanceId(instanceId)+"/disk").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}

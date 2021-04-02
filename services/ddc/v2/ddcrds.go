@@ -1277,3 +1277,17 @@ func (c *Client) LazyDropDeleteHardLink(instanceId, dbName, tableName string) er
 	}
 	return c.ddcClient.LazyDropDeleteHardLink(instanceId, dbName, tableName)
 }
+
+// GetDisk - get disk detail of instance
+//
+// PARAMS:
+//     - instanceId: id of instance
+// RETURNS:
+//     - *Disk:disk of instance
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetDisk(instanceId string) (*Disk, error) {
+	if !isDDCId(instanceId) {
+		return nil, RDSNotSupportError()
+	}
+	return c.ddcClient.GetDisk(instanceId)
+}

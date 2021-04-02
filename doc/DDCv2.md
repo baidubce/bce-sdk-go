@@ -572,7 +572,10 @@ fmt.Println("ddc Category: ", result.Category)
 fmt.Println("ddc ZoneNames: ", result.ZoneNames)
 fmt.Println("ddc Endpoint: ", result.Endpoint)
 fmt.Println("ddc vnetIp: ", result.Endpoint.VnetIp)
+// 备库访问Ip
 fmt.Println("ddc vnetIpBackup: ", result.Endpoint.VnetIpBackup)
+// 拓扑信息
+fmt.Println("ddc topo: ", result.InstanceTopoForReadonly)
 
 // RDS
 result, err := client.GetDetail(instanceId)
@@ -658,7 +661,23 @@ for _, e := range resp.Instances {
     fmt.Println("endpoint: ", e.Endpoint)
     fmt.Println("vnetIp: ", e.Endpoint.VnetIp)
     fmt.Println("vnetIpBackup: ", e.Endpoint.VnetIpBackup)
+    // 物理机ID
+    fmt.Println("long BBC Id: ", e.LongBBCId)
 }
+```
+
+## 获取磁盘信息
+使用以下代码可以获取指定实例下磁盘的详细信息。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+disk, err := client.GetDisk(instanceId)
+if err != nil {
+    fmt.Printf("get disk of instance error: %+v\n", err)
+    return
+}
+fmt.Println("get disk of instance success.")
+fmt.Println("disk CapacityRatio: ", disk.CapacityRatio)
 ```
 
 ## 删除实例

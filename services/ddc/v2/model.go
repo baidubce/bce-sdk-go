@@ -106,13 +106,14 @@ type Instance struct {
 	Topology           Topology     `json:"topology"`
 	PaymentTiming      string       `json:"paymentTiming"`
 
-	PubliclyAccessible bool      `json:"publiclyAccessible"`
-	RoGroupList        []RoGroup `json:"roGroupList"`
-	NodeMaster         NodeInfo  `json:"nodeMaster"`
-	NodeSlave          NodeInfo  `json:"nodeSlave"`
-	NodeReadReplica    NodeInfo  `json:"nodeReadReplica"`
-	DeployId           string    `json:"deployId"`
-	LongBBCId          string    `json:"longBBCId"`
+	PubliclyAccessible      bool                    `json:"publiclyAccessible"`
+	RoGroupList             []RoGroup               `json:"roGroupList"`
+	NodeMaster              NodeInfo                `json:"nodeMaster"`
+	NodeSlave               NodeInfo                `json:"nodeSlave"`
+	NodeReadReplica         NodeInfo                `json:"nodeReadReplica"`
+	DeployId                string                  `json:"deployId"`
+	LongBBCId               string                  `json:"longBBCId"`
+	InstanceTopoForReadonly InstanceTopoForReadonly `json:"instanceTopoForReadonly,omitempty"`
 }
 
 func (instance *Instance) ProductType() string {
@@ -292,41 +293,56 @@ type ListDeploySetResult struct {
 }
 
 type InstanceModel struct {
-	InstanceId           string       `json:"instanceId"`
-	InstanceName         string       `json:"instanceName"`
-	Engine               string       `json:"engine"`
-	EngineVersion        string       `json:"engineVersion"`
-	InstanceStatus       string       `json:"instanceStatus"`
-	CpuCount             int          `json:"cpuCount"`
-	AllocatedMemoryInGB  float64      `json:"allocatedMemoryInGB"`
-	AllocatedStorageInGB int          `json:"allocatedStorageInGB"`
-	NodeAmount           int          `json:"nodeAmount"`
-	UsedStorageInGB      float64      `json:"usedStorageInGB"`
-	PublicAccessStatus   bool         `json:"publicAccessStatus"`
-	InstanceCreateTime   string       `json:"instanceCreateTime"`
-	InstanceExpireTime   string       `json:"instanceExpireTime"`
-	Endpoint             Endpoint     `json:"endpoint"`
-	SyncMode             string       `json:"syncMode"`
-	BackupPolicy         BackupPolicy `json:"backupPolicy"`
-	Region               string       `json:"region"`
-	InstanceType         string       `json:"instanceType"`
-	SourceInstanceId     string       `json:"sourceInstanceId"`
-	SourceRegion         string       `json:"sourceRegion"`
-	ZoneNames            []string     `json:"zoneNames"`
-	VpcId                string       `json:"vpcId"`
-	Subnets              []Subnet     `json:"subnets"`
-	NodeMaster           NodeInfo     `json:"nodeMaster"`
-	NodeSlave            NodeInfo     `json:"nodeSlave"`
-	NodeReadReplica      NodeInfo     `json:"nodeReadReplica"`
-	DeployId             string       `json:"deployId"`
-	Topology             Topology     `json:"topology"`
-	DiskType             string       `json:"diskType"`
-	Type                 string       `json:"type"`
-	ApplicationType      string       `json:"applicationType"`
-	RoGroupList          []RoGroup    `json:"roGroupList"`
-	PaymentTiming        string       `json:"paymentTiming"`
-	Category             string       `json:"category"`
-	LongBBCId            string       `json:"longBBCId"`
+	InstanceId              string                  `json:"instanceId"`
+	InstanceName            string                  `json:"instanceName"`
+	Engine                  string                  `json:"engine"`
+	EngineVersion           string                  `json:"engineVersion"`
+	InstanceStatus          string                  `json:"instanceStatus"`
+	CpuCount                int                     `json:"cpuCount"`
+	AllocatedMemoryInGB     float64                 `json:"allocatedMemoryInGB"`
+	AllocatedStorageInGB    int                     `json:"allocatedStorageInGB"`
+	NodeAmount              int                     `json:"nodeAmount"`
+	UsedStorageInGB         float64                 `json:"usedStorageInGB"`
+	PublicAccessStatus      bool                    `json:"publicAccessStatus"`
+	InstanceCreateTime      string                  `json:"instanceCreateTime"`
+	InstanceExpireTime      string                  `json:"instanceExpireTime"`
+	Endpoint                Endpoint                `json:"endpoint"`
+	SyncMode                string                  `json:"syncMode"`
+	BackupPolicy            BackupPolicy            `json:"backupPolicy"`
+	Region                  string                  `json:"region"`
+	InstanceType            string                  `json:"instanceType"`
+	SourceInstanceId        string                  `json:"sourceInstanceId"`
+	SourceRegion            string                  `json:"sourceRegion"`
+	ZoneNames               []string                `json:"zoneNames"`
+	VpcId                   string                  `json:"vpcId"`
+	Subnets                 []Subnet                `json:"subnets"`
+	NodeMaster              NodeInfo                `json:"nodeMaster"`
+	NodeSlave               NodeInfo                `json:"nodeSlave"`
+	NodeReadReplica         NodeInfo                `json:"nodeReadReplica"`
+	DeployId                string                  `json:"deployId"`
+	Topology                Topology                `json:"topology"`
+	DiskType                string                  `json:"diskType"`
+	Type                    string                  `json:"type"`
+	ApplicationType         string                  `json:"applicationType"`
+	RoGroupList             []RoGroup               `json:"roGroupList"`
+	PaymentTiming           string                  `json:"paymentTiming"`
+	Category                string                  `json:"category"`
+	LongBBCId               string                  `json:"longBBCId"`
+	InstanceTopoForReadonly InstanceTopoForReadonly `json:"instanceTopoForReadonly,omitempty"`
+}
+type TopoInstance struct {
+	InstanceID       string `json:"instanceId,omitempty"`
+	SyncMode         string `json:"syncMode,omitempty"`
+	MasterSlaveDelay int    `json:"masterSlaveDelay,omitempty"`
+	Type             string `json:"type,omitempty"`
+	Region           string `json:"region,omitempty"`
+	RoGroupID        string `json:"roGroupId,omitempty"`
+	ZoneName         string `json:"zoneName,omitempty"`
+	InstanceStatus   string `json:"instanceStatus,omitempty"`
+}
+type InstanceTopoForReadonly struct {
+	ReadReplica []TopoInstance `json:"readReplica,omitempty"`
+	Master      []TopoInstance `json:"master,omitempty"`
 }
 
 type SubnetVo struct {
@@ -856,4 +872,7 @@ type GetLogArgs struct {
 
 type CreateTableHardLinkArgs struct {
 	TableName string `json:"tableName"`
+}
+type Disk struct {
+	CapacityRatio []string `json:"capacityRatio"`
 }

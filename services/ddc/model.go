@@ -770,3 +770,6 @@ type CreateTableHardLinkArgs struct {
 type ModifySyncModeArgs struct {
 	SyncMode string `json:"syncMode"`
 }
+type Disk struct {
+	CapacityRatio []string `json:"capacityRatio"`
+}

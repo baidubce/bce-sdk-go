@@ -532,35 +532,36 @@ func (c *DDCClient) GetDdcDetail(instanceId string) (*InstanceModelResult, error
 func (c *DDCClient) GetDetail(instanceId string) (*Instance, error) {
 	detail, err := c.GetDdcDetail(instanceId)
 	result := &Instance{
-		InstanceName:       detail.Instance.InstanceName,
-		InstanceId:         detail.Instance.InstanceId,
-		SourceInstanceId:   detail.Instance.SourceInstanceId,
-		Endpoint:           detail.Instance.Endpoint,
-		Engine:             detail.Instance.Engine,
-		EngineVersion:      detail.Instance.EngineVersion,
-		InstanceStatus:     detail.Instance.InstanceStatus,
-		CpuCount:           detail.Instance.CpuCount,
-		MemoryCapacity:     detail.Instance.AllocatedMemoryInGB,
-		VolumeCapacity:     detail.Instance.AllocatedStorageInGB,
-		UsedStorage:        detail.Instance.UsedStorageInGB,
-		InstanceType:       detail.Instance.Type,
-		InstanceCreateTime: detail.Instance.InstanceCreateTime,
-		InstanceExpireTime: detail.Instance.InstanceExpireTime,
-		PubliclyAccessible: detail.Instance.PublicAccessStatus,
-		PaymentTiming:      detail.Instance.PaymentTiming,
-		SyncMode:           detail.Instance.SyncMode,
-		Region:             detail.Instance.Region,
-		VpcId:              detail.Instance.VpcId,
-		BackupPolicy:       detail.Instance.BackupPolicy,
-		RoGroupList:        detail.Instance.RoGroupList,
-		NodeMaster:         detail.Instance.NodeMaster,
-		NodeSlave:          detail.Instance.NodeSlave,
-		NodeReadReplica:    detail.Instance.NodeReadReplica,
-		Subnets:            detail.Instance.Subnets,
-		DeployId:           detail.Instance.DeployId,
-		ZoneNames:          detail.Instance.ZoneNames,
-		Category:           detail.Instance.Category,
-		LongBBCId:          detail.Instance.LongBBCId,
+		InstanceName:            detail.Instance.InstanceName,
+		InstanceId:              detail.Instance.InstanceId,
+		SourceInstanceId:        detail.Instance.SourceInstanceId,
+		Endpoint:                detail.Instance.Endpoint,
+		Engine:                  detail.Instance.Engine,
+		EngineVersion:           detail.Instance.EngineVersion,
+		InstanceStatus:          detail.Instance.InstanceStatus,
+		CpuCount:                detail.Instance.CpuCount,
+		MemoryCapacity:          detail.Instance.AllocatedMemoryInGB,
+		VolumeCapacity:          detail.Instance.AllocatedStorageInGB,
+		UsedStorage:             detail.Instance.UsedStorageInGB,
+		InstanceType:            detail.Instance.Type,
+		InstanceCreateTime:      detail.Instance.InstanceCreateTime,
+		InstanceExpireTime:      detail.Instance.InstanceExpireTime,
+		PubliclyAccessible:      detail.Instance.PublicAccessStatus,
+		PaymentTiming:           detail.Instance.PaymentTiming,
+		SyncMode:                detail.Instance.SyncMode,
+		Region:                  detail.Instance.Region,
+		VpcId:                   detail.Instance.VpcId,
+		BackupPolicy:            detail.Instance.BackupPolicy,
+		RoGroupList:             detail.Instance.RoGroupList,
+		NodeMaster:              detail.Instance.NodeMaster,
+		NodeSlave:               detail.Instance.NodeSlave,
+		NodeReadReplica:         detail.Instance.NodeReadReplica,
+		Subnets:                 detail.Instance.Subnets,
+		DeployId:                detail.Instance.DeployId,
+		ZoneNames:               detail.Instance.ZoneNames,
+		Category:                detail.Instance.Category,
+		LongBBCId:               detail.Instance.LongBBCId,
+		InstanceTopoForReadonly: detail.Instance.InstanceTopoForReadonly,
 	}
 	// 兼容RDS字段
 	result.PublicAccessStatus = strconv.FormatBool(result.PubliclyAccessible)
@@ -1802,4 +1803,27 @@ func (c *DDCClient) ModifySyncMode(instanceId string, args *ModifySyncModeArgs) 
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		Do()
+}
+
+// GetDisk - get disk detail of instance
+//
+// PARAMS:
+//     - instanceId: id of instance
+// RETURNS:
+//     - *Disk:disk of instance
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetDisk(instanceId string) (*Disk, error) {
+	if len(instanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+
+	result := &Disk{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getDdcUriWithInstanceId(instanceId)+"/disk").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
 }

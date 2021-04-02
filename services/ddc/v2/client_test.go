@@ -36,7 +36,7 @@ const (
 	POOL            = "xdb_gaiabase_pool"
 	PNETIP          = "100.88.65.121"
 	DEPLOY_ID       = "ab89d829-9068-d88e-75bc-64bb6367d036"
-	DDC_INSTANCE_ID = "ddc-mkxvakqc"
+	DDC_INSTANCE_ID = "ddc-mw3by2yl"
 	RDS_INSTANCE_ID = "rds-OtTkC1OD"
 	ETAG            = "v0"
 )
@@ -372,7 +372,7 @@ func TestClient_ListVpc(t *testing.T) {
 }
 
 func TestClient_GetDetail(t *testing.T) {
-	instanceId = "ddc-m1imxfws"
+	instanceId = "ddc-mvjswzxb"
 	result, err := DDCRDS_CLIENT.GetDetail(instanceId)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println("ddc instanceId: ", result.InstanceId)
@@ -403,6 +403,7 @@ func TestClient_GetDetail(t *testing.T) {
 	fmt.Println("ddc Endpoint: ", result.Endpoint)
 	fmt.Println("ddc Endpoint vnetIpBackup: ", result.Endpoint.VnetIpBackup)
 	fmt.Println("ddc long BBC Id: ", result.LongBBCId)
+	fmt.Println("ddc topo: ", result.InstanceTopoForReadonly)
 }
 
 func TestClient_UpdateSecurityIps(t *testing.T) {
@@ -1276,4 +1277,14 @@ func TestClient_LazyDropDeleteHardLink(t *testing.T) {
 		return
 	}
 	fmt.Println("[lazy drop] delete hard link success.")
+}
+
+func TestClient_GetDisk(t *testing.T) {
+	disk, err := client.GetDisk(instanceId)
+	if err != nil {
+		fmt.Printf("get disk of instance error: %+v\n", err)
+		return
+	}
+	fmt.Println("get disk of instance success.")
+	fmt.Println("disk CapacityRatio: ", disk.CapacityRatio)
 }
