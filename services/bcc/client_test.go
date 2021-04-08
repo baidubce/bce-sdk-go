@@ -642,6 +642,17 @@ func TestListSecurityGroup(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestInstanceChangeVpc(t *testing.T)  {
+	args := &api.InstanceChangeVpcArgs{
+		InstanceId: "i-ujPXJ64Q",
+		SubnetId: "sbn-z1y9tcedqnh6",
+		Reboot: false,
+	}
+
+	err := BCC_CLIENT.InstanceChangeVpc(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestAuthorizeSecurityGroupRule(t *testing.T) {
 	args := &api.AuthorizeSecurityGroupArgs{
 		Rule: &api.SecurityGroupRuleModel{

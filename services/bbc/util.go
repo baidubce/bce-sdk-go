@@ -32,6 +32,7 @@ const (
 	REQUEST_RECYCLE_URI      = "/recycle"
 	REQUEST_RECOVERY_URI     = "/recovery"
 	REQUEST_SUBNET_URI       = "/vpcSubnet"
+	REQUEST_VPC_URI          = "/vpc"
 	SECURITY_GROUP_URI       = "/securitygroup"
 
 	REQUEST_IMAGE_URI                        = "/image"

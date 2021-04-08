@@ -30,14 +30,15 @@ const (
 type InstanceStatus string
 
 const (
-	InstanceStatusRunning         InstanceStatus = "Running"
-	InstanceStatusStarting        InstanceStatus = "Starting"
-	InstanceStatusStopping        InstanceStatus = "Stopping"
-	InstanceStatusStopped         InstanceStatus = "Stopped"
-	InstanceStatusDeleted         InstanceStatus = "Deleted"
-	InstanceStatusExpired         InstanceStatus = "Expired"
-	InstanceStatusError           InstanceStatus = "Error"
-	InstanceStatusImageProcessing InstanceStatus = "ImageProcessing"
+	InstanceStatusRunning         		InstanceStatus = "Running"
+	InstanceStatusStarting        		InstanceStatus = "Starting"
+	InstanceStatusStopping        		InstanceStatus = "Stopping"
+	InstanceStatusStopped         		InstanceStatus = "Stopped"
+	InstanceStatusDeleted         		InstanceStatus = "Deleted"
+	InstanceStatusExpired         		InstanceStatus = "Expired"
+	InstanceStatusError           		InstanceStatus = "Error"
+	InstanceStatusImageProcessing 		InstanceStatus = "ImageProcessing"
+	InstanceStatusChangeVpcProcessing   InstanceStatus = "ChangeVpc"
 )
 
 type ImageType string
@@ -215,6 +216,12 @@ type StopInstanceArgs struct {
 
 type ModifyInstanceNameArgs struct {
 	Name string `json:"name"`
+}
+
+type InstanceChangeVpcArgs struct {
+	InstanceId string `json:"instanceId"`
+	SubnetId   string `json:"subnetId"`
+	Reboot     bool   `json:"reboot"`
 }
 
 type ModifyInstanceDescArgs struct {

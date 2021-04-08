@@ -23,16 +23,17 @@ import (
 type InstanceStatus string
 
 const (
-	InstanceStatusRunning            InstanceStatus = "Running"
-	InstanceStatusStarting           InstanceStatus = "Starting"
-	InstanceStatusStopping           InstanceStatus = "Stopping"
-	InstanceStatusStopped            InstanceStatus = "Stopped"
-	InstanceStatusDeleted            InstanceStatus = "Deleted"
-	InstanceStatusScaling            InstanceStatus = "Scaling"
-	InstanceStatusExpired            InstanceStatus = "Expired"
-	InstanceStatusError              InstanceStatus = "Error"
-	InstanceStatusSnapshotProcessing InstanceStatus = "SnapshotProcessing"
-	InstanceStatusImageProcessing    InstanceStatus = "ImageProcessing"
+	InstanceStatusRunning            	InstanceStatus = "Running"
+	InstanceStatusStarting           	InstanceStatus = "Starting"
+	InstanceStatusStopping           	InstanceStatus = "Stopping"
+	InstanceStatusStopped            	InstanceStatus = "Stopped"
+	InstanceStatusDeleted            	InstanceStatus = "Deleted"
+	InstanceStatusScaling            	InstanceStatus = "Scaling"
+	InstanceStatusExpired            	InstanceStatus = "Expired"
+	InstanceStatusError              	InstanceStatus = "Error"
+	InstanceStatusSnapshotProcessing 	InstanceStatus = "SnapshotProcessing"
+	InstanceStatusImageProcessing    	InstanceStatus = "ImageProcessing"
+	InstanceStatusChangeVpcProcessing   InstanceStatus = "ChangeVpc"
 )
 
 type InstanceType string
@@ -582,6 +583,12 @@ type DeleteInstanceWithRelateResourceArgs struct {
 	RelatedReleaseFlag    bool `json:"relatedReleaseFlag"`
 	DeleteCdsSnapshotFlag bool `json:"deleteCdsSnapshotFlag"`
 	BccRecycleFlag        bool `json:"bccRecycleFlag"`
+}
+
+type InstanceChangeVpcArgs struct {
+	InstanceId string `json:"instanceId"`
+	SubnetId   string `json:"subnetId"`
+	Reboot     bool   `json:"reboot"`
 }
 
 type InstanceChangeSubnetArgs struct {

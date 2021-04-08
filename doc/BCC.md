@@ -1390,6 +1390,27 @@ if err != nil {
 > - 变更子网后默认自动重启，用户选择是否执行该操作。
 > - 变更子网的范围目前仅支持在同AZ下变更子网，不支持跨AZ或跨VPC变更子网，如果从普通子网变更至NAT专属子网请先手动解绑EIP。
 
+### 实例变更VPC
+
+如下代码可以变更实例的VPC
+```go
+args := &api.InstanceChangeVpcArgs{
+    InstanceId: instanceId,
+    SubnetId: subnetId,
+    Reboot: true,
+}
+err := client.InstanceChangeVpc(args)
+if err != nil {
+    fmt.Println("change instance vpc failed:", err)
+} else {
+    fmt.Println("change instance vpc success")
+}
+```
+
+> **提示：**
+> - 变更VPC后默认自动重启，用户选择是否执行该操作。
+> - 变更VPC后仅保留主网卡主IP（在新子网中自动分配），实例上的辅助IP、弹性网卡和安全组等信息不跟随主体迁移。
+
 ### 向指定实例批量添加指定ip
 
 ```go

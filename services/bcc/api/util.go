@@ -45,6 +45,7 @@ const (
 	REQUEST_CHAIN_URI            = "/chain"
 	REQUEST_SPEC_URI             = "/instance/spec"
 	REQUEST_SUBNET_URI           = "/subnet"
+	REQUEST_VPC_URI              = "/vpc"
 	REQUEST_VNC_SUFFIX           = "/vnc"
 	REQUEST_VOLUME_URI           = "/volume"
 	REQUEST_ZONE_URI             = "/zone"
@@ -220,6 +221,10 @@ func getInstanceTypeZoneUri() string {
 
 func getChangeSubnetUri() string {
 	return URI_PREFIXV2 + REQUEST_SUBNET_URI + "/changeSubnet"
+}
+
+func getChangeVpcUri() string {
+	return URI_PREFIXV2 + REQUEST_VPC_URI + "/changeVpc"
 }
 
 func getInstanceEniUri(instanceId string) string {

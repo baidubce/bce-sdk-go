@@ -319,6 +319,26 @@ if err := bbcClient.ModifyInstanceDesc(instanceId, modifyInstanceDescArgs); err 
 }
 ```
 
+### 修改实例VPC
+使用以下代码可以修改指定BBC实例所在的VPC：
+```go
+instanceChangeVpcArgs := &InstanceChangeVpcArgs{
+    InstanceId: "your-choose-instance-id",
+    SubnetId: "new_subnet_id_in_vpc",
+    Reboot: true,
+}
+if err := bbcClient.InstanceChangeVpc(instanceChangeVpcArgs); err != nil {
+    fmt.Println("modify instance vpc failed: ", err)
+} else {
+    fmt.Println("modify instance vpc success.")
+}
+```
+
+> **提示：**
+> - 变更VPC后默认自动重启，用户选择是否执行该操作。
+> - 变更VPC后仅保留主网卡主IP（在新子网中自动分配），实例上的辅助IP和安全组等信息不跟随主体迁移。
+
+
 ### 重装实例
 使用以下代码可以使用镜像重建指定BBC实例:
 ```go

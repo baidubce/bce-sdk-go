@@ -578,6 +578,25 @@ func (c *Client) InstanceChangeSubnet(args *api.InstanceChangeSubnetArgs) error 
 	return api.InstanceChangeSubnet(c, body)
 }
 
+// InstanceChangeVpc - change an instance's vpc
+//
+// PARAMS:
+//     - args: the arguments to change an instance's vpc
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) InstanceChangeVpc(args *api.InstanceChangeVpcArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.InstanceChangeVpc(c, body)
+}
+
 // BatchAddIP - Add ips to instance
 //
 // PARAMS:

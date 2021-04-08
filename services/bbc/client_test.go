@@ -141,8 +141,8 @@ func TestListInstances(t *testing.T) {
 }
 
 func TestGetInstanceDetail(t *testing.T) {
-	res, err := BBC_CLIENT.GetInstanceDetail(BBC_TestBbcId)
-	fmt.Println(res)
+	res, err := BBC_CLIENT.GetInstanceDetail("i-4PvLVv37")
+	fmt.Println(res.Status)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -686,6 +686,17 @@ func TestListRecycledInstances(t *testing.T) {
 	} else {
 		fmt.Println("list recycled bbc success, result: ", res)
 	}
+}
+
+func TestInstanceChangeVpc(t *testing.T)  {
+	args := &InstanceChangeVpcArgs{
+		InstanceId: "i-xxxxx",
+		SubnetId: "sbn-zyyyyyyy",
+		Reboot: true,
+	}
+
+	err := BBC_CLIENT.InstanceChangeVpc(args)
+	ExpectEqual(t.Errorf, err, nil)
 }
 
 func TestRecoveryInstances(t *testing.T) {

@@ -854,6 +854,33 @@ func InstanceChangeSubnet(cli bce.Client, reqBody *bce.Body) error {
 	return nil
 }
 
+// InstanceChangeVpc - change the vpc to which the instance belongs
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: request body to change vpc of instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func InstanceChangeVpc(cli bce.Client, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getChangeVpcUri())
+	req.SetMethod(http.PUT)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
 // BatchAddIp - Add ips to instance
 //
 // PARAMS:
