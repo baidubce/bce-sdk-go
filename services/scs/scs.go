@@ -18,18 +18,43 @@ package scs
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
-
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
+	"strconv"
 )
 
 const (
+	KEY_MARKER                = "marker"
+	KEY_MAX_KEYS              = "maxKeys"
 	INSTANCE_URL_V1           = bce.URI_PREFIX + "v1" + "/instance"
 	INSTANCE_URL_V2           = bce.URI_PREFIX + "v2" + "/instance"
 	URI_PREFIX_V2             = bce.URI_PREFIX + "v2"
+	URI_PREFIX_V1             = bce.URI_PREFIX + "v1"
 	REQUEST_SECURITYGROUP_URL = "/security"
+	REQUEST_RECYCLER_URL      = "/recycler"
 )
+
+func (c *Client) request(method, url string, result, body interface{}) (interface{}, error) {
+	var err error
+	if result != nil {
+		err = bce.NewRequestBuilder(c).
+			WithMethod(method).
+			WithURL(url).
+			WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+			WithBody(body).
+			WithResult(result).
+			Do()
+	} else {
+		err = bce.NewRequestBuilder(c).
+			WithMethod(method).
+			WithURL(url).
+			WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+			WithBody(body).
+			Do()
+	}
+	// fmt.Println(Json(result))
+	return result, err
+}
 
 // List Security Group By Vpc URL
 func getSecurityGroupWithVpcIdUrl(vpcId string) string {
@@ -56,12 +81,65 @@ func getReplaceSecurityGroupWithUrl() string {
 	return URI_PREFIX_V2 + REQUEST_SECURITYGROUP_URL + "/update"
 }
 
+// Recycler URL
+func getRecyclerUrl() string {
+	return URI_PREFIX_V2 + REQUEST_RECYCLER_URL + "/list"
+}
+
+// Recycler Recover URL
+func getRecyclerRecoverUrl() string {
+	return URI_PREFIX_V2 + REQUEST_RECYCLER_URL + "/recover"
+}
+
+// Recycler Recover URL
+func getRecyclerDeleteUrl() string {
+	return URI_PREFIX_V2 + REQUEST_RECYCLER_URL + "/delete"
+}
+
+// Renew Instance URL
+func getRenewUrl() string {
+	return INSTANCE_URL_V2 + "/renew"
+}
+
+func getLogsUrlWithInstanceId(instanceId string) string {
+	return INSTANCE_URL_V1 + "/" + instanceId + "/log"
+}
+
+func getLogsUrlWithLogId(instanceId, logId string) string {
+	return INSTANCE_URL_V1 + "/" + instanceId + "/log/" + logId
+}
+
 func Json(v interface{}) string {
 	jsonStr, err := json.Marshal(v)
 	if err != nil {
 		panic("convert to json faild")
 	}
 	return string(jsonStr)
+}
+
+// Convert marker to request params
+func getMarkerParams(marker *Marker) map[string]string {
+	if marker == nil {
+		marker = &Marker{Marker: "-1"}
+	}
+	params := make(map[string]string, 2)
+	params[KEY_MARKER] = marker.Marker
+	if marker.MaxKeys > 0 {
+		params[KEY_MAX_KEYS] = strconv.Itoa(marker.MaxKeys)
+	}
+	return params
+}
+
+// Convert struct to request params
+func getQueryParams(val interface{}) (map[string]string, error) {
+	var params map[string]string
+	if val != nil {
+		err := json.Unmarshal([]byte(Json(val)), &params)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return params, nil
 }
 
 // CreateInstance - create an instance with specified parameters
@@ -606,4 +684,161 @@ func (c *Client) ReplaceSecurityGroups(args *SecurityGroupArgs) error {
 		WithBody(args).
 		Do()
 	return err
+}
+
+// ListRecycleInstances - list all instances in recycler with marker
+//
+// PARAMS:
+//     - marker: marker page
+// RETURNS:
+//     - *RecyclerInstanceList: the result of instances in recycler
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListRecycleInstances(marker *Marker) (*RecyclerInstanceList, error) {
+	result := &RecyclerInstanceList{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithQueryParams(getMarkerParams(marker)).
+		WithURL(getRecyclerUrl()).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// RecoverRecyclerInstances - batch recover instances that in recycler
+//
+// PARAMS:
+//     - instanceIds: instanceId list to recover
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) RecoverRecyclerInstances(instanceIds []string) error {
+	if instanceIds == nil || len(instanceIds) < 1 {
+		return fmt.Errorf("unset instanceIds")
+	}
+	if len(instanceIds) > 10 {
+		return fmt.Errorf("the instanceIds length max value is 10")
+	}
+
+	args := &BatchInstanceIds{
+		InstanceIds: instanceIds,
+	}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getRecyclerRecoverUrl()).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// DeleteRecyclerInstances - batch delete instances that in recycler
+//
+// PARAMS:
+//     - instanceIds: instanceId list to delete
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeleteRecyclerInstances(instanceIds []string) error {
+	if instanceIds == nil || len(instanceIds) < 1 {
+		return fmt.Errorf("unset instanceIds")
+	}
+	if len(instanceIds) > 10 {
+		return fmt.Errorf("the instanceIds length max value is 10")
+	}
+
+	args := &BatchInstanceIds{
+		InstanceIds: instanceIds,
+	}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getRecyclerDeleteUrl()).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// RenewInstances - batch renew instances
+//
+// PARAMS:
+//     - args: renew instanceIds and duration
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) RenewInstances(args *RenewInstanceArgs) (*OrderIdResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("unset args")
+	}
+	if args.InstanceIds == nil || len(args.InstanceIds) < 1 {
+		return nil, fmt.Errorf("unset instanceIds")
+	}
+	if len(args.InstanceIds) > 10 {
+		return nil, fmt.Errorf("the instanceIds length max value is 10")
+	}
+	result := &OrderIdResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getRenewUrl()).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// ListLogByInstanceId - list error or slow logs of instance
+//
+// PARAMS:
+//     - instanceId: id of instance
+// RETURNS:
+//     - *[]Log:logs of instance
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListLogByInstanceId(instanceId string, args *ListLogArgs) (*ListLogResult, error) {
+	if len(instanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+	if args == nil {
+		return nil, fmt.Errorf("unset list log args")
+	}
+	params, err2 := getQueryParams(args)
+	if err2 != nil {
+		return nil, err2
+	}
+	result := &ListLogResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getLogsUrlWithInstanceId(instanceId)).
+		WithQueryParams(params).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GetLogById - get log's detail of instance
+//
+// PARAMS:
+//     - instanceId: id of instance
+// RETURNS:
+//     - *Log:log's detail of instance
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetLogById(instanceId, logId string, args *GetLogArgs) (*LogItem, error) {
+	if len(instanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+	if len(logId) < 1 {
+		return nil, fmt.Errorf("unset logId")
+	}
+	if args == nil {
+		return nil, fmt.Errorf("unset get log args")
+	}
+
+	result := &LogItem{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getLogsUrlWithLogId(instanceId, logId)).
+		WithQueryParam("validSeconds", strconv.Itoa(args.ValidSeconds)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
 }

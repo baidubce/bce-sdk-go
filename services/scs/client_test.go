@@ -34,6 +34,8 @@ const (
 	SDK_NAME_PREFIX = "sdk_scs_"
 )
 
+var instanceId = SCS_TEST_ID
+
 func init() {
 	_, f, _, _ := runtime.Caller(0)
 	for i := 0; i < 1; i++ {
@@ -52,7 +54,8 @@ func init() {
 	SCS_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
 	client = SCS_CLIENT
-	SCS_TEST_ID = "scs-hkg-elwrsdnkezvc"
+	SCS_TEST_ID = "scs-bj-mktaypucksot"
+	instanceId = SCS_TEST_ID
 }
 
 // ExpectEqual is the helper function for test each case
@@ -124,7 +127,6 @@ func TestClient_ListInstances(t *testing.T) {
 			ExpectEqual(t.Errorf, "Postpaid", e.PaymentTiming)
 		}
 	}
-
 }
 
 func TestClient_GetInstanceDetail(t *testing.T) {
@@ -200,7 +202,7 @@ func TestClient_UpdateInstanceDomainName(t *testing.T) {
 }
 
 func TestClient_GetZoneList(t *testing.T) {
-	isAvailable(SCS_TEST_ID)
+	//isAvailable(SCS_TEST_ID)
 	_, err := SCS_CLIENT.GetZoneList()
 	ExpectEqual(t.Errorf, nil, err)
 }
@@ -524,4 +526,126 @@ func TestClient_ReplaceSecurityGroups(t *testing.T) {
 		return
 	}
 	fmt.Println("replace security groups to instances success.")
+}
+
+func TestClient_ListRecycleInstances(t *testing.T) {
+	marker := &Marker{MaxKeys: 10}
+	instances, err := client.ListRecycleInstances(marker)
+	if err != nil {
+		fmt.Printf("list recycler instances error: %+v\n", err)
+		return
+	}
+	fmt.Println(Json(instances))
+	for _, instance := range instances.Result {
+		fmt.Println("+-------------------------------------------+")
+		fmt.Println("instanceId: ", instance.InstanceID)
+		fmt.Println("instanceName: ", instance.InstanceName)
+		fmt.Println("engine: ", instance.Engine)
+		fmt.Println("engineVersion: ", instance.EngineVersion)
+		fmt.Println("instanceStatus: ", instance.InstanceStatus)
+		fmt.Println("isolatedStatus: ", instance.IsolatedStatus)
+		fmt.Println("PaymentTiming: ", instance.PaymentTiming)
+		fmt.Println("ClusterType: ", instance.ClusterType)
+		fmt.Println("Domain: ", instance.Domain)
+		fmt.Println("Port: ", instance.Port)
+		fmt.Println("VnetIP: ", instance.VnetIP)
+		fmt.Println("InstanceCreateTime: ", instance.InstanceCreateTime)
+		fmt.Println("UsedCapacity: ", instance.UsedCapacity)
+		fmt.Println("ZoneNames: ", instance.ZoneNames)
+		fmt.Println("tags: ", instance.Tags)
+	}
+}
+
+func TestClient_RecoverRecyclerInstances(t *testing.T) {
+	instanceIds := []string{
+		"scs-bj-xjgriqupoftn",
+	}
+	err := client.RecoverRecyclerInstances(instanceIds)
+	if err != nil {
+		fmt.Printf("recover recycler instances error: %+v\n", err)
+		return
+	}
+	fmt.Println("recover recycler instances success.")
+}
+
+func TestClient_DeleteRecyclerInstances(t *testing.T) {
+	instanceIds := []string{
+		"scs-bj-xuuasbccatzr",
+	}
+	err := client.DeleteRecyclerInstances(instanceIds)
+	if err != nil {
+		fmt.Printf("delete recycler instances error: %+v\n", err)
+		return
+	}
+	fmt.Println("delete recycler instances success.")
+}
+
+func TestClient_RenewInstances(t *testing.T) {
+	instanceIds := []string{
+		"scs-bj-xuuasbccatzr",
+	}
+	args := &RenewInstanceArgs{
+		// 实例Id列表
+		InstanceIds: instanceIds,
+		// 续费周期，单位为月
+		Duration: 1,
+	}
+	result, err := client.RenewInstances(args)
+	if err != nil {
+		fmt.Printf("renew instances error: %+v\n", err)
+		return
+	}
+	fmt.Println("renew instances success. orderId:" + result.OrderId)
+}
+func TestClient_ListLogByInstanceId(t *testing.T) {
+	// 一天前
+	date := time.Now().
+		AddDate(0, 0, -1).
+		Format("2006-01-02 03:04:05")
+	fmt.Println(date)
+	args := &ListLogArgs{
+		// 运行日志 runlog 慢日志 slowlog
+		FileType: "runlog",
+		// 开始时间格式 "yyyy-MM-dd hh:mm:ss"
+		StartTime: date,
+		// 结束时间,可选,默认返回开始时间+24小时内的日志
+		// EndTime: date,
+	}
+	listLogResult, err := client.ListLogByInstanceId(instanceId, args)
+	if err != nil {
+		fmt.Printf("list logs of instance error: %+v\n", err)
+		return
+	}
+	fmt.Println("list logs of instance success.")
+	for _, shardLog := range listLogResult.LogList {
+		fmt.Println("+-------------------------------------------+")
+		fmt.Println("shard id: ", shardLog.ShardID)
+		fmt.Println("logs size: ", shardLog.TotalNum)
+		for _, log := range shardLog.LogItem {
+			fmt.Println("log id: ", log.LogID)
+			fmt.Println("size: ", log.LogSizeInBytes)
+			fmt.Println("start time: ", log.LogStartTime)
+			fmt.Println("end time: ", log.LogEndTime)
+			fmt.Println("download url: ", log.DownloadURL)
+			fmt.Println("download url expires: ", log.DownloadExpires)
+		}
+	}
+}
+
+func TestClient_GetLogById(t *testing.T) {
+	args := &GetLogArgs{
+		// 下载链接有效时间，单位为秒，可选，默认为1800秒
+		ValidSeconds: 60,
+	}
+	logId := "scs-bj-mktaypucksot_8742_slowlog_202104160330"
+	log, err := client.GetLogById(instanceId, logId, args)
+	if err != nil {
+		fmt.Printf("get log detail of instance error: %+v\n", err)
+		return
+	}
+	fmt.Println("get log detail success.")
+	fmt.Println("+-------------------------------------------+")
+	fmt.Println("id: ", log.LogID)
+	fmt.Println("download url: ", log.DownloadURL)
+	fmt.Println("download url expires: ", log.DownloadExpires)
 }

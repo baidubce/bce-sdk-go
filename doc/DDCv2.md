@@ -1550,6 +1550,8 @@ args := &ddcrds.UpdateParameterArgs{
 			Value: "15",
 		},
 	},
+    // 是否立即重启（修改需要重启才能生效的参数时，支持时间窗口，true：立即重启；false：在时间窗口重启）
+    IsRebootNow:true,
 }
 // DDC
 // Etag传入空字符串即可

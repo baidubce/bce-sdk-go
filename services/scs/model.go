@@ -294,3 +294,97 @@ type SecurityGroupDetail struct {
 	VpcID               string              `json:"vpcId"`
 	ProjectID           string              `json:"projectId"`
 }
+
+type RequestBuilder struct {
+}
+
+type GetPriceRequest struct {
+	Engine         string `json:"engine,omitempty"`
+	ShardNum       int    `json:"shardNum,omitempty"`
+	Period         int    `json:"period,omitempty"`
+	ChargeType     string `json:"chargeType,omitempty"`
+	NodeType       string `json:"nodeType,omitempty"`
+	ReplicationNum int    `json:"replicationNum,omitempty"`
+	ClusterType    string `json:"clusterType,omitempty"`
+}
+
+type GetPriceResult struct {
+	Price float64 `json:"price,omitempty"`
+}
+
+type Marker struct {
+	Marker  string `json:"marker,omitempty"`
+	MaxKeys int    `json:"maxKeys,omitempty"`
+}
+
+type ListResultWithMarker struct {
+	IsTruncated bool   `json:"isTruncated"`
+	Marker      string `json:"marker"`
+	MaxKeys     int    `json:"maxKeys"`
+	NextMarker  string `json:"nextMarker"`
+}
+
+type RecycleInstance struct {
+	InstanceID         string           `json:"cacheClusterShowId"`
+	InstanceName       string           `json:"instanceName"`
+	InstanceStatus     string           `json:"instanceStatus"`
+	IsolatedStatus     string           `json:"isolatedStatus"`
+	ClusterType        string           `json:"clusterType"`
+	Engine             string           `json:"engine"`
+	EngineVersion      string           `json:"engineVersion"`
+	VnetIP             string           `json:"vnetIp"`
+	Domain             string           `json:"domain"`
+	Port               string           `json:"port"`
+	InstanceCreateTime string           `json:"instanceCreateTime"`
+	Capacity           int              `json:"capacity"`
+	UsedCapacity       float64          `json:"usedCapacity"`
+	PaymentTiming      string           `json:"paymentTiming"`
+	ZoneNames          []string         `json:"zoneNames"`
+	Tags               []model.TagModel `json:"tags"`
+}
+
+type RecyclerInstanceList struct {
+	ListResultWithMarker
+	Result []RecycleInstance `json:"result"`
+}
+
+type BatchInstanceIds struct {
+	InstanceIds []string `json:"cacheClusterShowIds,omitempty"`
+}
+
+type RenewInstanceArgs struct {
+	Duration    int      `json:"duration,omitempty"`
+	InstanceIds []string `json:"instanceIds,omitempty"`
+}
+
+type OrderIdResult struct {
+	OrderId string `json:"orderId"`
+}
+
+type ListLogArgs struct {
+	FileType  string `json:"fileType"`
+	StartTime string `json:"startTime"`
+	EndTime   string `json:"endTime"`
+}
+
+type ListLogResult struct {
+	LogList []ShardLog `json:"logList"`
+}
+type LogItem struct {
+	LogStartTime    string `json:"logStartTime"`
+	LogEndTime      string `json:"logEndTime"`
+	DownloadURL     string `json:"downloadUrl"`
+	LogID           string `json:"logId"`
+	LogSizeInBytes  int    `json:"logSizeInBytes"`
+	DownloadExpires string `json:"downloadExpires"`
+}
+type ShardLog struct {
+	ShardShowID string    `json:"shardShowId"`
+	TotalNum    int       `json:"totalNum"`
+	ShardID     int       `json:"shardId"`
+	LogItem     []LogItem `json:"logItem"`
+}
+
+type GetLogArgs struct {
+	ValidSeconds int `json:"validSeconds"`
+}

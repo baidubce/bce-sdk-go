@@ -535,7 +535,8 @@ type Parameter struct {
 }
 
 type UpdateParameterArgs struct {
-	Parameters []KVParameter `json:"parameters"`
+	Parameters  []KVParameter `json:"parameters"`
+	IsRebootNow bool          `json:"isRebootNow"`
 }
 
 type KVParameter struct {

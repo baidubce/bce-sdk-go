@@ -331,7 +331,7 @@ if err != nil {
 
 ### 释放实例
 
-如下代码可以释放实例
+如下代码可以释放实例,实例将自动进入回收站，保留7天后删除
 ```go
 err := client.DeleteInstance(instanceId)
 if err != nil {
@@ -342,8 +342,95 @@ if err != nil {
 ```
 
 > **提示：**
-> -   释放单个SCS实例，释放后实例所使用的物理资源都被收回，相关数据全部丢失且不可恢复。
-> -   只有付费类型为Postpaid或者付费类型为Prepaid且已过期的实例才可以释放。
+> -   释放单个SCS实例，进入回收站；7天彻底删除后实例所使用的物理资源都被收回，相关数据全部丢失且不可恢复。
+
+## 续费实例
+使用以下代码可以对已有的预付费实例进行续费,如果实例在回收站中,续费后会从回收站中恢复。
+```go
+
+// 要恢复的实例Id列表
+instanceIds := []string{
+    instancId,
+}
+args := &scs.RenewInstanceArgs{
+    // 实例Id列表
+    InstanceIds: instanceIds,
+    // 续费周期，单位为月
+    Duration: 1,
+}
+result, err := client.RenewInstances(args)
+if err != nil {
+    fmt.Printf("renew instances error: %+v\n", err)
+    return
+}
+// 异步任务，返回订单Id
+fmt.Println("renew instances success. orderId:" + result.OrderId)
+```
+
+## 获取回收站中的实例列表
+使用以下代码可以获取回收站中的实例列表。
+```go
+
+// marker分页参数
+marker := &scs.Marker{MaxKeys: 10}
+instances, err := client.ListRecycleInstances(marker)
+if err != nil {
+    fmt.Printf("list recycler instances error: %+v\n", err)
+    return
+}
+for _, instance := range instances.Result {
+    fmt.Println("instanceId: ", instance.InstanceID)
+    fmt.Println("instanceName: ", instance.InstanceName)
+    fmt.Println("engine: ", instance.Engine)
+    fmt.Println("engineVersion: ", instance.EngineVersion)
+    fmt.Println("instanceStatus: ", instance.InstanceStatus)
+    // 进入回收站后isolatedStatus为Isolated,表示实例已隔离
+    fmt.Println("isolatedStatus: ", instance.IsolatedStatus)
+    fmt.Println("paymentTiming: ", instance.PaymentTiming)
+    fmt.Println("clusterType: ", instance.ClusterType)
+    fmt.Println("domain: ", instance.Domain)
+    fmt.Println("port: ", instance.Port)
+    fmt.Println("vnetIP: ", instance.VnetIP)
+    fmt.Println("instanceCreateTime: ", instance.InstanceCreateTime)
+    fmt.Println("usedCapacity: ", instance.UsedCapacity)
+    fmt.Println("zoneNames: ", instance.ZoneNames)
+    fmt.Println("tags: ", instance.Tags)
+}
+```
+
+## 从回收站中批量恢复实例
+使用以下代码可以从回收站中批量恢复实例,批量恢复仅支持后付费实例,回收站中的预付费实例请通过实例续费接口恢复。
+```go
+
+// 要恢复的实例Id列表
+instanceIds := []string{
+    instanceId_1,
+	instanceId_2,
+}
+err := client.RecoverRecyclerInstances(instanceIds)
+if err != nil {
+    fmt.Printf("recover recycler instances error: %+v\n", err)
+    return
+}
+fmt.Println("recover recycler instances success.")
+```
+
+## 从回收站中批量删除实例
+使用以下代码可以从回收站中批量删除实例,实例将被彻底删除。
+```go
+
+// 要删除的实例Id列表
+instanceIds := []string{
+    instanceId_1,
+    instanceId_2,
+}
+err := client.DeleteRecyclerInstances(instanceIds)
+if err != nil {
+    fmt.Printf("delete recycler instances error: %+v\n", err)
+    return
+}
+fmt.Println("delete recycler instances success.")
+```
 
 ### 变更配置
 
@@ -734,6 +821,67 @@ if err != nil {
 > - BackupDays: 标识一周中哪几天进行备份备份周期：Mon（周一）Tue（周二）Wed（周三）Thu（周四）Fri（周五）Sat（周六）Sun（周日）逗号分隔，取值如：Sun,Wed,Thu,Fri,Sta
 > - BackupTime: 标识一天中何时进行备份，UTC时间（+8为北京时间）取值如：01:05:00
 > - ExpireDay: 备份文件过期时间，取值如：3
+
+# 日志管理
+
+## 日志列表
+使用以下代码可以获取一个实例下的运行日志或者慢日志列表。
+```go
+// import "time"
+
+// 一天前
+date := time.Now().
+    AddDate(0, 0, -1).
+    Format("2006-01-02 03:04:05")
+fmt.Println(date)
+args := &scs.ListLogArgs{
+    // 运行日志 runlog 慢日志 slowlog
+    FileType:  "runlog",
+    // 开始时间格式 "yyyy-MM-dd hh:mm:ss"
+    StartTime: date,
+    // 结束时间,可选,默认返回开始时间+24小时内的日志
+    // EndTime: date,
+}
+listLogResult, err := client.ListLogByInstanceId(instanceId, args)
+if err != nil {
+    fmt.Printf("list logs of instance error: %+v\n", err)
+    return
+}
+fmt.Println("list logs of instance success.")
+for _, shardLog := range listLogResult.LogList {
+    fmt.Println("shard id: ", shardLog.ShardID)
+    fmt.Println("logs size: ", shardLog.TotalNum)
+    for _, log := range shardLog.LogItem {
+        fmt.Println("log id: ", log.LogID)
+        fmt.Println("size: ", log.LogSizeInBytes)
+        fmt.Println("start time: ", log.LogStartTime)
+        fmt.Println("end time: ", log.LogEndTime)
+        fmt.Println("download url: ", log.DownloadURL)
+        fmt.Println("download url expires: ", log.DownloadExpires)
+    }
+}
+```
+
+## 日志详情
+使用以下代码可以查询日志的详细信息，包括该日志文件有效的下载链接。
+```go
+args := &GetLogArgs{
+    // 下载链接有效时间，单位为秒，可选，默认为1800秒
+    ValidSeconds: 60,
+}
+logId := "scs-bj-mktaypucksot_8742_slowlog_202104160330"
+log, err := client.GetLogById(instanceId, logId, args)
+if err != nil {
+    fmt.Printf("get log detail of instance error: %+v\n", err)
+    return
+}
+fmt.Println("get log detail success.")
+fmt.Println("id: ", log.LogID)
+// 日志文件下载链接
+fmt.Println("download url: ", log.DownloadURL)
+// 下载链接截止该时间有效
+fmt.Println("download url expires: ", log.DownloadExpires)
+```
 
 # 错误处理
 
