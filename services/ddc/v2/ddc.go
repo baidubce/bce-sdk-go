@@ -16,13 +16,15 @@
 package ddcrds
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/bce"
-	"github.com/baidubce/bce-sdk-go/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/baidubce/bce-sdk-go/bce"
+	"github.com/baidubce/bce-sdk-go/http"
 )
 
 const (
@@ -43,6 +45,18 @@ func getMarkerParams(marker *Marker) map[string]string {
 		params[KEY_MAX_KEYS] = strconv.Itoa(marker.MaxKeys)
 	}
 	return params
+}
+
+// Convert struct to request params
+func getQueryParams(val interface{}) (map[string]string, error) {
+	var params map[string]string
+	if val != nil {
+		err := json.Unmarshal([]byte(Json(val)), &params)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return params, nil
 }
 
 // CreateInstance - create a Instance with the specific parameters
@@ -1823,6 +1837,60 @@ func (c *DDCClient) GetDisk(instanceId string) (*Disk, error) {
 		WithMethod(http.GET).
 		WithURL(getDdcUriWithInstanceId(instanceId)+"/disk").
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GetResidual - get residual of pool
+//
+// PARAMS:
+//     - poolId: id of pool
+//     - zoneName: the zone name
+// RETURNS:
+//     - *GetResidualResult:residual of pool
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetResidual(poolId string) (*GetResidualResult, error) {
+	if len(poolId) < 1 {
+		return nil, fmt.Errorf("unset poolId")
+	}
+
+	result := &GetResidualResult{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getPoolUriWithId(poolId)+"/residual").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GetFlavorCapacity - get flavor capacity of pool
+//
+// PARAMS:
+//     - poolId: id of pool
+//     - args: request params
+// RETURNS:
+//     - *GetResidualResult:get flavor capacity of pool
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetFlavorCapacity(poolId string, args *GetFlavorCapacityArgs) (*GetFlavorCapacityResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("unset args")
+	}
+	if len(poolId) < 1 {
+		return nil, fmt.Errorf("unset poolId")
+	}
+
+	result := &GetFlavorCapacityResult{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getPoolUriWithId(poolId)+"/flavorCap").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithQueryParam("cpuInCore", strconv.Itoa(args.CpuInCore)).
+		WithQueryParam("diskInGb", strconv.FormatInt(args.DiskInGb, 10)).
+		WithQueryParam("memoryInGb", strconv.FormatInt(args.MemoryInGb, 10)).
 		WithResult(result).
 		Do()
 	return result, err

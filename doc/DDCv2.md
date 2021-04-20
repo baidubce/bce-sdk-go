@@ -265,6 +265,60 @@ for i := range result.Result {
 }
 ```
 
+## 查询资源池余量
+使用以下代码可以查询当前指定资源池的资源余量(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+residual, err := client.GetResidual(poolId)
+if err != nil {
+    fmt.Printf("get residual of pool error: %+v\n", err)
+    return
+}
+fmt.Println("get residual of pool success.")
+for zoneName, residualByZone := range residual.Residual {
+    // 可用区名称
+    fmt.Println("Zone name: ", zoneName)
+    // 单机版余量
+    fmt.Printf("Single residual: disk %v GB, memory %v GB, cpu cores %d\n",
+        residualByZone.Single.DiskInGb, residualByZone.Single.MemoryInGb, residualByZone.Single.CPUInCore)
+    // 只读资源余量
+    fmt.Printf("Slave residual: disk %v GB, memory %v GB, cpu cores %d\n",
+        residualByZone.Slave.DiskInGb, residualByZone.Slave.MemoryInGb, residualByZone.Slave.CPUInCore)
+    // 双机版余量
+    fmt.Printf("HA residual: disk %v GB, memory %v GB, cpu cores %d\n",
+        residualByZone.HA.DiskInGb, residualByZone.HA.MemoryInGb, residualByZone.HA.CPUInCore)
+}
+```
+
+## 查询资源池套餐余量
+使用以下代码可以查询当前指定资源池的套餐余量(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+// 指定套餐
+args := &ddcrds.GetFlavorCapacityArgs{
+    CpuInCore:  2,
+    MemoryInGb: 4,
+    DiskInGb:   50,
+}
+capacityResult, err := client.GetFlavorCapacity(poolId, args)
+if err != nil {
+    fmt.Printf("get flavor capacity of pool error: %+v\n", err)
+    return
+}
+fmt.Println("get flavor capacity of pool success.")
+for zoneName, residualByZone := range capacityResult.Capacity {
+    // 可用区名称
+    fmt.Println("Zone name: ", zoneName)
+    // 双机版余量
+    fmt.Printf("HA capacity: %d\n", residualByZone.HA)
+    // 单机版余量
+    fmt.Printf("Single capacity: %d\n", residualByZone.Single)
+    // 只读实例余量
+    fmt.Printf("Slave capacity: %d\n", residualByZone.Slave)
+}
+```
+
 # 部署集管理
 
 ## 创建部署集

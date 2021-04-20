@@ -1291,3 +1291,27 @@ func (c *Client) GetDisk(instanceId string) (*Disk, error) {
 	}
 	return c.ddcClient.GetDisk(instanceId)
 }
+
+// GetResidual - get residual of pool
+//
+// PARAMS:
+//     - poolId: id of pool
+//     - zoneName: the zone name
+// RETURNS:
+//     - *GetResidualResult:residual of pool
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetResidual(poolId string) (*GetResidualResult, error) {
+	return c.ddcClient.GetResidual(poolId)
+}
+
+// GetFlavorCapacity - get flavor capacity of pool
+//
+// PARAMS:
+//     - poolId: id of pool
+//     - args: request params
+// RETURNS:
+//     - *GetResidualResult:get flavor capacity of pool
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetFlavorCapacity(poolId string, args *GetFlavorCapacityArgs) (*GetFlavorCapacityResult, error) {
+	return c.ddcClient.GetFlavorCapacity(poolId, args)
+}

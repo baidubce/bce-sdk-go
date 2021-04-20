@@ -3,14 +3,15 @@ package ddcrds
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/util"
-	"github.com/baidubce/bce-sdk-go/util/log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"testing"
 	"time"
+
+	"github.com/baidubce/bce-sdk-go/util"
+	"github.com/baidubce/bce-sdk-go/util/log"
 )
 
 var (
@@ -33,7 +34,7 @@ type Conf struct {
 
 const (
 	SDK_NAME_PREFIX = "sdk_rds_"
-	POOL            = "xdb_gaiabase_pool"
+	POOL            = "xdb_005a2d79-a4f4-4bfb-8284-0ffe9ddaa307_pool"
 	PNETIP          = "100.88.65.121"
 	DEPLOY_ID       = "ab89d829-9068-d88e-75bc-64bb6367d036"
 	DDC_INSTANCE_ID = "ddc-mw3by2yl"
@@ -1287,4 +1288,42 @@ func TestClient_GetDisk(t *testing.T) {
 	}
 	fmt.Println("get disk of instance success.")
 	fmt.Println("disk CapacityRatio: ", disk.CapacityRatio)
+}
+
+func TestClient_GetResidual(t *testing.T) {
+	residual, err := client.GetResidual(POOL)
+	if err != nil {
+		fmt.Printf("get residual of pool error: %+v\n", err)
+		return
+	}
+	fmt.Println("get residual of pool success.")
+	for zoneName, residualByZone := range residual.Residual {
+		fmt.Println("zone name: ", zoneName)
+		fmt.Printf("Single residual: disk %v GB, memory %v GB, cpu cores %d\n",
+			residualByZone.Single.DiskInGb, residualByZone.Single.MemoryInGb, residualByZone.Single.CPUInCore)
+		fmt.Printf("Slave residual: disk %v GB, memory %v GB, cpu cores %d\n",
+			residualByZone.Slave.DiskInGb, residualByZone.Slave.MemoryInGb, residualByZone.Slave.CPUInCore)
+		fmt.Printf("HA residual: disk %v GB, memory %v GB, cpu cores %d\n",
+			residualByZone.HA.DiskInGb, residualByZone.HA.MemoryInGb, residualByZone.HA.CPUInCore)
+	}
+}
+
+func TestClient_GetFlavorCapacity(t *testing.T) {
+	args := &GetFlavorCapacityArgs{
+		CpuInCore:  2,
+		MemoryInGb: 4,
+		DiskInGb:   50,
+	}
+	capacityResult, err := client.GetFlavorCapacity(POOL, args)
+	if err != nil {
+		fmt.Printf("get flavor capacity of pool error: %+v\n", err)
+		return
+	}
+	fmt.Println("get flavor capacity of pool success.")
+	for zoneName, residualByZone := range capacityResult.Capacity {
+		fmt.Println("zone name: ", zoneName)
+		fmt.Printf("HA capacity: %d\n", residualByZone.HA)
+		fmt.Printf("Single capacity: %d\n", residualByZone.Single)
+		fmt.Printf("Slave capacity: %d\n", residualByZone.Slave)
+	}
 }

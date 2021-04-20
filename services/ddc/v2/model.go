@@ -877,3 +877,40 @@ type CreateTableHardLinkArgs struct {
 type Disk struct {
 	CapacityRatio []string `json:"capacityRatio"`
 }
+
+type GetResidualResult struct {
+	Residual map[string]ResidualOfZone `json:"residual"`
+}
+type Slave struct {
+	DiskInGb   float64 `json:"diskInGb"`
+	MemoryInGb float64 `json:"memoryInGb"`
+	CPUInCore  int     `json:"cpuInCore"`
+}
+type Single struct {
+	DiskInGb   float64 `json:"diskInGb"`
+	MemoryInGb float64 `json:"memoryInGb"`
+	CPUInCore  int     `json:"cpuInCore"`
+}
+type HA struct {
+	DiskInGb   float64 `json:"diskInGb"`
+	MemoryInGb float64 `json:"memoryInGb"`
+	CPUInCore  int     `json:"cpuInCore"`
+}
+type ResidualOfZone struct {
+	Slave  Slave  `json:"slave"`
+	Single Single `json:"single"`
+	HA     HA     `json:"HA"`
+}
+type GetFlavorCapacityArgs struct {
+	CpuInCore  int    `json:"CpuInCore,omitempty"`
+	MemoryInGb int64  `json:"memoryInGb,omitempty"`
+	DiskInGb   int64  `json:"diskInGb,omitempty"`
+}
+type GetFlavorCapacityResult struct {
+	Capacity map[string]CapacityOfZone `json:"capacity"`
+}
+type CapacityOfZone struct {
+	Single int `json:"single"`
+	Slave  int `json:"slave"`
+	HA     int `json:"HA"`
+}
