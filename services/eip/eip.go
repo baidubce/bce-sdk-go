@@ -35,10 +35,6 @@ func (c *Client) CreateEip(args *CreateEipArgs) (*CreateEipResult, error) {
 		return nil, fmt.Errorf("please set create eip argments")
 	}
 
-	if args.BandWidthInMbps <= 0 || args.BandWidthInMbps > 1000 {
-		return nil, fmt.Errorf("unsupport bandwidthInMbps value: %d", args.BandWidthInMbps)
-	}
-
 	if args.Billing == nil {
 		return nil, fmt.Errorf("please set billing")
 	}
@@ -65,10 +61,6 @@ func (c *Client) CreateEip(args *CreateEipArgs) (*CreateEipResult, error) {
 func (c *Client) ResizeEip(eip string, args *ResizeEipArgs) error {
 	if args == nil {
 		return fmt.Errorf("please set resize eip argments")
-	}
-
-	if args.NewBandWidthInMbps <= 0 || args.NewBandWidthInMbps > 1000 {
-		return fmt.Errorf("unsupport bandwidthInMbps value: %d", args.NewBandWidthInMbps)
 	}
 
 	return bce.NewRequestBuilder(c).
