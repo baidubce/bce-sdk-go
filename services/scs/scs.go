@@ -18,9 +18,10 @@ package scs
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
+
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
-	"strconv"
 )
 
 const (
@@ -54,6 +55,10 @@ func (c *Client) request(method, url string, result, body interface{}) (interfac
 	}
 	// fmt.Println(Json(result))
 	return result, err
+}
+
+func getInstanceUrlWithId(instanceId string) string {
+	return INSTANCE_URL_V1 + "/" + instanceId
 }
 
 // List Security Group By Vpc URL
@@ -227,8 +232,25 @@ func (c *Client) ResizeInstance(instanceId string, args *ResizeInstanceArgs) err
 
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
-		WithURL(INSTANCE_URL_V1+"/"+instanceId+"/resize").
+		WithURL(INSTANCE_URL_V1+"/"+instanceId+"/change").
 		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithBody(args).
+		Do()
+}
+
+// RestartInstance - restart a specified instance
+//
+// PARAMS:
+//     - instanceId: id of the instance to be resized
+//     - args: specify restart immediately or postpone restart to time window
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) RestartInstance(instanceId string, args *RestartInstanceArgs) error {
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getInstanceUrlWithId(instanceId)+"/restart").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		Do()
 }
@@ -841,4 +863,51 @@ func (c *Client) GetLogById(instanceId, logId string, args *GetLogArgs) (*LogIte
 		WithResult(result).
 		Do()
 	return result, err
+}
+
+// GetMaintainTime - get maintainTime of instance
+//
+// PARAMS:
+//     - instanceId: id of instance
+// RETURNS:
+//     - *GetMaintainTimeResult:maintainTime of instance
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetMaintainTime(instanceId string) (*GetMaintainTimeResult, error) {
+	if len(instanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+
+	result := &GetMaintainTimeResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getInstanceUrlWithId(instanceId)+"/maintainTime").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// ModifyMaintainTime - modify MaintainTime of instance
+//
+// PARAMS:
+//     - args: new maintainTime
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ModifyMaintainTime(instanceId string, args *MaintainTime) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	if len(instanceId) < 1 {
+		return fmt.Errorf("unset instanceIds")
+	}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getInstanceUrlWithId(instanceId)+"/maintainTime").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	if err != nil {
+		return err
+	}
+	return nil
 }

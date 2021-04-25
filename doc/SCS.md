@@ -340,9 +340,26 @@ if err != nil {
     fmt.Println("delete instance success")
 }
 ```
-
 > **提示：**
 > -   释放单个SCS实例，进入回收站；7天彻底删除后实例所使用的物理资源都被收回，相关数据全部丢失且不可恢复。
+
+## 重启实例
+
+使用以下代码可以重启实例。支持用户决定是否延迟到维护窗口内重启。
+
+```go
+// 立即重启
+args := &scs.RestartInstanceArgs{
+    // 需要延迟到维护窗口重启时需传入true
+    IsDefer: false,
+}
+err := SCS_CLIENT.RestartInstance(instanceId, args)
+if err != nil {
+    fmt.Println("restart instance failed:", err)
+} else {
+    fmt.Println("restart instance success")
+}
+```
 
 ## 续费实例
 使用以下代码可以对已有的预付费实例进行续费,如果实例在回收站中,续费后会从回收站中恢复。
@@ -436,8 +453,10 @@ fmt.Println("delete recycler instances success.")
 
 ```go
 args := &scs.ResizeInstanceArgs{
-		NodeType:"cache.n1.small",
-		ShardNum:2,
+    NodeType:"cache.n1.small",
+    ShardNum:2,
+    // 需要延迟到维护窗口变配时需传入true
+    IsDefer: false,
 }
 err := client.ResizeInstance(instanceId, args)
 if err != nil {
@@ -881,6 +900,41 @@ fmt.Println("id: ", log.LogID)
 fmt.Println("download url: ", log.DownloadURL)
 // 下载链接截止该时间有效
 fmt.Println("download url expires: ", log.DownloadExpires)
+```
+
+# 维护窗口
+## 查询实例的维护时间窗口
+使用以下代码可以查询实例的维护时间窗口。
+```go
+resp, err := client.GetMaintainTime(instanceId)
+if err != nil {
+    fmt.Printf("get maintainTime of instance error: %+v\n", err)
+    return
+}
+fmt.Println("get maintainTime success.")
+fmt.Println("start time: ", resp.MaintainTime.StartTime)
+fmt.Println("dutation: ", resp.MaintainTime.Duration)
+fmt.Println("period: ", resp.MaintainTime.Period)
+```
+
+> 注意:
+>
+> - startTime 为北京时间24小时制，例如14:00。
+
+## 修改实例的维护时间窗口
+使用以下代码可以修改实例的维护时间窗口。
+```go
+newMaintainTime := &scs.MaintainTime{
+    StartTime: "16:00",
+    Duration:  1,
+    Period:    []int{1, 2, 3},
+}
+err := client.ModifyMaintainTime(instanceId, newMaintainTime)
+if err != nil {
+    fmt.Printf("modify maintainTime of instance error: %+v\n", err)
+    return
+}
+fmt.Println("modify maintainTime success.")
 ```
 
 # 错误处理

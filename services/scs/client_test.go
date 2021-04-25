@@ -3,7 +3,6 @@ package scs
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/model"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -12,6 +11,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/baidubce/bce-sdk-go/model"
 
 	"github.com/baidubce/bce-sdk-go/util"
 	"github.com/baidubce/bce-sdk-go/util/log"
@@ -54,7 +55,7 @@ func init() {
 	SCS_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
 	client = SCS_CLIENT
-	SCS_TEST_ID = "scs-bj-mktaypucksot"
+	SCS_TEST_ID = "scs-su-btgakwoafoyv"
 	instanceId = SCS_TEST_ID
 }
 
@@ -159,6 +160,7 @@ func TestClient_ResizeInstance(t *testing.T) {
 		NodeType:    "cache.n1.mirco",
 		ShardNum:    4,
 		ClientToken: getClientToken(),
+		IsDefer:     true,
 	}
 	result, err := SCS_CLIENT.GetInstanceDetail(SCS_TEST_ID)
 	ExpectEqual(t.Errorf, nil, err)
@@ -166,6 +168,14 @@ func TestClient_ResizeInstance(t *testing.T) {
 		err := SCS_CLIENT.ResizeInstance(SCS_TEST_ID, args)
 		ExpectEqual(t.Errorf, nil, err)
 	}
+}
+
+func TestClient_RestartInstance(t *testing.T) {
+	args := &RestartInstanceArgs{
+		IsDefer: true,
+	}
+	err := SCS_CLIENT.RestartInstance(SCS_TEST_ID, args)
+	ExpectEqual(t.Errorf, nil, err)
 }
 
 func TestClient_GetNodeTypeList(t *testing.T) {
@@ -535,7 +545,6 @@ func TestClient_ListRecycleInstances(t *testing.T) {
 		fmt.Printf("list recycler instances error: %+v\n", err)
 		return
 	}
-	fmt.Println(Json(instances))
 	for _, instance := range instances.Result {
 		fmt.Println("+-------------------------------------------+")
 		fmt.Println("instanceId: ", instance.InstanceID)
@@ -648,4 +657,31 @@ func TestClient_GetLogById(t *testing.T) {
 	fmt.Println("id: ", log.LogID)
 	fmt.Println("download url: ", log.DownloadURL)
 	fmt.Println("download url expires: ", log.DownloadExpires)
+}
+
+func TestClient_GetMaintainTime(t *testing.T) {
+	resp, err := client.GetMaintainTime(instanceId)
+	if err != nil {
+		fmt.Printf("get maintainTime of instance error: %+v\n", err)
+		return
+	}
+	fmt.Println("get maintainTime success.")
+	fmt.Println("+-------------------------------------------+")
+	fmt.Println("start time: ", resp.MaintainTime.StartTime)
+	fmt.Println("dutation: ", resp.MaintainTime.Duration)
+	fmt.Println("period: ", resp.MaintainTime.Period)
+}
+
+func TestClient_ModifyMaintainTime(t *testing.T) {
+	newMaintainTime := &MaintainTime{
+		StartTime: "16:00",
+		Duration:  1,
+		Period:    []int{1, 2, 3},
+	}
+	err := client.ModifyMaintainTime(instanceId, newMaintainTime)
+	if err != nil {
+		fmt.Printf("modify maintainTime of instance error: %+v\n", err)
+		return
+	}
+	fmt.Println("modify maintainTime success.")
 }

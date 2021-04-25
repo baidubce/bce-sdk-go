@@ -91,7 +91,11 @@ type ListInstancesResult struct {
 type ResizeInstanceArgs struct {
 	NodeType    string `json:"nodeType"`
 	ShardNum    int    `json:"shardNum"`
+	IsDefer     bool   `json:"isDefer"`
 	ClientToken string `json:"-"`
+}
+type RestartInstanceArgs struct {
+	IsDefer bool `json:"isDefer"`
 }
 
 type GetInstanceDetailResult struct {
@@ -387,4 +391,13 @@ type ShardLog struct {
 
 type GetLogArgs struct {
 	ValidSeconds int `json:"validSeconds"`
+}
+type GetMaintainTimeResult struct {
+	CacheClusterShowId string       `json:"cacheClusterShowId"`
+	MaintainTime       MaintainTime `json:"maintainTime"`
+}
+type MaintainTime struct {
+	StartTime string `json:"startTime"`
+	Duration  int    `json:"duration"`
+	Period    []int  `json:"period"`
 }
