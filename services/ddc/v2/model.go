@@ -53,6 +53,7 @@ type CreateRdsArgs struct {
 	AutoRenewTime     int         `json:"autoRenewTime,omitempty"`
 	DeployId          string      `json:"deployId,omitempty"`
 	PoolId            string      `json:"poolId"`
+	SyncMode          string      `json:"syncMode"`
 }
 
 type CreateReadReplicaArgs struct {
@@ -113,6 +114,7 @@ type Instance struct {
 	NodeReadReplica         NodeInfo                `json:"nodeReadReplica"`
 	DeployId                string                  `json:"deployId"`
 	LongBBCId               string                  `json:"longBBCId"`
+	HostName                string                  `json:"hostname,omitempty"`
 	InstanceTopoForReadonly InstanceTopoForReadonly `json:"instanceTopoForReadonly,omitempty"`
 }
 
@@ -173,6 +175,7 @@ type CreateInstance struct {
 	AutoRenewTime        int        `json:"autoRenewTime,omitempty"`
 	Category             string     `json:"category,omitempty"`
 	Tags                 []TagModel `json:"tags,omitempty"`
+	SyncMode             string     `json:"syncMode,omitempty"`
 }
 
 type Pool struct {
@@ -416,6 +419,7 @@ type NodeInfo struct {
 	SubnetId string `json:"subnetId"`
 	Cidr     string `json:"cidr"`
 	Name     string `json:"name"`
+	HostName string `json:"hostname"`
 }
 
 type Subnet struct {
@@ -902,9 +906,9 @@ type ResidualOfZone struct {
 	HA     HA     `json:"HA"`
 }
 type GetFlavorCapacityArgs struct {
-	CpuInCore  int    `json:"CpuInCore,omitempty"`
-	MemoryInGb int64  `json:"memoryInGb,omitempty"`
-	DiskInGb   int64  `json:"diskInGb,omitempty"`
+	CpuInCore  int   `json:"CpuInCore,omitempty"`
+	MemoryInGb int64 `json:"memoryInGb,omitempty"`
+	DiskInGb   int64 `json:"diskInGb,omitempty"`
 }
 type GetFlavorCapacityResult struct {
 	Capacity map[string]CapacityOfZone `json:"capacity"`

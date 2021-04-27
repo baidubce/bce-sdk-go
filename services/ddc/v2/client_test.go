@@ -373,7 +373,7 @@ func TestClient_ListVpc(t *testing.T) {
 }
 
 func TestClient_GetDetail(t *testing.T) {
-	instanceId = "ddc-mvjswzxb"
+	instanceId = "ddc-m4x1v31a"
 	result, err := DDCRDS_CLIENT.GetDetail(instanceId)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println("ddc instanceId: ", result.InstanceId)
@@ -395,7 +395,9 @@ func TestClient_GetDetail(t *testing.T) {
 	fmt.Println("ddc BackupPolicy: ", result.BackupPolicy)
 	fmt.Println("ddc RoGroupList: ", result.RoGroupList)
 	fmt.Println("ddc NodeMaster: ", result.NodeMaster)
+	fmt.Println("master BBC hostname: ", result.NodeMaster.HostName)
 	fmt.Println("ddc NodeSlave: ", result.NodeSlave)
+	fmt.Println("slave BBC hostname: ", result.NodeSlave.HostName)
 	fmt.Println("ddc NodeReadReplica: ", result.NodeReadReplica)
 	fmt.Println("ddc DeployId: ", result.DeployId)
 	fmt.Println("ddc SyncMode: ", result.SyncMode)
@@ -750,6 +752,7 @@ func TestClient_CreateRds(t *testing.T) {
 		//DeployId: "86be443c-a40d-be6a-58d5-e3aedc966cc1",
 		PoolId:   "xdb_005a2d79-a4f4-4bfb-8284-0ffe9ddaa307_pool",
 		Category: STANDARD,
+		SyncMode: "Semi_sync",
 	}
 	subnetArgs := &ListSubnetsArgs{VpcId: args.VpcId}
 	resp, err := DDCRDS_CLIENT.ListSubnets(subnetArgs, "ddc")
@@ -884,6 +887,7 @@ func TestClient_ListRds(t *testing.T) {
 		fmt.Println("vnetIp: ", e.Endpoint.VnetIp)
 		fmt.Println("vnetIpBackup: ", e.Endpoint.VnetIpBackup)
 		fmt.Println("long BBC Id: ", e.LongBBCId)
+		fmt.Println("bbc hostname: ", e.HostName)
 	}
 }
 

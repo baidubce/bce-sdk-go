@@ -45,6 +45,7 @@ type CreateRdsArgs struct {
 	AutoRenewTime     int              `json:"autoRenewTime,omitempty"`
 	DeployId          string           `json:"deployId"`
 	PoolId            string           `json:"poolId"`
+	SyncMode          string           `json:"syncMode"`
 }
 
 type CreateReadReplicaArgs struct {
@@ -153,6 +154,7 @@ type CreateInstance struct {
 	AutoRenewTime        int              `json:"autoRenewTime,omitempty"`
 	Category             string           `json:"category,omitempty"`
 	Tags                 []model.TagModel `json:"tags,omitempty"`
+	SyncMode             string           `json:"syncMode"`
 }
 
 type Pool struct {
@@ -353,6 +355,7 @@ type NodeInfo struct {
 	SubnetId string `json:"subnetId"`
 	Cidr     string `json:"cidr"`
 	Name     string `json:"name"`
+	HostName string `json:"hostname"`
 }
 
 type Subnet struct {

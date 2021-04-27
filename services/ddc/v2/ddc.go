@@ -70,7 +70,6 @@ func (c *DDCClient) CreateInstance(args *CreateInstanceArgs) (*CreateResult, err
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
 	}
-
 	result := &CreateResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
@@ -128,6 +127,7 @@ func (c *DDCClient) CreateRds(args *CreateRdsArgs) (*CreateResult, error) {
 			AutoRenewTimeUnit:    args.AutoRenewTimeUnit,
 			Tags:                 args.Tags,
 			Category:             args.Category,
+			SyncMode:             strings.ToLower(args.SyncMode),
 		},
 	}
 

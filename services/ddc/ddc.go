@@ -114,6 +114,7 @@ func (c *Client) CreateRds(args *CreateRdsArgs) (*CreateResult, error) {
 			AutoRenewTimeUnit:    args.AutoRenewTimeUnit,
 			Tags:                 args.Tags,
 			Category:             args.Category,
+			SyncMode:             args.SyncMode,
 		},
 	}
 

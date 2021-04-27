@@ -480,6 +480,8 @@ args := &ddcrds.CreateRdsArgs{
     DeployId:"xxxyyy-123",
     // 资源池id 产品类型为DDC时必选,产品类型为RDS忽略该参数
     PoolId:"xxxyzzzyy-123",
+    // 创建双机版主实例支持选择同步方式 Semi_sync：开启半同步/Async：异步
+    SyncMode:"Semi_sync",
 }
 // 创建DDC数据库专属集群产品，需要传入产品类型参数ddc
 result, err := client.CreateRds(args,"ddc")
@@ -618,7 +620,11 @@ fmt.Println("ddc Subnets: ", result.Subnets)
 fmt.Println("ddc BackupPolicy: ", result.BackupPolicy)
 fmt.Println("ddc RoGroupList: ", result.RoGroupList)
 fmt.Println("ddc NodeMaster: ", result.NodeMaster)
+// 主角色所在物理机主机名
+fmt.Println("master BBC hostname: ", result.NodeMaster.HostName)
 fmt.Println("ddc NodeSlave: ", result.NodeSlave)
+// 备角色所在物理机主机名
+fmt.Println("slave BBC hostname: ", result.NodeSlave.HostName)
 fmt.Println("ddc NodeReadReplica: ", result.NodeReadReplica)
 fmt.Println("ddc DeployId: ", result.DeployId)
 fmt.Println("ddc SyncMode: ", result.SyncMode)
@@ -715,8 +721,9 @@ for _, e := range resp.Instances {
     fmt.Println("endpoint: ", e.Endpoint)
     fmt.Println("vnetIp: ", e.Endpoint.VnetIp)
     fmt.Println("vnetIpBackup: ", e.Endpoint.VnetIpBackup)
-    // 物理机ID
+    // 物理机信息
     fmt.Println("long BBC Id: ", e.LongBBCId)
+    fmt.Println("BBC hostname: ", e.HostName)
 }
 ```
 
