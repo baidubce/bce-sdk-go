@@ -631,6 +631,8 @@ args := &ddc.CreateRdsArgs{
     DeployId:"xxxyyy-123",
     // 资源池id 必选
     PoolId:"xxxyzzzyy-123",
+    // 创建双机版主实例支持选择同步方式 Semi_sync：开启半同步/Async：异步
+    SyncMode:"Semi_sync",
 }
 result, err := client.CreateRds(args)
 if err != nil {

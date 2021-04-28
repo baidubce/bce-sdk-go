@@ -302,6 +302,15 @@ type ResizeInstanceStockArgs struct {
 	InstanceId         string          `json:"instanceId"`
 }
 
+type GetStockWithDeploySetArgs struct {
+	Spec         string   `json:"spec"`
+	DeploySetIds []string `json:"deploySetIds"`
+}
+
+type GetStockWithDeploySetResults struct {
+	BccStocks []BccStock `json:"bccStocks"`
+}
+
 type InstanceStockResult struct {
 	FlaovrId string `json:"flavorId"`
 	Count    int    `json:"Count"`

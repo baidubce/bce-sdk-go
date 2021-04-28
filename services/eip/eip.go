@@ -264,3 +264,33 @@ func (c *Client) GetEipCluster(clusterId string) (*ClusterDetail, error) {
 
 	return result, err
 }
+
+// DirectEip - turn on EIP pass through with the specific parameters
+//
+// PARAMS:
+//     - eip: the specific EIP
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DirectEip(eip, clientToken string) error {
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getEipUriWithEip(eip)).
+		WithQueryParamFilter("clientToken", clientToken).
+		WithQueryParam("direct", "").
+		Do()
+}
+
+// UnDirectEip - turn off EIP pass through with the specific parameters
+//
+// PARAMS:
+//     - eip: the specific EIP
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UnDirectEip(eip, clientToken string) error {
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getEipUriWithEip(eip)).
+		WithQueryParamFilter("clientToken", clientToken).
+		WithQueryParam("unDirect", "").
+		Do()
+}

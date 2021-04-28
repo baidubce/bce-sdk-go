@@ -113,8 +113,8 @@ func TestCreateInstance(t *testing.T) {
 func TestCreateInstanceBySpec(t *testing.T) {
 	DeploySetIds := []string{"DeploySetId"}
 	createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
-		ImageId:   "ImageId",
-		Spec:      "bcc.g4.c2m8",
+		ImageId:   "m-mcDaCc3x",
+		Spec:      "bcc.l3.c16m64",
 		Name:      "sdkTest2",
 		AdminPass: "123qaz!@#",
 		ZoneName:  "cn-bj-a",
@@ -143,9 +143,9 @@ func TestCreateInstanceV3(t *testing.T) {
 			},
 		},
 		PurchaseCount: 1,
-		InstanceName:  "sdkTest8",
-		Password:      "123qaz!@#",
-		ZoneName:      "cn-bj-b",
+		InstanceName: "sdkTest8",
+		Password:     "123qaz!@#",
+		ZoneName:     "cn-bj-b",
 		Billing: api.Billing{
 			PaymentTiming: api.PaymentTimingPostPaid,
 			Reservation: &api.Reservation{
@@ -214,7 +214,6 @@ func TestListInstances(t *testing.T) {
 	res, err := BCC_CLIENT.ListInstances(listArgs)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(res)
-	fmt.Println(res.Instances[0].DeploySetList)
 }
 
 func TestListRecycleInstances(t *testing.T) {
@@ -496,13 +495,18 @@ func TestDeleteAutoSnapshotPolicy(t *testing.T) {
 }
 
 func TestListCDSVolume(t *testing.T) {
-	queryArgs := &api.ListCDSVolumeArgs{}
-	_, err := BCC_CLIENT.ListCDSVolume(queryArgs)
+	queryArgs := &api.ListCDSVolumeArgs{
+		InstanceId: BCC_TestBccId,
+	}
+	res, err := BCC_CLIENT.ListCDSVolume(queryArgs)
 	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
 }
 
 func TestListCDSVolumeV3(t *testing.T) {
-	queryArgs := &api.ListCDSVolumeArgs{}
+	queryArgs := &api.ListCDSVolumeArgs{
+		InstanceId: BCC_TestBccId,
+	}
 	res, err := BCC_CLIENT.ListCDSVolumeV3(queryArgs)
 	fmt.Println(res)
 	ExpectEqual(t.Errorf, err, nil)
@@ -746,7 +750,7 @@ func TestDeleteImage(t *testing.T) {
 }
 
 func TestDeleteInstance(t *testing.T) {
-	err := BCC_CLIENT.DeleteInstance("BCC_TestBccId")
+	err := BCC_CLIENT.DeleteInstance(BCC_TestBccId)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -754,7 +758,7 @@ func TestDeleteInstanceWithRelateResource(t *testing.T) {
 	args := &api.DeleteInstanceWithRelateResourceArgs{
 		BccRecycleFlag: false,
 	}
-	err := BCC_CLIENT.DeleteInstanceWithRelateResource("BCC_TestBccId", args)
+	err := BCC_CLIENT.DeleteInstanceWithRelateResource(BCC_TestBccId, args)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -777,10 +781,10 @@ func TestListFlavorSpec(t *testing.T) {
 
 func TestGetPriceBySpec(t *testing.T) {
 	args := &api.GetPriceBySpecArgs{
-		SpecId:         "bcc.b1.c8m16",
+		SpecId:         "g1",
 		Spec:           "",
 		PaymentTiming:  "Postpaid",
-		ZoneName:       "cn-bj-c",
+		ZoneName:       "cn-gz-b",
 		PurchaseCount:  1,
 		PurchaseLength: 1,
 	}
@@ -836,26 +840,6 @@ func TestGetDeploySet(t *testing.T) {
 	fmt.Println(rep)
 	ExpectEqual(t.Errorf, err, nil)
 }
-
-//func TestUpdateInstanceDeploySet(t *testing.T) {
-//	queryArgs := &api.UpdateInstanceDeployArgs{
-//		InstanceId:   "i-p5AgGD2V",
-//		DeploySetIds: []string{"dset-wFhQIXid", "dset-NxOwQacM"},
-//	}
-//	rep, err := BCC_CLIENT.UpdateInstanceDeploySet(queryArgs)
-//	fmt.Println(rep)
-//	ExpectEqual(t.Errorf, err, nil)
-//}
-//
-//func TestDelInstanceDeploySet(t *testing.T) {
-//	queryArgs := &api.DelInstanceDeployArgs{
-//		DeploySetId: "dset-2mekjKVo",
-//		InstanceIds: []string{"i-D73858x1"},
-//	}
-//	rep, err := BCC_CLIENT.DelInstanceDeploySet(queryArgs)
-//	fmt.Println(rep)
-//	ExpectEqual(t.Errorf, err, nil)
-//}
 
 func TestResizeInstanceBySpec(t *testing.T) {
 	resizeArgs := &api.ResizeInstanceArgs{
@@ -960,7 +944,7 @@ func TestInstancePurchaseReserved(t *testing.T) {
 		},
 		RelatedRenewFlag: "",
 	}
-	err := BCC_CLIENT.InstancePurchaseReserved("i-C2NZiShJ", purchaseReservedArgs)
+	err := BCC_CLIENT.InstancePurchaseReserved(BCC_TestBccId, purchaseReservedArgs)
 	//fmt.Print(err)
 	ExpectEqual(t.Errorf, err, nil)
 }
@@ -1156,5 +1140,17 @@ func TestGetAllStocks(t *testing.T) {
 		fmt.Println("get all stocks failed: ", err)
 	} else {
 		fmt.Println("get all stocks success, result: ", res)
+	}
+}
+
+func TestGetStockWithDeploySet(t *testing.T) {
+	args := &api.GetStockWithDeploySetArgs{
+		Spec: "bcc.g3.c2m8",
+		DeploySetIds: []string{"dset-Wz2RRXSp"},
+	}
+	if res, err := BCC_CLIENT.GetStockWithDeploySet(args); err != nil {
+		fmt.Println("get stock with deploySet failed: ", err)
+	} else {
+		fmt.Println("get stock with deploySet, result: ", res)
 	}
 }

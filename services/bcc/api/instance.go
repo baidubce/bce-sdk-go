@@ -1345,6 +1345,46 @@ func GetAllStocks(cli bce.Client) (*GetAllStocksResult, error) {
 	return jsonBody, nil
 }
 
+// GetStockWithDeploySet - get the bcc's stock with deploySet
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - args: the arguments to get the bcc's stock with deploySet
+// RETURNS:
+//     - *GetAllStocksResult: the result of the bcc's stock
+//     - error: nil if success otherwise the specific error
+func GetStockWithDeploySet(cli bce.Client, args *GetStockWithDeploySetArgs) (*GetStockWithDeploySetResults, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getStockWithDeploySet())
+	req.SetMethod(http.POST)
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return nil, err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &GetStockWithDeploySetResults{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
 func GetInstanceCreateStock(cli bce.Client, args *CreateInstanceStockArgs) (*InstanceStockResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}

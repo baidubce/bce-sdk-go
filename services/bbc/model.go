@@ -197,6 +197,7 @@ type InstanceModel struct {
 	ExpireTime            string           `json:"expireTime"`
 	PublicIp              string           `json:"publicIp"`
 	InternalIp            string           `json:"internalIp"`
+	RdmaIp                string           `json:"rdmaIp"`
 	ImageId               string           `json:"imageId"`
 	FlavorId              string           `json:"flavorId"`
 	Zone                  string           `json:"zone"`

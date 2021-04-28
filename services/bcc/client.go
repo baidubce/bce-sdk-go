@@ -1513,6 +1513,15 @@ func (c *Client) GetAllStocks() (*api.GetAllStocksResult, error) {
 	return api.GetAllStocks(c)
 }
 
+// GetStockWithDeploySet - get the bcc's stock with deploySet
+//
+// RETURNS:
+//     - *GetStockWithDeploySetResults: the result of the bcc's stock
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetStockWithDeploySet(args *api.GetStockWithDeploySetArgs) (*api.GetStockWithDeploySetResults, error) {
+	return api.GetStockWithDeploySet(c, args)
+}
+
 func (c *Client) GetInstanceCreateStock(args *api.CreateInstanceStockArgs) (*api.InstanceStockResult, error) {
 	return api.GetInstanceCreateStock(c, args)
 }

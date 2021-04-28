@@ -44,6 +44,7 @@ func init() {
 		f = filepath.Dir(f)
 	}
 	conf := filepath.Join(f, "config.json")
+	fmt.Println(conf)
 	fp, err := os.Open(conf)
 	if err != nil {
 		fmt.Println("config json file of ak/sk not given: ", conf)
@@ -334,7 +335,10 @@ func TestDeleteImage(t *testing.T) {
 }
 
 func TestGetOperationLog(t *testing.T) {
-	queryArgs := &GetOperationLogArgs{}
+	queryArgs := &GetOperationLogArgs{
+		StartTime: "2021-03-28T15:00:27Z",
+		EndTime: "2021-03-30T15:00:27Z",
+	}
 	rep, err := BBC_CLIENT.GetOperationLog(queryArgs)
 	fmt.Println(rep)
 	ExpectEqual(t.Errorf, err, nil)

@@ -73,6 +73,7 @@ const (
 	REQUEST_BATCH_CREATE_AUTORENEW_RULES_URI = "/batchCreateAutoRenewRules"
 	REQUEST_BATCH_Delete_AUTORENEW_RULES_URI = "/batchDeleteAutoRenewRules"
 	REQUEST_GET_ALL_STOCKS                   = "/getAllStocks"
+	REQUEST_GET_STOCK_WITH_DEPLOYSET         = "/getStockWithDeploySet"
 )
 
 func getInstanceUri() string {
@@ -241,6 +242,10 @@ func getKeypairWithId(id string) string {
 
 func getAllStocks() string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_GET_ALL_STOCKS
+}
+
+func getStockWithDeploySet() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_GET_STOCK_WITH_DEPLOYSET
 }
 
 func getCreateInstanceStock() string {
