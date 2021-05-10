@@ -369,6 +369,31 @@ func TestSetDomainHttps(t *testing.T) {
 	checkClientErr(t, "SetDomainHttps", err)
 }
 
+func TestPutCert(t *testing.T) {
+	privateKey := "证书私钥数据"
+	certData := "证书内容(一般需要包含证书链信息)"
+	certId, err := testCli.PutCert(testAuthorityDomain, &api.UserCertificate{
+		CertName:    "test",
+		ServerData:  certData,
+		PrivateData: privateKey,
+	}, "ON")
+
+	t.Logf("TestPutCert got certId %s", certId)
+	checkClientErr(t, "TestPutCert", err)
+}
+
+func TestGetCert(t *testing.T) {
+	detail, err := testCli.GetCert(testAuthorityDomain)
+	data, _ := json.Marshal(detail)
+	t.Logf("TestGetCert: %s", string(data))
+	checkClientErr(t, "TestGetCert", err)
+}
+
+func TestDeleteCert(t *testing.T) {
+	err := testCli.DeleteCert(testAuthorityDomain)
+	checkClientErr(t, "TestGetCert", err)
+}
+
 func TestSetOCSP(t *testing.T) {
 	err := testCli.SetOCSP(testAuthorityDomain, false)
 	checkClientErr(t, "SetOCSP", err)

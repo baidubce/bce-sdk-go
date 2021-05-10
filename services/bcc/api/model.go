@@ -109,6 +109,7 @@ type InstanceModel struct {
 	PaymentTiming         string                 `json:"paymentTiming"`
 	CreationTime          string                 `json:"createTime"`
 	ExpireTime            string                 `json:"expireTime"`
+	ReleaseTime           string                 `json:"releaseTime"`
 	PublicIP              string                 `json:"publicIp"`
 	InternalIP            string                 `json:"internalIp"`
 	CpuCount              int                    `json:"cpuCount"`
@@ -400,6 +401,7 @@ type CreateInstanceV3Args struct {
 	AutoSnapshotPolicyId  string                `json:"autoSnapshotPolicyId,omitempty"`
 	PrivateIpAddresses    []string              `json:"privateIpAddresses,omitempty"`
 	DeploymentSetId       string                `json:"deploymentSetId,omitempty"`
+	DeployIdList          []string              `json:"deployIdList"`
 	ImageId               string                `json:"imageId,omitempty"`
 	UserData              string                `json:"userData,omitempty"`
 	InstanceMarketOptions InstanceMarketOptions `json:"instanceMarketOptions,omitempty"`
@@ -503,6 +505,10 @@ type ModifyInstanceHostnameArgs struct {
 
 type GetInstanceDetailResult struct {
 	Instance InstanceModel `json:"instance"`
+}
+
+type AutoReleaseArgs struct {
+	ReleaseTime			string 	 `json:"releaseTime"`
 }
 
 type ResizeInstanceArgs struct {

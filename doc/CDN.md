@@ -1098,6 +1098,49 @@ fmt.Printf("err:%+v\n", err)
 fmt.Printf("ocspSwitch:%+v\n", ocspSwitch)    
 ```
 
+## 证书管理接口
+
+### 添加/修改域名证书 PutCert
+
+> 给某个域名添加或修改证书，如果该域名已经绑定了一个证书，则该方法为修改（将用户新上传的证书替换掉证书库中的老证书，且给域名绑定新证书）。 如果域名之前没有绑定证书，则该方法为上传新证书。可自定义是否开启HTTPS。
+
+```go
+cli := client.GetDefaultClient()
+// certData要带有证书链信息
+certData := "-----BEGIN CERTIFICATE-----\nMIIFPTCCBCWgAwIBAgISBGRxBpT9H0OPrHDku006DU9SMA0GCSqGSIb3DQEBCwUA\nMDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD\nEwJSMzAeFw0yMTAzMTgwNzE0MzNaFw0yMTA2MTYwNzE0MzNaMB0xGzAZBgNVBAMM\nEiouY29kaW5nMzY1eDI0LmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC\nggEBALM1g+BnRWl26auFUgAEU6L/2OWixH6K1BOp7JtlHW1RYM1I72pohuXyu0Hc\n20vOYpIQHpN1UY1e7bTKHsWiE/qUO/MeORbuslkYLBi3rZDE6i3aiYIFmaxjeYL9\nVQEJFrJI8X1AiIoP3MyiA4QsPotBH++3FyBb6sl5HtgqmCqItbsh6NV2FDN9+bm0\nz4hGSlJ1Wg9N03pXTaE8FT4AsCJzd/m+z+5u02aO5tEHWHiwrL4Yj/Y5H39x8/Ax\nHyaUjK62bgFySYH/XpU89dAKKo+uwOx5iBLXR8ni7yUj3y5NJ5A+AZUa61WbNNh0\n3jmgXff+s1zSwSiK+GP8q+Fz9+sCAwEAAaOCAmAwggJcMA4GA1UdDwEB/wQEAwIF\noDAdBgNVHSUEFjAUwYBBQUHAwIwDAYDVR0TAQH/BAIwADAd\nBgNVHQ4EFgQUArIIp83mJ+O7zRPwVr5ehX6JVJ4wHwYDVR0jBBgwFoAUFC6zF7dY\nVsuuUAlA5h+vnYsUwsYwVQYIKwYBBQUHAQEESTBHMCEGCCsGAQUFBzABhhVodHRw\nOi8vcjMuby5sZW5jci5vcmcwIgYIKwYBBQUHMAKGFmh0dHA6Ly9yMy5pLmxlbmNy\nLm9yZy8wLwYDVR0RBCgwJoISKi5jb2RpbmczNjV4MjQuY29tghBjb2RpbmczNjV4\nMjQuY29tMEwGA1UdIARFMEMwCAYGZ4EMAQIBMDcGCysGAQQBgt8TAQEBMCgwJgYI\nKwYBBQUHAgEWGmh0dHA6Ly9jcHMubGV0c2VuY3J5cHQub3JnMIIBBQYKKwYBBAHW\neQIEAgSB9gSB8wDxAHcAXNxDkv7mq0VEsV6a1FbmEDf71fpH3KFzlLJe5vbHDsoA\nAAF4RGaGEA1Hh4zntDdVfmKVzQT5p/mQdczLsoQp2hmkHrKiTw\nl8cCIQDlceLBxn2RWzl+LD00gvTZDlqL/iWI/pAJ5qtTKzMH1QB2APZclC/RdzAi\nFFQYCDCUVo7jTRMZM7/fDC8gC8xO8WTjAAABeERmhrYAAAQDAEcwRQIhAKCycKu6\nNch4dkzO9gfQdjwhyCsaKi8nxNDgS199gp+eAiBkePK1AEwf+fvWGV+mXWDXcjjS\n6QCjL7w5lKi7CrVJLzANBgkqhkiG9w0BAQsFA0MKbiwTqtJdEb\nPaaATAtN/NXHoESO/KHFGjJT9ua1PByM0Qqn6mvonck+Tu9fWxM6ZOvXheEdcCbS\n5zLI4AJTdp5yySPRQe2v9UwVO6keDsk0Ux1JWFWgV7otwV5P22pDxaKOKqUQ11ZM\neu5Pk9dKFjlhT+oP88acHKVBJ0CJk/D72jWlDUhn4LwiEJ/+mfGW0oPu5ht+z0Zb\nQLMt7xTX6fATALSCELFPwVrBwleUpCYeafxAJC6XAMF1xeifFfZduORqPAUqyj7U\nYp6h3Wy+rJRKo0bN1roPxgu4aexXnOth6Qeyvi7zq7IO+jMY1/VaEBQJGS/hqity\nKQ==\n-----END CERTIFICATE-----\n-----BEGIN CERTIFICATE-----\nMIIEZTCCA02gAwIBAgIQQAF1BIMUpMghjISpDBbN3zANBgkqhkiG9w0BAQsFADA/\nMSQwIgYDVQQKExtEaWdpdGFsIFNpZ25hdHVyZSBUcnVzdCBDby4xFzAVBgNVBAMT\nDkRTVCBSb290IENBIFgzMB4XDTIwMTAwNzE5MjE0MFoXDTIxMDkyOTE5MjE0MFow\nMjELMAkGA1UEBhMCVVMxFjAUBgQxCzAJBgNVBAMT\nAlIzMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuwIVKMz2oJTTDxLs\njVWSw/iC8ZmmekKIp10mqrUrucVMsa+Oa/l1yKPXD0eUFFU1V4yeqKI5GfWCPEKp\nTm71O8Mu243AsFzzWTjn7c9p8FoLG77AlCQlh/o3cbMT5xys4Zvv2+Q7RVJFlqnB\nU840yFLuta7tj95gcOKlVKu2bQ6XpUA0ayvTvGbrZjR8+muLj1cpmfgwF126cm/7\ngcWt0oZYPRfH5wm78Sv3htzB2nFd1EbjzK0lwYi8YGd1ZrPxGPeiXOZT/zqItkel\n/xMY6pgJdz+dU/nPAeX1pnAXFK9jpP+Zs5Od3FOnBv5IhR2haa4ldbsTzFID9e1R\noYvbFQIDAQABo4IBaDCCAWQwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8E\nBAMCAYYwSwYIKwYBBQUHAQEEPzA9ModHRwOi8vYXBwcy5p\nZGVudHJ1c3QuY29tL3Jvb3RzL2RzdHJvb3RjYXgzLnA3YzAfBgNVHSMEGDAWgBTE\np7Gkeyxx+tvhS5B1/8QVYIWJEDBUBgNVHSAETTBLMAgGBmeBDAECATA/BgsrBgEE\nAYLfEwEBATAwMC4GCCsGAQUFBwIBFiJodHRwOi8vY3BzLnJvb3QteDEubGV0c2Vu\nY3J5cHQub3JnMDwGA1UdHwQ1MDMwMaAvoC2GK2h0dHA6Ly9jcmwuaWRlbnRydXN0\nLmNvbS9EU1RST09UQ0FYM0NSTC5jcmwwHQYDVR0OBBYEFBQusxe3WFbLrlAJQOYf\nr52LFMLGMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjANBgkqhkiG9w0B\nAQsFAAOCAQEA2UzgyfWEiDcx27sT4rP8i2tiEmxYt0l+PAK3qB8oYevO4C5z70kH\nejWEHx2taPDY/laBL21/WKZuNTYQHHPVvCadTQsvd8\nS8MXjohyc9z9/G2948kLjmE6Flh9dDYrVYA9x2O+hEPGOaEOa1eePynBgPayvUfL\nqjBstzLhWVQLGAkXXmNs+5ZnPBxzDJOLxhF2JIbeQAcH5H0tZrUlo5ZYyOqA7s9p\nO5b85o3AM/OJ+CktFBQtfvBhcJVd9wvlwPsk+uyOy2HI7mNxKKgsBTt375teA2Tw\nUdHkhVNcsAKX1H7GNNLOEADksd86wuoXvg==\n-----END CERTIFICATE-----"
+
+privateKey := "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAszWD4GdFaXbpq4VSAARTov/Y5aLEforUE6nsm2UdbVFgzUjv\namiG5fK7QdzbS85ikhAek3VRjV7ttMoexaIT+pQ78x45Fu6yWRgsGLetkMTqLdqJ\nggWZrGN5gv1VAQkWskjxfUCIig/czKIDhCw+i0Ef77cXIFvqyXke2CqYKoi1uyHo\n1XYUM335ubTPiEZKUnVaD03Te7P7m7TZo7m0QdYeLCsvhiP\n9jkff3Hz8DEfJpSMrrZuAXJJgf9elTz10Aoqj67A7HmIEtdHyeLvJSPfLk0nkD4B\nlRrrVZs02HTeOaBd9/6zXNLBKIr4Y/yr4XP36wIDAQABAoIBAHnKZcyNApxRJy7d\nFURTrG97RvGRM874FHckpVtaVaxkgNAiwCrlzL/bva1eJl8XbN/tOopmUb0tBYk3\nT8BqjP9f3Ho2UQAnymdISTenJLrdSHVPLuKBYdXJaNw/xJRGk/koH45K3EBP1XPw\nq0kZNIw4/zZPjNT+AstXmEGApnLPFIoiEuB8grbfqQfr\nvY5ywxkXZdKQzeUr2ZVEPBp27q6lT13L0VBCCtOxZNNXPca+Lv\nJKlfvXBckuoyqHaTythwnw1PFPjq+uVMWfaa6gttfGGr11NVPnucRHwCMWUO0Cba\nfPw5ShECgYEA6fmMLOK/xRvaax7Hkr/In7IXUwSR1yNYupSeo+OF7C/+lkvvdwJP\nj/An9So2wVWY+DK3gKB7GCrDjYHB7Lv0m0dw7b+vEXv39z86mwUZsD8rMHy+HuqH\nZ4NieBkARWDaP/iE3HbrsWUHog7YvOZLr529byTRRQZdga5R1Vmf5RkCgYEAxBQx\nTPD6PypvVpQ4fkg58EJsFKwkGYTgcfS9dfwsjWbOTNW5gM/hCKgI/LTjsU7a0YYH\nvEMCTim81kuUKZ9rYlfXqB1Xzk9k6mUFeoP4t5KCe79YFi1A\nBUxqHUArJiLyO1g8cZruKK37DQKpT0sYHw7AAaMCgYBuSNUc1yiDVTSn51M0xbdg\nJsa9t9qyaJPLJoB8SaN3h8vdth9CnlE4TH/ZHLPAf4NiAi3isEI1Svrv+WiaGKIc\nixkcx4xSlnd0EFakeUv5elz2NuY6lluKnDBO4aHyEcvt+UtOy7Me47ssVQkuSPMF\n7Tk8aUNG4NA0byFdiihHCQKBgQCBXOkh4CLaJb8LGgMjnbdMAiaYhPHUPExwIo4V\nF2i1acxV+PPIPl4zfdlgEF/gjSvk7E6SMIuG0haaM4bu5xTL7zSC38kcflkQI9Ja\nWy6WYJFh6kjsdfguDn+7bVfVGOqexv/j/wRLhBhzsrxvZOO\negbHjQKBgEe3ghxGKW8dl3+/PDZ3KF8YBb5xUxe9BO8ufM0Pe+tCn8iWrTeAHG16\ncl9JgGlN9eIgx9VOh7suKlb9SsZLbAN60IO9nIx23g2nLqH+HyEZmE6zK5onSxua\n9vgcKjhNmg5WLvmQwz0ECw050HtDpptawvfNPinUY1LsjvkWqwiX\n-----END RSA PRIVATE KEY-----"
+certId, err := testCli.PutCert("my.domain.com", &api.UserCertificate{
+		CertName:    "test",
+		ServerData:  certData,
+		PrivateData: privateKey,
+	}, "ON")
+fmt.Printf("certId:%s\n", certId)                         
+fmt.Printf("err:%+v\n", err)       
+```
+
+### 查询域名证书 GetCert
+
+> 查询某个域名的证书信息，如果证书不存在此方法会返回404错误。
+
+```go
+cli := client.GetDefaultClient()
+detail, err := testCli.GetCert("my.domain.com")
+fmt.Printf("detail:%v\n", detail)
+// {"certId":"cert-8j774s9y3ww2","certName":"test","status":"IN_USE","certCommonName":"*.domain.com","certDNSNames":"*.domain.com,domain.com","certStartTime":"2021-03-18T07:14:33Z","certStopTime":"2021-06-16T07:14:33Z","certCreateTime":"2021-04-25T06:50:55Z","certUpdateTime":"2021-04-25T14:50:54Z"}
+fmt.Printf("err:%+v\n", err)    
+```
+
+### 删除域名证书 DeleteCert
+
+> 删除某个域名的证书，且关闭HTTPS。如果该域名原来没有证书，那么什么都不会做。
+
+```go
+cli := client.GetDefaultClient()
+err := testCli.DeleteCert("my.domain.com")                 
+fmt.Printf("err:%+v\n", err) 
+```
+
 ## 缓存管理接口
 
 ### 刷新缓存/查询刷新状态 Purge/GetPurgedStatus

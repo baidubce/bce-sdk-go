@@ -113,7 +113,7 @@ func TestCreateInstance(t *testing.T) {
 func TestCreateInstanceBySpec(t *testing.T) {
 	DeploySetIds := []string{"DeploySetId"}
 	createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
-		ImageId:   "m-mcDaCc3x",
+		ImageId:   "ImageId",
 		Spec:      "bcc.l3.c16m64",
 		Name:      "sdkTest2",
 		AdminPass: "123qaz!@#",
@@ -131,21 +131,21 @@ func TestCreateInstanceBySpec(t *testing.T) {
 
 func TestCreateInstanceV3(t *testing.T) {
 	createInstanceV3Args := &api.CreateInstanceV3Args{
-		InstanceSpec: "bcc.ic3.c1m1",
+		InstanceSpec: "bcc.l1.c1m1",
 		SystemVolume: api.SystemVolume{
 			StorageType: api.StorageTypeV3CloudSSDGeneral,
-			VolumeSize:  30,
+			VolumeSize:  20,
 		},
 		DataVolumes: []api.DataVolume{
 			{
-				StorageType: api.StorageTypeV3CloudPremium,
-				VolumeSize:  5,
+				StorageType: api.StorageTypeV3LocalSSD,
+				VolumeSize:  460,
 			},
 		},
 		PurchaseCount: 1,
-		InstanceName: "sdkTest8",
-		Password:     "123qaz!@#",
-		ZoneName:     "cn-bj-b",
+		InstanceName:  "sdkTest8",
+		Password:      "123qaz!@#",
+		ZoneName:      "cn-bj-b",
 		Billing: api.Billing{
 			PaymentTiming: api.PaymentTimingPostPaid,
 			Reservation: &api.Reservation{
@@ -165,7 +165,11 @@ func TestCreateInstanceV3(t *testing.T) {
 		PrivateIpAddresses: []string{
 			"ip",
 		},
-		ImageId: "m-xxi8Xdl7",
+		DeployIdList: []string{
+			//"dset-PAAeNoJt",
+			"DeployId",
+		},
+		ImageId: "ImageId",
 		InternetAccessible: api.InternetAccessible{
 			InternetMaxBandwidthOut: 5,
 			InternetChargeType:      api.TrafficPostpaidByHour,
@@ -231,7 +235,7 @@ func TestGetInstanceDetail(t *testing.T) {
 }
 
 func TestGetInstanceDetailWithDeploySetAndFailed(t *testing.T) {
-	res, err := BCC_CLIENT.GetInstanceDetailWithDeploySetAndFailed("i-OMNCbRg1", false, true)
+	res, err := BCC_CLIENT.GetInstanceDetailWithDeploySetAndFailed("InstanceId", false, true)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(res)
 }
@@ -267,7 +271,7 @@ func TestRebootInstance(t *testing.T) {
 
 func TestRebuildInstance(t *testing.T) {
 	rebuildArgs := &api.RebuildInstanceArgs{
-		ImageId:   "m-DpgNg8lO",
+		ImageId:   "ImageId",
 		AdminPass: "123qaz!@#",
 	}
 	err := BCC_CLIENT.RebuildInstance(BCC_TestBccId, rebuildArgs)
@@ -314,7 +318,7 @@ func TestGetInstanceVNC(t *testing.T) {
 }
 
 func TestBatchAddIp(t *testing.T) {
-	privateIps := []string{"192.168.16.17"}
+	privateIps := []string{"privateIp"}
 	batchAddIpArgs := &api.BatchAddIpArgs{
 		InstanceId:                     BCC_TestBccId,
 		PrivateIps:                     privateIps,
@@ -326,7 +330,7 @@ func TestBatchAddIp(t *testing.T) {
 }
 
 func TestBatchDelIp(t *testing.T) {
-	privateIps := []string{"192.168.16.17"}
+	privateIps := []string{"privateIp"}
 	batchDelIpArgs := &api.BatchDelIpArgs{
 		InstanceId: BCC_TestBccId,
 		PrivateIps: privateIps,
@@ -622,7 +626,7 @@ func TestDeleteCDSVolume(t *testing.T) {
 
 func TestAutoRenewCDSVolume(t *testing.T) {
 	args := &api.AutoRenewCDSVolumeArgs{
-		VolumeId:      "v-agDi4SHo",
+		VolumeId:      "VolumeId",
 		RenewTimeUnit: "month",
 		RenewTime:     2,
 	}
@@ -633,7 +637,7 @@ func TestAutoRenewCDSVolume(t *testing.T) {
 
 func TestCancelAutoRenewCDSVolume(t *testing.T) {
 	args := &api.CancelAutoRenewCDSVolumeArgs{
-		VolumeId: "v-agDi4SHo",
+		VolumeId: "VolumeId",
 	}
 
 	err := BCC_CLIENT.CancelAutoRenewCDSVolume(args)
@@ -646,11 +650,11 @@ func TestListSecurityGroup(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
-func TestInstanceChangeVpc(t *testing.T)  {
+func TestInstanceChangeVpc(t *testing.T) {
 	args := &api.InstanceChangeVpcArgs{
-		InstanceId: "i-ujPXJ64Q",
-		SubnetId: "sbn-z1y9tcedqnh6",
-		Reboot: false,
+		InstanceId: "InstanceId",
+		SubnetId:   "SubnetId",
+		Reboot:     false,
 	}
 
 	err := BCC_CLIENT.InstanceChangeVpc(args)
@@ -756,8 +760,9 @@ func TestDeleteInstance(t *testing.T) {
 
 func TestDeleteInstanceWithRelateResource(t *testing.T) {
 	args := &api.DeleteInstanceWithRelateResourceArgs{
-		BccRecycleFlag: false,
+		BccRecycleFlag: true,
 	}
+
 	err := BCC_CLIENT.DeleteInstanceWithRelateResource(BCC_TestBccId, args)
 	ExpectEqual(t.Errorf, err, nil)
 }
@@ -837,6 +842,26 @@ func TestDeleteDeploySet(t *testing.T) {
 func TestGetDeploySet(t *testing.T) {
 	testDeploySetID := "DeploySetId"
 	rep, err := BCC_CLIENT.GetDeploySet(testDeploySetID)
+	fmt.Println(rep)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestUpdateInstanceDeploySet(t *testing.T) {
+	queryArgs := &api.UpdateInstanceDeployArgs{
+		InstanceId:   "InstanceId",
+		DeploySetIds: []string{"DeploySetId"},
+	}
+	rep, err := BCC_CLIENT.UpdateInstanceDeploySet(queryArgs)
+	fmt.Println(rep)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestDelInstanceDeploySet(t *testing.T) {
+	queryArgs := &api.DelInstanceDeployArgs{
+		DeploySetId: "DeploySetId",
+		InstanceIds: []string{"InstanceId"},
+	}
+	rep, err := BCC_CLIENT.DelInstanceDeploySet(queryArgs)
 	fmt.Println(rep)
 	ExpectEqual(t.Errorf, err, nil)
 }
@@ -973,7 +998,7 @@ func TestListTypeZones(t *testing.T) {
 }
 
 func TestListInstanceEnis(t *testing.T) {
-	instanceId := "instanceId"
+	instanceId := "InstanceId"
 	if res, err := BCC_CLIENT.ListInstanceEnis(instanceId); err != nil {
 		fmt.Println("Get specific instance eni failed: ", err)
 	} else {
@@ -1022,7 +1047,7 @@ func TestListKeypairs(t *testing.T) {
 func TestRenameKeypair(t *testing.T) {
 	args := &api.RenameKeypairArgs{
 		Name:      "renameKeypair",
-		KeypairId: "k-hcNzmnW0",
+		KeypairId: "KeypairId",
 	}
 	if err := BCC_CLIENT.RenameKeypair(args); err != nil {
 		fmt.Println("Get specific instance eni failed: ", err)
@@ -1033,7 +1058,7 @@ func TestRenameKeypair(t *testing.T) {
 
 func TestUpdateKeypairDescription(t *testing.T) {
 	args := &api.KeypairUpdateDescArgs{
-		KeypairId:   "k-hcNzmnW0",
+		KeypairId:   "KeypairId",
 		Description: "UpdateKeypairDescription test",
 	}
 	if err := BCC_CLIENT.UpdateKeypairDescription(args); err != nil {
@@ -1044,7 +1069,7 @@ func TestUpdateKeypairDescription(t *testing.T) {
 }
 
 func TestGetKeypairDetail(t *testing.T) {
-	keypairId := "k-uEA5vUFS"
+	keypairId := "KeypairId"
 	if resp, err := BCC_CLIENT.GetKeypairDetail(keypairId); err != nil {
 		fmt.Println("Get specific instance eni failed: ", err)
 	} else {
@@ -1054,8 +1079,8 @@ func TestGetKeypairDetail(t *testing.T) {
 
 func TestAttachKeypair(t *testing.T) {
 	args := &api.AttackKeypairArgs{
-		KeypairId:   "k-uEA5vUFS",
-		InstanceIds: []string{"i-4dLwwdgo"},
+		KeypairId:   "KeypairId",
+		InstanceIds: []string{"InstanceId"},
 	}
 	if err := BCC_CLIENT.AttachKeypair(args); err != nil {
 		fmt.Println("Get specific instance eni failed: ", err)
@@ -1066,8 +1091,8 @@ func TestAttachKeypair(t *testing.T) {
 
 func TestDetachKeypair(t *testing.T) {
 	args := &api.DetachKeypairArgs{
-		KeypairId:   "k-uEA5vUFS",
-		InstanceIds: []string{"i-4dLwwdgo"},
+		KeypairId:   "KeypairId",
+		InstanceIds: []string{"InstanceId"},
 	}
 	if err := BCC_CLIENT.DetachKeypair(args); err != nil {
 		fmt.Println("Get specific instance eni failed: ", err)
@@ -1078,7 +1103,7 @@ func TestDetachKeypair(t *testing.T) {
 
 func TestDeleteKeypair(t *testing.T) {
 	args := &api.DeleteKeypairArgs{
-		KeypairId: "k-uEA5vUFS",
+		KeypairId: "KeypairId",
 	}
 	if err := BCC_CLIENT.DeleteKeypair(args); err != nil {
 		fmt.Println("Get specific instance eni failed: ", err)
@@ -1107,7 +1132,7 @@ func TestBatchDeleteAutoRenewRules(t *testing.T) {
 
 func TestDeleteInstanceIngorePayment(t *testing.T) {
 	args := &api.DeleteInstanceIngorePaymentArgs{
-		InstanceId:            "i-IydDpQFF",
+		InstanceId:            "InstanceId",
 		RelatedReleaseFlag:    true,
 		DeleteRelatedEnisFlag: true,
 		DeleteCdsSnapshotFlag: true,
@@ -1145,8 +1170,8 @@ func TestGetAllStocks(t *testing.T) {
 
 func TestGetStockWithDeploySet(t *testing.T) {
 	args := &api.GetStockWithDeploySetArgs{
-		Spec: "bcc.g3.c2m8",
-		DeploySetIds: []string{"dset-Wz2RRXSp"},
+		Spec:         "bcc.g3.c2m8",
+		DeploySetIds: []string{"DeploySetId"},
 	}
 	if res, err := BCC_CLIENT.GetStockWithDeploySet(args); err != nil {
 		fmt.Println("get stock with deploySet failed: ", err)

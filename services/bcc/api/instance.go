@@ -393,6 +393,42 @@ func DeleteInstanceIngorePayment(cli bce.Client, args *DeleteInstanceIngorePayme
 	return jsonBody, nil
 }
 
+// AutoReleaseInstance - set releaseTime of a postpay instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: the specific instance ID
+//     - args: the arguments to auto release instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func AutoReleaseInstance(cli bce.Client, instanceId string, args *AutoReleaseArgs) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getInstanceUriWithId(instanceId))
+	req.SetMethod(http.PUT)
+	req.SetParam("autorelease", "")
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetBody(body)
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
 // ResizeInstance - resize a specified instance
 //
 // PARAMS:

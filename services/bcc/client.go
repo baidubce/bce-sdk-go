@@ -201,6 +201,20 @@ func (c *Client) DeleteInstance(instanceId string) error {
 	return api.DeleteInstance(c, instanceId)
 }
 
+// AutoReleaseInstance - set releaseTime of a postpay instance
+//
+// PARAMS:
+//     - instanceId: the specific instance ID
+//     - releaseTime: an UTC string，eg:"2021-05-01T07:58:09Z"
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) AutoReleaseInstance(instanceId string, releaseTime string) error {
+	args := &api.AutoReleaseArgs{
+		ReleaseTime:	releaseTime,
+	}
+	return api.AutoReleaseInstance(c, instanceId, args)
+}
+
 // ResizeInstance - resize a specific instance
 //
 // PARAMS:
@@ -1239,17 +1253,17 @@ func (c *Client) GetDeploySet(deploySetId string) (*api.DeploySetResult, error) 
 //     - args: the arguments to update deployset and instance relation
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-//func (c *Client) UpdateInstanceDeploySet(args *api.UpdateInstanceDeployArgs) (error, error) {
-//	jsonBytes, jsonErr := json.Marshal(args)
-//	if jsonErr != nil {
-//		return nil, jsonErr
-//	}
-//	body, err := bce.NewBodyFromBytes(jsonBytes)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return api.UpdateInstanceDeploy(c, args.ClientToken, body), nil
-//}
+func (c *Client) UpdateInstanceDeploySet(args *api.UpdateInstanceDeployArgs) (error, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return api.UpdateInstanceDeploy(c, args.ClientToken, body), nil
+}
 
 // DelInstanceDeploySet - delete deployset and instance relation
 //
@@ -1257,17 +1271,17 @@ func (c *Client) GetDeploySet(deploySetId string) (*api.DeploySetResult, error) 
 //     - args: the arguments to delete deployset and instance relation
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-//func (c *Client) DelInstanceDeploySet(args *api.DelInstanceDeployArgs) (error, error) {
-//	jsonBytes, jsonErr := json.Marshal(args)
-//	if jsonErr != nil {
-//		return nil, jsonErr
-//	}
-//	body, err := bce.NewBodyFromBytes(jsonBytes)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return api.DelInstanceDeploy(c, args.ClientToken, body), nil
-//}
+func (c *Client) DelInstanceDeploySet(args *api.DelInstanceDeployArgs) (error, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return api.DelInstanceDeploy(c, args.ClientToken, body), nil
+}
 
 // ResizeInstanceBySpec - resize a specific instance
 //

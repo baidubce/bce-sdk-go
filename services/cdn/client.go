@@ -427,6 +427,44 @@ func (cli *Client) GetDomainHttps(domain string) (*api.HTTPSConfig, error) {
 	return api.GetDomainHttps(cli, domain)
 }
 
+// PutCert - put the certificate data for the specified domain to server, you can also enable HTTPS or not.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/qjzuz2hp8
+//
+// PARAMS:
+//     - domain: the specified domain
+//     - userCert: certificate data
+//     - httpsEnabled: "ON" for enable HTTPS, "OFF" for disable HTTPS, otherwise invalid.
+// RETURNS:
+//     - string: certId
+//     - error: nil if success otherwise the specific error
+func (cli *Client) PutCert(domain string, userCert *api.UserCertificate, httpsEnabled string) (certId string, err error) {
+	return api.PutCert(cli, domain, userCert, httpsEnabled)
+}
+
+// GetCert - query the certificate data for the specified domain.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/kjzuvz70t
+//
+// PARAMS:
+//     - domain: the specified domain
+// RETURNS:
+//     - *CertificateDetail: certificate details
+//     - error: nil if success otherwise the specific error
+func (cli *Client) GetCert(domain string) (certDetail *api.CertificateDetail, err error) {
+	return api.GetCert(cli, domain)
+}
+
+// DeleteCert - delete the certificate data for the specified domain.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Ljzuylmee
+//
+// PARAMS:
+//     - domain: the specified domain
+// RETURNS:
+//     - *CertificateDetail: certificate details
+//     - error: nil if success otherwise the specific error
+func (cli *Client) DeleteCert(domain string) error {
+	return api.DeleteCert(cli, domain)
+}
+
 // SetOCSP - set "OCSP" for the specified domain,
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Pkf2c0ugn
 //

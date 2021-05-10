@@ -1195,6 +1195,25 @@ if err := bccClient.DeleteInstanceWithRelateResource(instanceId, deleteInstanceW
 > -   实例释放后，已挂载的CDS磁盘自动卸载，，基于此CDS磁盘的快照会保留。
 > -   实例释放后，基于原系统盘的快照会自动删除，基于原系统盘的自定义镜像会保留。
 
+## 定时释放 (限定后付费实例)
+
+后付费实例定时释放，到达预设时间后自动释放bcc，自动释放时间可查询实例详情ReleaseTime。设定空字符串可以取消定时释放。请谨慎使用该功能，避免遗忘定时设置
+```go
+err := bccClient.AutoReleaseInstance(instanceId, "2021-05-01T07:58:09Z")
+if err != nil {
+    fmt.Println("set instance autoRelease failed:", err)
+} else {
+    fmt.Println("set instance autoRelease success")
+}
+```
+
+> **提示：**
+> -   只有付费类型为Postpaid的后付费实例允许设定自动释放
+> -   本实例系统盘快照及实例快照都会被释放
+> -   本实例已挂载CDS云磁盘都会被自动卸载，不会被释放
+> -   实例释放后不可恢复
+> -   关联的网卡资源会被自动卸载，且被释放
+
 ## 变配实例
 使用以下代码可以选择CPU,MemoryCapacityInGB,EphemeralDisks变配指定BCC实例:
 
@@ -2577,6 +2596,38 @@ deploySetID := "your-choose-deploy-set-id"
 if err := bccClient.DeleteDeploySet(deploySetID); err != nil {
     fmt.Println("Delete deploy set failed: ", err)
 }
+```
+
+### 绑定指定的部署集
+
+使用以下代码白能搞定用户自己指定的部署集
+
+```go
+	queryArgs := &api.UpdateInstanceDeployArgs{
+        // 设置你要绑定的InstanceId
+		InstanceId:   "InstanceId",
+        // 设置你要绑定的DeploySetIds
+		DeploySetIds: []string{"DeploySetId"},
+	}
+	rep, err := BCC_CLIENT.UpdateInstanceDeploySet(queryArgs)
+	fmt.Println(rep)
+	ExpectEqual(t.Errorf, err, nil)
+```
+
+### 解绑指定的部署集
+
+使用以下代码解绑用户自己指定的部署集
+
+```go
+	queryArgs := &api.DelInstanceDeployArgs{
+        // 设置你要解绑的DeploySetId
+		DeploySetId: "DeploySetId",
+        // 设置你要解绑的InstanceIds
+		InstanceIds: []string{"InstanceId"},
+	}
+	rep, err := BCC_CLIENT.DelInstanceDeploySet(queryArgs)
+	fmt.Println(rep)
+	ExpectEqual(t.Errorf, err, nil)
 ```
 
 ## 密钥对接口
