@@ -1179,3 +1179,23 @@ func TestGetStockWithDeploySet(t *testing.T) {
 		fmt.Println("get stock with deploySet, result: ", res)
 	}
 }
+
+func TestListInstanceByInstanceIds(t *testing.T) {
+	args := &api.ListInstanceByInstanceIdArgs{
+		InstanceIds: []string{"i-gRYyYyjr", "i-GGc7Buqs"},
+		Marker:      "",
+		MaxKeys:     3,
+	}
+	result, err := BCC_CLIENT.ListInstanceByInstanceIds(args)
+	if err != nil {
+		fmt.Println("list instance failed: ", err)
+	} else {
+		fmt.Println("list instance  success")
+		data, e := json.Marshal(result)
+		if e != nil {
+			fmt.Println("json marshal failed!")
+			return
+		}
+		fmt.Printf("list instance : %s", data)
+	}
+}

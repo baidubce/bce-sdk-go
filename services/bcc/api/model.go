@@ -1516,3 +1516,17 @@ type RecoveryInstanceArgs struct {
 type RecoveryInstanceModel struct {
 	InstanceId string `json:"instanceId"`
 }
+
+type ListInstanceByInstanceIdArgs struct {
+	Marker      string
+	MaxKeys     int
+	InstanceIds []string `json:"instanceIds"`
+}
+
+type ListInstancesResult struct {
+	Marker      string          `json:"marker"`
+	IsTruncated bool            `json:"isTruncated"`
+	NextMarker  string          `json:"nextMarker"`
+	MaxKeys     int             `json:"maxKeys"`
+	Instances   []InstanceModel `json:"instances"`
+}

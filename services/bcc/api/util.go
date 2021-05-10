@@ -299,3 +299,7 @@ func getBatchDeleteAutoRenewRulesUri() string {
 func getDeleteInstanceDeleteIngorePaymentUri() string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/delete"
 }
+
+func getListInstancesByIdsUrl() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/listByInstanceId"
+}

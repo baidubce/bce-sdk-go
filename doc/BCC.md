@@ -2983,6 +2983,18 @@ if res, err := BCC_CLIENT.ListInstanceEnis(instanceId); err != nil {
 }
 ```
 
+### 根据实例ID批量查询实例列表
+以下代码可以根据实例ID批量查询实例列表
+```go
+args := &api.ListInstanceByInstanceIdArgs{}
+result, err := BCC_CLIENT.ListInstanceByInstanceIds(args)
+if err != nil {
+    fmt.Println("list instance failed:", err)
+} else {
+    fmt.Println("list instance success: ", result)
+}
+```
+
 # 错误处理
 
 GO语言以error类型标识错误，BCC支持两种错误见下表：

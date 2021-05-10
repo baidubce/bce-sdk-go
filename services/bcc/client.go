@@ -1583,3 +1583,7 @@ func (c *Client) BatchDeleteAutoRenewRules(args *api.BccDeleteAutoRenewArgs) err
 func (c *Client) DeleteInstanceIngorePayment(args *api.DeleteInstanceIngorePaymentArgs) (*api.DeleteInstanceResult, error) {
 	return api.DeleteInstanceIngorePayment(c, args)
 }
+
+func (c *Client) ListInstanceByInstanceIds(args *api.ListInstanceByInstanceIdArgs) (*api.ListInstancesResult, error) {
+	return api.ListInstanceByInstanceIds(c, args)
+}
