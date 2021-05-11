@@ -462,6 +462,24 @@ func (c *Client) BatchDelIP(args *BatchDelIpArgs) error {
 	return BatchDelIp(c, args, body)
 }
 
+// BatchAddIPCrossSubnet - Add ips to instance cross subnet
+//
+// PARAMS:
+//      - args: the arguments to add ips to bbc instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchAddIPCrossSubnet(args *BatchAddIpCrossSubnetArgs) (*BatchAddIpResponse, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return BatchAddIpCrossSubnet(c, args, body)
+}
+
 // BindTags - bind an instance tags
 //
 // PARAMS:

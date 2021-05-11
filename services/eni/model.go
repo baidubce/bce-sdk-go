@@ -72,6 +72,7 @@ type PrivateIp struct {
 	PublicIpAddress  string `json:"publicIpAddress"`
 	Primary          bool   `json:"primary"`
 	PrivateIpAddress string `json:"privateIpAddress"`
+	SubnetId         string `json:"subnetId"`
 }
 
 type EniPrivateIpArgs struct {

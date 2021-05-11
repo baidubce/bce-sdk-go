@@ -245,6 +245,27 @@ func TestBatchAddIp(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestBatchAddIpCrossSubnet(t *testing.T) {
+	batchAddIpCrossSubnetArgs := &BatchAddIpCrossSubnetArgs{
+		InstanceId:             BBC_TestBbcId,
+		SingleEniAndSubentIps: []SingleEniAndSubentIp{
+			{
+				EniId: "eni-cc31j8i1nq5f",
+				IpAndSubnets: []IpAndSubnet{
+					{
+						PrivateIp: "192.168.0.6",
+						SubnetId:  "sbn-af5iegk24se1",
+					},
+				},
+			},
+		},
+		ClientToken: "be31b98c-5e41-4838-9230-9be700de5a20",
+	}
+	result, err := BBC_CLIENT.BatchAddIPCrossSubnet(batchAddIpCrossSubnetArgs)
+	fmt.Println(result)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestBatchDelIp(t *testing.T) {
 	privateIps := []string{"192.168.1.25"}
 	batchDelIpArgs := &BatchDelIpArgs{
@@ -337,7 +358,7 @@ func TestDeleteImage(t *testing.T) {
 func TestGetOperationLog(t *testing.T) {
 	queryArgs := &GetOperationLogArgs{
 		StartTime: "2021-03-28T15:00:27Z",
-		EndTime: "2021-03-30T15:00:27Z",
+		EndTime:   "2021-03-30T15:00:27Z",
 	}
 	rep, err := BBC_CLIENT.GetOperationLog(queryArgs)
 	fmt.Println(rep)
@@ -692,11 +713,11 @@ func TestListRecycledInstances(t *testing.T) {
 	}
 }
 
-func TestInstanceChangeVpc(t *testing.T)  {
+func TestInstanceChangeVpc(t *testing.T) {
 	args := &InstanceChangeVpcArgs{
 		InstanceId: "i-xxxxx",
-		SubnetId: "sbn-zyyyyyyy",
-		Reboot: true,
+		SubnetId:   "sbn-zyyyyyyy",
+		Reboot:     true,
 	}
 
 	err := BBC_CLIENT.InstanceChangeVpc(args)

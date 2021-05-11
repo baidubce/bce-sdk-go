@@ -2909,6 +2909,24 @@ if res, err := BCC_CLIENT.GetAllStocks(); err != nil {
 }
 ```
 
+### 部署集粒度实例套餐库存
+查询部署集粒度的实例套餐库存
+```go
+// 套餐规格(不需要传本地盘参数，自动解析)
+spec := "bcc.l3.c32m128"
+// 部署集短id,最多传两个短id(目前一个bcc实例最多绑定两个部署集)
+deploySetIds := []string{"dset-12345678"}
+args := &api.GetStockWithDeploySetArgs{
+    Spec:           spec,
+    DeploySetIds:   deploySetIds,
+}
+if res, err := bccClient.GetStockWithDeploySet(args); err != nil {
+    fmt.Println("GetStockWithDeploySet failed: ", err)
+} else {
+    fmt.Println("GetStockWithDeploySet success: ", res)
+}
+```
+
 ### 查询实例套餐库存
 查询实例资源套餐规格对应的库存。
 ```go

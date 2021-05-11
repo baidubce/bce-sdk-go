@@ -665,6 +665,43 @@ func BatchAddIp(cli bce.Client, args *BatchAddIpArgs, reqBody *bce.Body) (*Batch
 	return jsonBody, nil
 }
 
+// BatchAddIp - Add ips to instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: http request body
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func BatchAddIpCrossSubnet(cli bce.Client, args *BatchAddIpCrossSubnetArgs, reqBody *bce.Body) (*BatchAddIpResponse,
+	error) {
+	// Build the request
+	clientToken := args.ClientToken
+	req := &bce.BceRequest{}
+	req.SetUri(getBatchAddIpCrossSubnetUri())
+	req.SetMethod(http.PUT)
+	req.SetBody(reqBody)
+
+	if clientToken != "" {
+		req.SetParam("clientToken", clientToken)
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &BatchAddIpResponse{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
 // BatchDelIp - Delete ips of instance
 //
 // PARAMS:
@@ -958,6 +995,10 @@ func getInstanceUriWithId(id string) string {
 
 func getBatchAddIpUri() string {
 	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + REQUEST_BATCHADDIP_URI
+}
+
+func getBatchAddIpCrossSubnetUri() string {
+	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + REQUEST_BATCHADDIPCROSSSUBNET_URI
 }
 
 func getBatchDelIpUri() string {

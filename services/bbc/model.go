@@ -304,6 +304,24 @@ type BatchAddIpArgs struct {
 	ClientToken                    string   `json:"-"`
 }
 
+type BatchAddIpCrossSubnetArgs struct {
+	InstanceId                     string   `json:"instanceId"`
+	SingleEniAndSubentIps          []SingleEniAndSubentIp `json:"singleEniAndSubentIps"`
+	ClientToken                    string   `json:"-"`
+}
+
+type SingleEniAndSubentIp struct {
+	EniId                            string         `json:"eniId"`
+	SubnetId                         string         `json:"subnetId"`
+	SecondaryPrivateIpAddressCount   int            `json:"secondaryPrivateIpAddressCount"`
+	IpAndSubnets                     []IpAndSubnet  `json:"ipAndSubnets"`
+}
+
+type IpAndSubnet struct {
+	PrivateIp    string `json:"privateIp"`
+	SubnetId     string `json:"subnetId"`
+}
+
 type BatchAddIpResponse struct {
 	PrivateIps []string `json:"privateIps"`
 }
