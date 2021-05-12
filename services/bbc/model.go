@@ -556,6 +556,7 @@ type PrivateIP struct {
 	Primary          bool   `json:"primary"`
 	PrivateIpAddress string `json:"privateIpAddress"`
 	Ipv6Address      string `json:"ipv6Address"`
+	SubnetId         string `json:"subnetId"`
 }
 
 type GetInstanceEniResult struct {
