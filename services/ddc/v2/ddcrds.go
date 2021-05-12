@@ -3,10 +3,11 @@ package ddcrds
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/services/ddc/ddc_util"
-	"github.com/baidubce/bce-sdk-go/services/rds"
 	"strconv"
 	"strings"
+
+	"github.com/baidubce/bce-sdk-go/services/ddc/ddc_util"
+	"github.com/baidubce/bce-sdk-go/services/rds"
 )
 
 // Int int point helper
@@ -232,6 +233,15 @@ func (c *Client) listRdsInstance(marker *ListRdsArgs) (*ListRdsResult, error) {
 			err = convertRdsInstance(&result.Instances[i])
 		}
 	}
+	return result, err
+}
+
+// ListPage - list all instances with page
+// RETURNS:
+//     - *ListRdsResult: the result of list instances with page
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListPage(args *ListPageArgs) (*ListPageResult, error) {
+	result, err := c.ddcClient.ListPage(args)
 	return result, err
 }
 

@@ -480,6 +480,27 @@ type ListRdsArgs struct {
 	MaxKeys int
 }
 
+type ListPageArgs struct {
+	PageNo   int      `json:"pageNo"`
+	PageSize int      `json:"pageSize"`
+	Filters  []Filter `json:"filters"`
+}
+type Filter struct {
+	KeywordType string `json:"keywordType"`
+	Keyword     string `json:"keyword"`
+}
+
+type ListPageResult struct {
+	Page Page `json:"page"`
+}
+
+type Page struct {
+	Result     []Instance `json:"result"`
+	PageNo     int        `json:"pageNo"`
+	PageSize   int        `json:"pageSize"`
+	TotalCount int        `json:"totalCount"`
+}
+
 type GetBackupListResult struct {
 	Marker        string     `json:"marker"`
 	MaxKeys       int        `json:"maxKeys"`

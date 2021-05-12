@@ -891,6 +891,65 @@ func TestClient_ListRds(t *testing.T) {
 	}
 }
 
+func TestClient_ListPage(t *testing.T) {
+	args := &ListPageArgs{
+		// 页码
+		PageNo: 1,
+		// 页大小
+		PageSize: 5,
+		// 筛选条件
+		// 筛选字段类型,各筛选条件只能单独筛选，当取值为type、status、dbType、zone时可在集合中增加筛选项
+		// all：匹配全部
+		// instanceName：匹配实例名称
+		// instanceId：匹配实例id；
+		// vnetIpBackup：备库ip；
+		// vnetIp：主库ip
+		Filters: []Filter{
+			{KeywordType: "all", Keyword: "mysql"},
+			{KeywordType: "zone", Keyword: "cn-bj-a"},
+		},
+	}
+	resp, err := DDCRDS_CLIENT.ListPage(args)
+
+	if err != nil {
+		fmt.Printf("get instance error: %+v\n", err)
+		return
+	}
+
+	// 返回分页页码
+	fmt.Println("list pageNo: ", resp.Page.PageNo)
+	// 返回页大小
+	fmt.Println("list pageSize: ", resp.Page.PageSize)
+	// 返回总数量
+	fmt.Println("list totalCount: ", resp.Page.TotalCount)
+
+	// 获取instance的列表信息
+	for _, e := range resp.Page.Result {
+		fmt.Println("=====================================>")
+		fmt.Println("instanceId: ", e.InstanceId)
+		fmt.Println("instanceName: ", e.InstanceName)
+		fmt.Println("engine: ", e.Engine)
+		fmt.Println("engineVersion: ", e.EngineVersion)
+		fmt.Println("instanceStatus: ", e.InstanceStatus)
+		fmt.Println("cpuCount: ", e.CpuCount)
+		fmt.Println("memoryCapacity: ", e.MemoryCapacity)
+		fmt.Println("volumeCapacity: ", e.VolumeCapacity)
+		fmt.Println("usedStorage: ", e.UsedStorage)
+		fmt.Println("paymentTiming: ", e.PaymentTiming)
+		fmt.Println("instanceType: ", e.InstanceType)
+		fmt.Println("instanceCreateTime: ", e.InstanceCreateTime)
+		fmt.Println("instanceExpireTime: ", e.InstanceExpireTime)
+		fmt.Println("publiclyAccessible: ", e.PubliclyAccessible)
+		fmt.Println("backup expireInDays: ", e.BackupPolicy.ExpireInDays)
+		fmt.Println("vpcId: ", e.VpcId)
+		fmt.Println("endpoint: ", e.Endpoint)
+		fmt.Println("vnetIp: ", e.Endpoint.VnetIp)
+		fmt.Println("vnetIpBackup: ", e.Endpoint.VnetIpBackup)
+		fmt.Println("long BBC Id: ", e.LongBBCId)
+		fmt.Println("bbc hostname: ", e.HostName)
+	}
+}
+
 func TestClient_UpdateInstanceName(t *testing.T) {
 	args := &UpdateInstanceNameArgs{
 		// DDC实例名称，允许小写字母、数字，中文，长度限制为1~64

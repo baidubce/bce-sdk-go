@@ -518,6 +518,26 @@ func (c *DDCClient) ListRds(marker *ListRdsArgs) (*ListRdsResult, error) {
 	return jsonBody, nil
 }
 
+// ListPage - list all instances with page
+// RETURNS:
+//     - *ListPageResult: the result of list instances with marker
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) ListPage(args *ListPageArgs) (*ListPageResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("unset args")
+	}
+	result := &ListPageResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getDdcInstanceUri()+"/listPage").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
 // GetDdcDetail - get details of the instance
 //
 // PARAMS:
