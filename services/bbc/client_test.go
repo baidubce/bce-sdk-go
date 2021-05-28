@@ -713,6 +713,17 @@ func TestListRecycledInstances(t *testing.T) {
 	}
 }
 
+func TestInstanceChangeSubnet(t *testing.T) {
+	args := &InstanceChangeSubnetArgs{
+		InstanceId: "i-DFlNGqLf",
+		SubnetId: "sbn-z1y9tcedqnh6",
+		Reboot: true,
+	}
+
+	err := BBC_CLIENT.InstanceChangeSubnet(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestInstanceChangeVpc(t *testing.T) {
 	args := &InstanceChangeVpcArgs{
 		InstanceId: "i-xxxxx",

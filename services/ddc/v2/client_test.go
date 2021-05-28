@@ -37,7 +37,7 @@ const (
 	POOL            = "xdb_005a2d79-a4f4-4bfb-8284-0ffe9ddaa307_pool"
 	PNETIP          = "100.88.65.121"
 	DEPLOY_ID       = "ab89d829-9068-d88e-75bc-64bb6367d036"
-	DDC_INSTANCE_ID = "ddc-mw3by2yl"
+	DDC_INSTANCE_ID = "ddc-m8rwmbnn"
 	RDS_INSTANCE_ID = "rds-OtTkC1OD"
 	ETAG            = "v0"
 )
@@ -599,6 +599,82 @@ func TestClient_ListDatabase(t *testing.T) {
 	ExpectEqual(t.Errorf, RDSNotSupportError(), err)
 }
 
+func TestClient_GetTableAmount(t *testing.T) {
+	args := &GetTableAmountArgs{
+		InstanceId: instanceId,
+		DbName:     "test1",
+		Pattern:    "0",
+	}
+	result, err := DDCRDS_CLIENT.GetTableAmount(args)
+	if err != nil {
+		fmt.Printf("get table amount error: %+v\n", err)
+		return
+	}
+	fmt.Printf("get table amount success.\n")
+	fmt.Println("ddc return amount ", result.ReturnAmount)
+	fmt.Println("ddc total amount ", result.TotalAmount)
+	for k, v := range result.Tables {
+		fmt.Println("ddc table ", k, " size: ", v)
+	}
+}
+
+func TestClient_GetDatabaseDiskUsage(t *testing.T) {
+	result, err := DDCRDS_CLIENT.GetDatabaseDiskUsage(instanceId, "")
+	if err != nil {
+		fmt.Printf("get database disk usage error: %+v\n", err)
+		return
+	}
+	fmt.Printf("get database disk usage success.\n")
+	fmt.Println("ddc rest disk size(byte) ", result.RestDisk)
+	fmt.Println("ddc used disk size(byte) ", result.UsedDisk)
+	for k, v := range result.Databases {
+		fmt.Println("ddc table ", k, " size: ", v)
+	}
+}
+
+func TestClient_GetRecoverableDateTime(t *testing.T) {
+	result, err := DDCRDS_CLIENT.GetRecoverableDateTime(instanceId)
+	if err != nil {
+		fmt.Printf("get recoverable datetimes error: %+v\n", err)
+		return
+	}
+	fmt.Printf("get recoverable datetimes success.\n")
+	for _, e := range result.RecoverableDateTimes {
+		fmt.Println("recover startTime: ", e.StartDateTime, " endTime: ", e.EndDateTime)
+	}
+}
+
+func TestClient_RecoverToSourceInstanceByDatetime(t *testing.T) {
+	dbName := "test2"
+	tableName := ""
+	args := &RecoverInstanceArgs{
+		Datetime: "2021-05-25T03:28:30Z",
+		RecoverData: []RecoverData{
+			{
+				DbName:      dbName,
+				NewDbName:   dbName + "_new",
+				RestoreMode: "database",
+			},
+			{
+				DbName:      dbName,
+				NewDbName:   dbName + "_new",
+				RestoreMode: "table",
+				RecoverTables: []RecoverTable{
+					{
+						TableName:    tableName,
+						NewTableName: tableName + "_new",
+					},
+				},
+			},
+		},
+	}
+	err := DDCRDS_CLIENT.RecoverToSourceInstanceByDatetime(instanceId, args)
+	if err != nil {
+		fmt.Printf("recover instance database error: %+v\n", err)
+		return
+	}
+	fmt.Printf("recover instance database success.\n")
+}
 func TestClient_UpdateDatabaseRemark(t *testing.T) {
 	args := &UpdateDatabaseRemarkArgs{
 		Remark: DB_REMARK + "_update",

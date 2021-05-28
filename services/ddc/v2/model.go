@@ -939,3 +939,44 @@ type CapacityOfZone struct {
 	Slave  int `json:"slave"`
 	HA     int `json:"HA"`
 }
+
+type GetTableAmountArgs struct {
+	InstanceId string `json:"instanceId"`
+	DbName     string `json:"dbName"`
+	Pattern    string `json:"pattern"`
+}
+
+type TableAmountResult struct {
+	Tables       map[string]int `json:"tables"`
+	TotalAmount  int            `json:"totalAmount"`
+	ReturnAmount int            `json:"returnAmount"`
+}
+
+type DatabaseDiskUsageResult struct {
+	Databases map[string]int `json:"databases"`
+	RestDisk  int64          `json:"restDisk"`
+	UsedDisk  int64          `json:"usedDisk"`
+}
+
+type GetRecoverableDateTimeResult struct {
+	RecoverableDateTimes []RecoverableDateTime `json:"recoverableDateTimes"`
+}
+type RecoverableDateTime struct {
+	StartDateTime string `json:"startDateTime"`
+	EndDateTime   string `json:"endDateTime"`
+}
+
+type RecoverInstanceArgs struct {
+	Datetime    string        `json:"datetime"`
+	RecoverData []RecoverData `json:"recoverData"`
+}
+type RecoverTable struct {
+	NewTableName string `json:"newTableName"`
+	TableName    string `json:"tableName"`
+}
+type RecoverData struct {
+	RecoverTables []RecoverTable `json:"recoverTables"`
+	RestoreMode   string         `json:"restoreMode"`
+	DbName        string         `json:"dbName"`
+	NewDbName     string         `json:"newDbName"`
+}

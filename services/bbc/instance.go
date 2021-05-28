@@ -942,6 +942,33 @@ func BatchDeleteAutoRenewRules(cli bce.Client, reqBody *bce.Body) error {
 	return nil
 }
 
+// InstanceChangeVpc - change the subnet to which the instance belongs
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: request body to change subnet of instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func InstanceChangeSubnet(cli bce.Client, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getChangeSubnetUri())
+	req.SetMethod(http.PUT)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
 // InstanceChangeVpc - change the vpc to which the instance belongs
 //
 // PARAMS:
@@ -1039,6 +1066,10 @@ func getBatchDeleteAutoRenewRulesUri() string {
 
 func getRebuildBatchInstanceUri() string {
 	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + REQUEST_BATCH_REBUILD_INSTANCE_URI
+}
+
+func getChangeSubnetUri() string {
+	return URI_PREFIX_V1 + "/subnet" + "/changeSubnet"
 }
 
 func getChangeVpcUri() string {

@@ -319,6 +319,27 @@ if err := bbcClient.ModifyInstanceDesc(instanceId, modifyInstanceDescArgs); err 
 }
 ```
 
+### 实例变更子网
+
+如下代码可以变更实例的子网
+```go
+instanceChangeVpcArgs := &api.InstanceChangeSubnetArgs{
+	InstanceId: instanceId,
+	SubnetId:   subnetId,
+	Reboot:     false,
+}
+err := bbcClient.InstanceChangeSubnet(args)
+if err != nil {
+    fmt.Println("change instance subnet failed:", err)
+} else {
+    fmt.Println("change instance subnet success")
+}
+```
+
+> **提示：**
+> - 变更子网后默认自动重启，用户选择是否执行该操作。
+> - 变更子网的范围目前仅支持在同AZ下变更子网，不支持跨AZ或跨VPC变更子网。
+
 ### 修改实例VPC
 使用以下代码可以修改指定BBC实例所在的VPC：
 ```go

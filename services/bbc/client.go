@@ -386,6 +386,25 @@ func (c *Client) ModifyInstancePassword(instanceId string, args *ModifyInstanceP
 	return ModifyInstancePassword(c, instanceId, body)
 }
 
+// InstanceChangeSubnet - change an instance's subnet
+//
+// PARAMS:
+//     - args: the arguments to change an instance's subnet
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) InstanceChangeSubnet(args *InstanceChangeSubnetArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return InstanceChangeSubnet(c, body)
+}
+
 // InstanceChangeVpc - change an instance's vpc
 //
 // PARAMS:

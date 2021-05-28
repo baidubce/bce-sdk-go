@@ -965,6 +965,50 @@ func (c *Client) ListDatabase(instanceId string) (*ListDatabaseResult, error) {
 	return c.ddcClient.ListDatabase(instanceId)
 }
 
+// GetTableAmount - query amount of tables
+//
+// PARAMS:
+//     - args: the specific ddc instanceId, dbName and search pattern
+// RETURNS:
+//     - *TableAmountResult: the size of the table that meets the criteria
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetTableAmount(args *GetTableAmountArgs) (*TableAmountResult, error) {
+	return c.ddcClient.GetTableAmount(args)
+}
+
+// GetDatabaseDiskUsage - get the disk footprint and the remaining space for database
+//
+// PARAMS:
+//     - instanceId: the specific ddc Instance's ID
+// RETURNS:
+//     - *ListDatabaseResult: the disk footprint and the remaining space for database
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetDatabaseDiskUsage(instanceId, dbName string) (*DatabaseDiskUsageResult, error) {
+	return c.ddcClient.GetDatabaseDiskUsage(instanceId, dbName)
+}
+
+// GetRecoverableDateTime - get a list of recoverable times
+//
+// PARAMS:
+//     - instanceId: the specific ddc Instance's ID
+// RETURNS:
+//     - *GetRecoverableDateTimeResult: the result of list all recoverable datetimes
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetRecoverableDateTime(instanceId string) (*GetRecoverableDateTimeResult, error) {
+	return c.ddcClient.GetRecoverableDateTime(instanceId)
+}
+
+// RecoverToSourceInstanceByDatetime - recover database or tables for the specific instance by a datetime
+//
+// PARAMS:
+//     - instanceId: the specific ddc Instance's ID
+//     - args: recover instance args
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) RecoverToSourceInstanceByDatetime(instanceId string, args *RecoverInstanceArgs) error {
+	return c.ddcClient.RecoverToSourceInstanceByDatetime(instanceId, args)
+}
+
 // UpdateAccountPassword - update a account password with the specific parameters
 //
 // PARAMS:

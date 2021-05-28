@@ -1358,6 +1358,110 @@ for _, database := range result.Databases {
 }
 ```
 
+## 获取数据表大小
+
+使用以下代码可以获取指定库下满足条件的数据表的大小。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+args := &ddcrds.GetTableAmountArgs{
+    // 实例ID
+    InstanceId: instanceId,
+    // 指定数据库名称
+    DbName:     dbName,
+    // 模糊搜索值, 可选
+    Pattern: search,
+}
+result, err := DDCRDS_CLIENT.GetTableAmount(args)
+if err != nil {
+    fmt.Printf("get table amount error: %+v\n", err)
+    return
+}
+fmt.Printf("get table amount success.\n")
+fmt.Println("ddc return amount ", result.ReturnAmount)
+fmt.Println("ddc total amount ", result.TotalAmount)
+for k, v := range result.Tables {
+    fmt.Println("ddc table ", k, " size: ", v)
+}
+```
+
+## 获取数据库占用磁盘空间
+
+使用以下代码可以获取指定实例下的数据库占用的磁盘空间大小以及剩余磁盘空间。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+// dbName可选，不指定数据库时传入空字符串即可
+result, err := DDCRDS_CLIENT.GetDatabaseDiskUsage(instanceId, dbName)
+if err != nil {
+    fmt.Printf("get database disk usage error: %+v\n", err)
+    return
+}
+fmt.Printf("get database disk usage success.\n")
+fmt.Println("ddc rest disk size(byte) ", result.RestDisk)
+fmt.Println("ddc used disk size(byte) ", result.UsedDisk)
+for k, v := range result.Databases {
+    fmt.Println("ddc database ", k, " size(byte): ", v)
+}
+```
+
+## 获取实例数据可恢复时间
+
+使用以下代码可以获取实例数据所有的可恢复时间段。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+result, err := DDCRDS_CLIENT.GetRecoverableDateTime(instanceId)
+if err != nil {
+    fmt.Printf("get recoverable datetimes error: %+v\n", err)
+    return
+}
+fmt.Printf("get recoverable datetimes success.\n")
+for _, e := range result.RecoverableDateTimes {
+    fmt.Println("recover startTime: ", e.StartDateTime, " endTime: ", e.EndDateTime)
+}
+```
+
+## 恢复数据库
+
+使用以下代码可以按时间点恢复指定数据库或数据表到原有实例。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+args := &ddcrds.RecoverInstanceArgs{
+    // 可恢复时间点，从GetRecoverableDateTime()获取
+    Datetime: "2021-05-25T03:28:30Z",
+    // RestoreMode 为database或table
+    RecoverData: []ddcrds.RecoverData{
+        {   
+            // 数据库名称
+            DbName:      dbName,
+            // 新库名
+            NewDbName:   newDbName,
+            RestoreMode: "database",
+        },
+        {
+            DbName:      dbName,
+            NewDbName:   newDbName,
+            RestoreMode: "table",
+            // RestoreMode为table时RecoverTables为必选
+            RecoverTables: []ddcrds.RecoverTable{
+                {
+                    // 表名
+                    TableName:    tableName,
+                    // 新表名
+                    NewTableName: newTableName,
+                },
+            },
+        },
+    },
+}
+err := DDCRDS_CLIENT.RecoverToSourceInstanceByDatetime(instanceId, args)
+if err != nil {
+    fmt.Printf("recover instance database error: %+v\n", err)
+    return
+}
+fmt.Printf("recover instance database success.\n")
+```
+
 ## 删除特定数据库
 
 使用以下代码可以删除特定数据库信息。

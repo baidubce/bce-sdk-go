@@ -33,6 +33,8 @@ const (
 	REQUEST_LOADBALANCER_URL = URI_PREFIX + "/blb"
 
 	REQUEST_VM_INSTANCE_URL = URI_PREFIX + "/vm/instance"
+
+	REQUEST_NODE_URL = URI_PREFIX + "/node"
 )
 
 /*
@@ -115,4 +117,8 @@ func GetVmServiceMetricsURI(serviceId, metricsType string) string {
 
 func GetVmInstanceURI() string {
 	return REQUEST_VM_INSTANCE_URL
+}
+
+func GetNodeInfoURI() string {
+	return REQUEST_NODE_URL
 }

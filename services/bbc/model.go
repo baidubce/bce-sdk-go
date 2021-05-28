@@ -219,6 +219,12 @@ type ModifyInstanceNameArgs struct {
 	Name string `json:"name"`
 }
 
+type InstanceChangeSubnetArgs struct {
+	InstanceId string `json:"instanceId"`
+	SubnetId   string `json:"subnetId"`
+	Reboot     bool   `json:"reboot"`
+}
+
 type InstanceChangeVpcArgs struct {
 	InstanceId string `json:"instanceId"`
 	SubnetId   string `json:"subnetId"`

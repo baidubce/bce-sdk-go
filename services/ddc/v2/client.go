@@ -2,10 +2,11 @@ package ddcrds
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/baidubce/bce-sdk-go/auth"
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/services/rds"
-	"strings"
 )
 
 const (
@@ -179,6 +180,22 @@ func getDatabaseUriWithInstanceId(instanceId string) string {
 
 func getDatabaseUriWithDbName(instanceId string, dbName string) string {
 	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_DDC_DATABASE_URL + "/" + dbName
+}
+
+func getQueryDatabaseUriWithDbName(instanceId string, dbName string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_DDC_DATABASE_URL + "/" + dbName + "/amount"
+}
+
+func getDatabaseDiskUsageUriWithInstanceId(instanceId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_DDC_DATABASE_URL + "/usage"
+}
+
+func getDatabaseRecoverTimeUriWithInstanceId(instanceId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_DDC_DATABASE_URL + "/recoverableDateTimes"
+}
+
+func getRecoverInstanceDatabaseUriWithInstanceId(instanceId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + "/recoveryToSourceInstanceByDatetime"
 }
 
 // Account URL

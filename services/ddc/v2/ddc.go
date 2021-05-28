@@ -1191,6 +1191,97 @@ func (c *DDCClient) ListDatabase(instanceId string) (*ListDatabaseResult, error)
 	return result, err
 }
 
+// GetTableAmount - query amount of tables
+//
+// PARAMS:
+//     - args: the specific ddc instanceId, dbName and search pattern
+// RETURNS:
+//     - *TableAmountResult: the size of the table that meets the criteria
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetTableAmount(args *GetTableAmountArgs) (*TableAmountResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("unset args")
+	}
+	if len(args.InstanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+	if len(args.DbName) < 1 {
+		return nil, fmt.Errorf("unset dbName")
+	}
+	result := &TableAmountResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithQueryParam("pattern", args.Pattern).
+		WithURL(getQueryDatabaseUriWithDbName(args.InstanceId, args.DbName)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// GetDatabaseDiskUsage - get the disk footprint and the remaining space for database
+//
+// PARAMS:
+//     - instanceId: the specific ddc Instance's ID
+// RETURNS:
+//     - *ListDatabaseResult: the disk footprint and the remaining space for database
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetDatabaseDiskUsage(instanceId, dbName string) (*DatabaseDiskUsageResult, error) {
+	result := &DatabaseDiskUsageResult{}
+	req := bce.NewRequestBuilder(c)
+	if len(dbName) > 0 {
+		req.WithQueryParam("pattern", dbName)
+	}
+	err := req.
+		WithMethod(http.GET).
+		WithURL(getDatabaseDiskUsageUriWithInstanceId(instanceId)).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GetRecoverableDateTime - get a list of recoverable times
+//
+// PARAMS:
+//     - instanceId: the specific ddc Instance's ID
+// RETURNS:
+//     - *GetRecoverableDateTimeResult: the result of list all recoverable datetimes
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetRecoverableDateTime(instanceId string) (*GetRecoverableDateTimeResult, error) {
+	result := &GetRecoverableDateTimeResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getDatabaseRecoverTimeUriWithInstanceId(instanceId)).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// RecoverToSourceInstanceByDatetime - recover database or tables for the specific instance by a datetime
+//
+// PARAMS:
+//     - instanceId: the specific ddc Instance's ID
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) RecoverToSourceInstanceByDatetime(instanceId string, args *RecoverInstanceArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	if len(args.Datetime) < 1 {
+		return fmt.Errorf("unset datetime. Please query recoverable datetime by GetRecoverableDateTime()")
+	}
+	if args.RecoverData == nil || len(args.RecoverData) < 1 {
+		return fmt.Errorf("unset recover data")
+	}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getRecoverInstanceDatabaseUriWithInstanceId(instanceId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
 // CreateAccount - create a account with the specific parameters
 //
 // PARAMS:

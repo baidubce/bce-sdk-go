@@ -448,10 +448,44 @@ type ImageDetail struct {
 	SharedToUserNum     int    `json:"sharedToUserNum"`
 	FpgaType            string `json:"fpgaType"`
 }
+
+type VmInstanceIdVo struct {
+	VmId            string `json:"vmId"`
+	VmName          string `json:"vmName"`
+	Region          string `json:"region"`
+	City            string `json:"city"`
+	ServiceProvider string `json:"serviceProvider"`
+}
+
+type ResourceStatus string
+
+const (
+	ResourceStatusStarting    = "STARTING"
+	ResourceStatusRunning     = "RUNNING"
+	ResourceStatusException   = "EXCEPTION"
+	ResourceStatusFailed      = "FAILED"
+	ResourceStatusUnknown     = "UNKNOWN"
+	ResourceStatusTerminated  = "TERMINATED"
+	ResourceStatusWaiting     = "WAITING"
+	ResourceStatusStop        = "STOP"
+	ResourceStatusStopping    = "STOPPING"
+	ResourceStatusTerminating = "TERMINATING"
+	ResourceStatusNormal      = "NORMAL"
+	// part of status for vm instant
+	ResourceStatusCreating     = "CREATING"
+	ResourceStatusStopped      = "STOPPED"
+	ResourceStatusRestarting   = "RESTARTING"
+	ResourceStatusReinstalling = "REINSTALLING"
+	ResourceStatusImaging      = "IMAGING"
+	// part of status for lb
+	ResourceStatusPending = "PENDING"
+	ResourceStatusBinding = "BINDING"
+)
+
 type VmServiceBriefVo struct {
 	ServiceId        string               `json:"serviceId"`
 	ServiceName      string               `json:"serviceName"`
-	Status           string               `json:"status"`
+	Status           ResourceStatus       `json:"status"`
 	TotalCpu         int                  `json:"totalCpu"`
 	TotalMem         int                  `json:"totalMem"`
 	TotalDisk        int                  `json:"totalDisk"`
@@ -463,6 +497,7 @@ type VmServiceBriefVo struct {
 	OsImage          ImageDetail          `json:"osImage"`
 	CreateTime       string               `json:"createTime"`
 	TotalGpu         int                  `json:"totalGpu"`
+	Instances        []VmInstanceIdVo     `json:"instances"`
 }
 
 type CreateVmServiceResult struct {
@@ -545,6 +580,7 @@ type GetVmServiceDetailArgs struct {
 }
 
 type VmServiceDetailsVo struct {
+	VmServiceBriefVo
 	Bandwidth        string         `json:"bandwidth"`
 	TotalBandwidth   string         `json:"totalBandwidth"`
 	DataVolumeList   []VolumeConfig `json:"dataVolumeList"`
@@ -1076,4 +1112,26 @@ type IpamResultVo struct {
 type VmPrivateIpResult struct {
 	Result  IpamResultVo `json:"result"`
 	Success bool         `json:"success"`
+}
+
+type ServiceProviderInfo struct {
+	ServiceProvider ServiceProvider `json:"serviceProvider"`
+	Name            string          `json:"name"`
+	Capability      []string        `json:"capability"`
+}
+
+type CityInfo struct {
+	City                string                `json:"city"`
+	Name                string                `json:"name"`
+	ServiceProviderList []ServiceProviderInfo `json:"serviceProviderList"`
+}
+
+type RegionInfo struct {
+	Region   Region     `json:"region"`
+	Name     string     `json:"name"`
+	CityList []CityInfo `json:"cityList"`
+}
+
+type GetBecAvailableNodeInfoVoResult struct {
+	RegionList []RegionInfo `json:"regionList"`
 }
