@@ -490,13 +490,18 @@ etag, err := bosClient.PutObjectFromString(bucketName, objectName, str, nil)
 byteArr := []byte("test put object")
 etag, err := bosClient.PutObjectFromBytes(bucketName, objectName, byteArr, nil)
 
+// 从文件上传
+body, err := bce.NewBodyFromFile(fileName)
+etag, err := bosClient.PutObject(bucketName, objectName, body, nil)
+
 // 从数据流上传
-bodyStream, err := bce.NewBodyFromFile(fileName)
-etag, err := bosClient.PutObject(bucketName, objectName, bodyStream, nil)
+reader, err := os.Open(fileName)
+etag, err := bosClient.PutObjectFromStream(bucketName, objectName, reader, nil)
 
 // 使用基本接口，提供必需参数从数据流上传
-bodyStream, err := bce.NewBodyFromFile(fileName)
-etag, err := bosClient.BasicPutObject(bucketName, objectName, bodyStream)
+reader, err := os.Open(fileName)
+body, err := bce.NewBodyFromSizedReader(reader, -1)
+etag, err := bosClient.BasicPutObject(bucketName, objectName, body)
 ```
 
 Object以文件的形式上传到BOS中，上述简单上传的接口支持不超过5GB的Object上传。在请求处理成功后，BOS会在Header中返回Object的ETag作为文件标识。
