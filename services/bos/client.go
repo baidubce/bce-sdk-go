@@ -850,6 +850,25 @@ func (c *Client) PutObjectFromFile(bucket, object, fileName string,
 	return api.PutObject(c, bucket, object, body, args)
 }
 
+// PutObjectFromStream - upload a new object or rewrite the existed object from stream
+//
+// PARAMS:
+//     - bucket: the name of the bucket to store the object
+//     - object: the name of the object
+//     - fileName: the local file full path name
+//     - args: the optional arguments
+// RETURNS:
+//     - string: etag of the uploaded object
+//     - error: the uploaded error if any occurs
+func (c *Client) PutObjectFromStream(bucket, object string, reader io.Reader,
+	args *api.PutObjectArgs) (string, error) {
+	body, err := bce.NewBodyFromSizedReader(reader, -1)
+	if err != nil {
+		return "", err
+	}
+	return api.PutObject(c, bucket, object, body, args)
+}
+
 // CopyObject - copy a remote object to another one
 //
 // PARAMS:

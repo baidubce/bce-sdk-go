@@ -63,22 +63,19 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 			http.BCE_CONTENT_SHA256:  args.ContentSha256,
 			http.BCE_CONTENT_CRC32:   args.ContentCrc32,
 		})
-		if args.ContentLength != 0 {
+		if args.ContentLength > 0 {
 			// User specified Content-Length can be smaller than the body size, so the body should
 			// be reset. The `net/http.Client' does not support the Content-Length bigger than the
 			// body size.
 			if args.ContentLength > body.Size() {
-				return "", bce.NewBceClientError("content-length can't be bigger than body size")
-			}
-			if args.ContentLength < 0 {
-				return "", bce.NewBceClientError("content-length can't be a negative number")
+				return "", bce.NewBceClientError(fmt.Sprintf("ContentLength %d is bigger than body size %d", args.ContentLength, body.Size()))
 			}
 			body, err := bce.NewBodyFromSizedReader(body.Stream(), args.ContentLength)
 			if err != nil {
 				return "", bce.NewBceClientError(err.Error())
 			}
-			req.SetBody(body)
 			req.SetHeader(http.CONTENT_LENGTH, fmt.Sprintf("%d", args.ContentLength))
+			req.SetBody(body) // re-assign body
 		}
 
 		// Reset the contentMD5 if set by user
