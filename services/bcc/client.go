@@ -956,6 +956,18 @@ func (c *Client) RemoteCopyImage(imageId string, args *api.RemoteCopyImageArgs) 
 	return api.RemoteCopyImage(c, imageId, args)
 }
 
+
+// RemoteCopyImageReturnImageIds - copy an image from other region
+//
+// PARAMS:
+//     - imageId: the specific image ID
+//     - args: the arguments to remote copy an image
+// RETURNS:
+//     - imageIds of destination region if success otherwise the specific error
+func (c *Client) RemoteCopyImageReturnImageIds(imageId string, args *api.RemoteCopyImageArgs) (*api.RemoteCopyImageResult, error) {
+	return api.RemoteCopyImageReturnImageIds(c, imageId, args)
+}
+
 // CancelRemoteCopyImage - cancel a copy image from other region operation
 //
 // PARAMS:

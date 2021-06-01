@@ -19,10 +19,11 @@ package api
 
 import (
 	"encoding/json"
-	"strconv"
-
+	"errors"
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
+	"strconv"
+	"strings"
 )
 
 // CreateImage - create an image
@@ -90,7 +91,14 @@ func ListImage(cli bce.Client, queryArgs *ListImageArgs) (*ListImageResult, erro
 		if queryArgs.MaxKeys != 0 {
 			req.SetParam("maxKeys", strconv.Itoa(queryArgs.MaxKeys))
 		}
-		if len(queryArgs.ImageType) != 0 {
+		if len(queryArgs.ImageName) != 0 {
+			if len(queryArgs.ImageType) != 0 && strings.EqualFold("custom", queryArgs.ImageType) {
+				req.SetParam("imageName", queryArgs.ImageName)
+			} else {
+				return nil, errors.New("only the custom image type could filter by name")
+			}
+		}
+  		if len(queryArgs.ImageType) != 0 {
 			req.SetParam("imageType", queryArgs.ImageType)
 		}
 	}
@@ -209,6 +217,49 @@ func RemoteCopyImage(cli bce.Client, imageId string, args *RemoteCopyImageArgs) 
 
 	defer func() { resp.Body().Close() }()
 	return nil
+}
+
+// RemoteCopyImageReturnImageIds - copy custom images across regions, only custom images supported, the system \
+// and service integration images cannot be copied.
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - imageId: id of the image to be copied
+//     - args: the arguments to copy image
+// RETURNS:
+//     - imageIds of destination region if success otherwise the specific error
+func RemoteCopyImageReturnImageIds(cli bce.Client, imageId string, args *RemoteCopyImageArgs) (*RemoteCopyImageResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getImageUriWithId(imageId))
+	req.SetMethod(http.POST)
+
+	req.SetParam("remoteCopy", "")
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return nil, err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &RemoteCopyImageResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
 }
 
 // CancelRemoteCopyImage - cancel the image copy across regions

@@ -23,17 +23,17 @@ import (
 type InstanceStatus string
 
 const (
-	InstanceStatusRunning            	InstanceStatus = "Running"
-	InstanceStatusStarting           	InstanceStatus = "Starting"
-	InstanceStatusStopping           	InstanceStatus = "Stopping"
-	InstanceStatusStopped            	InstanceStatus = "Stopped"
-	InstanceStatusDeleted            	InstanceStatus = "Deleted"
-	InstanceStatusScaling            	InstanceStatus = "Scaling"
-	InstanceStatusExpired            	InstanceStatus = "Expired"
-	InstanceStatusError              	InstanceStatus = "Error"
-	InstanceStatusSnapshotProcessing 	InstanceStatus = "SnapshotProcessing"
-	InstanceStatusImageProcessing    	InstanceStatus = "ImageProcessing"
-	InstanceStatusChangeVpcProcessing   InstanceStatus = "ChangeVpc"
+	InstanceStatusRunning             InstanceStatus = "Running"
+	InstanceStatusStarting            InstanceStatus = "Starting"
+	InstanceStatusStopping            InstanceStatus = "Stopping"
+	InstanceStatusStopped             InstanceStatus = "Stopped"
+	InstanceStatusDeleted             InstanceStatus = "Deleted"
+	InstanceStatusScaling             InstanceStatus = "Scaling"
+	InstanceStatusExpired             InstanceStatus = "Expired"
+	InstanceStatusError               InstanceStatus = "Error"
+	InstanceStatusSnapshotProcessing  InstanceStatus = "SnapshotProcessing"
+	InstanceStatusImageProcessing     InstanceStatus = "ImageProcessing"
+	InstanceStatusChangeVpcProcessing InstanceStatus = "ChangeVpc"
 )
 
 type InstanceType string
@@ -1024,6 +1024,17 @@ type RemoteCopyImageArgs struct {
 	DestRegion []string `json:"destRegion"`
 }
 
+type RemoteCopyImageResult struct {
+	RemoteCopyImages []RemoteCopyImageModel `json:"result"`
+}
+
+type RemoteCopyImageModel struct {
+	Region  string `json:"region"`
+	ImageId string `json:"imageId"`
+	ErrMsg  string `json:"errMsg"`
+	Code    string `json:"code"`
+}
+
 type CreateImageArgs struct {
 	InstanceId  string `json:"instanceId,omitempty"`
 	SnapshotId  string `json:"snapshotId,omitempty"`
@@ -1036,6 +1047,7 @@ type ListImageArgs struct {
 	Marker    string
 	MaxKeys   int
 	ImageType string
+	ImageName string
 }
 
 type OsModel struct {

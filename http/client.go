@@ -143,7 +143,7 @@ func Execute(request *Request) (*Response, error) {
 		} else if request.Length() < 0 {
 			// if set body and ContentLength <= 0, will be chunked
 			httpRequest.Body = request.Body()
-		} // else ContentLength == 0, empty body
+		} // else {} body == nil and ContentLength == 0
 	}
 
 	// Set the proxy setting if needed

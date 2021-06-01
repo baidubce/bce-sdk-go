@@ -716,6 +716,15 @@ func TestRemoteCopyImage(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestRemoteCopyImageReturnImageIds(t *testing.T) {
+	args := &api.RemoteCopyImageArgs{
+		Name:       "testRemoteCopy",
+		DestRegion: []string{"hkg"},
+	}
+	_, err := BCC_CLIENT.RemoteCopyImageReturnImageIds(BCC_TestImageId, args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestCancelRemoteCopyImage(t *testing.T) {
 	err := BCC_CLIENT.CancelRemoteCopyImage(BCC_TestImageId)
 	ExpectEqual(t.Errorf, err, nil)

@@ -494,7 +494,7 @@ etag, err := bosClient.PutObjectFromBytes(bucketName, objectName, byteArr, nil)
 body, err := bce.NewBodyFromFile(fileName)
 etag, err := bosClient.PutObject(bucketName, objectName, body, nil)
 
-// 从数据流上传
+// 从数据流上传(分块编码上传)
 reader, err := os.Open(fileName)
 etag, err := bosClient.PutObjectFromStream(bucketName, objectName, reader, nil)
 

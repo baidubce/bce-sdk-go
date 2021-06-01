@@ -2055,6 +2055,7 @@ if res, err := bccClient.CreateImage(args); err != nil {
 - 使用以下代码可以查询有权限的镜像列表。
 - 查询的镜像信息中包括系统镜像、自定义镜像和服务集成镜像。
 - 支持按 imageType 来过滤查询，此参数非必需，缺省为 All,即查询所有类型的镜像。
+- 支持按 imageName 来过滤查询自定义镜像，返回名称中包含该字符串的镜像。此参数非必需，设定ImageName时，必须同时指定ImageType为'Custom'。
 ```go
 // 批量获取列表的查询的起始位置，是一个由系统生成的字符串,可选参数
 marker := "your-marker"
@@ -2068,6 +2069,17 @@ args := &api.ListImageArgs{
     MaxKeys:        maxKeys,
     ImageType:      imageType,
 }
+
+// 指定过滤查询的自定义镜像名称
+imageName := "your-imageName"
+
+args := &api.ListImageArgs{
+    Marker:         marker,
+    MaxKeys:        maxKeys,
+    ImageType:      "Custom",
+    ImageName:      imageName,
+}
+
 if res, err := bccClient.ListImage(args); err != nil {
     fmt.Println("get image list failed: ", err)
 } else {
@@ -2115,6 +2127,22 @@ if err != nil {
     DestRegion: []string{"gz"},
  }
  err := client.RemoteCopyImage(imageId, args)
+ if err != nil {
+     fmt.Println("remote copy image failed:", err)
+ } else {
+     fmt.Println("remote copy image success")
+ }
+```
+
+### 跨区域复制自定义镜像并返回目的region的镜像镜像id
+- 用于用户跨区域复制自定义镜像，仅限自定义镜像，系统镜像和服务集成镜像不能复制
+- regions如北京"bj",广州"gz",苏州"su"，可多选：
+```go
+args := &api.RemoteCopyImageArgs{
+    Name:       "test2",
+    DestRegion: []string{"gz"},
+ }
+result, err := client.RemoteCopyImageReturnImageIds(imageId, args)
  if err != nil {
      fmt.Println("remote copy image failed:", err)
  } else {
