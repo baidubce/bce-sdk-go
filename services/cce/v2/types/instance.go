@@ -44,6 +44,10 @@ type InstanceSpec struct {
 	// BBC 选项
 	BBCOption *BBCOption `json:"bbcOption,omitempty"`
 
+	// 是否为竞价实例
+	Bid       bool      `json:"bid,omitempty"`
+	BidOption BidOption `json:"bidOption,omitempty"`
+
 	// VPC 相关配置
 	VPCConfig VPCConfig `json:"vpcConfig,omitempty"`
 
@@ -73,8 +77,9 @@ type InstanceSpec struct {
 
 	Tags TagList `json:"tags,omitempty"`
 
-	Labels InstanceLabels `json:"labels,omitempty"`
-	Taints InstanceTaints `json:"taints,omitempty"`
+	Labels      InstanceLabels      `json:"labels,omitempty"`
+	Taints      InstanceTaints      `json:"taints,omitempty"`
+	Annotations InstanceAnnotations `json:"annotations,omitempty"`
 
 	CCEInstancePriority int `json:"cceInstancePriority,omitempty"`
 }
@@ -271,6 +276,23 @@ const (
 	InstancePhaseDeleteFailed InstancePhase = "delete_failed"
 )
 
+type BidOption struct {
+	// BidMode 竞价模式
+	BidMode BidMode `json:"bidMode,omitempty"`
+
+	// BidPrice 用户的出价, 仅在 BidMode=BidModeCustomPrice 模式下生效
+	BidPrice string `json:"bidPrice,omitempty"`
+
+	// BidTime 竞价超时时间, 单位: minute, 超时会取消该竞价实例订单
+	BidTimeout int `json:"bidTimeout,omitempty"`
+
+	// BidReleaseEIP 竞价实例被动释放时, 是否联动释放实例 EIP
+	BidReleaseEIP bool `json:"bidReleaseEIP,omitempty"`
+
+	// BidReleaseEIP 竞价实例被动释放时, 是否联动释放实例 CDS
+	BidReleaseCDS bool `json:"bidReleaseCDS,omitempty"`
+}
+
 type CDSConfigList []CDSConfig
 
 type TagList []Tag
@@ -279,4 +301,16 @@ type InstanceLabels map[string]string
 
 type InstanceTaints []Taint
 
+type InstanceAnnotations map[string]string
+
 type BBCFlavorID string
+
+type BidMode string
+
+const (
+	// BidModeMarketPrice 跟随市场价出价
+	BidModeMarketPrice BidMode = "MARKET_PRICE_BID"
+
+	// BidModeCustomPrice 用户自定义出价
+	BidModeCustomPrice BidMode = "CUSTOM_BID"
+)

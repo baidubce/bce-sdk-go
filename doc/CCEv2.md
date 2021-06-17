@@ -932,3 +932,9 @@ myLogger.Info("this is my own logger from the CCE go sdk")
   - 支持获取集群的kubeconfig
 增加Instance 相关接口：
   - 支持对Instance部分属性的更新
+
+## v1.3.0 [2021-06-17]
+
+Instance 增加字段:
+  - 支持新建和移入竞价实例(bid)
+  - 支持新建和移入实例时, 自定义 K8S Node Annotation
