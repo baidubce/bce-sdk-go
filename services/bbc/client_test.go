@@ -717,6 +717,7 @@ func TestInstanceChangeSubnet(t *testing.T) {
 	args := &InstanceChangeSubnetArgs{
 		InstanceId: "i-DFlNGqLf",
 		SubnetId: "sbn-z1y9tcedqnh6",
+		InternalIp: "10.10.10.1",
 		Reboot: true,
 	}
 
@@ -751,4 +752,21 @@ func TestGetInstanceVnc(t *testing.T) {
 	res, err := BBC_CLIENT.GetInstanceVNC(BBC_TestBbcId)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println("get instance vnc success: ", res.VNCUrl)
+}
+
+func TestGetBbcStockWithDeploySet(t *testing.T) {
+	queryArgs := &GetBbcStockArgs{
+		Flavor:     "BBC-S3-02",
+		DeploySetIds: []string{"dset-0RHZYUfF"},
+	}
+	if res, err := BBC_CLIENT.GetBbcStockWithDeploySet(queryArgs); err != nil {
+		fmt.Println("get bbc stock failed: ", err)
+	} else {
+		data, e := json.Marshal(res)
+		if e != nil {
+			fmt.Println("json marshal failed!")
+			return
+		}
+		fmt.Printf("get bbc stock, result : %s", data)
+	}
 }

@@ -222,6 +222,7 @@ type ModifyInstanceNameArgs struct {
 type InstanceChangeSubnetArgs struct {
 	InstanceId string `json:"instanceId"`
 	SubnetId   string `json:"subnetId"`
+	InternalIp string `json:"internalIp"`
 	Reboot     bool   `json:"reboot"`
 }
 
@@ -862,4 +863,21 @@ type AutoSnapshotPolicyModel struct {
 type DeleteInstanceArgs struct {
 	BbcRecycleFlag bool     `json:"bbcRecycleFlag"`
 	InstanceIds    []string `json:"instanceIds"`
+}
+
+type GetBbcStockArgs struct {
+	Flavor         string   `json:"flavor"`
+	DeploySetIds []string `json:"deploySetIds"`
+}
+
+type GetBbcStocksResult struct {
+	BbcStocks []BbcStock `json:"bbcStocks"`
+}
+
+type BbcStock struct {
+	FlavorId          string `json:"flavorId"`
+	InventoryQuantity int    `json:"inventoryQuantity"`
+	UpdatedTime       string `json:"updatedTime"`
+	CollectionTime    string `json:"collectionTime"`
+	ZoneName          string `json:"logicalZone"`
 }

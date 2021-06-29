@@ -890,6 +890,27 @@ if err != nil {
     fmt.Println("list instance success: ", result)
 }
 ```
+### 查询实例列表V3
+以下代码可以查询BCC虚机实例列表,支持通过实例ID、实例名称、内网ip、实例公网IP、专属服务器id、私有网络名称、
+子网名称、子网ID、是否自动续费、密钥对ID、密钥对名称、部署集ID、部署集名称、资源分组、标签、可用区名称进行筛选
+```go
+args := &api.ListServerRequestV3Args{
+Marker:      "",
+MaxKeys:     3,
+}
+result, err := BCC_CLIENT.ListServersByMarkerV3(args)
+if err != nil {
+fmt.Println("list instance failed: ", err)
+} else {
+fmt.Println("list instance  success")
+data, e := json.Marshal(result)
+if e != nil {
+fmt.Println("json marshal failed!")
+return
+}
+fmt.Printf("list instance : %s", data)
+}
+```
 
 ### 查询回收站实例列表
 
@@ -1294,6 +1315,7 @@ if err := bccClient.UnBindSecurityGroup(instanceId, SecurityGroupId); err != nil
 args := &api.ResizeInstanceArgs{
 	CpuCount:           2,
 	MemoryCapacityInGB: 4,
+	LiveResize:      true,
 }
 err := client.ResizeInstance(instanceId, args)
 if err != nil {
@@ -1306,10 +1328,9 @@ if err != nil {
 > - 实例计费方式为预付费时，不能进行缩容操作
 > - 实例计费方式为后付费时，可弹性扩缩容
 > - 只有实例Running或Stopped状态时可以进行扩缩容操作
-> - 实例扩缩容之后会重启一次
+> - 实例扩缩容之后会重启一次，可选择热升级进行扩缩容，不影响业务中断，热升级的限制请参考文档[热升级的限制](https://cloud.baidu.com/doc/BCC/s/gjwvyohty#%E5%9C%A8%E7%BA%BF%E6%94%B9%E9%85%8D%EF%BC%88%E7%83%AD%E5%8D%87%E7%BA%A7%EF%BC%89%E7%9A%84%E9%99%90%E5%88%B6%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F)
 > - 异步接口，可通过查询实例详情接口查看扩缩容状态是否完成
 > - 专属实例可以通过指定的cpu、内存以及临时盘大小，专属实例临时盘大小只支持扩容而不支持缩容，具体请参考API文档 [实例扩缩容](https://cloud.baidu.com/doc/BCC/s/1jwvyoc9l)
-
 ### 查询实例VNC地址
 
 如下代码可以查询实例的VNC地址
@@ -1395,6 +1416,7 @@ if err != nil {
 args := &api.InstanceChangeSubnetArgs{
 	InstanceId: instanceId,
 	SubnetId:   subnetId,
+	InternalIp: internalIp,
 	Reboot:     false,
 }
 err := client.InstanceChangeSubnet(args)
@@ -1643,6 +1665,28 @@ if err != nil {
 > **提示：**
 > - 创建CDS磁盘接口为异步接口，可通过[查询磁盘详情](#查询磁盘详情)接口查询磁盘状态，详细接口使用请参考BCC API 文档[查询磁盘详情](https://cloud.baidu.com/doc/BCC/s/1jwvyo4ly)
 
+
+### 释放预付费CDS磁盘
+支持释放预付费的磁盘，参考以下代码可以释放磁盘：
+```go
+args := &api.VolumePrepayDeleteRequestArgs{
+             VolumeId:      "v-tVDW1NkK",
+             RelatedReleaseFlag:     false,
+        }
+       result, err := BCC_CLIENT.DeletePrepayVolume(args)
+       if err != nil {
+       fmt.Println("delete volume failed: ", err)
+       } else {
+        fmt.Println("delete volume  success")
+        data, e := json.Marshal(result)
+        if e != nil {
+        fmt.Println("json marshal failed!")
+        return
+        }
+        fmt.Printf("delete volume : %s", data)
+      }
+```
+
 ### 创建CDS磁盘(V3)
 
 支持新建空白CDS磁盘或者从CDS数据盘快照创建CDS磁盘，参考以下代码可以创建CDS磁盘：
@@ -1670,6 +1714,10 @@ args := &api.CreateCDSVolumeV3Args{
     ZoneName      string      "zoneName",
 	// 设置磁盘加密密钥
 	EncryptKey    string      "encryptKey",
+	// 自动续费的时间单位，按月付费或者按年付费 月是"month",年是"year"
+    RenewTimeUnit    string        "renewTimeUnit"
+	// 自动续费的时间 按月是1-9 按年是 1-3
+    RenewTime            int        "renewTime"
     // 设置自动快照策略id
     AutoSnapshotPolicyId string "autoSnapshotPolicyId",
 }

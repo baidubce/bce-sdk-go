@@ -50,6 +50,7 @@ const (
 	REQUEST_VOLUME_URI           = "/volume"
 	REQUEST_ZONE_URI             = "/zone"
 	REQUEST_RECYCLE              = "/recycle"
+	REQUEST_DELETEPREPAY         = "/volume/deletePrepay"
 	//
 	REQUEST_FLAVOR_SPEC_URI       = "/instance/flavorSpec"
 	REQUEST_PRICE_URI             = "/price"
@@ -86,6 +87,10 @@ func getInstanceUriV3() string {
 
 func getRecycleInstanceListUri() string {
 	return URI_PREFIXV2 + REQUEST_RECYCLE + REQUEST_INSTANCE_URI
+}
+
+func getServersByMarkerV3Uri() string {
+	return URI_PREFIXV3 + REQUEST_INSTANCE_URI + REQUEST_LIST_URI
 }
 
 func getInstanceBySpecUri() string {
@@ -143,6 +148,10 @@ func getVolumeV3Uri() string {
 
 func getVolumeUriWithId(id string) string {
 	return URI_PREFIXV2 + REQUEST_VOLUME_URI + "/" + id
+}
+
+func getDeletePrepayVolumeUri() string {
+	return URI_PREFIXV2 + REQUEST_DELETEPREPAY
 }
 
 func getVolumeV3UriWithId(id string) string {

@@ -83,3 +83,7 @@ func Aes128EncryptUseSecreteKey(sk string, data string) (string, error) {
 func getVolumeUri() string {
 	return URI_PREFIX_V1 + REQUEST_VOLUME_URI
 }
+
+func geBbcStockWithDeploySetUri() string {
+	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + "/getStockWithDeploySet"
+}

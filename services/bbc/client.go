@@ -1077,3 +1077,13 @@ func (c *Client) DeleteInstanceIngorePayment(args *DeleteInstanceIngorePaymentAr
 func (c *Client) ListCDSVolume(queryArgs *ListCDSVolumeArgs) (*ListCDSVolumeResult, error) {
 	return ListCDSVolume(c, queryArgs)
 }
+
+
+// GetBbcStockWithDeploySet - get the bbc's stock with deploySet
+//
+// RETURNS:
+//     - *GetBbcStocksResult: the result of the bbc's stock
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetBbcStockWithDeploySet(args *GetBbcStockArgs) (*GetBbcStocksResult, error) {
+	return GetStockWithDeploySet(c, args)
+}

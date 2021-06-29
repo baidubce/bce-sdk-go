@@ -169,6 +169,17 @@ func (c *Client) ListRecycleInstances(args *api.ListRecycleInstanceArgs) (*api.L
 	return api.ListRecycleInstances(c, args)
 }
 
+// ListServersByMarkerV3 - list all instance with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to list all instance
+// RETURNS:
+//     - *api.LogicMarkerResultResponseV3: the result of list Instance
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListServersByMarkerV3(args *api.ListServerRequestV3Args) (*api.LogicMarkerResultResponseV3, error) {
+	return api.ListServersByMarkerV3(c, args)
+}
+
 // GetInstanceDetail - get a specific instance detail info
 //
 // PARAMS:
@@ -1472,6 +1483,19 @@ func (c *Client) GetAvailableDiskInfo(zoneName string) (*api.GetAvailableDiskInf
 	return api.GetAvailableDiskInfo(c, zoneName)
 }
 
+
+// DeletePrepayVolume - delete the volumes for prepay
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - args: the arguments of method
+// RETURNS:
+//     - *VolumeDeleteResultResponse: the result of deleting volumes
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeletePrepayVolume(args *api.VolumePrepayDeleteRequestArgs) (*api.VolumeDeleteResultResponse, error) {
+	return api.DeletePrepayVolume(c, args)
+}
+
 // ListTypeZones - list instanceType zones
 // PARAMS:
 //     - cli: the client agent which can perform sending request
@@ -1599,3 +1623,6 @@ func (c *Client) DeleteInstanceIngorePayment(args *api.DeleteInstanceIngorePayme
 func (c *Client) ListInstanceByInstanceIds(args *api.ListInstanceByInstanceIdArgs) (*api.ListInstancesResult, error) {
 	return api.ListInstanceByInstanceIds(c, args)
 }
+
+
+

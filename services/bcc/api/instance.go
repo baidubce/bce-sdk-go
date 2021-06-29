@@ -239,6 +239,49 @@ func ListRecycleInstances(cli bce.Client, args *ListRecycleInstanceArgs) (*ListR
 	return jsonBody, nil
 }
 
+// listServersByMarkerV3 - list all instances  with the specified parameters
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - args: the arguments to list instances
+// RETURNS:
+//     - *LogicMarkerResultResponseV3: result of the instance
+//     - error: nil if success otherwise the specific error
+func ListServersByMarkerV3(cli bce.Client, args *ListServerRequestV3Args) (*LogicMarkerResultResponseV3, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getServersByMarkerV3Uri())
+	req.SetMethod(http.POST)
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &LogicMarkerResultResponseV3{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+
+
 // GetInstanceDetail - get details of the specified instance
 //
 // PARAMS:

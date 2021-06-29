@@ -1075,3 +1075,43 @@ func getChangeSubnetUri() string {
 func getChangeVpcUri() string {
 	return URI_PREFIX_V1 + REQUEST_VPC_URI + "/changeVpc"
 }
+
+// GetStockWithDeploySet - get the bbc's stock with deploySet
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - args: the arguments to get the bbc's stock with deploySet
+// RETURNS:
+//     - *GetBbcStocksResult: the result of the bbc's stock
+//     - error: nil if success otherwise the specific error
+func GetStockWithDeploySet(cli bce.Client, args *GetBbcStockArgs) (*GetBbcStocksResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(geBbcStockWithDeploySetUri())
+	req.SetMethod(http.POST)
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return nil, err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &GetBbcStocksResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}

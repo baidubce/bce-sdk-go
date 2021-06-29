@@ -326,6 +326,7 @@ if err := bbcClient.ModifyInstanceDesc(instanceId, modifyInstanceDescArgs); err 
 instanceChangeVpcArgs := &api.InstanceChangeSubnetArgs{
 	InstanceId: instanceId,
 	SubnetId:   subnetId,
+	InternalIp: internalIp,
 	Reboot:     false,
 }
 err := bbcClient.InstanceChangeSubnet(args)
@@ -1381,4 +1382,16 @@ if err := bbcClient.EnableRule(args); err != nil {
 }
 ```
 
-
+### 获取基于部署集粒度的bbc资源余量
+通过以下代码可以分页获取基于部署集粒度的bbc资源余量。由于bbc现只支持单部署集创建，要求部署集参数传一个。
+```go
+queryArgs := &GetBbcStockArgs{
+		Flavor:     "BBC-S3-02",
+		DeploySetIds: []string{"dset-0RHZYUfF"},
+	}
+if res, err := BBC_CLIENT.GetBbcStockWithDeploySet(queryArgs); err != nil {
+		fmt.Println("get bbc stock failed: ", err)
+} else {
+	fmt.Println("list volume success, result: ", res)
+}
+```

@@ -764,3 +764,43 @@ func GetAvailableDiskInfo(cli bce.Client, zoneName string) (*GetAvailableDiskInf
 	}
 	return jsonBody, nil
 }
+
+// DeletePrepayVolume - delete the volumes for prepay
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - args: the arguments of method
+// RETURNS:
+//     - *VolumeDeleteResultResponse: the result of deleting volumes
+//     - error: nil if success otherwise the specific error
+func DeletePrepayVolume(cli bce.Client, args *VolumePrepayDeleteRequestArgs) (*VolumeDeleteResultResponse, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getDeletePrepayVolumeUri())
+	req.SetMethod(http.POST)
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return nil, err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &VolumeDeleteResultResponse{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+

@@ -249,6 +249,16 @@ func TestResizeInstance(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestLiveResizeInstance(t *testing.T) {
+	resizeArgs := &api.ResizeInstanceArgs{
+		CpuCount:           2,
+		MemoryCapacityInGB: 4,
+		LiveResize:      true,
+	}
+	err := BCC_CLIENT.ResizeInstance(BCC_TestBccId, resizeArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestStopInstanceWithNoCharge(t *testing.T) {
 	err := BCC_CLIENT.StopInstanceWithNoCharge(BCC_TestBccId, true, true)
 	ExpectEqual(t.Errorf, err, nil)
@@ -661,6 +671,18 @@ func TestInstanceChangeVpc(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestInstanceChangeSubnet(t *testing.T) {
+	args := &api.InstanceChangeSubnetArgs{
+		InstanceId: "i-YRMFRB6Z",
+		SubnetId:   "sbn-z1y9tcedqnh6",
+		InternalIp: "192.168.5.12",
+		Reboot:     false,
+	}
+
+	err := BCC_CLIENT.InstanceChangeSubnet(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestAuthorizeSecurityGroupRule(t *testing.T) {
 	args := &api.AuthorizeSecurityGroupArgs{
 		Rule: &api.SecurityGroupRuleModel{
@@ -710,7 +732,7 @@ func TestGetImageDetail(t *testing.T) {
 func TestRemoteCopyImage(t *testing.T) {
 	args := &api.RemoteCopyImageArgs{
 		Name:       "testRemoteCopy",
-		DestRegion: []string{"bj"},
+		DestRegion: []string{"hkg"},
 	}
 	err := BCC_CLIENT.RemoteCopyImage(BCC_TestImageId, args)
 	ExpectEqual(t.Errorf, err, nil)
@@ -718,11 +740,12 @@ func TestRemoteCopyImage(t *testing.T) {
 
 func TestRemoteCopyImageReturnImageIds(t *testing.T) {
 	args := &api.RemoteCopyImageArgs{
-		Name:       "testRemoteCopy",
+		Name:       "Copy",
 		DestRegion: []string{"hkg"},
 	}
-	_, err := BCC_CLIENT.RemoteCopyImageReturnImageIds(BCC_TestImageId, args)
+	result, err := BCC_CLIENT.RemoteCopyImageReturnImageIds(BCC_TestImageId, args)
 	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
 }
 
 func TestCancelRemoteCopyImage(t *testing.T) {
@@ -1206,5 +1229,43 @@ func TestListInstanceByInstanceIds(t *testing.T) {
 			return
 		}
 		fmt.Printf("list instance : %s", data)
+	}
+}
+
+func TestListServersByMarkerV3(t *testing.T) {
+	args := &api.ListServerRequestV3Args{
+		Marker:      "",
+		MaxKeys:     3,
+	}
+	result, err := BCC_CLIENT.ListServersByMarkerV3(args)
+	if err != nil {
+		fmt.Println("list instance failed: ", err)
+	} else {
+		fmt.Println("list instance  success")
+		data, e := json.Marshal(result)
+		if e != nil {
+			fmt.Println("json marshal failed!")
+			return
+		}
+		fmt.Printf("list instance : %s", data)
+	}
+}
+
+func TestDeletePrepayVolume(t *testing.T) {
+	args := &api.VolumePrepayDeleteRequestArgs{
+		VolumeId:      "v-tVDW1NkK",
+		RelatedReleaseFlag:     false,
+	}
+	result, err := BCC_CLIENT.DeletePrepayVolume(args)
+	if err != nil {
+		fmt.Println("delete volume failed: ", err)
+	} else {
+		fmt.Println("delete volume  success")
+		data, e := json.Marshal(result)
+		if e != nil {
+			fmt.Println("json marshal failed!")
+			return
+		}
+		fmt.Printf("delete volume : %s", data)
 	}
 }

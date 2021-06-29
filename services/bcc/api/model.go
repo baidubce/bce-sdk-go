@@ -477,12 +477,104 @@ type ListRecycleInstanceArgs struct {
 	RecycleEnd    string `json:"recycleEnd,omitempty"`
 }
 
+type ListServerRequestV3Args struct {
+	Marker        string  `json:"marker,omitempty"`
+	MaxKeys      int     `json:"maxKeys,omitempty"`
+	InstanceId   string  `json:"instanceId,omitempty"`
+	InstanceName string  `json:"instanceName,omitempty"`
+	PrivateIpAddress string `json:"privateIpAddress,omitempty"`
+	PublicIpAddress  string  `json:"publicIpAddress,omitempty"`
+	VpcName      string    `json:"vpcName,omitempty"`
+	SubnetName   string    `json:"subnetName,omitempty"`
+	SubnetId     string    `json:"subnetId,omitempty"`
+	DedicatedHostId string  `json:"dedicatedHostId,omitempty"`
+	ZoneName     string     `json:"zoneName,omitempty"`
+	AutoRenew    bool       `json:"autoRenew,omitempty"`
+	KeypairId    string     `json:"keypairId,omitempty"`
+	KeypairName  string    `json:"keypairName,omitempty"`
+	DeploymentSetId string  `json:"deploymentSetId,omitempty"`
+	DeploymentSetName string `json:"deploymentSetName,omitempty"`
+	ResGroupId     string    `json:"resGroupId,omitempty"`
+	Tag         model.TagModel `json:"tag,omitempty"`
+}
+
+type LogicMarkerResultResponseV3 struct {
+	Marker            string                    `json:"marker"`
+	IsTruncated       bool                       `json:"isTruncated"`
+	NextMarker        string                     `json:"nextMarker"`
+	MaxKeys           int                        `json:"maxKeys"`
+	Instances         []InstanceModelV3          `json:"instances"`
+}
+
+
 type ListRecycleInstanceResult struct {
 	Marker      string                 `json:"marker"`
 	IsTruncated bool                   `json:"isTruncated"`
 	NextMarker  string                 `json:"nextMarker"`
 	MaxKeys     int                    `json:"maxKeys"`
 	Instances   []RecycleInstanceModel `json:"instances"`
+}
+
+type InstanceModelV3 struct {
+	InstanceId       string    `json:"instanceId"`
+	InstanceName     string    `json:"instanceName"`
+	HostId           string    `json:"hostId"`
+	HostName         string    `json:"hostName"`
+	InstanceSpec     string    `json:"instanceSpec"`
+	Status           InstanceStatus    `json:"status"`
+	Description      string    `json:"description"`
+	PaymentTiming    string    `json:"paymentTiming"`
+	CreateTime       string    `json:"createTime"`
+	ExpireTime       string    `json:"expireTime"`
+	ReleaseTime      string    `json:"releaseTime"`
+	PrivateIpAddress string    `json:"privateIpAddress"`
+	PublicIpAddress  string    `json:"publicIpAddress"`
+	Cpu              int       `json:"cpu"`
+	Memory           int       `json:"memory"`
+	GpuCard          string    `json:"gpuCard"`
+	FpgaCard         string    `json:"fpgaCard"`
+	CardCount        int       `json:"cardCount"`
+	DataVolumes      []DataVolumeV3 `json:"dataVolumes"`
+	ImageId          string     `json:"imageId"`
+	NetworkCapacityInMbps InternetAccessible `json:"networkCapacityInMbps"`
+	ZoneName         string      `json:"zoneName"`
+	SubnetId         string      `json:"subnetId"`
+	VpcId            string      `json:"vpcId"`
+	AutoRenew        bool        `json:"autoRenew"`
+	KeypairId        string      `json:"keypairId"`
+	KeypairName      string      `json:"keypairName"`
+	HypervisorDedicatedId string  `json:"hypervisorDedicatedId"`
+	Ipv6             string       `json:"ipv6"`
+	Tags             []model.TagModel `json:"tags"`
+	DeployId         []string      `json:"deployId"`
+	SerialNumber     string        `json:"serialNumber"`
+	SwitchId         string        `json:"switchId"`
+	RackId           string        `json:"rackId"`
+	NicInfo          NicInfoV3     `json:"nicInfo"`
+	OsName           string        `json:"osName"`
+	OsType           string        `json:"osType"`
+}
+
+type NicInfoV3 struct {
+	MacAddress    string        `json:"macAddress"`
+	EniId         string        `json:"eniId"`
+	Type          string        `json:"type"`
+	Ips           []IpModelV3   `json:"ips"`
+	SecurityGroups []string     `json:"securityGroups"`
+}
+
+type  IpModelV3 struct {
+	Primary   bool     `json:"primary"`
+	PrivateIp string     `json:"privateIp"`
+}
+
+type DataVolumeV3 struct {
+	VolumeId         string   `json:"volumeId"`
+	VolumeType       string   `json:"volumeType"`
+	VolumeSizeInGb   int      `json:"volumeSizeInGb"`
+	StorageType      string   `json:"storageType"`
+	SnapshotId       string   `json:"snapshotId"`
+	EncryptKey       string   `json:"encryptKey"`
 }
 
 type RecycleInstanceModel struct {
@@ -516,6 +608,7 @@ type ResizeInstanceArgs struct {
 	MemoryCapacityInGB int             `json:"memoryCapacityInGB"`
 	EphemeralDisks     []EphemeralDisk `json:"ephemeralDisks,omitempty"`
 	Spec               string          `json:"spec"`
+	LiveResize         bool            `json:"liveResize"`
 	ClientToken        string          `json:"-"`
 }
 
@@ -609,6 +702,7 @@ type InstanceChangeVpcArgs struct {
 type InstanceChangeSubnetArgs struct {
 	InstanceId string `json:"instanceId"`
 	SubnetId   string `json:"subnetId"`
+	InternalIp   string `json:"internalIp"`
 	Reboot     bool   `json:"reboot"`
 }
 
@@ -812,6 +906,8 @@ type CreateCDSVolumeV3Args struct {
 	Billing              *Billing      `json:"billing"`
 	EncryptKey           string        `json:"encryptKey"`
 	AutoSnapshotPolicyId string        `json:"autoSnapshotPolicyId"`
+	RenewTimeUnit        string        `json:"renewTimeUnit"`
+	RenewTime            int           `json:"renewTime"`
 	ClientToken          string        `json:"-"`
 }
 
@@ -1542,3 +1638,18 @@ type ListInstancesResult struct {
 	MaxKeys     int             `json:"maxKeys"`
 	Instances   []InstanceModel `json:"instances"`
 }
+
+type VolumePrepayDeleteRequestArgs struct {
+	VolumeId   string           `json:"volumeId"`
+	RelatedReleaseFlag bool      `json:"relatedReleaseFlag"`
+}
+
+type VolumeDeleteResultResponse struct {
+	SuccessResources   VolumeDeleteResultModel  `json:"successResources"`
+	FailResources      VolumeDeleteResultModel   `json:"failResources"`
+}
+
+type VolumeDeleteResultModel struct {
+	VolumeIds  []string      `json:"volumeIds"`
+}
+
