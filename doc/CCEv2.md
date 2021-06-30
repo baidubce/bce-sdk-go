@@ -938,3 +938,12 @@ myLogger.Info("this is my own logger from the CCE go sdk")
 Instance 增加字段:
   - 支持新建和移入竞价实例(bid)
   - 支持新建和移入实例时, 自定义 K8S Node Annotation
+
+## v1.4.0 [2021-06-29]
+
+增加InstanceGroup相关接口：
+  - 支持创建 InstanceGroup 扩容任务
+  - 支持创建 InstanceGroup 缩容任务
+增加Task相关接口：
+  - 支持查询指定Task执行详情
+  - 支持查询Task列表

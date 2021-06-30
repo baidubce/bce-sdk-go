@@ -31,6 +31,8 @@ type Interface interface {
 	GetInstance(args *GetInstanceArgs) (*GetInstanceResponse, error)
 	DeleteInstances(args *DeleteInstancesArgs) (*DeleteInstancesResponse, error)
 	ListInstancesByPage(args *ListInstancesByPageArgs) (*ListInstancesResponse, error)
+	CreateScaleUpInstanceGroupTask(args *CreateScaleUpInstanceGroupTaskArgs) (*CreateTaskResp, error)
+	CreateScaleDownInstanceGroupTask(args *CreateScaleDownInstanceGroupTaskArgs) (*CreateTaskResp, error)
 
 	GetClusterQuota() (*GetQuotaResponse, error)
 	GetClusterNodeQuota(clusterID string) (*GetQuotaResponse, error)
@@ -39,6 +41,9 @@ type Interface interface {
 	CheckClusterIPCIDR(args *CheckClusterIPCIDRArgs) (*CheckClusterIPCIDRResponse, error)
 	RecommendContainerCIDR(args *RecommendContainerCIDRArgs) (*RecommendContainerCIDRResponse, error)
 	RecommendClusterIPCIDR(args *RecommendClusterIPCIDRArgs) (*RecommendClusterIPCIDRResponse, error)
+
+	GetTask(args *GetTaskArgs) (*GetTaskResp, error)
+	ListTasks(args *ListTasksArgs) (*ListTaskResp, error)
 }
 
 //CreateCluterArgs为后续支持clientToken预留空间
@@ -139,8 +144,8 @@ type CreateInstancesResponse struct {
 }
 
 type UpdateInstanceArgs struct {
-	ClusterID string
-	InstanceID string
+	ClusterID    string
+	InstanceID   string
 	InstanceSpec *types.InstanceSpec
 }
 
@@ -306,8 +311,8 @@ const (
 // Instance - 节点详情
 // 作为sdk返回结果的Instance
 type Instance struct {
-	Spec   *types.InstanceSpec   `json:"spec"`
-	Status *InstanceStatus `json:"status"`
+	Spec   *types.InstanceSpec `json:"spec"`
+	Status *InstanceStatus     `json:"status"`
 
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
@@ -769,4 +774,50 @@ func CheckKubeConfigType(kubeConfigType string) error {
 		return fmt.Errorf("KubeConfigType %s not valid", kubeConfigType)
 	}
 	return nil
+}
+
+type CreateScaleUpInstanceGroupTaskArgs struct {
+	ClusterID       string
+	InstanceGroupID string
+	TargetReplicas  int
+}
+
+type CreateScaleDownInstanceGroupTaskArgs struct {
+	ClusterID            string
+	InstanceGroupID      string
+	InstancesToBeRemoved []string
+}
+
+type CreateTaskResp struct {
+	CommonResponse
+	TaskID string `json:"taskID"`
+}
+
+type GetTaskArgs struct {
+	TaskType types.TaskType
+	TaskID   string
+}
+
+type ListTasksArgs struct {
+	TaskType types.TaskType
+	TargetID string
+	PageNo   int
+	PageSize int
+}
+
+type GetTaskResp struct {
+	CommonResponse
+	Task *types.Task `json:"task"`
+}
+
+type ListTaskResp struct {
+	CommonResponse
+	Page ListTaskPage
+}
+
+type ListTaskPage struct {
+	PageNo     int           `json:"pageNo,omitempty"`
+	PageSize   int           `json:"pageSize,omitempty"`
+	TotalCount int           `json:"totalCount"`
+	Items      []*types.Task `json:"items"`
 }

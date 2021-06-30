@@ -7,6 +7,7 @@ import (
 
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
+	"github.com/baidubce/bce-sdk-go/services/cce/v2/types"
 )
 
 // 创建集群
@@ -484,5 +485,120 @@ func (c *Client) GetKubeConfig(args *GetKubeConfigArgs) (*GetKubeConfigResponse,
 		WithResult(result).
 		Do()
 
+	return result, err
+}
+
+// 创建节点组扩容任务
+func (c *Client) CreateScaleUpInstanceGroupTask(args *CreateScaleUpInstanceGroupTaskArgs) (*CreateTaskResp, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	if args.ClusterID == "" {
+		return nil, fmt.Errorf("clusterID is empty")
+	}
+	if args.InstanceGroupID == "" {
+		return nil, fmt.Errorf("instanceGroupID is empty")
+	}
+	if args.TargetReplicas <= 0 {
+		return nil, fmt.Errorf("target replicas should be positive")
+	}
+
+	result := &CreateTaskResp{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getScaleUpInstanceGroupURI(args.ClusterID, args.InstanceGroupID)).
+		WithQueryParamFilter("upToReplicas", strconv.Itoa(args.TargetReplicas)).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// 创建节点组缩容任务
+func (c *Client) CreateScaleDownInstanceGroupTask(args *CreateScaleDownInstanceGroupTaskArgs) (*CreateTaskResp, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	if args.ClusterID == "" {
+		return nil, fmt.Errorf("clusterID is empty")
+	}
+	if args.InstanceGroupID == "" {
+		return nil, fmt.Errorf("instanceGroupID is empty")
+	}
+	if len(args.InstancesToBeRemoved) == 0 {
+		return nil, fmt.Errorf("instances to be removed are not provided")
+	}
+
+	body := map[string]interface{}{
+		"instancesToBeRemoved": args.InstancesToBeRemoved,
+	}
+
+	result := &CreateTaskResp{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getScaleDownInstanceGroupURI(args.ClusterID, args.InstanceGroupID)).
+		WithBody(body).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// 获取任务信息
+func (c *Client) GetTask(args *GetTaskArgs) (*GetTaskResp, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	if args.TaskType == "" {
+		return nil, fmt.Errorf("taskType is not set")
+	}
+	if args.TaskID == "" {
+		return nil, fmt.Errorf("taskID is empty")
+	}
+
+	switch args.TaskType {
+	case types.TaskTypeInstanceGroupReplicas:
+	default:
+		return nil, fmt.Errorf("unsupported taskType")
+	}
+
+	result := &GetTaskResp{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getTaskWithIDURI(args.TaskType, args.TaskID)).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// 获取任务列表
+func (c *Client) ListTasks(args *ListTasksArgs) (*ListTaskResp, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	if args.TaskType == "" {
+		return nil, fmt.Errorf("taskType is not set")
+	}
+
+	switch args.TaskType {
+	case types.TaskTypeInstanceGroupReplicas:
+		if args.TargetID == "" {
+			return nil, fmt.Errorf("targetID is empty")
+		}
+	default:
+		return nil, fmt.Errorf("unsupported taskType")
+	}
+
+	result := &ListTaskResp{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getTaskListURI(args.TaskType)).
+		WithQueryParamFilter("targetID", args.TargetID).
+		WithQueryParamFilter("pageNo", strconv.Itoa(args.PageNo)).
+		WithQueryParamFilter("pageSize", strconv.Itoa(args.PageSize)).
+		WithResult(result).
+		Do()
 	return result, err
 }
