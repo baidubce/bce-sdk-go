@@ -37,6 +37,7 @@ type CreateEipArgs struct {
 	Tags              []model.TagModel `json:"tags"`
 	AutoRenewTimeUnit string           `json:"autoRenewTimeUnit,omitempty"`
 	AutoRenewTime     int              `json:"autoRenewTime,omitempty"`
+	RouteType         string           `json:"routeType,omitempty"`
 	ClientToken       string           `json:"-"`
 }
 
