@@ -37,7 +37,7 @@ const (
 	POOL            = "xdb_005a2d79-a4f4-4bfb-8284-0ffe9ddaa307_pool"
 	PNETIP          = "100.88.65.121"
 	DEPLOY_ID       = "ab89d829-9068-d88e-75bc-64bb6367d036"
-	DDC_INSTANCE_ID = "ddc-m8rwmbnn"
+	DDC_INSTANCE_ID = "ddc-m94xmm0t"
 	RDS_INSTANCE_ID = "rds-OtTkC1OD"
 	ETAG            = "v0"
 )
@@ -1464,5 +1464,32 @@ func TestClient_GetFlavorCapacity(t *testing.T) {
 		fmt.Printf("HA capacity: %d\n", residualByZone.HA)
 		fmt.Printf("Single capacity: %d\n", residualByZone.Single)
 		fmt.Printf("Slave capacity: %d\n", residualByZone.Slave)
+	}
+}
+
+func TestClient_KillSession(t *testing.T) {
+	args := &KillSessionArgs{
+		Role:       "master",
+		SessionIds: []int{8661, 8662},
+	}
+	result, err := client.KillSession(instanceId, args)
+	if err != nil {
+		fmt.Printf("start kill session task error: %+v\n", err)
+		return
+	}
+	fmt.Println("start kill session task success. TaskID:", result.TaskID)
+}
+
+func TestClient_GetKillSessionTaskResult(t *testing.T) {
+	taskId := 285647
+	result, err := client.GetKillSessionTask(instanceId, taskId)
+	if err != nil {
+		fmt.Printf("get kill session task error: %+v\n", err)
+		return
+	}
+	fmt.Println("get kill session task success.")
+	for _, task := range result.Tasks {
+		fmt.Println("sessionId: ", task.SessionID)
+		fmt.Println("task status: ", task.Status)
 	}
 }

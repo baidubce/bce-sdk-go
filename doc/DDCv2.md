@@ -1507,6 +1507,47 @@ if err != nil {
 }
 fmt.Println("[lazy drop] delete hard link success.")
 ```
+# 会话管理
+
+## 执行KillSession任务
+
+使用以下代码可以对指定数据库执行KillSession任务。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+args := &ddcrds.KillSessionArgs{
+    // 实例角色
+    Role:       "master",
+    // Session ID
+    SessionIds: []int{8661, 8662},
+}
+result, err := client.KillSession(instanceId, args)
+if err != nil {
+    fmt.Printf("start kill session task error: %+v\n", err)
+    return
+}
+fmt.Println("start kill session task success. TaskID:", result.TaskID)
+```
+
+
+## 查看KillSession任务进度
+
+使用以下代码可以查看指定数据库下已执行的KillSession任务的进度。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+// taskId 为执行KillSession任务时返回的任务Id
+result, err := client.GetKillSessionTask(instanceId, taskId)
+if err != nil {
+    fmt.Printf("get kill session task error: %+v\n", err)
+    return
+}
+fmt.Println("get kill session task success.")
+for _, task := range result.Tasks {
+    fmt.Println("sessionId: ", task.SessionID)
+    fmt.Println("task status: ", task.Status)
+}
+```
 
 # 账号管理
 

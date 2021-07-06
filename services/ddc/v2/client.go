@@ -2,6 +2,7 @@ package ddcrds
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/baidubce/bce-sdk-go/auth"
@@ -299,4 +300,12 @@ func getTableHardLinkUrl(instanceId, dbName, tableName string) string {
 
 func getChangeSemiSyncStatusUrlWithId(instanceId string) string {
 	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + "/semisync"
+}
+
+func getKillSessionUri(instanceId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + "/session/kill"
+}
+
+func getKillSessionTaskUri(instanceId string, taskId int) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + "/session/task" + "/" + strconv.Itoa(taskId)
 }

@@ -2006,3 +2006,49 @@ func (c *DDCClient) GetFlavorCapacity(poolId string, args *GetFlavorCapacityArgs
 		Do()
 	return result, err
 }
+
+// KillSession - start kill session tasks
+//
+// PARAMS:
+//     - instanceId: id of the instance
+//     - args: instance role and sessionIds
+// RETURNS:
+//     - *KillSessionResult: the response of kill session task id
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) KillSession(instanceId string, args *KillSessionArgs) (*KillSessionResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("unset args")
+	}
+
+	result := &KillSessionResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getKillSessionUri(instanceId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+	if err != nil {
+		return nil, err
+	}
+	return result, err
+}
+
+// GetKillSessionTask - get kill session tasks by taskId
+//
+// PARAMS:
+//     - instanceId: the specific instanceId of ddc
+//     - taskId: kill session returned id
+// RETURNS:
+//     - *GetKillSessionTaskResult: the response of kill session task
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetKillSessionTask(instanceId string, taskId int) (*GetKillSessionTaskResult, error) {
+	result := &GetKillSessionTaskResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getKillSessionTaskUri(instanceId, taskId)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}

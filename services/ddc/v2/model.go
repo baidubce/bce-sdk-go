@@ -980,3 +980,18 @@ type RecoverData struct {
 	DbName        string         `json:"dbName"`
 	NewDbName     string         `json:"newDbName"`
 }
+
+type KillSessionArgs struct {
+	Role       string `json:"role"`
+	SessionIds []int  `json:"sessionIds"`
+}
+type KillSessionResult struct {
+	TaskID int `json:"taskId"`
+}
+type GetKillSessionTaskResult struct {
+	Tasks []KillSessionTask `json:"tasks"`
+}
+type KillSessionTask struct {
+	SessionID int    `json:"sessionId"`
+	Status    string `json:"status"`
+}

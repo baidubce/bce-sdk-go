@@ -1369,3 +1369,27 @@ func (c *Client) GetResidual(poolId string) (*GetResidualResult, error) {
 func (c *Client) GetFlavorCapacity(poolId string, args *GetFlavorCapacityArgs) (*GetFlavorCapacityResult, error) {
 	return c.ddcClient.GetFlavorCapacity(poolId, args)
 }
+
+// KillSession - start kill session tasks
+//
+// PARAMS:
+//     - instanceId: id of the instance
+//     - args: instance role and sessionIds
+// RETURNS:
+//     - *KillSessionResult: the response of kill session task id
+//     - error: nil if success otherwise the specific error
+func (c *Client) KillSession(instanceId string, args *KillSessionArgs) (*KillSessionResult, error) {
+	return c.ddcClient.KillSession(instanceId, args)
+}
+
+// GetKillSessionTask - get kill session tasks by taskId
+//
+// PARAMS:
+//     - instanceId: the specific instanceId of ddc
+//     - taskId: kill session returned id
+// RETURNS:
+//     - *GetKillSessionTaskResult: the response of kill session task
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetKillSessionTask(instanceId string, taskId int) (*GetKillSessionTaskResult, error) {
+	return c.ddcClient.GetKillSessionTask(instanceId, taskId)
+}
