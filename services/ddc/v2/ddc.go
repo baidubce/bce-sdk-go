@@ -452,8 +452,11 @@ func (c *DDCClient) CreateDeploySet(poolId string, args *CreateDeployRequest) (*
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
 	}
+	if len(args.Strategy) < 1 {
+		args.Strategy = "centralized"
+	}
 	if !(args.Strategy == "distributed" || args.Strategy == "centralized") {
-		return nil, fmt.Errorf("Only support strategy distributed/centralized, current strategy: %v", args.Strategy)
+		return nil, fmt.Errorf("Only support strategy centralized, current strategy: %v", args.Strategy)
 	}
 
 	result := &CreateDeployResult{}

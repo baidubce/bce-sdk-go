@@ -161,8 +161,7 @@ func TestClient_DeleteDeploySet(t *testing.T) {
 
 func TestClient_CreateDeploySet(t *testing.T) {
 	result, err := DDCRDS_CLIENT.CreateDeploySet(POOL, &CreateDeployRequest{
-		DeployName:          "api-from-go3",
-		Strategy:            "distributed",
+		DeployName:          "api-from-go4",
 		CentralizeThreshold: 10,
 	})
 	ExpectEqual(t.Errorf, nil, err)

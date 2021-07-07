@@ -330,8 +330,6 @@ args := &ddcrds.CreateDeployRequest{
     ClientToken: "xxxyyyzzz",
     // 部署集名称
     DeployName: "api-from-go",
-    // 部署策略 支持集中部署(centralized)/完全打散(distributed)
-    Strategy:   "distributed",
     // 亲和度阈值 取值范围【0-96】
     CentralizeThreshold: 23,
 }

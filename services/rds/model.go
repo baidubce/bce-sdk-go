@@ -220,7 +220,7 @@ type GetBackupListArgs struct {
 
 type Snapshot struct {
 	SnapshotId          string `json:"backupId"`
-	SnapshotSizeInBytes string `json:"backupSize"`
+	SnapshotSizeInBytes int64  `json:"backupSize"`
 	SnapshotType        string `json:"backupType"`
 	SnapshotStatus      string `json:"backupStatus"`
 	SnapshotStartTime   string `json:"backupStartTime"`
