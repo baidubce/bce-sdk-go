@@ -1938,9 +1938,9 @@ func (c *Client) parallelPartUpload(bucket string, object string, filename strin
 
 		select {
 		case <-ctx.Done():
-			return nil, nil
-		case err = <-errChan:
 			return nil, ctx.Err()
+		case err = <-errChan:
+			return nil, err
 		default:
 			select {
 			case err = <-errChan:
