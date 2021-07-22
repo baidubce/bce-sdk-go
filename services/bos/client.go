@@ -19,6 +19,7 @@
 package bos
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -1866,14 +1867,14 @@ func (c *Client) DeleteBucketNotification(bucket string) error {
 // RETURNS:
 //     - *api.CompleteMultipartUploadResult: multipart upload result
 //     - error: nil if success otherwise the specific error
-func (c *Client) ParallelUpload(bucket string, object string, filename string, contentType string, args *api.InitiateMultipartUploadArgs) (*api.CompleteMultipartUploadResult, error) {
+func (c *Client) ParallelUpload(bucket string, object string, filename string, contentType string, args *api.InitiateMultipartUploadArgs, ctx context.Context) (*api.CompleteMultipartUploadResult, error) {
 
 	initiateMultipartUploadResult, err := api.InitiateMultipartUpload(c, bucket, object, contentType, args)
 	if err != nil {
 		return nil, err
 	}
 
-	partEtags, err := c.parallelPartUpload(bucket, object, filename, initiateMultipartUploadResult.UploadId)
+	partEtags, err := c.parallelPartUpload(bucket, object, filename, initiateMultipartUploadResult.UploadId, ctx)
 	if err != nil {
 		c.AbortMultipartUpload(bucket, object, initiateMultipartUploadResult.UploadId)
 		return nil, err
@@ -1897,7 +1898,7 @@ func (c *Client) ParallelUpload(bucket string, object string, filename string, c
 // RETURNS:
 //     - []api.UploadInfoType: multipart upload result
 //     - error: nil if success otherwise the specific error
-func (c *Client) parallelPartUpload(bucket string, object string, filename string, uploadId string) ([]api.UploadInfoType, error) {
+func (c *Client) parallelPartUpload(bucket string, object string, filename string, uploadId string, ctx context.Context) ([]api.UploadInfoType, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -1936,8 +1937,10 @@ func (c *Client) parallelPartUpload(bucket string, object string, filename strin
 		partBody, _ := bce.NewBodyFromSectionFile(file, offset, uploadSize)
 
 		select {
+		case <-ctx.Done():
+			return nil, nil
 		case err = <-errChan:
-			return nil, err
+			return nil, ctx.Err()
 		default:
 			select {
 			case err = <-errChan:
