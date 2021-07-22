@@ -77,6 +77,8 @@ type CreateReadReplicaArgs struct {
 	DelayThreshold      string      `json:"delayThreshold,omitempty"`
 	LeastInstanceAmount string      `json:"leastInstanceAmount,omitempty"`
 	RoGroupWeight       string      `json:"roGroupWeight,omitempty"`
+	AutoRenewTimeUnit string      `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime     int         `json:"autoRenewTime,omitempty"`
 }
 
 type Instance struct {
@@ -141,6 +143,7 @@ type Reservation struct {
 }
 
 type CreateResult struct {
+	OrderId     string   `json:"orderId"`
 	InstanceIds []string `json:"instanceIds"`
 }
 
@@ -757,6 +760,10 @@ type ResizeRdsArgs struct {
 	NodeAmount     int     `json:"nodeAmount,omitempty"`
 	IsDirectPay    bool    `json:"isDirectPay,omitempty"`
 	IsResizeNow    bool    `json:"isResizeNow,omitempty"`
+}
+
+type OrderIdResponse struct {
+	OrderId string `json:"orderId"`
 }
 
 type ModifySyncModeArgs struct {

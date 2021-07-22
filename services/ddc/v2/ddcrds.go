@@ -366,7 +366,7 @@ func (c *Client) DeleteRds(instanceIds string) error {
 //     - args: the arguments to resize an RDS
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) ResizeRds(instanceId string, args *ResizeRdsArgs) error {
+func (c *Client) ResizeRds(instanceId string, args *ResizeRdsArgs) (*OrderIdResponse, error) {
 	if isDDCId(instanceId) {
 		return c.ddcClient.ResizeRds(instanceId, args)
 	}
@@ -374,10 +374,10 @@ func (c *Client) ResizeRds(instanceId string, args *ResizeRdsArgs) error {
 	resReq := &rds.ResizeRdsArgs{}
 	err := ddc_util.SimpleCopyProperties(resReq, args)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	err = c.rdsClient.ResizeRds(instanceId, resReq)
-	return err
+	return nil, err
 }
 
 // CreateAccount - create a account with the specific parameters
@@ -1155,17 +1155,17 @@ func (c *Client) ListRecycleInstances(marker *Marker, productType string) (*Recy
 //     - instanceIds: instanceId list to recover
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) RecoverRecyclerInstances(instanceIds []string) error {
+func (c *Client) RecoverRecyclerInstances(instanceIds []string) (*OrderIdResponse, error) {
 	if instanceIds == nil || len(instanceIds) < 1 {
-		return fmt.Errorf("unset instanceIds")
+		return nil, fmt.Errorf("unset instanceIds")
 	}
 	if len(instanceIds) > 10 {
-		return fmt.Errorf("the instanceIds length max value is 10")
+		return nil, fmt.Errorf("the instanceIds length max value is 10")
 	}
 
 	for _, id := range instanceIds {
 		if !isDDCId(id) {
-			return RDSNotSupportError()
+			return nil, RDSNotSupportError()
 		}
 	}
 	return c.ddcClient.RecoverRecyclerInstances(instanceIds)

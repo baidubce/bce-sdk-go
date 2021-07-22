@@ -100,34 +100,38 @@ func assertAvailable(instanceId string, t *testing.T) {
 
 func TestClient_CreateInstance(t *testing.T) {
 	args := &CreateRdsArgs{
-		PurchaseCount: 1,
-		InstanceName:  "mysql_sdk",
-		//SourceInstanceId: "ddc-mmqptugx",
-		Engine:         "mysql",
-		EngineVersion:  "5.7",
-		CpuCount:       1,
-		MemoryCapacity: 1,
-		VolumeCapacity: 5,
+		ClientToken: "81adc02cf0221a753d1ef969eb6c6360",
 		Billing: Billing{
-			PaymentTiming: "Postpaid",
+			PaymentTiming: "Prepaid",
 			Reservation:   Reservation{ReservationLength: 1, ReservationTimeUnit: "Month"},
 		},
-		VpcId: "vpc-80m2ksi6sv0f",
-		ZoneNames: []string{
-			"cn-su-c",
-		},
+		PurchaseCount: 1,
+		InstanceName:  "go_sdk_tester",
+		Engine:         "mysql",
+		EngineVersion:  "5.7",
+		Category: "Standard",
+		CpuCount:       2,
+		MemoryCapacity: 4,
+		VolumeCapacity: 50,
+		IsDirectPay: true,
+		AutoRenewTime: 1,
+		AutoRenewTimeUnit: "month",
+		PoolId: "xdb_9c72b2ea-a24c-41ba-b6c7-fc4eb7e8f538_pool",
+		VpcId: "vpc-4mcfvqcitav5",
+		ZoneNames:[]string{"cn-bj-a"},
 		Subnets: []SubnetMap{
 			{
-				ZoneName: "cn-su-c",
-				SubnetId: "sbn-8v3p33vhyhq5",
+				ZoneName: "cn-bj-a",
+				SubnetId: "sbn-izx7eq3wy87e",
 			},
 		},
-		DeployId: "",
-		PoolId:   "xdb_gaiabase_pool",
 	}
-	rds, err := DDCRDS_CLIENT.CreateRds(args, "ddc")
+	result, err := DDCRDS_CLIENT.CreateRds(args, "ddc")
 	ExpectEqual(t.Errorf, nil, err)
-	fmt.Println(rds)
+	fmt.Println("create ddc success, orderId: ", result.OrderId)
+	for _, e := range result.InstanceIds {
+		fmt.Println("create ddc success, instanceId: ", e)
+	}
 }
 
 func TestClient_ListDeploySets(t *testing.T) {
@@ -859,14 +863,18 @@ func TestClient_CreateRds(t *testing.T) {
 
 func TestClient_CreateReadReplica(t *testing.T) {
 	client := DDCRDS_CLIENT
-	instanceId := "ddc-mpsb5qre"
+	instanceId := "ddc-m1b5gjr5"
 	args := &CreateReadReplicaArgs{
+		ClientToken: "320cfd8dceaf98529bd9f7c1d43a52c5",
+		// 计费相关参数，DDC 只读实例只支持预付费，RDS 只读实例只支持后付费Postpaid，必选
+		Billing: Billing{
+			PaymentTiming: "Prepaid",
+			Reservation: Reservation{ReservationLength: 5, ReservationTimeUnit: "Month"},
+		},
+		PurchaseCount: 3,
 		//主实例ID，必选
 		SourceInstanceId: instanceId,
-		// 计费相关参数，只读实例只支持后付费Postpaid，必选
-		Billing: Billing{
-			PaymentTiming: "Postpaid",
-		},
+		InstanceName: "go_tester_read",
 		// CPU核数，必选
 		CpuCount: 2,
 		//套餐内存大小，单位GB，必选
@@ -979,10 +987,10 @@ func TestClient_ListPage(t *testing.T) {
 		// instanceId：匹配实例id；
 		// vnetIpBackup：备库ip；
 		// vnetIp：主库ip
-		Filters: []Filter{
-			{KeywordType: "all", Keyword: "mysql"},
-			{KeywordType: "zone", Keyword: "cn-bj-a"},
-		},
+		//Filters: []Filter{
+		//	{KeywordType: "all", Keyword: "mysql"},
+		//	{KeywordType: "zone", Keyword: "cn-bj-a"},
+		//},
 	}
 	resp, err := DDCRDS_CLIENT.ListPage(args)
 
@@ -1074,8 +1082,9 @@ func TestClient_ResizeRds(t *testing.T) {
 		IsResizeNow:    true,
 		IsDirectPay:    true,
 	}
-	err := DDCRDS_CLIENT.ResizeRds(DDC_INSTANCE_ID, args)
+	orderIdResponse, err := DDCRDS_CLIENT.ResizeRds(DDC_INSTANCE_ID, args)
 	ExpectEqual(t.Errorf, nil, err)
+	fmt.Println("resize ddc success, orderId: ", orderIdResponse.OrderId)
 	time.Sleep(30 * time.Second)
 	assertAvailable(DDC_INSTANCE_ID, t)
 }
@@ -1226,12 +1235,12 @@ func TestClient_RecoverRecyclerInstances(t *testing.T) {
 		"ddc-mv8zcy6u",
 		"ddc-mof1m3hb",
 	}
-	err := client.RecoverRecyclerInstances(instanceIds)
+	orderIdResponse, err := client.RecoverRecyclerInstances(instanceIds)
 	if err != nil {
 		fmt.Printf("recover recycler instances error: %+v\n", err)
 		return
 	}
-	fmt.Println("recover recycler instances success.")
+	fmt.Println("recover recycler instances success, orderId: ", orderIdResponse.OrderId)
 }
 
 func TestClient_DeleteRecyclerInstances(t *testing.T) {

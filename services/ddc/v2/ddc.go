@@ -347,6 +347,8 @@ func (c *DDCClient) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResul
 			LeastInstanceAmount:  Int(args.LeastInstanceAmount),
 			Billing:              args.Billing,
 			IsDirectPay:          args.IsDirectPay,
+			AutoRenewTime: args.AutoRenewTime,
+			AutoRenewTimeUnit: args.AutoRenewTimeUnit,
 			Tags:                 args.Tags,
 		},
 	}
@@ -1607,24 +1609,29 @@ func (c *DDCClient) ListRecycleInstances(marker *Marker) (*RecyclerInstanceList,
 //     - instanceIds: instanceId list to recover
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *DDCClient) RecoverRecyclerInstances(instanceIds []string) error {
+func (c *DDCClient) RecoverRecyclerInstances(instanceIds []string) (*OrderIdResponse, error) {
 	if instanceIds == nil || len(instanceIds) < 1 {
-		return fmt.Errorf("unset instanceIds")
+		return nil, fmt.Errorf("unset instanceIds")
 	}
 	if len(instanceIds) > 10 {
-		return fmt.Errorf("the instanceIds length max value is 10")
+		return nil, fmt.Errorf("the instanceIds length max value is 10")
 	}
 
 	args := &BatchInstanceIds{
 		InstanceIds: strings.Join(instanceIds, COMMA),
 	}
+
+	result := &OrderIdResponse{}
+
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
 		WithURL(getRecyclerRecoverUrl()).
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
+		WithResult(result).
 		Do()
-	return err
+
+	return result, err
 }
 
 // DeleteRecyclerInstances - batch delete instances that in recycler
@@ -1902,17 +1909,22 @@ func (c *DDCClient) LazyDropDeleteHardLink(instanceId, dbName, tableName string)
 //     - args: the arguments to resize an RDS
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *DDCClient) ResizeRds(instanceId string, args *ResizeRdsArgs) error {
+func (c *DDCClient) ResizeRds(instanceId string, args *ResizeRdsArgs) (*OrderIdResponse, error) {
 	if args == nil {
-		return fmt.Errorf("unset args")
+		return nil, fmt.Errorf("unset args")
 	}
 
-	return bce.NewRequestBuilder(c).
+	result := &OrderIdResponse{}
+
+	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
 		WithURL(getDdcUriWithInstanceId(instanceId)+"/resize").
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
+		WithResult(result).
 		Do()
+
+	return result, err
 }
 
 // UpdateSyncMode - update sync mode of a specified instance

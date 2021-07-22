@@ -431,15 +431,16 @@ args := &ddcrds.CreateRdsArgs{
     // 指定ddc的数据库版本，必选
     EngineVersion:  "5.6",
     // 计费相关参数，PaymentTiming取值为 预付费：Prepaid，后付费：Postpaid；Reservation：支付方式为后支付时不需要设置，预支付时必须设置；必选
+    // 目前仅支持预付费
     Billing: ddcrds.Billing{
-        PaymentTiming: "Postpaid",
-        //Reservation: ddcrds.Reservation{ReservationLength: 1, ReservationTimeUnit: "Month"},
+        PaymentTiming: "Prepaid",
+        Reservation: ddcrds.Reservation{ReservationLength: 1, ReservationTimeUnit: "Month"},
     },
     // 预付费时可指定自动续费参数 AutoRenewTime 和 AutoRenewTimeUnit
     // 自动续费时长（续费单位为year 不大于3，续费单位为mouth 不大于9）
-    // AutoRenewTime: 1,
-    // 自动续费单位（"year";"mouth"）
-    // AutoRenewTimeUnit: "year",
+    AutoRenewTime: 1,
+    // 自动续费单位（"year";"month"）
+    AutoRenewTimeUnit: "month",
     // CPU核数，必选
     CpuCount: 1,
     //套餐内存大小，单位GB，必选
@@ -457,8 +458,8 @@ args := &ddcrds.CreateRdsArgs{
     ZoneNames:[]string{"cn-bj-a"},
     //vpc ShortId 如果不提供则属于默认vpc，可选
     VpcId: "vpc-IyrqYIQ7",
-    //是否进行直接支付，默认false，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑，可选
-    IsDirectPay: false,
+    //是否进行直接支付，默认true，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑
+    IsDirectPay: true,
     //vpc内，每个可用区的subnetId；如果不是默认vpc则必须指定 subnetId，可选
     Subnets: []ddcrds.SubnetMap{
     {
@@ -488,6 +489,7 @@ if err != nil {
     return
 }
 
+fmt.Println("create ddc success, orderId: ", result.OrderId)
 for _, e := range result.InstanceIds {
     fmt.Println("create ddc success, instanceId: ", e)
 }
@@ -513,10 +515,16 @@ for _, e := range result.InstanceIds {
 args := &ddcrds.CreateReadReplicaArgs{
     //主实例ID，必选
     SourceInstanceId: "sourceInstanceId",
-    // 计费相关参数，只读实例只支持后付费Postpaid，必选
+    // 计费相关参数，只读实例只支持后付费Prepaid，必选
     Billing: ddcrds.Billing{
-        PaymentTiming: "Postpaid",
+        PaymentTiming: "Prepaid",
+        Reservation: ddcrds.Reservation{ReservationLength: 1, ReservationTimeUnit: "Month"},
     },
+    // 预付费时可指定自动续费参数 AutoRenewTime 和 AutoRenewTimeUnit
+    // 自动续费时长（续费单位为year 不大于3，续费单位为mouth 不大于9）
+    AutoRenewTime: 1,
+    // 自动续费单位（"year";"month"）
+    AutoRenewTimeUnit: "month",
     // CPU核数，必选
     CpuCount: 1,
     //套餐内存大小，单位GB，必选
@@ -532,8 +540,8 @@ args := &ddcrds.CreateReadReplicaArgs{
     ZoneNames: []string{"cn-bj-a"},
     //与主实例 vpcId 相同，可选
     VpcId: "vpc-IyrqYIQ7",
-    //是否进行直接支付，默认false，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑，可选
-    IsDirectPay: false,
+    //是否进行直接支付，默认true，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑，可选
+    IsDirectPay: true,
     //vpc内，每个可用区的subnetId；如果不是默认vpc则必须指定 subnetId，可选
     Subnets: []ddcrds.SubnetMap{
     {
@@ -1009,18 +1017,17 @@ args := &ddcrds.ResizeRdsArgs{
     VolumeCapacity: 20,
     // 代理实例节点数，代理实例变配时此项必填
     NodeAmount: 2,
-    // 是否进行直接支付，默认false，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑，可选
+    // 是否进行直接支付，默认true，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑，可选
     IsDirectPay: false,
     // 是否立即变配 RDS只支持立即变配
     IsResizeNow: true,
 }
-err = client.ResizeRds(instanceId, args)
+orderIdResponse, err = client.ResizeRds(instanceId, args)
 if err != nil {
-    fmt.Printf("resize rds error: %+v\n", err)
+    fmt.Printf("resize ddc error: %+v\n", err)
     return
 }
-
-fmt.Println("resize rds success.")
+fmt.Println("resize ddc success, orderId: ", orderIdResponse.OrderId)
 ```
 
 > 注意:
@@ -1232,12 +1239,12 @@ instanceIds := []string{
     instanceId_1,
 	instanceId_2,
 }
-err := client.RecoverRecyclerInstances(instanceIds)
+orderIdResponse, err := client.RecoverRecyclerInstances(instanceIds)
 if err != nil {
     fmt.Printf("recover recycler instances error: %+v\n", err)
     return
 }
-fmt.Println("recover recycler instances success.")
+fmt.Println("recover recycler instances success, orderId: ", orderIdResponse.OrderId)
 ```
 
 ## 从回收站中批量删除实例
