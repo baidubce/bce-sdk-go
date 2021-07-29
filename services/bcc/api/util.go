@@ -75,6 +75,7 @@ const (
 	REQUEST_BATCH_Delete_AUTORENEW_RULES_URI = "/batchDeleteAutoRenewRules"
 	REQUEST_GET_ALL_STOCKS                   = "/getAllStocks"
 	REQUEST_GET_STOCK_WITH_DEPLOYSET         = "/getStockWithDeploySet"
+	REQUEST_DELETION_PROTECTION              = "/deletionProtection"
 )
 
 func getInstanceUri() string {
@@ -123,6 +124,10 @@ func listBidFlavorUri() string {
 
 func getInstanceVNCUri(id string) string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/" + id + REQUEST_VNC_SUFFIX
+}
+
+func getInstanceDeletionProtectionUri(id string) string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/" + id + REQUEST_DELETION_PROTECTION
 }
 
 func Aes128EncryptUseSecreteKey(sk string, data string) (string, error) {

@@ -393,6 +393,25 @@ func (c *Client) ChangeInstancePass(instanceId string, args *api.ChangeInstanceP
 	return api.ChangeInstancePass(c, instanceId, body)
 }
 
+// ModifyDeletionProtection - Modify deletion protection of specified instance
+//
+// PARAMS:
+//     - instanceId: id of the instance
+//	   - args: the arguments to modify deletion protection, default 0 for deletable and 1 for deletion protection
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ModifyDeletionProtection(instanceId string, args *api.DeletionProtectionArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return api.ModifyDeletionProtection(c, instanceId, body)
+}
+
 // ModifyInstanceAttribute - modify an instance's attribute
 //
 // PARAMS:

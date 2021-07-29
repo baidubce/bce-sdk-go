@@ -228,4 +228,3 @@ func ListInstanceEnis(cli bce.Client, instanceId string) (*ListInstanceEniResult
 	}
 	return jsonBody, nil
 }
-

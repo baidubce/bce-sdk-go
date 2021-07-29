@@ -280,8 +280,6 @@ func ListServersByMarkerV3(cli bce.Client, args *ListServerRequestV3Args) (*Logi
 	return jsonBody, nil
 }
 
-
-
 // GetInstanceDetail - get details of the specified instance
 //
 // PARAMS:
@@ -619,7 +617,6 @@ func RebootInstance(cli bce.Client, instanceId string, reqBody *bce.Body) error 
 	return nil
 }
 
-
 func RecoveryInstance(cli bce.Client, reqBody *bce.Body) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -654,6 +651,34 @@ func ChangeInstancePass(cli bce.Client, instanceId string, reqBody *bce.Body) er
 	req.SetUri(getInstanceUriWithId(instanceId))
 	req.SetMethod(http.PUT)
 	req.SetParam("changePass", "")
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// ModifyDeletionProtection - Modify deletion protection of specified instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance
+//	   - reqBody: the request body to set an instance, default 0 for deletable and 1 for deletion protection
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func ModifyDeletionProtection(cli bce.Client, instanceId string, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getInstanceDeletionProtectionUri(instanceId))
+	req.SetMethod(http.PUT)
 	req.SetBody(reqBody)
 
 	// Send request and get response

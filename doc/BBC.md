@@ -325,7 +325,7 @@ if err := bbcClient.ModifyInstanceDesc(instanceId, modifyInstanceDescArgs); err 
 ```go
 instanceChangeVpcArgs := &api.InstanceChangeSubnetArgs{
 	InstanceId: instanceId,
-	SubnetId:   subnetId,
+	SubnetId:   subnetId, 
 	InternalIp: internalIp,
 	Reboot:     false,
 }
@@ -346,7 +346,8 @@ if err != nil {
 ```go
 instanceChangeVpcArgs := &InstanceChangeVpcArgs{
     InstanceId: "your-choose-instance-id",
-    SubnetId: "new_subnet_id_in_vpc",
+    SubnetId: "new_subnet_id_in_vpc", 
+    InternalIp: internalIp,
     Reboot: true,
 }
 if err := bbcClient.InstanceChangeVpc(instanceChangeVpcArgs); err != nil {

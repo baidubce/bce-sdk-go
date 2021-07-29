@@ -803,4 +803,3 @@ func DeletePrepayVolume(cli bce.Client, args *VolumePrepayDeleteRequestArgs) (*V
 	}
 	return jsonBody, nil
 }
-

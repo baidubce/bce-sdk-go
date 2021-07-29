@@ -229,6 +229,7 @@ type InstanceChangeSubnetArgs struct {
 type InstanceChangeVpcArgs struct {
 	InstanceId string `json:"instanceId"`
 	SubnetId   string `json:"subnetId"`
+	InternalIp   string `json:"internalIp"`
 	Reboot     bool   `json:"reboot"`
 }
 

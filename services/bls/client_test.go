@@ -46,11 +46,11 @@ func init() {
 	}
 	// default use http protocol
 	BLS_CLIENT, _ = NewClient(confObj.Ak, confObj.Sk, DEFAULT_TEST_DOMAIN)
-	//log.SetLogHandler(log.STDERR | log.FILE)
-	//log.SetRotateType(log.ROTATE_SIZE)
+	// log.SetLogHandler(log.STDERR | log.FILE)
+	// log.SetRotateType(log.ROTATE_SIZE)
 	log.SetLogLevel(log.WARN)
-	//log.SetLogHandler(log.STDERR)
-	//log.SetLogLevel(log.DEBUG)
+	// log.SetLogHandler(log.STDERR)
+	// log.SetLogLevel(log.DEBUG)
 }
 
 // ExpectEqual is the helper function for test each case

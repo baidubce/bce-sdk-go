@@ -297,7 +297,9 @@ args := &api.CreateInstanceArgs{
     // 指定实例所在的部署集id
     DeployId              string           "deployId"
     // 指定实例所在的部署集id 列表
-	DeployIdList          []string         `json:"deployIdList"`
+	DeployIdList          []string         "deployIdList"
+    // 设置释放保护 默认0不启用，1启用
+    DetetionProtection    int              "deletionProtection"
     // 设置要绑定的密钥对ID
     KeypairId             string           "keypairId"
     // 设置要绑定的自动快照策略ID
@@ -416,7 +418,9 @@ createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
     // cds是否自动续费 是:true 否:false
     CdsAutoRenew          bool             cdsAutoRenew
 	// 指定实例所在的部署集id 列表
-	DeployIdList          []string         `json:"deployIdList"`
+	DeployIdList          []string         "deployIdList"
+    // 设置释放保护 默认0不启用，1启用
+    DetetionProtection    int              "deletionProtection"
     // 待创建实例指定的标签是否需要和已有标签键进行关联，默认为false。注意值为true时要保证该标签键已存在
     RelationTag           bool             relationTag
     // 待创建的标签列表
@@ -1235,6 +1239,29 @@ if err != nil {
 > -   实例释放后不可恢复
 > -   关联的网卡资源会被自动卸载，且被释放
 
+## 释放保护
+使用以下代码可以为BCC实例设置释放保护，实例当前设置可查询实例详情DeletionProtection，默认0不保护，1释放保护中（创建和查询入口限v2版本使用）:
+
+```go
+args := &api.DeletionProtectionArgs {
+// 释放保护状态 0不启用，1启用
+    DeletionProtection : 0,
+}
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+
+if err := bccClient.ModifyDeletionProtection(instanceId, args); err != nil {
+    fmt.Println("modifyDeletionProtection failed: ", err)
+} else {
+    fmt.Println("modifyDeletionProtection success.")
+}
+```
+
+> **提示：**
+> -   后付费和预付费均可开启释放保护
+> -   已开启释放保护的实例将无法通过控制台或API释放，只有在关闭的情况下才能被手动释放。定时释放，欠费释放以及实例过期释放不受释放保护属性的影响
+> -   实例释放保护默认不开启
+
 ## 变配实例
 使用以下代码可以选择CPU,MemoryCapacityInGB,EphemeralDisks变配指定BCC实例:
 
@@ -1437,7 +1464,8 @@ if err != nil {
 ```go
 args := &api.InstanceChangeVpcArgs{
     InstanceId: instanceId,
-    SubnetId: subnetId,
+    SubnetId: subnetId, 
+    InternalIp: internalIp,
     Reboot: true,
 }
 err := client.InstanceChangeVpc(args)

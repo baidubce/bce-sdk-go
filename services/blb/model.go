@@ -82,6 +82,7 @@ type BLBModel struct {
 	Layer4ClusterId string           `json:"layer4ClusterId"`
 	Layer7ClusterId string           `json:"layer7ClusterId"`
 	Tags            []model.TagModel `json:"tags"`
+	EipRouteType    string			 `json:"eipRouteType"`
 }
 
 type DescribeLoadBalancersResult struct {
@@ -108,6 +109,7 @@ type DescribeLoadBalancerDetailResult struct {
 	Layer7ClusterId string           `json:"layer7ClusterId"`
 	Listener        []ListenerModel  `json:"listener"`
 	Tags            []model.TagModel `json:"tags"`
+	EipRouteType	string			 `json:"eipRouteType"`
 }
 
 type CreateTCPListenerArgs struct {

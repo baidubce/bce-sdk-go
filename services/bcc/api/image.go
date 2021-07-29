@@ -98,7 +98,7 @@ func ListImage(cli bce.Client, queryArgs *ListImageArgs) (*ListImageResult, erro
 				return nil, errors.New("only the custom image type could filter by name")
 			}
 		}
-  		if len(queryArgs.ImageType) != 0 {
+		if len(queryArgs.ImageType) != 0 {
 			req.SetParam("imageType", queryArgs.ImageType)
 		}
 	}
