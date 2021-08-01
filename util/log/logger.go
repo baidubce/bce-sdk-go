@@ -107,14 +107,12 @@ var (
 
 type writerArgs struct {
 	record     string
-	recordDone chan bool
 	rotateArgs interface{} // used for rotating: the size of the record or the logging time
 }
 
 // Logger defines the internal implementation of the log facility
 type logger struct {
 	writers        map[Handler]io.WriteCloser // the destination writer to log message
-	writerChan     chan *writerArgs           // the writer channal to pass each record and time or size
 	logFormat      []string
 	levelThreshold Level
 	handler        Handler
@@ -163,13 +161,11 @@ func (l *logger) logging(level Level, format string, args ...interface{}) {
 		}
 	}
 	record := strings.Join(buf, " ")
-	logRecordDone := make(chan bool)
 	if l.rotateType == ROTATE_SIZE {
-		l.writerChan <- &writerArgs{record, logRecordDone, int64(len(record))}
+		l.print(&writerArgs{record, int64(len(record))})
 	} else {
-		l.writerChan <- &writerArgs{record, logRecordDone, now}
+		l.print(&writerArgs{record, now})
 	}
-	<-logRecordDone // wait for current record done logging
 }
 
 func (l *logger) buildWriter(args interface{}) {
@@ -346,28 +342,21 @@ func (l *logger) Panicf(format string, msg ...interface{}) {
 	panic(record)
 }
 
+func (l *logger) print(args *writerArgs) {
+	l.buildWriter(args.rotateArgs)
+
+	for _, w := range l.writers {
+		fmt.Fprint(w, args.record)
+	}
+}
+
 func NewLogger() *logger {
 	obj := &logger{
 		writers:        make(map[Handler]io.WriteCloser, 3), // now only support 3 kinds of handler
-		writerChan:     make(chan *writerArgs),
 		logFormat:      gDefaultLogFormat,
 		levelThreshold: DEBUG,
 		handler:        NONE,
 	}
-
-	// The backend writer goroutine to write each log record
-	go func() {
-		for {
-			select {
-			case args := <-obj.writerChan: // wait until a record comes to log
-				obj.buildWriter(args.rotateArgs)
-				for _, w := range obj.writers {
-					fmt.Fprint(w, args.record)
-				}
-				args.recordDone <- true
-			}
-		}
-	}()
 
 	return obj
 }
