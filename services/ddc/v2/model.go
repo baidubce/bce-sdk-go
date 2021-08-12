@@ -77,8 +77,8 @@ type CreateReadReplicaArgs struct {
 	DelayThreshold      string      `json:"delayThreshold,omitempty"`
 	LeastInstanceAmount string      `json:"leastInstanceAmount,omitempty"`
 	RoGroupWeight       string      `json:"roGroupWeight,omitempty"`
-	AutoRenewTimeUnit string      `json:"autoRenewTimeUnit,omitempty"`
-	AutoRenewTime     int         `json:"autoRenewTime,omitempty"`
+	AutoRenewTimeUnit   string      `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime       int         `json:"autoRenewTime,omitempty"`
 }
 
 type Instance struct {
@@ -1001,4 +1001,27 @@ type GetKillSessionTaskResult struct {
 type KillSessionTask struct {
 	SessionID int    `json:"sessionId"`
 	Status    string `json:"status"`
+}
+
+type MaintainTask struct {
+	TaskID           string   `json:"taskId"`
+	TaskName         string   `json:"taskName"`
+	TaskStatus       string   `json:"taskStatus"`
+	InstanceID       string   `json:"instanceId"`
+	InstanceName     string   `json:"instanceName"`
+	SupportedOperate []string `json:"supportedOperate"`
+	StartTime        string   `json:"startTime"`
+	EndTime          string   `json:"endTime"`
+	Region           string   `json:"region"`
+}
+
+type ListMaintainTaskResult struct {
+	ListResultWithMarker
+	Result []MaintainTask `json:"result"`
+}
+
+type GetMaintainTaskListArgs struct {
+	Marker
+	StartTime string `json:"startTime"`
+	EndTime   string `json:"endTime"`
 }

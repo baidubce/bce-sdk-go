@@ -1393,3 +1393,33 @@ func (c *Client) KillSession(instanceId string, args *KillSessionArgs) (*KillSes
 func (c *Client) GetKillSessionTask(instanceId string, taskId int) (*GetKillSessionTaskResult, error) {
 	return c.ddcClient.GetKillSessionTask(instanceId, taskId)
 }
+
+// GetMaintainTaskList - get maintain tasks by taskId
+//
+// PARAMS:
+// RETURNS:
+//     - *ListMaintainTaskResult: the response of maintain tasks
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetMaintainTaskList(args *GetMaintainTaskListArgs) (*ListMaintainTaskResult, error) {
+	return c.ddcClient.GetMaintainTaskList(args)
+}
+
+// ExecuteMaintainTaskImmediately - execute maintain task immediately
+//
+// PARAMS:
+//     - taskId: id of the task
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ExecuteMaintainTaskImmediately(taskId string) error {
+	return c.ddcClient.ExecuteMaintainTaskImmediately(taskId)
+}
+
+// CancelMaintainTask - cancel maintain task
+//
+// PARAMS:
+//     - taskId: id of the task
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) CancelMaintainTask(taskId string) error {
+	return c.ddcClient.CancelMaintainTask(taskId)
+}

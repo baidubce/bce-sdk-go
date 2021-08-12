@@ -105,20 +105,20 @@ func TestClient_CreateInstance(t *testing.T) {
 			PaymentTiming: "Prepaid",
 			Reservation:   Reservation{ReservationLength: 1, ReservationTimeUnit: "Month"},
 		},
-		PurchaseCount: 1,
-		InstanceName:  "go_sdk_tester",
-		Engine:         "mysql",
-		EngineVersion:  "5.7",
-		Category: "Standard",
-		CpuCount:       2,
-		MemoryCapacity: 4,
-		VolumeCapacity: 50,
-		IsDirectPay: true,
-		AutoRenewTime: 1,
+		PurchaseCount:     1,
+		InstanceName:      "go_sdk_tester",
+		Engine:            "mysql",
+		EngineVersion:     "5.7",
+		Category:          "Standard",
+		CpuCount:          2,
+		MemoryCapacity:    4,
+		VolumeCapacity:    50,
+		IsDirectPay:       true,
+		AutoRenewTime:     1,
 		AutoRenewTimeUnit: "month",
-		PoolId: "xdb_9c72b2ea-a24c-41ba-b6c7-fc4eb7e8f538_pool",
-		VpcId: "vpc-4mcfvqcitav5",
-		ZoneNames:[]string{"cn-bj-a"},
+		PoolId:            "xdb_9c72b2ea-a24c-41ba-b6c7-fc4eb7e8f538_pool",
+		VpcId:             "vpc-4mcfvqcitav5",
+		ZoneNames:         []string{"cn-bj-a"},
 		Subnets: []SubnetMap{
 			{
 				ZoneName: "cn-bj-a",
@@ -869,12 +869,12 @@ func TestClient_CreateReadReplica(t *testing.T) {
 		// 计费相关参数，DDC 只读实例只支持预付费，RDS 只读实例只支持后付费Postpaid，必选
 		Billing: Billing{
 			PaymentTiming: "Prepaid",
-			Reservation: Reservation{ReservationLength: 5, ReservationTimeUnit: "Month"},
+			Reservation:   Reservation{ReservationLength: 5, ReservationTimeUnit: "Month"},
 		},
 		PurchaseCount: 3,
 		//主实例ID，必选
 		SourceInstanceId: instanceId,
-		InstanceName: "go_tester_read",
+		InstanceName:     "go_tester_read",
 		// CPU核数，必选
 		CpuCount: 2,
 		//套餐内存大小，单位GB，必选
@@ -1500,4 +1500,59 @@ func TestClient_GetKillSessionTaskResult(t *testing.T) {
 		fmt.Println("sessionId: ", task.SessionID)
 		fmt.Println("task status: ", task.Status)
 	}
+}
+
+func TestClient_GetMaintainTaskList(t *testing.T) {
+	args := &GetMaintainTaskListArgs{
+		Marker: Marker{
+			MaxKeys: 10,
+		},
+		// 任务起始时间 必选
+		StartTime: "2021-08-10 00:00:00",
+	}
+	result, err := client.GetMaintainTaskList(args)
+	if err != nil {
+		fmt.Printf("get tasks error: %+v\n", err)
+		return
+	}
+	fmt.Println("get tasks success.")
+	// 返回标记查询的起始位置
+	fmt.Println("list marker: ", result.Marker)
+	// true表示后面还有数据，false表示已经是最后一页
+	fmt.Println("list isTruncated: ", result.IsTruncated)
+	// 获取下一页所需要传递的marker值。当isTruncated为false时，该域不出现
+	fmt.Println("list nextMarker: ", result.NextMarker)
+	// 每页包含的最大数量
+	fmt.Println("list maxKeys: ", result.MaxKeys)
+	for _, task := range result.Result {
+		fmt.Println("task id: ", task.TaskID)
+		fmt.Println("task name: ", task.TaskName)
+		fmt.Println("task status: ", task.TaskStatus)
+		fmt.Println("instance id: ", task.InstanceID)
+		fmt.Println("instance name: ", task.InstanceName)
+		fmt.Println("instance region: ", task.Region)
+		fmt.Println("start time: ", task.StartTime)
+		fmt.Println("end time: ", task.EndTime)
+		fmt.Println("--------------------------")
+	}
+}
+
+func TestClient_ExecuteMaintainTaskImmediately(t *testing.T) {
+	taskId := "880337"
+	err := client.ExecuteMaintainTaskImmediately(taskId)
+	if err != nil {
+		fmt.Printf("execute task invoke error: %+v\n", err)
+		return
+	}
+	fmt.Println("execute task invoke  success.")
+}
+
+func TestClient_CancelMaintainTask(t *testing.T) {
+	taskId := "880337"
+	err := client.CancelMaintainTask(taskId)
+	if err != nil {
+		fmt.Printf("cancel task invoke error: %+v\n", err)
+		return
+	}
+	fmt.Println("cancel task invoke  success.")
 }

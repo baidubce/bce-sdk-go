@@ -347,8 +347,8 @@ func (c *DDCClient) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResul
 			LeastInstanceAmount:  Int(args.LeastInstanceAmount),
 			Billing:              args.Billing,
 			IsDirectPay:          args.IsDirectPay,
-			AutoRenewTime: args.AutoRenewTime,
-			AutoRenewTimeUnit: args.AutoRenewTimeUnit,
+			AutoRenewTime:        args.AutoRenewTime,
+			AutoRenewTimeUnit:    args.AutoRenewTimeUnit,
 			Tags:                 args.Tags,
 		},
 	}
@@ -2066,4 +2066,66 @@ func (c *DDCClient) GetKillSessionTask(instanceId string, taskId int) (*GetKillS
 		Do()
 
 	return result, err
+}
+
+// GetMaintainTaskList - get maintain tasks by taskId
+//
+// PARAMS:
+// RETURNS:
+//     - *ListMaintainTaskResult: the response of maintain tasks
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetMaintainTaskList(args *GetMaintainTaskListArgs) (*ListMaintainTaskResult, error) {
+	if args == nil || len(args.StartTime) < 1 {
+		return nil, fmt.Errorf("unset startTime")
+	}
+	result := &ListMaintainTaskResult{}
+	req := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getMaintainTaskUri()).
+		WithResult(result).
+		WithQueryParams(getMarkerParams(&args.Marker)).
+		WithQueryParam("startTime", args.StartTime)
+	if len(args.EndTime) > 0 {
+		req.WithQueryParam("endTime", args.EndTime)
+	}
+	err := req.Do()
+	return result, err
+}
+
+// ExecuteMaintainTaskImmediately - execute maintain task immediately
+//
+// PARAMS:
+//     - taskId: id of the task
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) ExecuteMaintainTaskImmediately(taskId string) error {
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getMaintainTaskUriWithTaskId(taskId)+"/executeNow").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		Do()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// CancelMaintainTask - cancel maintain task
+//
+// PARAMS:
+//     - taskId: id of the task
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) CancelMaintainTask(taskId string) error {
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getMaintainTaskUriWithTaskId(taskId)+"/cancel").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		Do()
+	if err != nil {
+		return err
+	}
+	return nil
 }

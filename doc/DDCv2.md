@@ -1199,6 +1199,92 @@ if err != nil {
 >
 > - startTime 为北京时间24小时制，例如14:00。
 
+
+## 查询任务列表
+通过此接口可以获取到任务列表，管理已经执行过的任务，或者时间窗口内即将执行的任务(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+args := &ddcrds.GetMaintainTaskListArgs{
+		Marker: ddcrds.Marker{
+			MaxKeys: 10,
+		},
+		// 任务起始时间 必选
+		StartTime: "2021-07-31 00:00:00",
+		// 结束时间 可选
+		EndTime: "2021-08-10 00:00:00",
+	}
+result, err := client.GetMaintainTaskList(args)
+if err != nil {
+    fmt.Printf("get tasks error: %+v\n", err)
+    return
+}
+fmt.Println("get tasks success.")
+
+// 返回标记查询的起始位置
+fmt.Println("list marker: ", result.Marker)
+// true表示后面还有数据，false表示已经是最后一页
+fmt.Println("list isTruncated: ", result.IsTruncated)
+// 获取下一页所需要传递的marker值。当isTruncated为false时，该域不出现
+fmt.Println("list nextMarker: ", result.NextMarker)
+// 每页包含的最大数量
+fmt.Println("list maxKeys: ", result.MaxKeys)
+for _, task := range result.Result {
+    fmt.Println("task id: ", task.TaskID)
+    fmt.Println("task name: ", task.TaskName)
+    fmt.Println("task status: ", task.TaskStatus)
+    fmt.Println("instance id: ", task.InstanceID)
+    fmt.Println("instance name: ", task.InstanceName)
+    fmt.Println("instance region: ", task.Region)
+    fmt.Println("start time: ", task.StartTime)
+    fmt.Println("end time: ", task.EndTime)
+}
+```
+
+> 注意:
+>
+> - StartTime 和 EndTime 格式为yyyy-MM-dd HH:mm:ss，例如2021-07-31 00:00:00。
+
+## 立即执行任务
+通过此接口对维护时间窗口内的任务发起立即执行的命令(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+err := client.ExecuteMaintainTaskImmediately(taskId)
+if err != nil {
+    fmt.Printf("execute task invoke error: %+v\n", err)
+    return
+}
+fmt.Println("execute task invoke  success.")
+```
+
+> 常见错误:
+>
+> - task not found:任务列表中无此任务
+> - not in running status:任务已执行结束
+> - it had been updated before:任务已触发立即执行或取消
+> - in maintentime or not set maintentime yet:已处于维护时间窗口或者未设置维护时间窗口
+
+## 撤销任务
+通过此接口对维护时间窗口内的任务发起撤销命令(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+err := client.CancelMaintainTask(taskId)
+if err != nil {
+    fmt.Printf("cancel task invoke error: %+v\n", err)
+    return
+}
+fmt.Println("cancel task invoke  success.")
+```
+
+> 常见错误:
+>
+> - task not found:任务列表中无此任务
+> - not in running status:任务已执行结束
+> - it had been updated before:任务已触发立即执行或取消
+> - in maintentime or not set maintentime yet:已处于维护时间窗口或者未设置维护时间窗口
+
 ## 获取回收站中的实例列表
 使用以下代码可以获取回收站中的实例列表(仅支持DDC)。
 ```go

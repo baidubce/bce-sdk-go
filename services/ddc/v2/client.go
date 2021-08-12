@@ -18,6 +18,7 @@ const (
 	REQUEST_DDC_INSTANCE_URL        = "/instance"
 	REQUEST_DDC_POOL_URL            = "/pool"
 	REQUEST_DDC_HOST_URL            = "/host"
+	REQUEST_DDC_TASK_URL            = "/task"
 	REQUEST_DDC_DEPLOY_URL          = "/deploy"
 	REQUEST_DDC_DATABASE_URL        = "/database"
 	REQUEST_DDC_TABLE_URL           = "/table"
@@ -308,4 +309,12 @@ func getKillSessionUri(instanceId string) string {
 
 func getKillSessionTaskUri(instanceId string, taskId int) string {
 	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + "/session/task" + "/" + strconv.Itoa(taskId)
+}
+
+func getMaintainTaskUri() string {
+	return URI_PREFIX + REQUEST_DDC_TASK_URL
+}
+
+func getMaintainTaskUriWithTaskId(taskId string) string {
+	return URI_PREFIX + REQUEST_DDC_TASK_URL + "/" + taskId
 }
