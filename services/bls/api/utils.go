@@ -21,12 +21,13 @@ import (
 )
 
 const (
-	DEFAULT_PREFIX   = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logstore"
-	FASTQUERY_PREFIX = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "fastquery"
+	LOGSTORE_PREFIX   = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logstore"
+	FASTQUERY_PREFIX  = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "fastquery"
+	LOGSHIPPER_PREFIX = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logshipper"
 )
 
 func getLogStoreUri(logStoreName string) string {
-	return DEFAULT_PREFIX + bce.URI_PREFIX + logStoreName
+	return LOGSTORE_PREFIX + bce.URI_PREFIX + logStoreName
 }
 
 func getLogStreamName(logStoreName string) string {
@@ -43,4 +44,20 @@ func getFastQueryUri(fastQuery string) string {
 
 func getIndexUri(logStoreName string) string {
 	return getLogStoreUri(logStoreName) + bce.URI_PREFIX + "index"
+}
+
+func getLogShipperUri(logShipperID string) string {
+	return LOGSHIPPER_PREFIX + bce.URI_PREFIX + logShipperID
+}
+
+func getLogShipperRecordUri(logShipperID string) string {
+	return getLogShipperUri(logShipperID) + bce.URI_PREFIX + "record"
+}
+
+func getLogShipperStatusUri(logShipperID string) string {
+	return getLogShipperUri(logShipperID) + bce.URI_PREFIX + "status"
+}
+
+func getBulkSetLogShipperStatusUri() string {
+	return LOGSHIPPER_PREFIX + bce.URI_PREFIX + "status" + bce.URI_PREFIX + "batch"
 }

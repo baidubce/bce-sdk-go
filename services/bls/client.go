@@ -205,3 +205,82 @@ func (c *Client) DeleteIndex(logStore string) error {
 func (c *Client) DescribeIndex(logStore string) (*api.IndexFields, error) {
 	return api.DescribeIndex(c, logStore)
 }
+
+// LogShipper opts
+func (c *Client) ListLogShipper(args *api.ListLogShipperCondition) (*api.ListShipperResult, error) {
+	return api.ListLogShipper(c, args)
+}
+
+func (c *Client) CreateLogShipper(args *api.CreateLogShipperBody) (string, error) {
+	params, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+
+		return "", jsonErr
+	}
+	body, err := bce.NewBodyFromString(string(params))
+	if err != nil {
+
+		return "", nil
+	}
+	return api.CreateLogShipper(c, body)
+}
+
+func (c *Client) UpdateLogShipper(logShipperID string, args *api.UpdateLogShipperBody) error {
+	params, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromString(string(params))
+	if err != nil {
+		return nil
+	}
+	return api.UpdateLogShipper(c, body, logShipperID)
+}
+
+func (c *Client) GetLogShipper(logShipperID string) (*api.LogShipper, error) {
+	return api.GetLogShipper(c, logShipperID)
+}
+
+func (c *Client) ListLogShipperRecord(logShipperID string, args *api.ListShipperRecordCondition) (*api.ListShipperRecordResult, error) {
+	return api.ListLogShipperRecord(c, logShipperID, args)
+}
+
+func (c *Client) DeleteSingleLogShipper(logShipperID string) error {
+	return api.DeleteSingleLogShipper(c, logShipperID)
+}
+
+func (c *Client) BulkDeleteLogShipper(args *api.BulkDeleteShipperCondition) error {
+	params, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromString(string(params))
+	if err != nil {
+		return nil
+	}
+	return api.BulkDeleteLogShipper(c, body)
+}
+
+func (c *Client) SetSingleLogShipperStatus(logShipperID string, args *api.SetSingleShipperStatusCondition) error {
+	params, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromString(string(params))
+	if err != nil {
+		return nil
+	}
+	return api.SetSingleLogShipperStatus(c, logShipperID, body)
+}
+
+func (c *Client) BulkSetLogShipperStatus(args *api.BulkSetShipperStatusCondition) error {
+	params, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromString(string(params))
+	if err != nil {
+		return nil
+	}
+	return api.BulkSetLogShipperStatus(c, body)
+}

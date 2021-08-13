@@ -23,6 +23,11 @@ var (
 	JSON_LOGSTREAM      = LOGSTREAM_PATTERN + "-JSON"
 	TEXT_LOGSTREAM      = LOGSTREAM_PATTERN + "-TEXT"
 	FASTQUERY_NAME      = "speedo"
+	LOGSHIPPER_NAME     = "test-bls-sdk"
+	TEST_STARTTIME      = "2021-07-06T19:01:00Z"
+	LOGSHIPPER_ID       = "MjI3NDY5OTE5MTk3MzE1MDcy"
+	DEAFAULT_LOGSTORE   = "ng-log"
+	DEAFAULT_BOSPATH    = "/bls-test/bls-sdk/"
 	DEFAULT_TEST_DOMAIN = "10.132.106.242"
 )
 
@@ -401,5 +406,144 @@ func TestDeleteLogStore(t *testing.T) {
 	ExpectEqual(t.Errorf, res, nil)
 	if realErr, ok := err.(*bce.BceServiceError); ok {
 		ExpectEqual(t.Errorf, realErr.StatusCode, http.StatusNotFound)
+	}
+}
+
+func TestClient_CreateLogShipper(t *testing.T) {
+	args := &api.CreateLogShipperBody{
+		LogShipperName: LOGSHIPPER_NAME,
+		LogStoreName:   DEAFAULT_LOGSTORE,
+		StartTime:      TEST_STARTTIME,
+		DestConfig: &api.ShipperDestConfig{
+			BOSPath: DEAFAULT_BOSPATH,
+		},
+	}
+	id, err := BLS_CLIENT.CreateLogShipper(args)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, len(id) > 0, true)
+	args = &api.CreateLogShipperBody{
+		LogShipperName: "invalid",
+		LogStoreName:   "not-exist",
+		DestConfig:     &api.ShipperDestConfig{},
+	}
+	id, err = BLS_CLIENT.CreateLogShipper(args)
+	if realErr, ok := err.(*bce.BceServiceError); ok {
+		ExpectEqual(t.Errorf, realErr.StatusCode, http.StatusBadRequest)
+		ExpectEqual(t.Errorf, id, "")
+	}
+}
+
+func TestClient_UpdateLogShipper(t *testing.T) {
+	args := &api.UpdateLogShipperBody{
+		LogShipperName: "shipper-sdk",
+		DestConfig: &api.ShipperDestConfig{
+			PartitionFormatLogStream: true,
+			MaxObjectSize:            50,
+			CompressType:             "snappy",
+			DeliverInterval:          30,
+			StorageFormat:            "json",
+		},
+	}
+	err := BLS_CLIENT.UpdateLogShipper(LOGSHIPPER_ID, args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestClient_GetLogShipper(t *testing.T) {
+	logShipper, err := BLS_CLIENT.GetLogShipper(LOGSHIPPER_ID)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, logShipper.LogStoreName, DEAFAULT_LOGSTORE)
+	ExpectEqual(t.Errorf, logShipper.DestConfig.BOSPath, DEAFAULT_BOSPATH)
+}
+
+func TestClient_ListLogShipper(t *testing.T) {
+	args := &api.ListLogShipperCondition{
+		LogShipperID: LOGSHIPPER_ID,
+		LogStoreName: DEAFAULT_LOGSTORE,
+		Status:       "Running",
+	}
+	shipperInfo, err := BLS_CLIENT.ListLogShipper(args)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, shipperInfo.TotalCount, 1)
+}
+
+func TestClient_ListLogShipperRecord(t *testing.T) {
+	args := &api.ListShipperRecordCondition{
+		SinceHours: 20 * 24,
+	}
+	records, err := BLS_CLIENT.ListLogShipperRecord(LOGSHIPPER_ID, args)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, records.TotalCount > 0, true)
+	ExpectEqual(t.Errorf, records.Result[0].FinishedCount > 0, true)
+}
+
+func TestClient_SetSingleLogShipperStatus(t *testing.T) {
+	args := &api.SetSingleShipperStatusCondition{DesiredStatus: "Paused"}
+	err := BLS_CLIENT.SetSingleLogShipperStatus(LOGSHIPPER_ID, args)
+	ExpectEqual(t.Errorf, err, nil)
+	logShipper, err := BLS_CLIENT.GetLogShipper(LOGSHIPPER_ID)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, logShipper.Status, "Paused")
+}
+
+func TestClient_BulkSetLogShipperStatus(t *testing.T) {
+	args := &api.BulkSetShipperStatusCondition{
+		LogShipperIDs: []string{LOGSHIPPER_ID},
+		DesiredStatus: "Running",
+	}
+	err := BLS_CLIENT.BulkSetLogShipperStatus(args)
+	ExpectEqual(t.Errorf, err, nil)
+	logShipper, err := BLS_CLIENT.GetLogShipper(LOGSHIPPER_ID)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, logShipper.Status, "Running")
+}
+
+func TestClient_DeleteSingleLogShipper(t *testing.T) {
+	args := &api.CreateLogShipperBody{
+		LogShipperName: LOGSHIPPER_NAME,
+		LogStoreName:   DEAFAULT_LOGSTORE,
+		StartTime:      TEST_STARTTIME,
+		DestConfig: &api.ShipperDestConfig{
+			BOSPath: DEAFAULT_BOSPATH,
+		},
+	}
+	id, err := BLS_CLIENT.CreateLogShipper(args)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, len(id) > 0, true)
+	time.Sleep(2 * time.Second)
+	err = BLS_CLIENT.DeleteSingleLogShipper(id)
+	ExpectEqual(t.Errorf, err, nil)
+	logShipper, err := BLS_CLIENT.GetLogShipper(id)
+	ExpectEqual(t.Errorf, logShipper, nil)
+	if realErr, ok := err.(*bce.BceServiceError); ok {
+		ExpectEqual(t.Errorf, realErr.StatusCode, http.StatusNotFound)
+	}
+}
+
+func TestClient_BulkDeleteLogShipper(t *testing.T) {
+	var ids []string
+	for i := 0; i < 3; i++ {
+		args := &api.CreateLogShipperBody{
+			LogShipperName: LOGSHIPPER_NAME,
+			LogStoreName:   DEAFAULT_LOGSTORE,
+			StartTime:      TEST_STARTTIME,
+			DestConfig: &api.ShipperDestConfig{
+				BOSPath: DEAFAULT_BOSPATH,
+			},
+		}
+		id, err := BLS_CLIENT.CreateLogShipper(args)
+		ExpectEqual(t.Errorf, err, nil)
+		ExpectEqual(t.Errorf, len(id) > 0, true)
+		ids = append(ids, id)
+	}
+	time.Sleep(time.Second * 2)
+	args := &api.BulkDeleteShipperCondition{LogShipperIDs:ids}
+	err := BLS_CLIENT.BulkDeleteLogShipper(args)
+	ExpectEqual(t.Errorf, err, nil)
+	for _, id := range ids {
+		logShipper, err := BLS_CLIENT.GetLogShipper(id)
+		ExpectEqual(t.Errorf, logShipper, nil)
+		if realErr, ok := err.(*bce.BceServiceError); ok {
+			ExpectEqual(t.Errorf, realErr.StatusCode, http.StatusNotFound)
+		}
 	}
 }

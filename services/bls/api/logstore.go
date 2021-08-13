@@ -32,7 +32,7 @@ import (
 //     - error: nil if success otherwise the specific error
 func CreateLogStore(cli bce.Client, body *bce.Body) error {
 	req := &bce.BceRequest{}
-	req.SetUri(DEFAULT_PREFIX)
+	req.SetUri(LOGSTORE_PREFIX)
 	req.SetMethod(http.POST)
 	if body != nil {
 		req.SetBody(body)
@@ -130,7 +130,7 @@ func DeleteLogStore(cli bce.Client, logStore string) error {
 //     - error: nil if success otherwise the specific error
 func ListLogStore(cli bce.Client, args *QueryConditions) (*ListLogStoreResult, error) {
 	req := &bce.BceRequest{}
-	req.SetUri(DEFAULT_PREFIX)
+	req.SetUri(LOGSTORE_PREFIX)
 	req.SetMethod(http.GET)
 	// Set optional args
 	if args != nil {

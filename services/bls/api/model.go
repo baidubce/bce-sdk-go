@@ -36,6 +36,15 @@ type LogStore struct {
 	Retention        int      `json:"retention"`
 }
 
+type LogShipper struct {
+	Status         string             `json:"status"`
+	LogShipperName string             `json:"logShipperName"`
+	LogStoreName   string             `json:"logStoreName"`
+	StartTime      string             `json:"startTime"`
+	DestType       string             `json:"destType"`
+	DestConfig     *ShipperDestConfig `json:"destConfig"`
+}
+
 type QueryConditions struct {
 	NamePattern string `json:"namePattern"`
 	Order       string `json:"order"`
@@ -107,7 +116,7 @@ type QueryLogResult struct {
 type ListLogStreamResult struct {
 	Order      string      `json:"order"`
 	OrderBy    string      `json:"orderBy"`
-	PageNumebr int         `json:"pageNo"`
+	PageNumber int         `json:"pageNo"`
 	PageSize   int         `json:"pageSize"`
 	TotalCount int         `json:"totalCount"`
 	Result     []LogStream `json:"result"`
@@ -164,4 +173,94 @@ type LogField struct {
 type IndexFields struct {
 	FullText bool                `json:"fulltext"`
 	Fields   map[string]LogField `json:"fields"`
+}
+
+type CreateLogShipperBody struct {
+	LogShipperName string             `json:"logShipperName"`
+	LogStoreName   string             `json:"logStoreName"`
+	StartTime      string             `json:"startTime"`
+	DestType       string             `json:"destType"`
+	DestConfig     *ShipperDestConfig `json:"destConfig"`
+}
+
+type CreateLogShipperResponse struct {
+	LogShipperID string `json:"logShipperID"`
+}
+
+type ShipperDestConfig struct {
+	BOSPath                  string `json:"BOSPath"`
+	PartitionFormatTS        string `json:"partitionFormatTS"`
+	PartitionFormatLogStream bool   `json:"partitionFormatLogStream"`
+	MaxObjectSize            int64  `json:"maxObjectSize"`
+	CompressType             string `json:"compressType"`
+	DeliverInterval          int64  `json:"deliverInterval"`
+	StorageFormat            string `json:"storageFormat"`
+	CsvHeadline              bool   `json:"csvHeadline"`
+	CsvDelimiter             string `json:"csvDelimiter"`
+	CsvQuote                 string `json:"csvQuote"`
+	NullIdentifier           string `json:"nullIdentifier"`
+	SelectedColumnName       string `json:"selectedColumnName"`
+	SelectedColumnType       string `json:"selectedColumnType"`
+}
+
+type ListShipperRecordCondition struct {
+	SinceHours int `json:"sinceHours"`
+	PageNo     int `json:"pageNo"`
+	PageSize   int `json:"pageSize"`
+}
+
+type ListShipperRecordResult struct {
+	TotalCount int                `json:"totalCount"`
+	Result     []LogShipperRecord `json:"result"`
+}
+
+type LogShipperRecord struct {
+	StartTime     string `json:"startTime"`
+	EndTime       string `json:"endTime"`
+	FinishedCount int    `json:"finishedCount"`
+}
+
+type ListShipperResult struct {
+	TotalCount int              `json:"totalCount"`
+	Result     []ShipperSummary `json:"result"`
+}
+
+type ShipperSummary struct {
+	LogShipperID   string `json:"logShipperID"`
+	LogShipperName string `json:"logShipperName"`
+	LogStoreName   string `json:"logStoreName"`
+	DestType       string `json:"destType"`
+	Status         string `json:"status"`
+	ErrMessage     string `json:"errMessage"`
+	CreateDateTime string `json:"createDateTime"`
+}
+
+type ListLogShipperCondition struct {
+	LogShipperID   string `json:"logShipperID"`
+	LogShipperName string `json:"logShipperName"`
+	LogStoreName   string `json:"logStoreName"`
+	DestType       string `json:"destType"`
+	Status         string `json:"status"`
+	Order          string `json:"order"`
+	OrderBy        string `json:"orderBy"`
+	PageNo         int    `json:"pageNo"`
+	PageSize       int    `json:"pageSize"`
+}
+
+type UpdateLogShipperBody struct {
+	LogShipperName string             `json:"logShipperName"`
+	DestConfig     *ShipperDestConfig `json:"destConfig"`
+}
+
+type BulkDeleteShipperCondition struct {
+	LogShipperIDs []string `json:"logShipperIDs"`
+}
+
+type SetSingleShipperStatusCondition struct {
+	DesiredStatus string `json:"desiredStatus"`
+}
+
+type BulkSetShipperStatusCondition struct {
+	LogShipperIDs []string `json:"logShipperIDs"`
+	DesiredStatus string   `json:"desiredStatus"`
 }

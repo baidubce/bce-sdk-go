@@ -673,3 +673,200 @@ if err != nil {
 >
 > - 详细的参数配置及限制条件，可以参考BLS API 文档[DeleteIndex](https://cloud.baidu.com/doc/BLS/s/bkbt56uvu)
 
+## LogShipper操作
+
+### 创建LogShipper
+
+创建投递任务，需要遵循以下准则：
+
+- 每个日志集可以创建多个投递任务
+- 总投递任务上限为300
+- 投递任务名称，最长63个字符，包含字母、数字、-和_
+- 投递开始时间，最早为前180天，最迟为后24小时，默认为任务创建时间为开始时间，格式为ISO8601
+
+```go
+args := &api.CreateLogShipperBody{
+  LogShipperName: "demo",
+  LogStoreName:   "store",
+  StartTime:      "2021-07-06T19:01:00Z",
+  DestConfig: &api.ShipperDestConfig{
+    BOSPath: "bucket_1/demo/",
+  },
+}
+id, err := blsClient.CreateLogShipper(args)
+if err != nil {
+  fmt.Println("Create LogShipper failed: ", err)
+} else {
+  fmt.Printf("Create LogShipper %s success.", id)
+}
+```
+
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BLS API 文档[CreateLogShipper](https://cloud.baidu.com/doc/BLS/s/Skref348s)
+
+### 更新指定LogShipper
+
+通过以下代码，更新指定的投递任务，目前不支持更改投递任务的日志集、起始时间和目的类型。
+
+```go
+args := &api.UpdateLogShipperBody{
+  LogShipperName: "shipper-sdk",
+  DestConfig: &api.ShipperDestConfig{
+    PartitionFormatLogStream: true,
+    MaxObjectSize:            50,
+    CompressType:             "snappy",
+    DeliverInterval:          30,
+    StorageFormat:            "json",
+  },
+}
+err := blsClient.UpdateLogShipper("logShipperID", args)
+if err != nil {
+  fmt.Println("Update LogShipper failed: ", err)
+} else {
+  fmt.Println("Update LogShipper success.")
+}
+```
+
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BLS API 文档[UpdateLogShipper](https://cloud.baidu.com/doc/BLS/s/ukrektd01)
+
+### 查询指定LogShipper
+
+通过以下代码，获取指定投递任务的详情信息。
+
+```go
+res, err := blsClient.GetLogShipper("logShipperID")
+if err != nil {
+  fmt.Println("Get LogShipper failed: ", err)
+} else {
+  fmt.Println("LogShipper info: ", res)
+}
+```
+
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BLS API 文档[GetLogShipper](https://cloud.baidu.com/doc/BLS/s/xkrekxc8z)
+
+### 获取LogShipper列表
+
+通过以下代码，查看符合查询条件的投递任务。
+
+```go
+args := &api.ListLogShipperCondition{
+  LogShipperID: "logShipperID",
+  LogStoreName: "demo*",
+  Status:       "Running",
+}
+res, err := blsClient.ListLogShipper(args)
+if err != nil {
+  fmt.Println("Get LogShipper list failed: ", err)
+} else {
+  fmt.Println("List LogShipper success: ", res)
+}
+```
+
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BLS API 文档[ListLogShipper](https://cloud.baidu.com/doc/BLS/s/bkrekyq51)
+
+### 查看LogShipper执行记录
+
+通过以下代码，查看投递任务的执行记录。
+
+```go
+args := &api.ListShipperRecordCondition{
+  SinceHours: 20 * 24,
+}
+res, err := blsClient.ListLogShipperRecord("logShipperID", args)
+if err != nil {
+  fmt.Println("Get LogShipper record failed: ", err)
+} else {
+  fmt.Println("Get LogShipper record success: ", res)
+}
+```
+
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BLS API 文档[ListLogShipperRecord](https://cloud.baidu.com/doc/BLS/s/dkrel0hiy)
+
+### 启停LogShipper
+
+#### 单个启停
+
+通过以下代码，启停指定的投递任务。
+
+```go
+args := &api.SetSingleShipperStatusCondition{DesiredStatus: "Paused"}
+err := blsClient.SetSingleLogShipperStatus("logShipperID", args)
+if err != nil {
+  fmt.Println("Set LogShipper status failed: ", err)
+} else {
+  fmt.Println("Set LogShipper status success.")
+}
+```
+
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BLS API 文档[SetSingleLogShipperStatus](https://cloud.baidu.com/doc/BLS/s/dkrel1tsv)
+
+#### 批量启停
+
+通过以下代码，批量启停投递任务。
+
+```go
+args := &api.BulkSetShipperStatusCondition{
+  LogShipperIDs: []string{"id1_to_set", "id2_to_set"},
+  DesiredStatus: "Paused",
+}
+err := blsClient.BulkSetLogShipperStatus(args)
+if err != nil {
+  fmt.Println("Bulk set LogShipper status failed: ", err)
+} else {
+  fmt.Println("Bulk set LogShipper status success.")
+}
+```
+
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BLS API 文档[BulkSetLogShipperStatus](https://cloud.baidu.com/doc/BLS/s/6krel2nl8)
+
+### 删除LogShipper
+
+#### 单个删除
+
+通过以下代码，删除指定的投递任务。
+
+```go
+err := blsClient.DeleteSingleLogShipper("logShipperID")
+if err != nil {
+  fmt.Println("Delete LogShipper failed: ", err)
+} else {
+  fmt.Println("Delete LogShipper success.")
+}
+```
+
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BLS API 文档[DeleteSingleLogShipper](https://cloud.baidu.com/doc/BLS/s/1krel3v47)
+
+#### 批量删除
+
+通过一下代码，批量删除投递任务。
+
+```go
+ids := []string{"id1_to_del", "id2_to_del"}
+args := &api.BulkDeleteShipperCondition{LogShipperIDs:ids}
+err := blsClient.BulkDeleteLogShipper("logShipperID")
+if err != nil {
+  fmt.Println("Bulk delete LogShipper failed: ", err)
+} else {
+  fmt.Println("Bulk delete LogShipper success.")
+}
+```
+
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BLS API 文档[BulkDeleteLogShipper](https://cloud.baidu.com/doc/BLS/s/Ykrel4g5f)
+
