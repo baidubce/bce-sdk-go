@@ -676,6 +676,11 @@ fmt.Println("rds SyncMode: ", result.SyncMode)
 fmt.Println("rds Category: ", result.Category)
 fmt.Println("rds ZoneNames: ", result.ZoneNames)
 fmt.Println("rds Endpoint: ", result.Endpoint)
+// 自动续费规则
+if result.AutoRenewRule != nil {
+    fmt.Println("ddc renewTime: ", result.AutoRenewRule.RenewTime)
+    fmt.Println("ddc renewTimeUnit: ", result.AutoRenewRule.RenewTimeUnit)
+}
 ```
 
 ## 实例列表
@@ -730,6 +735,11 @@ for _, e := range resp.Instances {
     // 物理机信息
     fmt.Println("long BBC Id: ", e.LongBBCId)
     fmt.Println("BBC hostname: ", e.HostName)
+    // 自动续费规则
+    if e.AutoRenewRule != nil {
+        fmt.Println("renewTime: ", e.AutoRenewRule.RenewTime)
+        fmt.Println("renewTimeUnit: ", e.AutoRenewRule.RenewTimeUnit)
+    }
 }
 ```
 
@@ -794,6 +804,11 @@ for _, e := range resp.Page.Result {
     fmt.Println("vnetIpBackup: ", e.Endpoint.VnetIpBackup)
     fmt.Println("long BBC Id: ", e.LongBBCId)
     fmt.Println("bbc hostname: ", e.HostName)
+    // 自动续费规则
+    if e.AutoRenewRule != nil {
+        fmt.Println("renewTime: ", e.AutoRenewRule.RenewTime)
+        fmt.Println("renewTimeUnit: ", e.AutoRenewRule.RenewTimeUnit)
+    }
 }
 ```
 
@@ -2312,6 +2327,23 @@ fmt.Println("end time: ", log.LogEndTime)
 fmt.Println("download url: ", log.DownloadURL)
 // 下载链接截止该时间有效
 fmt.Println("download url expires: ", log.DownloadExpires)
+```
+
+## 访问日志
+通过此接口可以获取访问日志的下载链接，应获取昨天或者更早的⽇期的访问日志，当⽇的⽇志在第⼆天凌晨打包(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+// import "time"
+
+downloadInfo, err := client.GetAccessLog(date)
+if err != nil {
+    fmt.Printf("get access logs error: %+v\n", err)
+    return
+}
+fmt.Println("get access logs success.")
+fmt.Println("mysql access logs link: ", downloadInfo.Downloadurl.Mysql)
+fmt.Println("bbc access logs link: ", downloadInfo.Downloadurl.Bbc)
+fmt.Println("bos access logs link: ", downloadInfo.Downloadurl.Bos)
 ```
 
 # 其他

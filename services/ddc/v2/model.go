@@ -118,6 +118,12 @@ type Instance struct {
 	LongBBCId               string                  `json:"longBBCId"`
 	HostName                string                  `json:"hostname,omitempty"`
 	InstanceTopoForReadonly InstanceTopoForReadonly `json:"instanceTopoForReadonly,omitempty"`
+	AutoRenewRule           *AutoRenewRule          `json:"autoRenewRule,omitempty"`
+}
+
+type AutoRenewRule struct {
+	RenewTime     int    `json:"renewTime"`
+	RenewTimeUnit string `json:"renewTimeUnit"`
 }
 
 func (instance *Instance) ProductType() string {
@@ -335,6 +341,7 @@ type InstanceModel struct {
 	Category                string                  `json:"category"`
 	LongBBCId               string                  `json:"longBBCId"`
 	InstanceTopoForReadonly InstanceTopoForReadonly `json:"instanceTopoForReadonly,omitempty"`
+	AutoRenewRule           *AutoRenewRule           `json:"autoRenewRule,omitempty"`
 }
 type TopoInstance struct {
 	InstanceID       string `json:"instanceId,omitempty"`
@@ -1024,4 +1031,11 @@ type GetMaintainTaskListArgs struct {
 	Marker
 	StartTime string `json:"startTime"`
 	EndTime   string `json:"endTime"`
+}
+type AccessLog struct {
+	Downloadurl struct {
+		Bbc   string `json:"bbc"`
+		Bos   string `json:"bos"`
+		Mysql string `json:"mysql"`
+	} `json:"downloadurl"`
 }

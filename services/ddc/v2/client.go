@@ -279,6 +279,10 @@ func getReplaceSecurityGroupWithUrl() string {
 	return URI_PREFIX + REQUEST_DDC_SECURITYGROUP_URL + "/updateSecurityGroup"
 }
 
+func getAccessLogUrl() string {
+	return URI_PREFIX + REQUEST_DDC_LOG_URL + "/accessLog"
+}
+
 func getLogsUrlWithInstanceId(instanceId string) string {
 	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_DDC_LOG_URL
 }

@@ -376,7 +376,7 @@ func TestClient_ListVpc(t *testing.T) {
 }
 
 func TestClient_GetDetail(t *testing.T) {
-	instanceId = "ddc-m4x1v31a"
+	instanceId = "ddc-mqqint6z"
 	result, err := DDCRDS_CLIENT.GetDetail(instanceId)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println("ddc instanceId: ", result.InstanceId)
@@ -410,6 +410,11 @@ func TestClient_GetDetail(t *testing.T) {
 	fmt.Println("ddc Endpoint vnetIpBackup: ", result.Endpoint.VnetIpBackup)
 	fmt.Println("ddc long BBC Id: ", result.LongBBCId)
 	fmt.Println("ddc topo: ", result.InstanceTopoForReadonly)
+	// 自动续费规则
+	if result.AutoRenewRule != nil {
+		fmt.Println("ddc renewTime: ", result.AutoRenewRule.RenewTime)
+		fmt.Println("ddc renewTimeUnit: ", result.AutoRenewRule.RenewTimeUnit)
+	}
 }
 
 func TestClient_UpdateSecurityIps(t *testing.T) {
@@ -928,7 +933,7 @@ func TestClient_ListRds(t *testing.T) {
 		// 批量获取列表的查询的起始位置，实例列表中Marker需要指定实例Id，可选
 		Marker: "-1",
 		// 指定每页包含的最大数量(主实例)，最大数量不超过1000，缺省值为1000，可选
-		MaxKeys: 5,
+		MaxKeys: 10,
 	}
 	resp, err := DDCRDS_CLIENT.ListRds(args)
 
@@ -971,6 +976,10 @@ func TestClient_ListRds(t *testing.T) {
 		fmt.Println("vnetIpBackup: ", e.Endpoint.VnetIpBackup)
 		fmt.Println("long BBC Id: ", e.LongBBCId)
 		fmt.Println("bbc hostname: ", e.HostName)
+		if e.AutoRenewRule != nil {
+			fmt.Println("renewTime: ", e.AutoRenewRule.RenewTime)
+			fmt.Println("renewTimeUnit: ", e.AutoRenewRule.RenewTimeUnit)
+		}
 	}
 }
 
@@ -979,7 +988,7 @@ func TestClient_ListPage(t *testing.T) {
 		// 页码
 		PageNo: 1,
 		// 页大小
-		PageSize: 5,
+		PageSize: 10,
 		// 筛选条件
 		// 筛选字段类型,各筛选条件只能单独筛选，当取值为type、status、dbType、zone时可在集合中增加筛选项
 		// all：匹配全部
@@ -1030,6 +1039,10 @@ func TestClient_ListPage(t *testing.T) {
 		fmt.Println("vnetIpBackup: ", e.Endpoint.VnetIpBackup)
 		fmt.Println("long BBC Id: ", e.LongBBCId)
 		fmt.Println("bbc hostname: ", e.HostName)
+		if e.AutoRenewRule != nil {
+			fmt.Println("renewTime: ", e.AutoRenewRule.RenewTime)
+			fmt.Println("renewTimeUnit: ", e.AutoRenewRule.RenewTimeUnit)
+		}
 	}
 }
 
@@ -1555,4 +1568,17 @@ func TestClient_CancelMaintainTask(t *testing.T) {
 		return
 	}
 	fmt.Println("cancel task invoke  success.")
+}
+
+func TestClient_GetAccessLog(t *testing.T) {
+	date := "20210810"
+	downloadInfo, err := client.GetAccessLog(date)
+	if err != nil {
+		fmt.Printf("get access logs error: %+v\n", err)
+		return
+	}
+	fmt.Println("get access logs success.")
+	fmt.Println("mysql access logs link: ", downloadInfo.Downloadurl.Mysql)
+	fmt.Println("bbc access logs link: ", downloadInfo.Downloadurl.Bbc)
+	fmt.Println("bos access logs link: ", downloadInfo.Downloadurl.Bos)
 }

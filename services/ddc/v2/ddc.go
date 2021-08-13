@@ -601,6 +601,7 @@ func (c *DDCClient) GetDetail(instanceId string) (*Instance, error) {
 		Category:                detail.Instance.Category,
 		LongBBCId:               detail.Instance.LongBBCId,
 		InstanceTopoForReadonly: detail.Instance.InstanceTopoForReadonly,
+		AutoRenewRule:           detail.Instance.AutoRenewRule,
 	}
 	// 兼容RDS字段
 	result.PublicAccessStatus = strconv.FormatBool(result.PubliclyAccessible)
@@ -2128,4 +2129,25 @@ func (c *DDCClient) CancelMaintainTask(taskId string) error {
 		return err
 	}
 	return nil
+}
+
+// GetAccessLog - get access logs's download info by date
+//
+// PARAMS:
+// RETURNS:
+//     - *AccessLog: the access logs's download info
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetAccessLog(date string) (*AccessLog, error) {
+	if len(date) < 1 {
+		return nil, fmt.Errorf("unset date")
+	}
+	result := &AccessLog{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getAccessLogUrl()).
+		WithResult(result).
+		WithQueryParam("date", date).
+		Do()
+
+	return result, err
 }

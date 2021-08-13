@@ -1423,3 +1423,13 @@ func (c *Client) ExecuteMaintainTaskImmediately(taskId string) error {
 func (c *Client) CancelMaintainTask(taskId string) error {
 	return c.ddcClient.CancelMaintainTask(taskId)
 }
+
+// GetAccessLog - get access logs's download info by date
+//
+// PARAMS:
+// RETURNS:
+//     - *AccessLog: the access logs's download info
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetAccessLog(date string) (*AccessLog, error) {
+	return c.ddcClient.GetAccessLog(date)
+}
