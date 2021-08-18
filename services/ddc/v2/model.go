@@ -1039,3 +1039,56 @@ type AccessLog struct {
 		Mysql string `json:"mysql"`
 	} `json:"downloadurl"`
 }
+
+type GetErrorLogsArgs struct {
+	InstanceId string `json:"instanceId"`
+	StartTime string `json:"startTime"`
+	EndTime string `json:"endTime"`
+	PageNo int `json:"pageNo"`
+	PageSize int `json:"pageSize"`
+	Role string `json:"role"`
+	KeyWord string `json:"keyWord,omitempty"`
+}
+
+type ErrorLog struct {
+	InstanceId string `json:"instanceId"`
+	LogLevel string `json:"logLevel"`
+	LogText string `json:"logText"`
+	ExecuteTime string `json:"executeTime"`
+}
+
+type ErrorLogsResponse struct {
+	Count int `json:"count"`
+	ErrorLogs []ErrorLog `json:"errorLogs"`
+}
+
+type GetSlowLogsArgs struct {
+	InstanceId string `json:"instanceId"`
+	StartTime string `json:"startTime"`
+	EndTime string `json:"endTime"`
+	PageNo int `json:"pageNo"`
+	PageSize int `json:"pageSize"`
+	Role string `json:"role"`
+	DbName []string `json:"dbName,omitempty"`
+	UserName []string `json:"userName,omitempty"`
+	HostIp []string `json:"hostIp,omitempty"`
+	Sql string `json:"sql,omitempty"`
+}
+
+type SlowLog struct {
+	InstanceId string `json:"instanceId"`
+	UserName string `json:"userName"`
+	DbName string `json:"dbName"`
+	HostIp string `json:"hostIp"`
+	QueryTime float64 `json:"queryTime"`
+	LockTime float64 `json:"lockTime"`
+	RowsExamined int `json:"rowsExamined"`
+	RowsSent int `json:"rowsSent"`
+	Sql string `json:"sql"`
+	ExecuteTime string `json:"executeTime"`
+}
+
+type SlowLogsResponse struct {
+	Count int `json:"count"`
+	SlowLogs []SlowLog `json:"slowLogs"`
+}

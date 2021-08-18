@@ -1582,3 +1582,64 @@ func TestClient_GetAccessLog(t *testing.T) {
 	fmt.Println("bbc access logs link: ", downloadInfo.Downloadurl.Bbc)
 	fmt.Println("bos access logs link: ", downloadInfo.Downloadurl.Bos)
 }
+
+func TestClient_GetErrorLogs(t *testing.T) {
+	args := &GetErrorLogsArgs{
+		InstanceId: "ddc-mp8lme9w",
+		StartTime: "2021-08-16T02:28:51Z",
+		EndTime: "2021-08-17T02:28:51Z",
+		PageNo: 1,
+		PageSize: 10,
+		Role: "master",
+		KeyWord: "Aborted",
+	}
+	errorLogsResponse, err := client.GetErrorLogs(args)
+	if err != nil {
+		fmt.Printf("get error logs error: %+v\n", err)
+		return
+	}
+	fmt.Println("get error logs success.")
+	fmt.Println("error logs count: ", errorLogsResponse.Count)
+	for _, errorLog := range errorLogsResponse.ErrorLogs {
+		fmt.Println("=================================================")
+		fmt.Println("error log instanceId: ", errorLog.InstanceId)
+		fmt.Println("error log executeTime: ", errorLog.ExecuteTime)
+		fmt.Println("error log logLevel: ", errorLog.LogLevel)
+		fmt.Println("error log logText: ", errorLog.LogText)
+	}
+}
+
+func TestClient_GetSlowLogs(t *testing.T) {
+	args := &GetSlowLogsArgs{
+		InstanceId: "ddc-mp8lme9w",
+		StartTime: "2021-08-16T02:28:51Z",
+		EndTime: "2021-08-17T02:28:51Z",
+		PageNo: 1,
+		PageSize: 10,
+		Role: "master",
+		DbName: []string{"baidu_dba"},
+		UserName: []string{"_root"},
+		HostIp: []string{"localhost"},
+		Sql: "update heartbeat set id=?, value=?",
+	}
+	slowLogsResponse, err := client.GetSlowLogs(args)
+	if err != nil {
+		fmt.Printf("get slow logs error: %+v\n", err)
+		return
+	}
+	fmt.Println("get slow logs success.")
+	fmt.Println("slow logs count: ", slowLogsResponse.Count)
+	for _, slowLog := range slowLogsResponse.SlowLogs {
+		fmt.Println("=================================================")
+		fmt.Println("slow log instanceId: ", slowLog.InstanceId)
+		fmt.Println("slow log userName: ", slowLog.UserName)
+		fmt.Println("slow log dbName: ", slowLog.DbName)
+		fmt.Println("slow log hostIp: ", slowLog.HostIp)
+		fmt.Println("slow log queryTime: ", slowLog.QueryTime)
+		fmt.Println("slow log lockTime: ", slowLog.LockTime)
+		fmt.Println("slow log rowsExamined: ", slowLog.RowsExamined)
+		fmt.Println("slow log rowsSent: ", slowLog.RowsSent)
+		fmt.Println("slow log sql: ", slowLog.Sql)
+		fmt.Println("slow log executeTime: ", slowLog.ExecuteTime)
+	}
+}

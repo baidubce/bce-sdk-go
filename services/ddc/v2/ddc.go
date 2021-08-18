@@ -2151,3 +2151,85 @@ func (c *DDCClient) GetAccessLog(date string) (*AccessLog, error) {
 
 	return result, err
 }
+
+// GetErrorLog - get error logs
+//
+// PARAMS:
+// RETURNS:
+//     - *ErrorLogsResponse: the error logs
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetErrorLogs(args *GetErrorLogsArgs) (*ErrorLogsResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("unset args")
+	}
+	if len(args.InstanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+	if len(args.StartTime) < 1 {
+		return nil, fmt.Errorf("unset startTime")
+	}
+	if len(args.EndTime) < 1 {
+		return nil, fmt.Errorf("unset endTime")
+	}
+	if args.PageNo < 1 {
+		return nil, fmt.Errorf("unset pageNo")
+	}
+	if args.PageSize < 1 {
+		return nil, fmt.Errorf("unset pageSize")
+	}
+	if len(args.Role) < 1 {
+		return nil, fmt.Errorf("unset role")
+	}
+
+	result := &ErrorLogsResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getErrorLogsUrlWithInstanceId(args.InstanceId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// GetSlowLog - get slow logs
+//
+// PARAMS:
+// RETURNS:
+//     - *SlowLogsResponse: the slow logs
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetSlowLogs(args *GetSlowLogsArgs) (*SlowLogsResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("unset args")
+	}
+	if len(args.InstanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+	if len(args.StartTime) < 1 {
+		return nil, fmt.Errorf("unset startTime")
+	}
+	if len(args.EndTime) < 1 {
+		return nil, fmt.Errorf("unset endTime")
+	}
+	if args.PageNo < 1 {
+		return nil, fmt.Errorf("unset pageNo")
+	}
+	if args.PageSize < 1 {
+		return nil, fmt.Errorf("unset pageSize")
+	}
+	if len(args.Role) < 1 {
+		return nil, fmt.Errorf("unset role")
+	}
+
+	result := &SlowLogsResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getSlowLogsUrlWithInstanceId(args.InstanceId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}

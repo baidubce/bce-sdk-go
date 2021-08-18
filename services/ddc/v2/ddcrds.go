@@ -1433,3 +1433,23 @@ func (c *Client) CancelMaintainTask(taskId string) error {
 func (c *Client) GetAccessLog(date string) (*AccessLog, error) {
 	return c.ddcClient.GetAccessLog(date)
 }
+
+// GetErrorLogs - get error logs
+//
+// PARAMS:
+// RETURNS:
+//     - *ErrorLogsResponse: the error logs
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetErrorLogs(args *GetErrorLogsArgs) (*ErrorLogsResponse, error) {
+	return c.ddcClient.GetErrorLogs(args)
+}
+
+// GetSlowLogs - get slow logs
+//
+// PARAMS:
+// RETURNS:
+//     - *SlowLogsResponse: the slow logs
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetSlowLogs(args *GetSlowLogsArgs) (*SlowLogsResponse, error) {
+	return c.ddcClient.GetSlowLogs(args)
+}

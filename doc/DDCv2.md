@@ -2346,6 +2346,101 @@ fmt.Println("bbc access logs link: ", downloadInfo.Downloadurl.Bbc)
 fmt.Println("bos access logs link: ", downloadInfo.Downloadurl.Bos)
 ```
 
+## 错误日志
+通过此接口可以获取错误日志(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+args := &ddcrds.GetErrorLogsArgs{
+	// 实例ID，必填参数
+    InstanceId: "ddc-mp8lme9w",
+    // 开始时间，UTC 格式，必填参数
+    StartTime: "2021-08-16T02:28:51Z",
+    // 结束时间，UTC 格式，必填参数
+    EndTime: "2021-08-17T02:28:51Z",
+    // 分页页码，必填参数
+    PageNo: 1,
+    // 分页大小，取值范围：[1-2000]，必填参数
+    PageSize: 10,
+    // 实例角色，取值：master（主实例-主节点）、backup（主实例-备节点）、slave（只读实例），必填参数
+    Role: "master",
+    // 搜索关键词，选填参数
+    KeyWord: "Aborted",
+}
+
+errorLogsResponse, err := client.GetErrorLogs(args)
+if err != nil {
+    fmt.Printf("get error logs error: %+v\n", err)
+    return
+}
+fmt.Println("get error logs success.")
+fmt.Println("error logs count: ", errorLogsResponse.Count)
+for _, errorLog := range errorLogsResponse.ErrorLogs {
+    fmt.Println("=================================================")
+    fmt.Println("error log instanceId: ", errorLog.InstanceId)
+    // 采集时间，本地时间
+    fmt.Println("error log executeTime: ", errorLog.ExecuteTime)
+    fmt.Println("error log logLevel: ", errorLog.LogLevel)
+    // 日志内容
+    fmt.Println("error log logText: ", errorLog.LogText)
+}
+```
+
+## 慢日志
+通过此接口可以获取慢日志(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+args := &ddcrds.GetSlowLogsArgs{
+    // 实例ID，必填参数
+    InstanceId: "ddc-mp8lme9w",
+	// 开始时间，UTC 格式，必填参数
+    StartTime: "2021-08-16T02:28:51Z",
+	// 结束时间，UTC 格式，必填参数
+    EndTime: "2021-08-17T02:28:51Z",
+    // 分页页码，必填参数
+    PageNo: 1,
+    // 分页大小，取值范围：[1-2000]，必填参数
+    PageSize: 10,
+    // 实例角色，取值：master（主实例-主节点）、backup（主实例-备节点）、slave（只读实例），必填参数
+    Role: "master",
+    // 数据库名列表，选填参数
+	DbName: []string{"baidu_dba"},
+	// 用户名列表，选填参数
+    UserName: []string{"_root"},
+    // 客户端IP列表，选填参数
+    HostIp: []string{"localhost"},
+    // SQL 语句，选填参数
+    Sql: "update heartbeat set id=?, value=?",
+}
+
+slowLogsResponse, err := client.GetSlowLogs(args)
+if err != nil {
+    fmt.Printf("get slow logs error: %+v\n", err)
+    return
+}
+fmt.Println("get slow logs success.")
+fmt.Println("slow logs count: ", slowLogsResponse.Count)
+for _, slowLog := range slowLogsResponse.SlowLogs {
+    fmt.Println("=================================================")
+    fmt.Println("slow log instanceId: ", slowLog.InstanceId)
+    fmt.Println("slow log userName: ", slowLog.UserName)
+    fmt.Println("slow log dbName: ", slowLog.DbName)
+    fmt.Println("slow log hostIp: ", slowLog.HostIp)
+    // 执行时长，单位：秒
+    fmt.Println("slow log queryTime: ", slowLog.QueryTime)
+    // 加锁时长，单位：秒
+    fmt.Println("slow log lockTime: ", slowLog.LockTime)
+    // 解析行数
+    fmt.Println("slow log rowsExamined: ", slowLog.RowsExamined)
+    // 返回行数
+    fmt.Println("slow log rowsSent: ", slowLog.RowsSent)
+    fmt.Println("slow log sql: ", slowLog.Sql)
+    // 执行时间
+    fmt.Println("slow log executeTime: ", slowLog.ExecuteTime)
+}
+```
+
 # 其他
 ## VPC列表
 使用以下代码可以查询vpc列表(仅支持DDC)。

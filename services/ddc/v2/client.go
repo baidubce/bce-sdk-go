@@ -291,6 +291,14 @@ func getLogsUrlWithLogId(instanceId, logId string) string {
 	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_DDC_LOG_URL + "/" + logId
 }
 
+func getErrorLogsUrlWithInstanceId(instanceId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_DDC_LOG_URL + "/logErrorDetail"
+}
+
+func getSlowLogsUrlWithInstanceId(instanceId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_DDC_LOG_URL + "/logSlowDetail"
+}
+
 func getCreateTableHardLinkUrl(instanceId, dbName string) string {
 	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId +
 		REQUEST_DDC_DATABASE_URL + "/" + dbName +
