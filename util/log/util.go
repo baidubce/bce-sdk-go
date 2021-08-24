@@ -154,6 +154,10 @@ func Panicf(format string, msg ...interface{}) {
 	panic(record)
 }
 
+func Close() {
+	gDefaultLogger.Close()
+}
+
 // SetLogHandler - set the handler of the logger
 //
 // PARAMS:
@@ -206,6 +210,10 @@ func SetLogDir(dir string) error {
 //     - RotateStrategy: the rotate strategy defined in this package, now support 5 strategy.
 func SetRotateType(r RotateStrategy) {
 	gDefaultLogger.rotateType = r
+}
+
+func SetAsync(async bool) {
+	gDefaultLogger.async = async
 }
 
 // SetRotateSize - set the rotating size if logging to file and set the strategy of size.
