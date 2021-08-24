@@ -118,12 +118,14 @@ type logger struct {
 	logFormat      []string
 	levelThreshold Level
 	handler        Handler
+	done           chan bool
 
 	// Fields that used when logging to file
 	logDir     string
 	logFile    string
 	rotateType RotateStrategy
 	rotateSize int64
+	async      bool
 }
 
 func (l *logger) logging(level Level, format string, args ...interface{}) {
@@ -169,7 +171,9 @@ func (l *logger) logging(level Level, format string, args ...interface{}) {
 	} else {
 		l.writerChan <- &writerArgs{record, logRecordDone, now}
 	}
-	<-logRecordDone // wait for current record done logging
+	if l.async == false {
+		<-logRecordDone // wait for current record done logging
+	}
 }
 
 func (l *logger) buildWriter(args interface{}) {
@@ -298,6 +302,8 @@ func (l *logger) SetRotateType(rotate RotateStrategy) { l.rotateType = rotate }
 
 func (l *logger) SetRotateSize(size int64) { l.rotateSize = size }
 
+func (l *logger) SetAsync(async bool) { l.async = async }
+
 func (l *logger) Debug(msg ...interface{}) { l.logging(DEBUG, "%s\n", concat(msg...)) }
 
 func (l *logger) Debugln(msg ...interface{}) { l.logging(DEBUG, "%s\n", concat(msg...)) }
@@ -346,25 +352,48 @@ func (l *logger) Panicf(format string, msg ...interface{}) {
 	panic(record)
 }
 
+func (l *logger) Close() {
+	select {
+	case <-l.done:
+		return
+	default:
+	}
+	l.writerChan <- nil
+	select {
+	case <-l.done:
+		return
+	}
+}
 func NewLogger() *logger {
 	obj := &logger{
 		writers:        make(map[Handler]io.WriteCloser, 3), // now only support 3 kinds of handler
-		writerChan:     make(chan *writerArgs),
+		writerChan:     make(chan *writerArgs, 100),
 		logFormat:      gDefaultLogFormat,
 		levelThreshold: DEBUG,
 		handler:        NONE,
+		done:           make(chan bool),
+		async:          true,
 	}
 
 	// The backend writer goroutine to write each log record
 	go func() {
 		for {
 			select {
+			case <-obj.done:
+				return
 			case args := <-obj.writerChan: // wait until a record comes to log
+				if args == nil {
+					close(obj.done)
+					close(obj.writerChan)
+					return
+				}
 				obj.buildWriter(args.rotateArgs)
 				for _, w := range obj.writers {
 					fmt.Fprint(w, args.record)
 				}
-				args.recordDone <- true
+				if obj.async == false {
+					args.recordDone <- true
+				}
 			}
 		}
 	}()
