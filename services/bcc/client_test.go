@@ -33,12 +33,9 @@ type Conf struct {
 }
 
 func init() {
+
 	_, f, _, _ := runtime.Caller(0)
-	for i := 0; i < 7; i++ {
-		f = filepath.Dir(f)
-	}
-	conf := filepath.Join(f, "/config.json")
-	fmt.Println(conf)
+	conf := filepath.Join(filepath.Dir(f), "config.json")
 	fp, err := os.Open(conf)
 	if err != nil {
 		log.Fatal("config json file of ak/sk not given:", conf)
@@ -47,7 +44,7 @@ func init() {
 	decoder := json.NewDecoder(fp)
 	confObj := &Conf{}
 	decoder.Decode(confObj)
-	fmt.Println(confObj.Endpoint)
+
 	BCC_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
 	//log.SetLogLevel(log.DEBUG)
@@ -253,7 +250,7 @@ func TestLiveResizeInstance(t *testing.T) {
 	resizeArgs := &api.ResizeInstanceArgs{
 		CpuCount:           2,
 		MemoryCapacityInGB: 4,
-		LiveResize:      true,
+		LiveResize:         true,
 	}
 	err := BCC_CLIENT.ResizeInstance(BCC_TestBccId, resizeArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -363,16 +360,20 @@ func TestCreateCDSVolume(t *testing.T) {
 	args := &api.CreateCDSVolumeArgs{
 		PurchaseCount: 1,
 		CdsSizeInGB:   40,
-		StorageType:   api.StorageTypeSSD,
 		Billing: &api.Billing{
-			PaymentTiming: api.PaymentTimingPostPaid,
+			PaymentTiming: api.PaymentTimingPrePaid,
+			Reservation: &api.Reservation{
+				ReservationLength:   1,
+				ReservationTimeUnit: "MONTH",
+			},
 		},
-		EncryptKey: "EncryptKey",
+		RenewTimeUnit: "month",
+		RenewTime:     2,
 	}
 
-	result, err := BCC_CLIENT.CreateCDSVolume(args)
-	ExpectEqual(t.Errorf, err, nil)
+	result, _ := BCC_CLIENT.CreateCDSVolume(args)
 	BCC_TestCdsId = result.VolumeIds[0]
+	fmt.Print(BCC_TestCdsId)
 }
 
 func TestCreateCDSVolumeV3(t *testing.T) {
@@ -1234,8 +1235,8 @@ func TestListInstanceByInstanceIds(t *testing.T) {
 
 func TestListServersByMarkerV3(t *testing.T) {
 	args := &api.ListServerRequestV3Args{
-		Marker:      "",
-		MaxKeys:     3,
+		Marker:  "",
+		MaxKeys: 3,
 	}
 	result, err := BCC_CLIENT.ListServersByMarkerV3(args)
 	if err != nil {
@@ -1253,8 +1254,8 @@ func TestListServersByMarkerV3(t *testing.T) {
 
 func TestDeletePrepayVolume(t *testing.T) {
 	args := &api.VolumePrepayDeleteRequestArgs{
-		VolumeId:      "v-tVDW1NkK",
-		RelatedReleaseFlag:     false,
+		VolumeId:           "v-tVDW1NkK",
+		RelatedReleaseFlag: false,
 	}
 	result, err := BCC_CLIENT.DeletePrepayVolume(args)
 	if err != nil {

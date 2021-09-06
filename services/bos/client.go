@@ -35,13 +35,13 @@ import (
 const (
 	DEFAULT_SERVICE_DOMAIN = bce.DEFAULT_REGION + ".bcebos.com"
 	DEFAULT_MAX_PARALLEL   = 10
-	MULTIPART_ALIGN        = 1 << 20        // 1MB
-	MIN_MULTIPART_SIZE     = 1 << 20        // 1MB
-	DEFAULT_MULTIPART_SIZE = 12 * (1 << 20) // 12MB
+	MULTIPART_ALIGN        = 1 << 20         // 1MB
+	MIN_MULTIPART_SIZE     = 100 * (1 << 10) // 100 KB
+	DEFAULT_MULTIPART_SIZE = 12 * (1 << 20)  // 12MB
 
 	MAX_PART_NUMBER        = 10000
-	MAX_SINGLE_PART_SIZE   = 5 * (1 << 30) // 5GB
-	MAX_SINGLE_OBJECT_SIZE = 5 * (1 << 40) // 5TB
+	MAX_SINGLE_PART_SIZE   = 5 * (1 << 30)    // 5GB
+	MAX_SINGLE_OBJECT_SIZE = 48.8 * (1 << 40) // 48.8TB
 )
 
 // Client of BOS service is a kind of BceClient, so derived from BceClient
@@ -90,12 +90,12 @@ func NewClientWithConfig(config *BosClientConfiguration) (*Client, error) {
 		HeadersToSign: auth.DEFAULT_HEADERS_TO_SIGN,
 		ExpireSeconds: auth.DEFAULT_EXPIRE_SECONDS}
 	defaultConf := &bce.BceClientConfiguration{
-		Endpoint:    endpoint,
-		Region:      bce.DEFAULT_REGION,
-		UserAgent:   bce.DEFAULT_USER_AGENT,
-		Credentials: credentials,
-		SignOption:  defaultSignOptions,
-		Retry:       bce.DEFAULT_RETRY_POLICY,
+		Endpoint:                  endpoint,
+		Region:                    bce.DEFAULT_REGION,
+		UserAgent:                 bce.DEFAULT_USER_AGENT,
+		Credentials:               credentials,
+		SignOption:                defaultSignOptions,
+		Retry:                     bce.DEFAULT_RETRY_POLICY,
 		ConnectionTimeoutInMillis: bce.DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS,
 		RedirectDisabled:          config.RedirectDisabled}
 	v1Signer := &auth.BceV1Signer{}
@@ -1628,6 +1628,12 @@ func (c *Client) DownloadSuperFile(bucket, object, fileName string) (err error) 
 func (c *Client) GeneratePresignedUrl(bucket, object string, expireInSeconds int, method string,
 	headers, params map[string]string) string {
 	return api.GeneratePresignedUrl(c.Config, c.Signer, bucket, object,
+		expireInSeconds, method, headers, params)
+}
+
+func (c *Client) GeneratePresignedUrlPathStyle(bucket, object string, expireInSeconds int, method string,
+	headers, params map[string]string) string {
+	return api.GeneratePresignedUrlPathStyle(c.Config, c.Signer, bucket, object,
 		expireInSeconds, method, headers, params)
 }
 

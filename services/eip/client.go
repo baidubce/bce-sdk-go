@@ -27,6 +27,8 @@ const (
 	REQUEST_EIP_URL = "/eip"
 
 	REQUEST_EIP_CLUSTER_URL = "/eipcluster"
+
+	REQUEST_EIP_TP_URL = "/eiptp"
 )
 
 // Client of EIP service is a kind of BceClient, so derived from BceClient
@@ -59,4 +61,12 @@ func getEipClusterUri() string {
 
 func getEipClusterUriWithId(clusterId string) string {
 	return URI_PREFIX + REQUEST_EIP_CLUSTER_URL + "/" + clusterId
+}
+
+func getEipTpUri() string {
+	return URI_PREFIX + REQUEST_EIP_TP_URL
+}
+
+func getEipTpUriWithId(id string) string {
+	return URI_PREFIX + REQUEST_EIP_TP_URL + "/" + id
 }

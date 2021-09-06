@@ -466,6 +466,39 @@ func (c *Client) DescribeSSLListeners(blbId string, args *DescribeListenerArgs) 
 	return result, err
 }
 
+// DescribeAllListeners - describe all Listeners
+//
+// PARAMS:
+//     - blbId: LoadBalancer's ID
+//     - args: parameters to describe all Listeners
+// RETURNS:
+//     - *DescribeAllListenersResult: the result of describe all Listeners
+//     - error: nil if ok otherwise the specific error
+func (c *Client) DescribeAllListeners(blbId string, args *DescribeListenerArgs) (*DescribeAllListenersResult, error) {
+	if args == nil {
+		args = &DescribeListenerArgs{}
+	}
+
+	if args.MaxKeys <= 0 || args.MaxKeys > 1000 {
+		args.MaxKeys = 1000
+	}
+
+	result := &DescribeAllListenersResult{}
+	request := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getListenerUri(blbId)).
+		WithQueryParamFilter("marker", args.Marker).
+		WithQueryParam("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithResult(result)
+
+	if args.ListenerPort != 0 {
+		request.WithQueryParam("listenerPort", strconv.Itoa(int(args.ListenerPort)))
+	}
+
+	err := request.Do()
+	return result, err
+}
+
 // DeleteListeners - delete Listeners
 //
 // PARAMS:

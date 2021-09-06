@@ -80,3 +80,12 @@ func (c *Client) SimplePutText(text string) (*api.PutTextResult, error) {
 	args := &api.PutTextArgs{Text: text}
 	return api.PutText(c, args)
 }
+
+func (c *Client) PutImageSync(args *api.PutImageSyncArgs) (*api.PutImageSyncResult, error) {
+	return api.PutImageSync(c, args)
+}
+
+func (c *Client) SimplePutImageSync(source string) (*api.PutImageSyncResult, error) {
+	args := &api.PutImageSyncArgs{Source: source}
+	return api.PutImageSync(c, args)
+}

@@ -13,6 +13,7 @@ const (
 	SK           = "YourSK"
 	MEDIA_SOURCE = "YourTestMedia" // e.g. "bos://YourBucket/dir/video.mp4
 	TEXT         = "YourTestText"
+	IMAGE_SOURCE = "YourTestImage" // e.g. "bos://YourBucket/dir/image.jpg"
 )
 
 func init() {
@@ -64,6 +65,23 @@ func TestPutText(t *testing.T) {
 func TestSimplePutText(t *testing.T) {
 	if res, err := CLIENT.SimplePutText(TEXT); err != nil {
 		t.Log("simple put text error")
+	} else {
+		t.Logf("%+v", res)
+	}
+}
+
+func TestPutImageSync(t *testing.T) {
+	args := &api.PutImageSyncArgs{Source: IMAGE_SOURCE}
+	if res, err := CLIENT.PutImageSync(args); err != nil {
+		t.Log("simple put image sync error", err)
+	} else {
+		t.Logf("%+v", res)
+	}
+}
+
+func TestSimplePutImageSync(t *testing.T) {
+	if res, err := CLIENT.SimplePutImageSync(IMAGE_SOURCE); err != nil {
+		t.Log("simple put image sync error", err)
 	} else {
 		t.Logf("%+v", res)
 	}

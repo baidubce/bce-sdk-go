@@ -30,6 +30,7 @@ var (
 	CERT_ID               = ""
 	IPGROUP_MEMBER_IP     = ""
 	CLUSTER_PROPERTY_TEST = ""
+	TEST_APPBLB_ID = ""
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -41,11 +42,7 @@ type Conf struct {
 
 func init() {
 	_, f, _, _ := runtime.Caller(0)
-	// run 7 times is not necessary, just for make sure we can get work directory path
-	for i := 0; i < 7; i++ {
-		f = filepath.Dir(f)
-	}
-	conf := filepath.Join(f, "config.json")
+	conf := filepath.Join(filepath.Dir(f), "config.json")
 	fp, err := os.Open(conf)
 	if err != nil {
 		log.Fatal("config json file of ak/sk not given:", conf)
@@ -415,10 +412,14 @@ func TestClient_UpdateAppUDPListener(t *testing.T) {
 
 func TestClient_DescribeAppUDPListeners(t *testing.T) {
 	describeArgs := &DescribeAppListenerArgs{
-		ListenerPort: 91,
+		ListenerPort: 53,
 	}
-	_, err := APPBLB_CLIENT.DescribeAppUDPListeners(APPBLB_ID, describeArgs)
-	ExpectEqual(t.Errorf, nil, err)
+	result, err := APPBLB_CLIENT.DescribeAppUDPListeners(APPBLB_ID, describeArgs)
+	if err != nil {
+		fmt.Println("get udp listener failed:", err)
+	} else {
+		fmt.Println("get udp listener success: ", result)
+	}
 }
 
 func TestClient_CreateAppHTTPListener(t *testing.T) {
@@ -575,6 +576,18 @@ func TestClient_DescribeAppSSLListeners(t *testing.T) {
 	}
 	_, err := APPBLB_CLIENT.DescribeAppSSLListeners(APPBLB_ID, describeArgs)
 	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DescribeAppAllListeners(t *testing.T) {
+	describeArgs := &DescribeAppListenerArgs{
+
+	}
+	result, err := APPBLB_CLIENT.DescribeAppAllListeners(APPBLB_ID, describeArgs)
+	if err != nil {
+		fmt.Println("get all listener failed:", err)
+	} else {
+		fmt.Println("get all listener success: ", result)
+	}
 }
 
 func TestClient_DeleteAppListeners(t *testing.T) {

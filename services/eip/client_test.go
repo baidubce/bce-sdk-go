@@ -2,6 +2,7 @@ package eip
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -18,6 +19,7 @@ var (
 	CLUSTER_ID  string
 	// set this value before start test
 	BCC_TEST_ID = ""
+	EIP_TP_ID = "tp-R4E8cWijbf"
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -173,6 +175,32 @@ func TestClient_DirectEip(t *testing.T) {
 
 func TestClient_UnDirectEip(t *testing.T) {
 	EIP_CLIENT.UnDirectEip(EIP_ADDRESS, getClientToken())
+}
+
+func TestClient_CreateEipTp(t *testing.T) {
+	args := &CreateEipTpArgs{
+		ReservationLength: 1,
+		Capacity:          "10G",
+		DeductPolicy:      "TimeDurationPackage",
+		PackageType:       "WebOutBytes",
+		ClientToken:       getClientToken(),
+	}
+	result, err := EIP_CLIENT.CreateEipTp(args)
+	ExpectEqual(t.Errorf, nil, err)
+	EIP_TP_ID = result.Id
+}
+
+func TestClient_ListEipTp(t *testing.T) {
+	args := &ListEipTpArgs{
+		Id: "tp-R4E8cWijbf",
+		DeductPolicy: "FullTimeDurationPackage",
+		Status: "RUNNING",
+	}
+	fmt.Println(EIP_CLIENT.ListEipTp(args))
+}
+
+func TestClient_GetEipTp(t *testing.T) {
+	fmt.Println(EIP_CLIENT.GetEipTp("tp-hfI9pKIL58"))
 }
 
 func getClientToken() string {

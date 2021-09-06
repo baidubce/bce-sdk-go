@@ -129,6 +129,7 @@ type CreateUDPListenerArgs struct {
 	ListenerPort               uint16 `json:"listenerPort"`
 	BackendPort                uint16 `json:"backendPort"`
 	Scheduler                  string `json:"scheduler"`
+	UdpSessionTimeout          int    `json:"udpSessionTimeout,omitempty"`
 	HealthCheckString          string `json:"healthCheckString"`
 	HealthCheckTimeoutInSecond int    `json:"healthCheckTimeoutInSecond,omitempty"`
 	HealthCheckInterval        int    `json:"healthCheckInterval,omitempty"`
@@ -179,9 +180,9 @@ type CreateHTTPSListenerArgs struct {
 	HealthCheckNormalStatus    string   `json:"healthCheckNormalStatus,omitempty"`
 	ServerTimeout              int      `json:"serverTimeout,omitempty"`
 	RedirectPort               uint16   `json:"redirectPort,omitempty"`
-	Ie6Compatible              bool     `json:"ie6Compatible,omitempty"`
 	EncryptionType             string   `json:"encryptionType,omitempty"`
 	EncryptionProtocols        []string `json:"encryptionProtocols,omitempty"`
+	AppliedCiphers             string   `json:"appliedCiphers,omitempty"`
 	DualAuth                   bool     `json:"dualAuth,omitempty"`
 	ClientCertIds              []string `json:"clientCertIds,omitempty"`
 }
@@ -196,9 +197,9 @@ type CreateSSLListenerArgs struct {
 	HealthCheckInterval        int      `json:"healthCheckInterval,omitempty"`
 	UnhealthyThreshold         int      `json:"unhealthyThreshold,omitempty"`
 	HealthyThreshold           int      `json:"healthyThreshold,omitempty"`
-	Ie6Compatible              bool     `json:"ie6Compatible,omitempty"`
 	EncryptionType             string   `json:"encryptionType,omitempty"`
 	EncryptionProtocols        []string `json:"encryptionProtocols,omitempty"`
+	AppliedCiphers             string   `json:"appliedCiphers,omitempty"`
 	DualAuth                   bool     `json:"dualAuth,omitempty"`
 	ClientCertIds              []string `json:"clientCertIds,omitempty"`
 }
@@ -227,6 +228,7 @@ type UpdateUDPListenerArgs struct {
 	ListenerPort               uint16 `json:"-"`
 	BackendPort                uint16 `json:"backendPort,omitempty"`
 	Scheduler                  string `json:"scheduler,omitempty"`
+	UdpSessionTimeout          int    `json:"udpSessionTimeout,omitempty"`
 	HealthCheckTimeoutInSecond int    `json:"healthCheckTimeoutInSecond,omitempty"`
 	HealthCheckInterval        int    `json:"healthCheckInterval,omitempty"`
 	UnhealthyThreshold         int    `json:"unhealthyThreshold,omitempty"`
@@ -276,7 +278,9 @@ type UpdateHTTPSListenerArgs struct {
 	HealthCheckNormalStatus    string   `json:"healthCheckNormalStatus,omitempty"`
 	ServerTimeout              int      `json:"serverTimeout,omitempty"`
 	CertIds                    []string `json:"certIds,omitempty"`
-	Ie6Compatible              bool     `json:"ie6Compatible,omitempty"`
+	EncryptionType             string   `json:"encryptionType,omitempty"`
+	EncryptionProtocols        []string `json:"encryptionProtocols,omitempty"`
+	AppliedCiphers             string   `json:"appliedCiphers,omitempty"`
 }
 
 type UpdateSSLListenerArgs struct {
@@ -289,9 +293,9 @@ type UpdateSSLListenerArgs struct {
 	UnhealthyThreshold         int      `json:"unhealthyThreshold,omitempty"`
 	HealthyThreshold           int      `json:"healthyThreshold,omitempty"`
 	CertIds                    []string `json:"certIds,omitempty"`
-	Ie6Compatible              bool     `json:"ie6Compatible,omitempty"`
 	EncryptionType             string   `json:"encryptionType,omitempty"`
 	EncryptionProtocols        []string `json:"encryptionProtocols,omitempty"`
+	AppliedCiphers             string   `json:"appliedCiphers,omitempty"`
 	DualAuth                   bool     `json:"dualAuth,omitempty"`
 	ClientCertIds              []string `json:"clientCertIds,omitempty"`
 }
@@ -312,6 +316,7 @@ type UDPListenerModel struct {
 	ListenerPort               uint16 `json:"listenerPort"`
 	BackendPort                uint16 `json:"backendPort"`
 	Scheduler                  string `json:"scheduler"`
+	UdpSessionTimeout          int    `json:"udpSessionTimeout"`
 	HealthCheckTimeoutInSecond int    `json:"healthCheckTimeoutInSecond"`
 	HealthCheckInterval        int    `json:"healthCheckInterval"`
 	UnhealthyThreshold         int    `json:"unhealthyThreshold"`
@@ -362,9 +367,11 @@ type HTTPSListenerModel struct {
 	HealthCheckNormalStatus    string   `json:"healthCheckNormalStatus"`
 	ServerTimeout              int      `json:"serverTimeout"`
 	CertIds                    []string `json:"certIds"`
-	Ie6Compatible              bool     `json:"ie6Compatible"`
 	DualAuth                   bool     `json:"dualAuth"`
 	ClientCertIds              []string `json:"clientCertIds"`
+	EncryptionType             string   `json:"encryptionType"`
+	EncryptionProtocols        []string `json:"encryptionProtocols"`
+	AppliedCiphers    		   string   `json:"appliedCiphers"`
 }
 
 type SSLListenerModel struct {
@@ -377,12 +384,45 @@ type SSLListenerModel struct {
 	HealthyThreshold           int      `json:"healthyThreshold"`
 	GetBlbIp                   bool     `json:"getBlbIp"`
 	CertIds                    []string `json:"certIds"`
-	Ie6Compatible              bool     `json:"ie6Compatible"`
 	EncryptionType             string   `json:"encryptionType"`
 	EncryptionProtocols        []string `json:"encryptionProtocols"`
+	AppliedCiphers    		   string   `json:"appliedCiphers"`
 	DualAuth                   bool     `json:"dualAuth"`
 	ClientCertIds              []string `json:"clientCertIds"`
 	ServerTimeout              int      `json:"serverTimeout"`
+}
+
+type AllListenerModel struct {
+	ListenerPort               uint16   `json:"listenerPort"`
+	ListenerType               string   `json:"listenerType"`
+	BackendPort                uint16   `json:"backendPort"`
+	Scheduler                  string   `json:"scheduler"`
+	GetBlbIp                   bool     `json:"getBlbIp"`
+	TcpSessionTimeout          int      `json:"tcpSessionTimeout"`
+	UdpSessionTimeout          int      `json:"udpSessionTimeout"`
+	HealthCheckString          string   `json:"healthCheckString"`
+	KeepSession                bool     `json:"keepSession"`
+	KeepSessionType            string   `json:"keepSessionType"`
+	KeepSessionDuration        int      `json:"keepSessionDuration"`
+	KeepSessionCookieName      string   `json:"keepSessionCookieName"`
+	XForwardedFor              bool     `json:"xForwardedFor"`
+	HealthCheckType            string   `json:"healthCheckType"`
+	HealthCheckPort            uint16   `json:"healthCheckPort"`
+	HealthCheckURI             string   `json:"healthCheckURI"`
+	HealthCheckTimeoutInSecond int      `json:"healthCheckTimeoutInSecond"`
+	HealthCheckInterval        int      `json:"healthCheckInterval"`
+	UnhealthyThreshold         int      `json:"unhealthyThreshold"`
+	HealthyThreshold           int      `json:"healthyThreshold"`
+	HealthCheckNormalStatus    string   `json:"healthCheckNormalStatus"`
+	HealthCheckHost    		   string   `json:"healthCheckHost"`
+	ServerTimeout              int      `json:"serverTimeout"`
+	RedirectPort               int      `json:"redirectPort"`
+	CertIds                    []string `json:"certIds"`
+	DualAuth                   bool     `json:"dualAuth"`
+	ClientCertIds              []string `json:"clientCertIds"`
+	EncryptionType    		   string   `json:"encryptionType"`
+	EncryptionProtocols        []string `json:"encryptionProtocols"`
+	AppliedCiphers    		   string   `json:"appliedCiphers"`
 }
 
 type DescribeListenerArgs struct {
@@ -413,6 +453,11 @@ type DescribeHTTPSListenersResult struct {
 
 type DescribeSSLListenersResult struct {
 	ListenerList []SSLListenerModel `json:"listenerList"`
+	DescribeResultMeta
+}
+
+type DescribeAllListenersResult struct {
+	AllListenerList []AllListenerModel `json:"listenerList"`
 	DescribeResultMeta
 }
 

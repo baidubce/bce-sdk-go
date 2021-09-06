@@ -22,6 +22,7 @@ const (
 	URI_PREFIX = bce.URI_PREFIX + "v1"
 	MEDIA_URI  = "/media"
 	TEXT_URI   = "/text"
+	IMAGE_URI  = "/image"
 )
 
 type PutMediaArgs struct {
@@ -88,5 +89,18 @@ type PutTextArgs struct {
 type PutTextResult struct {
 	Text    string        `json:"text"`
 	Preset  string        `json:"preset"`
+	Results []CheckResult `json:"results"`
+}
+
+type PutImageSyncArgs struct {
+	Source string `json:"source"`
+	Preset string `json:"preset"`
+}
+
+type PutImageSyncResult struct {
+	Source  string        `json:"source"`
+	Label   string        `json:"label"`
+	Preset  string        `json:"preset"`
+	Status  string        `json:"status"`
 	Results []CheckResult `json:"results"`
 }

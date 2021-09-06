@@ -294,3 +294,81 @@ func (c *Client) UnDirectEip(eip, clientToken string) error {
 		WithQueryParam("unDirect", "").
 		Do()
 }
+
+// CreateEipTp - create an EIP TP with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to create an eiptp
+// RETURNS:
+//     - *CreateEipTpResult: the created eiptp id.
+//     - error: nil if success otherwise the specific error
+func (c *Client) CreateEipTp(args *CreateEipTpArgs) (*CreateEipTpResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("please set create eip tp argments")
+	}
+	if len(args.Capacity) == 0 {
+		return nil, fmt.Errorf("please set capacity argment")
+	}
+	result := &CreateEipTpResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getEipTpUri()).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// ListEipTp - list all EIP TPs with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to list all eiptps
+// RETURNS:
+//     - *ListEipTpResult: the result of listing all eiptps
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListEipTp(args *ListEipTpArgs) (*ListEipTpResult, error) {
+	if args == nil {
+		args = &ListEipTpArgs{}
+	}
+	if args.MaxKeys <= 0 || args.MaxKeys > 1000 {
+		args.MaxKeys = 1000
+	}
+	result := &ListEipTpResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getEipTpUri()).
+		WithQueryParamFilter("id", args.Id).
+		WithQueryParamFilter("deductPolicy", args.DeductPolicy).
+		WithQueryParamFilter("status", args.Status).
+		WithQueryParamFilter("marker", args.Marker).
+		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// GetEipTp - get the EIP TP detail with the id
+//
+// PARAMS:
+//     - id: the specific eiptp id
+// RETURNS:
+//     - *EipTpDetail: the result of eiptp detail
+//     - error: nil if success otherwise the specific error
+
+func (c *Client) GetEipTp(id string) (*EipTpDetail, error) {
+	if len(id) == 0 {
+		return nil, fmt.Errorf("please set eiptp id argment")
+	}
+	result := &EipTpDetail{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getEipTpUriWithId(id)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}

@@ -25,6 +25,7 @@ var (
 	CERT_ID        = ""
 	CLUSTER_ID     = ""
 	CLUSTER_PROPERTY_TEST = ""
+	TEST_BLB_ID = ""
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -36,12 +37,7 @@ type Conf struct {
 
 func init() {
 	_, f, _, _ := runtime.Caller(0)
-	// run 7 times is not necessary, just for make sure we can get work directory path
-	for i := 0; i < 7; i++ {
-		f = filepath.Dir(f)
-	}
-	// attention : native test need absolute path
-	conf := filepath.Join(f, "config.json")
+	conf := filepath.Join(filepath.Dir(f), "config.json")
 	fp, err := os.Open(conf)
 	if err != nil {
 		log.Fatal("config json file of ak/sk not given:", conf)
@@ -270,6 +266,18 @@ func TestClient_DescribeSSLListeners(t *testing.T) {
 	}
 	_, err := BLB_CLIENT.DescribeSSLListeners(BLB_ID, describeArgs)
 	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DescribeAllListeners(t *testing.T) {
+	describeArgs := &DescribeListenerArgs{
+
+	}
+	result, err := BLB_CLIENT.DescribeAllListeners(BLB_ID, describeArgs)
+	if err != nil {
+		fmt.Println("get all listener failed:", err)
+	} else {
+		fmt.Println("get all listener success: ", result)
+	}
 }
 
 

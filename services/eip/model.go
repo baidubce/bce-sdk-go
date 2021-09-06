@@ -126,3 +126,55 @@ type ClusterDetail struct {
 	NetworkInPps  int64  `json:"networkInPps"`
 	NetworkOutPps int64  `json:"networkOutPps"`
 }
+
+type Package struct {
+	Id           string `json:"id,omitempty"`
+	DeductPolicy string `json:"deductPolicy,omitempty"`
+	PackageType  string `json:"packageType,omitempty"`
+	Status       string `json:"status,omitempty"`
+	Capacity     string `json:"capacity,omitempty"`
+	UsedCapacity string `json:"usedCapacity,omitempty"`
+	ActiveTime   string `json:"activeTime"`
+	ExpireTime   string `json:"expireTime"`
+	CreateTime   string `json:"createTime"`
+}
+
+type CreateEipTpArgs struct {
+	ReservationLength int    `json:"reservationLength,omitempty"`
+	Capacity          string `json:"capacity,omitempty"`
+	DeductPolicy      string `json:"deductPolicy,omitempty"`
+	PackageType       string `json:"packageType,omitempty"`
+	ClientToken       string `json:"-"`
+}
+
+type CreateEipTpResult struct {
+	Id string `json:"id,omitempty"`
+}
+
+type ListEipTpArgs struct {
+	Id           string `json:"id,omitempty"`
+	DeductPolicy string `json:"deductPolicy,omitempty"`
+	Status       string `json:"status,omitempty"`
+	Marker       string `json:"marker"`
+	MaxKeys      int    `json:"maxKeys"`
+}
+
+type ListEipTpResult struct {
+	Marker      string    `json:"marker"`
+	MaxKeys     int       `json:"maxKeys"`
+	NextMarker  string    `json:"nextMarker"`
+	IsTruncated bool      `json:"isTruncated"`
+	PackageList []Package `json:"packageList"`
+}
+
+type EipTpDetail struct {
+	Id           string `json:"id,omitempty"`
+	DeductPolicy string `json:"deductPolicy,omitempty"`
+	PackageType  string `json:"packageType,omitempty"`
+	Status       string `json:"status,omitempty"`
+	Capacity     string `json:"capacity,omitempty"`
+	UsedCapacity string `json:"usedCapacity,omitempty"`
+	ActiveTime   string `json:"activeTime,omitempty"`
+	ExpireTime   string `json:"expireTime,omitempty"`
+	CreateTime   string `json:"createTime,omitempty"`
+}

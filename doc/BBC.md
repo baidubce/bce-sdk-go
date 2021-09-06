@@ -727,10 +727,10 @@ if res, err := bbcClient.GetFlavorRaid(testFlavorId); err != nil {
 ```go
 // 设置你要操作的flavorId
 flavorId := ""
-queryArgs := &GetFlavorZoneArgs{
+queryArgs := &ListFlavorZonesArgs{
     FlavorId: flavorId,
 }
-if res, err := bbcClient.GetFlavorZone(queryArgs); err != nil {
+if res, err := bbcClient.ListFlavorZones(queryArgs); err != nil {
     fmt.Println("Get flavor zoneName failed: ", err)
 } else {
     fmt.Println("Get flavor zoneName success, result: ", res)
@@ -743,10 +743,10 @@ if res, err := bbcClient.GetFlavorZone(queryArgs); err != nil {
 ```go
 // 设置你要操作的zoneName，可以使用cn-bj-a 等
 zoneName := ""
-queryArgs := &GetZoneFlavorArgs{
+queryArgs := &ListZoneFlavorsArgs{
     ZoneName: zoneName,
 }
-if res, err := bbcClient.GetFlavors(queryArgs); err != nil {
+if res, err := bbcClient.ListZoneFlavors(queryArgs); err != nil {
     fmt.Println("Get the specific zone flavor failed: ", err)
 } else {
     fmt.Println("Get the specific zone flavor success, result: ", res)
@@ -1143,6 +1143,19 @@ if res, err := bbcClient.ListRepairTasks(listArgs); err != nil {
 }
 ```
 
+### 查询关闭的维修任务列表
+使用以下代码查询关闭的任务列表
+```go
+args := &bbc.ListClosedRepairTaskArgs {
+	  // 返回数据大小
+      MaxKeys: 100,
+    }
+if res, err := bbcClient.ListClosedRepairTasks(args); err != nil{
+  fmt.Println("Get the closed repaired tasks failed: ", err)
+} else {
+  fmt.Println("Get the closed repaired tasks success: ", res)
+}
+```
 
 ### 查询维修任务详情
 使用以下代码可以查询指定BBC维修任务的详细信息：

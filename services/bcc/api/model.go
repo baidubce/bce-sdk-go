@@ -699,7 +699,7 @@ type DeleteInstanceWithRelateResourceArgs struct {
 type InstanceChangeVpcArgs struct {
 	InstanceId string `json:"instanceId"`
 	SubnetId   string `json:"subnetId"`
-	InternalIp   string `json:"internalIp"`
+	InternalIp string `json:"internalIp"`
 	Reboot     bool   `json:"reboot"`
 }
 
@@ -843,6 +843,8 @@ type VolumeModel struct {
 	SourceSnapshotId   string                   `json:"sourceSnapshotId"`
 	SnapshotNum        string                   `json:"snapshotNum"`
 	Tags               []model.TagModel         `json:"tags"`
+	EnableAutoRenew    bool                     `json:"enableAutoRenew"`
+	AutoRenewTime      int                      `json:"autoRenewTime"`
 	Encrypted          bool                     `json:"encrypted"`
 }
 
@@ -896,6 +898,8 @@ type CreateCDSVolumeArgs struct {
 	StorageType   StorageType `json:"storageType,omitempty"`
 	Billing       *Billing    `json:"billing"`
 	EncryptKey    string      `json:"encryptKey"`
+	RenewTimeUnit string      `json:"renewTimeUnit"`
+	RenewTime     int         `json:"renewTime"`
 	ClientToken   string      `json:"-"`
 }
 

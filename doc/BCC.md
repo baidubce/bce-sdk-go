@@ -853,6 +853,38 @@ fmt.Println("get instance detail success, result: ", res)
 
 ```
 
+## 查询带部署集和失败相关字段实例详情
+
+查询带部署集和失败相关字段实例详情
+
+```go
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+//设置是否展示部署集字段,true or false
+isDeploySet := "your-isDeploySet"
+//设置是否展示部署集字段,true or false
+containsFailed := "your-containsFailed"
+
+if res, err := bccClient.GetInstanceDetailWithDeploySet(instanceId,isDeploySet,containsFailed); err != nil {
+fmt.Println("get instance detail failed: ", err)
+} else {
+fmt.Println("get instance detail success, result: ", res)
+}
+```
+## 查询部署集详情
+
+通过以下代码利用部署集ID查询部署集详情
+
+```go
+// 设置你要查询的deploySetID
+deploySetID := "your-choose-deploy-set-id"
+if res, err := bccClient.GetDeploySet(deploySetID); err != nil {
+    fmt.Println("Delete deploy set failed: ", err)
+} else {
+    fmt.Println("Get deploy set success: ", res)
+}
+```
+
 ## 查询可关机不计费的实例列表
 查询可关机不计费的BCC实例列表：
 ```go
