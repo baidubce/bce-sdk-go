@@ -310,3 +310,58 @@ func (c *Client) SetReservedConcurrentExecutions(args *api.ReservedConcurrentExe
 func (c *Client) DeleteReservedConcurrentExecutions(args *api.DeleteReservedConcurrentExecutionsArgs) error {
 	return api.DeleteReservedConcurrentExecutions(c, args)
 }
+
+// ListEventSource - list all event source mapping settings in one cfc function version
+//
+// PARAMS:
+//     - args: the arguments to list all event source mapping settings
+// RETURNS:
+//     - *api.ListEventSourceResult: the result of list all event source mapping settings
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListEventSource(args *api.ListEventSourceArgs) (*api.ListEventSourceResult, error) {
+	return api.ListEventSource(c, args)
+}
+
+// GetEventSource - get info for a event source mapping setting
+//
+// PARAMS:
+//     - args: the arguments to get a event source mapping setting
+// RETURNS:
+//     - *api.GetEventSourceResult: the result of get a event source mapping
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetEventSource(args *api.GetEventSourceArgs) (*api.GetEventSourceResult, error) {
+	return api.GetEventSource(c, args)
+}
+
+// UpdateEventSource - update a event source mapping setting
+//
+// PARAMS:
+//     - args: the arguments to update a event source mapping
+// RETURNS:
+//     - *api.UpdateEventSourceResult: the result of update a event source mapping
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateEventSource(args *api.UpdateEventSourceArgs) (*api.UpdateEventSourceResult, error) {
+	return api.UpdateEventSource(c, args)
+}
+
+// CreateEventSource - create a event source mapping setting
+//
+// PARAMS:
+//     - args: the arguments to create a event source mapping setting
+// RETURNS:
+//     - *api.CreateEventSourceResult: the result of create event source mapping setting
+//     - error: nil if success otherwise the specific error
+func (c *Client) CreateEventSource(args *api.CreateEventSourceArgs) (*api.CreateEventSourceResult, error) {
+	return api.CreateEventSource(c, args)
+}
+
+// DeleteEventSource - delete one cfc event source mapping setting
+//
+// PARAMS:
+//     - args: the arguments to delete cfc event source mapping setting
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeleteEventSource(args *api.DeleteEventSourceArgs) error {
+	return api.DeleteEventSource(c, args)
+
+}

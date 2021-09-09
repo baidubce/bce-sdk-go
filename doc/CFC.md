@@ -665,7 +665,125 @@ if err != nil {
     fmt.Println("delete function trigger failed:", err)
 }
 ```
+## 消息触发器EventSourceMappings操作
 
+### 获取消息触发器EventSourceMappings列表
+
+使用以下代码可以获取某个函数的消息触发器EventSourceMappings的列表
+```go
+args := &api.ListEventSourceArgs{
+    FunctionName: "functionBrn",
+	Marker: 0,
+	MaxItems: 100,
+}
+
+// 返回指定函数的消息触发器列表
+result, err := client.ListEventSource(args)
+if err != nil {
+    fmt.Println("list function event source mappings failed:", err)
+} else {
+    fmt.Println("list function event source mappings success: ", result)
+}
+```
+### 获取某个消息触发器EventSourceMappings配置信息
+
+使用以下代码可以获取某个消息触发器EventSourceMapping配置信息
+```go
+args := &api.GetEventSourceArgs{
+    UUID: "uuid",
+}
+
+// 返回指定函数的消息触发器列表
+result, err := client.GetEventSource(args)
+if err != nil {
+    fmt.Println("get function event source mapping info failed:", err)
+} else {
+    fmt.Println("get function event source mapping info success: ", result)
+}
+```
+
+### 创建消息触发器EventSourceMapping
+
+使用以下代码可以创建一个特定的消息触发器Event Source Mapping并绑定函数
+```go
+FunctionBRN = ""
+enabled := true 
+args := &api.CreateEventSourceArgs{
+    Enabled: &enabled,
+    BatchSize: 3,
+    Type: api.TypeEventSourceDatahubTopic,
+    FunctionName: FunctionBRN,
+    DatahubConfig: api.DatahubConfig{
+    	MetaHostEndpoint: "endpoint", 
+    	MetaHostPort:     2181, 
+    	ClusterName:      "clusterName", 
+    	PipeName:         "pipeName", 
+    	PipeletNum:       1,
+    	StartPoint:       -1, 
+    	AclName:          "aclName", 
+    	AclPassword:      "aclPaaaword",
+    },
+  }
+
+result, err := client.CreateEventSource(args)
+if err != nil {
+    fmt.Println("create function event source mapping failed:", err)
+} else {
+    fmt.Println("create function event source mapping success: ", result)
+}
+```
+
+> **提示：**
+> 1.  不同类型的消息触发器，其Type字段不同，目前只支持api.TypeEventSourceBms和api.TypeEventSourceDatahubTopic
+> 2.  不同类型的触发器，其Data字段所需内容不同，具体可以参考文档[触发器配置](https://cloud.baidu.com/doc/CFC/s/Kjwvz47o9#relationconfiguration)
+
+### 更新消息触发器EventSourceMapping
+
+使用以下代码可以更新一个函数的消息触发器EventSourceMapping配置
+```go
+unEnabled := false
+FunctionBRN = ""
+args := &api.UpdateEventSourceArgs{
+    UUID: "uuid",
+	FuncEventSource: api.FuncEventSource{
+        Enabled: &unEnabled,
+        BatchSize: 3,
+        Type: api.TypeEventSourceDatahubTopic,
+        FunctionName: FunctionBRN,
+        DatahubConfig: api.DatahubConfig{
+        	MetaHostEndpoint:"endpoint", 
+        	MetaHostPort: 80, 
+        	ClusterName: "clusterName", 
+        	PipeName:"pipeName", 
+        	PipeletNum:1,
+        	StartPoint:-1, 
+        	AclName: "aclName", 
+        	AclPassword: "aclPassword",
+        },
+	},
+}
+
+result, err := client.UpdateEventSource(args)
+if err != nil {
+    fmt.Println("update function event source failed:", err)
+} else {
+    fmt.Println("update function event source success: ", result)
+}
+```
+
+### 删除一个消息触发器
+
+使用以下代码可以删除一个触发器
+```go
+args := &api.DeleteEventSourceArgs{
+    UUID: "uuid",
+}
+
+err := client.DeleteEventSource(args)
+if err != nil {
+    fmt.Println("delete function event source mapping failed:", err)
+}
+```
 
 # 错误处理
 
@@ -709,7 +827,6 @@ if err != nil {
 # 版本变更记录
 
 ## v0.9.1 [2019-09-26]
-
 首次发布：
 
  - 执行函数
@@ -718,3 +835,7 @@ if err != nil {
  - 列表、创建函数版本
  - 列表、创建、获取、更新、删除别名
  - 获取、创建、更新、删除触发器
+## v0.9.2 [2021-09-06]
+- ## v0.9.2 [2021-09-06]
+- 列表、获取、创建、更新、删除消息触发器，包括百度消息bms触发器及Datahub触发器
+

@@ -624,3 +624,114 @@ func caller(cli bce.Client, op *Operation, request *cfcRequest, response *cfcRes
 	}
 	return nil
 }
+
+// ListEventSource
+func ListEventSource(cli bce.Client, args *ListEventSourceArgs) (*ListEventSourceResult, error) {
+	op := &Operation{
+		HTTPUri:    getEventSourceUri(),
+		HTTPMethod: GET,
+	}
+	request := &cfcRequest{
+		Args: args,
+		Params: map[string]interface{}{
+			"FunctionName": args.FunctionName,
+			"Marker":       args.Marker,
+			"MaxItems":     args.MaxItems,
+		},
+	}
+	result := &cfcResult{
+		Result: &ListEventSourceResult{},
+	}
+	err := caller(cli, op, request, result)
+	if err != nil {
+		return nil, err
+	}
+	if value, ok := result.Result.(*ListEventSourceResult); ok {
+		return value, nil
+	}
+	return nil, nil
+}
+
+// GetEventSource
+func GetEventSource(cli bce.Client, args *GetEventSourceArgs) (*GetEventSourceResult, error) {
+	op := &Operation{
+		HTTPUri:    getOneEventSourceUri(args.UUID),
+		HTTPMethod: GET,
+	}
+	request := &cfcRequest{
+		Args: args,
+	}
+	result := &cfcResult{
+		Result: &GetEventSourceResult{},
+	}
+	err := caller(cli, op, request, result)
+	if err != nil {
+		return nil, err
+	}
+	if value, ok := result.Result.(*GetEventSourceResult); ok {
+		return value, nil
+	}
+	return nil, nil
+}
+
+// CreateEventSource
+func CreateEventSource(cli bce.Client, args *CreateEventSourceArgs) (*CreateEventSourceResult, error) {
+	op := &Operation{
+		HTTPUri:    getEventSourceUri(),
+		HTTPMethod: POST,
+	}
+	request := &cfcRequest{
+		Args: args,
+		Body: args,
+	}
+	result := &cfcResult{
+		Result: &CreateEventSourceResult{},
+	}
+	err := caller(cli, op, request, result)
+	if err != nil {
+		return nil, err
+	}
+	if value, ok := result.Result.(*CreateEventSourceResult); ok {
+		return value, nil
+	}
+	return nil, nil
+}
+
+// UpdateEventSource
+func UpdateEventSource(cli bce.Client, args *UpdateEventSourceArgs) (*UpdateEventSourceResult, error) {
+	op := &Operation{
+		HTTPUri:    getOneEventSourceUri(args.UUID),
+		HTTPMethod: PUT,
+	}
+	request := &cfcRequest{
+		Args: args,
+		Body: args.FuncEventSource,
+	}
+	result := &cfcResult{
+		Result: &UpdateEventSourceResult{},
+	}
+	err := caller(cli, op, request, result)
+	if err != nil {
+		return nil, err
+	}
+	if value, ok := result.Result.(*UpdateEventSourceResult); ok {
+		return value, nil
+	}
+	return nil, nil
+}
+
+func DeleteEventSource(cli bce.Client, args *DeleteEventSourceArgs) error {
+	op := &Operation{
+		HTTPUri:    getOneEventSourceUri(args.UUID),
+		HTTPMethod: DELETE,
+	}
+	request := &cfcRequest{
+		Args: args,
+	}
+	result := &cfcResult{}
+	err := caller(cli, op, request, result)
+	if err != nil {
+		return err
+	}
+	return nil
+}

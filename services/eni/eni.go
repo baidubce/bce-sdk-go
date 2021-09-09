@@ -18,6 +18,7 @@ package eni
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
@@ -97,14 +98,19 @@ func (c *Client) ListEni(args *ListEniArgs) (*ListEniResult, error) {
 	}
 
 	result := &ListEniResult{}
-	err := bce.NewRequestBuilder(c).
+	builder := bce.NewRequestBuilder(c).
 		WithURL(getURLForEni()).
 		WithMethod(http.GET).
 		WithQueryParam("vpcId", args.VpcId).
 		WithQueryParamFilter("marker", args.Marker).
-		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
-		WithResult(result).
-		Do()
+		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys))
+
+	if len(args.PrivateIpAddress) != 0 {
+		builder.WithQueryParam("privateIpAddress",
+			strings.Replace(strings.Trim(fmt.Sprint(args.PrivateIpAddress), "[]"), " ", ",", -1))
+	}
+
+	err := builder.WithResult(result).Do()
 
 	return result, err
 }

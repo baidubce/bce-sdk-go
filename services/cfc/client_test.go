@@ -513,3 +513,111 @@ func TestDeleteFunction(t *testing.T) {
 		t.Logf("res (%v)", err)
 	}
 }
+
+// TODO test fail
+func TestListEventSource(t *testing.T) {
+	FunctionBRN = ""
+	args := &api.ListEventSourceArgs{
+		FunctionName: FunctionBRN,
+		Marker:       0,
+		MaxItems:     100,
+	}
+	res, err := CfcClient.ListEventSource(args)
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	t.Logf("res %+v", res)
+	resStr, err := json.Marshal(res)
+	if err == nil {
+		t.Logf("res %s ", resStr)
+	}
+}
+
+// test pass
+func TestGetEventSource(t *testing.T) {
+	args := &api.GetEventSourceArgs{
+		UUID: "uuid",
+	}
+	res, err := CfcClient.GetEventSource(args)
+	if err != nil {
+		t.Logf("res (%v)", err)
+	}
+	t.Logf("res %+v", res)
+	resStr, err := json.Marshal(res)
+	if err == nil {
+		t.Logf("res %s ", resStr)
+	}
+}
+
+// test pass
+func TestCreateEventSource(t *testing.T) {
+	unEnabled := false
+	FunctionBRN = ""
+	args := &api.CreateEventSourceArgs{
+		Enabled:      &unEnabled,
+		BatchSize:    3,
+		Type:         api.TypeEventSourceDatahubTopic,
+		FunctionName: FunctionBRN,
+		DatahubConfig: api.DatahubConfig{
+			MetaHostEndpoint: "endpoint",
+			MetaHostPort:     2181,
+			ClusterName:      "clusterName",
+			PipeName:         "pipeName",
+			PipeletNum:       1,
+			StartPoint:       -1,
+			AclName:          "aclName",
+			AclPassword:      "aclPassword",
+		},
+	}
+	res, err := CfcClient.CreateEventSource(args)
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	t.Logf("res %+v", res)
+	resStr, err := json.MarshalIndent(res, "", "	")
+	if logSuccess && err == nil {
+		t.Logf("res %s ", resStr)
+	}
+}
+func TestUpdateEventSource(t *testing.T) {
+	FunctionBRN = ""
+	unEnabled := false
+	args := &api.UpdateEventSourceArgs{
+		UUID: "uuid",
+		FuncEventSource: api.FuncEventSource{
+			Enabled:      &unEnabled,
+			BatchSize:    3,
+			Type:         api.TypeEventSourceDatahubTopic,
+			FunctionName: FunctionBRN,
+			DatahubConfig: api.DatahubConfig{
+				MetaHostEndpoint: "10.155.195.11",
+				MetaHostPort:     2181,
+				ClusterName:      "clusterName",
+				PipeName:         "pipeName",
+				PipeletNum:       1,
+				StartPoint:       -1,
+				AclName:          "aclName",
+				AclPassword:      "aclPassword",
+			},
+		},
+	}
+	res, err := CfcClient.UpdateEventSource(args)
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	t.Logf("res %+v", res)
+	resStr, err := json.MarshalIndent(res, "", "	")
+	if logSuccess && err == nil {
+		t.Logf("res %s ", resStr)
+	}
+}
+
+func TestDeleteEventSource(t *testing.T) {
+	args := &api.DeleteEventSourceArgs{
+		UUID: "uuid",
+	}
+	err := CfcClient.DeleteEventSource(args)
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+}

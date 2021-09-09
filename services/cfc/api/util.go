@@ -66,6 +66,14 @@ func getFunctionAliasUri(functionName string, aliasName string) string {
 	return fmt.Sprintf("/v1/functions/%s/aliases/%s", functionName, aliasName)
 }
 
+func getEventSourceUri() string {
+	return fmt.Sprintf("/v1/event-source-mappings")
+}
+
+func getOneEventSourceUri(uuid string) string {
+	return fmt.Sprintf("/v1/event-source-mappings/%s", uuid)
+}
+
 func getTriggerUri() string {
 	return fmt.Sprintf("/v1/console/relation")
 }

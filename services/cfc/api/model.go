@@ -37,8 +37,17 @@ const (
 	SourceTypeCrontab SourceType = "cfc-crontab-trigger/v1/"
 	SourceTypeCDN     SourceType = "cdn"
 
-	TriggerTypeHTTP    TriggerType = "cfc-http-trigger"
-	TriggerTypeGeneric TriggerType = "generic"
+	TriggerTypeHTTP             TriggerType = "cfc-http-trigger"
+	TriggerTypeGeneric          TriggerType = "generic"
+	TypeEventSourceDatahubTopic             = "datahub_topic"
+	TypeEventSourceBms                      = "bms"
+
+	StartingPositionTriHorizon  = "TRIM_HORIZON"
+	StartingPositionLatest      = "LATEST"
+	StartingPositionAtTimeStamp = "AT_TIMESTAMP"
+
+	DatahubTopicStartPointLatest = int64(-1)
+	DatahubTopicStartPointOldest = int64(-2)
 )
 
 type Function struct {
@@ -363,4 +372,66 @@ type DeleteTriggerArgs struct {
 	RelationId string
 	Target     string
 	Source     SourceType
+}
+
+type CreateEventSourceArgs FuncEventSource
+
+type CreateEventSourceResult FuncEventSource
+
+type DeleteEventSourceArgs struct {
+	UUID string
+}
+type UpdateEventSourceArgs struct {
+	UUID            string
+	FuncEventSource FuncEventSource
+}
+
+type UpdateEventSourceResult FuncEventSource
+
+type GetEventSourceArgs struct {
+	UUID string
+}
+
+type GetEventSourceResult FuncEventSource
+
+type ListEventSourceArgs struct {
+	FunctionName string
+	Marker       int
+	MaxItems     int
+}
+
+type ListEventSourceResult struct {
+	EventSourceMappings []FuncEventSource
+}
+
+// EventSource
+type FuncEventSource struct {
+	Uuid                      string     `json:"UUID"`
+	BatchSize                 int        //  一次最多消费多少条消息
+	Enabled                   *bool      `json:"Enabled,omitempty"` //是否开启消息触发器
+	FunctionBrn               string     //  绑定的function brn
+	EventSourceBrn            string     //  百度消息触发器bms kafka的topic名；Datahub触发器的配置唯一标识符，无需用户传入，服务端自动生成
+	FunctionArn               string     //  兼容aws,与FunctionBrn相同
+	EventSourceArn            string     //  兼容aws,与EventSourceBrn相同
+	Type                      string     `json:"Type,omitempty"`                      // 类型 bms/datahub_topic
+	FunctionName              string     `json:"FunctionName,omitempty"`              // 函数brn或者函数名
+	StartingPosition          string     `json:"StartingPosition,omitempty"`          // 百度消息触发器bms kalfka topic 起始位置
+	StartingPositionTimestamp *time.Time `json:"StartingPositionTimestamp,omitempty"` // 百度消息触发器bms kalfka topic 起始时间
+	StateTransitionReason     string     // 状态变更原因
+	DatahubConfig                        // Datahub触发器相关配置
+
+	State                string    `json:"State"`                  // 消息触发器状态，开启或关闭，与aws兼容
+	LastProcessingResult string    `json:"LastProcessingResult"`   // 最新一次触发器的执行结果
+	LastModified         time.Time `json:"LastModified，omitempty"` // 上次修改时间
+}
+
+type DatahubConfig struct {
+	MetaHostEndpoint string `json:"MetaHostEndpoint,omitempty"` // MetaHost endpoint
+	MetaHostPort     int    `json:"MetaHostPort,omitempty"`     // MetaHost port
+	ClusterName      string `json:"ClusterName,omitempty"`      // 集群名
+	PipeName         string `json:"PipeName,omitempty"`         // pipe名
+	PipeletNum       uint32 `json:"PipeletNum,omitempty"`       // 订阅PipiletNum
+	StartPoint       int64  `json:"StartPoint,omitempty"`       // 起始订阅点  正常情况下id为正整数, 2个特殊的点 -1: 表示pipelet内的最新一条消息；-2: 表示pipelet内最旧的一条消息
+	AclName          string `json:"ACLName,omitempty"`          // ACL name
+	AclPassword      string `json:"ACLPassword,omitempty"`      // ACL passwd
 }

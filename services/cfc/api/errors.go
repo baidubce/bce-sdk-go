@@ -20,4 +20,5 @@ const (
 	VersionInvalid      = "the version of function must match " + RegularVersion
 	QualifierInvalid    = "the qualifier is not the function's version or alias"
 	PaginateInvalid     = "the pagination must greater than 0"
+    EventSourceTypeNotSupport = "the event source type: %s not support"
 )

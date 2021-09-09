@@ -306,3 +306,61 @@ func (args DeleteReservedConcurrentExecutionsArgs) Validate() error {
 
 	return nil
 }
+
+func (args ListEventSourceArgs) Validate() error {
+	if args.FunctionName == "" {
+		return fmt.Errorf(requiredIllegal, "FunctionName")
+	}
+	// 先检查是否满足brn规则 再看是不是function name
+	if !validateFunctionBRN(args.FunctionName) || !validateFunctionName(args.FunctionName) {
+		return fmt.Errorf(requiredIllegal, "FunctionName")
+	}
+
+	if args.Marker < 0 || args.MaxItems < 0 {
+		return fmt.Errorf(PaginateInvalid)
+	}
+	return nil
+}
+func (args GetEventSourceArgs) Validate() error {
+	if args.UUID == "" {
+		return fmt.Errorf(requiredIllegal, "UUID")
+	}
+	return nil
+}
+
+func (args CreateEventSourceArgs) Validate() error {
+	if args.FunctionName == "" {
+		return fmt.Errorf(requiredIllegal, "FunctionName")
+	}
+	// 先检查是否满足brn规则 再看是不是function name
+	if !validateFunctionBRN(args.FunctionName) || !validateFunctionName(args.FunctionName) {
+		return fmt.Errorf(requiredIllegal, "FunctionName")
+	}
+
+	if args.Type == TypeEventSourceDatahubTopic || args.Type == TypeEventSourceBms {
+		return nil
+	} else {
+		return fmt.Errorf(EventSourceTypeNotSupport, args.Type)
+	}
+	return nil
+}
+
+func (args UpdateEventSourceArgs) Validate() error {
+	if args.UUID == "" {
+		return fmt.Errorf(requiredIllegal, "UUID")
+	}
+	if args.FuncEventSource.Type != TypeEventSourceDatahubTopic || args.FuncEventSource.Type != TypeEventSourceBms {
+		return nil
+	} else {
+		return fmt.Errorf(EventSourceTypeNotSupport, args.FuncEventSource.Type)
+	}
+
+	return nil
+}
+
+func (args DeleteEventSourceArgs) Validate() error {
+	if args.UUID == "" {
+		return fmt.Errorf(requiredIllegal, "UUID")
+	}
+	return nil
+}
