@@ -34,6 +34,7 @@ const (
 	REQUEST_ACL_URL      = "/acl"
 	REQUEST_NAT_URL      = "/nat"
 	REQUEST_PEERCONN_URL = "/peerconn"
+	REQUEST_NETWORK_TOPOLOGY_URL = "/topology"
 )
 
 // Client of VPC service is a kind of BceClient, so derived from BceClient
@@ -106,4 +107,8 @@ func getURLForPeerConn() string {
 
 func getURLForPeerConnId(peerConnId string) string {
 	return getURLForPeerConn() + "/" + peerConnId
+}
+
+func getURLForNetworkTopology() string {
+	return getURLForVPC() + REQUEST_NETWORK_TOPOLOGY_URL
 }

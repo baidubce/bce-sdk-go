@@ -159,3 +159,24 @@ func (c *Client) GetPrivateIpAddressesInfo(args *GetVpcPrivateIpArgs) (*VpcPriva
 	err := builder.WithResult(result).Do()
 	return result, err
 }
+
+// GetNetworkTopologyInfo - get the network topology info
+//
+// PARAMS:
+//     - getNetworkTopologyArgs: the arguments to GetNetworkTopologyInfo
+// RETURNS:
+//     - *NetworkTopologyResult: the network topologies info obtained based on host ip or host id
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetNetworkTopologyInfo(args *GetNetworkTopologyArgs) (*NetworkTopologyResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("The GetNetworkTopologyArgs cannot be nil.")
+	}
+	result := &NetworkTopologyResult{}
+	builder := bce.NewRequestBuilder(c).
+		WithURL(getURLForNetworkTopology()).
+		WithMethod(http.GET).
+		WithQueryParamFilter("hostIp", args.HostIp).
+		WithQueryParamFilter("hostId", args.HostId)
+	err := builder.WithResult(result).Do()
+	return result, err
+}

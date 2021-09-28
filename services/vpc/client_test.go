@@ -778,3 +778,14 @@ func waitStateForPeerConn(peerConnID string, status interface{}) error {
 		return err
 	}
 }
+
+func TestGetNetworkTopologyInfo(t *testing.T) {
+	args := &GetNetworkTopologyArgs{
+		HostId: "",
+		HostIp: "",
+	}
+	result, err := VPC_CLIENT.GetNetworkTopologyInfo(args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(result)
+	fmt.Println(string(r))
+}

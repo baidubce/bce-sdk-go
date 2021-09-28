@@ -517,3 +517,26 @@ type VpcPrivateIpAddress struct {
 type VpcPrivateIpAddressesResult struct {
 	VpcPrivateIpAddresses []VpcPrivateIpAddress `json:"vpcPrivateIpAddresses"`
 }
+
+/* Get NetworkTopologyInfo args
+   HostIp:the host ip of the network topology to be queried
+   HostId:the host id of the network topology to be queried
+   If both HostIp and HostId are passed in, the HostIp will effect (only need to pass in one of the two)
+*/
+type GetNetworkTopologyArgs struct {
+	HostIp string `json:"hostIp,omitempty"`
+	HostId string `json:"hostId,omitempty"`
+}
+
+type NetworkTopology struct {
+	ClusterName string `json:"clusterName"`
+	HostId      string `json:"hostId"`
+	SwitchId    string `json:"switchId"`
+	HostIp      string `json:"hostIp"`
+	PodName     string `json:"podName"`
+}
+
+// NetworkTopologyResult defines the structure of the output parameters for the GetNetworkTopologyInfo api
+type NetworkTopologyResult struct {
+	NetworkTopologies []NetworkTopology `json:"networkTopologies"`
+}
