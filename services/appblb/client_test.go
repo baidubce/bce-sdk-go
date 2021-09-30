@@ -599,6 +599,24 @@ func TestClient_DeleteAppListeners(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
+func TestClient_DeleteAppPortTypeListeners(t *testing.T) {
+	deleteArgs := &DeleteAppListenersArgs{
+		PortTypeList: []PortTypeModel{
+			{
+				Port: 80,
+				Type: "UDP",
+			},
+			{
+				Port: 80,
+				Type: "HTTP",
+			},
+		},
+		ClientToken: getClientToken(),
+	}
+	err := APPBLB_CLIENT.DeleteAppListeners(APPBLB_ID, deleteArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
 func TestClient_DeleteLoadBalancer(t *testing.T) {
 	err := APPBLB_CLIENT.DeleteLoadBalancer(APPBLB_ID)
 	ExpectEqual(t.Errorf, nil, err)

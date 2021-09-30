@@ -39,6 +39,7 @@ const (
 	InstanceStatusError           		InstanceStatus = "Error"
 	InstanceStatusImageProcessing 		InstanceStatus = "ImageProcessing"
 	InstanceStatusChangeVpcProcessing   InstanceStatus = "ChangeVpc"
+	InstanceStatusRecycled           	InstanceStatus = "Recycled"
 )
 
 type ImageType string

@@ -95,6 +95,11 @@ type ListenerModel struct {
 	Type string `json:"type"`
 }
 
+type PortTypeModel struct {
+	Port int `json:"port"`
+	Type string `json:"type"`
+}
+
 type DescribeLoadBalancerDetailResult struct {
 	BlbId           string           `json:"blbId"`
 	Status          BLBStatus        `json:"status"`
@@ -464,6 +469,7 @@ type DescribeAllListenersResult struct {
 type DeleteListenersArgs struct {
 	ClientToken string   `json:"-"`
 	PortList    []uint16 `json:"portList"`
+	PortTypeList    []PortTypeModel `json:"portTypeList"`
 }
 
 type AddBackendServersArgs struct {

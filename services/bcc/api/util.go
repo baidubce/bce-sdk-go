@@ -314,6 +314,10 @@ func getDeleteInstanceDeleteIngorePaymentUri() string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/delete"
 }
 
+func getDeleteRecycledInstanceUri(id string) string {
+	return URI_PREFIXV2 + "/recycle" + REQUEST_INSTANCE_URI + "/" + id
+}
+
 func getListInstancesByIdsUrl() string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/listByInstanceId"
 }

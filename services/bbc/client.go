@@ -1067,6 +1067,16 @@ func (c *Client) DeleteInstanceIngorePayment(args *DeleteInstanceIngorePaymentAr
 	return DeleteBbcIngorePayment(c, args)
 }
 
+// DeleteRecycledInstance - delete an recycled instance
+//
+// PARAMS:
+//     - instanceId: the specific instance ID
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeleteRecycledInstance(instanceId string) error {
+	return DeleteRecycledInstance(c, instanceId)
+}
+
 // ListCDSVolume - list all cds volume with the specific parameters
 //
 // PARAMS:

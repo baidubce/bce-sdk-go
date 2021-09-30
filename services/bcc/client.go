@@ -1639,6 +1639,16 @@ func (c *Client) DeleteInstanceIngorePayment(args *api.DeleteInstanceIngorePayme
 	return api.DeleteInstanceIngorePayment(c, args)
 }
 
+// DeleteRecycledInstance - delete a recycled instance
+//
+// PARAMS:
+//     - instanceId: the specific instance ID
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeleteRecycledInstance(instanceId string) error {
+	return api.DeleteRecycledInstance(c, instanceId)
+}
+
 func (c *Client) ListInstanceByInstanceIds(args *api.ListInstanceByInstanceIdArgs) (*api.ListInstancesResult, error) {
 	return api.ListInstanceByInstanceIds(c, args)
 }

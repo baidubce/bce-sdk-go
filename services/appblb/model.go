@@ -253,6 +253,11 @@ type ListenerModel struct {
 	Type string `json:"type"`
 }
 
+type PortTypeModel struct {
+	Port int `json:"port"`
+	Type string `json:"type"`
+}
+
 type DescribeLoadBalancerDetailResult struct {
 	BlbId           string           `json:"blbId"`
 	Status          BLBStatus        `json:"status"`
@@ -504,6 +509,7 @@ type DescribeAppAllListenersResult struct {
 type DeleteAppListenersArgs struct {
 	ClientToken string   `json:"-"`
 	PortList    []uint16 `json:"portList"`
+	PortTypeList    []PortTypeModel `json:"portTypeList"`
 }
 
 type AppRule struct {
@@ -532,10 +538,12 @@ type CreatePolicysArgs struct {
 	ClientToken  string      `json:"-"`
 	ListenerPort uint16      `json:"listenerPort"`
 	AppPolicyVos []AppPolicy `json:"appPolicyVos"`
+	Type         string      `json:"type"`
 }
 
 type DescribePolicysArgs struct {
 	Port    uint16
+	Type    string
 	Marker  string
 	MaxKeys int
 }
@@ -549,6 +557,7 @@ type DeletePolicysArgs struct {
 	ClientToken  string   `json:"-"`
 	Port         uint16   `json:"port"`
 	PolicyIdList []string `json:"policyIdList"`
+	Type         string      `json:"type"`
 }
 
 type CreateAppIpGroupArgs struct {

@@ -434,6 +434,32 @@ func DeleteInstanceIngorePayment(cli bce.Client, args *DeleteInstanceIngorePayme
 	return jsonBody, nil
 }
 
+// DeleteRecycledInstance - delete a recycled bcc instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: the id of the instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func DeleteRecycledInstance(cli bce.Client, instanceId string) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getDeleteRecycledInstanceUri(instanceId))
+	req.SetMethod(http.DELETE)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
 // AutoReleaseInstance - set releaseTime of a postpay instance
 //
 // PARAMS:

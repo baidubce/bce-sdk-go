@@ -1229,11 +1229,12 @@ if err := bccClient.DeleteInstanceWithRelateResource(instanceId, deleteInstanceW
 ```go
 	args := &api.DeleteInstanceIngorePaymentArgs{
 		InstanceId:      "instanceid",
-		//设置是否释放eip和cds false代表否 true代表是，默认false
+		//设置是否释放eip和cds false代表eip和cds与实例解绑，实例进回收站；true代表eip解绑，cds与实例绑定进回收站
 		RelatedReleaseFlag: true,
 		//设置是否释放 false代表否 true代表是，默认false
 		DeleteRelatedEnisFlag:true,
-		//设置是否释放云磁盘快照 false代表否 true代表是，默认false，释放预付费bcc时DeleteCdsSnapshotFlag和RelatedReleaseFlag不存在绑定关系，
+		//设置是否释放云磁盘快照 false代表否 true代表是，默认false，释放预付费bcc时DeleteCdsSnapshotFlag和RelatedReleaseFlag存在绑定关系，
+        RelatedReleaseFlag为true时，DeleteCdsSnapshotFlag必须为true
 		// 选择DeleteCdsSnapshotFlag=true即会释放虚机绑定的各种快照
 		// 释放后付费bcc时，DeleteCdsSnapshotFlag和RelatedReleaseFlag之间逻辑和之前逻辑保持一致
 		DeleteCdsSnapshotFlag:true,
@@ -1244,6 +1245,18 @@ if err := bccClient.DeleteInstanceWithRelateResource(instanceId, deleteInstanceW
 		fmt.Printf("delete  instance success, result: %s", res.String())
 	}
 
+```
+
+## 释放回收站实例
+回收站实例7天后自动释放，清理回收站资源，可以使用以下代码将其释放:
+```go
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+if err := bccClient.DeleteRecycledInstance(instanceId); err != nil {
+    fmt.Println("release instance failed: ", err)
+} else {
+    fmt.Println("release instance success.")
+}
 ```
 
 > **提示：**

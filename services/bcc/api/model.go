@@ -34,6 +34,7 @@ const (
 	InstanceStatusSnapshotProcessing  InstanceStatus = "SnapshotProcessing"
 	InstanceStatusImageProcessing     InstanceStatus = "ImageProcessing"
 	InstanceStatusChangeVpcProcessing InstanceStatus = "ChangeVpc"
+	InstanceStatusRecycled			  InstanceStatus = "Recycled"
 )
 
 type InstanceType string

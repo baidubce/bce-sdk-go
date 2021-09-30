@@ -511,7 +511,7 @@ func (c *Client) DeleteListeners(blbId string, args *DeleteListenersArgs) error 
 		return fmt.Errorf("unset args")
 	}
 
-	if len(args.PortList) == 0 {
+	if len(args.PortList) == 0 && len(args.PortTypeList) == 0 {
 		return fmt.Errorf("unset port list")
 	}
 

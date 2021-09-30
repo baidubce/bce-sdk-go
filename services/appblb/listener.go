@@ -511,7 +511,7 @@ func (c *Client) DeleteAppListeners(blbId string, args *DeleteAppListenersArgs) 
 		return fmt.Errorf("unset args")
 	}
 
-	if len(args.PortList) == 0 {
+	if len(args.PortList) == 0 && len(args.PortTypeList) == 0 {
 		return fmt.Errorf("unset port list")
 	}
 
@@ -577,6 +577,7 @@ func (c *Client) DescribePolicys(blbId string, args *DescribePolicysArgs) (*Desc
 		WithMethod(http.GET).
 		WithURL(getPolicysUrl(blbId)).
 		WithQueryParam("port", strconv.Itoa(int(args.Port))).
+		WithQueryParamFilter("type", args.Type).
 		WithQueryParamFilter("marker", args.Marker).
 		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
 		WithResult(result).

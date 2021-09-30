@@ -349,6 +349,7 @@ func DeleteBbcIngorePayment(cli bce.Client, args *DeleteInstanceIngorePaymentArg
 	if err := cli.SendRequest(req, resp); err != nil {
 		return nil, err
 	}
+
 	if resp.IsFail() {
 		return nil, resp.ServiceError()
 	}
@@ -554,6 +555,32 @@ func DeleteInstances(cli bce.Client, reqBody *bce.Body) error {
 	req.SetUri(getBatchDeleteInstanceUri())
 	req.SetMethod(http.POST)
 	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// DeleteRecycledInstance - delete a recycled bbc instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: the id of the instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func DeleteRecycledInstance(cli bce.Client, instanceId string) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getDeleteRecycledInstanceUri(instanceId))
+	req.SetMethod(http.DELETE)
 
 	// Send request and get response
 	resp := &bce.BceResponse{}
@@ -1038,6 +1065,10 @@ func getBatchDeleteInstanceUri() string {
 
 func getInstanceUriWithIdV2(id string) string {
 	return URI_PREFIX_V2 + REQUEST_INSTANCE_URI + "/" + id
+}
+
+func getDeleteRecycledInstanceUri(id string) string {
+	return URI_PREFIX_V1 + "/recycle" + REQUEST_INSTANCE_URI + "/" + id
 }
 
 func getSubnetUri() string {

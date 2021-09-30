@@ -446,8 +446,8 @@ if err := bbcClient.DeleteInstance(instanceId); err != nil {
 	}
 ```
 
-### 批量释放或进入回收站实例（包含预付费实例）
-不区分后付费还是预付费实例，释放或者进入回收站bbc实例，可以使用以下代码将其释放:
+### 批量释放或进入回收站实例（不包含预付费实例）
+释放或者进入回收站bbc实例，可以使用以下代码将其释放:
 ```go
 	instanceIds := []string{"instanceId"}
 	queryArgs := &DeleteInstanceArgs{
@@ -478,6 +478,18 @@ if err := bbcClient.DeleteInstance(instanceId); err != nil {
 	} else {
 		fmt.Println("list recycled bbc success, result: ", res)
 	}
+```
+
+### 释放回收站实例
+回收站实例7天后自动释放，清理回收站资源，可以使用以下代码将其释放:
+```go
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+if err := bbcClient.DeleteRecycledInstance(instanceId); err != nil {
+    fmt.Println("release instance failed: ", err)
+} else {
+    fmt.Println("release instance success.")
+}
 ```
 
 ### 后付费回收站bbc实例恢复计费

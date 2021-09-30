@@ -25,7 +25,7 @@ var (
 	CERT_ID        = ""
 	CLUSTER_ID     = ""
 	CLUSTER_PROPERTY_TEST = ""
-	TEST_BLB_ID = ""
+	TEST_BLB_ID = "lb-36c64ec0"
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -332,6 +332,24 @@ func TestClient_RemoveBackendServers(t *testing.T) {
 func TestClient_DeleteListeners(t *testing.T) {
 	deleteArgs := &DeleteListenersArgs{
 		PortList:    []uint16{90, 91, 92, 93, 94},
+		ClientToken: getClientToken(),
+	}
+	err := BLB_CLIENT.DeleteListeners(BLB_ID, deleteArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DeletePortTypeListeners(t *testing.T) {
+	deleteArgs := &DeleteListenersArgs{
+		PortTypeList: []PortTypeModel{
+			{
+				Port: 80,
+				Type: "UDP",
+			},
+			{
+				Port: 80,
+				Type: "HTTP",
+			},
+		},
 		ClientToken: getClientToken(),
 	}
 	err := BLB_CLIENT.DeleteListeners(BLB_ID, deleteArgs)
