@@ -58,6 +58,7 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 		setOptionalNullHeaders(req, map[string]string{
 			http.CACHE_CONTROL:       args.CacheControl,
 			http.CONTENT_DISPOSITION: args.ContentDisposition,
+			http.CONTENT_ENCODING:    args.ContentEncoding,
 			http.CONTENT_TYPE:        args.ContentType,
 			http.EXPIRES:             args.Expires,
 			http.BCE_CONTENT_SHA256:  args.ContentSha256,
