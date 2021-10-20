@@ -76,6 +76,7 @@ type ListEipResult struct {
 type EipModel struct {
 	Name            string           `json:"name"`
 	Eip             string           `json:"eip"`
+	EipId           string           `json:"eipId"`
 	Status          string           `json:"status"`
 	EipInstanceType string           `json:"eipInstanceType"`
 	InstanceType    string           `json:"instanceType"`
