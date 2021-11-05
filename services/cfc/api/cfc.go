@@ -238,6 +238,7 @@ func Invocations(cli bce.Client, args *InvocationsArgs) (*InvocationsResult, err
 	}
 
 	req := &bce.BceRequest{}
+	req.SetRequestId(args.RequestId)
 	req.SetUri(getInvocationsUri(args.FunctionName))
 	req.SetMethod(http.POST)
 	req.SetParam("invocationType", string(args.InvocationType))

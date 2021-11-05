@@ -695,6 +695,7 @@ type DeleteInstanceWithRelateResourceArgs struct {
 	RelatedReleaseFlag    bool `json:"relatedReleaseFlag"`
 	DeleteCdsSnapshotFlag bool `json:"deleteCdsSnapshotFlag"`
 	BccRecycleFlag        bool `json:"bccRecycleFlag"`
+	DeleteRelatedEnisFlag bool `json:"deleteRelatedEnisFlag"`
 }
 
 type InstanceChangeVpcArgs struct {

@@ -132,6 +132,7 @@ type InvocationsArgs struct {
 	LogType        LogType
 	Qualifier      string
 	Payload        interface{}
+	RequestId      string
 }
 
 type InvocationsResult struct {
