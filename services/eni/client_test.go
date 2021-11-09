@@ -38,7 +38,7 @@ type Conf struct {
 }
 
 const (
-	VPC_ID    string = "vpc-rif0euejenz7"
+	VPC_ID    string = "vpc-87n1d60i2vas"
 	SUBNET_ID string = "sbn-cxwi5hmf8ugx"
 )
 
@@ -140,7 +140,9 @@ func TestClient_DeleteEni(t *testing.T) {
 
 func TestClient_ListEnis(t *testing.T) {
 	args := &ListEniArgs{
-		VpcId: VPC_ID,
+		VpcId:      VPC_ID,
+		InstanceId: "i-FodWXDUY",
+		Name:       "eni",
 	}
 	res, err := ENI_CLIENT.ListEni(args)
 	ExpectEqual(t.Errorf, nil, err)

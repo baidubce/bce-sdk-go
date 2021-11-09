@@ -102,6 +102,8 @@ func (c *Client) ListEni(args *ListEniArgs) (*ListEniResult, error) {
 		WithURL(getURLForEni()).
 		WithMethod(http.GET).
 		WithQueryParam("vpcId", args.VpcId).
+		WithQueryParamFilter("instanceId", args.InstanceId).
+		WithQueryParamFilter("name", args.Name).
 		WithQueryParamFilter("marker", args.Marker).
 		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys))
 

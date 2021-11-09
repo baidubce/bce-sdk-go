@@ -40,10 +40,12 @@ type DeleteEniArgs struct {
 }
 
 type ListEniArgs struct {
-	VpcId              string
-	Marker             string
-	MaxKeys            int
-	PrivateIpAddress   []string `json:"privateIpAddress,omitempty"`
+	VpcId            string
+	InstanceId       string
+	Name             string
+	Marker           string
+	MaxKeys          int
+	PrivateIpAddress []string `json:"privateIpAddress,omitempty"`
 }
 
 type ListEniResult struct {
