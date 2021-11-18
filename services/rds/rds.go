@@ -52,6 +52,7 @@ func (c *Client) CreateRds(args *CreateRdsArgs) (*CreateResult, error) {
 		WithMethod(http.POST).
 		WithURL(getRdsUri()).
 		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		WithResult(result).
 		Do()
@@ -85,6 +86,7 @@ func (c *Client) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResult, 
 		WithURL(getRdsUri()).
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		WithQueryParam("readReplica","").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		WithResult(result).
 		Do()
@@ -118,6 +120,7 @@ func (c *Client) CreateRdsProxy(args *CreateRdsProxyArgs) (*CreateResult, error)
 		WithURL(getRdsUri()).
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		WithQueryParam("rdsproxy","").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		WithResult(result).
 		Do()
@@ -201,6 +204,7 @@ func (c *Client) ResizeRds(instanceId string, args *ResizeRdsArgs) error {
 		WithMethod(http.PUT).
 		WithURL(getRdsUriWithInstanceId(instanceId)).
 		WithQueryParam("resize", "").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		Do()
 }
@@ -235,6 +239,7 @@ func (c *Client) CreateAccount(instanceId string, args *CreateAccountArgs)  erro
 		WithMethod(http.POST).
 		WithURL(getRdsUriWithInstanceId(instanceId)+"/account").
 		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		Do()
 }
@@ -320,6 +325,7 @@ func (c *Client) UpdateInstanceName(instanceId string, args *UpdateInstanceNameA
 		WithMethod(http.PUT).
 		WithURL(getRdsUriWithInstanceId(instanceId)).
 		WithQueryParam("rename", "").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		Do()
 }
@@ -338,6 +344,7 @@ func (c *Client) ModifySyncMode(instanceId string, args *ModifySyncModeArgs) err
 		WithMethod(http.PUT).
 		WithURL(getRdsUriWithInstanceId(instanceId)).
 		WithQueryParam("modifySyncMode", "").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		Do()
 }
@@ -356,6 +363,7 @@ func (c *Client) ModifyEndpoint(instanceId string, args *ModifyEndpointArgs) err
 		WithMethod(http.PUT).
 		WithURL(getRdsUriWithInstanceId(instanceId)).
 		WithQueryParam("modifyEndpoint", "").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		Do()
 }
@@ -374,6 +382,7 @@ func (c *Client) ModifyPublicAccess(instanceId string, args *ModifyPublicAccessA
 		WithMethod(http.PUT).
 		WithURL(getRdsUriWithInstanceId(instanceId)).
 		WithQueryParam("modifyPublicAccess", "").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		Do()
 }
@@ -485,6 +494,7 @@ func (c *Client) UpdateSecurityIps(instanceId, Etag string, args *UpdateSecurity
 		WithMethod(http.PUT).
 		WithURL(getRdsUriWithInstanceId(instanceId)+"/securityIp").
 		WithHeaders(headers).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		Do()
 }
@@ -523,6 +533,7 @@ func (c *Client) UpdateParameter(instanceId, Etag string, args *UpdateParameterA
 		WithMethod(http.PUT).
 		WithURL(getRdsUriWithInstanceId(instanceId)+"/parameter").
 		WithHeaders(headers).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		Do()
 }
@@ -539,6 +550,7 @@ func (c *Client) AutoRenew(args *AutoRenewArgs) error {
 		WithMethod(http.PUT).
 		WithURL(getRdsUri()).
 		WithQueryParam("autoRenew","").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		Do()
 }

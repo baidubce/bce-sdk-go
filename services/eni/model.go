@@ -111,3 +111,13 @@ type UpdateEniSecurityGroupArgs struct {
 	ClientToken      string   `json:"-"`
 	SecurityGroupIds []string `json:"securityGroupIds"`
 }
+
+type EniQuoteArgs struct {
+	EniId      string `json:"-"`
+	InstanceId string `json:"-"`
+}
+
+type EniQuoteInfo struct {
+	TotalQuantity     int `json:"totalQuantity"`
+	AvailableQuantity int `json:"availableQuantity"`
+}

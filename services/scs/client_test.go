@@ -105,6 +105,7 @@ func TestClient_CreateInstance(t *testing.T) {
 		ReplicationNum: 2,
 		ShardNum:       2,
 		ProxyNum:       2,
+		BgwGroupId:     "bgw_group-7a88",
 	}
 	result, err := SCS_CLIENT.CreateInstance(args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -112,7 +113,6 @@ func TestClient_CreateInstance(t *testing.T) {
 	if len(result.InstanceIds) > 0 {
 		SCS_TEST_ID = result.InstanceIds[0]
 	}
-	isAvailable(SCS_TEST_ID)
 	data, _ := json.Marshal(result)
 	fmt.Println(string(data))
 }

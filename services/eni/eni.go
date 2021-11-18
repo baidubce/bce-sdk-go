@@ -292,3 +292,20 @@ func (c *Client) UpdateEniSecurityGroup(args *UpdateEniSecurityGroupArgs) error 
 
 	return err
 }
+
+func (c *Client) GetEniQuota(args *EniQuoteArgs) (*EniQuoteInfo, error) {
+
+	result := &EniQuoteInfo{}
+	request := bce.NewRequestBuilder(c).
+		WithURL(getURLForEni() + "/quota").
+		WithMethod(http.GET)
+	if args.EniId != "" {
+		request.WithQueryParam("eniId", args.EniId)
+	}
+	if args.InstanceId != "" {
+		request.WithQueryParam("instanceId", args.InstanceId)
+	}
+	err := request.WithResult(result).Do()
+
+	return result, err
+}

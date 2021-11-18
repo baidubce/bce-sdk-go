@@ -50,6 +50,7 @@ type CreateInstanceArgs struct {
 	Subnets           []Subnet `json:"subnets,omitempty"`
 	AutoRenewTimeUnit string   `json:"autoRenewTimeUnit,omitempty"`
 	AutoRenewTime     int      `json:"autoRenewTime,omitempty"`
+	BgwGroupId        string   `json:"bgwGroupId,omitempty"`
 	ClientToken       string   `json:"-"`
 }
 

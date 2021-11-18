@@ -38,7 +38,7 @@ type Conf struct {
 }
 
 const (
-	VPC_ID    string = "vpc-87n1d60i2vas"
+	VPC_ID    string = "vpc-q1hcnhf7nmve"
 	SUBNET_ID string = "sbn-cxwi5hmf8ugx"
 )
 
@@ -140,11 +140,12 @@ func TestClient_DeleteEni(t *testing.T) {
 
 func TestClient_ListEnis(t *testing.T) {
 	args := &ListEniArgs{
-		VpcId:      VPC_ID,
-		InstanceId: "i-FodWXDUY",
-		Name:       "eni",
+		VpcId: VPC_ID,
+		//InstanceId: "i-FodWXDUY",
+		Name: "eni",
 	}
 	res, err := ENI_CLIENT.ListEni(args)
+	fmt.Println(res)
 	ExpectEqual(t.Errorf, nil, err)
 	r, err := json.Marshal(res)
 	fmt.Println(string(r))
@@ -231,4 +232,20 @@ func TestClient_UpdateEniSecurityGroup(t *testing.T) {
 	}
 	err := ENI_CLIENT.UpdateEniSecurityGroup(args)
 	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GetEniIPQuota(t *testing.T) {
+	args := &EniQuoteArgs{EniId: "eni-bd1ivf6ui4di"}
+	result, err := ENI_CLIENT.GetEniQuota(args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
+func TestClient_GetEniBindQuota(t *testing.T) {
+	args := &EniQuoteArgs{InstanceId: "i-0v5XVO8M"}
+	result, err := ENI_CLIENT.GetEniQuota(args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(result)
+	fmt.Println(string(r))
 }

@@ -158,6 +158,7 @@ type BccStock struct {
 	Spec              string `json:"spec"`
 	SpecId            string `json:"specId"`
 	InventoryQuantity int    `json:"inventoryQuantity"`
+	RootOnLocal       bool   `json:"rootOnLocal"`
 	UpdatedTime       string `json:"updatedTime"`
 	CollectionTime    string `json:"collectionTime"`
 	ZoneName          string `json:"logicalZone"`
