@@ -1272,7 +1272,7 @@ for _, task := range result.Result {
 ```go
 // import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
 
-result, err := client.GetTaskDetail(taskId)
+result, err := client.GetMaintainTaskDetail(taskId)
 if err != nil {
     fmt.Printf("get task detail error: %+v\n", err)
     return

@@ -152,7 +152,7 @@ type BackupPolicy struct {
 	BackupDays    string `json:"backupDays"`
 	BackupTime    string `json:"backupTime"`
 	Persistent    bool   `json:"persistent"`
-	ExpireInDays  string `json:"expireInDays"`
+	ExpireInDays  int    `json:"expireInDays"`
 	FreeSpaceInGB int    `json:"freeSpaceInGb"`
 }
 
