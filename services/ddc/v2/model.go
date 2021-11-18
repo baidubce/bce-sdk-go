@@ -341,7 +341,7 @@ type InstanceModel struct {
 	Category                string                  `json:"category"`
 	LongBBCId               string                  `json:"longBBCId"`
 	InstanceTopoForReadonly InstanceTopoForReadonly `json:"instanceTopoForReadonly,omitempty"`
-	AutoRenewRule           *AutoRenewRule           `json:"autoRenewRule,omitempty"`
+	AutoRenewRule           *AutoRenewRule          `json:"autoRenewRule,omitempty"`
 }
 type TopoInstance struct {
 	InstanceID       string `json:"instanceId,omitempty"`
@@ -570,8 +570,8 @@ type Parameter struct {
 }
 
 type UpdateParameterArgs struct {
-	Parameters  []KVParameter `json:"parameters"`
-	IsRebootNow bool          `json:"isRebootNow"`
+	Parameters []KVParameter `json:"parameters"`
+	WaitSwitch int           `json:"waitSwitch"`
 }
 
 type KVParameter struct {
@@ -1022,6 +1022,15 @@ type MaintainTask struct {
 	Region           string   `json:"region"`
 }
 
+type ProducedMaintainTaskResult struct {
+	Success bool                 `json:"success"`
+	Result  MaintainTaskIdResult `json:"result"`
+}
+
+type MaintainTaskIdResult struct {
+	TaskID string `json:"taskId"`
+}
+
 type ListMaintainTaskResult struct {
 	ListResultWithMarker
 	Result []MaintainTask `json:"result"`
@@ -1032,6 +1041,25 @@ type GetMaintainTaskListArgs struct {
 	StartTime string `json:"startTime"`
 	EndTime   string `json:"endTime"`
 }
+
+type MaintainTaskDetailList struct {
+	Tasks []MaintainTaskDetail `json:"tasks"`
+}
+type MaintainTaskDetail struct {
+	TaskID                int    `json:"taskId"`
+	InstanceID            string `json:"instanceId"`
+	InstanceName          string `json:"instanceName"`
+	AppID                 string `json:"appId"`
+	TaskName              string `json:"taskName"`
+	TaskType              string `json:"taskType"`
+	CreateTime            string `json:"createTime"`
+	PickupTime            string `json:"pickupTime"`
+	ErrNu                 int    `json:"errNu"`
+	TaskStatus            string `json:"taskStatus"`
+	TaskSpecialAction     string `json:"taskSpecialAction"`
+	TaskSpecialActionTime string `json:"taskSpecialActionTime"`
+}
+
 type AccessLog struct {
 	Downloadurl struct {
 		Bbc   string `json:"bbc"`
@@ -1042,53 +1070,53 @@ type AccessLog struct {
 
 type GetErrorLogsArgs struct {
 	InstanceId string `json:"instanceId"`
-	StartTime string `json:"startTime"`
-	EndTime string `json:"endTime"`
-	PageNo int `json:"pageNo"`
-	PageSize int `json:"pageSize"`
-	Role string `json:"role"`
-	KeyWord string `json:"keyWord,omitempty"`
+	StartTime  string `json:"startTime"`
+	EndTime    string `json:"endTime"`
+	PageNo     int    `json:"pageNo"`
+	PageSize   int    `json:"pageSize"`
+	Role       string `json:"role"`
+	KeyWord    string `json:"keyWord,omitempty"`
 }
 
 type ErrorLog struct {
-	InstanceId string `json:"instanceId"`
-	LogLevel string `json:"logLevel"`
-	LogText string `json:"logText"`
+	InstanceId  string `json:"instanceId"`
+	LogLevel    string `json:"logLevel"`
+	LogText     string `json:"logText"`
 	ExecuteTime string `json:"executeTime"`
 }
 
 type ErrorLogsResponse struct {
-	Count int `json:"count"`
+	Count     int        `json:"count"`
 	ErrorLogs []ErrorLog `json:"errorLogs"`
 }
 
 type GetSlowLogsArgs struct {
-	InstanceId string `json:"instanceId"`
-	StartTime string `json:"startTime"`
-	EndTime string `json:"endTime"`
-	PageNo int `json:"pageNo"`
-	PageSize int `json:"pageSize"`
-	Role string `json:"role"`
-	DbName []string `json:"dbName,omitempty"`
-	UserName []string `json:"userName,omitempty"`
-	HostIp []string `json:"hostIp,omitempty"`
-	Sql string `json:"sql,omitempty"`
+	InstanceId string   `json:"instanceId"`
+	StartTime  string   `json:"startTime"`
+	EndTime    string   `json:"endTime"`
+	PageNo     int      `json:"pageNo"`
+	PageSize   int      `json:"pageSize"`
+	Role       string   `json:"role"`
+	DbName     []string `json:"dbName,omitempty"`
+	UserName   []string `json:"userName,omitempty"`
+	HostIp     []string `json:"hostIp,omitempty"`
+	Sql        string   `json:"sql,omitempty"`
 }
 
 type SlowLog struct {
-	InstanceId string `json:"instanceId"`
-	UserName string `json:"userName"`
-	DbName string `json:"dbName"`
-	HostIp string `json:"hostIp"`
-	QueryTime float64 `json:"queryTime"`
-	LockTime float64 `json:"lockTime"`
-	RowsExamined int `json:"rowsExamined"`
-	RowsSent int `json:"rowsSent"`
-	Sql string `json:"sql"`
-	ExecuteTime string `json:"executeTime"`
+	InstanceId   string  `json:"instanceId"`
+	UserName     string  `json:"userName"`
+	DbName       string  `json:"dbName"`
+	HostIp       string  `json:"hostIp"`
+	QueryTime    float64 `json:"queryTime"`
+	LockTime     float64 `json:"lockTime"`
+	RowsExamined int     `json:"rowsExamined"`
+	RowsSent     int     `json:"rowsSent"`
+	Sql          string  `json:"sql"`
+	ExecuteTime  string  `json:"executeTime"`
 }
 
 type SlowLogsResponse struct {
-	Count int `json:"count"`
+	Count    int       `json:"count"`
 	SlowLogs []SlowLog `json:"slowLogs"`
 }

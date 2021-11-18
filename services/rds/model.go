@@ -38,6 +38,7 @@ type CreateRdsArgs struct {
 	Tags              []model.TagModel `json:"tags,omitempty"`
 	AutoRenewTimeUnit string           `json:"autoRenewTimeUnit,omitempty"`
 	AutoRenewTime     int              `json:"autoRenewTime,omitempty"`
+	BgwGroupId        string           `json:"bgwGroupId,omitempty"`
 }
 
 type Billing struct {
@@ -121,6 +122,7 @@ type Instance struct {
 	Topology           Topology     `json:"topology"`
 	Task               string       `json:"task"`
 	PaymentTiming      string       `json:"paymentTiming"`
+	BgwGroupId         string       `json:"bgwGroupId"`
 }
 
 type ListRdsResult struct {

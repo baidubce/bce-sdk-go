@@ -15,6 +15,7 @@ const (
 	DDC_NOT_SUPPORTED               = "DDC does not support this feature."
 	RDS_NOT_SUPPORTED               = "RDS does not support this feature."
 	URI_PREFIX                      = bce.URI_PREFIX + "v1/ddc"
+	URI_PREFIX_V2                   = bce.URI_PREFIX + "v2/ddc"
 	REQUEST_DDC_INSTANCE_URL        = "/instance"
 	REQUEST_DDC_POOL_URL            = "/pool"
 	REQUEST_DDC_HOST_URL            = "/host"
@@ -175,6 +176,10 @@ func getDdcUriWithInstanceId(instanceId string) string {
 	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId
 }
 
+func getDdcUriWithInstanceIdV2(instanceId string) string {
+	return URI_PREFIX_V2 + REQUEST_DDC_INSTANCE_URL + "/" + instanceId
+}
+
 // Database URL
 func getDatabaseUriWithInstanceId(instanceId string) string {
 	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + REQUEST_DDC_DATABASE_URL
@@ -325,6 +330,10 @@ func getKillSessionTaskUri(instanceId string, taskId int) string {
 
 func getMaintainTaskUri() string {
 	return URI_PREFIX + REQUEST_DDC_TASK_URL
+}
+
+func getMaintainTaskDetailUri() string {
+	return URI_PREFIX + REQUEST_DDC_TASK_URL + "/detail"
 }
 
 func getMaintainTaskUriWithTaskId(taskId string) string {

@@ -482,7 +482,8 @@ func (c *Client) DeleteAccount(instanceId, accountName string) error {
 func (c *Client) RebootInstance(instanceId string) error {
 	if isDDCId(instanceId) {
 		args := &RebootArgs{IsRebootNow: true}
-		return c.ddcClient.RebootInstanceWithArgs(instanceId, args)
+		_, err := c.ddcClient.RebootInstanceWithArgs(instanceId, args)
+		return err
 	}
 	err := c.rdsClient.RebootInstance(instanceId)
 	return err
@@ -496,11 +497,11 @@ func (c *Client) RebootInstance(instanceId string) error {
 //     - args: reboot args
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) RebootInstanceWithArgs(instanceId string, args *RebootArgs) error {
+func (c *Client) RebootInstanceWithArgs(instanceId string, args *RebootArgs) (*MaintainTaskIdResult, error) {
 	if isDDCId(instanceId) {
 		return c.ddcClient.RebootInstanceWithArgs(instanceId, args)
 	}
-	return RDSNotSupportError()
+	return nil, RDSNotSupportError()
 }
 
 // UpdateInstanceName - update name of a specified instance
@@ -732,17 +733,17 @@ func (c *Client) ListParameters(instanceId string) (*ListParametersResult, error
 //     - Args: *UpdateParameterArgs
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) UpdateParameter(instanceId, Etag string, args *UpdateParameterArgs) error {
+func (c *Client) UpdateParameter(instanceId, Etag string, args *UpdateParameterArgs) (*ProducedMaintainTaskResult, error) {
 	if isDDCId(instanceId) {
 		return c.ddcClient.UpdateParameter(instanceId, args)
 	}
 	rdsArgs := &rds.UpdateParameterArgs{}
 	err1 := ddc_util.SimpleCopyProperties(rdsArgs, args)
 	if err1 != nil {
-		return err1
+		return nil, err1
 	}
 	err := c.rdsClient.UpdateParameter(instanceId, Etag, rdsArgs)
-	return err
+	return nil, err
 }
 
 // CreateDeploySet - create a deploy set
@@ -886,9 +887,9 @@ func (c *Client) GetBinlogDetail(instanceId string, binlog string) (*BinlogDetai
 //     - instanceId: the id of the instance
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) SwitchInstance(instanceId string, args *SwitchArgs) error {
+func (c *Client) SwitchInstance(instanceId string, args *SwitchArgs) (*ProducedMaintainTaskResult, error) {
 	if !isDDCId(instanceId) {
-		return RDSNotSupportError()
+		return nil, RDSNotSupportError()
 	}
 	return c.ddcClient.SwitchInstance(instanceId, args)
 }
@@ -1005,7 +1006,7 @@ func (c *Client) GetRecoverableDateTime(instanceId string) (*GetRecoverableDateT
 //     - args: recover instance args
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) RecoverToSourceInstanceByDatetime(instanceId string, args *RecoverInstanceArgs) error {
+func (c *Client) RecoverToSourceInstanceByDatetime(instanceId string, args *RecoverInstanceArgs) (*MaintainTaskIdResult, error) {
 	return c.ddcClient.RecoverToSourceInstanceByDatetime(instanceId, args)
 }
 
@@ -1325,9 +1326,9 @@ func (c *Client) LazyDropCreateHardLink(instanceId, dbName, tableName string) er
 //     - tableName: name of table
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *Client) LazyDropDeleteHardLink(instanceId, dbName, tableName string) error {
+func (c *Client) LazyDropDeleteHardLink(instanceId, dbName, tableName string) (*MaintainTaskIdResult, error) {
 	if !isDDCId(instanceId) {
-		return RDSNotSupportError()
+		return nil, RDSNotSupportError()
 	}
 	return c.ddcClient.LazyDropDeleteHardLink(instanceId, dbName, tableName)
 }
@@ -1402,6 +1403,16 @@ func (c *Client) GetKillSessionTask(instanceId string, taskId int) (*GetKillSess
 //     - error: nil if success otherwise the specific error
 func (c *Client) GetMaintainTaskList(args *GetMaintainTaskListArgs) (*ListMaintainTaskResult, error) {
 	return c.ddcClient.GetMaintainTaskList(args)
+}
+
+// GetTaskDetail - get maintain task detail by taskId
+//
+// PARAMS:
+// RETURNS:
+//     - *MaintainTaskDetailList: the response of maintain task detail
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetMaintainTaskDetail(taskIds string) (*MaintainTaskDetailList, error) {
+	return c.ddcClient.GetMaintainTaskDetail(taskIds)
 }
 
 // ExecuteMaintainTaskImmediately - execute maintain task immediately

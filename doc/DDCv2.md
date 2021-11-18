@@ -885,12 +885,16 @@ args := &ddcrds.SwitchArgs{
 	// 立即切换
     IsSwitchNow: true,
 }
-err := client.SwitchInstance(instanceId, args)
+result, err := client.SwitchInstance(instanceId, args)
 if err != nil {
     fmt.Printf(" main standby switching of the instance error: %+v\n", err)
     return
 }
-fmt.Printf(" main standby switching of the instance success\n")
+if result != nil {
+    fmt.Printf(" main standby switching of the instance success, taskId: %v\n", result.Result.TaskID)
+} else {
+    fmt.Printf(" main standby switching of the instance success\n")
+}
 ```
 
 ## 只读组列表
@@ -1072,10 +1076,13 @@ if err != nil {
 args := &ddcrds.RebootArgs{
     IsRebootNow: false,
 }
-err = client.RebootInstanceWithArgs(instanceId, args)
+result, err := client.RebootInstanceWithArgs(instanceId, args)
 if err != nil {
     fmt.Printf("reboot ddc error: %+v\n", err)
     return
+}
+if result != nil {
+    fmt.Printf("reboot ddc success, taskId: %+v\n", result.TaskID)
 }
 ```
 
@@ -1259,6 +1266,28 @@ for _, task := range result.Result {
 > 注意:
 >
 > - StartTime 和 EndTime 格式为yyyy-MM-dd HH:mm:ss，例如2021-07-31 00:00:00。
+
+## 查询任务详情
+通过此接口可以查询任务详情，可查询已经执行过的任务，或者时间窗口内即将执行的任务(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+result, err := client.GetTaskDetail(taskId)
+if err != nil {
+    fmt.Printf("get task detail error: %+v\n", err)
+    return
+}
+fmt.Println("get task detail success.")
+for _, task := range result.Tasks {
+    fmt.Println("task id: ", task.TaskID)
+    fmt.Println("task name: ", task.TaskName)
+    fmt.Println("instance instanceId: ", task.InstanceID)
+    fmt.Println("instance instanceName: ", task.InstanceName)
+    fmt.Println("instance task type: ", task.TaskType)
+    fmt.Println("task status: ", task.TaskStatus)
+    fmt.Println("instance create time: ", task.CreateTime)
+}
+```
 
 ## 立即执行任务
 通过此接口对维护时间窗口内的任务发起立即执行的命令(仅支持DDC)。
@@ -1560,12 +1589,12 @@ args := &ddcrds.RecoverInstanceArgs{
         },
     },
 }
-err := DDCRDS_CLIENT.RecoverToSourceInstanceByDatetime(instanceId, args)
+taskResult, err := DDCRDS_CLIENT.RecoverToSourceInstanceByDatetime(instanceId, args)
 if err != nil {
     fmt.Printf("recover instance database error: %+v\n", err)
     return
 }
-fmt.Printf("recover instance database success.\n")
+fmt.Printf("recover instance database success. taskId:%s\n", taskResult.TaskID)
 ```
 
 ## 删除特定数据库
@@ -1606,12 +1635,12 @@ fmt.Println("[lazy drop] create hard link success.")
 // import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
 
 // DDC
-err := client.LazyDropDeleteHardLink(instanceId, dbName, tableName)
+result, err := client.LazyDropDeleteHardLink(instanceId, dbName, tableName)
 if err != nil {
     fmt.Printf("[lazy drop] delete hard link error: %+v\n", err)
     return
 }
-fmt.Println("[lazy drop] delete hard link success.")
+fmt.Println("[lazy drop] delete hard link success.taskId:", result.TaskID)
 ```
 # 会话管理
 
@@ -1926,17 +1955,18 @@ args := &ddcrds.UpdateParameterArgs{
 			Value: "15",
 		},
 	},
-    // 是否立即重启（修改需要重启才能生效的参数时，支持时间窗口，true：立即重启；false：在时间窗口重启）
-    IsRebootNow:true,
+    // 执行参数修改任务的方式,默认为0; 0 为立刻执行，1 为时间窗口执行
+    WaitSwitch: 1,
 }
 // DDC
 // Etag传入空字符串即可
-err := client.UpdateParameter(instanceId, "", args)
-if err != nil {
-	fmt.Printf("update parameter: %+v\n", err)
-	return
+result, er := DDCRDS_CLIENT.UpdateParameter(instanceId, etag, args)
+ExpectEqual(t.Errorf, nil, er)
+if result != nil {
+    fmt.Println("update parameter task success: ", result.Result.TaskID)
+} else {
+    fmt.Println("update parameter task success.")
 }
-fmt.Printf("update parameter success\n")
 
 // RDS
 // RDS修改参数时需要匹配Etag
@@ -1945,12 +1975,12 @@ if err != nil {
     fmt.Printf("get instance error: %+v\n", err)
     return
 }
-err = client.UpdateParameter(instanceId, res.Etag, args)
+_, err := client.UpdateParameter(instanceId, res.Etag, args)
 if err != nil {
     fmt.Printf("update parameter: %+v\n", err)
     return
 }
-fmt.Printf("update parameter success\n")
+fmt.Println("update parameter success.")
 ```
 
 # 安全管理

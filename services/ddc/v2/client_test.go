@@ -23,6 +23,7 @@ var (
 	DB_NAME               string = "go_sdk_db_1"
 	DB_CHARACTER_SET_NAME string = "utf8"
 	DB_REMARK             string = "go_sdk_db_remark"
+	TASK_ID               string = ""
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -37,7 +38,7 @@ const (
 	POOL            = "xdb_005a2d79-a4f4-4bfb-8284-0ffe9ddaa307_pool"
 	PNETIP          = "100.88.65.121"
 	DEPLOY_ID       = "ab89d829-9068-d88e-75bc-64bb6367d036"
-	DDC_INSTANCE_ID = "ddc-m94xmm0t"
+	DDC_INSTANCE_ID = "ddc-mvvq49zt"
 	RDS_INSTANCE_ID = "rds-OtTkC1OD"
 	ETAG            = "v0"
 )
@@ -212,12 +213,6 @@ func TestClient_ListParameters(t *testing.T) {
 }
 
 func TestClient_UpdateParameter(t *testing.T) {
-	//DDCRDS_CLIENT.UpdateParameter(DDC_INSTANCE_ID, "", &UpdateParameterArgs{Parameters: []KVParameter{
-	//	{
-	//		Name:  "auto_increment_increment",
-	//		Value: "3",
-	//	},
-	//}}, "ddc")
 
 	instances := getRdsList(t)
 	for _, e := range *instances {
@@ -231,9 +226,18 @@ func TestClient_UpdateParameter(t *testing.T) {
 						Value: "2",
 					},
 				},
+				WaitSwitch: 0,
 			}
-			er := DDCRDS_CLIENT.UpdateParameter(e.InstanceId, res.Etag, args)
+			result, er := DDCRDS_CLIENT.UpdateParameter(e.InstanceId, res.Etag, args)
 			ExpectEqual(t.Errorf, nil, er)
+			if result != nil {
+				fmt.Println("update parameter task success: ", result.Result.TaskID)
+				TASK_ID = result.Result.TaskID
+				TestClient_GetMaintainTaskDetail(t)
+			} else {
+				fmt.Println("update parameter task success.")
+			}
+			break
 		}
 	}
 }
@@ -558,12 +562,16 @@ func TestClient_SwitchInstance(t *testing.T) {
 	args := &SwitchArgs{
 		IsSwitchNow: false,
 	}
-	err := client.SwitchInstance(instanceId, args)
+	result, err := client.SwitchInstance(instanceId, args)
 	if err != nil {
 		fmt.Printf(" main standby switching of the instance error: %+v\n", err)
 		return
 	}
-	fmt.Printf(" main standby switching of the instance success\n")
+	if result != nil {
+		fmt.Printf(" main standby switching of the instance success, taskId: %v\n", result.Result.TaskID)
+	} else {
+		fmt.Printf(" main standby switching of the instance success\n")
+	}
 }
 
 // Database
@@ -654,9 +662,9 @@ func TestClient_GetRecoverableDateTime(t *testing.T) {
 
 func TestClient_RecoverToSourceInstanceByDatetime(t *testing.T) {
 	dbName := "test2"
-	tableName := ""
+	tableName := "app_1"
 	args := &RecoverInstanceArgs{
-		Datetime: "2021-05-25T03:28:30Z",
+		Datetime: "2021-11-03T11:38:04Z",
 		RecoverData: []RecoverData{
 			{
 				DbName:      dbName,
@@ -676,12 +684,12 @@ func TestClient_RecoverToSourceInstanceByDatetime(t *testing.T) {
 			},
 		},
 	}
-	err := DDCRDS_CLIENT.RecoverToSourceInstanceByDatetime(instanceId, args)
+	taskResult, err := DDCRDS_CLIENT.RecoverToSourceInstanceByDatetime(instanceId, args)
 	if err != nil {
 		fmt.Printf("recover instance database error: %+v\n", err)
 		return
 	}
-	fmt.Printf("recover instance database success.\n")
+	fmt.Printf("recover instance database success. taskId:%s\n", taskResult.TaskID)
 }
 func TestClient_UpdateDatabaseRemark(t *testing.T) {
 	args := &UpdateDatabaseRemarkArgs{
@@ -1103,21 +1111,24 @@ func TestClient_ResizeRds(t *testing.T) {
 }
 
 func TestClient_RebootInstance(t *testing.T) {
-	client := DDCRDS_CLIENT
-	err := client.RebootInstance("rds-deaaDuV9")
-	if err != nil {
-		fmt.Printf("reboot error: %+v\n", err)
-		return
-	}
+	// client := DDCRDS_CLIENT
+	// err := client.RebootInstance("rds-deaaDuV9")
+	// if err != nil {
+	// 	fmt.Printf("reboot error: %+v\n", err)
+	// 	return
+	// }
 
 	// 延迟重启(仅支持DDC)
 	args := &RebootArgs{
-		IsRebootNow: true,
+		IsRebootNow: false,
 	}
-	err = client.RebootInstanceWithArgs(instanceId, args)
+	result, err := client.RebootInstanceWithArgs(instanceId, args)
 	if err != nil {
 		fmt.Printf("reboot ddc error: %+v\n", err)
 		return
+	}
+	if result != nil {
+		fmt.Printf("reboot ddc success, taskId: %+v\n", result.TaskID)
 	}
 }
 
@@ -1315,10 +1326,10 @@ func TestClient_ListSecurityGroupByInstanceId(t *testing.T) {
 
 func TestClient_BindSecurityGroups(t *testing.T) {
 	instanceIds := []string{
-		"ddc-mjafcdu0",
+		"ddc-mf4c901b",
 	}
 	securityGroupIds := []string{
-		"g-iutg5rtcydsk",
+		"g-mi74p78rtq07",
 	}
 	args := &SecurityGroupArgs{
 		InstanceIds:      instanceIds,
@@ -1419,8 +1430,8 @@ func TestClient_GetLogById(t *testing.T) {
 }
 
 func TestClient_LazyDropCreateHardLink(t *testing.T) {
-	dbName := "yangxue"
-	tableName := "apps_6"
+	dbName := "test2"
+	tableName := "app_3"
 	err := client.LazyDropCreateHardLink(instanceId, dbName, tableName)
 	if err != nil {
 		fmt.Printf("[lazy drop] create hard link error: %+v\n", err)
@@ -1430,14 +1441,14 @@ func TestClient_LazyDropCreateHardLink(t *testing.T) {
 }
 
 func TestClient_LazyDropDeleteHardLink(t *testing.T) {
-	dbName := "yangxue"
-	tableName := "apps_6"
-	err := client.LazyDropDeleteHardLink(instanceId, dbName, tableName)
+	dbName := "test2"
+	tableName := "app_1"
+	result, err := client.LazyDropDeleteHardLink(instanceId, dbName, tableName)
 	if err != nil {
 		fmt.Printf("[lazy drop] delete hard link error: %+v\n", err)
 		return
 	}
-	fmt.Println("[lazy drop] delete hard link success.")
+	fmt.Println("[lazy drop] delete hard link success.taskId:", result.TaskID)
 }
 
 func TestClient_GetDisk(t *testing.T) {
@@ -1550,6 +1561,25 @@ func TestClient_GetMaintainTaskList(t *testing.T) {
 	}
 }
 
+func TestClient_GetMaintainTaskDetail(t *testing.T) {
+	result, err := client.GetMaintainTaskDetail(TASK_ID)
+	if err != nil {
+		fmt.Printf("get task detail error: %+v\n", err)
+		return
+	}
+	fmt.Println("get task detail success.")
+	for _, task := range result.Tasks {
+		fmt.Println("task id: ", task.TaskID)
+		fmt.Println("task name: ", task.TaskName)
+		fmt.Println("instance instanceId: ", task.InstanceID)
+		fmt.Println("instance instanceName: ", task.InstanceName)
+		fmt.Println("instance task type: ", task.TaskType)
+		fmt.Println("task status: ", task.TaskStatus)
+		fmt.Println("instance create time: ", task.CreateTime)
+		fmt.Println("--------------------------")
+	}
+}
+
 func TestClient_ExecuteMaintainTaskImmediately(t *testing.T) {
 	taskId := "880337"
 	err := client.ExecuteMaintainTaskImmediately(taskId)
@@ -1586,12 +1616,12 @@ func TestClient_GetAccessLog(t *testing.T) {
 func TestClient_GetErrorLogs(t *testing.T) {
 	args := &GetErrorLogsArgs{
 		InstanceId: "ddc-mp8lme9w",
-		StartTime: "2021-08-16T02:28:51Z",
-		EndTime: "2021-08-17T02:28:51Z",
-		PageNo: 1,
-		PageSize: 10,
-		Role: "master",
-		KeyWord: "Aborted",
+		StartTime:  "2021-08-16T02:28:51Z",
+		EndTime:    "2021-08-17T02:28:51Z",
+		PageNo:     1,
+		PageSize:   10,
+		Role:       "master",
+		KeyWord:    "Aborted",
 	}
 	errorLogsResponse, err := client.GetErrorLogs(args)
 	if err != nil {
@@ -1612,15 +1642,15 @@ func TestClient_GetErrorLogs(t *testing.T) {
 func TestClient_GetSlowLogs(t *testing.T) {
 	args := &GetSlowLogsArgs{
 		InstanceId: "ddc-mp8lme9w",
-		StartTime: "2021-08-16T02:28:51Z",
-		EndTime: "2021-08-17T02:28:51Z",
-		PageNo: 1,
-		PageSize: 10,
-		Role: "master",
-		DbName: []string{"baidu_dba"},
-		UserName: []string{"_root"},
-		HostIp: []string{"localhost"},
-		Sql: "update heartbeat set id=?, value=?",
+		StartTime:  "2021-08-16T02:28:51Z",
+		EndTime:    "2021-08-17T02:28:51Z",
+		PageNo:     1,
+		PageSize:   10,
+		Role:       "master",
+		DbName:     []string{"baidu_dba"},
+		UserName:   []string{"_root"},
+		HostIp:     []string{"localhost"},
+		Sql:        "update heartbeat set id=?, value=?",
 	}
 	slowLogsResponse, err := client.GetSlowLogs(args)
 	if err != nil {

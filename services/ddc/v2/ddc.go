@@ -630,14 +630,16 @@ func (c *DDCClient) DeleteRds(instanceIds string) error {
 //     - args: reboot args
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *DDCClient) RebootInstanceWithArgs(instanceId string, args *RebootArgs) error {
-
-	return bce.NewRequestBuilder(c).
+func (c *DDCClient) RebootInstanceWithArgs(instanceId string, args *RebootArgs) (*MaintainTaskIdResult, error) {
+	result := &MaintainTaskIdResult{}
+	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
 		WithURL(getDdcUriWithInstanceId(instanceId)+"/reboot").
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
+		WithResult(result).
 		Do()
+	return result, err
 }
 
 // UpdateInstanceName - update name of a specified instance
@@ -950,18 +952,18 @@ func (c *DDCClient) ListParameters(instanceId string) (*ListParametersResult, er
 //     - Args: *UpdateParameterArgs
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *DDCClient) UpdateParameter(instanceId string, args *UpdateParameterArgs) error {
+func (c *DDCClient) UpdateParameter(instanceId string, args *UpdateParameterArgs) (*ProducedMaintainTaskResult, error) {
 
-	result := &bce.BceResponse{}
+	result := &ProducedMaintainTaskResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
-		WithURL(getDdcUriWithInstanceId(instanceId)+"/parameter"+"/modify").
+		WithURL(getDdcUriWithInstanceIdV2(instanceId)+"/parameter"+"/modify").
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		WithResult(result).
 		Do()
 
-	return err
+	return result, err
 }
 
 // CreateBackup - create backup of the instance
@@ -1069,11 +1071,11 @@ func (c *DDCClient) GetBinlogDetail(instanceId string, binlog string) (*BinlogDe
 //     - args: switch now or wait to the maintain time
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *DDCClient) SwitchInstance(instanceId string, args *SwitchArgs) error {
+func (c *DDCClient) SwitchInstance(instanceId string, args *SwitchArgs) (*ProducedMaintainTaskResult, error) {
 	if args == nil {
-		return fmt.Errorf("unset args")
+		return nil, fmt.Errorf("unset args")
 	}
-	result := &bce.BceResponse{}
+	result := &ProducedMaintainTaskResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
 		WithURL(getDdcUriWithInstanceId(instanceId)+"/switchMaster").
@@ -1082,7 +1084,7 @@ func (c *DDCClient) SwitchInstance(instanceId string, args *SwitchArgs) error {
 		WithResult(result).
 		Do()
 
-	return err
+	return result, err
 }
 
 // CreateDatabase - create a database with the specific parameters
@@ -1268,24 +1270,27 @@ func (c *DDCClient) GetRecoverableDateTime(instanceId string) (*GetRecoverableDa
 // PARAMS:
 //     - instanceId: the specific ddc Instance's ID
 // RETURNS:
+//     - *MaintainTaskIdResult: ID of generated maintain task
 //     - error: nil if success otherwise the specific error
-func (c *DDCClient) RecoverToSourceInstanceByDatetime(instanceId string, args *RecoverInstanceArgs) error {
+func (c *DDCClient) RecoverToSourceInstanceByDatetime(instanceId string, args *RecoverInstanceArgs) (*MaintainTaskIdResult, error) {
 	if args == nil {
-		return fmt.Errorf("unset args")
+		return nil, fmt.Errorf("unset args")
 	}
 	if len(args.Datetime) < 1 {
-		return fmt.Errorf("unset datetime. Please query recoverable datetime by GetRecoverableDateTime()")
+		return nil, fmt.Errorf("unset datetime. Please query recoverable datetime by GetRecoverableDateTime()")
 	}
 	if args.RecoverData == nil || len(args.RecoverData) < 1 {
-		return fmt.Errorf("unset recover data")
+		return nil, fmt.Errorf("unset recover data")
 	}
+	result := &MaintainTaskIdResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
 		WithURL(getRecoverInstanceDatabaseUriWithInstanceId(instanceId)).
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
+		WithResult(result).
 		Do()
-	return err
+	return result, err
 }
 
 // CreateAccount - create a account with the specific parameters
@@ -1885,22 +1890,24 @@ func (c *DDCClient) LazyDropCreateHardLink(instanceId, dbName, tableName string)
 //     - tableName: name of table
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func (c *DDCClient) LazyDropDeleteHardLink(instanceId, dbName, tableName string) error {
+func (c *DDCClient) LazyDropDeleteHardLink(instanceId, dbName, tableName string) (*MaintainTaskIdResult, error) {
 	if len(instanceId) < 1 {
-		return fmt.Errorf("unset instanceId")
+		return nil, fmt.Errorf("unset instanceId")
 	}
 	if len(dbName) < 1 {
-		return fmt.Errorf("unset dbName")
+		return nil, fmt.Errorf("unset dbName")
 	}
 	if len(tableName) < 1 {
-		return fmt.Errorf("unset tableName")
+		return nil, fmt.Errorf("unset tableName")
 	}
+	result := &MaintainTaskIdResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
 		WithURL(getTableHardLinkUrl(instanceId, dbName, tableName)).
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
 		Do()
-	return err
+	return result, err
 }
 
 // ResizeRds - resize an RDS with the specific parameters
@@ -2089,6 +2096,26 @@ func (c *DDCClient) GetMaintainTaskList(args *GetMaintainTaskListArgs) (*ListMai
 	if len(args.EndTime) > 0 {
 		req.WithQueryParam("endTime", args.EndTime)
 	}
+	err := req.Do()
+	return result, err
+}
+
+// GetMaintainTaskDetail - get maintain task detail by taskId
+//
+// PARAMS:
+// RETURNS:
+//     - *MaintainTaskDetailList: the response of maintain task detail
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetMaintainTaskDetail(taskIds string) (*MaintainTaskDetailList, error) {
+	if len(taskIds) < 1 {
+		return nil, fmt.Errorf("unset taskIds")
+	}
+	result := &MaintainTaskDetailList{}
+	req := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getMaintainTaskDetailUri()).
+		WithResult(result).
+		WithQueryParam("taskId", taskIds)
 	err := req.Do()
 	return result, err
 }
