@@ -215,6 +215,13 @@ type ModifyPublicAccessArgs struct {
 	PublicAccess bool `json:"publicAccess"`
 }
 
+type ModifyBackupPolicyArgs struct {
+	BackupDays   string `json:"backupDays"`
+	BackupTime   string `json:"backupTime"`
+	Persistent   bool   `json:"persistent"`
+	ExpireInDays int    `json:"expireInDays"`
+}
+
 type GetBackupListArgs struct {
 	Marker  string
 	MaxKeys int
@@ -227,6 +234,8 @@ type Snapshot struct {
 	SnapshotStatus      string `json:"backupStatus"`
 	SnapshotStartTime   string `json:"backupStartTime"`
 	SnapshotEndTime     string `json:"backupEndTime"`
+	DownloadUrl         string `json:"downloadUrl"`
+	DownloadExpires     string `json:"downloadExpires"`
 }
 
 type GetBackupListResult struct {

@@ -387,6 +387,25 @@ func (c *Client) ModifyPublicAccess(instanceId string, args *ModifyPublicAccessA
 		Do()
 }
 
+// ModifyBackupPolicy - modify backup policy
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance
+//     - args: the arguments to modify public access
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ModifyBackupPolicy(instanceId string, args *ModifyBackupPolicyArgs) error {
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getRdsUriWithInstanceId(instanceId)).
+		WithQueryParam("modifyBackupPolicy", "").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+}
+
 // GetBackupList - get backup list of the instance
 //
 // PARAMS:
@@ -411,6 +430,26 @@ func (c *Client) GetBackupList(instanceId string, args *GetBackupListArgs) (*Get
 		WithURL(getRdsUriWithInstanceId(instanceId) + "/backup").
 		WithQueryParamFilter("marker", args.Marker).
 		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// GetBackupDetail - get backup detail of the instance's backup
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance
+//     - backupId: id of the backup
+// RETURNS:
+//     - *Snapshot: result of the backup detail
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetBackupDetail(instanceId string, backupId string) (*Snapshot, error) {
+	result := &Snapshot{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getRdsUriWithInstanceId(instanceId) + "/backup/" + backupId).
 		WithResult(result).
 		Do()
 

@@ -444,7 +444,21 @@ if err != nil {
 }
 fmt.Println("eenic update security group success")
 ```
+## ENIC查询配额
 
+```go
+args := &client.EniQuoteArgs{
+        EniId: "eniId",
+        ClientToken: getClientToken(),
+        InstanceId: "instanceId"
+}
+err := client.GetEniQuota(args)
+if err != nil {
+    fmt.Printf("enic get quota info error: %+v\n", err)
+    return
+}
+fmt.Println("enic get quota info success")
+```
 
 
 # 错误处理

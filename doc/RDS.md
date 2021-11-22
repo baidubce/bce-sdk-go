@@ -844,7 +844,8 @@ fmt.Printf("update parameter success\n")
 >
 > - 在修改配置参数时需要通过获取参数列表接口获取最新的Etag。
 
-# 其它
+
+# 备份管理
 
 ## 获取备份列表
 
@@ -864,6 +865,41 @@ fmt.Printf("get backup list success\n")
 > 注意:
 >
 > - 请求参数 marker 和 maxKeys 不是必须的。
+
+## 获取备份详情
+
+使用以下代码可以获取一个实例备份的详情信息。
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+_, err := client.GetBackupDetail(instanceId, backupId)
+if err != nil {
+    fmt.Printf("get backup detail error: %+v\n", err)
+    return
+}
+fmt.Printf("get backup detail success\n")
+```
+
+## 更新备份策略
+
+使用以下代码可以更新一个实例的备份策略。
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.ModifyBackupPolicyArgs{
+    BackupDays: "1,3",
+    BackupTime: "10:00:00Z",
+    Persistent: true,
+    ExpireInDays: 20,
+}
+err := client.ModifyBackupPolicy(instanceId, args)
+if err != nil {
+    fmt.Printf("modify backup policy error: %+v\n", err)
+    return
+}
+fmt.Printf("modify backup policy success\n")
+```
+
+
+# 其它
 
 ## 获取可用区列表
 
