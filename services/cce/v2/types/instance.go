@@ -84,12 +84,18 @@ type InstanceSpec struct {
 	CCEInstancePriority int `json:"cceInstancePriority,omitempty"`
 }
 
+type SecurityGroup struct {
+	CustomSecurityGroups           []string `json:"customSecurityGroups,omitempty"`
+	EnableCCERequiredSecurityGroup bool     `json:"enableCCERequiredSecurityGroup,omitempty"`
+	EnableCCEOptionalSecurityGroup bool     `json:"enableCCEOptionalSecurityGroup,omitempty"`
+}
+
 // VPCConfig 定义 Instance VPC
 type VPCConfig struct {
-	VPCID           string `json:"vpcID,omitempty"`
-	VPCSubnetID     string `json:"vpcSubnetID,omitempty"`
-	SecurityGroupID string `json:"securityGroupID,omitempty"`
-
+	VPCID             string         `json:"vpcID,omitempty"`
+	VPCSubnetID       string         `json:"vpcSubnetID,omitempty"`
+	SecurityGroupID   string         `json:"securityGroupID,omitempty"`
+	SecurityGroup     SecurityGroup  `json:"securityGroup,omitempty"`
 	VPCSubnetType     vpc.SubnetType `json:"vpcSubnetType,omitempty"`
 	VPCSubnetCIDR     string         `json:"vpcSubnetCIDR,omitempty"`
 	VPCSubnetCIDRIPv6 string         `json:"vpcSubnetCIDRIPv6,omitempty"`
