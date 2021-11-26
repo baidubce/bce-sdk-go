@@ -49,7 +49,7 @@ type InstanceSpec struct {
 	BidOption BidOption `json:"bidOption,omitempty"`
 
 	// VPC 相关配置
-	VPCConfig VPCConfig `json:"vpcConfig,omitempty"`
+	VPCConfig *VPCConfig `json:"vpcConfig,omitempty"`
 
 	// 集群规格相关配置
 	InstanceResource InstanceResource `json:"instanceResource,omitempty"`
