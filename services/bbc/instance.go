@@ -516,6 +516,39 @@ func BatchRebuildInstances(cli bce.Client, reqBody *bce.Body) (*BatchRebuildResp
 	return jsonBody, nil
 }
 
+// InstancePurchaseReserved - renew a specified instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance to be renewed
+//     - reqBody: the request body to renew instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func InstancePurchaseReserved(cli bce.Client, instanceId string, clientToken string, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getInstanceUriWithId(instanceId))
+	req.SetMethod(http.PUT)
+	req.SetParam("purchaseReserved", "")
+	req.SetBody(reqBody)
+
+	if clientToken != "" {
+		req.SetParam("clientToken", clientToken)
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
 // DeleteInstance - delete a bbc instance
 //
 // PARAMS:

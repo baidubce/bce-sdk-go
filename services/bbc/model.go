@@ -40,6 +40,8 @@ const (
 	InstanceStatusImageProcessing 		InstanceStatus = "ImageProcessing"
 	InstanceStatusChangeVpcProcessing   InstanceStatus = "ChangeVpc"
 	InstanceStatusRecycled           	InstanceStatus = "Recycled"
+	InstanceStatusRecharging          	InstanceStatus = "Recharging"
+
 )
 
 type ImageType string
@@ -560,6 +562,11 @@ type ListZoneFlavorsArgs struct {
 	ProductType PaymentTimingType `json:"productType"`
 }
 
+type PurchaseReservedArgs struct {
+	Billing          Billing `json:"billing"`
+	ClientToken      string  `json:"-"`
+}
+
 type PrivateIP struct {
 	PublicIpAddress  string `json:"publicIpAddress"`
 	Primary          bool   `json:"primary"`
@@ -787,6 +794,7 @@ type DeleteInstanceIngorePaymentArgs struct {
 	RelatedReleaseFlag    bool   `json:"relatedReleaseFlag"`
 	DeleteCdsSnapshotFlag bool   `json:"deleteCdsSnapshotFlag"`
 	DeleteRelatedEnisFlag bool   `json:"deleteRelatedEnisFlag"`
+	DeleteImmediate       bool   `json:"deleteImmediate"`
 }
 
 type DeleteInstanceModel struct {

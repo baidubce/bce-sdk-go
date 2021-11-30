@@ -420,6 +420,33 @@ if res, err := bbcClient.BatchRebuildInstance(rebuildArgs); err != nil {
 >- 当IsPreserveData设置为 false 时，RaidId 和 SysRootSize 是必填参数
 >- 当IsPreserveData设置为 true 时，RaidId 和 SysRootSize 参数不生效
 
+### 实例续费
+
+对BBC实例的续费操作，可以延长过期时长，或者从回收站恢复预付费BBC实例，以下代码可以对实例进行续费
+```go
+args := &PurchaseReservedArgs {
+    Billing: Billing{
+        PaymentTiming: PaymentTimingPrePaid,
+        Reservation: Reservation{
+            Length: 1,
+            TimeUnit: "Month",
+        },
+    },
+}
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+
+if err := bbcClient.InstancePurchaseReserved(instnaceId, args); err != nil {
+    fmt.Println("Renew Instance failed: ", err)
+} else {
+    fmt.Println("Renew Instance success.")
+}
+```
+
+> **提示：**
+> - 续费时若实例已欠费停机，续费成功后有个BBC实例启动的过程。
+> - 该接口是一个异步接口。
+
 ### 释放实例
 对于后付费Postpaid以及预付费Prepaid过期的BBC实例，可以使用以下代码将其释放:
 ```go
@@ -438,6 +465,8 @@ if err := bbcClient.DeleteInstance(instanceId); err != nil {
 	args := &DeleteInstanceIngorePaymentArgs{
 		InstanceId:      "instanceid",
 		RelatedReleaseFlag: relatedReleaseFlag, //true or false
+        //设置是否立即释放，默认false，实例进入回收站，关联eip资源解绑；为true时，实例和设置了关联释放的eip资源，一起立即释放
+        DeleteImmediate: false,
 	}
 	if res, err := BBC_CLIENT.DeleteInstanceIngorePayment(args); err != nil {
 		fmt.Println("delete instance failed: ", err)
