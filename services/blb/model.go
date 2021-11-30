@@ -43,6 +43,7 @@ type CreateLoadBalancerArgs struct {
 	Description     string           `json:"desc,omitempty"`
 	SubnetId        string           `json:"subnetId"`
 	VpcId           string           `json:"vpcId"`
+	Eip             string           `json:"eip,omitempty"`
 	ClusterProperty string           `json:"clusterProperty"`
 	Tags            []model.TagModel `json:"tags,omitempty"`
 }
