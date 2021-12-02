@@ -447,7 +447,6 @@ func (c *Client) InstanceChangeVpc(args *InstanceChangeVpcArgs) error {
 	return InstanceChangeVpc(c, body)
 }
 
-
 // GetVpcSubnet - get multi instances vpc and subnet
 //
 // PARAMS:
@@ -1110,7 +1109,6 @@ func (c *Client) DeleteRecycledInstance(instanceId string) error {
 func (c *Client) ListCDSVolume(queryArgs *ListCDSVolumeArgs) (*ListCDSVolumeResult, error) {
 	return ListCDSVolume(c, queryArgs)
 }
-
 
 // GetBbcStockWithDeploySet - get the bbc's stock with deploySet
 //

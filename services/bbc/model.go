@@ -30,18 +30,17 @@ const (
 type InstanceStatus string
 
 const (
-	InstanceStatusRunning         		InstanceStatus = "Running"
-	InstanceStatusStarting        		InstanceStatus = "Starting"
-	InstanceStatusStopping        		InstanceStatus = "Stopping"
-	InstanceStatusStopped         		InstanceStatus = "Stopped"
-	InstanceStatusDeleted         		InstanceStatus = "Deleted"
-	InstanceStatusExpired         		InstanceStatus = "Expired"
-	InstanceStatusError           		InstanceStatus = "Error"
-	InstanceStatusImageProcessing 		InstanceStatus = "ImageProcessing"
-	InstanceStatusChangeVpcProcessing   InstanceStatus = "ChangeVpc"
-	InstanceStatusRecycled           	InstanceStatus = "Recycled"
-	InstanceStatusRecharging          	InstanceStatus = "Recharging"
-
+	InstanceStatusRunning             InstanceStatus = "Running"
+	InstanceStatusStarting            InstanceStatus = "Starting"
+	InstanceStatusStopping            InstanceStatus = "Stopping"
+	InstanceStatusStopped             InstanceStatus = "Stopped"
+	InstanceStatusDeleted             InstanceStatus = "Deleted"
+	InstanceStatusExpired             InstanceStatus = "Expired"
+	InstanceStatusError               InstanceStatus = "Error"
+	InstanceStatusImageProcessing     InstanceStatus = "ImageProcessing"
+	InstanceStatusChangeVpcProcessing InstanceStatus = "ChangeVpc"
+	InstanceStatusRecycled            InstanceStatus = "Recycled"
+	InstanceStatusRecharging          InstanceStatus = "Recharging"
 )
 
 type ImageType string
@@ -123,6 +122,8 @@ type CreateInstanceArgs struct {
 	InternalIps       []string         `json:"internalIps,omitempty"`
 	RequestToken      string           `json:"requestToken"`
 	EnableNuma        bool             `json:"enableNuma"`
+	RootPartitionType string           `json:"rootPartitionType,omitempty"`
+	DataPartitionType string           `json:"dataPartitionType,omitempty"`
 }
 
 type Billing struct {
@@ -232,7 +233,7 @@ type InstanceChangeSubnetArgs struct {
 type InstanceChangeVpcArgs struct {
 	InstanceId string `json:"instanceId"`
 	SubnetId   string `json:"subnetId"`
-	InternalIp   string `json:"internalIp"`
+	InternalIp string `json:"internalIp"`
 	Reboot     bool   `json:"reboot"`
 }
 
@@ -316,21 +317,21 @@ type BatchAddIpArgs struct {
 }
 
 type BatchAddIpCrossSubnetArgs struct {
-	InstanceId                     string   `json:"instanceId"`
-	SingleEniAndSubentIps          []SingleEniAndSubentIp `json:"singleEniAndSubentIps"`
-	ClientToken                    string   `json:"-"`
+	InstanceId            string                 `json:"instanceId"`
+	SingleEniAndSubentIps []SingleEniAndSubentIp `json:"singleEniAndSubentIps"`
+	ClientToken           string                 `json:"-"`
 }
 
 type SingleEniAndSubentIp struct {
-	EniId                            string         `json:"eniId"`
-	SubnetId                         string         `json:"subnetId"`
-	SecondaryPrivateIpAddressCount   int            `json:"secondaryPrivateIpAddressCount"`
-	IpAndSubnets                     []IpAndSubnet  `json:"ipAndSubnets"`
+	EniId                          string        `json:"eniId"`
+	SubnetId                       string        `json:"subnetId"`
+	SecondaryPrivateIpAddressCount int           `json:"secondaryPrivateIpAddressCount"`
+	IpAndSubnets                   []IpAndSubnet `json:"ipAndSubnets"`
 }
 
 type IpAndSubnet struct {
-	PrivateIp    string `json:"privateIp"`
-	SubnetId     string `json:"subnetId"`
+	PrivateIp string `json:"privateIp"`
+	SubnetId  string `json:"subnetId"`
 }
 
 type BatchAddIpResponse struct {
@@ -563,8 +564,8 @@ type ListZoneFlavorsArgs struct {
 }
 
 type PurchaseReservedArgs struct {
-	Billing          Billing `json:"billing"`
-	ClientToken      string  `json:"-"`
+	Billing     Billing `json:"billing"`
+	ClientToken string  `json:"-"`
 }
 
 type PrivateIP struct {
@@ -876,7 +877,7 @@ type DeleteInstanceArgs struct {
 }
 
 type GetBbcStockArgs struct {
-	Flavor         string   `json:"flavor"`
+	Flavor       string   `json:"flavor"`
 	DeploySetIds []string `json:"deploySetIds"`
 }
 

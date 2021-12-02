@@ -184,6 +184,10 @@ createInstanceArgs := &CreateInstanceArgs{
     RequestToken: "requestToken",
     // 指定是否开启numa true为开启，false为关闭
     EnableNuma:  true,
+    // 指定系统盘文件系统，当前合法值：xfs，ext4
+    RootPartitionType: "your-choose-rootPartitionType", 
+    // 指定数据盘文件系统，当前合法值：xfs，ext4
+    DataPartitionType: "your-choose-dataPartitionType",
     // 指定实例绑定标签
     Tags: []model.TagModel{
         {
