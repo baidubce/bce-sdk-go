@@ -294,6 +294,29 @@ func (c *Client) BatchRebuildInstances(args *RebuildBatchInstanceArgs) (*BatchRe
 	return BatchRebuildInstances(c, body)
 }
 
+// InstancePurchaseReserved - purchase reserve an instance
+//
+// PARAMS:
+//     - instanceId: the specific instance ID
+//     - args: the arguments to purchase reserved an instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) InstancePurchaseReserved(instanceId string, args *PurchaseReservedArgs) error {
+	// this api only support Prepaid instance
+	args.Billing.PaymentTiming = PaymentTimingPrePaid
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return InstancePurchaseReserved(c, instanceId, args.ClientToken, body)
+}
+
 // DeleteInstance - delete an instance
 //
 // PARAMS:
@@ -423,7 +446,6 @@ func (c *Client) InstanceChangeVpc(args *InstanceChangeVpcArgs) error {
 
 	return InstanceChangeVpc(c, body)
 }
-
 
 // GetVpcSubnet - get multi instances vpc and subnet
 //
@@ -1087,7 +1109,6 @@ func (c *Client) DeleteRecycledInstance(instanceId string) error {
 func (c *Client) ListCDSVolume(queryArgs *ListCDSVolumeArgs) (*ListCDSVolumeResult, error) {
 	return ListCDSVolume(c, queryArgs)
 }
-
 
 // GetBbcStockWithDeploySet - get the bbc's stock with deploySet
 //

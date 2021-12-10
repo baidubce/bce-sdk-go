@@ -1238,6 +1238,9 @@ if err := bccClient.DeleteInstanceWithRelateResource(instanceId, deleteInstanceW
 		// 选择DeleteCdsSnapshotFlag=true即会释放虚机绑定的各种快照
 		// 释放后付费bcc时，DeleteCdsSnapshotFlag和RelatedReleaseFlag之间逻辑和之前逻辑保持一致
 		DeleteCdsSnapshotFlag:true,
+        //设置是否立即释放，默认false，保持释放进入回收站逻辑；为true时，实例和设置了关联释放的cds、eip资源，一起立即释放
+        DeleteImmediate: false,
+
 	}
 	if res, err := BCC_CLIENT.DeleteInstanceIngorePayment(args); err != nil {
 		fmt.Println("delete  instance failed: ", err)
@@ -1421,7 +1424,7 @@ if err != nil {
 
 ### 实例续费
 
-对BCC虚机的续费操作，可以延长过期时长，以下代码可以对磁盘进行续费
+对BCC虚机的续费操作，可以延长过期时长，以下代码可以对实例及关联产品进行续费
 ```go
 args := &api.PurchaseReservedArgs{
     Billing: &api.Billing{

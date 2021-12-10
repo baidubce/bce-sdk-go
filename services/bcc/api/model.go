@@ -1614,6 +1614,7 @@ type DeleteInstanceIngorePaymentArgs struct {
 	RelatedReleaseFlag    bool   `json:"relatedReleaseFlag"`
 	DeleteCdsSnapshotFlag bool   `json:"deleteCdsSnapshotFlag"`
 	DeleteRelatedEnisFlag bool   `json:"deleteRelatedEnisFlag"`
+	DeleteImmediate		  bool   `json:"deleteImmediate"`
 }
 
 type DeleteInstanceModel struct {
@@ -1654,6 +1655,7 @@ type ListInstancesResult struct {
 type VolumePrepayDeleteRequestArgs struct {
 	VolumeId           string `json:"volumeId"`
 	RelatedReleaseFlag bool   `json:"relatedReleaseFlag"`
+	DeleteImmediate	   bool   `json:"deleteImmediate"`
 }
 
 type VolumeDeleteResultResponse struct {
