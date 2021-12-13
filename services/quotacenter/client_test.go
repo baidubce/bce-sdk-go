@@ -39,12 +39,14 @@ func init() {
 }
 
 func TestClient_ListProducts(t *testing.T) {
-	args := &ProductQueryArgs{
-		ProductType: "EIP",
-	}
+	args := &ProductQueryArgs{}
 	result, err := QUOTA_CENTER_CLIENT.ListProducts(args)
-	fmt.Println(result)
-	fmt.Println(err)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		r, _ := json.Marshal(result)
+		fmt.Println(string(r))
+	}
 
 }
 
@@ -54,8 +56,13 @@ func TestClient_ListRegions(t *testing.T) {
 		ServiceType: "EIP_BP",
 		Type:        "QUOTA",
 	}
-	result, _ := QUOTA_CENTER_CLIENT.ListRegions(args)
-	fmt.Println(result)
+	result, err := QUOTA_CENTER_CLIENT.ListRegions(args)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		r, _ := json.Marshal(result)
+		fmt.Println(string(r))
+	}
 }
 
 func TestClient_QuotaCenterQuery(t *testing.T) {
@@ -65,15 +72,64 @@ func TestClient_QuotaCenterQuery(t *testing.T) {
 		Region:      "su",
 	}
 	result, err := QUOTA_CENTER_CLIENT.QuotaCenterQuery(args)
-	fmt.Println(result)
-	fmt.Println(err)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		r, _ := json.Marshal(result)
+		fmt.Println(string(r))
+	}
 }
 
 func TestClient_InfoQuery(t *testing.T) {
 	args := &InfoQueryArgs{
-		Region: "sin",
+		Region: "bj",
 	}
 	result, err := QUOTA_CENTER_CLIENT.InfoQuery(args)
-	fmt.Println(result)
-	fmt.Println(err)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		r, _ := json.Marshal(result)
+		fmt.Println(string(r))
+	}
+}
+
+func TestClient_Apply(t *testing.T) {
+	args := &ApplicationCreateModel{
+		ProductType: "EIP",
+		ServiceType: "EIP",
+		Region:      "bj",
+		Name:        "eipInstanceQuota",
+		Value:       "280",
+		Reason:      "we need more again",
+	}
+	result, err := QUOTA_CENTER_CLIENT.Apply(args)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		r, _ := json.Marshal(result)
+		fmt.Println(string(r))
+	}
+}
+
+func TestClient_ApplicationQuery(t *testing.T) {
+	args := &ApplicationQueryArgs{
+		Status: "EFFECTED",
+	}
+	result, err := QUOTA_CENTER_CLIENT.ApplicationQuery(args)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		r, _ := json.Marshal(result)
+		fmt.Println(string(r))
+	}
+}
+
+func TestClient_ApplicationDetail(t *testing.T) {
+	result, err := QUOTA_CENTER_CLIENT.ApplicationDetail("app-uh4eaumggx4q")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		r, _ := json.Marshal(result)
+		fmt.Println(string(r))
+	}
 }

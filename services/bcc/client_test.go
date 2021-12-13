@@ -1213,6 +1213,18 @@ func TestGetStockWithDeploySet(t *testing.T) {
 	}
 }
 
+func TestGetStockWithSpec(t *testing.T) {
+	args := &api.GetStockWithSpecArgs{
+		Spec:         "bcc.g3.c2m8",
+		DeploySetIds: []string{"dset-RekVqK7V"},
+	}
+	if res, err := BCC_CLIENT.GetStockWithSpec(args); err != nil {
+		fmt.Println("get stock with spec failed: ", err)
+	} else {
+		fmt.Println("get stock with spec, result: ", res)
+	}
+}
+
 func TestListInstanceByInstanceIds(t *testing.T) {
 	args := &api.ListInstanceByInstanceIdArgs{
 		InstanceIds: []string{"i-gRYyYyjr", "i-GGc7Buqs"},

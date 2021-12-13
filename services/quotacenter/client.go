@@ -31,6 +31,8 @@ const (
 	BASE_INFO_URL = "/info"
 
 	BASE_REGION_URL = "/info/region"
+
+	BASE_APPLY_URL = "/apply"
 )
 
 // Client of QUOTA_CENTER service is a kind of BceClient, so derived from BceClient
@@ -63,4 +65,12 @@ func getInfoUri() string {
 
 func getRegionUri() string {
 	return getQuotaCenterUri() + BASE_REGION_URL
+}
+
+func getApplyUri() string {
+	return getQuotaCenterUri() + BASE_APPLY_URL
+}
+
+func getApplyUriWithId(id string) string {
+	return getApplyUri() + bce.URI_PREFIX + id
 }
