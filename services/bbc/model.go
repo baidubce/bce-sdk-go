@@ -248,20 +248,24 @@ type ModifyInstanceHostnameArgs struct {
 }
 
 type RebuildInstanceArgs struct {
-	ImageId        string `json:"imageId"`
-	AdminPass      string `json:"adminPass"`
-	IsPreserveData bool   `json:"isPreserveData"`
-	RaidId         string `json:"raidId,omitempty"`
-	SysRootSize    int    `json:"sysRootSize,omitempty"`
+	ImageId           string `json:"imageId"`
+	AdminPass         string `json:"adminPass"`
+	IsPreserveData    bool   `json:"isPreserveData"`
+	RaidId            string `json:"raidId,omitempty"`
+	SysRootSize       int    `json:"sysRootSize,omitempty"`
+	RootPartitionType string `json:"rootPartitionType,omitempty"`
+	DataPartitionType string `json:"dataPartitionType,omitempty"`
 }
 
 type RebuildBatchInstanceArgs struct {
-	InstanceIds    []string `json:"instanceIds"`
-	ImageId        string   `json:"imageId"`
-	AdminPass      string   `json:"adminPass"`
-	IsPreserveData bool     `json:"isPreserveData"`
-	RaidId         string   `json:"raidId,omitempty"`
-	SysRootSize    int      `json:"sysRootSize,omitempty"`
+	InstanceIds       []string `json:"instanceIds"`
+	ImageId           string   `json:"imageId"`
+	AdminPass         string   `json:"adminPass"`
+	IsPreserveData    bool     `json:"isPreserveData"`
+	RaidId            string   `json:"raidId,omitempty"`
+	SysRootSize       int      `json:"sysRootSize,omitempty"`
+	RootPartitionType string   `json:"rootPartitionType,omitempty"`
+	DataPartitionType string   `json:"dataPartitionType,omitempty"`
 }
 
 type BatchRebuildResponse struct {

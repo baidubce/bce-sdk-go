@@ -380,6 +380,10 @@ rebuildArgs := &RebuildInstanceArgs{
     RaidId:         "your_raid_id",
     // 系统盘根分区大小，默认为20G，取值范围为20-100。此参数在isPreserveData为true时不生效
     SysRootSize: 20,
+    // 指定系统盘文件系统，当前合法值：xfs，ext4
+    RootPartitionType: "your-choose-rootPartitionType",
+    // 指定数据盘文件系统，当前合法值：xfs，ext4
+    DataPartitionType: "your-choose-dataPartitionType",
 }
 // 设置你要操作的instanceId
 instanceId := "your-choose-instance-id"
@@ -394,7 +398,7 @@ if err := bbcClient.RebuildInstance(instanceId, isPreserveData, rebuildArgs); er
 > **注意：**
 >IsPreserveData表示是否保留数据：
 >- 当IsPreserveData设置为 false 时，RaidId 和 SysRootSize 是必填参数
->- 当IsPreserveData设置为 true 时，RaidId 和 SysRootSize 参数不生效
+>- 当IsPreserveData设置为 true 时，RaidId、SysRootSize 和 DataPartitionType 参数不生效
 
 ### 批量重装实例
 使用以下代码可以使用镜像批量重建指定BBC实例:
@@ -412,6 +416,10 @@ rebuildArgs := &BatchRebuildInstanceArgs{
     RaidId:         "your_raid_id",
     // 系统盘根分区大小，默认为20G，取值范围为20-100。此参数在isPreserveData为true时不生效
     SysRootSize: 20,
+    // 指定系统盘文件系统，当前合法值：xfs，ext4
+    RootPartitionType: "your-choose-rootPartitionType",
+    // 指定数据盘文件系统，当前合法值：xfs，ext4
+    DataPartitionType: "your-choose-dataPartitionType",
 }
 if res, err := bbcClient.BatchRebuildInstance(rebuildArgs); err != nil {
     fmt.Println("batch rebuild instance failed: ", err)
@@ -422,7 +430,7 @@ if res, err := bbcClient.BatchRebuildInstance(rebuildArgs); err != nil {
 > **注意：**
 >IsPreserveData表示是否保留数据：
 >- 当IsPreserveData设置为 false 时，RaidId 和 SysRootSize 是必填参数
->- 当IsPreserveData设置为 true 时，RaidId 和 SysRootSize 参数不生效
+>- 当IsPreserveData设置为 true 时，RaidId、SysRootSize 和 DataPartitionType 参数不生效
 
 ### 实例续费
 

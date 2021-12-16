@@ -1908,6 +1908,7 @@ func (c *Client) parallelPartUpload(bucket string, object string, filename strin
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 	// 分块大小按MULTIPART_ALIGN=1MB对齐
 	partSize := (c.MultipartSize +
 		MULTIPART_ALIGN - 1) / MULTIPART_ALIGN * MULTIPART_ALIGN

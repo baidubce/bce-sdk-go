@@ -187,11 +187,13 @@ func TestModifyInstanceDesc(t *testing.T) {
 
 func TestRebuildInstance(t *testing.T) {
 	rebuildArgs := &RebuildInstanceArgs{
-		ImageId:        BBC_TestImageId,
-		AdminPass:      BBC_TestAdminPass,
-		IsPreserveData: true,
-		RaidId:         BBC_TestRaidId,
-		SysRootSize:    20,
+		ImageId:           BBC_TestImageId,
+		AdminPass:         BBC_TestAdminPass,
+		IsPreserveData:    true,
+		RaidId:            BBC_TestRaidId,
+		SysRootSize:       20,
+		RootPartitionType: "xfs",
+		DataPartitionType: "xfs",
 	}
 	err := BBC_CLIENT.RebuildInstance(BBC_TestBbcId, true, rebuildArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -199,12 +201,14 @@ func TestRebuildInstance(t *testing.T) {
 
 func TestBatchRebuildInstances(t *testing.T) {
 	rebuildArgs := &RebuildBatchInstanceArgs{
-		ImageId:        "ImageId",
-		AdminPass:      "123qaz!@#",
-		InstanceIds:    []string{"BBC_TestBbcId"},
-		IsPreserveData: true,
-		RaidId:         BBC_TestRaidId,
-		SysRootSize:    20,
+		ImageId:           "ImageId",
+		AdminPass:         "123qaz!@#",
+		InstanceIds:       []string{"BBC_TestBbcId"},
+		IsPreserveData:    true,
+		RaidId:            BBC_TestRaidId,
+		SysRootSize:       20,
+		RootPartitionType: "xfs",
+		DataPartitionType: "xfs",
 	}
 	result, err := BBC_CLIENT.BatchRebuildInstances(rebuildArgs)
 	fmt.Println(result)
