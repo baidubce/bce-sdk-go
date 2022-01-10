@@ -23,7 +23,7 @@ var (
 	DB_NAME               string = "go_sdk_db_1"
 	DB_CHARACTER_SET_NAME string = "utf8"
 	DB_REMARK             string = "go_sdk_db_remark"
-	TASK_ID               string = ""
+	TASK_ID               string = "1173906"
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -38,7 +38,7 @@ const (
 	POOL            = "xdb_005a2d79-a4f4-4bfb-8284-0ffe9ddaa307_pool"
 	PNETIP          = "100.88.65.121"
 	DEPLOY_ID       = "ab89d829-9068-d88e-75bc-64bb6367d036"
-	DDC_INSTANCE_ID = "ddc-mvvq49zt"
+	DDC_INSTANCE_ID = "ddc-mtu45cvm"
 	RDS_INSTANCE_ID = "rds-OtTkC1OD"
 	ETAG            = "v0"
 )
@@ -977,7 +977,7 @@ func TestClient_ListRds(t *testing.T) {
 		fmt.Println("instanceCreateTime: ", e.InstanceCreateTime)
 		fmt.Println("instanceExpireTime: ", e.InstanceExpireTime)
 		fmt.Println("publiclyAccessible: ", e.PubliclyAccessible)
-		fmt.Println("backup expireInDays: ", e.BackupPolicy.ExpireInDays)
+		fmt.Println("backup expireInDays: ", e.BackupPolicy.ExpireInDaysInt)
 		fmt.Println("vpcId: ", e.VpcId)
 		fmt.Println("endpoint: ", e.Endpoint)
 		fmt.Println("vnetIp: ", e.Endpoint.VnetIp)
@@ -1040,7 +1040,7 @@ func TestClient_ListPage(t *testing.T) {
 		fmt.Println("instanceCreateTime: ", e.InstanceCreateTime)
 		fmt.Println("instanceExpireTime: ", e.InstanceExpireTime)
 		fmt.Println("publiclyAccessible: ", e.PubliclyAccessible)
-		fmt.Println("backup expireInDays: ", e.BackupPolicy.ExpireInDays)
+		fmt.Println("backup expireInDays: ", e.BackupPolicy.ExpireInDaysInt)
 		fmt.Println("vpcId: ", e.VpcId)
 		fmt.Println("endpoint: ", e.Endpoint)
 		fmt.Println("vnetIp: ", e.Endpoint.VnetIp)
@@ -1458,7 +1458,14 @@ func TestClient_GetDisk(t *testing.T) {
 		return
 	}
 	fmt.Println("get disk of instance success.")
-	fmt.Println("disk CapacityRatio: ", disk.CapacityRatio)
+	for _, diskItem := range disk.Response.Items {
+		fmt.Println("instance id: ", diskItem.InstanceID)
+		fmt.Println("instance role: ", diskItem.InstanceRole)
+		fmt.Println("disk disk partition: ", diskItem.DiskPartition)
+		fmt.Println("disk totle size in bytes: ", diskItem.TotalSize)
+		fmt.Println("disk used size in bytes: ", diskItem.UsedSize)
+		fmt.Println("disk report time: ", diskItem.ReportTime)
+	}
 }
 
 func TestClient_GetResidual(t *testing.T) {
@@ -1573,9 +1580,12 @@ func TestClient_GetMaintainTaskDetail(t *testing.T) {
 		fmt.Println("task name: ", task.TaskName)
 		fmt.Println("instance instanceId: ", task.InstanceID)
 		fmt.Println("instance instanceName: ", task.InstanceName)
+		fmt.Println("instance instanceName: ", task.AppID)
 		fmt.Println("instance task type: ", task.TaskType)
 		fmt.Println("task status: ", task.TaskStatus)
 		fmt.Println("instance create time: ", task.CreateTime)
+		fmt.Println("instance create time: ", task.TaskSpecialAction)
+		fmt.Println("instance create time: ", task.TaskSpecialActionTime)
 		fmt.Println("--------------------------")
 	}
 }

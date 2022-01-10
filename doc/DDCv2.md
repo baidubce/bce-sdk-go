@@ -823,7 +823,14 @@ if err != nil {
     return
 }
 fmt.Println("get disk of instance success.")
-fmt.Println("disk CapacityRatio: ", disk.CapacityRatio)
+for _, diskItem := range disk.Response.Items {
+    fmt.Println("instance id: ", diskItem.InstanceID)
+    fmt.Println("instance role: ", diskItem.InstanceRole)
+    fmt.Println("disk disk partition: ", diskItem.DiskPartition)
+    fmt.Println("disk totle size in bytes: ", diskItem.TotalSize)
+    fmt.Println("disk used size in bytes: ", diskItem.UsedSize)
+    fmt.Println("disk report time: ", diskItem.ReportTime)
+}
 ```
 
 ## 删除实例

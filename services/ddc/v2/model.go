@@ -454,11 +454,11 @@ type Endpoint struct {
 }
 
 type BackupPolicy struct {
-	BackupDays    string `json:"backupDays"`
-	BackupTime    string `json:"backupTime"`
-	Persistent    bool   `json:"persistent"`
-	ExpireInDays  string `json:"expireInDaysStr"`
-	FreeSpaceInGB int    `json:"freeSpaceInGb"`
+	BackupDays      string `json:"backupDays"`
+	BackupTime      string `json:"backupTime"`
+	Persistent      bool   `json:"persistent"`
+	ExpireInDaysStr string `json:"expireInDaysStr"`
+	FreeSpaceInGB   int    `json:"freeSpaceInGb"`
 
 	ExpireInDaysInt int `json:"expireInDays"`
 }
@@ -914,7 +914,17 @@ type CreateTableHardLinkArgs struct {
 	TableName string `json:"tableName"`
 }
 type Disk struct {
-	CapacityRatio []string `json:"capacityRatio"`
+	Response struct {
+		Items []struct {
+			DiskPartition string `json:"DiskPartition"`
+			InstanceID    string `json:"InstanceId"`
+			InstanceRole  string `json:"InstanceRole"`
+			PhysicalIP    string `json:"PhysicalIp"`
+			ReportTime    string `json:"ReportTime"`
+			TotalSize     int    `json:"TotalSize"`
+			UsedSize      int    `json:"UsedSize"`
+		} `json:"Items"`
+	} `json:"Response"`
 }
 
 type GetResidualResult struct {
