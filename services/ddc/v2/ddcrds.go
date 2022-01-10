@@ -330,7 +330,7 @@ func convertRdsInstance(result *Instance) error {
 	// Creating	公网开通中，成功后状态为Available
 	// Available	已开通公网
 	result.PubliclyAccessible = result.PublicAccessStatus == "Available"
-	days := result.BackupPolicy.ExpireInDays
+	days := result.BackupPolicy.ExpireInDaysStr
 	var err error
 	if len(days) > 0 {
 		result.BackupPolicy.ExpireInDaysInt, err = strconv.Atoi(days)
