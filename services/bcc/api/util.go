@@ -75,6 +75,7 @@ const (
 	REQUEST_BATCH_Delete_AUTORENEW_RULES_URI = "/batchDeleteAutoRenewRules"
 	REQUEST_GET_ALL_STOCKS                   = "/getAllStocks"
 	REQUEST_GET_STOCK_WITH_DEPLOYSET         = "/getStockWithDeploySet"
+	REQUEST_GET_STOCK_WITH_SPEC              = "/getStockWithSpec"
 	REQUEST_DELETION_PROTECTION              = "/deletionProtection"
 )
 
@@ -260,6 +261,10 @@ func getAllStocks() string {
 
 func getStockWithDeploySet() string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_GET_STOCK_WITH_DEPLOYSET
+}
+
+func getStockWithSpec() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_GET_STOCK_WITH_SPEC
 }
 
 func getCreateInstanceStock() string {

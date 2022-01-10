@@ -17,6 +17,7 @@ package quotacenter
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/baidubce/bce-sdk-go/bce"
@@ -51,7 +52,7 @@ func (c *Client) ListProducts(args *ProductQueryArgs) (*ListProductResult, error
 	return result, err
 }
 
-// listRegions - list quota center support regions with the specific parameters.
+// ListRegions - list quota center support regions with the specific parameters.
 //
 // PARAMS:
 //     - args: the arguments to list regions.
@@ -68,9 +69,6 @@ func (c *Client) ListRegions(args *RegionQueryArgs) (*ListRegionResult, error) {
 	}
 	if len(args.ServiceType) == 0 {
 		return nil, errors.New("serviceType should not be empty")
-	}
-	if len(args.Type) == 0 || (args.Type != "QUOTA" && args.Type != "WHITELIST") {
-		return nil, errors.New("type should not be empty,and only be QUOTA or WHITELIST")
 	}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
@@ -100,9 +98,6 @@ func (c *Client) QuotaCenterQuery(args *QuotaCenterQueryArgs) (*ListQuotaResult,
 	}
 	if len(args.Region) == 0 {
 		return nil, errors.New("region should not be empty")
-	}
-	if len(args.Type) == 0 || (args.Type != "QUOTA" && args.Type != "WHITELIST") {
-		return nil, errors.New("type should not be empty,and only be QUOTA or WHITELIST")
 	}
 	if args.MaxKeys <= 0 || args.MaxKeys > 1000 {
 		args.MaxKeys = 1000
@@ -147,6 +142,89 @@ func (c *Client) InfoQuery(args *InfoQueryArgs) (*ListInfoResult, error) {
 		WithQueryParamFilter("region", args.Region).
 		WithQueryParamFilter("marker", args.Marker).
 		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// Apply - apply quota or whitelist with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to apply.
+// RETURNS:
+//     - *IdModel: the id of application.
+//     - error: nil if success otherwise the specific error
+
+func (c *Client) Apply(args *ApplicationCreateModel) (*IdModel, error) {
+	if args == nil {
+		args = &ApplicationCreateModel{}
+	}
+
+	result := &IdModel{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithURL(getApplyUri()).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// ApplicationQuery - query applications from quota_center with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to query application.
+// RETURNS:
+//     - *ListApplicationResult: the result of applications.
+//     - error: nil if success otherwise the specific error
+func (c *Client) ApplicationQuery(args *ApplicationQueryArgs) (*ListApplicationResult, error) {
+	if args == nil {
+		args = &ApplicationQueryArgs{}
+	}
+	if args.MaxKeys <= 0 || args.MaxKeys > 1000 {
+		args.MaxKeys = 1000
+	}
+	result := &ListApplicationResult{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getApplyUri()).
+		WithQueryParamFilter("id", args.Id).
+		WithQueryParamFilter("name", args.Name).
+		WithQueryParamFilter("status", args.Status).
+		WithQueryParamFilter("productType", args.ProductType).
+		WithQueryParamFilter("serviceType", args.ServiceType).
+		WithQueryParamFilter("type", args.Type).
+		WithQueryParamFilter("region", args.Region).
+		WithQueryParamFilter("marker", args.Marker).
+		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// ApplicationDetail - query application detail from quota_center with id.
+//
+// PARAMS:
+//     - id: the application's id.
+// RETURNS:
+//     - *ApplicationModel: the result of application.
+//     - error: nil if success otherwise the specific error
+func (c *Client) ApplicationDetail(id string) (*ApplicationModel, error) {
+	if len(id) == 0 {
+		return nil, fmt.Errorf("please set id argment")
+	}
+
+	result := &ApplicationModel{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getApplyUriWithId(id)).
 		WithResult(result).
 		Do()
 

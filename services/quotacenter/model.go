@@ -94,4 +94,55 @@ type InfoModel struct {
 	Region      string `json:"region"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
+	Apply       bool   `json:"apply"`
+}
+
+type ApplicationCreateModel struct {
+	ProductType string `json:"productType"`
+	ServiceType string `json:"serviceType"`
+	Type        string `json:"type"`
+	Region      string `json:"region"`
+	Name        string `json:"name"`
+	Value       string `json:"value"`
+	Reason      string `json:"reason"`
+}
+
+type IdModel struct {
+	id string `json:"id"`
+}
+
+type ApplicationQueryArgs struct {
+	Id          string `json:"id,omitempty"`
+	Name        string `json:"name,omitempty"`
+	Status      string `json:"status,omitempty"`
+	ProductType string `json:"status,productType"`
+	ServiceType string `json:"serviceType"`
+	Type        string `json:"type"`
+	Region      string `json:"region"`
+	Marker      string `json:"marker,omitempty"`
+	MaxKeys     int    `json:"maxKeys,omitempty"`
+}
+
+type ListApplicationResult struct {
+	Marker      string             `json:"marker"`
+	MaxKeys     int                `json:"maxKeys"`
+	NextMarker  string             `json:"nextMarker"`
+	IsTruncated bool               `json:"isTruncated"`
+	Result      []ApplicationModel `json:"result"`
+}
+
+type ApplicationModel struct {
+	Id          string `json:"id"`
+	ProductType string `json:"productType"`
+	ServiceType string `json:"serviceType"`
+	Type        string `json:"type"`
+	Region      string `json:"region"`
+	Name        string `json:"name"`
+	Value       string `json:"value"`
+	Reason      string `json:"reason"`
+	Status      string `json:"status"`
+	Conclusion  string `json:"conclusion"`
+	CreateTime  string `json:"createTime"`
+	EffectTime  string `json:"effectTime,omitempty"`
+	ApproveTime string `json:"approveTime,omitempty"`
 }

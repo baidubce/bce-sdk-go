@@ -317,6 +317,15 @@ type GetStockWithDeploySetResults struct {
 	BccStocks []BccStock `json:"bccStocks"`
 }
 
+type GetStockWithSpecArgs struct {
+	Spec         string   `json:"spec"`
+	DeploySetIds []string `json:"deploySetIds"`
+}
+
+type GetStockWithSpecResults struct {
+	BccStocks []BccStock `json:"bccStocks"`
+}
+
 type InstanceStockResult struct {
 	FlaovrId string `json:"flavorId"`
 	Count    int    `json:"Count"`
