@@ -44,6 +44,9 @@ type Interface interface {
 
 	GetTask(args *GetTaskArgs) (*GetTaskResp, error)
 	ListTasks(args *ListTasksArgs) (*ListTaskResp, error)
+
+	GetInstanceCRD(args *GetInstanceCRDArgs) (*GetInstanceCRDResponse, error)
+	UpdateInstanceCRD(args *UpdateInstanceCRDRequest) (*CommonResponse, error)
 }
 
 //CreateCluterArgs为后续支持clientToken预留空间
@@ -74,6 +77,12 @@ type CreateInstancesArgs struct {
 type GetInstanceArgs struct {
 	ClusterID  string
 	InstanceID string
+}
+
+type GetInstanceCRDArgs struct {
+	ClusterID string
+	// cceInstanceID , cce 节点的唯一标志，不是底层机器的instanceID
+	CCEInstanceID string
 }
 
 type DeleteInstancesArgs struct {
@@ -316,6 +325,19 @@ type Instance struct {
 
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+}
+
+type InstanceCRD struct {
+	ObjectMeta `json:"metadata,omitempty"`
+
+	Spec   types.InstanceSpec `json:"spec,omitempty"`
+	Status InstanceStatus     `json:"status,omitempty"`
+}
+
+type ObjectMeta struct {
+	Name         string `json:"name,omitempty"`
+	GenerateName string `json:"generateName,omitempty"`
+	ClusterName  string `json:"clusterName,omitempty"`
 }
 
 // InstanceStatus - Instance Status
@@ -820,4 +842,13 @@ type ListTaskPage struct {
 	PageSize   int           `json:"pageSize,omitempty"`
 	TotalCount int           `json:"totalCount"`
 	Items      []*types.Task `json:"items"`
+}
+
+type UpdateInstanceCRDRequest struct {
+	Instance *InstanceCRD `json:"instance"`
+}
+
+type GetInstanceCRDResponse struct {
+	Instance  *InstanceCRD `json:"instance"`
+	RequestID string       `json:"requestID"`
 }

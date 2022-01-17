@@ -175,6 +175,14 @@ func getTaskListURI(taskType types.TaskType) string {
 	return URI_PREFIX + REQUEST_TASK_LIST_URL + "/" + string(taskType)
 }
 
+func genGetInstanceCRDURI(clusterID, cceInstanceID string) string {
+	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_INSTANCE_URL + "/" + cceInstanceID + "/crd"
+}
+
+func genUpdateInstanceCRDURI(clusterID string) string {
+	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_INSTANCE_URL + "/crd"
+}
+
 func encodeUserScriptInInstanceSet(instancesSets []*InstanceSet) error {
 	if instancesSets == nil {
 		return nil

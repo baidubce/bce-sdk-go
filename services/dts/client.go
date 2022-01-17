@@ -21,9 +21,8 @@ import "github.com/baidubce/bce-sdk-go/bce"
 
 const (
 	URI_PREFIX       = bce.URI_PREFIX + "v1"
-	DEFAULT_ENDPOINT = "rds.bj.baidubce.com"
+	DEFAULT_ENDPOINT = "dts.baidubce.com"
 	REQUEST_DTS_URL  = "/task"
-	API_DTS_URL      = "/api/dts/"
 )
 
 // Client of DTS service is a kind of BceClient, so derived from BceClient
@@ -44,10 +43,6 @@ func NewClient(ak, sk, endPoint string) (*Client, error) {
 
 func getDtsUri() string {
 	return URI_PREFIX + REQUEST_DTS_URL
-}
-
-func getDtsApi() string {
-	return API_DTS_URL
 }
 
 func getDtsUriWithTaskId(taskId string) string {

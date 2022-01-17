@@ -57,7 +57,8 @@ func (c *Client) CreateDts(args *CreateDtsArgs) (*CreateDtsResult, error) {
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
 		WithURL(getDtsUri()).
-		WithQueryParamFilter("orderType","NEW").
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		WithResult(result).
 		Do()
@@ -112,7 +113,10 @@ func (c *Client) ListDts(args *ListDtsArgs) (*ListDtsResult, error) {
 		return nil, fmt.Errorf("unset type")
 	}
 
-	if args.MaxKeys <= 0 || args.MaxKeys > 1000 {
+	if args.MaxKeys <= 0 {
+		args.MaxKeys = 10
+	}
+	if args.MaxKeys > 1000 {
 		args.MaxKeys = 1000
 	}
 
@@ -120,6 +124,42 @@ func (c *Client) ListDts(args *ListDtsArgs) (*ListDtsResult, error) {
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
 		WithURL(getDtsUri()+"/list").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// ListDtsWithPage - list all dtsTask with page
+//
+// PARAMS:
+//     - args: the arguments to list all dtsTask with page
+// RETURNS:
+//     - *ListDtsResult: the result of list all dtsTask, contains all dtsTask' detail
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListDtsWithPage(args *ListDtsWithPageArgs) (*ListDtsWithPageResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("unset args")
+	}
+
+	if args.Types == nil || len(args.Types) == 0 {
+		return nil, fmt.Errorf("unset type")
+	}
+
+	if args.PageNo <= 0 {
+		args.PageNo = 1
+	}
+	if args.PageSize > 100 {
+		args.PageSize = 100
+	}
+
+	result := &ListDtsWithPageResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getDtsUri()+"/listWithPage").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		WithResult(result).
 		Do()
@@ -137,7 +177,7 @@ func (c *Client) PreCheck(taskId string) (*PreCheckResult, error) {
 	result:=&PreCheckResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
-		WithURL(getDtsApi()+taskId+"/precheck").
+		WithURL(getDtsUriWithTaskId(taskId) + "/precheck").
 		WithResult(result).
 		Do()
 	return result, err
@@ -153,11 +193,28 @@ func (c *Client) PreCheck(taskId string) (*PreCheckResult, error) {
 func (c *Client) GetPreCheck(taskId string) (*GetPreCheckResult, error) {
 	result:=&GetPreCheckResult{}
 	err := bce.NewRequestBuilder(c).
-		WithMethod(http.POST).
-		WithURL(getDtsApi()+taskId+"/get_precheck").
+		WithMethod(http.GET).
+		WithURL(getDtsUriWithTaskId(taskId) + "/precheck").
 		WithResult(result).
 		Do()
 
+	return result, err
+}
+
+// SkipPreCheck - skip precheck of a dts task
+//
+// PARAMS:
+//     - taskId: the specific dtsTask's ID
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) SkipPreCheck(taskId string) (*SkipPreCheckResponse, error) {
+	result:=&SkipPreCheckResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getDtsUriWithTaskId(taskId)).
+		WithQueryParam("skipPrecheck", "").
+		WithResult(result).
+		Do()
 	return result, err
 }
 
@@ -190,6 +247,7 @@ func (c *Client) ConfigDts(taskId string, args *ConfigArgs) (*ConfigDtsResult, e
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
 		WithURL(getDtsUriWithTaskId(taskId)+"/config").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		WithResult(result).
 		Do()
@@ -234,4 +292,61 @@ func (c *Client) ShutdownDts(taskId string) error {
 		WithMethod(http.POST).
 		WithURL(getDtsUriWithTaskId(taskId)+"/shutdown").
 		Do()
+}
+
+// GetSchema - get schema
+//
+// PARAMS:
+//     - args: connection param
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetSchema(args *GetSchemaArgs) (*GetSchemaResponse, error) {
+	result := &GetSchemaResponse{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getDtsUri() + "/schema").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// UpdateTaskName - update task name
+//
+// PARAMS:
+//     - args: update task name param
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateTaskName(taskId string, args *UpdateTaskNameArgs) error {
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getDtsUriWithTaskId(taskId)).
+		WithQueryParam("name", "").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+}
+
+// ResizeTaskStandard - resize task standard
+//
+// PARAMS:
+//     - args: resize task standard param
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ResizeTaskStandard(taskId string, args *ResizeTaskStandardArgs) (*ResizeTaskStandardResponse, error) {
+	result := &ResizeTaskStandardResponse{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getDtsUriWithTaskId(taskId)).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithQueryParam("standard", "").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
 }
