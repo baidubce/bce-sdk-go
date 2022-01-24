@@ -592,15 +592,25 @@ type DataVolumeV3 struct {
 }
 
 type RecycleInstanceModel struct {
-	InstanceId    string   `json:"id"`
-	SerialNumber  string   `json:"serialNumber"`
-	InstanceName  string   `json:"name"`
-	RecycleTime   string   `json:"recycleTime"`
-	DeleteTime    string   `json:"deleteTime"`
-	PaymentTiming string   `json:"paymentTiming"`
-	ServiceName   string   `json:"serviceName"`
-	ServiceType   string   `json:"serviceType"`
-	ConfigItems   []string `json:"configItems"`
+	InstanceId    	string   							`json:"id"`
+	SerialNumber  	string   							`json:"serialNumber"`
+	InstanceName  	string   							`json:"name"`
+	RecycleTime   	string   							`json:"recycleTime"`
+	DeleteTime    	string   							`json:"deleteTime"`
+	PaymentTiming 	string   							`json:"paymentTiming"`
+	ServiceName   	string   							`json:"serviceName"`
+	ServiceType   	string   							`json:"serviceType"`
+	ConfigItems   	[]string 							`json:"configItems"`
+	ConfigItem		RecycleInstanceModelConfigItem		`json:"configItem"`
+}
+
+type RecycleInstanceModelConfigItem struct {
+	Cpu			int 	`json:"cpu"`
+	Memory		int		`json:"memory"`
+	Type		string	`json:"type"`
+	SpecId		string	`json:"specId"`
+	Spec		string	`json:"spec"`
+	ZoneName	string	`json:"zoneName"`
 }
 
 type ModifyInstanceHostnameArgs struct {

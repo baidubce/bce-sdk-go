@@ -170,15 +170,22 @@ type ListRecycledInstancesResult struct {
 }
 
 type RecycledInstancesModel struct {
-	ServiceType   string   `json:"serviceType"`
-	ServiceName   string   `json:"serviceName"`
-	Name          string   `json:"name"`
-	Id            string   `json:"id"`
-	SerialNumber  string   `json:"serialNumber"`
-	RecycleTime   string   `json:"recycleTime"`
-	DeleteTime    string   `json:"deleteTime"`
-	PaymentTiming string   `json:"paymentTiming"`
-	ConfigItems   []string `json:"configItems"`
+	ServiceType   string   							`json:"serviceType"`
+	ServiceName   string   							`json:"serviceName"`
+	Name          string   							`json:"name"`
+	Id            string   							`json:"id"`
+	SerialNumber  string   							`json:"serialNumber"`
+	RecycleTime   string   							`json:"recycleTime"`
+	DeleteTime    string   							`json:"deleteTime"`
+	PaymentTiming string   							`json:"paymentTiming"`
+	ConfigItems   []string 							`json:"configItems"`
+	ConfigItem	  RecycleInstanceModelConfigItem	`json:"configItem"`
+}
+
+type RecycleInstanceModelConfigItem struct {
+	Cpu			int 	`json:"cpu"`
+	Memory		int		`json:"memory"`
+	Type		string	`json:"type"`
 }
 
 type ListInstancesResult struct {
