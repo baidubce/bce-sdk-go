@@ -186,6 +186,7 @@ type RecycleInstanceModelConfigItem struct {
 	Cpu			int 	`json:"cpu"`
 	Memory		int		`json:"memory"`
 	Type		string	`json:"type"`
+	ZoneName	string	`json:"zoneName"`
 }
 
 type ListInstancesResult struct {
