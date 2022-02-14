@@ -119,6 +119,7 @@ type GetInstanceDetailResult struct {
 	Subnets            []Subnet         `json:"subnets"`
 	AutoRenew          string           `json:"autoRenew"`
 	Tags               []model.TagModel `json:"tags"`
+	ShardNum           int              `json:"shardNum"`
 }
 
 type UpdateInstanceNameArgs struct {

@@ -55,7 +55,7 @@ func init() {
 	SCS_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
 	client = SCS_CLIENT
-	SCS_TEST_ID = "scs-su-btgakwoafoyv"
+	SCS_TEST_ID = "scs-bdbl-vzawoqvarfms"
 	instanceId = SCS_TEST_ID
 }
 
