@@ -610,10 +610,10 @@ func (c *Client) GetInstanceCRD(args *GetInstanceCRDArgs) (*GetInstanceCRDRespon
 
 	result := &GetInstanceCRDResponse{}
 	err := bce.NewRequestBuilder(c).
-	WithMethod(http.GET).
-	WithURL(genGetInstanceCRDURI(args.ClusterID, args.CCEInstanceID)).
-	WithResult(result).
-	Do()
+		WithMethod(http.GET).
+		WithURL(genGetInstanceCRDURI(args.ClusterID, args.CCEInstanceID)).
+		WithResult(result).
+		Do()
 
 	return result, err
 }
@@ -634,6 +634,41 @@ func (c *Client) UpdateInstanceCRD(args *UpdateInstanceCRDRequest) (*CommonRespo
 		WithBody(args).
 		WithResult(result).
 		Do()
-		
+
+	return result, err
+}
+
+func (c *Client) GetClusterCRD(args *GetClusterCRDArgs) (*GetClusterCRDResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	result := &GetClusterCRDResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(genGetClusterCRDURI(args.ClusterID)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+func (c *Client) UpdateClusterCRD(args *UpdateClusterCRDArgs) (*CommonResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	if args.Cluster == nil {
+		return nil, fmt.Errorf("cluster is nil")
+	}
+
+	result := &CommonResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(genUpdateClusterCRDURI(args.Cluster.Spec.ClusterID)).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
 	return result, err
 }

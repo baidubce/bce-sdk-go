@@ -652,3 +652,36 @@ func TestClient_InstanceCRD(t *testing.T) {
 
 	t.Logf("Request ID: %s", commonResp.RequestID)
 }
+
+func TestClient_UpdateClusterCRD(t *testing.T) {
+	getClusterCRDArgs := &GetClusterCRDArgs{
+
+		ClusterID: "cce-bvyohjkg",
+	}
+
+	resp, err := CCE_CLIENT.GetClusterCRD(getClusterCRDArgs)
+	if err != nil {
+		fmt.Printf("get cluster crd error: %s", err.Error())
+		return
+	}
+
+	fmt.Printf("Request ID: %s", resp.RequestID)
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Printf("Response: %s", string(s))
+
+
+	cluster := resp.Cluster
+	cluster.Spec.ClusterName = "gogogogo"
+
+	request := UpdateClusterCRDArgs{
+		Cluster: cluster,
+	}
+
+	commonResp, err := CCE_CLIENT.UpdateClusterCRD(&request)
+	if err != nil {
+		fmt.Printf("update cluster crd error: %s", err.Error())
+		return
+	}
+
+	fmt.Printf("Resuest ID: %s", commonResp.RequestID)
+}

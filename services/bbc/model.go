@@ -825,6 +825,10 @@ type SharedUser struct {
 	Account   string `json:"account,omitempty"`
 }
 
+type GetImageSharedUserResult struct {
+	Users []SharedUser `json:"users"`
+}
+
 type ListCDSVolumeArgs struct {
 	MaxKeys    int
 	InstanceId string

@@ -850,6 +850,17 @@ func (c *Client) UnShareImage(imageId string, args *SharedUser) error {
 	return UnShareImage(c, imageId, args)
 }
 
+// GetImageSharedUser - get user list use this image
+//
+// PARAMS:
+//     - imageId: the specific image ID
+// RETURNS:
+//     - *api.GetImageSharedUserResult: the result of user list
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetImageSharedUser(imageId string) (*GetImageSharedUserResult, error) {
+	return GetImageSharedUser(c, imageId)
+}
+
 // GetInstanceEni - get the eni of the bbc instance
 //
 // PARAMS:

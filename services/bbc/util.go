@@ -43,10 +43,11 @@ const (
 	REQUEST_BATCH_Delete_AUTORENEW_RULES_URI = "/batchDeleteAutoRenewRules"
 	REQUEST_BATCH_REBUILD_INSTANCE_URI       = "/batchRebuild"
 
-	REQUEST_FLAVOR_URI       = "/flavor"
-	REQUEST_FLAVOR_RAID_URI  = "/flavorRaid"
-	REQUEST_COMMON_IMAGE_URI = "/flavor/image"
-	REQUEST_CUSTOM_IMAGE_URI = "/customFlavor/image"
+	REQUEST_FLAVOR_URI           = "/flavor"
+	REQUEST_FLAVOR_RAID_URI      = "/flavorRaid"
+	REQUEST_COMMON_IMAGE_URI     = "/flavor/image"
+	REQUEST_CUSTOM_IMAGE_URI     = "/customFlavor/image"
+	REQUEST_IMAGE_SHAREDUSER_URI = "/sharedUsers"
 
 	REQUEST_FLAVOR_ZONE_URI = "/order/flavorZone"
 	REQUEST_FLAVORS_URI     = "/order/flavor"

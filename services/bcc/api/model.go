@@ -260,6 +260,7 @@ type CreateInstanceArgs struct {
 	EphemeralDisks        []EphemeralDisk  `json:"ephemeralDisks,omitempty"`
 	CreateCdsList         []CreateCdsModel `json:"createCdsList,omitempty"`
 	NetWorkCapacityInMbps int              `json:"networkCapacityInMbps,omitempty"`
+	EipName               string           `json:"eipName,omitempty"`
 	DedicateHostId        string           `json:"dedicatedHostId,omitempty"`
 	PurchaseCount         int              `json:"purchaseCount,omitempty"`
 	Name                  string           `json:"name,omitempty"`
@@ -368,6 +369,7 @@ type CreateInstanceBySpecArgs struct {
 	EphemeralDisks        []EphemeralDisk  `json:"ephemeralDisks,omitempty"`
 	CreateCdsList         []CreateCdsModel `json:"createCdsList,omitempty"`
 	NetWorkCapacityInMbps int              `json:"networkCapacityInMbps,omitempty"`
+	EipName               string           `json:"eipName,omitempty"`
 	InternetChargeType    string           `json:"internetChargeType,omitempty"`
 	PurchaseCount         int              `json:"purchaseCount,omitempty"`
 	Name                  string           `json:"name,omitempty"`

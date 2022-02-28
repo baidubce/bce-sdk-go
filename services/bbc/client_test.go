@@ -500,6 +500,15 @@ func TestUnShareImage(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestGetImageSharedUser(t *testing.T) {
+	users, err := BBC_CLIENT.GetImageSharedUser(BBC_TestImageId)
+	if err != nil {
+		fmt.Println("error: ", err)
+	} else {
+		fmt.Println(users)
+	}
+}
+
 func TestGetInstanceEni(t *testing.T) {
 	instanceId := "instanceId"
 	if res, err := BBC_CLIENT.GetInstanceEni(instanceId); err != nil {

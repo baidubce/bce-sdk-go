@@ -58,6 +58,8 @@ type ClusterSpec struct {
 	MasterConfig           MasterConfig           `json:"masterConfig,omitempty" valid:"Required"`
 	ContainerNetworkConfig ContainerNetworkConfig `json:"containerNetworkConfig,omitempty" valid:"Required"`
 
+	AuthenticateMode AuthenticateMode `json:"authenticateMode,omitempty"` // APIServer 认证方式
+
 	// K8S 自定义配置
 	K8SCustomConfig K8SCustomConfig `json:"k8sCustomConfig,omitempty"`
 }
@@ -275,4 +277,15 @@ const (
 
 	// ClusterPhaseDeleteFailed 集群删除失败
 	ClusterPhaseDeleteFailed ClusterPhase = "delete_failed"
+)
+
+// AuthenticateMode - 认证类型
+type AuthenticateMode string
+
+const (
+	// AuthenticateModeX509 - X509
+	AuthenticateModeX509 AuthenticateMode = "x509"
+
+	// AuthenticateModeOIDC - OIDC
+	AuthenticateModeOIDC AuthenticateMode = "oidc"
 )

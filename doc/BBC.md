@@ -966,6 +966,22 @@ if  err := bbcClient.UnShareImage(imageId,args); err != nil {
 }
 ```
 
+### 查询自定义镜像已共享的用户
+
+- 该接口用于查询自定义镜像已共享的用户列表
+- imageId 待查询的自定义镜像Id
+
+```go
+// 待查询的自定义镜像ID
+imageId := "your-imageId"
+
+if  users, err := bbcClient.GetImageSharedUser(imageId); err != nil {
+    fmt.Println("GetImageSharedUser failed: ", err)
+} else {
+    fmt.Println("GetImageSharedUser success: ", users)
+}
+```
+
 ## 操作日志
 ### 查询操作日志
 通过以下代码查询指定操作日志

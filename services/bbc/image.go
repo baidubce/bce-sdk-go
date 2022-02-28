@@ -304,6 +304,36 @@ func UnShareImage(cli bce.Client, imageId string, args *SharedUser) error {
 	return nil
 }
 
+// GetImageSharedUser - get the list of users that the image has been shared with
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - imageId: id of the image
+// RETURNS:
+//     - *GetImageSharedUserResult: result of the shared users
+//     - error: nil if success otherwise the specific error
+func GetImageSharedUser(cli bce.Client, imageId string) (*GetImageSharedUserResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getImageSharedUserUri(imageId))
+	req.SetMethod(http.GET)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &GetImageSharedUserResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
 func getImageUri() string {
 	return URI_PREFIX_V1 + REQUEST_IMAGE_URI
 }
@@ -318,4 +348,8 @@ func getCommonImageUri() string {
 
 func getCustomImageUri() string {
 	return URI_PREFIX_V1 + REQUEST_CUSTOM_IMAGE_URI
+}
+
+func getImageSharedUserUri(id string) string {
+	return URI_PREFIX_V1 + REQUEST_IMAGE_URI + "/" + id + REQUEST_IMAGE_SHAREDUSER_URI
 }

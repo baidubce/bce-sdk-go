@@ -334,6 +334,13 @@ type InstanceCRD struct {
 	Status InstanceStatus     `json:"status,omitempty"`
 }
 
+type ClusterCRD struct {
+	ObjectMeta `json:"metadata,omitempty"`
+
+	Spec   types.ClusterSpec `json:"spec,omitempty"`
+	Status ClusterStatus     `json:"status,omitempty"`
+}
+
 type ObjectMeta struct {
 	Name         string `json:"name,omitempty"`
 	GenerateName string `json:"generateName,omitempty"`
@@ -851,4 +858,21 @@ type UpdateInstanceCRDRequest struct {
 type GetInstanceCRDResponse struct {
 	Instance  *InstanceCRD `json:"instance"`
 	RequestID string       `json:"requestID"`
+}
+
+type GetClusterCRDArgs struct {
+	ClusterID string `json:"clusterID"`
+}
+
+type GetClusterCRDResponse struct {
+	Cluster   *ClusterCRD `json:"cluster"`
+	RequestID string      `json:"requestID"`
+}
+
+type UpdateClusterCRDArgs struct {
+	Cluster *ClusterCRD `json:"cluster"`
+}
+
+type UpdateClusterCRDResponses struct {
+
 }
