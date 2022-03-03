@@ -339,3 +339,7 @@ func getMaintainTaskDetailUri() string {
 func getMaintainTaskUriWithTaskId(taskId string) string {
 	return URI_PREFIX + REQUEST_DDC_TASK_URL + "/" + taskId
 }
+
+func getInstanceBackupStatusUrl(instanceId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + "/backupStatus"
+}

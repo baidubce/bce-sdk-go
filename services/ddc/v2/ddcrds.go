@@ -1464,3 +1464,13 @@ func (c *Client) GetErrorLogs(args *GetErrorLogsArgs) (*ErrorLogsResponse, error
 func (c *Client) GetSlowLogs(args *GetSlowLogsArgs) (*SlowLogsResponse, error) {
 	return c.ddcClient.GetSlowLogs(args)
 }
+
+// GetInstanceBackupStatus - get instance backup status and backup start time
+//
+// PARAMS:
+// RETURNS:
+//     - *GetBackupStatusResponse: the response of backup status
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetInstanceBackupStatus(instanceId string) (*GetBackupStatusResponse, error) {
+	return c.ddcClient.GetInstanceBackupStatus(instanceId)
+}

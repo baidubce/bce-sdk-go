@@ -300,7 +300,11 @@ args := &ddcrds.GetFlavorCapacityArgs{
     CpuInCore:  2,
     MemoryInGb: 4,
     DiskInGb:   50,
+    // 指定亲和度
+    Affinity:   2,
 }
+// 使用默认亲和度，默认为10
+// args := ddcrds.NewDefaultGetFlavorCapacityArgs(2,4,50)
 capacityResult, err := client.GetFlavorCapacity(poolId, args)
 if err != nil {
     fmt.Printf("get flavor capacity of pool error: %+v\n", err)
@@ -2214,6 +2218,23 @@ if err != nil {
     return
 }
 fmt.Printf("create backup success\n")
+```
+
+## 查询实例备份状态
+使用以下代码可以查询当前实例是否正在备份以及备份开始的时间(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+backupStatusResult, err := client.GetInstanceBackupStatus(instanceId)
+if err != nil {
+    fmt.Printf("get backup status error: %+v\n", err)
+    return
+}
+fmt.Println("get backup status success.")
+fmt.Println("instance is backuping: ", backupStatusResult.IsBackuping)
+if backupStatusResult.IsBackuping {
+    fmt.Println("instance backup start time: ", backupStatusResult.SnapshotStartTime)
+}
 ```
 
 ## 备份详情

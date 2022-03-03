@@ -954,7 +954,18 @@ type GetFlavorCapacityArgs struct {
 	CpuInCore  int   `json:"CpuInCore,omitempty"`
 	MemoryInGb int64 `json:"memoryInGb,omitempty"`
 	DiskInGb   int64 `json:"diskInGb,omitempty"`
+	Affinity   int64 `json:"affinity,omitempty"`
 }
+
+func NewDefaultGetFlavorCapacityArgs(cpuInCore int, memoryInGb, diskInGb int64) *GetFlavorCapacityArgs {
+	return &GetFlavorCapacityArgs{
+		CpuInCore:  cpuInCore,
+		MemoryInGb: memoryInGb,
+		DiskInGb:   diskInGb,
+		Affinity:   10,
+	}
+}
+
 type GetFlavorCapacityResult struct {
 	Capacity map[string]CapacityOfZone `json:"capacity"`
 }
@@ -1129,4 +1140,9 @@ type SlowLog struct {
 type SlowLogsResponse struct {
 	Count    int       `json:"count"`
 	SlowLogs []SlowLog `json:"slowLogs"`
+}
+
+type GetBackupStatusResponse struct {
+	IsBackuping       bool   `json:"isBackuping"`
+	SnapshotStartTime string `json:"snapshotStartTime"`
 }

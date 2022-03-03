@@ -1491,7 +1491,10 @@ func TestClient_GetFlavorCapacity(t *testing.T) {
 		CpuInCore:  2,
 		MemoryInGb: 4,
 		DiskInGb:   50,
+		Affinity:   2,
 	}
+
+	args = NewDefaultGetFlavorCapacityArgs(2, 4, 50)
 	capacityResult, err := client.GetFlavorCapacity(POOL, args)
 	if err != nil {
 		fmt.Printf("get flavor capacity of pool error: %+v\n", err)
@@ -1681,5 +1684,19 @@ func TestClient_GetSlowLogs(t *testing.T) {
 		fmt.Println("slow log rowsSent: ", slowLog.RowsSent)
 		fmt.Println("slow log sql: ", slowLog.Sql)
 		fmt.Println("slow log executeTime: ", slowLog.ExecuteTime)
+	}
+}
+
+func TestClient_GetInstanceBackupStatus(t *testing.T) {
+	instanceId = "ddc-mvxhc1fq"
+	backupStatusResult, err := client.GetInstanceBackupStatus(instanceId)
+	if err != nil {
+		fmt.Printf("get backup status error: %+v\n", err)
+		return
+	}
+	fmt.Println("get backup status success.")
+	fmt.Println("instance is backuping: ", backupStatusResult.IsBackuping)
+	if backupStatusResult.IsBackuping {
+		fmt.Println("instance backup start time: ", backupStatusResult.SnapshotStartTime)
 	}
 }
