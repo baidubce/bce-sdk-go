@@ -515,12 +515,13 @@ func TestClient_ListInstancesByPage(t *testing.T) {
 	args := &ListInstancesByPageArgs{
 		ClusterID: CCE_CLUSTER_ID,
 		Params: &ListInstancesByPageParams{
-			KeywordType: InstanceKeywordTypeInstanceName,
-			Keyword:     "",
-			OrderBy:     "createdAt",
-			Order:       OrderASC,
-			PageNo:      1,
-			PageSize:    10,
+			KeywordType:          InstanceKeywordTypeInstanceName,
+			Keyword:              "",
+			OrderBy:              "createdAt",
+			Order:                OrderASC,
+			PageNo:               1,
+			PageSize:             10,
+			EnableInternalFields: true,
 		},
 	}
 	resp, err := CCE_CLIENT.ListInstancesByPage(args)
@@ -668,7 +669,6 @@ func TestClient_UpdateClusterCRD(t *testing.T) {
 	fmt.Printf("Request ID: %s", resp.RequestID)
 	s, _ := json.MarshalIndent(resp, "", "\t")
 	fmt.Printf("Response: %s", string(s))
-
 
 	cluster := resp.Cluster
 	cluster.Spec.ClusterName = "gogogogo"

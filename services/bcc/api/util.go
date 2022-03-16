@@ -39,6 +39,7 @@ const (
 	REQUEST_IMAGE_SHAREDUSER_URI = "/sharedUsers"
 	REQUEST_IMAGE_OS_URI         = "/os"
 	REQUEST_INSTANCE_URI         = "/instance"
+	REQUEST_INSTANCE_LABEL_URI   = "/instanceByLabel"
 	REQUEST_LIST_URI             = "/list"
 	REQUEST_SECURITYGROUP_URI    = "/securityGroup"
 	REQUEST_SNAPSHOT_URI         = "/snapshot"
@@ -81,6 +82,10 @@ const (
 
 func getInstanceUri() string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI
+}
+
+func getInstanceByLabelUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_LABEL_URI
 }
 
 func getInstanceUriV3() string {

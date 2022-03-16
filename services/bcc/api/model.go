@@ -396,6 +396,63 @@ type CreateInstanceBySpecArgs struct {
 	DetetionProtection    int              `json:"deletionProtection"`
 }
 
+const (
+	LabelOperatorEqual    LabelOperator = "equal"
+	LabelOperatorNotEqual LabelOperator = "not_equal"
+	LabelOperatorExist    LabelOperator = "exist"
+	LabelOperatorNotExist LabelOperator = "not_exist"
+)
+
+type LabelOperator string
+
+type LabelConstraint struct {
+	Key      string        `json:"labelKey,omitempty"`
+	Value    string        `json:"labelValue,omitempty"`
+	Operator LabelOperator `json:"operatorName,omitempty"`
+}
+
+// --- 创建 BCC 的新接口的参数和返回值
+
+type CreateSpecialInstanceBySpecArgs struct {
+	ImageId               string           `json:"imageId"`
+	Spec                  string           `json:"spec"`
+	RootDiskSizeInGb      int              `json:"rootDiskSizeInGb,omitempty"`
+	RootDiskStorageType   StorageType      `json:"rootDiskStorageType,omitempty"`
+	EphemeralDisks        []EphemeralDisk  `json:"ephemeralDisks,omitempty"`
+	CreateCdsList         []CreateCdsModel `json:"createCdsList,omitempty"`
+	NetWorkCapacityInMbps int              `json:"networkCapacityInMbps,omitempty"`
+	InternetChargeType    string           `json:"internetChargeType,omitempty"`
+	PurchaseCount         int              `json:"purchaseCount,omitempty"`
+	Name                  string           `json:"name,omitempty"`
+	Hostname              string           `json:"hostname,omitempty"`
+	IsOpenHostnameDomain  bool             `json:"isOpenHostnameDomain,omitempty"`
+	AutoSeqSuffix         bool             `json:"autoSeqSuffix,omitempty"`
+	AdminPass             string           `json:"adminPass,omitempty"`
+	Billing               Billing          `json:"billing"`
+	ZoneName              string           `json:"zoneName,omitempty"`
+	SubnetId              string           `json:"subnetId,omitempty"`
+	SecurityGroupId       string           `json:"securityGroupId,omitempty"`
+	RelationTag           bool             `json:"relationTag,omitempty"`
+	Tags                  []model.TagModel `json:"tags,omitempty"`
+	KeypairId             string           `json:"keypairId"`
+	AutoRenewTimeUnit     string           `json:"autoRenewTimeUnit"`
+	AutoRenewTime         int              `json:"autoRenewTime"`
+	CdsAutoRenew          bool             `json:"cdsAutoRenew"`
+	AspId                 string           `json:"aspId"`
+	InternalIps           []string         `json:"internalIps,omitempty"`
+	DeployId              string           `json:"deployId,omitempty"`
+	ClientToken           string           `json:"-"`
+	RequestToken          string           `json:"requestToken"`
+	DeployIdList          []string         `json:"deployIdList"`
+	DetetionProtection    int              `json:"deletionProtection"`
+	// CreateInstanceBySpecArgs 的基础上增加的参数
+	LabelConstraints []LabelConstraint `json:"labelConstraints,omitempty"`
+}
+
+type CreateSpecialInstanceBySpecResult struct {
+	InstanceIds []string `json:"instanceIds"`
+}
+
 type CreateInstanceV3Args struct {
 	InstanceSpec          string                `json:"instanceSpec,omitempty"`
 	SystemVolume          SystemVolume          `json:"systemVolume,omitempty"`

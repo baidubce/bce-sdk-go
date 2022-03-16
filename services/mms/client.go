@@ -77,6 +77,17 @@ func (c *Client) GetInsertVideoResult(lib, source string) (*api.BaseResponse, er
 	return api.GetInsertVideoResult(c, lib, source)
 }
 
+// GetInsertVideoResultById - get video insert result and video recognize task result by id
+// PARAMS:
+// 		- libId: vedio library id
+// 		- mediaId: vedio id
+// RETURN:
+// 		- BaseResponse: the result of get result
+// 		- error: nil if success otherwise the specific error
+func (c *Client) GetInsertVideoResultById(libId, mediaId string) (*api.BaseResponse, error) {
+	return api.GetInsertVideoResultById(c, libId, mediaId)
+}
+
 // DeleteVideo - delete a video
 // PARAMS:
 // 		- lib: vedio library name
@@ -86,6 +97,17 @@ func (c *Client) GetInsertVideoResult(lib, source string) (*api.BaseResponse, er
 // 		- error: nil if success otherwise the specific error
 func (c *Client) DeleteVideo(lib, source string) (*api.BaseResponse, error) {
 	return api.DeleteVideo(c, lib, source)
+}
+
+// DeleteVideoById - delete a video
+// PARAMS:
+// 		- libId: video library id
+// 		- mediaId: video id
+// RETURN:
+// 		- BaseResponse: the result of delete video
+// 		- error: nil if success otherwise the specific error
+func (c *Client) DeleteVideoById(libId, mediaId string) (*api.BaseResponse, error) {
+	return api.DeleteVideoById(c, libId, mediaId)
 }
 
 // InsertImage - insert a image
@@ -108,6 +130,17 @@ func (c *Client) InsertImage(lib string, args *api.BaseRequest) (*api.BaseRespon
 // 		- error: nil if success otherwise the specific error
 func (c *Client) DeleteImage(lib, source string) (*api.BaseResponse, error) {
 	return api.DeleteImage(c, lib, source)
+}
+
+// DeleteImageById - delete a image
+// PARAMS:
+// 		- libId: image library id
+// 		- mediaId: image id
+// RETURN:
+// 		- BaseResponse: the result of delete a image
+// 		- error: nil if success otherwise the specific error
+func (c *Client) DeleteImageById(libId, mediaId string) (*api.BaseResponse, error) {
+	return api.DeleteImageById(c, libId, mediaId)
 }
 
 // SearchImageByImage - search images by a image
@@ -152,4 +185,15 @@ func (c *Client) SearchVideoByVideo(lib string, args *api.BaseRequest) (*api.Sea
 // 		- error: nil if success otherwise the specific error
 func (c *Client) GetSearchVideoByVideoResult(lib, source string) (*api.SearchTaskResultResponse, error) {
 	return api.GetSearchVideoByVideoResult(c, lib, source)
+}
+
+// GetSearchVideoByVideoResultById - get result of searching videos by taskId
+// PARAMS:
+// 		- lib: video library name
+// 		- taskId: search task id
+// RETURN:
+// 		- BaseResponse: the result of searching videos by video
+// 		- error: nil if success otherwise the specific error
+func (c *Client) GetSearchVideoByVideoResultById(lib, taskId string) (*api.SearchTaskResultResponse, error) {
+	return api.GetSearchVideoByVideoResultById(c, lib, taskId)
 }

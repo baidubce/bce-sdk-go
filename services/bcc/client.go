@@ -89,6 +89,35 @@ func (c *Client) CreateInstance(args *api.CreateInstanceArgs) (*api.CreateInstan
 	return api.CreateInstance(c, args, body)
 }
 
+// CreateInstance - create an instance with the specific parameters and support the passing in of label
+//
+// PARAMS:
+//     - args: the arguments to create instance
+// RETURNS:
+//     - *api.CreateInstanceResult: the result of create Instance, contains new Instance ID
+//     - error: nil if success otherwise the specific error
+func (c *Client) CreateInstanceByLabel(args *api.CreateSpecialInstanceBySpecArgs) (*api.CreateInstanceResult, error) {
+	if len(args.AdminPass) > 0 {
+		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
+		if err != nil {
+			return nil, err
+		}
+
+		args.AdminPass = cryptedPass
+	}
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.CreateInstanceByLabel(c, args, body)
+}
+
 // CreateInstanceBySpec - create an instance with the specific parameters
 //
 // PARAMS:

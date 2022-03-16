@@ -58,6 +58,25 @@ func GetInsertVideoResult(cli bce.Client, lib, source string) (*BaseResponse, er
 	return res, nil
 }
 
+func GetInsertVideoResultById(cli bce.Client, libId, mediaId string) (*BaseResponse, error) {
+
+	params := map[string]string{
+		"mediaId":               mediaId,
+		"getInsertResponseById": "",
+	}
+
+	resp, err := sendRequest(cli, http.GET, URI_PREFIX+VIDEO_URI+"/"+libId, []byte{}, params)
+	res := &BaseResponse{}
+	if err != nil {
+		return nil, err
+	}
+
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
 func DeleteVideo(cli bce.Client, lib, source string) (*BaseResponse, error) {
 
 	params := map[string]string{
@@ -66,6 +85,25 @@ func DeleteVideo(cli bce.Client, lib, source string) (*BaseResponse, error) {
 	}
 
 	resp, err := sendRequest(cli, http.POST, URI_PREFIX+VIDEO_URI+"/"+lib, []byte{}, params)
+	res := &BaseResponse{}
+	if err != nil {
+		return nil, err
+	}
+
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func DeleteVideoById(cli bce.Client, libId, mediaId string) (*BaseResponse, error) {
+
+	params := map[string]string{
+		"mediaId":         mediaId,
+		"deleteVideoById": "",
+	}
+
+	resp, err := sendRequest(cli, http.POST, URI_PREFIX+VIDEO_URI+"/"+libId, []byte{}, params)
 	res := &BaseResponse{}
 	if err != nil {
 		return nil, err
@@ -103,6 +141,25 @@ func DeleteImage(cli bce.Client, lib, source string) (*BaseResponse, error) {
 	}
 
 	resp, err := sendRequest(cli, http.POST, URI_PREFIX+IMAGE_URI+"/"+lib, []byte{}, params)
+	res := &BaseResponse{}
+	if err != nil {
+		return nil, err
+	}
+
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func DeleteImageById(cli bce.Client, libId, mediaId string) (*BaseResponse, error) {
+
+	params := map[string]string{
+		"mediaId":         mediaId,
+		"deleteImageById": "",
+	}
+
+	resp, err := sendRequest(cli, http.POST, URI_PREFIX+IMAGE_URI+"/"+libId, []byte{}, params)
 	res := &BaseResponse{}
 	if err != nil {
 		return nil, err
@@ -188,6 +245,25 @@ func GetSearchVideoByVideoResult(cli bce.Client, lib, source string) (*SearchTas
 	params := map[string]string{
 		"searchByVideo": "",
 		"source":        source,
+	}
+
+	resp, err := sendRequest(cli, http.GET, URI_PREFIX+VIDEO_URI+"/"+lib, []byte{}, params)
+	res := &SearchTaskResultResponse{}
+	if err != nil {
+		return nil, err
+	}
+
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func GetSearchVideoByVideoResultById(cli bce.Client, lib, taskId string) (*SearchTaskResultResponse, error) {
+
+	params := map[string]string{
+		"getSearchResponseByTaskId": "",
+		"taskId":                    taskId,
 	}
 
 	resp, err := sendRequest(cli, http.GET, URI_PREFIX+VIDEO_URI+"/"+lib, []byte{}, params)

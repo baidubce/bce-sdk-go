@@ -27,10 +27,15 @@ const (
 	AK           = ""
 	SK           = ""
 	VIDEO_LIB    = ""
+	VIDEO_LIB_ID = ""
 	IMAGE_LIB    = ""
+	IMAGE_LIB_ID = ""
 	VIDEO_SOURCE = "http://xxx.mp4"
 	IMAGE_SOURCE = "http://xxx.png"
 	ENDPOINT     = "http://xxx"
+	VIDEO_ID     = ""
+	IMAGE_ID     = ""
+	TASK_ID      = ""
 )
 
 func init() {
@@ -60,6 +65,16 @@ func TestGetInsertVideoResult(t *testing.T) {
 	}
 }
 
+func TestGetInsertVideoResultById(t *testing.T) {
+	res, err := CLIENT.GetInsertVideoResultById(VIDEO_LIB_ID, VIDEO_ID)
+	if err != nil {
+		t.Fatalf("TestGetInsertVideoResult failed: %s", err)
+	}
+	if res.Source != VIDEO_SOURCE {
+		t.Fatal("TestGetInsertVideoResult Failed.")
+	}
+}
+
 func TestDeleteVideo(t *testing.T) {
 	res, err := CLIENT.DeleteVideo(VIDEO_LIB, VIDEO_SOURCE)
 	if err != nil {
@@ -67,6 +82,16 @@ func TestDeleteVideo(t *testing.T) {
 	}
 	if res == nil {
 		t.Fatal("TestDeleteVideo Failed.")
+	}
+}
+
+func TestDeleteVideoById(t *testing.T) {
+	res, err := CLIENT.DeleteVideoById(VIDEO_LIB_ID, VIDEO_ID)
+	if err != nil {
+		t.Fatalf("DeleteVideoById failed: %s", err)
+	}
+	if res == nil {
+		t.Fatal("DeleteVideoById Failed.")
 	}
 }
 
@@ -88,6 +113,16 @@ func TestDeleteImage(t *testing.T) {
 	}
 	if res == nil {
 		t.Fatal("TestDeleteImage Failed.")
+	}
+}
+
+func TestDeleteImageById(t *testing.T) {
+	res, err := CLIENT.DeleteVideoById(IMAGE_LIB_ID, IMAGE_ID)
+	if err != nil {
+		t.Fatalf("TestDeleteImageById failed: %s", err)
+	}
+	if res == nil {
+		t.Fatal("TestDeleteImageById Failed.")
 	}
 }
 
@@ -128,6 +163,16 @@ func TestGetSearchVideoByVideoResult(t *testing.T) {
 	res, err := CLIENT.GetSearchVideoByVideoResult(VIDEO_LIB, VIDEO_SOURCE)
 	if err != nil {
 		t.Fatalf("TestGetSearchVideoByVideoResult failed: %s", err)
+	}
+	if res == nil {
+		t.Fatal(res)
+	}
+}
+
+func TestGetSearchVideoByVideoResultById(t *testing.T) {
+	res, err := CLIENT.GetSearchVideoByVideoResultById(VIDEO_LIB, TASK_ID)
+	if err != nil {
+		t.Fatalf("TestGetSearchVideoByVideoResultById failed: %s", err)
 	}
 	if res == nil {
 		t.Fatal(res)

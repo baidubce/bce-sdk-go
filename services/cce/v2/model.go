@@ -109,12 +109,13 @@ type InstanceSet struct {
 
 // ListInstancesByPageParams - 分页查询集群实例列表参数
 type ListInstancesByPageParams struct {
-	KeywordType InstanceKeywordType `json:"keywordType"`
-	Keyword     string              `json:"keyword"`
-	OrderBy     InstanceOrderBy     `json:"orderBy"`
-	Order       Order               `json:"order"`
-	PageNo      int                 `json:"pageNo"`
-	PageSize    int                 `json:"pageSize"`
+	KeywordType          InstanceKeywordType `json:"keywordType"`
+	Keyword              string              `json:"keyword"`
+	OrderBy              InstanceOrderBy     `json:"orderBy"`
+	Order                Order               `json:"order"`
+	PageNo               int                 `json:"pageNo"`
+	PageSize             int                 `json:"pageSize"`
+	EnableInternalFields bool                `json:"enableInternalFields"`
 }
 
 // CreateClusterResponse - 创建 Cluster 返回
@@ -874,5 +875,4 @@ type UpdateClusterCRDArgs struct {
 }
 
 type UpdateClusterCRDResponses struct {
-
 }
