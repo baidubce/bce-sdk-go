@@ -38,7 +38,7 @@ const (
 	POOL            = "xdb_005a2d79-a4f4-4bfb-8284-0ffe9ddaa307_pool"
 	PNETIP          = "100.88.65.121"
 	DEPLOY_ID       = "ab89d829-9068-d88e-75bc-64bb6367d036"
-	DDC_INSTANCE_ID = "ddc-mtu45cvm"
+	DDC_INSTANCE_ID = "ddc-mqv3e72u"
 	RDS_INSTANCE_ID = "rds-OtTkC1OD"
 	ETAG            = "v0"
 )
@@ -1465,6 +1465,25 @@ func TestClient_GetDisk(t *testing.T) {
 		fmt.Println("disk totle size in bytes: ", diskItem.TotalSize)
 		fmt.Println("disk used size in bytes: ", diskItem.UsedSize)
 		fmt.Println("disk report time: ", diskItem.ReportTime)
+	}
+}
+
+func TestClient_GetMachineInfo(t *testing.T) {
+	machine, err := client.GetMachineInfo(instanceId)
+	if err != nil {
+		fmt.Printf("get machine info error: %+v\n", err)
+		return
+	}
+	fmt.Println("get machine info success.")
+	for _, machine := range machine.Response.Items {
+		fmt.Println("instance id: ", machine.InstanceID)
+		fmt.Println("instance role: ", machine.Role)
+		fmt.Println("cpu(core): ", machine.CPUInCore)
+		fmt.Println("cpu(core) free: ", machine.FreeCPUInCore)
+		fmt.Println("memory(MB): ", machine.MemSizeInMB)
+		fmt.Println("memory(MB) free: ", machine.FreeMemSizeInMB)
+		fmt.Println("disk info: ", machine.SizeInGB)
+		fmt.Println("----------------------")
 	}
 }
 

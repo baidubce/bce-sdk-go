@@ -1976,6 +1976,29 @@ func (c *DDCClient) GetDisk(instanceId string) (*Disk, error) {
 	return result, err
 }
 
+// GetMachineInfo - get machine info of instance
+//
+// PARAMS:
+//     - instanceId: id of instance
+// RETURNS:
+//     - *MachineInfo:info of machine resource
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetMachineInfo(instanceId string) (*MachineInfo, error) {
+	if len(instanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+
+	result := &MachineInfo{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getDdcUriWithInstanceId(instanceId)+"/machine").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
 // GetResidual - get residual of pool
 //
 // PARAMS:

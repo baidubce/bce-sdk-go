@@ -927,6 +927,25 @@ type Disk struct {
 	} `json:"Response"`
 }
 
+type MachineInfo struct {
+	Response struct {
+		Items []struct {
+			InstanceID      string `json:"instanceId"`
+			Role            string `json:"role"`
+			CPUInCore       int    `json:"cpuInCore"`
+			FreeCPUInCore   int    `json:"freeCpuInCore"`
+			MemSizeInMB     int    `json:"memSizeInMB"`
+			FreeMemSizeInMB int    `json:"freeMemSizeInMB"`
+			SizeInGB        []struct {
+				FreeSizeInGB int               `json:"freeSizeInGB"`
+				Label        map[string]string `json:"label"`
+				Path         string            `json:"path"`
+				SizeInGB     int               `json:"sizeInGB"`
+			} `json:"sizeInGB"`
+		} `json:"Items"`
+	} `json:"Response"`
+}
+
 type GetResidualResult struct {
 	Residual map[string]ResidualOfZone `json:"residual"`
 }

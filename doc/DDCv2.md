@@ -837,6 +837,29 @@ for _, diskItem := range disk.Response.Items {
 }
 ```
 
+## 获取物理机资源信息
+使用以下代码可以获取指定实例所在物理机资源信息。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+machine, err := client.GetMachineInfo(instanceId)
+if err != nil {
+    fmt.Printf("get machine info error: %+v\n", err)
+    return
+}
+fmt.Println("get machine info success.")
+for _, machine := range machine.Response.Items {
+    fmt.Println("instance id: ", machine.InstanceID)
+    fmt.Println("instance role: ", machine.Role)
+    fmt.Println("cpu(core): ", machine.CPUInCore)
+    fmt.Println("cpu(core) free: ", machine.FreeCPUInCore)
+    fmt.Println("memory(MB): ", machine.MemSizeInMB)
+    fmt.Println("memory(MB) free: ", machine.FreeMemSizeInMB)
+    fmt.Println("disk info: ", machine.SizeInGB)
+    fmt.Println("----------------------")
+}
+```
+
 ## 删除实例
 使用以下代码可以批量删除实例,RDS产品将删除实例,DDC产品会将实例放入回收站。
 ```go
