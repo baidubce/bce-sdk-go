@@ -25,6 +25,7 @@ type CreateDtsArgs struct {
 	TargetInstanceType string `json:"targetInstanceType"`
 	CrossRegionTag     int    `json:"crossRegionTag"`
 	DirectionType      string `json:"directionType"`
+	OrderInfo          OrderInfo `json:"orderInfo"`
 }
 
 type CreateDtsResult struct {
@@ -80,6 +81,10 @@ type Connection struct {
 	StartTime       string `json:"startTime,omitempty"`
 	EndTime         string `json:"endTime,omitempty"`
 	SqlType         string `json:"sqlType,omitempty"`
+	VpcId           string `json:"vpcId"`
+	VpcName         string `json:"vpcName"`
+	VpcCidr         string `json:"vpcCidr"`
+	VpcShortId      string `json:"vpcShortId"`
 }
 
 type Schema struct {
@@ -243,4 +248,31 @@ type ResizeTaskStandardArgs struct {
 
 type ResizeTaskStandardResponse struct {
 	OrderId string `json:"orderId"`
+}
+
+type OrderInfo struct {
+	Src Src `json:"src"`
+	Dst Dst `json:"dst"`
+}
+
+type Src struct {
+    InstanceType    string  `json:"instanceType"`
+    DbType          string  `json:"dbType"`
+    SliceNum        string   `json:"sliceNum"`
+}
+
+type Dst struct {
+    InstanceType    string  `json:"instanceType"`
+    DbType          string  `json:"dbType"`
+}
+
+type DtsVpcsResult struct {
+	Vpcs    []VpcVo   `json:"vpcs"`
+}
+
+type VpcVo struct {
+	VpcId   string  `json:"vpcId"`
+	ShortId string  `json:"shortId"`
+	Name    string  `json:"name"`
+	Cidr    string  `json:"cidr"`
 }

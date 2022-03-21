@@ -350,3 +350,15 @@ func (c *Client) ResizeTaskStandard(taskId string, args *ResizeTaskStandardArgs)
 
 	return result, err
 }
+
+func (c *Client) GetVpcs(region string) (*DtsVpcsResult, error) {
+	result := &DtsVpcsResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getDtsUri() + "/vpc").
+		WithQueryParam("region", region).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
