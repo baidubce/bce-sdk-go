@@ -18,6 +18,7 @@ type CreateEniArgs struct {
 	ClientToken      string      `json:"-"`
 	Name             string      `json:"name"`
 	SubnetId         string      `json:"subnetId"`
+	InstanceId       string      `json:"instanceId,omitempty"`
 	SecurityGroupIds []string    `json:"securityGroupIds"`
 	PrivateIpSet     []PrivateIp `json:"privateIpSet"`
 	Description      string      `json:"description,omitempty"`

@@ -98,15 +98,16 @@ func getClientToken() string {
 
 func TestClient_CreateEni(t *testing.T) {
 	args := &CreateEniArgs{
-		Name:     "hzb_3",
-		SubnetId: SUBNET_ID,
+		Name:       "hzb_3",
+		SubnetId:   "sbn-5u7bv2e8mzwf",
+		InstanceId: "i-XA1jzMCk",
 		SecurityGroupIds: []string{
-			"g-eqhqsbs84yww",
+			"g-enw8n4aib8nk",
 		},
 		PrivateIpSet: []PrivateIp{
 			{
 				Primary:          true,
-				PrivateIpAddress: "192.168.0.54",
+				PrivateIpAddress: "",
 			},
 		},
 		Description: "go sdk test",
