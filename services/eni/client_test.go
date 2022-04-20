@@ -171,6 +171,34 @@ func TestClient_AddPrivateIp(t *testing.T) {
 	fmt.Println(string(r))
 }
 
+func TestClient_BatchAddPrivateIp(t *testing.T) {
+	args := &EniBatchPrivateIpArgs{
+		EniId:       "eni-gay686fr93e3",
+		ClientToken: getClientToken(),
+		PrivateIpAddresses: []string{
+			"192.168.0.28",
+			"192.168.0.29",
+		},
+	}
+	result, err := ENI_CLIENT.BatchAddPrivateIp(args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
+func TestClient_BatchAddPrivateIpCrossSubnet(t *testing.T) {
+	args := &EniBatchAddPrivateIpCrossSubnetArgs{
+		EniId:                 "eni-gay686fr93e3",
+		ClientToken:           getClientToken(),
+		SubnetId:              "sbn-5vhut3bxmumi",
+		PrivateIpAddressCount: 2,
+	}
+	result, err := ENI_CLIENT.BatchAddPrivateIpCrossSubnet(args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
 func TestClient_DeletePrivateIp(t *testing.T) {
 	args := &EniPrivateIpArgs{
 		EniId:            "eni-mmwvvbvfjch3",
@@ -178,6 +206,19 @@ func TestClient_DeletePrivateIp(t *testing.T) {
 		PrivateIpAddress: "192.168.0.53",
 	}
 	err := ENI_CLIENT.DeletePrivateIp(args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_BatchDeletePrivateIp(t *testing.T) {
+	args := &EniBatchPrivateIpArgs{
+		EniId:       "eni-gay686fr93e3",
+		ClientToken: getClientToken(),
+		PrivateIpAddresses: []string{
+			"192.168.0.28",
+			"192.168.32.17",
+		},
+	}
+	err := ENI_CLIENT.BatchDeletePrivateIp(args)
 	ExpectEqual(t.Errorf, nil, err)
 }
 

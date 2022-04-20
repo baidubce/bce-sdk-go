@@ -550,6 +550,30 @@ func TestGetImageSharedUser(t *testing.T) {
 	}
 }
 
+func TestRemoteCopyImage(t *testing.T) {
+	args := &RemoteCopyImageArgs{
+		Name:       "testRemoteCopy",
+		DestRegion: []string{"hkg"},
+	}
+	err := BBC_CLIENT.RemoteCopyImage(BBC_TestImageId, args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestCancelRemoteCopyImage(t *testing.T) {
+	err := BBC_CLIENT.CancelRemoteCopyImage(BBC_TestImageId)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestRemoteCopyImageReturnImageIds(t *testing.T) {
+	args := &RemoteCopyImageArgs{
+		Name:       "Copy",
+		DestRegion: []string{"hkg"},
+	}
+	result, err := BBC_CLIENT.RemoteCopyImageReturnImageIds(BBC_TestImageId, args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}
+
 func TestGetInstanceEni(t *testing.T) {
 	instanceId := "instanceId"
 	if res, err := BBC_CLIENT.GetInstanceEni(instanceId); err != nil {

@@ -875,6 +875,22 @@ type GetImageSharedUserResult struct {
 	Users []SharedUser `json:"users"`
 }
 
+type RemoteCopyImageModel struct {
+	Region  string `json:"region"`
+	ImageId string `json:"imageId"`
+	ErrMsg  string `json:"errMsg"`
+	Code    string `json:"code"`
+}
+
+type RemoteCopyImageArgs struct {
+	Name       string   `json:"name,omitempty"`
+	DestRegion []string `json:"destRegion"`
+}
+
+type RemoteCopyImageResult struct {
+	RemoteCopyImages []RemoteCopyImageModel `json:"result"`
+}
+
 type ListCDSVolumeArgs struct {
 	MaxKeys    int
 	InstanceId string

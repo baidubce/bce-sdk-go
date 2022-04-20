@@ -897,6 +897,39 @@ func (c *Client) GetImageSharedUser(imageId string) (*GetImageSharedUserResult, 
 	return GetImageSharedUser(c, imageId)
 }
 
+// RemoteCopyImage - copy a bbc image from other region
+//
+// PARAMS:
+//     - imageId: the specific image ID
+//     - args: the arguments to remote copy an image
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) RemoteCopyImage(imageId string, args *RemoteCopyImageArgs) error {
+	return RemoteCopyImage(c, imageId, args)
+}
+
+
+// RemoteCopyImageReturnImageIds - copy an image from other region
+//
+// PARAMS:
+//     - imageId: the specific image ID
+//     - args: the arguments to remote copy an image
+// RETURNS:
+//     - imageIds of destination region if success otherwise the specific error
+func (c *Client) RemoteCopyImageReturnImageIds(imageId string, args *RemoteCopyImageArgs) (*RemoteCopyImageResult, error) {
+	return RemoteCopyImageReturnImageIds(c, imageId, args)
+}
+
+// CancelRemoteCopyImage - cancel a copy image from other region operation
+//
+// PARAMS:
+//     - imageId: the specific image ID
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) CancelRemoteCopyImage(imageId string) error {
+	return CancelRemoteCopyImage(c, imageId)
+}
+
 // GetInstanceEni - get the eni of the bbc instance
 //
 // PARAMS:

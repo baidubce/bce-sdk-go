@@ -163,6 +163,58 @@ func (c *Client) AddPrivateIp(args *EniPrivateIpArgs) (*AddPrivateIpResult, erro
 	return result, err
 }
 
+// BatchAddPrivateIp - batch add private ips
+//
+// PARAMS:
+//     - args: the arguments to batch add private ips, property PrivateIpAddresses or PrivateIpAddressCount is required;
+//             when PrivateIpAddressCount is set, private ips will be auto allocated,
+//             and if you want assign private ips, please just set PrivateIpAddresses;
+// RETURNS:
+//     - *BatchAddPrivateIpResult: the private ips
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchAddPrivateIp(args *EniBatchPrivateIpArgs) (*BatchAddPrivateIpResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("The EniBatchPrivateIpArgs cannot be nil.")
+	}
+
+	result := &BatchAddPrivateIpResult{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForEniId(args.EniId)+"/privateIp/batchAdd").
+		WithMethod(http.POST).
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// BatchAddPrivateIpCrossSubnet - batch add private ips that support cross subnet, white list function
+//
+// PARAMS:
+//     - args: the arguments to batch add private ips, property PrivateIps or PrivateIpAddressCount is required;
+//             when PrivateIpAddressCount is set, private ips in subnet assigned by 'SubnetId' property will be auto allocated;
+//             if you want assign private ips, please just set PrivateIps, and you can also assgin subnet with property 'PrivateIpArgs.SubnetId';
+// RETURNS:
+//     - *BatchAddPrivateIpResult: the private ips
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchAddPrivateIpCrossSubnet(args *EniBatchAddPrivateIpCrossSubnetArgs) (*BatchAddPrivateIpResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("The EniBatchAddPrivateIpCrossSubnetArgs cannot be nil.")
+	}
+
+	result := &BatchAddPrivateIpResult{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForEniId(args.EniId)+"/privateIp/batchAddCrossSubnet").
+		WithMethod(http.POST).
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
 // DeletePrivateIp - delete private ip
 //
 // PARAMS:
@@ -177,6 +229,27 @@ func (c *Client) DeletePrivateIp(args *EniPrivateIpArgs) error {
 	err := bce.NewRequestBuilder(c).
 		WithURL(getURLForEniId(args.EniId)+"/privateIp/"+args.PrivateIpAddress).
 		WithMethod(http.DELETE).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
+
+	return err
+}
+
+// BatchDeletePrivateIp - batch delete private ip
+//
+// PARAMS:
+//     - args: the arguments to batch delete private ipa
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchDeletePrivateIp(args *EniBatchPrivateIpArgs) error {
+	if args == nil {
+		return fmt.Errorf("The EniBatchPrivateIpArgs cannot be nil.")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForEniId(args.EniId)+"/privateIp/batchDel").
+		WithMethod(http.POST).
+		WithBody(args).
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		Do()
 

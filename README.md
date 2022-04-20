@@ -186,7 +186,7 @@ BceServiceError | BOS服务返回的错误
 
 用户使用SDK调用各服务的相关接口，除了返回所需的结果之外还会返回错误，用户可以获取相关错误的详细信息进行处理。实例如下：
 
-```
+```go
 // bosClient 为已创建的BOS服务的Client对象
 bucketLocation, err := bosClient.PutBucket("test-bucket")
 if err != nil {
@@ -216,7 +216,7 @@ GO SDK自行实现了支持六个级别、三种输出（标准输出、标准�
 
 该日志模块无任何外部依赖，开发者使用GO SDK开发项目，可以直接引用该日志模块自行在项目中使用。可使用GO SDK使用的包级别的日志对象，也可创建新的日志对象，详见如下示例：
 
-```
+```go
 // 直接使用包级别全局日志对象（会和GO SDK自身日志一并输出）
 log.SetLogHandler(log.STDERR)
 log.Debugf("%s", "logging message using the log package in the sdk")
@@ -246,6 +246,7 @@ myLogger.Info("this is my own logger from the sdk")
 SSL证书服务 | CERT | github.com/baidubce/bce-sdk-go/services/cert | [CERT.md](./doc/CERT.md)
 函数计算 | CFC | github.com/baidubce/bce-sdk-go/services/cfc | [CFC.md](./doc/CFC.md)
 文件存储服务 | CFS | github.com/baidubce/bce-sdk-go/services/cfs | [CFS.md](./doc/CFS.md)
+文档服务 | DOC | github.com/baidubce/bce-sdk-go/services/doc | [DOC.md](./doc/DOC.md)
 数据传输服务 | DTS | github.com/baidubce/bce-sdk-go/services/dts | [DTS.md](./doc/DTS.md)
 弹性公网IP | EIP | github.com/baidubce/bce-sdk-go/services/eip | [EIP.md](./doc/EIP.md)
 ENIC服务网卡 | ENIC | github.com/baidubce/bce-sdk-go/services/eni | [ENIC.md](./doc/ENIC.md)
