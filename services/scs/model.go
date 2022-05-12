@@ -45,13 +45,18 @@ type CreateInstanceArgs struct {
 	ClusterType       string   `json:"clusterType"`
 	ReplicationNum    int      `json:"replicationNum"`
 	Port              int      `json:"port"`
+	Engine            int      `json:"engine,omitempty"`
 	EngineVersion     string   `json:"engineVersion"`
+	DiskFlavor        int      `json:"diskFlavor,omitempty"`
 	VpcID             string   `json:"vpcId"`
 	Subnets           []Subnet `json:"subnets,omitempty"`
 	AutoRenewTimeUnit string   `json:"autoRenewTimeUnit,omitempty"`
 	AutoRenewTime     int      `json:"autoRenewTime,omitempty"`
 	BgwGroupId        string   `json:"bgwGroupId,omitempty"`
 	ClientToken       string   `json:"-"`
+	ClientAuth        string   `json:"clientAuth"`
+	StoreType         int      `json:"storeType"`
+	EnableReadOnly    int      `json:"enableReadOnly,omitempty"`
 }
 
 type CreateInstanceResult struct {
@@ -94,6 +99,19 @@ type ResizeInstanceArgs struct {
 	ShardNum    int    `json:"shardNum"`
 	IsDefer     bool   `json:"isDefer"`
 	ClientToken string `json:"-"`
+	DiskFlavor  int    `json:"diskFlavor"`
+}
+
+type ReplicationArgs struct {
+	ResizeType      string        `json:"resizeType"`
+	ReplicationInfo []Replication `json:"replicationInfo"`
+	ClientToken     string        `json:"-"`
+}
+
+type Replication struct {
+	AvailabilityZone string `json:"availabilityZone"`
+	SubnetId         string `json:"subnetId"`
+	IsMaster         int    `json:"isMaster"`
 }
 type RestartInstanceArgs struct {
 	IsDefer bool `json:"isDefer"`

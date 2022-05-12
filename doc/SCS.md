@@ -237,8 +237,12 @@ args := &scs.CreateInstanceArgs{
 	InstanceName:  "sdk-scs",
     // 端口号 1025<port<22222，22222<port<65535
 	Port:          6379,
-    // 引擎版本，集群：3.2、4.0、5.0 主从：2.8、3.2、4.0、5.0
+    // 引擎
+    Engine: 2, // redis: 2   PegaDB: 3
+    // 引擎版本，集群：3.2、4.0、5.0 主从：2.8、3.2、4.0、5.0  当Engine为3时，可不传
 	EngineVersion: "3.2",
+    // 存储空间 当Engine为3时添加
+    // DiskFlavor:     60,
     // 节点规格
 	NodeType:      "cache.n1.micro",
     // 集群类型，集群版："cluster"，主从版："master_slave"
@@ -249,6 +253,10 @@ args := &scs.CreateInstanceArgs{
 	ShardNum:      1,
     // 代理节点数，主从版：0，集群版：代理节点数=分片个数
 	ProxyNum:      0,
+    // 存储类型 0：高性能内存 1：ssd本地磁盘 3:容量型存储（PegaDB专用）
+    StoreType: 0,
+    // 副本只读 1打开 2关闭 （PegaDB专用）
+    // EnableReadOnly: 1,
 }
 
 // 若要生成预付费实例，可以按以下配置生成一个月的预付费实例
@@ -448,6 +456,46 @@ if err != nil {
     return
 }
 fmt.Println("delete recycler instances success.")
+```
+
+### 添加节点
+
+```go
+args := &scs.ReplicationArgs{
+    ResizeType: "add", // add 添加从节点  add_readonly 添加只读节点 
+    ReplicationInfo: []Replication{
+        {AvailabilityZone: "cn-bj-a", SubnetId: "sbn-fh56wbtv1ycw", IsMaster: 1},
+        {AvailabilityZone: "cn-bj-a", SubnetId: "sbn-fh56wbtv1ycw", IsMaster: 0},
+        {AvailabilityZone: "cn-bj-a", SubnetId: "sbn-fh56wbtv1ycw", IsMaster: 0},
+    },
+    ClientToken: getClientToken(),
+}
+result, err := client.AddReplication(instanceId, args)
+
+if err != nil {
+    fmt.Println("resize instance failed:", err)
+} else {
+    fmt.Println("resize instance success")
+```
+
+### 删除节点
+
+```go
+args := &scs.ReplicationArgs{
+    ResizeType: "delete", // delete 删除节点  delete_readonly 删除只读节点 
+    ReplicationInfo: []Replication{
+        {AvailabilityZone: "cn-bj-a", SubnetId: "sbn-fh56wbtv1ycw", IsMaster: 1},
+        {AvailabilityZone: "cn-bj-a", SubnetId: "sbn-fh56wbtv1ycw", IsMaster: 0},
+        {AvailabilityZone: "cn-bj-a", SubnetId: "sbn-fh56wbtv1ycw", IsMaster: 0},
+    },
+    ClientToken: getClientToken(),
+}
+result, err := client.DeleteReplication(instanceId, args)
+
+if err != nil {
+    fmt.Println("resize instance failed:", err)
+} else {
+    fmt.Println("resize instance success")
 ```
 
 ### 变更配置

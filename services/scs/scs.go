@@ -238,6 +238,42 @@ func (c *Client) ResizeInstance(instanceId string, args *ResizeInstanceArgs) err
 		Do()
 }
 
+// AddReplication - add replications
+//
+// PARAMS:
+//     - instanceId: id of the instance to be resized
+//     - args: replicationInfo
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) AddReplication(instanceId string, args *ReplicationArgs) error {
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(INSTANCE_URL_V2+"/"+instanceId+"/resizeReplication").
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+}
+
+// DeleteReplication - delete replications
+//
+// PARAMS:
+//     - instanceId: id of the instance to be resized
+//     - args: replicationInfo
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeleteReplication(instanceId string, args *ReplicationArgs) error {
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(INSTANCE_URL_V2+"/"+instanceId+"/resizeReplication").
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+}
+
 // RestartInstance - restart a specified instance
 //
 // PARAMS:
