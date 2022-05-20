@@ -107,6 +107,7 @@ func TestClient_CreateInstance(t *testing.T) {
 		ShardNum:       1,
 		ProxyNum:       2,
 		DiskFlavor:     60,
+		DiskType:       "essd",
 		BgwGroupId:     "",
 		StoreType:      3,
 		EnableReadOnly: 1,

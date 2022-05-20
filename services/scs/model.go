@@ -48,6 +48,7 @@ type CreateInstanceArgs struct {
 	Engine            int      `json:"engine,omitempty"`
 	EngineVersion     string   `json:"engineVersion"`
 	DiskFlavor        int      `json:"diskFlavor,omitempty"`
+	DiskType          string   `json:"diskType,omitempty"`
 	VpcID             string   `json:"vpcId"`
 	Subnets           []Subnet `json:"subnets,omitempty"`
 	AutoRenewTimeUnit string   `json:"autoRenewTimeUnit,omitempty"`
@@ -100,6 +101,7 @@ type ResizeInstanceArgs struct {
 	IsDefer     bool   `json:"isDefer"`
 	ClientToken string `json:"-"`
 	DiskFlavor  int    `json:"diskFlavor"`
+	DiskType    string `json:"diskType"`
 }
 
 type ReplicationArgs struct {

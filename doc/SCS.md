@@ -243,6 +243,8 @@ args := &scs.CreateInstanceArgs{
 	EngineVersion: "3.2",
     // 存储空间 当Engine为3时添加
     // DiskFlavor:     60,
+    // 磁盘类型 当Engine为3时添加目前支持cds  essd两个类型
+    // DiskType:     "essd",
     // 节点规格
 	NodeType:      "cache.n1.micro",
     // 集群类型，集群版："cluster"，主从版："master_slave"
