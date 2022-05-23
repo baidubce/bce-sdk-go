@@ -18,6 +18,7 @@ type CreateEniArgs struct {
 	ClientToken      string      `json:"-"`
 	Name             string      `json:"name"`
 	SubnetId         string      `json:"subnetId"`
+	InstanceId       string      `json:"instanceId,omitempty"`
 	SecurityGroupIds []string    `json:"securityGroupIds"`
 	PrivateIpSet     []PrivateIp `json:"privateIpSet"`
 	Description      string      `json:"description,omitempty"`
@@ -83,8 +84,32 @@ type EniPrivateIpArgs struct {
 	PrivateIpAddress string `json:"privateIpAddress"`
 }
 
+type EniBatchPrivateIpArgs struct {
+	EniId                 string   `json:"-"`
+	ClientToken           string   `json:"-"`
+	PrivateIpAddresses    []string `json:"privateIpAddresses"`
+	PrivateIpAddressCount int      `json:"privateIpAddressCount,omitempty"`
+}
+
+type EniBatchAddPrivateIpCrossSubnetArgs struct {
+	EniId                 string          `json:"-"`
+	ClientToken           string          `json:"-"`
+	SubnetId              string          `json:"subnetId"`
+	PrivateIps            []PrivateIpArgs `json:"privateIps"`
+	PrivateIpAddressCount int             `json:"privateIpAddressCount,omitempty"`
+}
+
+type PrivateIpArgs struct {
+	PrivateIpAddress string `json:"privateIpAddress"`
+	SubnetId         string `json:"subnetId"`
+}
+
 type AddPrivateIpResult struct {
 	PrivateIpAddress string `json:"privateIpAddress"`
+}
+
+type BatchAddPrivateIpResult struct {
+	PrivateIpAddresses []string `json:"privateIpAddresses"`
 }
 
 type EniInstance struct {

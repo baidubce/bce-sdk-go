@@ -102,6 +102,7 @@ type GrantType struct {
 	Resource    []string      `json:"resource,omitempty"`
 	NotResource []string      `json:"notResource,omitempty"`
 	Condition   AclCondType   `json:"condition,omitempty"`
+	Effect      string        `json:"effect,omitempty"`
 }
 
 // PutBucketAclArgs defines the input args structure for putting bucket acl.

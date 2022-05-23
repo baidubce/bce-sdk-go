@@ -966,6 +966,67 @@ if  err := bbcClient.UnShareImage(imageId,args); err != nil {
 }
 ```
 
+### 跨区域复制自定义镜像
+- 用于用户跨区域复制自定义镜像，仅限自定义镜像，系统镜像和服务集成镜像不能复制
+- regions如北京"bj",广州"gz",苏州"su"，可多选：
+```go
+ args := RemoteCopyImageArgs{
+    Name:       "test2",
+    DestRegion: []string{"gz"},
+ }
+ err := bbcClient.RemoteCopyImage(imageId, args)
+ if err != nil {
+     fmt.Println("remote copy image failed:", err)
+ } else {
+     fmt.Println("remote copy image success")
+ }
+```
+
+### 跨区域复制自定义镜像并返回目的region的镜像镜像id
+- 用于用户跨区域复制自定义镜像，仅限自定义镜像，系统镜像和服务集成镜像不能复制
+- regions如北京"bj",广州"gz",苏州"su"，可多选：
+```go
+args := &api.RemoteCopyImageArgs{
+    Name:       "test2",
+    DestRegion: []string{"gz"},
+ }
+result, err := bbcClient.RemoteCopyImageReturnImageIds(imageId, args)
+ if err != nil {
+     fmt.Println("remote copy image failed:", err)
+ } else {
+     fmt.Println("remote copy image success")
+ }
+```
+
+### 取消跨区域复制自定义镜像
+
+用于取消跨区域复制自定义镜像，仅限自定义镜像，系统镜像和服务集成镜像不能复制：
+
+```go
+err := bbcClient.CancelRemoteCopyImage(imageId)
+if err != nil {
+    fmt.Println("cancel remote copy image failed:", err)
+} else {
+    fmt.Println("cancel remote copy image success")
+}
+```
+
+### 查询自定义镜像已共享的用户
+
+- 该接口用于查询自定义镜像已共享的用户列表
+- imageId 待查询的自定义镜像Id
+
+```go
+// 待查询的自定义镜像ID
+imageId := "your-imageId"
+
+if  users, err := bbcClient.GetImageSharedUser(imageId); err != nil {
+    fmt.Println("GetImageSharedUser failed: ", err)
+} else {
+    fmt.Println("GetImageSharedUser success: ", users)
+}
+```
+
 ## 操作日志
 ### 查询操作日志
 通过以下代码查询指定操作日志

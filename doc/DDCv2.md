@@ -300,7 +300,11 @@ args := &ddcrds.GetFlavorCapacityArgs{
     CpuInCore:  2,
     MemoryInGb: 4,
     DiskInGb:   50,
+    // 指定亲和度
+    Affinity:   2,
 }
+// 使用默认亲和度，默认为10
+// args := ddcrds.NewDefaultGetFlavorCapacityArgs(2,4,50)
 capacityResult, err := client.GetFlavorCapacity(poolId, args)
 if err != nil {
     fmt.Printf("get flavor capacity of pool error: %+v\n", err)
@@ -830,6 +834,29 @@ for _, diskItem := range disk.Response.Items {
     fmt.Println("disk totle size in bytes: ", diskItem.TotalSize)
     fmt.Println("disk used size in bytes: ", diskItem.UsedSize)
     fmt.Println("disk report time: ", diskItem.ReportTime)
+}
+```
+
+## 获取物理机资源信息
+使用以下代码可以获取指定实例所在物理机资源信息。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+machine, err := client.GetMachineInfo(instanceId)
+if err != nil {
+    fmt.Printf("get machine info error: %+v\n", err)
+    return
+}
+fmt.Println("get machine info success.")
+for _, machine := range machine.Response.Items {
+    fmt.Println("instance id: ", machine.InstanceID)
+    fmt.Println("instance role: ", machine.Role)
+    fmt.Println("cpu(core): ", machine.CPUInCore)
+    fmt.Println("cpu(core) free: ", machine.FreeCPUInCore)
+    fmt.Println("memory(MB): ", machine.MemSizeInMB)
+    fmt.Println("memory(MB) free: ", machine.FreeMemSizeInMB)
+    fmt.Println("disk info: ", machine.SizeInGB)
+    fmt.Println("----------------------")
 }
 ```
 
@@ -2214,6 +2241,23 @@ if err != nil {
     return
 }
 fmt.Printf("create backup success\n")
+```
+
+## 查询实例备份状态
+使用以下代码可以查询当前实例是否正在备份以及备份开始的时间(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+backupStatusResult, err := client.GetInstanceBackupStatus(instanceId)
+if err != nil {
+    fmt.Printf("get backup status error: %+v\n", err)
+    return
+}
+fmt.Println("get backup status success.")
+fmt.Println("instance is backuping: ", backupStatusResult.IsBackuping)
+if backupStatusResult.IsBackuping {
+    fmt.Println("instance backup start time: ", backupStatusResult.SnapshotStartTime)
+}
 ```
 
 ## 备份详情

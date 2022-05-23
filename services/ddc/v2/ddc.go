@@ -1976,6 +1976,29 @@ func (c *DDCClient) GetDisk(instanceId string) (*Disk, error) {
 	return result, err
 }
 
+// GetMachineInfo - get machine info of instance
+//
+// PARAMS:
+//     - instanceId: id of instance
+// RETURNS:
+//     - *MachineInfo:info of machine resource
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetMachineInfo(instanceId string) (*MachineInfo, error) {
+	if len(instanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+
+	result := &MachineInfo{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getDdcUriWithInstanceId(instanceId)+"/machine").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
 // GetResidual - get residual of pool
 //
 // PARAMS:
@@ -2025,6 +2048,7 @@ func (c *DDCClient) GetFlavorCapacity(poolId string, args *GetFlavorCapacityArgs
 		WithQueryParam("cpuInCore", strconv.Itoa(args.CpuInCore)).
 		WithQueryParam("diskInGb", strconv.FormatInt(args.DiskInGb, 10)).
 		WithQueryParam("memoryInGb", strconv.FormatInt(args.MemoryInGb, 10)).
+		WithQueryParam("affinity", strconv.FormatInt(args.Affinity, 10)).
 		WithResult(result).
 		Do()
 	return result, err
@@ -2255,6 +2279,28 @@ func (c *DDCClient) GetSlowLogs(args *GetSlowLogsArgs) (*SlowLogsResponse, error
 		WithURL(getSlowLogsUrlWithInstanceId(args.InstanceId)).
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// GetInstanceBackupStatus - get instance backup status and backup start time
+//
+// PARAMS:
+// RETURNS:
+//     - *GetBackupStatusResponse: the response of backup status
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetInstanceBackupStatus(instanceId string) (*GetBackupStatusResponse, error) {
+	if len(instanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+
+	result := &GetBackupStatusResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getInstanceBackupStatusUrl(instanceId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithResult(result).
 		Do()
 

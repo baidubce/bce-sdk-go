@@ -126,6 +126,52 @@ type CreateInstanceArgs struct {
 	DataPartitionType string           `json:"dataPartitionType,omitempty"`
 }
 
+const (
+	LabelOperatorEqual    LabelOperator = "equal"
+	LabelOperatorNotEqual LabelOperator = "not_equal"
+	LabelOperatorExist    LabelOperator = "exist"
+	LabelOperatorNotExist LabelOperator = "not_exist"
+)
+
+type LabelOperator string
+
+type LabelConstraint struct {
+	Key      string        `json:"labelKey,omitempty"`
+	Value    string        `json:"labelValue,omitempty"`
+	Operator LabelOperator `json:"operatorName,omitempty"`
+}
+
+type CreateSpecialInstanceArgs struct {
+	FlavorId          string           `json:"flavorId"`
+	ImageId           string           `json:"imageId"`
+	RaidId            string           `json:"raidId"`
+	RootDiskSizeInGb  int              `json:"rootDiskSizeInGb"`
+	PurchaseCount     int              `json:"purchaseCount"`
+	ZoneName          string           `json:"zoneName"`
+	SubnetId          string           `json:"subnetId"`
+	AutoRenewTimeUnit string           `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime     int              `json:"autoRenewTime,omitempty"`
+	Billing           Billing          `json:"billing"`
+	Name              string           `json:"name,omitempty"`
+	Hostname          string           `json:"hostname,omitempty"`
+	AdminPass         string           `json:"adminPass,omitempty"`
+	DeploySetId       string           `json:"deploySetId,omitempty"`
+	ClientToken       string           `json:"-"`
+	SecurityGroupId   string           `json:"securityGroupId,omitempty"`
+	Tags              []model.TagModel `json:"tags,omitempty"`
+	InternalIps       []string         `json:"internalIps,omitempty"`
+	RequestToken      string           `json:"requestToken"`
+	EnableNuma        bool             `json:"enableNuma"`
+	RootPartitionType string           `json:"rootPartitionType,omitempty"`
+	DataPartitionType string           `json:"dataPartitionType,omitempty"`
+	// CreateInstanceArgs 的基础上增加的参数
+	LabelConstraints []LabelConstraint `json:"labelConstraints,omitempty"`
+}
+
+type CreateSpecialInstanceResult struct {
+	InstanceIds []string `json:"instanceIds"`
+}
+
 type Billing struct {
 	PaymentTiming PaymentTimingType `json:"paymentTiming,omitempty"`
 	Reservation   Reservation       `json:"reservation,omitempty"`
@@ -170,15 +216,23 @@ type ListRecycledInstancesResult struct {
 }
 
 type RecycledInstancesModel struct {
-	ServiceType   string   `json:"serviceType"`
-	ServiceName   string   `json:"serviceName"`
-	Name          string   `json:"name"`
-	Id            string   `json:"id"`
-	SerialNumber  string   `json:"serialNumber"`
-	RecycleTime   string   `json:"recycleTime"`
-	DeleteTime    string   `json:"deleteTime"`
-	PaymentTiming string   `json:"paymentTiming"`
-	ConfigItems   []string `json:"configItems"`
+	ServiceType   string   							`json:"serviceType"`
+	ServiceName   string   							`json:"serviceName"`
+	Name          string   							`json:"name"`
+	Id            string   							`json:"id"`
+	SerialNumber  string   							`json:"serialNumber"`
+	RecycleTime   string   							`json:"recycleTime"`
+	DeleteTime    string   							`json:"deleteTime"`
+	PaymentTiming string   							`json:"paymentTiming"`
+	ConfigItems   []string 							`json:"configItems"`
+	ConfigItem	  RecycleInstanceModelConfigItem	`json:"configItem"`
+}
+
+type RecycleInstanceModelConfigItem struct {
+	Cpu			int 	`json:"cpu"`
+	Memory		int		`json:"memory"`
+	Type		string	`json:"type"`
+	ZoneName	string	`json:"zoneName"`
 }
 
 type ListInstancesResult struct {
@@ -815,6 +869,26 @@ type DeleteInstanceResult struct {
 type SharedUser struct {
 	AccountId string `json:"accountId,omitempty"`
 	Account   string `json:"account,omitempty"`
+}
+
+type GetImageSharedUserResult struct {
+	Users []SharedUser `json:"users"`
+}
+
+type RemoteCopyImageModel struct {
+	Region  string `json:"region"`
+	ImageId string `json:"imageId"`
+	ErrMsg  string `json:"errMsg"`
+	Code    string `json:"code"`
+}
+
+type RemoteCopyImageArgs struct {
+	Name       string   `json:"name,omitempty"`
+	DestRegion []string `json:"destRegion"`
+}
+
+type RemoteCopyImageResult struct {
+	RemoteCopyImages []RemoteCopyImageModel `json:"result"`
 }
 
 type ListCDSVolumeArgs struct {

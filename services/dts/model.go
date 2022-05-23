@@ -17,12 +17,15 @@
 package dts
 
 type CreateDtsArgs struct {
+	ClientToken        string `json:"-"`
 	ProductType        string `json:"productType"`
 	Type               string `json:"type"`
 	Standard           string `json:"standard"`
 	SourceInstanceType string `json:"sourceInstanceType"`
 	TargetInstanceType string `json:"targetInstanceType"`
 	CrossRegionTag     int    `json:"crossRegionTag"`
+	DirectionType      string `json:"directionType"`
+	OrderInfo          OrderInfo `json:"orderInfo"`
 }
 
 type CreateDtsResult struct {
@@ -56,6 +59,10 @@ type DtsTaskMeta struct {
 	SubDataScope        SubDataScope `json:"subDataScope,omitempty"`
 	PayInfo             PayInfo      `json:"payInfo,omitempty"`
 	LockStatus          string       `json:"lockStatus,omitempty"`
+	DtsIdPos            string       `json:"dtsIdPos,omitempty"`
+	DtsIdNeg            string       `json:"dtsIdNeg,omitempty"`
+	DtsTaskPos          *DtsTaskMeta `json:"dtsTaskPos"`
+	DtsTaskNeg          *DtsTaskMeta `json:"dtsTaskNeg"`
 }
 
 type Connection struct {
@@ -73,6 +80,11 @@ type Connection struct {
 	FieldBlacklist  string `json:"field_blacklist,omitempty"`
 	StartTime       string `json:"startTime,omitempty"`
 	EndTime         string `json:"endTime,omitempty"`
+	SqlType         string `json:"sqlType,omitempty"`
+	VpcId           string `json:"vpcId"`
+	VpcName         string `json:"vpcName"`
+	VpcCidr         string `json:"vpcCidr"`
+	VpcShortId      string `json:"vpcShortId"`
 }
 
 type Schema struct {
@@ -89,9 +101,15 @@ type SubStatus struct {
 }
 
 type DynamicInfo struct {
-	Schema    []SchemaInfo        `json:"schema"`
-	Base      []SchemaInfo        `json:"base"`
-	Increment []map[string]string `json:"increment"`
+	Schema    []SchemaInfo `json:"schema"`
+	Base      []SchemaInfo `json:"base"`
+	Increment Increment    `json:"increment"`
+}
+
+type Increment struct {
+	Delay      int64  `json:"delay"`
+	Position   string `json:"position"`
+	SyncStatus string `json:"syncStatus"`
 }
 
 type SchemaInfo struct {
@@ -117,20 +135,43 @@ type PayInfo struct {
 }
 
 type ListDtsArgs struct {
-	Type string `json:"type"`
-	Status string `json:"status,omitempty"`
-	Marker string `json:"marker,omitempty"`
-	MaxKeys int `json:"maxKeys,omitempty"`
-	Keyword string `json:"keyword,omitempty"`
+	Type        string `json:"type"`
+	Status      string `json:"status,omitempty"`
+	Marker      string `json:"marker,omitempty"`
+	MaxKeys     int    `json:"maxKeys,omitempty"`
+	Keyword     string `json:"keyword,omitempty"`
 	KeywordType string `json:"keywordType,omitempty"`
+}
+
+type ListDtsWithPageArgs struct {
+	Types    []string     `json:"types"`
+	Filters  []ListFilter `json:"filters"`
+	Order    string       `json:"order"`
+	OrderBy  string       `json:"orderBy"`
+	PageNo   int          `json:"pageNo"`
+	PageSize int          `json:"pageSize"`
+}
+
+type ListFilter struct {
+	KeywordType string `json:"keywordType"`
+	Keyword     string `json:"keyword"`
 }
 
 type ListDtsResult struct {
 	Marker      string        `json:"marker"`
-	MaxKeys     int        `json:"maxKeys"`
-	IsTruncated string        `json:"isTruncated"`
+	MaxKeys     int           `json:"maxKeys"`
+	IsTruncated bool          `json:"isTruncated"`
 	NextMarker  string        `json:"nextMarker"`
 	Task        []DtsTaskMeta `json:"task"`
+}
+
+type ListDtsWithPageResult struct {
+	OrderBy    string        `json:"orderBy"`
+	Order      string        `json:"order"`
+	PageNo     int           `json:"pageNo"`
+	PageSize   int           `json:"pageSize"`
+	TotalCount int           `json:"totalCount"`
+	Result     []DtsTaskMeta `json:"result"`
 }
 
 type CheckResult struct {
@@ -169,4 +210,69 @@ type InitPosition struct {
 type PreCheckResult struct {
 	Success bool   `json:"success"`
 	Message string `json:"message"`
+}
+
+type SkipPreCheckResponse struct {
+	Success bool   `json:"success"`
+	Result  string `json:"result"`
+}
+
+type GetSchemaArgs struct {
+	Connection Connection `json:"connection"`
+}
+
+type GetSchemaResponse struct {
+	Success bool            `json:"success"`
+	Result  GetSchemaResult `json:"result"`
+}
+
+type GetSchemaResult struct {
+	SchemaAll map[string]ObjectInDb `json:"schemaAll"`
+}
+
+type ObjectInDb struct {
+	Tables     []string `json:"tables"`
+	Views      []string `json:"views"`
+	Procedures []string `json:"procedures"`
+	Functions  []string `json:"functions"`
+}
+
+type UpdateTaskNameArgs struct {
+	TaskName string `json:"taskName"`
+}
+
+type ResizeTaskStandardArgs struct {
+	ClientToken string `json:"-"`
+	Standard    string `json:"standard"`
+}
+
+type ResizeTaskStandardResponse struct {
+	OrderId string `json:"orderId"`
+}
+
+type OrderInfo struct {
+	Src Src `json:"src"`
+	Dst Dst `json:"dst"`
+}
+
+type Src struct {
+    InstanceType    string  `json:"instanceType"`
+    DbType          string  `json:"dbType"`
+    SliceNum        string   `json:"sliceNum"`
+}
+
+type Dst struct {
+    InstanceType    string  `json:"instanceType"`
+    DbType          string  `json:"dbType"`
+}
+
+type DtsVpcsResult struct {
+	Vpcs    []VpcVo   `json:"vpcs"`
+}
+
+type VpcVo struct {
+	VpcId   string  `json:"vpcId"`
+	ShortId string  `json:"shortId"`
+	Name    string  `json:"name"`
+	Cidr    string  `json:"cidr"`
 }

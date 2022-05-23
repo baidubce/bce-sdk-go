@@ -64,6 +64,45 @@ func CreateInstance(cli bce.Client, args *CreateInstanceArgs, reqBody *bce.Body)
 	return jsonBody, nil
 }
 
+// CreateInstance - create an instance with specified parameters and support the passing in of label
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: the request body to create instance
+// RETURNS:
+//     - *CreateInstanceResult: result of the instance ids newly created
+//     - error: nil if success otherwise the specific error
+func CreateInstanceByLabel(cli bce.Client, args *CreateSpecialInstanceBySpecArgs, reqBody *bce.Body) (*CreateInstanceResult,
+	error) {
+	// Build the request
+	clientToken := args.ClientToken
+	requestToken := args.RequestToken
+	req := &bce.BceRequest{}
+	req.SetUri(getInstanceByLabelUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+	req.SetHeader("x-request-token", requestToken)
+	if clientToken != "" {
+		req.SetParam("clientToken", clientToken)
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &CreateInstanceResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
 // CreateInstanceBySpec - create an instance with specified spec.
 //
 // PARAMS:

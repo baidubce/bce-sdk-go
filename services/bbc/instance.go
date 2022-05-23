@@ -67,6 +67,47 @@ func CreateInstance(cli bce.Client, args *CreateInstanceArgs, reqBody *bce.Body)
 	return jsonBody, nil
 }
 
+// CreateInstance - create a bbc instance and support the passing in of label
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - clientToken: idempotent token, an ASCII string no longer than 64 bits
+//     - reqBody: http request body
+// RETURNS:
+//     - *CreateInstanceResult: results of creating a bbc instance
+//     - error: nil if success otherwise the specific error
+func CreateInstanceByLabel(cli bce.Client, args *CreateSpecialInstanceArgs, reqBody *bce.Body) (*CreateInstanceResult,
+	error) {
+	clientToken := args.ClientToken
+	requestToken := args.RequestToken
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getInstanceByLabelUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+	req.SetHeader("x-request-token", requestToken)
+
+	if clientToken != "" {
+		req.SetParam("clientToken", clientToken)
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &CreateInstanceResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
 // ListInstances - list all bbc instances
 //
 // PARAMS:
@@ -1066,6 +1107,10 @@ func getInstanceEniUri(instanceId string) string {
 
 func getInstanceUri() string {
 	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI
+}
+
+func getInstanceByLabelUri() string {
+	return URI_PREFIX_V1 + REQUEST_INSTANCE_LABEL_URI
 }
 
 func getRecycledInstanceUri() string {

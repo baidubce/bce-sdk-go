@@ -304,6 +304,147 @@ func UnShareImage(cli bce.Client, imageId string, args *SharedUser) error {
 	return nil
 }
 
+// GetImageSharedUser - get the list of users that the image has been shared with
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - imageId: id of the image
+// RETURNS:
+//     - *GetImageSharedUserResult: result of the shared users
+//     - error: nil if success otherwise the specific error
+func GetImageSharedUser(cli bce.Client, imageId string) (*GetImageSharedUserResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getImageSharedUserUri(imageId))
+	req.SetMethod(http.GET)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &GetImageSharedUserResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
+// RemoteCopyImage - copy bbc custom images across regions, only custom images supported, the system \
+// and service integration images cannot be copied.
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - imageId: id of the image to be copied
+//     - args: the arguments to copy image
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func RemoteCopyImage(cli bce.Client, imageId string, args *RemoteCopyImageArgs) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getImageUriWithId(imageId))
+	req.SetMethod(http.POST)
+
+	req.SetParam("remoteCopy", "")
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// CancelRemoteCopyImage - cancel the image copy across regions
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - imageId: id of the image
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func CancelRemoteCopyImage(cli bce.Client, imageId string) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getImageUriWithId(imageId))
+	req.SetMethod(http.POST)
+
+	req.SetParam("cancelRemoteCopy", "")
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// RemoteCopyImageReturnImageIds - copy custom images across regions, only custom images supported, the system \
+// and service integration images cannot be copied.
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - imageId: id of the image to be copied
+//     - args: the arguments to copy image
+// RETURNS:
+//     - imageIds of destination region if success otherwise the specific error
+func RemoteCopyImageReturnImageIds(cli bce.Client, imageId string, args *RemoteCopyImageArgs) (*RemoteCopyImageResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getImageUriWithId(imageId))
+	req.SetMethod(http.POST)
+
+	req.SetParam("remoteCopy", "")
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return nil, err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &RemoteCopyImageResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
 func getImageUri() string {
 	return URI_PREFIX_V1 + REQUEST_IMAGE_URI
 }
@@ -318,4 +459,8 @@ func getCommonImageUri() string {
 
 func getCustomImageUri() string {
 	return URI_PREFIX_V1 + REQUEST_CUSTOM_IMAGE_URI
+}
+
+func getImageSharedUserUri(id string) string {
+	return URI_PREFIX_V1 + REQUEST_IMAGE_URI + "/" + id + REQUEST_IMAGE_SHAREDUSER_URI
 }

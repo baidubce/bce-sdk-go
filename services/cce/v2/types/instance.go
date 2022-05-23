@@ -168,14 +168,26 @@ type BBCOption struct {
 type DeployCustomConfig struct {
 	// Docker相关配置
 	DockerConfig DockerConfig `json:"dockerConfig,omitempty"`
+	// containerd相关配置
+	ContainerdConfig ContainerdConfig `json:"containerdConfig,omitempty"`
 
 	// kubelet数据目录
 	KubeletRootDir string `json:"kubeletRootDir,omitempty"`
 	// 是否开启资源预留
 	EnableResourceReserved bool `json:"EnableResourceReserved,omitempty"`
-	// 资源预留配额,
-	// key:value: cpu: 100m, memory: 1000Mi
+	// k8s进程资源预留配额
+	// key:value: cpu: 50m, memory: 100Mi
 	KubeReserved map[string]string `json:"kubeReserved,omitempty"`
+	// 系统进程资源预留配额
+	// key:value: cpu: 50m, memory: 100Mi
+	SystemReserved map[string]string `json:"systemReserved,omitempty"`
+
+	// RegistryPullQPS, default: 5
+	RegistryPullQPS int `json:"registryPullQPS,omitempty"`
+	// RegistryBurst, default: 10
+	RegistryBurst int `json:"registryBurst,omitempty"`
+	// PodPidsLimit, default: -1
+	PodPidsLimit int `json:"podPidsLimit,omitempty"`
 
 	// 是否封锁节点
 	EnableCordon bool `json:"enableCordon,omitempty"`
@@ -184,6 +196,9 @@ type DeployCustomConfig struct {
 	PreUserScript string `json:"preUserScript,omitempty"`
 	// 部署后执行脚本, 前端 base64编码后传参
 	PostUserScript string `json:"postUserScript,omitempty"`
+
+	// KubeletBindAddressType, kubelet bind address
+	KubeletBindAddressType KubeletBindAddressType `json:"kubeletBindAddressType,omitempty"`
 }
 
 // DockerConfig docker相关配置
@@ -194,6 +209,13 @@ type DockerConfig struct {
 	DockerLogMaxSize   string   `json:"dockerLogMaxSize,omitempty"`   // docker日志大小，default: 20m
 	DockerLogMaxFile   string   `json:"dockerLogMaxFile,omitempty"`   // docker日志保留数，default: 10
 	BIP                string   `json:"dockerBIP,omitempty"`          // docker0网桥网段， default: 169.254.30.1/28
+}
+
+// ContainerdConfig containerd相关配置
+type ContainerdConfig struct {
+	DataRoot           string   `json:"dataRoot,omitempty"`           // 自定义 containerd 数据目录
+	RegistryMirrors    []string `json:"registryMirrors,omitempty"`    // 自定义 RegistryMirrors
+	InsecureRegistries []string `json:"insecureRegistries,omitempty"` // 自定义 InsecureRegistries
 }
 
 // ExistedOption 已有实例相关配置
@@ -284,6 +306,20 @@ const (
 
 	// InstancePhaseDeleteFailed 节点删除失败
 	InstancePhaseDeleteFailed InstancePhase = "delete_failed"
+)
+
+// KubeletBindAddressType - kubelet bind address 类型
+type KubeletBindAddressType string
+
+const (
+	// KubeletBindAddressTypeAll - 0.0.0.0
+	KubeletBindAddressTypeAll KubeletBindAddressType = "all"
+
+	// KubeletBindAddressTypeLocal - 127.0.0.1
+	KubeletBindAddressTypeLocal KubeletBindAddressType = "local"
+
+	// KubeletBindAddressTypeHostIP - 主网卡 IP
+	KubeletBindAddressTypeHostIP KubeletBindAddressType = "hostip"
 )
 
 type BidOption struct {

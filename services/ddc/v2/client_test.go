@@ -38,7 +38,7 @@ const (
 	POOL            = "xdb_005a2d79-a4f4-4bfb-8284-0ffe9ddaa307_pool"
 	PNETIP          = "100.88.65.121"
 	DEPLOY_ID       = "ab89d829-9068-d88e-75bc-64bb6367d036"
-	DDC_INSTANCE_ID = "ddc-mtu45cvm"
+	DDC_INSTANCE_ID = "ddc-mqv3e72u"
 	RDS_INSTANCE_ID = "rds-OtTkC1OD"
 	ETAG            = "v0"
 )
@@ -1468,6 +1468,25 @@ func TestClient_GetDisk(t *testing.T) {
 	}
 }
 
+func TestClient_GetMachineInfo(t *testing.T) {
+	machine, err := client.GetMachineInfo(instanceId)
+	if err != nil {
+		fmt.Printf("get machine info error: %+v\n", err)
+		return
+	}
+	fmt.Println("get machine info success.")
+	for _, machine := range machine.Response.Items {
+		fmt.Println("instance id: ", machine.InstanceID)
+		fmt.Println("instance role: ", machine.Role)
+		fmt.Println("cpu(core): ", machine.CPUInCore)
+		fmt.Println("cpu(core) free: ", machine.FreeCPUInCore)
+		fmt.Println("memory(MB): ", machine.MemSizeInMB)
+		fmt.Println("memory(MB) free: ", machine.FreeMemSizeInMB)
+		fmt.Println("disk info: ", machine.SizeInGB)
+		fmt.Println("----------------------")
+	}
+}
+
 func TestClient_GetResidual(t *testing.T) {
 	residual, err := client.GetResidual(POOL)
 	if err != nil {
@@ -1491,7 +1510,10 @@ func TestClient_GetFlavorCapacity(t *testing.T) {
 		CpuInCore:  2,
 		MemoryInGb: 4,
 		DiskInGb:   50,
+		Affinity:   2,
 	}
+
+	args = NewDefaultGetFlavorCapacityArgs(2, 4, 50)
 	capacityResult, err := client.GetFlavorCapacity(POOL, args)
 	if err != nil {
 		fmt.Printf("get flavor capacity of pool error: %+v\n", err)
@@ -1681,5 +1703,19 @@ func TestClient_GetSlowLogs(t *testing.T) {
 		fmt.Println("slow log rowsSent: ", slowLog.RowsSent)
 		fmt.Println("slow log sql: ", slowLog.Sql)
 		fmt.Println("slow log executeTime: ", slowLog.ExecuteTime)
+	}
+}
+
+func TestClient_GetInstanceBackupStatus(t *testing.T) {
+	instanceId = "ddc-mvxhc1fq"
+	backupStatusResult, err := client.GetInstanceBackupStatus(instanceId)
+	if err != nil {
+		fmt.Printf("get backup status error: %+v\n", err)
+		return
+	}
+	fmt.Println("get backup status success.")
+	fmt.Println("instance is backuping: ", backupStatusResult.IsBackuping)
+	if backupStatusResult.IsBackuping {
+		fmt.Println("instance backup start time: ", backupStatusResult.SnapshotStartTime)
 	}
 }

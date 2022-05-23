@@ -10,11 +10,11 @@
 
 在确认您使用SDK时配置的Endpoint时，百度云目前开放了多区域支持，请参考[区域选择说明](https://cloud.baidu.com/doc/Reference/s/2jwvz23xx/)。
 
-目前支持“华北-北京”区域。对应信息为：
+DTS 是全局产品，不需要区分多地域，仅有一个 Endpoint。对应信息为：
 
 访问区域 | 对应Endpoint | 协议
 ---|---|---
-BJ | rds.bj.baidubce.com | HTTP and HTTPS
+所有区域 | dts.baidubce.com | HTTP and HTTPS
 
 ## 获取密钥
 
@@ -51,9 +51,9 @@ func main() {
 }
 ```
 
-在上面代码中，`ACCESS_KEY_ID`对应控制台中的“Access Key ID”，`SECRET_ACCESS_KEY`对应控制台中的“Access Key Secret”，获取方式请参考《操作指南 [如何获取AKSK](https://cloud.baidu.com/doc/Reference/s/9jwvz2egb/)》。第三个参数`ENDPOINT`支持用户自己指定域名，如果设置为空字符串，会使用默认域名作为VPC的服务地址。
+在上面代码中，`ACCESS_KEY_ID`对应控制台中的“Access Key ID”，`SECRET_ACCESS_KEY`对应控制台中的“Access Key Secret”，获取方式请参考《操作指南 [如何获取AKSK](https://cloud.baidu.com/doc/Reference/s/9jwvz2egb/)》。
+第三个参数`ENDPOINT`支持用户自己指定域名，如果设置为空字符串，会使用默认域名作为VPC的服务地址。
 
-> **注意：**`ENDPOINT`参数需要用指定区域的域名来进行定义，如服务所在区域为北京，则为`dts.bj.baidubce.com`。
 
 ### 使用STS创建DTS Client
 
@@ -104,7 +104,7 @@ func main() {
 	fmt.Println("  userId:", stsObj.UserId)
 
 	// 使用申请的临时STS创建DTS服务的Client对象，Endpoint使用默认值
-	dtsClient, err := dts.NewClient(stsObj.AccessKeyId, stsObj.SecretAccessKey, "dts.bj.baidubce.com")
+	dtsClient, err := dts.NewClient(stsObj.AccessKeyId, stsObj.SecretAccessKey, "dts.baidubce.com")
 	if err != nil {
 		fmt.Println("create dts client failed:", err)
 		return
@@ -131,7 +131,7 @@ DTS支持HTTPS传输协议，您可以通过在创建DTS Client对象时指定�
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/dts"
 
-ENDPOINT := "https://dts.bj.baidubce.com" //指明使用HTTPS协议
+ENDPOINT := "https://dts.baidubce.com" //指明使用HTTPS协议
 AK, SK := <your-access-key-id>, <your-secret-access-key>
 dtsClient, _ := dts.NewClient(AK, SK, ENDPOINT)
 ```
@@ -149,7 +149,7 @@ dtsClient, _ := dts.NewClient(AK, SK, ENDPOINT)
 
 //创建DTS Client对象
 AK, SK := <your-access-key-id>, <your-secret-access-key>
-ENDPOINT := "dts.bj.baidubce.com"
+ENDPOINT := "dts.baidubce.com"
 client, _ := dts.NewClient(AK, SK, ENDPOINT)
 
 //代理使用本地的8080端口
@@ -164,7 +164,7 @@ client.Config.ProxyUrl = "127.0.0.1:8080"
 // import "github.com/baidubce/bce-sdk-go/services/dts"
 
 AK, SK := <your-access-key-id>, <your-secret-access-key>
-ENDPOINT := "dts.bj.baidubce.com"
+ENDPOINT := "dts.baidubce.com"
 client, _ := dts.NewClient(AK, SK, ENDPOINT)
 
 // 配置不进行重试，默认为Back Off重试
@@ -180,7 +180,7 @@ client.Config.ConnectionTimeoutInMillis = 30 * 1000
 // import "github.com/baidubce/bce-sdk-go/services/dts"
 
 AK, SK := <your-access-key-id>, <your-secret-access-key>
-ENDPOINT := "dts.bj.baidubce.com"
+ENDPOINT := "dts.baidubce.com"
 client, _ := dts.NewClient(AK, SK, ENDPOINT)
 
 // 配置签名使用的HTTP请求头为`Host`
@@ -232,12 +232,22 @@ DTS（Data Transmission Service）提供数据迁移、数据同步、数据订�
 // import "github.com/baidubce/bce-sdk-go/services/dts"
 
 args := &dts.CreateDtsArgs{
+    // 幂等性Token，是一个长度不超过64位的ASCII字符串，选填参数（关于幂等性，可以参考下面专门介绍幂等性的章节内容）
+    ClientToken: "aff0ea1548d30a5c711382b0cca7b45faff0ea1548d30a5c711382b0cca7b45f",
+	// 付费类型（后付费：postpay；），目前仅支持后付费
     ProductType:        "postpay",
+	// 任务类型（数据传输任务：migration；），目前仅支持数据传输任务
     Type:               "migration",
+	// 链路规格，取值：Samll、Medium、Large、Xlarge
     Standard:           "Large",
+	// 源端类型（百度智能云数据库：bcerds；自建数据存储：public；）
     SourceInstanceType: "bcerds",
+    // 目标端类型（百度智能云数据库：bcerds；自建数据存储：public；）
     TargetInstanceType: "bcerds",
+	// 跨地域标识（当源端、目标端类型均为百度智能云数据库且跨地域时：1；其他情况：0）
     CrossRegionTag:     1,
+	// 同步方向（单向同步：single；双向同步：bidirect），目前仅支持单向同步
+	DirectionType: "single",
 }
 result, err := client.CreateDts(args)
 if err != nil {
@@ -256,7 +266,7 @@ for _, e := range result.DtsTasks {
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/dts"
 
-result, err := client.DeleteDts(taskId)
+err := client.DeleteDts(dtsId)
 if err != nil {
     fmt.Printf("delete dts error: %+v\n", err)
     return
@@ -271,7 +281,7 @@ fmt.Println("delete dts success\n")
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/dts"
 
-result, err := client.GetDetail(taskId)
+result, err := client.GetDetail(dtsId)
 if err != nil {
     fmt.Printf("get dts detail error: %+v\n", err)
     return
@@ -281,24 +291,83 @@ fmt.Println("dts taskName: ",result.TaskName)
 fmt.Println("dts status: ",result.Status)
 fmt.Println("dts region: ",result.Region)
 fmt.Println("dts createTime: ",result.CreateTime)
+// 若 result.DtsIdPos 为空字符串，则表示该任务是单向同步任务，否则为双向同步任务
+if result.DtsIdPos != "" {
+	// 正向数据流 ID
+    fmt.Println("dts dtsIdPos: ", result.DtsIdPos)
+	// 反向数据流 ID
+    fmt.Println("dts dtsIdNeg: ", result.DtsIdNeg)
+	// 正向数据流状态
+    fmt.Println("dts dtsTaskPos status: ", result.DtsTaskPos.Status)
+	// 反向数据流状态
+    fmt.Println("dts dtsTaskNeg status: ", result.DtsTaskNeg.Status)
+}
 ```
 
-## 查看DTS任务列表
+## 查询DTS任务列表
 
 使用以下代码可以查看DTS任务列表
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/dts"
 
 args := &dts.ListDtsArgs{
-    Type:               "migration",
+	// 任务类型（单向同步类型：migration；双向同步类型：bidirect）
+    Type: "migration",
+	// 分页参数，初次请求无需设置，后续请求使用上次请求响应中的nextMarker
+	Marker: "dtsmb0p9j8hcb7as36gx",
+	// 分页参数，每页数据条数，默认为 10
+	MaxKeys: 10,
 }
 result, err := client.ListDts(args)
 if err != nil {
     fmt.Printf("get dts list error: %+v\n", err)
     return
 }
-
+// 是否截断（true：截断，表示还有下一页数据；false：最后一页数据；）
+fmt.Println("isTruncated: ", result.IsTruncated)
+// 分页参数，下一页标记
+fmt.Println("nextMarker: ", result.NextMarker)
 for _, e := range result.Task {
+	fmt.Println("dtsId: ", e.DtsId)
+    fmt.Println("taskName: ", e.TaskName)
+	fmt.Println("status: ", e.Status)
+}
+```
+
+## 分页查询DTS任务列表
+
+使用以下代码可以查看DTS任务列表
+```go
+// import "github.com/baidubce/bce-sdk-go/services/dts"
+
+args := &dts.ListDtsWithPageArgs{
+	// 任务类型数组（单向同步类型：migration；双向同步类型：bidirect）
+    Types: []string{"migration"},
+	// 过滤条件数组
+    Filters: []dts.ListFilter{
+        {
+            // 搜索关键字，支持前缀模糊匹配
+            Keyword: "he",
+            // 搜索关键字类型，取值：dtsId、taskName、status、srcConnection.dbType、dtsConnection.dbType
+            KeywordType: "taskName",
+        },
+    },
+	// 分页页码，从 1 开始
+    PageNo: 1,
+    // 分页大小，最大值 100
+    PageSize: 10,
+	// 排序方式，取值：asc（升序）、desc（降序）
+    Order: "desc",
+	// 排序字段，取值：dtsId、taskName、createTime
+    OrderBy: "createTime",
+}
+result, err := client.ListDtsWithPage(args)
+if err != nil {
+    fmt.Printf("get dts list with page error: %+v\n", err)
+    return
+}
+
+for _, e := range result.Result {
 	fmt.Println("dtsId: ", e.DtsId)
     fmt.Println("taskName: ", e.TaskName)
 	fmt.Println("status: ", e.Status)
@@ -312,48 +381,48 @@ for _, e := range result.Task {
 // import "github.com/baidubce/bce-sdk-go/services/dts"
 
 dataType :=[]string{"schema","base"}
-	srcConnection := Connection{
-		Region:       "public",
-		DbType:       "mysql",
-		DbUser:       "usrname",
-		DbPass:       "password",
-		DbPort:       3306,
-		DbHost:       "180.76.120.207",
-		InstanceId:   "rds-TOzVOznv",
-		InstanceType: "public",
-	}
-	dstConnection := Connection{
-		Region:       "public",
-		DbType:       "mysql",
-		DbUser:       "usrname",
-		DbPass:       "password",
-		DbPort:       3306,
-		DbHost:       "180.76.120.207",
-		InstanceId:   "rds-TOzVOznv",
-		InstanceType: "public",
-	}
-	schema := Schema{
-		Type:  "db",
-		Src:   "db1",
-		Dst:   "db2",
-		Where: "",
-	}
-	schemaMapping := []Schema{schema}
-	args := &ConfigArgs{
-		TaskName:      "test",
-		DataType:      dataType,
-		Type:          "migration",
-		SrcConnection: srcConnection,
-		DstConnection: dstConnection,
-		SchemaMapping: schemaMapping,
-	}
-result, err := client.CreateDts(args)
+srcConnection := dts.Connection{
+    Region:       "public",
+    DbType:       "mysql",
+    DbUser:       "usrname",
+    DbPass:       "password",
+    DbPort:       3306,
+    DbHost:       "180.76.120.207",
+    InstanceId:   "rds-TOzVOznv",
+    InstanceType: "public",
+}
+dstConnection := dts.Connection{
+    Region:       "public",
+    DbType:       "mysql",
+    DbUser:       "usrname",
+    DbPass:       "password",
+    DbPort:       3306,
+    DbHost:       "180.76.120.207",
+    InstanceId:   "rds-TOzVOznv",
+    InstanceType: "public",
+}
+schema := dts.Schema{
+    Type:  "db",
+    Src:   "db1",
+    Dst:   "db2",
+    Where: "",
+}
+schemaMapping := []dts.Schema{schema}
+args := &dts.ConfigArgs{
+    TaskName:      "test",
+    DataType:      dataType,
+    Type:          "migration",
+    SrcConnection: srcConnection,
+    DstConnection: dstConnection,
+    SchemaMapping: schemaMapping,
+}
+result, err := client.ConfigDts("dtsmro61533558", args)
 if err != nil {
     fmt.Printf("config dts error: %+v\n", err)
     return
 }
 
-	fmt.Println("config dts success, task id: ", result.DtsId)
+fmt.Println("config dts success, dtsId: ", result.DtsId)
 ```
 
 ## 前置检查
@@ -368,7 +437,7 @@ if err != nil {
     return
 }
 
-fmt.Println("preCheck dts: ",result.Success)
+fmt.Println("result success: ",result.Success)
 ```
 
 ## 查看前置检查结果
@@ -383,13 +452,28 @@ if err != nil {
     return
 }
 
-fmt.Println("get dts preCheck result: ",result.GetPreCheckResult)
+fmt.Println("result success: ", result.Success)
 for _, e := range result.Result {
-    fmt.Println("check result name: ",e.Name)
-    fmt.Println("check result status: ",e.Status)
-    fmt.Println("check result message: ",e.Message)
-    fmt.Println("check result subscription: ",e.Subscription)
+    fmt.Println("name: ", e.Name, "status: ", e.Status, "Message: ", e.Message, "Subscription: ", e.Subscription)
 }
+```
+
+## 强制通过预检查（即前置检查）
+
+使用以下代码可以尝试强制通过一个DTS任务预检查，根据响应结果可以检查强制通过预检查操作是否成功
+```go
+// import "github.com/baidubce/bce-sdk-go/services/dts"
+
+response, err := client.SkipPreCheck(taskId)
+if err != nil {
+    fmt.Printf("skip preCheck dts error: %+v\n", err)
+    return
+}
+
+// 若 success 为 true，表示强制通过预检查操作成功；否则，表示强制通过预检查操作失败；
+fmt.Println("response success: ",response.Success)
+// 强制通过预检查操作失败时失败原因
+fmt.Println("response result: ",response.Result)
 ```
 
 ## 启动DTS任务
@@ -398,7 +482,7 @@ for _, e := range result.Result {
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/dts"
 
-result, err := client.StartDts(taskId)
+err := client.StartDts(taskId)
 if err != nil {
     fmt.Printf("start dts error: %+v\n", err)
     return
@@ -413,7 +497,7 @@ fmt.Println("start dts success\n")
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/dts"
 
-result, err := client.PauseDts(taskId)
+err := client.PauseDts(taskId)
 if err != nil {
     fmt.Printf("pause dts error: %+v\n", err)
     return
@@ -428,13 +512,77 @@ fmt.Println("pause dts success\n")
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/dts"
 
-result, err := client.ShutdownDts(taskId)
+err := client.ShutdownDts(taskId)
 if err != nil {
     fmt.Printf("shut down dts error: %+v\n", err)
     return
 }
 
-fmt.Println("shut down dts success\n")
+fmt.Println("shutdown dts success\n")
+```
+
+## 更新任务名称
+
+使用以下代码可以更新任务名称
+```go
+// import "github.com/baidubce/bce-sdk-go/services/dts"
+
+args := &dts.UpdateTaskNameArgs {
+    TaskName: "go-sdkkk",
+}
+err := client.UpdateTaskName(taskId, args)
+if err != nil {
+    fmt.Printf("update task name error: %+v\n", err)
+    return
+}
+
+fmt.Println("update task name success\n")
+```
+
+## 变更链路规格
+
+使用以下代码可以变更链路规格
+```go
+// import "github.com/baidubce/bce-sdk-go/services/dts"
+
+args := &dts.ResizeTaskStandardArgs {
+    // 幂等性Token，是一个长度不超过64位的ASCII字符串，选填参数（关于幂等性，可以参考下面专门介绍幂等性的章节内容）
+    ClientToken: "aff0ea1548d30a5c711382b0cca7b45faff0ea1548d30a5c711382b0cca7b45f",
+    // 链路规格，取值：Samll、Medium、Large、Xlarge
+    Standard: "Xlarge",
+}
+response, err := client.ResizeTaskStandard(taskId, args)
+if err != nil {
+    fmt.Printf("resize task standard error: %+v\n", err)
+    return
+}
+
+fmt.Println("response orderId: ", response.OrderId)
+```
+
+## 查询数据库Schema
+
+使用以下代码可以查询数据库Schema
+```go
+// import "github.com/baidubce/bce-sdk-go/services/dts"
+
+args := &dts.GetSchemaArgs {
+    Connection: dts.Connection{
+        InstanceType:   "bcerds",
+        DbType:         "mysql",
+        InstanceId:     "rdsm97xpxxxxu",
+        Region:         "bj",
+        FieldWhitelist: "",
+        FieldBlacklist: "",
+    },
+}
+response, err := client.GetSchema(args)
+if err != nil {
+    fmt.Printf("get schema error: %+v\n", err)
+    return
+}
+fmt.Println("response success: ", response.Success)
+fmt.Println("response result: ", response.Result)
 ```
 
 # 错误处理
@@ -519,6 +667,15 @@ myLogger.SetLogDir("/home/log")
 myLogger.SetRotateType(log.ROTATE_SIZE)
 myLogger.Info("this is my own logger from the DTS go sdk")
 ```
+
+# 幂等性
+
+## 幂等性概述
+Go SDK 在调用API时，很容易出现由于网络等问题导致客户端没收到响应连接就中断的情况。此时客户端无法得知服务器端是否收到了请求，重试又可能导致问题。例如一个创建实例的请求被多次发送就可能出现重复创建。对此，加入幂等性的机制来加以应对。
+
+幂等性的意思是无论同一个请求被重复发送多次，其结果都和发送一次一样。
+
+Go SDK 采用clientToken机制来保证API调用的幂等性，clientToken 是一个长度不超过64位的ASCII字符串，通常放在创建、删除类操作的参数中。
 
 
 

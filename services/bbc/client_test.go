@@ -132,6 +132,47 @@ func TestCreateInstance(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestCreateSpecialInstance(t *testing.T) {
+	InternalIps := []string{"ip"}
+	createSpecialInstanceArgs := &CreateSpecialInstanceArgs{
+		FlavorId:         BBC_TestFlavorId,
+		ImageId:          BBC_TestImageId,
+		RaidId:           BBC_TestRaidId,
+		RootDiskSizeInGb: 40,
+		PurchaseCount:    1,
+		AdminPass:        "AdminPass",
+		ZoneName:         BBC_TestZoneName,
+		SubnetId:         BBC_TestSubnetId,
+		SecurityGroupId:  BBC_TestSecurityGroupId,
+		ClientToken:      BBC_TestClientToken,
+		Billing: Billing{
+			PaymentTiming: PaymentTimingPostPaid,
+		},
+		DeploySetId: BBC_TestDeploySetId,
+		Name:        BBC_TestName,
+		EnableNuma:  false,
+		InternalIps: InternalIps,
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tag1",
+				TagValue: "var1",
+			},
+		},
+		LabelConstraints: []LabelConstraint{{
+			Key:      "feaA",
+			Operator: LabelOperatorExist,
+		}, {
+			Key:      "feaB",
+			Value:    "typeB",
+			Operator: LabelOperatorNotEqual,
+		}},
+	}
+	// 将使用『没有 feaC 这个 label』且『feaD 这个 label 的值为 typeD』的测试机创建实例
+	res, err := BBC_CLIENT.CreateInstanceByLabel(createSpecialInstanceArgs)
+	fmt.Println(res)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestListInstances(t *testing.T) {
 	listArgs := &ListInstancesArgs{
 		MaxKeys: 500,
@@ -498,6 +539,39 @@ func TestUnShareImage(t *testing.T) {
 	}
 	err := BBC_CLIENT.UnShareImage(BBC_TestImageId, args)
 	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestGetImageSharedUser(t *testing.T) {
+	users, err := BBC_CLIENT.GetImageSharedUser(BBC_TestImageId)
+	if err != nil {
+		fmt.Println("error: ", err)
+	} else {
+		fmt.Println(users)
+	}
+}
+
+func TestRemoteCopyImage(t *testing.T) {
+	args := &RemoteCopyImageArgs{
+		Name:       "testRemoteCopy",
+		DestRegion: []string{"hkg"},
+	}
+	err := BBC_CLIENT.RemoteCopyImage(BBC_TestImageId, args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestCancelRemoteCopyImage(t *testing.T) {
+	err := BBC_CLIENT.CancelRemoteCopyImage(BBC_TestImageId)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestRemoteCopyImageReturnImageIds(t *testing.T) {
+	args := &RemoteCopyImageArgs{
+		Name:       "Copy",
+		DestRegion: []string{"hkg"},
+	}
+	result, err := BBC_CLIENT.RemoteCopyImageReturnImageIds(BBC_TestImageId, args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
 }
 
 func TestGetInstanceEni(t *testing.T) {

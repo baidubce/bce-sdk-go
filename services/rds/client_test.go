@@ -83,7 +83,7 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 }
 
 func TestClient_CreateRds(t *testing.T) {
-	id := strconv.FormatInt(time.Now().Unix(),10)
+	id := strconv.FormatInt(time.Now().Unix(), 10)
 	args := &CreateRdsArgs{
 		Engine:         "mysql",
 		EngineVersion:  "5.6",
@@ -93,15 +93,21 @@ func TestClient_CreateRds(t *testing.T) {
 		MemoryCapacity: 1,
 		VolumeCapacity: 5,
 		Billing: Billing{
-			PaymentTiming: "Postpaid",
+			PaymentTiming: "Prepaid",
+			Reservation: Reservation{
+				ReservationLength:   1,
+				ReservationTimeUnit: "month",
+			},
 		},
 		ClientToken: getClientToken(),
+		IsDirectPay: true,
 	}
 	result, err := RDS_CLIENT.CreateRds(args)
 	ExpectEqual(t.Errorf, nil, err)
 
 	RDS_ID = result.InstanceIds[0]
-	isAvailable(RDS_ID)
+	fmt.Println("RDS: ", RDS_ID)
+	// isAvailable(RDS_ID)
 }
 
 func TestClient_ResizeRds(t *testing.T) {
@@ -112,7 +118,7 @@ func TestClient_ResizeRds(t *testing.T) {
 	}
 	err := RDS_CLIENT.ResizeRds(RDS_ID, args)
 	ExpectEqual(t.Errorf, nil, err)
-	time.Sleep(30*time.Second)
+	time.Sleep(30 * time.Second)
 	isAvailable(RDS_ID)
 }
 
@@ -144,7 +150,7 @@ func TestClient_CreateAccount(t *testing.T) {
 	}
 
 	isAvailable(RDS_ID)
-	err := RDS_CLIENT.CreateAccount(RDS_ID,args)
+	err := RDS_CLIENT.CreateAccount(RDS_ID, args)
 	ExpectEqual(t.Errorf, nil, err)
 }
 
@@ -160,13 +166,13 @@ func TestClient_ListAccount(t *testing.T) {
 }
 
 func TestClient_GetAccount(t *testing.T) {
-	result, err := RDS_CLIENT.GetAccount(RDS_ID,ACCOUNT_NAME)
+	result, err := RDS_CLIENT.GetAccount(RDS_ID, ACCOUNT_NAME)
 	ExpectEqual(t.Errorf, nil, err)
 	ExpectEqual(t.Errorf, "Available", result.Status)
 }
 
 func TestClient_DeleteAccount(t *testing.T) {
-	err := RDS_CLIENT.DeleteAccount(RDS_ID,ACCOUNT_NAME)
+	err := RDS_CLIENT.DeleteAccount(RDS_ID, ACCOUNT_NAME)
 	ExpectEqual(t.Errorf, nil, err)
 }
 
@@ -181,7 +187,7 @@ func TestClient_CreateReadReplica(t *testing.T) {
 		},
 		ClientToken: getClientToken(),
 	}
-	time.Sleep(30*time.Second)
+	time.Sleep(30 * time.Second)
 	isAvailable(RDS_ID)
 	_, err := RDS_CLIENT.CreateReadReplica(args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -215,7 +221,7 @@ func TestClient_UpdateInstanceName(t *testing.T) {
 	for _, e := range result.Instances {
 		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Available" == e.InstanceStatus {
 			args := &UpdateInstanceNameArgs{
-				InstanceName:  e.InstanceName + "_new",
+				InstanceName: e.InstanceName + "_new",
 			}
 			err := RDS_CLIENT.UpdateInstanceName(e.InstanceId, args)
 			ExpectEqual(t.Errorf, nil, err)
@@ -231,7 +237,7 @@ func TestClient_ModifySyncMode(t *testing.T) {
 	for _, e := range result.Instances {
 		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Available" == e.InstanceStatus {
 			args := &ModifySyncModeArgs{
-				SyncMode:  "Async",
+				SyncMode: "Async",
 			}
 			err := RDS_CLIENT.ModifySyncMode(e.InstanceId, args)
 			ExpectEqual(t.Errorf, nil, err)
@@ -247,7 +253,7 @@ func TestClient_ModifyEndpoint(t *testing.T) {
 	for _, e := range result.Instances {
 		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Available" == e.InstanceStatus {
 			args := &ModifyEndpointArgs{
-				Address:  "newsdkrds",
+				Address: "newsdkrds",
 			}
 			err := RDS_CLIENT.ModifyEndpoint(e.InstanceId, args)
 			ExpectEqual(t.Errorf, nil, err)
@@ -263,7 +269,7 @@ func TestClient_ModifyPublicAccess(t *testing.T) {
 	for _, e := range result.Instances {
 		if strings.HasPrefix(e.InstanceName, SDK_NAME_PREFIX) && "Available" == e.InstanceStatus {
 			args := &ModifyPublicAccessArgs{
-				PublicAccess:  false,
+				PublicAccess: false,
 			}
 			err := RDS_CLIENT.ModifyPublicAccess(e.InstanceId, args)
 			ExpectEqual(t.Errorf, nil, err)
@@ -324,7 +330,7 @@ func TestClient_SecurityIps(t *testing.T) {
 			res, err := RDS_CLIENT.GetSecurityIps(e.InstanceId)
 			ExpectEqual(t.Errorf, nil, err)
 			args := &UpdateSecurityIpsArgs{
-				SecurityIps:  []string{
+				SecurityIps: []string{
 					"%",
 					"192.0.0.1",
 					"192.0.0.2",
@@ -362,9 +368,9 @@ func TestClient_UpdateParameter(t *testing.T) {
 			res, err := RDS_CLIENT.ListParameters(e.InstanceId)
 			ExpectEqual(t.Errorf, nil, err)
 			args := &UpdateParameterArgs{
-				Parameters:  []KVParameter{
+				Parameters: []KVParameter{
 					{
-						Name: "connect_timeout",
+						Name:  "connect_timeout",
 						Value: "15",
 					},
 				},
@@ -376,7 +382,7 @@ func TestClient_UpdateParameter(t *testing.T) {
 }
 
 func TestClient_DeleteRds(t *testing.T) {
-	time.Sleep(30*time.Second)
+	time.Sleep(30 * time.Second)
 	isAvailable(RDS_ID)
 	listRdsArgs := &ListRdsArgs{}
 	result, err := RDS_CLIENT.ListRds(listRdsArgs)
@@ -411,4 +417,12 @@ func TestClient_AutoRenew(t *testing.T) {
 		},
 	})
 	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_newApi(t *testing.T) {
+	result, err := RDS_CLIENT.Request("GET", "/v1/instance/rds-TSIlv3Sd/performance/processlist", nil)
+	ExpectEqual(t.Errorf, nil, err)
+	if result != nil {
+		fmt.Println(result)
+	}
 }

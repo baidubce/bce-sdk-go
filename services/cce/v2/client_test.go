@@ -36,7 +36,6 @@ type Conf struct {
 func TestMain(m *testing.M) {
 	setup()
 	code := m.Run()
-	teardown()
 	os.Exit(code)
 }
 
@@ -64,51 +63,6 @@ func setup() {
 	}
 
 	log.Info("Setup Complete")
-}
-
-//Try to clean environment
-func teardown() {
-	if CCE_INSTANCE_ID != "" && CCE_CLIENT != nil {
-		args := &DeleteInstancesArgs{
-			ClusterID: CCE_CLUSTER_ID,
-			DeleteInstancesRequest: &DeleteInstancesRequest{
-				InstanceIDs: []string{CCE_INSTANCE_ID},
-				DeleteOption: &types.DeleteOption{
-					MoveOut:           false,
-					DeleteCDSSnapshot: true,
-					DeleteResource:    true,
-				},
-			},
-		}
-		_, err := CCE_CLIENT.DeleteInstances(args)
-		if err != nil {
-			log.Error(err.Error())
-		}
-	}
-
-	if CCE_INSTANCE_GROUP_ID != "" && CCE_CLIENT != nil {
-		args := &DeleteInstanceGroupArgs{
-			ClusterID:       CCE_CLUSTER_ID,
-			InstanceGroupID: CCE_INSTANCE_GROUP_ID,
-			DeleteInstances: true,
-		}
-		_, err := CCE_CLIENT.DeleteInstanceGroup(args)
-		if err != nil {
-			log.Error(err.Error())
-		}
-	}
-
-	if CCE_CLUSTER_ID != "" && CCE_CLIENT != nil {
-		args := &DeleteClusterArgs{
-			ClusterID:         CCE_CLUSTER_ID,
-			DeleteResource:    true,
-			DeleteCDSSnapshot: true,
-		}
-		_, err := CCE_CLIENT.DeleteCluster(args)
-		if err != nil {
-			log.Error(err.Error())
-		}
-	}
 }
 
 // ExpectEqual is the helper function for test each case
@@ -531,10 +485,10 @@ func TestClient_CreateInstances(t *testing.T) {
 					ImageID: IMAGE_TEST_ID,
 					InstanceOS: types.InstanceOS{
 						ImageType: bccapi.ImageTypeSystem,
-						OSType: types.OSTypeLinux,
-						OSName: types.OSNameCentOS,
+						OSType:    types.OSTypeLinux,
+						OSName:    types.OSNameCentOS,
 						OSVersion: "7.5",
-						OSArch: "x86_64 (64bit)",
+						OSArch:    "x86_64 (64bit)",
 					},
 					NeedEIP:              false,
 					InstanceChargingType: bccapi.PaymentTimingPostPaid,
@@ -561,12 +515,13 @@ func TestClient_ListInstancesByPage(t *testing.T) {
 	args := &ListInstancesByPageArgs{
 		ClusterID: CCE_CLUSTER_ID,
 		Params: &ListInstancesByPageParams{
-			KeywordType: InstanceKeywordTypeInstanceName,
-			Keyword:     "",
-			OrderBy:     "createdAt",
-			Order:       OrderASC,
-			PageNo:      1,
-			PageSize:    10,
+			KeywordType:          InstanceKeywordTypeInstanceName,
+			Keyword:              "",
+			OrderBy:              "createdAt",
+			Order:                OrderASC,
+			PageNo:               1,
+			PageSize:             10,
+			EnableInternalFields: true,
 		},
 	}
 	resp, err := CCE_CLIENT.ListInstancesByPage(args)
@@ -602,8 +557,8 @@ func TestClient_UpdateInstance(t *testing.T) {
 	oldInstanceSpec.CCEInstancePriority = 1
 
 	argsUpdate := &UpdateInstanceArgs{
-		ClusterID:  CCE_CLUSTER_ID,
-		InstanceID: CCE_INSTANCE_ID,
+		ClusterID:    CCE_CLUSTER_ID,
+		InstanceID:   CCE_INSTANCE_ID,
 		InstanceSpec: oldInstanceSpec,
 	}
 
@@ -666,4 +621,67 @@ func TestClient_DeleteCluster(t *testing.T) {
 	fmt.Println("Request ID:" + resp.RequestID)
 	s, _ := json.MarshalIndent(resp, "", "\t")
 	fmt.Println("Response:" + string(s))
+}
+
+func TestClient_InstanceCRD(t *testing.T) {
+	getInstanceCRDArgs := &GetInstanceCRDArgs{
+		ClusterID:     "cce-xyr5njs7",
+		CCEInstanceID: "cce-xyr5njs7-zjxl4lju",
+	}
+
+	resp, err := CCE_CLIENT.GetInstanceCRD(getInstanceCRDArgs)
+	if err != nil {
+		t.Logf("get instance crd error: %s", err.Error())
+		return
+	}
+	t.Logf("Request ID: %s", resp.RequestID)
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	t.Logf("Response: %s", string(s))
+
+	// update instance crd
+	instance := resp.Instance
+	instance.Spec.AdminPassword = "Test123!"
+
+	updateInstanceCRD := UpdateInstanceCRDRequest{
+		Instance: instance,
+	}
+	commonResp, err := CCE_CLIENT.UpdateInstanceCRD(&updateInstanceCRD)
+	if err != nil {
+		t.Logf("update instance crd error: %s", err.Error())
+		return
+	}
+
+	t.Logf("Request ID: %s", commonResp.RequestID)
+}
+
+func TestClient_UpdateClusterCRD(t *testing.T) {
+	getClusterCRDArgs := &GetClusterCRDArgs{
+
+		ClusterID: "cce-bvyohjkg",
+	}
+
+	resp, err := CCE_CLIENT.GetClusterCRD(getClusterCRDArgs)
+	if err != nil {
+		fmt.Printf("get cluster crd error: %s", err.Error())
+		return
+	}
+
+	fmt.Printf("Request ID: %s", resp.RequestID)
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Printf("Response: %s", string(s))
+
+	cluster := resp.Cluster
+	cluster.Spec.ClusterName = "gogogogo"
+
+	request := UpdateClusterCRDArgs{
+		Cluster: cluster,
+	}
+
+	commonResp, err := CCE_CLIENT.UpdateClusterCRD(&request)
+	if err != nil {
+		fmt.Printf("update cluster crd error: %s", err.Error())
+		return
+	}
+
+	fmt.Printf("Resuest ID: %s", commonResp.RequestID)
 }

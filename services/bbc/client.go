@@ -94,6 +94,42 @@ func (c *Client) CreateInstance(args *CreateInstanceArgs) (*CreateInstanceResult
 	return CreateInstance(c, args, body)
 }
 
+// CreateInstance - create an instance with specific parameters and support the passing in of label
+//
+// PARAMS:
+//     - args: the arguments to create instance
+// RETURNS:
+//     - *CreateInstanceResult: the result of create Instance, contains new Instance ID
+//     - error: nil if success otherwise the specific erro
+func (c *Client) CreateInstanceByLabel(args *CreateSpecialInstanceArgs) (*CreateInstanceResult, error) {
+	if len(args.AdminPass) > 0 {
+		cryptedPass, err := Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
+		if err != nil {
+			return nil, err
+		}
+
+		args.AdminPass = cryptedPass
+	}
+
+	if args.RootDiskSizeInGb <= 0 {
+		args.RootDiskSizeInGb = 20
+	}
+
+	if args.PurchaseCount < 1 {
+		args.PurchaseCount = 1
+	}
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return CreateInstanceByLabel(c, args, body)
+}
+
 // ListInstances - list all instance with the specific parameters
 //
 // PARAMS:
@@ -848,6 +884,50 @@ func (c *Client) ShareImage(imageId string, args *SharedUser) error {
 //     - error: nil if success otherwise the specific error
 func (c *Client) UnShareImage(imageId string, args *SharedUser) error {
 	return UnShareImage(c, imageId, args)
+}
+
+// GetImageSharedUser - get user list use this image
+//
+// PARAMS:
+//     - imageId: the specific image ID
+// RETURNS:
+//     - *api.GetImageSharedUserResult: the result of user list
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetImageSharedUser(imageId string) (*GetImageSharedUserResult, error) {
+	return GetImageSharedUser(c, imageId)
+}
+
+// RemoteCopyImage - copy a bbc image from other region
+//
+// PARAMS:
+//     - imageId: the specific image ID
+//     - args: the arguments to remote copy an image
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) RemoteCopyImage(imageId string, args *RemoteCopyImageArgs) error {
+	return RemoteCopyImage(c, imageId, args)
+}
+
+
+// RemoteCopyImageReturnImageIds - copy an image from other region
+//
+// PARAMS:
+//     - imageId: the specific image ID
+//     - args: the arguments to remote copy an image
+// RETURNS:
+//     - imageIds of destination region if success otherwise the specific error
+func (c *Client) RemoteCopyImageReturnImageIds(imageId string, args *RemoteCopyImageArgs) (*RemoteCopyImageResult, error) {
+	return RemoteCopyImageReturnImageIds(c, imageId, args)
+}
+
+// CancelRemoteCopyImage - cancel a copy image from other region operation
+//
+// PARAMS:
+//     - imageId: the specific image ID
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) CancelRemoteCopyImage(imageId string) error {
+	return CancelRemoteCopyImage(c, imageId)
 }
 
 // GetInstanceEni - get the eni of the bbc instance

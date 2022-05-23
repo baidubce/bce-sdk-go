@@ -55,7 +55,7 @@ func init() {
 	SCS_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
 	client = SCS_CLIENT
-	SCS_TEST_ID = "scs-su-btgakwoafoyv"
+	SCS_TEST_ID = "scs-bj-xeezxbguylsw"
 	instanceId = SCS_TEST_ID
 }
 
@@ -95,17 +95,22 @@ func TestClient_CreateInstance(t *testing.T) {
 				ReservationLength: 1,
 			},
 		},
-		ClientToken:    getClientToken(),
-		PurchaseCount:  1,
-		InstanceName:   SDK_NAME_PREFIX + id,
-		Port:           6379,
-		EngineVersion:  "5.0",
-		NodeType:       "cache.n1.micro",
+		ClientToken:   getClientToken(),
+		PurchaseCount: 1,
+		InstanceName:  SDK_NAME_PREFIX + id,
+		Port:          6379,
+		Engine:        3,
+		// EngineVersion:  "5.0",
+		NodeType:       "pega.g4s1.micro",
 		ClusterType:    "cluster",
 		ReplicationNum: 2,
-		ShardNum:       2,
+		ShardNum:       1,
 		ProxyNum:       2,
-		BgwGroupId:     "bgw_group-7a88",
+		DiskFlavor:     60,
+		DiskType:       "essd",
+		BgwGroupId:     "",
+		StoreType:      3,
+		EnableReadOnly: 1,
 	}
 	result, err := SCS_CLIENT.CreateInstance(args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -166,6 +171,45 @@ func TestClient_ResizeInstance(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 	if result.InstanceStatus == "Running" {
 		err := SCS_CLIENT.ResizeInstance(SCS_TEST_ID, args)
+		ExpectEqual(t.Errorf, nil, err)
+	}
+}
+
+func TestClient_AddReplication(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	args := &ReplicationArgs{
+		ResizeType: "add",
+		ReplicationInfo: []Replication{
+			{AvailabilityZone: "cn-bj-a", SubnetId: "sbn-fh56wbtv1ycw", IsMaster: 1},
+			{AvailabilityZone: "cn-bj-a", SubnetId: "sbn-fh56wbtv1ycw", IsMaster: 0},
+			{AvailabilityZone: "cn-bj-a", SubnetId: "sbn-fh56wbtv1ycw", IsMaster: 0},
+			{AvailabilityZone: "cn-bj-a", SubnetId: "sbn-fh56wbtv1ycw", IsMaster: 0},
+		},
+		ClientToken: getClientToken(),
+	}
+	result, err := SCS_CLIENT.GetInstanceDetail(SCS_TEST_ID)
+	ExpectEqual(t.Errorf, nil, err)
+	if result.InstanceStatus == "Running" {
+		err := SCS_CLIENT.AddReplication(SCS_TEST_ID, args)
+		ExpectEqual(t.Errorf, nil, err)
+	}
+}
+
+func TestClient_Deletelication(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	args := &ReplicationArgs{
+		ResizeType: "delete",
+		ReplicationInfo: []Replication{
+			{AvailabilityZone: "cn-bj-a", SubnetId: "sbn-fh56wbtv1ycw", IsMaster: 1},
+			{AvailabilityZone: "cn-bj-a", SubnetId: "sbn-fh56wbtv1ycw", IsMaster: 0},
+			{AvailabilityZone: "cn-bj-a", SubnetId: "sbn-fh56wbtv1ycw", IsMaster: 0},
+		},
+		ClientToken: getClientToken(),
+	}
+	result, err := SCS_CLIENT.GetInstanceDetail(SCS_TEST_ID)
+	ExpectEqual(t.Errorf, nil, err)
+	if result.InstanceStatus == "Running" {
+		err := SCS_CLIENT.DeleteReplication(SCS_TEST_ID, args)
 		ExpectEqual(t.Errorf, nil, err)
 	}
 }

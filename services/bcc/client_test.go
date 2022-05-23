@@ -107,6 +107,32 @@ func TestCreateInstance(t *testing.T) {
 	BCC_TestBccId = createResult.InstanceIds[0]
 }
 
+func TestCreateSpecialInstanceBySpec(t *testing.T) {
+
+	createInstanceBySpecArgs := &api.CreateSpecialInstanceBySpecArgs{
+		ImageId:   "ImageId",
+		Spec:      "bcc.g5.c1m4",
+		ZoneName:  "cn-bj-a",
+		Billing: api.Billing{
+			PaymentTiming: api.PaymentTimingPostPaid,
+		},
+
+		LabelConstraints: []api.LabelConstraint{{
+			Key:      "feaA",
+			Operator: api.LabelOperatorExist,
+		}, {
+			Key:      "feaB",
+			Value:    "typeB",
+			Operator: api.LabelOperatorNotEqual,
+		}},
+	}
+	// 将使用『有 feaA 这个 label』且『feaB 这个 label 的值不是 typeB』的测试机创建实例
+	createResult, err := BCC_CLIENT.CreateInstanceByLabel(createInstanceBySpecArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(createResult)
+	BCC_TestBccId = createResult.InstanceIds[0]
+}
+
 func TestCreateInstanceBySpec(t *testing.T) {
 	DeploySetIds := []string{"DeploySetId"}
 	createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
