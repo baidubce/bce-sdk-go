@@ -285,6 +285,7 @@ type CreateInstanceArgs struct {
 	KeypairId             string           `json:"keypairId,omitempty"`
 	AspId                 string           `json:"aspId,omitempty"`
 	InternetChargeType    string           `json:"internetChargeType,omitempty"`
+	UserData              string           `json:"userData,omitempty"`
 	InternalIps           []string         `json:"internalIps,omitempty"`
 	ClientToken           string           `json:"-"`
 	RequestToken          string           `json:"requestToken"`
@@ -390,6 +391,7 @@ type CreateInstanceBySpecArgs struct {
 	AspId                 string           `json:"aspId"`
 	InternalIps           []string         `json:"internalIps,omitempty"`
 	DeployId              string           `json:"deployId,omitempty"`
+	UserData              string           `json:"userData,omitempty"`
 	ClientToken           string           `json:"-"`
 	RequestToken          string           `json:"requestToken"`
 	DeployIdList          []string         `json:"deployIdList"`
@@ -426,6 +428,7 @@ type CreateSpecialInstanceBySpecArgs struct {
 	Name                  string           `json:"name,omitempty"`
 	Hostname              string           `json:"hostname,omitempty"`
 	IsOpenHostnameDomain  bool             `json:"isOpenHostnameDomain,omitempty"`
+	UserData              string           `json:"userData,omitempty"`
 	AutoSeqSuffix         bool             `json:"autoSeqSuffix,omitempty"`
 	AdminPass             string           `json:"adminPass,omitempty"`
 	Billing               Billing          `json:"billing"`
