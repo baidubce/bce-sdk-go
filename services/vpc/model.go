@@ -390,6 +390,40 @@ type NAT struct {
 	ExpiredTime   string        `json:"expiredTime"`
 }
 
+type SnatRule struct {
+	RuleId            string   `json:"ruleId"`
+	RuleName          string   `json:"ruleName"`
+	PublicIpAddresses []string `json:"publicIpsAddress"`
+	SourceCIDR        string   `json:"sourceCIDR"`
+	Status            string   `json:"status"`
+}
+
+type SnatRuleArgs struct {
+	RuleName          string   `json:"ruleName,omitempty"`
+	SourceCIDR        string   `json:"sourceCIDR,omitempty"`
+	PublicIpAddresses []string `json:"publicIpsAddress,omitempty"`
+}
+
+type DnatRuleArgs struct {
+	RuleName         string `json:"ruleName,omitempty"`
+	PublicIpAddress  string `json:"publicIpAddress,omitempty"`
+	PrivateIpAddress string `json:"privateIpAddress,omitempty"`
+	Protocol         string `json:"protocol,omitempty"`
+	PublicPort       string `json:"publicPort,omitempty"`
+	PrivatePort      string `json:"privatePort,omitempty"`
+}
+
+type DnatRule struct {
+	RuleId           string `json:"ruleId"`
+	RuleName         string `json:"ruleName"`
+	PublicIpAddress  string `json:"publicIpAddress"`
+	PrivateIpAddress string `json:"privateIpAddress"`
+	Protocol         string `json:"protocol"`
+	PublicPort       int    `json:"publicPort"`
+	PrivatePort      int    `json:"privatePort"`
+	Status           string `json:"status"`
+}
+
 // UpdateNatGatewayArgs defines the structure of the input parameters for the UpdateNatGateway api
 type UpdateNatGatewayArgs struct {
 	ClientToken string `json:"-"`
@@ -412,6 +446,93 @@ type UnBindEipsArgs struct {
 type RenewNatGatewayArgs struct {
 	ClientToken string   `json:"-"`
 	Billing     *Billing `json:"billing"`
+}
+
+type CreateNatGatewaySnatRuleArgs struct {
+	ClientToken       string   `json:"-"`
+	RuleName          string   `json:"ruleName,omitempty"`
+	SourceCIDR        string   `json:"sourceCIDR,omitempty"`
+	PublicIpAddresses []string `json:"publicIpsAddress,omitempty"`
+}
+
+type BatchCreateNatGatewaySnatRuleArgs struct {
+	ClientToken string         `json:"-"`
+	NatId       string         `json:"natId"`
+	SnatRules   []SnatRuleArgs `json:"snatRules"`
+}
+
+type UpdateNatGatewaySnatRuleArgs struct {
+	ClientToken       string   `json:"-"`
+	RuleName          string   `json:"ruleName,omitempty"`
+	SourceCIDR        string   `json:"sourceCIDR,omitempty"`
+	PublicIpAddresses []string `json:"publicIpsAddress,omitempty"`
+}
+
+type ListNatGatewaySnatRuleArgs struct {
+	NatId   string `json:"natId"`
+	Marker  string `json:"marker"`
+	MaxKeys int    `json:"maxKeys"`
+}
+
+type ListNatGatewaySnatRulesResult struct {
+	Rules       []SnatRule `json:"rules"`
+	Marker      string     `json:"marker"`
+	IsTruncated bool       `json:"isTruncated"`
+	NextMarker  string     `json:"nextMarker"`
+	MaxKeys     int        `json:"maxKeys"`
+}
+
+type CreateNatGatewaySnatRuleResult struct {
+	RuleId string `json:"ruleId"`
+}
+type BatchCreateNatGatewaySnatRuleResult struct {
+	SnatRuleIds []string `json:"snatRuleIds"`
+}
+
+type CreateNatGatewayDnatRuleArgs struct {
+	ClientToken      string `json:"-"`
+	RuleName         string `json:"ruleName,omitempty"`
+	PublicIpAddress  string `json:"publicIpAddress,omitempty"`
+	PrivateIpAddress string `json:"privateIpAddress,omitempty"`
+	Protocol         string `json:"protocol,omitempty"`
+	PublicPort       string `json:"publicPort,omitempty"`
+	PrivatePort      string `json:"privatePort,omitempty"`
+}
+
+type BatchCreateNatGatewayDnatRuleArgs struct {
+	ClientToken string         `json:"-"`
+	Rules       []DnatRuleArgs `json:"rules"`
+}
+
+type UpdateNatGatewayDnatRuleArgs struct {
+	ClientToken      string `json:"-"`
+	RuleName         string `json:"ruleName,omitempty"`
+	PublicIpAddress  string `json:"publicIpAddress,omitempty"`
+	PrivateIpAddress string `json:"privateIpAddress,omitempty"`
+	Protocol         string `json:"protocol,omitempty"`
+	PublicPort       string `json:"publicPort,omitempty"`
+	PrivatePort      string `json:"privatePort,omitempty"`
+}
+
+type ListNatGatewaDnatRuleArgs struct {
+	Marker  string `json:"marker"`
+	MaxKeys int    `json:"maxKeys"`
+}
+
+type ListNatGatewayDnatRulesResult struct {
+	Rules       []DnatRule `json:"rules"`
+	Marker      string     `json:"marker"`
+	IsTruncated bool       `json:"isTruncated"`
+	NextMarker  string     `json:"nextMarker"`
+	MaxKeys     int        `json:"maxKeys"`
+}
+
+type CreateNatGatewayDnatRuleResult struct {
+	RuleId string `json:"ruleId"`
+}
+
+type BatchCreateNatGatewayDnatRuleResult struct {
+	RuleIds []string `json:"ruleIds"`
 }
 
 // CreatePeerConnArgs defines the structure of the input parameters for the CreatePeerConn api

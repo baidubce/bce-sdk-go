@@ -1073,6 +1073,101 @@ fmt.Printf("renew nat gateway %s success.", natId)
 > 注意:
 - 后付费的NAT网关不能续费
 
+## 创建SNAT规则
+使用以下代码可以创建nat网关的snat规则。
+```go
+//import "github.com/baidubce/bce-sdk-go/services/vpc"
+
+args := &CreateNatGatewaySnatRuleArgs{
+RuleName:         "sdk-test",
+PublicIpsAddress: []string{"100.88.10.84"},
+SourceCIDR:       "192.168.3.3",
+}
+result, err := VPC_CLIENT.CreateNatGatewaySnatRule("nat-b1jb3b5e34tc", args)
+ExpectEqual(t.Errorf, nil, err)
+r, err := json.Marshal(result)
+fmt.Println(string(r))
+```
+
+## 删除SNAT规则
+使用以下代码可以删除nat网关的snat规则。
+```go
+//import "github.com/baidubce/bce-sdk-go/services/vpc"
+
+VPC_CLIENT.DeleteNatGatewaySnatRule("nat-b1jb3b5e34tc", "rule-hprz7sv9zvcx", getClientToken())
+```
+
+## 修改SNAT规则
+使用以下代码可以修改nat网关的snat规则。
+```go
+//import "github.com/baidubce/bce-sdk-go/services/vpc"
+
+args := &UpdateNatGatewaySnatRuleArgs{
+RuleName:   "sdk-test-1",
+SourceCIDR: "192.168.3.6",
+}
+VPC_CLIENT.UpdateNatGatewaySnatRule("nat-b1jb3b5e34tc", "rule-hprz7sv9zvcx", args)
+```
+
+## 查询SNAT规则
+使用以下代码可以查询nat网关的snat规则。
+```go
+//import "github.com/baidubce/bce-sdk-go/services/vpc"
+
+args := &ListNatGatewaySnatRuleArgs{
+NatId: "nat-b1jb3b5e34tc",
+}
+result, err := VPC_CLIENT.ListNatGatewaySnatRules(args)
+ExpectEqual(t.Errorf, nil, err)
+r, err := json.Marshal(result)
+fmt.Println(string(r))
+```
+
+## 创建DNAT规则
+使用以下代码可以创建nat网关的dnat规则。
+```go
+//import "github.com/baidubce/bce-sdk-go/services/vpc"
+
+args := &ListNatGatewaySnatRuleArgs{
+NatId: "nat-b1jb3b5e34tc",
+}
+result, err := VPC_CLIENT.ListNatGatewaySnatRules(args)
+ExpectEqual(t.Errorf, nil, err)
+r, err := json.Marshal(result)
+fmt.Println(string(r))
+```
+
+## 删除DNAT规则
+使用以下代码可以删除nat网关的dnat规则。
+```go
+//import "github.com/baidubce/bce-sdk-go/services/vpc"
+
+VPC_CLIENT.DeleteNatGatewayDnatRule("nat-b1jb3b5e34tc", "rule-8gee5abqins0", getClientToken())
+```
+
+## 修改DNAT规则
+使用以下代码可以修改nat网关的dnat规则。
+```go
+//import "github.com/baidubce/bce-sdk-go/services/vpc"
+
+args := &UpdateNatGatewayDnatRuleArgs{
+RuleName:         "sdk-test-3",
+PrivateIpAddress: "192.168.1.5",
+}
+VPC_CLIENT.UpdateNatGatewayDnatRule("nat-b1jb3b5e34tc", "rule-8gee5abqins0", args)
+```
+
+## 查询DNAT规则
+使用以下代码可以查询nat网关的dnat规则。
+```go
+//import "github.com/baidubce/bce-sdk-go/services/vpc"
+
+args := &ListNatGatewaDnatRuleArgs{}
+result, err := VPC_CLIENT.ListNatGatewayDnatRules("nat-b1jb3b5e34tc", args)
+ExpectEqual(t.Errorf, nil, err)
+r, err := json.Marshal(result)
+fmt.Println(string(r))
+```
 
 # 对等连接管理
 
