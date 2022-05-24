@@ -140,6 +140,15 @@ type GetInstanceDetailResult struct {
 	AutoRenew          string           `json:"autoRenew"`
 	Tags               []model.TagModel `json:"tags"`
 	ShardNum           int              `json:"shardNum"`
+	ReplicationNum     int              `json:"replicationNum"`
+	NodeType           string           `json:"nodeType"`
+	DiskFlavor         int              `json:"diskFlavor"`
+	DiskType           string           `json:"diskType"`
+	StoreType          int              `json:"storeType"`
+	Eip                string           `json:"eip"`
+	PublicDomain       string           `json:"publicDomain"`
+	EnableReadOnly     int              `json:"enableReadOnly"`
+	ReplicationInfo    []Replication    `json:"replicationInfo"`
 }
 
 type UpdateInstanceNameArgs struct {
