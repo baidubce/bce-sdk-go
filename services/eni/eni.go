@@ -366,6 +366,28 @@ func (c *Client) UpdateEniSecurityGroup(args *UpdateEniSecurityGroupArgs) error 
 	return err
 }
 
+// UpdateEniEnterpriseSecurityGroup - update eni enterprise security group
+//
+// PARAMS:
+//     - args: the arguments to update eni enterprise security group
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateEniEnterpriseSecurityGroup(args *UpdateEniEnterpriseSecurityGroupArgs) error {
+	if args == nil {
+		return fmt.Errorf("The UpdateEniEnterpriseSecurityGroupArgs cannot be nil.")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForEniId(args.EniId)).
+		WithMethod(http.PUT).
+		WithQueryParam("bindEsg", "").
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
+
+	return err
+}
+
 func (c *Client) GetEniQuota(args *EniQuoteArgs) (*EniQuoteInfo, error) {
 
 	result := &EniQuoteInfo{}

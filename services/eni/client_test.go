@@ -98,11 +98,10 @@ func getClientToken() string {
 
 func TestClient_CreateEni(t *testing.T) {
 	args := &CreateEniArgs{
-		Name:       "hzb_3",
-		SubnetId:   "sbn-5u7bv2e8mzwf",
-		InstanceId: "i-XA1jzMCk",
-		SecurityGroupIds: []string{
-			"g-enw8n4aib8nk",
+		Name:     "enitest66",
+		SubnetId: "sbn-56s25qecigix",
+		EnterpriseSecurityGroupIds: []string{
+			"esg-rn49gxbin4x7",
 		},
 		PrivateIpSet: []PrivateIp{
 			{
@@ -153,7 +152,7 @@ func TestClient_ListEnis(t *testing.T) {
 }
 
 func TestClient_GetEniDetail(t *testing.T) {
-	result, err := ENI_CLIENT.GetEniDetail("eni-mmwvvbvfjch3")
+	result, err := ENI_CLIENT.GetEniDetail("eni-7c9yzhkfn9c2")
 	ExpectEqual(t.Errorf, nil, err)
 	r, err := json.Marshal(result)
 	fmt.Println(string(r))
@@ -273,6 +272,18 @@ func TestClient_UpdateEniSecurityGroup(t *testing.T) {
 		},
 	}
 	err := ENI_CLIENT.UpdateEniSecurityGroup(args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UpdateEniEnterpriseSecurityGroup(t *testing.T) {
+	args := &UpdateEniEnterpriseSecurityGroupArgs{
+		EniId:       "eni-7c9yzhkfn9c2",
+		ClientToken: getClientToken(),
+		EnterpriseSecurityGroupIds: []string{
+			"esg-e28mnj5vbrv5",
+		},
+	}
+	err := ENI_CLIENT.UpdateEniEnterpriseSecurityGroup(args)
 	ExpectEqual(t.Errorf, nil, err)
 }
 
