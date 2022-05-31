@@ -2626,6 +2626,44 @@ for _, e := range resp.Subnets {
 }
 ```
 
+## 实例版本回滚
+使用以下代码可以回滚实例版本。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+args := &ddcrds.InstanceVersionRollBackArg{
+	// 是否维护时间窗口执行
+	WaitSwitch: true,
+}
+// DDC
+result, err := client.InstanceVersionRollBack(instanceId, args)
+if err != nil {
+    fmt.Printf("rollback instance version faild: %+v\n", err)
+    return
+}
+fmt.Printf("rollback instance version success. taskId:%s\n", result.TaskID)
+```
+
+
+## 实例版本升级
+使用以下代码可以升级实例版本。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+args := &ddcrds.InstanceVersionUpgradeArg{
+	// 是否立即升级
+	IsUpgradeNow: false,
+}
+// DDC
+result, err := client.InstanceVersionUpgrade(instanceId, args)
+if err != nil {
+    fmt.Printf("upgrade instance version faild: %+v\n", err)
+    return
+}
+fmt.Printf("upgrade instance version success. taskId:%s\n", result.TaskID)
+```
+
+
 # 错误处理
 
 GO语言以error类型标识错误，DDC支持两种错误见下表：

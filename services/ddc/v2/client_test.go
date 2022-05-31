@@ -1719,3 +1719,31 @@ func TestClient_GetInstanceBackupStatus(t *testing.T) {
 		fmt.Println("instance backup start time: ", backupStatusResult.SnapshotStartTime)
 	}
 }
+
+func TestClient_InstanceVersionRollBack(t *testing.T) {
+	instanceId = "ddc-mvxhc1fq"
+	args := &InstanceVersionRollBackArg{
+		// 是否维护时间执行
+		WaitSwitch: true,
+	}
+	result, err := client.InstanceVersionRollBack(instanceId, args)
+	if err != nil {
+		fmt.Printf("rollback instance version faild: %+v\n", err)
+		return
+	}
+	fmt.Printf("rollback instance version success. taskId:%s\n", result.TaskID)
+}
+
+func TestClient_InstanceVersionUpgrade(t *testing.T) {
+	instanceId = "ddc-mvxhc1fq"
+	args := &InstanceVersionUpgradeArg{
+		// 是否立即执行
+		IsUpgradeNow: true,
+	}
+	result, err := client.InstanceVersionUpgrade(instanceId, args)
+	if err != nil {
+		fmt.Printf("upgrade instance version faild: %+v\n", err)
+		return
+	}
+	fmt.Printf("upgrade instance version success. taskId:%s\n", result.TaskID)
+}

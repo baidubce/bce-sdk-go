@@ -1488,3 +1488,25 @@ func (c *Client) GetSlowLogs(args *GetSlowLogsArgs) (*SlowLogsResponse, error) {
 func (c *Client) GetInstanceBackupStatus(instanceId string) (*GetBackupStatusResponse, error) {
 	return c.ddcClient.GetInstanceBackupStatus(instanceId)
 }
+
+// InstanceVersionRollBack - rollback instance version from 5.7 to 5.6
+//
+// PARAMS:
+//     - instanceId: id of the instance
+//     - args: the arguments to set WaitSwitch
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) InstanceVersionRollBack(instanceId string, args *InstanceVersionRollBackArg) (*MaintainTaskIdResult, error) {
+	return c.ddcClient.InstanceVersionRollBack(instanceId, args)
+}
+
+// InstanceVersionUpgrade - upgrade instance version from 5.6 to 5.7
+//
+// PARAMS:
+//     - instanceId: id of the instance
+//     - args: the arguments to set IsUpgradeNow
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) InstanceVersionUpgrade(instanceId string, args *InstanceVersionUpgradeArg) (*MaintainTaskIdResult, error) {
+	return c.ddcClient.InstanceVersionUpgrade(instanceId, args)
+}

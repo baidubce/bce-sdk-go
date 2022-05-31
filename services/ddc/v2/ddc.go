@@ -2306,3 +2306,46 @@ func (c *DDCClient) GetInstanceBackupStatus(instanceId string) (*GetBackupStatus
 
 	return result, err
 }
+
+// InstanceVersionRollBack - rollback instance version from 5.7 to 5.6
+//
+// PARAMS:
+//     - instanceId: id of the instance
+//     - args: the arguments to set WaitSwitch
+// RETURNS:
+//     - *MaintainTaskIdResult: ID of generated maintain task
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) InstanceVersionRollBack(instanceId string, args *InstanceVersionRollBackArg) (*MaintainTaskIdResult, error) {
+
+	result := &MaintainTaskIdResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getDdcUriWithInstanceId(instanceId)+"/rollback").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// InstanceVersionUpgrade - upgrade instance version from 5.6 to 5.7
+//
+// PARAMS:
+//     - instanceId: id of the instance
+//     - args: the arguments to set IsUpgradeNow
+// RETURNS:
+//     - *MaintainTaskIdResult: ID of generated maintain task
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) InstanceVersionUpgrade(instanceId string, args *InstanceVersionUpgradeArg) (*MaintainTaskIdResult, error) {
+
+	result := &MaintainTaskIdResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getDdcUriWithInstanceId(instanceId)+"/upgrade").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+	return result, err
+}
+

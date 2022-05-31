@@ -1165,3 +1165,11 @@ type GetBackupStatusResponse struct {
 	IsBackuping       bool   `json:"isBackuping"`
 	SnapshotStartTime string `json:"snapshotStartTime"`
 }
+
+type InstanceVersionRollBackArg struct {
+	WaitSwitch bool `json:"waitSwitch"`
+}
+
+type InstanceVersionUpgradeArg struct {
+	IsUpgradeNow bool `json:"isUpgradeNow"`
+}
