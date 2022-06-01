@@ -124,6 +124,23 @@ func (c *Client) DeleteEip(eip, clientToken string) error {
 		Do()
 }
 
+// OptionalDeleteEip - optionally delete an EIP
+//
+// PARAMS:
+//     - eip: the specific EIP
+//     - clientToken: optional parameter, an Idempotent Token
+//     - releaseToRecycle: the parameter confirms whether to put the specific EIP in the recycle bin (true) or directly delete it (false)
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) OptionalDeleteEip(eip string, clientToken string, releaseToRecycle bool) error {
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(getEipUriWithEip(eip)).
+		WithQueryParamFilter("releaseToRecycle", strconv.FormatBool(releaseToRecycle)).
+		WithQueryParamFilter("clientToken", clientToken).
+		Do()
+}
+
 // ListEip - list all EIP with the specific parameters
 //
 // PARAMS:
@@ -154,6 +171,67 @@ func (c *Client) ListEip(args *ListEipArgs) (*ListEipResult, error) {
 		Do()
 
 	return result, err
+}
+
+// ListRecycleEip - list all EIP in the recycle bin with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to list all eip in the recycle bin
+// RETURNS:
+//     - *ListRecycleEipResult: the result of list all eip in the recycle bin
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListRecycleEip(args *ListRecycleEipArgs) (*ListRecycleEipResult, error) {
+	if args == nil {
+		args = &ListRecycleEipArgs{}
+	}
+
+	if args.MaxKeys <= 0 || args.MaxKeys > 1000 {
+		args.MaxKeys = 1000
+	}
+
+	result := &ListRecycleEipResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getRecycleEipUri()).
+		WithQueryParamFilter("eip", args.Eip).
+		WithQueryParamFilter("name", args.Name).
+		WithQueryParamFilter("marker", args.Marker).
+		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// RestoreRecycleEip - restore the specific EIP in the recycle bin
+//
+// PARAMS:
+//     - eip: the specific EIP
+//     - clientToken: optional parameter, an Idempotent Token
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) RestoreRecycleEip(eip string, clientToken string) error {
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getRecycleEipUriWithEip(eip)).
+		WithQueryParamFilter("clientToken", clientToken).
+		WithQueryParam("restore", "").
+		Do()
+}
+
+// DeleteRecycleEip - delete the specific EIP in the recycle bin
+//
+// PARAMS:
+//     - eip: the specific EIP
+//     - clientToken: optional parameter, an Idempotent Token
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeleteRecycleEip(eip string, clientToken string) error {
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(getRecycleEipUriWithEip(eip)).
+		WithQueryParamFilter("clientToken", clientToken).
+		Do()
 }
 
 // PurchaseReservedEip - purchase reserve an eip with the specific parameters

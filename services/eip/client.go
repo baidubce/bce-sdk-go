@@ -26,6 +26,8 @@ const (
 
 	REQUEST_EIP_URL = "/eip"
 
+	REQUEST_RECYCLE_EIP_URL = "/eip/recycle"
+
 	REQUEST_EIP_CLUSTER_URL = "/eipcluster"
 
 	REQUEST_EIP_TP_URL = "/eiptp"
@@ -53,6 +55,14 @@ func getEipUri() string {
 
 func getEipUriWithEip(eip string) string {
 	return URI_PREFIX + REQUEST_EIP_URL + "/" + eip
+}
+
+func getRecycleEipUri() string {
+	return URI_PREFIX + REQUEST_RECYCLE_EIP_URL
+}
+
+func getRecycleEipUriWithEip(eip string) string {
+	return URI_PREFIX + REQUEST_RECYCLE_EIP_URL +  "/" + eip
 }
 
 func getEipClusterUri() string {
