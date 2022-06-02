@@ -234,6 +234,7 @@ func (c *Client) ResizeInstance(instanceId string, args *ResizeInstanceArgs) err
 		WithMethod(http.PUT).
 		WithURL(INSTANCE_URL_V1+"/"+instanceId+"/change").
 		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		Do()
 }
