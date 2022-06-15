@@ -31,6 +31,7 @@ type CreateRdsArgs struct {
 	CpuCount          int              `json:"cpuCount"`
 	MemoryCapacity    float64          `json:"memoryCapacity"`
 	VolumeCapacity    int              `json:"volumeCapacity"`
+	DiskIoType    	  string           `json:"diskIoType"`
 	ZoneNames         []string         `json:"zoneNames,omitempty"`
 	VpcId             string           `json:"vpcId,omitempty"`
 	IsDirectPay       bool             `json:"isDirectPay,omitempty"`

@@ -255,6 +255,8 @@ args := &rds.CreateRdsArgs{
     MemoryCapacity: 1,
     //套餐磁盘大小，单位GB，每5G递增，必选
     VolumeCapacity: 5,
+    //磁盘类型, normal_io:本地盘ssd磁盘, cloud_high:高性能云磁盘, cloud_nor:通用型SSD, cloud_enha:增强型SSD, 必选
+    DiskIoType: "normal_io",
     //批量创建云数据库 RDS 实例个数, 最大不超过10，默认1，可选
     PurchaseCount: 1,
     //rds实例名称，允许小写字母、数字，长度限制为1~32，默认命名规则:{engine} + {engineVersion}，可选
