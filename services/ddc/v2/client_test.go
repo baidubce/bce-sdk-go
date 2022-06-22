@@ -1102,6 +1102,7 @@ func TestClient_ResizeRds(t *testing.T) {
 		VolumeCapacity: 10,
 		IsResizeNow:    true,
 		IsDirectPay:    true,
+		ClientToken:    getClientToken(),
 	}
 	orderIdResponse, err := DDCRDS_CLIENT.ResizeRds(DDC_INSTANCE_ID, args)
 	ExpectEqual(t.Errorf, nil, err)

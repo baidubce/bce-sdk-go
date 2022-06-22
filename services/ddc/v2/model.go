@@ -761,6 +761,7 @@ type CreateRdsProxyArgs struct {
 }
 
 type ResizeRdsArgs struct {
+	ClientToken    string  `json:"-"`
 	CpuCount       int     `json:"cpuCount"`
 	MemoryCapacity float64 `json:"memoryCapacity"`
 	VolumeCapacity int     `json:"volumeCapacity"`

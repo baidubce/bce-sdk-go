@@ -1928,6 +1928,7 @@ func (c *DDCClient) ResizeRds(instanceId string, args *ResizeRdsArgs) (*OrderIdR
 		WithMethod(http.PUT).
 		WithURL(getDdcUriWithInstanceId(instanceId)+"/resize").
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithQueryParamFilter("clientToken", args.ClientToken).
 		WithBody(args).
 		WithResult(result).
 		Do()
@@ -2348,4 +2349,3 @@ func (c *DDCClient) InstanceVersionUpgrade(instanceId string, args *InstanceVers
 		Do()
 	return result, err
 }
-
