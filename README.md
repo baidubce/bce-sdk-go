@@ -47,6 +47,7 @@ bce-sdk-go
 |  |--cert                //SSL证书服务
 |  |--cfc                 //函数计算
 |  |--cfs                 //CFS文件存储服务
+|  |--cfw                 //云防火墙
 |  |--ddc                 //DDC数据库专属集群
 |  |--dts                 //数据传输服务
 |  |--eip                 //弹性公网IP
@@ -246,6 +247,7 @@ myLogger.Info("this is my own logger from the sdk")
 SSL证书服务 | CERT | github.com/baidubce/bce-sdk-go/services/cert | [CERT.md](./doc/CERT.md)
 函数计算 | CFC | github.com/baidubce/bce-sdk-go/services/cfc | [CFC.md](./doc/CFC.md)
 文件存储服务 | CFS | github.com/baidubce/bce-sdk-go/services/cfs | [CFS.md](./doc/CFS.md)
+云防火墙 | CFW | github.com/baidubce/bce-sdk-go/services/cfw | [CFW.md](./doc/CFW.md)
 文档服务 | DOC | github.com/baidubce/bce-sdk-go/services/doc | [DOC.md](./doc/DOC.md)
 数据传输服务 | DTS | github.com/baidubce/bce-sdk-go/services/dts | [DTS.md](./doc/DTS.md)
 弹性公网IP | EIP | github.com/baidubce/bce-sdk-go/services/eip | [EIP.md](./doc/EIP.md)
