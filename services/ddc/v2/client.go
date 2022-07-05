@@ -343,3 +343,11 @@ func getMaintainTaskUriWithTaskId(taskId string) string {
 func getInstanceBackupStatusUrl(instanceId string) string {
 	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + "/backupStatus"
 }
+
+func getInstanceSyncDelayUrl(instanceId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + "/sync_delay"
+}
+
+func getInstanceSyncDelayReplicationUrl(instanceId string) string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + "/replication"
+}

@@ -383,6 +383,7 @@ type UpdateRoGroupArgs struct {
 	EnableDelayOff      string `json:"enableDelayOff,omitempty"`
 	DelayThreshold      string `json:"delayThreshold,omitempty"`
 	LeastInstanceAmount string `json:"leastInstanceAmount,omitempty"`
+	MasterDelay 		string `json:"masterDelay,omitempty"`
 }
 
 type UpdateRoGroupRealArgs struct {
@@ -391,6 +392,7 @@ type UpdateRoGroupRealArgs struct {
 	EnableDelayOff      Integer `json:"enableDelayOff,omitempty"`
 	DelayThreshold      Integer `json:"delayThreshold,omitempty"`
 	LeastInstanceAmount Integer `json:"leastInstanceAmount,omitempty"`
+	MasterDelay 		Integer `json:"masterDelay,omitempty"`
 }
 
 type UpdateRoGroupWeightArgs struct {
@@ -399,6 +401,7 @@ type UpdateRoGroupWeightArgs struct {
 	DelayThreshold      string          `json:"delayThreshold,omitempty"`
 	LeastInstanceAmount string          `json:"leastInstanceAmount,omitempty"`
 	IsBalanceRoLoad     string          `json:"isBalanceRoLoad,omitempty"`
+	MasterDelay 		string 			`json:"masterDelay,omitempty"`
 	ReplicaList         []ReplicaWeight `json:"replicaList,omitempty"`
 }
 
@@ -408,6 +411,7 @@ type UpdateRoGroupWeightRealArgs struct {
 	DelayThreshold      Integer         `json:"delayThreshold,omitempty"`
 	LeastInstanceAmount Integer         `json:"leastInstanceAmount,omitempty"`
 	IsBalanceRoLoad     Integer         `json:"isBalanceRoLoad,omitempty"`
+	MasterDelay 		Integer 		`json:"masterDelay,omitempty"`
 	ReplicaList         []ReplicaWeight `json:"replicaList,omitempty"`
 }
 
@@ -1173,4 +1177,22 @@ type InstanceVersionRollBackArg struct {
 
 type InstanceVersionUpgradeArg struct {
 	IsUpgradeNow bool `json:"isUpgradeNow"`
+}
+
+type InstanceSyncDelayResponse struct {
+	Success bool              `json:"success"`
+	Result  InstanceSyncDelay `json:"result"`
+}
+
+type InstanceSyncDelay struct {
+	SyncDelay  int    `json:"sync_delay"`
+	SyncStatus string `json:"sync_status"`
+}
+
+type InstanceSyncDelayReplicationArg struct {
+	Action string `json:"action"`
+}
+
+type InstanceSyncDelayReplicationResponse struct {
+	Success bool  `json:"success"`
 }

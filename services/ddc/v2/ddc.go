@@ -389,6 +389,7 @@ func (c *DDCClient) UpdateRoGroup(roGroupId string, args *UpdateRoGroupArgs) err
 		DelayThreshold:      Int(args.DelayThreshold),
 		LeastInstanceAmount: Int(args.LeastInstanceAmount),
 		IsBalanceRoLoad:     Int(args.IsBalanceRoLoad),
+		MasterDelay:     	 Int(args.MasterDelay),
 	}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
@@ -417,6 +418,7 @@ func (c *DDCClient) UpdateRoGroupReplicaWeight(roGroupId string, args *UpdateRoG
 		DelayThreshold:      Int(args.DelayThreshold),
 		LeastInstanceAmount: Int(args.LeastInstanceAmount),
 		IsBalanceRoLoad:     Int(args.IsBalanceRoLoad),
+		MasterDelay:     	 Int(args.MasterDelay),
 		ReplicaList:         args.ReplicaList,
 	}
 	err := bce.NewRequestBuilder(c).
@@ -2343,6 +2345,52 @@ func (c *DDCClient) InstanceVersionUpgrade(instanceId string, args *InstanceVers
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
 		WithURL(getDdcUriWithInstanceId(instanceId)+"/upgrade").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GetInstanceSyncDelay - get readonly instance syncDelay and syncStatus.
+//
+// PARAMS:
+//     - instanceId: id of the instance
+// RETURNS:
+//     - *InstanceSyncDelayResponse: the response of syncDelay
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetInstanceSyncDelay(instanceId string) (*InstanceSyncDelayResponse, error) {
+	if len(instanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+
+	result := &InstanceSyncDelayResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getInstanceSyncDelayUrl(instanceId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// InstanceSyncDelayReplication - start or stop readonly instance syncDelay.
+//
+// PARAMS:
+//     - instanceId: id of the instance
+// RETURNS:
+//     - *InstanceSyncDelayReplicationResponse: the response of success
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) InstanceSyncDelayReplication(instanceId string, args *InstanceSyncDelayReplicationArg) (*InstanceSyncDelayReplicationResponse, error) {
+	if len(instanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+
+	result := &InstanceSyncDelayReplicationResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getInstanceSyncDelayReplicationUrl(instanceId)).
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		WithResult(result).

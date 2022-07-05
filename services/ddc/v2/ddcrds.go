@@ -1510,3 +1510,25 @@ func (c *Client) InstanceVersionRollBack(instanceId string, args *InstanceVersio
 func (c *Client) InstanceVersionUpgrade(instanceId string, args *InstanceVersionUpgradeArg) (*MaintainTaskIdResult, error) {
 	return c.ddcClient.InstanceVersionUpgrade(instanceId, args)
 }
+
+// GetInstanceSyncDelay - get readonly instance syncDelay and syncStatus.
+//
+// PARAMS:
+//     - instanceId: id of the instance
+// RETURNS:
+//     - *InstanceSyncDelayResponse: the response of syncDelay
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetInstanceSyncDelay(instanceId string) (*InstanceSyncDelayResponse, error) {
+	return c.ddcClient.GetInstanceSyncDelay(instanceId)
+}
+
+// InstanceSyncDelayReplication - start or stop readonly instance syncDelay.
+//
+// PARAMS:
+//     - instanceId: id of the instance
+// RETURNS:
+//     - *InstanceSyncDelayReplicationResponse: the response of success
+//     - error: nil if success otherwise the specific error
+func (c *Client) InstanceSyncDelayReplication(instanceId string, args *InstanceSyncDelayReplicationArg) (*InstanceSyncDelayReplicationResponse, error) {
+	return c.ddcClient.InstanceSyncDelayReplication(instanceId, args)
+}
