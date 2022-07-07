@@ -151,6 +151,7 @@ type GetInstanceDetailResult struct {
 	PublicDomain       string           `json:"publicDomain"`
 	EnableReadOnly     int              `json:"enableReadOnly"`
 	ReplicationInfo    []Replication    `json:"replicationInfo"`
+	BnsGroup           string           `json:"bnsGroup"`
 }
 
 type UpdateInstanceNameArgs struct {

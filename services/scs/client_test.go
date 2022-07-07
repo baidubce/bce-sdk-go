@@ -111,6 +111,7 @@ func TestClient_CreateInstance(t *testing.T) {
 		BgwGroupId:     "",
 		StoreType:      3,
 		EnableReadOnly: 1,
+		ClientAuth:     "ABlockIs16Bytes!",
 	}
 	result, err := SCS_CLIENT.CreateInstance(args)
 	ExpectEqual(t.Errorf, nil, err)

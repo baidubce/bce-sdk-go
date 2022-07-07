@@ -159,7 +159,13 @@ func (c *Client) CreateInstance(args *CreateInstanceArgs) (*CreateInstanceResult
 	if args == nil {
 		return nil, fmt.Errorf("please set create scs argments")
 	}
-
+	if len(args.ClientAuth) != 0 {
+		cryptedPass, err := Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.ClientAuth)
+		if err != nil {
+			return nil, err
+		}
+		args.ClientAuth = cryptedPass
+	}
 	result := &CreateInstanceResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
