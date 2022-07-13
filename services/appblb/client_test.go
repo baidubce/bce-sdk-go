@@ -30,7 +30,7 @@ var (
 	CERT_ID               = ""
 	IPGROUP_MEMBER_IP     = ""
 	CLUSTER_PROPERTY_TEST = ""
-	TEST_APPBLB_ID = ""
+	TEST_APPBLB_ID        = ""
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -579,9 +579,7 @@ func TestClient_DescribeAppSSLListeners(t *testing.T) {
 }
 
 func TestClient_DescribeAppAllListeners(t *testing.T) {
-	describeArgs := &DescribeAppListenerArgs{
-
-	}
+	describeArgs := &DescribeAppListenerArgs{}
 	result, err := APPBLB_CLIENT.DescribeAppAllListeners(APPBLB_ID, describeArgs)
 	if err != nil {
 		fmt.Println("get all listener failed:", err)
