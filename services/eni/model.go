@@ -15,13 +15,14 @@
 package eni
 
 type CreateEniArgs struct {
-	ClientToken      string      `json:"-"`
-	Name             string      `json:"name"`
-	SubnetId         string      `json:"subnetId"`
-	InstanceId       string      `json:"instanceId,omitempty"`
-	SecurityGroupIds []string    `json:"securityGroupIds"`
-	PrivateIpSet     []PrivateIp `json:"privateIpSet"`
-	Description      string      `json:"description,omitempty"`
+	ClientToken                string      `json:"-"`
+	Name                       string      `json:"name"`
+	SubnetId                   string      `json:"subnetId"`
+	InstanceId                 string      `json:"instanceId,omitempty"`
+	SecurityGroupIds           []string    `json:"securityGroupIds"`
+	EnterpriseSecurityGroupIds []string    `json:"enterpriseSecurityGroupIds"`
+	PrivateIpSet               []PrivateIp `json:"privateIpSet"`
+	Description                string      `json:"description,omitempty"`
 }
 
 type CreateEniResult struct {
@@ -58,18 +59,19 @@ type ListEniResult struct {
 }
 
 type Eni struct {
-	EniId            string      `json:"eniId"`
-	Name             string      `json:"name"`
-	ZoneName         string      `json:"zoneName"`
-	Description      string      `json:"description"`
-	InstanceId       string      `json:"instanceId"`
-	MacAddress       string      `json:"macAddress"`
-	VpcId            string      `json:"vpcId"`
-	SubnetId         string      `json:"subnetId"`
-	Status           string      `json:"status"`
-	PrivateIpSet     []PrivateIp `json:"privateIpSet"`
-	SecurityGroupIds []string    `json:"securityGroupIds"`
-	CreatedTime      string      `json:"createdTime"`
+	EniId                      string      `json:"eniId"`
+	Name                       string      `json:"name"`
+	ZoneName                   string      `json:"zoneName"`
+	Description                string      `json:"description"`
+	InstanceId                 string      `json:"instanceId"`
+	MacAddress                 string      `json:"macAddress"`
+	VpcId                      string      `json:"vpcId"`
+	SubnetId                   string      `json:"subnetId"`
+	Status                     string      `json:"status"`
+	PrivateIpSet               []PrivateIp `json:"privateIpSet"`
+	SecurityGroupIds           []string    `json:"securityGroupIds"`
+	EnterpriseSecurityGroupIds []string    `json:"enterpriseSecurityGroupIds"`
+	CreatedTime                string      `json:"createdTime"`
 }
 
 type PrivateIp struct {
@@ -135,6 +137,12 @@ type UpdateEniSecurityGroupArgs struct {
 	EniId            string   `json:"-"`
 	ClientToken      string   `json:"-"`
 	SecurityGroupIds []string `json:"securityGroupIds"`
+}
+
+type UpdateEniEnterpriseSecurityGroupArgs struct {
+	EniId                      string   `json:"-"`
+	ClientToken                string   `json:"-"`
+	EnterpriseSecurityGroupIds []string `json:"enterpriseSecurityGroupIds"`
 }
 
 type EniQuoteArgs struct {

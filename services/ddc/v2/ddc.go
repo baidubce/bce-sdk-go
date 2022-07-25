@@ -389,6 +389,7 @@ func (c *DDCClient) UpdateRoGroup(roGroupId string, args *UpdateRoGroupArgs) err
 		DelayThreshold:      Int(args.DelayThreshold),
 		LeastInstanceAmount: Int(args.LeastInstanceAmount),
 		IsBalanceRoLoad:     Int(args.IsBalanceRoLoad),
+		MasterDelay:     	 Int(args.MasterDelay),
 	}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
@@ -417,6 +418,7 @@ func (c *DDCClient) UpdateRoGroupReplicaWeight(roGroupId string, args *UpdateRoG
 		DelayThreshold:      Int(args.DelayThreshold),
 		LeastInstanceAmount: Int(args.LeastInstanceAmount),
 		IsBalanceRoLoad:     Int(args.IsBalanceRoLoad),
+		MasterDelay:     	 Int(args.MasterDelay),
 		ReplicaList:         args.ReplicaList,
 	}
 	err := bce.NewRequestBuilder(c).
@@ -1928,6 +1930,7 @@ func (c *DDCClient) ResizeRds(instanceId string, args *ResizeRdsArgs) (*OrderIdR
 		WithMethod(http.PUT).
 		WithURL(getDdcUriWithInstanceId(instanceId)+"/resize").
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithQueryParamFilter("clientToken", args.ClientToken).
 		WithBody(args).
 		WithResult(result).
 		Do()
@@ -2304,5 +2307,93 @@ func (c *DDCClient) GetInstanceBackupStatus(instanceId string) (*GetBackupStatus
 		WithResult(result).
 		Do()
 
+	return result, err
+}
+
+// InstanceVersionRollBack - rollback instance version from 5.7 to 5.6
+//
+// PARAMS:
+//     - instanceId: id of the instance
+//     - args: the arguments to set WaitSwitch
+// RETURNS:
+//     - *MaintainTaskIdResult: ID of generated maintain task
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) InstanceVersionRollBack(instanceId string, args *InstanceVersionRollBackArg) (*MaintainTaskIdResult, error) {
+
+	result := &MaintainTaskIdResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getDdcUriWithInstanceId(instanceId)+"/rollback").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// InstanceVersionUpgrade - upgrade instance version from 5.6 to 5.7
+//
+// PARAMS:
+//     - instanceId: id of the instance
+//     - args: the arguments to set IsUpgradeNow
+// RETURNS:
+//     - *MaintainTaskIdResult: ID of generated maintain task
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) InstanceVersionUpgrade(instanceId string, args *InstanceVersionUpgradeArg) (*MaintainTaskIdResult, error) {
+
+	result := &MaintainTaskIdResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getDdcUriWithInstanceId(instanceId)+"/upgrade").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GetInstanceSyncDelay - get readonly instance syncDelay and syncStatus.
+//
+// PARAMS:
+//     - instanceId: id of the instance
+// RETURNS:
+//     - *InstanceSyncDelayResponse: the response of syncDelay
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) GetInstanceSyncDelay(instanceId string) (*InstanceSyncDelayResponse, error) {
+	if len(instanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+
+	result := &InstanceSyncDelayResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getInstanceSyncDelayUrl(instanceId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// InstanceSyncDelayReplication - start or stop readonly instance syncDelay.
+//
+// PARAMS:
+//     - instanceId: id of the instance
+// RETURNS:
+//     - *InstanceSyncDelayReplicationResponse: the response of success
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) InstanceSyncDelayReplication(instanceId string, args *InstanceSyncDelayReplicationArg) (*InstanceSyncDelayReplicationResponse, error) {
+	if len(instanceId) < 1 {
+		return nil, fmt.Errorf("unset instanceId")
+	}
+
+	result := &InstanceSyncDelayReplicationResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getInstanceSyncDelayReplicationUrl(instanceId)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
 	return result, err
 }

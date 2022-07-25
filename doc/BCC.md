@@ -1515,6 +1515,8 @@ args := &api.InstanceChangeVpcArgs{
     SubnetId: subnetId, 
     InternalIp: internalIp,
     Reboot: true,
+    SecurityGroupIds: securityGroupId,
+    EnterpriseSecurityGroupIds: enterpriseSecurityGroupId
 }
 err := client.InstanceChangeVpc(args)
 if err != nil {
@@ -1527,6 +1529,7 @@ if err != nil {
 > **提示：**
 > - 变更VPC后默认自动重启，用户选择是否执行该操作。
 > - 变更VPC后仅保留主网卡主IP（在新子网中自动分配），实例上的辅助IP、弹性网卡和安全组等信息不跟随主体迁移。
+> - 安全组和企业安全组不能同时指定。
 
 ### 向指定实例批量添加指定ip
 

@@ -128,19 +128,15 @@ func TestClient_PurchaseReservedEip(t *testing.T) {
 func TestClient_ListEip(t *testing.T) {
 	args := &ListEipArgs{}
 	EIP_CLIENT.ListEip(args)
-	//ExpectEqual(t.Errorf, nil, err)
-	//for _, e := range result.EipList {
-	//	if e.Eip == EIP_ADDRESS {
-	//		ExpectEqual(t.Errorf, "Postpaid", e.PaymentTiming)
-	//		ExpectEqual(t.Errorf, "ByTraffic", e.BillingMethod)
-	//		ExpectEqual(t.Errorf, 2, e.BandWidthInMbps)
-	//	}
-	//	ExpectEqual(t.Errorf, "c-76a34e7b", e.ClusterId)
-	//}
 }
 
 func TestClient_DeleteEip(t *testing.T) {
 	err := EIP_CLIENT.DeleteEip(EIP_ADDRESS, getClientToken())
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_OptionalDeleteEip(t *testing.T) {
+	err := EIP_CLIENT.OptionalDeleteEip(EIP_ADDRESS, getClientToken(), false)
 	ExpectEqual(t.Errorf, nil, err)
 }
 
@@ -175,6 +171,26 @@ func TestClient_DirectEip(t *testing.T) {
 
 func TestClient_UnDirectEip(t *testing.T) {
 	EIP_CLIENT.UnDirectEip(EIP_ADDRESS, getClientToken())
+}
+
+func TestClient_ListRecycleEip(t *testing.T) {
+	args := &ListRecycleEipArgs{
+		Marker: "",
+		MaxKeys: 1,
+	}
+	result, err := EIP_CLIENT.ListRecycleEip(args)
+	ExpectEqual(t.Errorf, nil, err)
+	fmt.Println(result)
+}
+
+func TestClient_RestoreRecycleEip(t *testing.T) {
+	err := EIP_CLIENT.RestoreRecycleEip(EIP_ADDRESS, getClientToken())
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DeleteRecycleEip(t *testing.T) {
+	err := EIP_CLIENT.DeleteRecycleEip(EIP_ADDRESS, getClientToken())
+	ExpectEqual(t.Errorf, nil, err)
 }
 
 func TestClient_CreateEipTp(t *testing.T) {

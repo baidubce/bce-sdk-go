@@ -288,6 +288,7 @@ func TestClient_UpdateRoGroup(t *testing.T) {
 		EnableDelayOff:      "1",
 		DelayThreshold:      "0",
 		LeastInstanceAmount: "1",
+		MasterDelay: 		 "1",
 	}
 	err = client.UpdateRoGroup(roGroupId, args, "ddc")
 	if err != nil {
@@ -321,6 +322,7 @@ func TestClient_UpdateRoGroupReplicaWeight(t *testing.T) {
 		DelayThreshold:      "",
 		LeastInstanceAmount: "0",
 		IsBalanceRoLoad:     "0",
+		MasterDelay: 		 "1",
 		ReplicaList:         []ReplicaWeight{replicaWeight},
 	}
 	err = client.UpdateRoGroupReplicaWeight(roGroupId, args, "ddc")
@@ -1102,6 +1104,7 @@ func TestClient_ResizeRds(t *testing.T) {
 		VolumeCapacity: 10,
 		IsResizeNow:    true,
 		IsDirectPay:    true,
+		ClientToken:    getClientToken(),
 	}
 	orderIdResponse, err := DDCRDS_CLIENT.ResizeRds(DDC_INSTANCE_ID, args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -1718,4 +1721,60 @@ func TestClient_GetInstanceBackupStatus(t *testing.T) {
 	if backupStatusResult.IsBackuping {
 		fmt.Println("instance backup start time: ", backupStatusResult.SnapshotStartTime)
 	}
+}
+
+func TestClient_InstanceVersionRollBack(t *testing.T) {
+	instanceId = "ddc-mvxhc1fq"
+	args := &InstanceVersionRollBackArg{
+		// 是否维护时间执行
+		WaitSwitch: true,
+	}
+	result, err := client.InstanceVersionRollBack(instanceId, args)
+	if err != nil {
+		fmt.Printf("rollback instance version faild: %+v\n", err)
+		return
+	}
+	fmt.Printf("rollback instance version success. taskId:%s\n", result.TaskID)
+}
+
+func TestClient_InstanceVersionUpgrade(t *testing.T) {
+	instanceId = "ddc-mvxhc1fq"
+	args := &InstanceVersionUpgradeArg{
+		// 是否立即执行
+		IsUpgradeNow: true,
+	}
+	result, err := client.InstanceVersionUpgrade(instanceId, args)
+	if err != nil {
+		fmt.Printf("upgrade instance version faild: %+v\n", err)
+		return
+	}
+	fmt.Printf("upgrade instance version success. taskId:%s\n", result.TaskID)
+}
+
+func TestClient_GetInstanceSyncDelay(t *testing.T) {
+	instanceId = "ddc-mvxhc1fq"
+	result, err := client.GetInstanceSyncDelay(instanceId)
+	if err != nil {
+		fmt.Printf("get readonly instance syncDelay and syncStatus faild: %+v\n", err)
+		return
+	}
+	fmt.Println("get readonly instance syncDelay and syncStatus success.")
+	if result.Success {
+		fmt.Println("instance is SyncDelay: ", result.Result.SyncDelay)
+		fmt.Println("instance is SyncStatus: ", result.Result.SyncStatus)
+	}
+}
+
+func TestClient_InstanceSyncDelayReplication(t *testing.T) {
+	instanceId = "ddc-mvxhc1fq"
+	args := &InstanceSyncDelayReplicationArg{
+		// 开启
+		Action: "start",
+	}
+	result, err := client.InstanceSyncDelayReplication(instanceId, args)
+	if err != nil {
+		fmt.Printf("instance syncDelay replication faild: %+v\n", err)
+		return
+	}
+	fmt.Printf("instance syncDelay replication success. success:%s\n", result.Success)
 }

@@ -110,9 +110,9 @@ func TestCreateInstance(t *testing.T) {
 func TestCreateSpecialInstanceBySpec(t *testing.T) {
 
 	createInstanceBySpecArgs := &api.CreateSpecialInstanceBySpecArgs{
-		ImageId:   "ImageId",
-		Spec:      "bcc.g5.c1m4",
-		ZoneName:  "cn-bj-a",
+		ImageId:  "ImageId",
+		Spec:     "bcc.g5.c1m4",
+		ZoneName: "cn-bj-a",
 		Billing: api.Billing{
 			PaymentTiming: api.PaymentTimingPostPaid,
 		},
@@ -689,9 +689,11 @@ func TestListSecurityGroup(t *testing.T) {
 
 func TestInstanceChangeVpc(t *testing.T) {
 	args := &api.InstanceChangeVpcArgs{
-		InstanceId: "InstanceId",
-		SubnetId:   "SubnetId",
-		Reboot:     false,
+		InstanceId:                 "InstanceId",
+		SubnetId:                   "SubnetId",
+		Reboot:                     false,
+		SecurityGroupIds:           []string{"SecurityGroupId"},
+		EnterpriseSecurityGroupIds: []string{"EnterpriseSecurityGroupIds"},
 	}
 
 	err := BCC_CLIENT.InstanceChangeVpc(args)

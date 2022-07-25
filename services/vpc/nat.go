@@ -194,3 +194,153 @@ func (c *Client) RenewNatGateway(natId string, args *RenewNatGatewayArgs) error 
 		WithQueryParam("purchaseReserved", "").
 		Do()
 }
+
+func (c *Client) CreateNatGatewaySnatRule(natId string, args *CreateNatGatewaySnatRuleArgs) (*CreateNatGatewaySnatRuleResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("The CreateNatGatewaySnatRuleArgs cannot be nil.")
+	}
+
+	result := &CreateNatGatewaySnatRuleResult{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForNatId(natId)+"/snatRule").
+		WithMethod(http.POST).
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+func (c *Client) BatchCreateNatGatewaySnatRule(args *BatchCreateNatGatewaySnatRuleArgs) (*BatchCreateNatGatewaySnatRuleResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("The BatchCreateNatGatewaySnatRuleArgs cannot be nil.")
+	}
+
+	result := &BatchCreateNatGatewaySnatRuleResult{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForNat()+"/snatRule/batchCreate").
+		WithMethod(http.POST).
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+func (c *Client) DeleteNatGatewaySnatRule(natId string, snatRuleId string, clientToken string) error {
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForNatId(natId)+"/snatRule/"+snatRuleId).
+		WithMethod(http.DELETE).
+		WithQueryParamFilter("clientToken", clientToken).
+		Do()
+}
+
+func (c *Client) UpdateNatGatewaySnatRule(natId string, snatRuleId string, args *UpdateNatGatewaySnatRuleArgs) error {
+	if args == nil {
+		return fmt.Errorf("The UpdateNatGatewaySnatRuleArgs cannot be nil.")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForNatId(natId)+"/snatRule/"+snatRuleId).
+		WithMethod(http.PUT).
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
+}
+
+func (c *Client) ListNatGatewaySnatRules(args *ListNatGatewaySnatRuleArgs) (*ListNatGatewaySnatRulesResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("The ListNatGatewaySnatRuleArgs cannot be nil.")
+	}
+	if args.MaxKeys == 0 {
+		args.MaxKeys = 1000
+	}
+
+	result := &ListNatGatewaySnatRulesResult{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForNatId(args.NatId)+"/snatRule").
+		WithMethod(http.GET).
+		WithQueryParamFilter("marker", args.Marker).
+		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+func (c *Client) CreateNatGatewayDnatRule(natId string, args *CreateNatGatewayDnatRuleArgs) (*CreateNatGatewayDnatRuleResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("The CreateNatGatewayDnatRuleArgs cannot be nil.")
+	}
+
+	result := &CreateNatGatewayDnatRuleResult{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForNatId(natId)+"/dnatRule").
+		WithMethod(http.POST).
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+func (c *Client) BatchCreateNatGatewayDnatRule(natId string, args *BatchCreateNatGatewayDnatRuleArgs) (*BatchCreateNatGatewayDnatRuleResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("The BatchCreateNatGatewayDnatRuleArgs cannot be nil.")
+	}
+
+	result := &BatchCreateNatGatewayDnatRuleResult{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForNatId(natId)+"/dnatRule/batchCreate").
+		WithMethod(http.POST).
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+func (c *Client) DeleteNatGatewayDnatRule(natId string, dnatRuleId string, clientToken string) error {
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForNatId(natId)+"/dnatRule/"+dnatRuleId).
+		WithMethod(http.DELETE).
+		WithQueryParamFilter("clientToken", clientToken).
+		Do()
+}
+
+func (c *Client) UpdateNatGatewayDnatRule(natId string, dnatRuleId string, args *UpdateNatGatewayDnatRuleArgs) error {
+	if args == nil {
+		return fmt.Errorf("The UpdateNatGatewayDnatRuleArgs cannot be nil.")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForNatId(natId)+"/dnatRule/"+dnatRuleId).
+		WithMethod(http.PUT).
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
+}
+
+func (c *Client) ListNatGatewayDnatRules(natId string, args *ListNatGatewaDnatRuleArgs) (*ListNatGatewayDnatRulesResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("The ListNatGatewaDnatRuleArgs cannot be nil.")
+	}
+	if args.MaxKeys == 0 {
+		args.MaxKeys = 1000
+	}
+
+	result := &ListNatGatewayDnatRulesResult{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForNatId(natId)+"/dnatRule").
+		WithMethod(http.GET).
+		WithQueryParamFilter("marker", args.Marker).
+		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}

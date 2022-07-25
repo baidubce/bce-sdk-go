@@ -34,7 +34,7 @@ const (
 	InstanceStatusSnapshotProcessing  InstanceStatus = "SnapshotProcessing"
 	InstanceStatusImageProcessing     InstanceStatus = "ImageProcessing"
 	InstanceStatusChangeVpcProcessing InstanceStatus = "ChangeVpc"
-	InstanceStatusRecycled			  InstanceStatus = "Recycled"
+	InstanceStatusRecycled            InstanceStatus = "Recycled"
 )
 
 type InstanceType string
@@ -654,25 +654,25 @@ type DataVolumeV3 struct {
 }
 
 type RecycleInstanceModel struct {
-	InstanceId    	string   							`json:"id"`
-	SerialNumber  	string   							`json:"serialNumber"`
-	InstanceName  	string   							`json:"name"`
-	RecycleTime   	string   							`json:"recycleTime"`
-	DeleteTime    	string   							`json:"deleteTime"`
-	PaymentTiming 	string   							`json:"paymentTiming"`
-	ServiceName   	string   							`json:"serviceName"`
-	ServiceType   	string   							`json:"serviceType"`
-	ConfigItems   	[]string 							`json:"configItems"`
-	ConfigItem		RecycleInstanceModelConfigItem		`json:"configItem"`
+	InstanceId    string                         `json:"id"`
+	SerialNumber  string                         `json:"serialNumber"`
+	InstanceName  string                         `json:"name"`
+	RecycleTime   string                         `json:"recycleTime"`
+	DeleteTime    string                         `json:"deleteTime"`
+	PaymentTiming string                         `json:"paymentTiming"`
+	ServiceName   string                         `json:"serviceName"`
+	ServiceType   string                         `json:"serviceType"`
+	ConfigItems   []string                       `json:"configItems"`
+	ConfigItem    RecycleInstanceModelConfigItem `json:"configItem"`
 }
 
 type RecycleInstanceModelConfigItem struct {
-	Cpu			int 	`json:"cpu"`
-	Memory		int		`json:"memory"`
-	Type		string	`json:"type"`
-	SpecId		string	`json:"specId"`
-	Spec		string	`json:"spec"`
-	ZoneName	string	`json:"zoneName"`
+	Cpu      int    `json:"cpu"`
+	Memory   int    `json:"memory"`
+	Type     string `json:"type"`
+	SpecId   string `json:"specId"`
+	Spec     string `json:"spec"`
+	ZoneName string `json:"zoneName"`
 }
 
 type ModifyInstanceHostnameArgs struct {
@@ -781,10 +781,12 @@ type DeleteInstanceWithRelateResourceArgs struct {
 }
 
 type InstanceChangeVpcArgs struct {
-	InstanceId string `json:"instanceId"`
-	SubnetId   string `json:"subnetId"`
-	InternalIp string `json:"internalIp"`
-	Reboot     bool   `json:"reboot"`
+	InstanceId                 string   `json:"instanceId"`
+	SubnetId                   string   `json:"subnetId"`
+	InternalIp                 string   `json:"internalIp"`
+	Reboot                     bool     `json:"reboot"`
+	SecurityGroupIds           []string `json:"securityGroupIds"`
+	EnterpriseSecurityGroupIds []string `json:"enterpriseSecurityGroupIds"`
 }
 
 type InstanceChangeSubnetArgs struct {
@@ -1695,7 +1697,7 @@ type DeleteInstanceIngorePaymentArgs struct {
 	RelatedReleaseFlag    bool   `json:"relatedReleaseFlag"`
 	DeleteCdsSnapshotFlag bool   `json:"deleteCdsSnapshotFlag"`
 	DeleteRelatedEnisFlag bool   `json:"deleteRelatedEnisFlag"`
-	DeleteImmediate		  bool   `json:"deleteImmediate"`
+	DeleteImmediate       bool   `json:"deleteImmediate"`
 }
 
 type DeleteInstanceModel struct {
@@ -1736,7 +1738,7 @@ type ListInstancesResult struct {
 type VolumePrepayDeleteRequestArgs struct {
 	VolumeId           string `json:"volumeId"`
 	RelatedReleaseFlag bool   `json:"relatedReleaseFlag"`
-	DeleteImmediate	   bool   `json:"deleteImmediate"`
+	DeleteImmediate    bool   `json:"deleteImmediate"`
 }
 
 type VolumeDeleteResultResponse struct {

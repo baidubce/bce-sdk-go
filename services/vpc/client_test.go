@@ -46,9 +46,10 @@ type Conf struct {
 func init() {
 	_, f, _, _ := runtime.Caller(0)
 	// Get the directory of GOPATH, the config file should be under the directory.
-	for i := 0; i < 7; i++ {
-		f = filepath.Dir(f)
-	}
+	//for i := 0; i < 7; i++ {
+	//	f = filepath.Dir(f)
+	//}
+	f = filepath.Dir(f)
 	conf := filepath.Join(f, "config.json")
 	fp, err := os.Open(conf)
 	if err != nil {
@@ -464,6 +465,138 @@ func TestRenewNatGateway(t *testing.T) {
 	if err == nil {
 		t.Errorf("Test RenewNatGateway failed.")
 	}
+}
+
+func TestCreateNatGatewaySnatRule(t *testing.T) {
+	args := &CreateNatGatewaySnatRuleArgs{
+		RuleName:          "sdk-test",
+		PublicIpAddresses: []string{"100.88.10.84"},
+		SourceCIDR:        "192.168.3.33",
+	}
+	result, err := VPC_CLIENT.CreateNatGatewaySnatRule("nat-b1jb3b5e34tc", args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
+func TestBatchCreateNatGatewaySnatRule(t *testing.T) {
+	snatargs1 := SnatRuleArgs{
+		RuleName:          "sdk-test-b1",
+		PublicIpAddresses: []string{"100.88.9.91", "100.88.2.154"},
+		SourceCIDR:        "192.168.3.6",
+	}
+	snatargs2 := SnatRuleArgs{
+		RuleName:          "sdk-test-b2",
+		PublicIpAddresses: []string{"100.88.10.84", "100.88.2.154"},
+		SourceCIDR:        "192.168.3.7",
+	}
+
+	args := &BatchCreateNatGatewaySnatRuleArgs{
+		NatId: "nat-b1jb3b5e34tc",
+	}
+
+	args.SnatRules = append(args.SnatRules, snatargs1)
+	args.SnatRules = append(args.SnatRules, snatargs2)
+	result, err := VPC_CLIENT.BatchCreateNatGatewaySnatRule(args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
+func TestUpdateNatGatewaySnatRule(t *testing.T) {
+	args := &UpdateNatGatewaySnatRuleArgs{
+		RuleName:   "sdk-test-1",
+		SourceCIDR: "192.168.3.66",
+	}
+	result := VPC_CLIENT.UpdateNatGatewaySnatRule("nat-b1jb3b5e34tc", "rule-7zr5941yngks", args)
+	r, _ := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
+func TestDeleteNatGatewaySnatRule(t *testing.T) {
+	result := VPC_CLIENT.DeleteNatGatewaySnatRule("nat-b1jb3b5e34tc", "rule-7zr5941yngks", getClientToken())
+	r, _ := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
+func TestListNatGatewaySnatRules(t *testing.T) {
+	args := &ListNatGatewaySnatRuleArgs{
+		NatId: "nat-b1jb3b5e34tc",
+	}
+	result, err := VPC_CLIENT.ListNatGatewaySnatRules(args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
+func TestCreateNatGatewayDnatRule(t *testing.T) {
+	args := &CreateNatGatewayDnatRuleArgs{
+		RuleName:         "sdk-test",
+		PublicIpAddress:  "100.88.0.217",
+		PrivateIpAddress: "192.168.1.4",
+		Protocol:         "TCP",
+		PublicPort:       "121",
+		PrivatePort:      "122",
+	}
+	result, err := VPC_CLIENT.CreateNatGatewayDnatRule("nat-b1jb3b5e34tc", args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
+func TestBatchCreateNatGatewayDnatRule(t *testing.T) {
+	snatargs1 := DnatRuleArgs{
+		RuleName:         "sdk-test-db1",
+		PublicIpAddress:  "100.88.0.217",
+		PrivateIpAddress: "192.168.1.21",
+		Protocol:         "TCP",
+		PublicPort:       "1211",
+		PrivatePort:      "1221",
+	}
+	snatargs2 := DnatRuleArgs{
+		RuleName:         "sdk-test-db2",
+		PublicIpAddress:  "100.88.0.217",
+		PrivateIpAddress: "192.168.1.22",
+		Protocol:         "TCP",
+		PublicPort:       "1212",
+		PrivatePort:      "1222",
+	}
+
+	args := &BatchCreateNatGatewayDnatRuleArgs{
+		Rules: []DnatRuleArgs{snatargs1, snatargs2},
+	}
+
+	result, err := VPC_CLIENT.BatchCreateNatGatewayDnatRule("nat-b1jb3b5e34tc", args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
+func TestUpdateNatGatewayDnatRule(t *testing.T) {
+	args := &UpdateNatGatewayDnatRuleArgs{
+		RuleName:         "sdk-test-3",
+		PrivateIpAddress: "192.168.1.5",
+	}
+	result := VPC_CLIENT.UpdateNatGatewayDnatRule("nat-b1jb3b5e34tc", "rule-8gee5abqins0", args)
+	r, _ := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
+func TestDeleteNatGatewayDnatRule(t *testing.T) {
+	result := VPC_CLIENT.DeleteNatGatewayDnatRule("nat-b1jb3b5e34tc", "rule-8gee5abqins0", getClientToken())
+	r, _ := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
+func TestListNatGatewayDnatRules(t *testing.T) {
+	args := &ListNatGatewaDnatRuleArgs{
+		MaxKeys: 2,
+		Marker:  "rule-29n3en0z8tku",
+	}
+	result, err := VPC_CLIENT.ListNatGatewayDnatRules("nat-b1jb3b5e34tc", args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(result)
+	fmt.Println(string(r))
 }
 
 func TestCreatePeerConn(t *testing.T) {

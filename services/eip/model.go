@@ -91,6 +91,34 @@ type EipModel struct {
 	Tags            []model.TagModel `json:"tags"`
 }
 
+type ListRecycleEipArgs struct {
+	Eip     string
+	Name    string
+	Marker  string
+	MaxKeys int
+}
+
+type ListRecycleEipResult struct {
+	Marker      string            `json:"marker"`
+	MaxKeys     int               `json:"maxKeys"`
+	NextMarker  string            `json:"nextMarker"`
+	IsTruncated bool              `json:"isTruncated"`
+	EipList     []RecycleEipModel `json:"eipList"`
+}
+
+type RecycleEipModel struct {
+	Name                string `json:"name"`
+	Eip                 string `json:"eip"`
+	EipId               string `json:"eipId"`
+	Status              string `json:"status"`
+	RouteType           string `json:"routeType"`
+	BandWidthInMbps     int    `json:"bandwidthInMbps"`
+	PaymentTiming       string `json:"paymentTiming"`
+	BillingMethod       string `json:"billingMethod"`
+	RecycleTime         string `json:"recycleTime"`
+	ScheduledDeleteTime string `json:"scheduledDeleteTime"`
+}
+
 type PurchaseReservedEipArgs struct {
 	Billing     *Billing `json:"billing"`
 	ClientToken string   `json:"clientToken"`

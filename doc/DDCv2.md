@@ -973,6 +973,8 @@ args := &ddcrds.UpdateRoGroupWeightArgs{
     LeastInstanceAmount: "1",
     // 是否重新进行负载均衡,需传入数字,取值为0或1,可选
     IsBalanceRoLoad: "0",
+    // 设置只读组的延迟参数,需传入数字，取值范围0-259200秒，开启延迟只读时可修改，可选
+	MasterDelay: "0",
     // 只读副本新权重数组
     ReplicaList: []ddcrds.ReplicaWeight{replicaWeight},
 }
@@ -2625,6 +2627,80 @@ for _, e := range resp.Subnets {
     fmt.Println("rds updatedTime: ", e.UpdatedTime)
 }
 ```
+
+## 实例版本回滚
+使用以下代码可以回滚实例版本。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+args := &ddcrds.InstanceVersionRollBackArg{
+	// 是否维护时间窗口执行
+	WaitSwitch: true,
+}
+// DDC
+result, err := client.InstanceVersionRollBack(instanceId, args)
+if err != nil {
+    fmt.Printf("rollback instance version faild: %+v\n", err)
+    return
+}
+fmt.Printf("rollback instance version success. taskId:%s\n", result.TaskID)
+```
+
+
+## 实例版本升级
+使用以下代码可以升级实例版本。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+args := &ddcrds.InstanceVersionUpgradeArg{
+	// 是否立即升级
+	IsUpgradeNow: false,
+}
+// DDC
+result, err := client.InstanceVersionUpgrade(instanceId, args)
+if err != nil {
+    fmt.Printf("upgrade instance version faild: %+v\n", err)
+    return
+}
+fmt.Printf("upgrade instance version success. taskId:%s\n", result.TaskID)
+```
+
+## 获取只读实例的主从同步延迟
+使用以下代码可以获取只读实例的主从同步延迟。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+// DDC
+result, err := client.GetInstanceSyncDelay(instanceId)
+if err != nil {
+fmt.Printf("get readonly instance syncDelay and syncStatus faild: %+v\n", err)
+    return
+}
+fmt.Println("get readonly instance syncDelay and syncStatus success.")
+if result.Success {
+fmt.Println("instance is SyncDelay: ", result.Result.SyncDelay)
+fmt.Println("instance is SyncStatus: ", result.Result.SyncStatus)
+}
+```
+
+## 开关只读实例主从同步延迟
+使用以下代码可以开关只读实例主从同步延迟。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+args := &ddcrds.InstanceSyncDelayReplicationArg{
+	// 开启只读实例主从同步延迟,开启start,关闭stop
+	Action: "start",
+}
+// DDC
+result, err := client.InstanceSyncDelayReplication(instanceId, args)
+if err != nil {
+fmt.Printf("instance syncDelay replication faild: %+v\n", err)
+return
+}
+fmt.Printf("instance syncDelay replication success. success:%s\n", result.Success)
+```
+
 
 # 错误处理
 

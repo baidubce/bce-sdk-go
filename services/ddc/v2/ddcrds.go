@@ -1488,3 +1488,47 @@ func (c *Client) GetSlowLogs(args *GetSlowLogsArgs) (*SlowLogsResponse, error) {
 func (c *Client) GetInstanceBackupStatus(instanceId string) (*GetBackupStatusResponse, error) {
 	return c.ddcClient.GetInstanceBackupStatus(instanceId)
 }
+
+// InstanceVersionRollBack - rollback instance version from 5.7 to 5.6
+//
+// PARAMS:
+//     - instanceId: id of the instance
+//     - args: the arguments to set WaitSwitch
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) InstanceVersionRollBack(instanceId string, args *InstanceVersionRollBackArg) (*MaintainTaskIdResult, error) {
+	return c.ddcClient.InstanceVersionRollBack(instanceId, args)
+}
+
+// InstanceVersionUpgrade - upgrade instance version from 5.6 to 5.7
+//
+// PARAMS:
+//     - instanceId: id of the instance
+//     - args: the arguments to set IsUpgradeNow
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) InstanceVersionUpgrade(instanceId string, args *InstanceVersionUpgradeArg) (*MaintainTaskIdResult, error) {
+	return c.ddcClient.InstanceVersionUpgrade(instanceId, args)
+}
+
+// GetInstanceSyncDelay - get readonly instance syncDelay and syncStatus.
+//
+// PARAMS:
+//     - instanceId: id of the instance
+// RETURNS:
+//     - *InstanceSyncDelayResponse: the response of syncDelay
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetInstanceSyncDelay(instanceId string) (*InstanceSyncDelayResponse, error) {
+	return c.ddcClient.GetInstanceSyncDelay(instanceId)
+}
+
+// InstanceSyncDelayReplication - start or stop readonly instance syncDelay.
+//
+// PARAMS:
+//     - instanceId: id of the instance
+// RETURNS:
+//     - *InstanceSyncDelayReplicationResponse: the response of success
+//     - error: nil if success otherwise the specific error
+func (c *Client) InstanceSyncDelayReplication(instanceId string, args *InstanceSyncDelayReplicationArg) (*InstanceSyncDelayReplicationResponse, error) {
+	return c.ddcClient.InstanceSyncDelayReplication(instanceId, args)
+}
