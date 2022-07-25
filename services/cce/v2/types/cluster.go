@@ -128,7 +128,9 @@ type ManagedClusterMasterOption struct {
 type RuntimeType string
 
 const (
-	RuntimeTypeDocker RuntimeType = "docker"
+	RuntimeTypeDocker     RuntimeType = "docker"
+	RuntimeTypeContainerd RuntimeType = "containerd"
+	RuntimeTypeBci        RuntimeType = "bci"
 )
 
 // ContainerNetworkConfig defines the network config
