@@ -276,8 +276,10 @@ args := &api.CreateInstanceArgs{
     // 同时指定的子网和安全组必须同属于一个VPC，都不指定会使用默认子网和默认安全组。
     // 设置创建BCC使用的子网
     SubnetId              string           "subnetId"
-    // // 设置创建BCC使用的安全组
+    // 设置创建BCC使用的安全组
     SecurityGroupId       string           "securityGroupId"
+    // 设置创建BCC使用的企业安全组
+    EnterpriseSecurityGroupId       string           "enterpriseSecurityGroupId"
     // 设置需要创建GPU卡信息
     GpuCard               string           "gpuCard"
     // 设置需要创建FPGA卡信息
@@ -411,6 +413,8 @@ createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
     SubnetId              string           "subnetId"
     // 设置创建BCC使用的安全组
     SecurityGroupId       string           "securityGroupId"
+    // 设置创建BCC使用的企业安全组
+    EnterpriseSecurityGroupId       string           "enterpriseSecurityGroupId"
     // 设置按月付费或者按年付费 月是"month",年是"year"
     AutoRenewTimeUnit     string           "autoRenewTimeUnit"
     // 设置自动续费的时间 按月是1-9 按年是 1-3
