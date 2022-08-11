@@ -101,7 +101,7 @@ const (
 	//支持在console创建集群
 	K8S_1_13_10 K8SVersion = "1.13.10"
 	//K8S_1_16_3  K8SVersion = "1.16.3"
-	K8S_1_16_8  K8SVersion = "1.16.8"
+	K8S_1_16_8 K8SVersion = "1.16.8"
 )
 
 // MasterConfig Master 配置
@@ -121,14 +121,16 @@ type MasterConfig struct {
 
 // ManagedClusterMasterOption 托管集群 Master 配置
 type ManagedClusterMasterOption struct {
-	MasterVPCSubnetZone     AvailableZone             `json:"masterVPCSubnetZone,omitempty"`
+	MasterVPCSubnetZone AvailableZone `json:"masterVPCSubnetZone,omitempty"`
 }
 
 // RuntimeType defines the runtime on each node
 type RuntimeType string
 
 const (
-	RuntimeTypeDocker RuntimeType = "docker"
+	RuntimeTypeDocker     RuntimeType = "docker"
+	RuntimeTypeContainerd RuntimeType = "containerd"
+	RuntimeTypeBci        RuntimeType = "bci"
 )
 
 // ContainerNetworkConfig defines the network config
@@ -234,6 +236,8 @@ const (
 
 	// MasterTypeServerless Serverless集群Master
 	MasterTypeServerless MasterType = "serverless"
+	// 容器化部署
+	MasterTypeContainerizedCustom MasterType = "containerizedCustom"
 )
 
 // ClusterHA Cluster Master 对应副本数

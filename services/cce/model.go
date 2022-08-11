@@ -138,7 +138,7 @@ const (
 type DiskSizeConfig struct {
 	Size       string     `json:"size"`
 	VolumeType VolumeType `json:"volumeType"`
-	SnapshotId string     `json:"snapshotId,omitempty"`
+	SnapshotId string     `json:"snapshotId"`
 }
 
 type CdsConfig struct {

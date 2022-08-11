@@ -49,7 +49,7 @@ type InstanceSpec struct {
 	BidOption BidOption `json:"bidOption,omitempty"`
 
 	// VPC 相关配置
-	VPCConfig VPCConfig `json:"vpcConfig,omitempty"`
+	VPCConfig *VPCConfig `json:"vpcConfig,omitempty"`
 
 	// 集群规格相关配置
 	InstanceResource InstanceResource `json:"instanceResource,omitempty"`
@@ -86,12 +86,18 @@ type InstanceSpec struct {
 	AutoSnapshotID string `json:"autoSnapshotID,omitempty"` // 自动快照策略   ID
 }
 
+type SecurityGroup struct {
+	CustomSecurityGroups           []string `json:"customSecurityGroups,omitempty"`
+	EnableCCERequiredSecurityGroup bool     `json:"enableCCERequiredSecurityGroup,omitempty"`
+	EnableCCEOptionalSecurityGroup bool     `json:"enableCCEOptionalSecurityGroup,omitempty"`
+}
+
 // VPCConfig 定义 Instance VPC
 type VPCConfig struct {
-	VPCID           string `json:"vpcID,omitempty"`
-	VPCSubnetID     string `json:"vpcSubnetID,omitempty"`
-	SecurityGroupID string `json:"securityGroupID,omitempty"`
-
+	VPCID             string         `json:"vpcID,omitempty"`
+	VPCSubnetID       string         `json:"vpcSubnetID,omitempty"`
+	SecurityGroupID   string         `json:"securityGroupID,omitempty"`
+	SecurityGroup     SecurityGroup  `json:"securityGroup,omitempty"`
 	VPCSubnetType     vpc.SubnetType `json:"vpcSubnetType,omitempty"`
 	VPCSubnetCIDR     string         `json:"vpcSubnetCIDR,omitempty"`
 	VPCSubnetCIDRIPv6 string         `json:"vpcSubnetCIDRIPv6,omitempty"`
