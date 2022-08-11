@@ -68,6 +68,7 @@ type DescribeLoadBalancersArgs struct {
 	ExactlyMatch bool
 	Marker       string
 	MaxKeys      int
+	Type         string
 }
 
 type BLBModel struct {

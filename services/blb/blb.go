@@ -101,6 +101,7 @@ func (c *Client) DescribeLoadBalancers(args *DescribeLoadBalancersArgs) (*Descri
 		WithQueryParamFilter("bccId", args.BccId).
 		WithQueryParamFilter("marker", args.Marker).
 		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithQueryParamFilter("type", args.Type).
 		WithResult(result)
 
 	if args.ExactlyMatch {

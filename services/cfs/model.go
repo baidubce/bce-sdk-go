@@ -74,11 +74,11 @@ type FSModel struct {
 	Protocol    string            `json:"protocol"`
 	Usage       string            `json:"fsUsage"`
 	Status      FSStatus          `json:"status"`
-	MoutTargets []MoutTargetModel `json:"MountTargetList"`
+	MoutTargets []MoutTargetModel `json:"mountTargetList"`
 }
 
 type DescribeFSResult struct {
-	FSList []FSModel `json:"FileSystemList"`
+	FSList []FSModel `json:"fileSystemList"`
 	DescribeResultMeta
 }
 
@@ -111,6 +111,6 @@ type DescribeMountTargetArgs struct {
 }
 
 type DescribeMountTargetResult struct {
-	MountTargetList []MoutTargetModel `json:"MountTargetList"`
+	MountTargetList []MoutTargetModel `json:"mountTargetList"`
 	DescribeResultMeta
 }

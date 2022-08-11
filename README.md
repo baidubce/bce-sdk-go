@@ -52,7 +52,7 @@ bce-sdk-go
 |  |--dts                 //数据传输服务
 |  |--eip                 //弹性公网IP
 |  |--endpoint            //SNIC服务网卡
-|  |--eni                 //ENIC服务网卡
+|  |--eni                 //ENIC弹性网卡
 |  |--etGateway           //专线网关
 |  |--rds                 //云数据库
 |  |--scs                 //SCS服务目录
@@ -251,7 +251,7 @@ SSL证书服务 | CERT      | github.com/baidubce/bce-sdk-go/services/cert      
 文档服务 | DOC       | github.com/baidubce/bce-sdk-go/services/doc       | [DOC.md](./doc/DOC.md)
 数据传输服务 | DTS       | github.com/baidubce/bce-sdk-go/services/dts       | [DTS.md](./doc/DTS.md)
 弹性公网IP | EIP       | github.com/baidubce/bce-sdk-go/services/eip       | [EIP.md](./doc/EIP.md)
-ENIC服务网卡 | ENIC      | github.com/baidubce/bce-sdk-go/services/eni       | [ENIC.md](./doc/ENIC.md)
+ENIC弹性网卡 | ENIC      | github.com/baidubce/bce-sdk-go/services/eni       | [ENIC.md](./doc/ENIC.md)
 专线网关 | EtGateway | github.com/baidubce/bce-sdk-go/services/etGateway | [ETGateway.md](./doc/ETGateway.md)
 内网DNS | LOCALDNS  | github.com/baidubce/bce-sdk-go/services/localDns  | [LOCALDNS.md](./doc/LOCALDNS.md)
 云数据库 | RDS       | github.com/baidubce/bce-sdk-go/services/rds       | [RDS.md](./doc/RDS.md)
