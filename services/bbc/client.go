@@ -19,6 +19,7 @@ package bbc
 
 import (
 	"encoding/json"
+
 	"github.com/baidubce/bce-sdk-go/auth"
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/services/bcc/api"
@@ -907,7 +908,6 @@ func (c *Client) GetImageSharedUser(imageId string) (*GetImageSharedUserResult, 
 func (c *Client) RemoteCopyImage(imageId string, args *RemoteCopyImageArgs) error {
 	return RemoteCopyImage(c, imageId, args)
 }
-
 
 // RemoteCopyImageReturnImageIds - copy an image from other region
 //

@@ -121,7 +121,8 @@ type CreateInstanceArgs struct {
 	Tags              []model.TagModel `json:"tags,omitempty"`
 	InternalIps       []string         `json:"internalIps,omitempty"`
 	RequestToken      string           `json:"requestToken"`
-	EnableNuma        bool             `json:"enableNuma"`
+	EnableNuma        bool             `json:"enable_numa,omitempty"`
+	EnableHt          bool             `json:"enable_ht,omitempty"`
 	RootPartitionType string           `json:"rootPartitionType,omitempty"`
 	DataPartitionType string           `json:"dataPartitionType,omitempty"`
 }
@@ -216,23 +217,23 @@ type ListRecycledInstancesResult struct {
 }
 
 type RecycledInstancesModel struct {
-	ServiceType   string   							`json:"serviceType"`
-	ServiceName   string   							`json:"serviceName"`
-	Name          string   							`json:"name"`
-	Id            string   							`json:"id"`
-	SerialNumber  string   							`json:"serialNumber"`
-	RecycleTime   string   							`json:"recycleTime"`
-	DeleteTime    string   							`json:"deleteTime"`
-	PaymentTiming string   							`json:"paymentTiming"`
-	ConfigItems   []string 							`json:"configItems"`
-	ConfigItem	  RecycleInstanceModelConfigItem	`json:"configItem"`
+	ServiceType   string                         `json:"serviceType"`
+	ServiceName   string                         `json:"serviceName"`
+	Name          string                         `json:"name"`
+	Id            string                         `json:"id"`
+	SerialNumber  string                         `json:"serialNumber"`
+	RecycleTime   string                         `json:"recycleTime"`
+	DeleteTime    string                         `json:"deleteTime"`
+	PaymentTiming string                         `json:"paymentTiming"`
+	ConfigItems   []string                       `json:"configItems"`
+	ConfigItem    RecycleInstanceModelConfigItem `json:"configItem"`
 }
 
 type RecycleInstanceModelConfigItem struct {
-	Cpu			int 	`json:"cpu"`
-	Memory		int		`json:"memory"`
-	Type		string	`json:"type"`
-	ZoneName	string	`json:"zoneName"`
+	Cpu      int    `json:"cpu"`
+	Memory   int    `json:"memory"`
+	Type     string `json:"type"`
+	ZoneName string `json:"zoneName"`
 }
 
 type ListInstancesResult struct {
