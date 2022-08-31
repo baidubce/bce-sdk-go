@@ -121,8 +121,8 @@ type CreateInstanceArgs struct {
 	Tags              []model.TagModel `json:"tags,omitempty"`
 	InternalIps       []string         `json:"internalIps,omitempty"`
 	RequestToken      string           `json:"requestToken"`
-	EnableNuma        bool             `json:"enable_numa,omitempty"`
-	EnableHt          bool             `json:"enable_ht,omitempty"`
+	EnableNuma        bool             `json:"enableNuma,omitempty"`
+	EnableHt          bool             `json:"enableHt,omitempty"`
 	RootPartitionType string           `json:"rootPartitionType,omitempty"`
 	DataPartitionType string           `json:"dataPartitionType,omitempty"`
 }
