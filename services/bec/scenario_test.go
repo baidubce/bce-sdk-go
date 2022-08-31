@@ -119,8 +119,8 @@ func TestVmServiceSce(t *testing.T) {
 	t.Logf("%+v", delRes)
 
 	// 重置虚机密码
-	updateVmReq := &api.UpdateVmDeploymentArgs{Type: "password", KeyConfig: &api.KeyConfig{Type: "password", AdminPass: "12345asdf@"}}
-	updateVmRes, err := CLIENT.UpdateVmDeployment(vmiId, updateVmReq)
+	updateVmReq := &api.UpdateVmInstanceArgs{Type: "password", KeyConfig: &api.KeyConfig{Type: "password", AdminPass: "12345asdf@"}}
+	updateVmRes, err := CLIENT.UpdateVmInstance(vmiId, updateVmReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", updateVmRes)
 
@@ -255,8 +255,9 @@ func TestBlbScenario(t *testing.T) {
 	}
 
 	// 创建TCP监听
+	str := ""
 	blbMonitorReq := &api.BlbMonitorArgs{LbMode: api.LbModeWrr, FrontendPort: &api.Port{Protocol: api.ProtocolTcp, Port: 80},
-		BackendPort: 80, HealthCheck: &api.HealthCheck{HealthCheckString: "", HealthCheckType: "tcp",
+		BackendPort: 80, HealthCheck: &api.HealthCheck{HealthCheckString: &str, HealthCheckType: "tcp",
 			HealthyThreshold: 1000, UnhealthyThreshold: 1000, TimeoutInSeconds: 60, IntervalInSeconds: 3}}
 	blbMonitorRes, err := CLIENT.CreateBlbMonitorPort(lbId, blbMonitorReq)
 	if err != nil {

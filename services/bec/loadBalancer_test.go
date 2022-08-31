@@ -10,8 +10,25 @@ import (
 // Loadbalancer API
 //////////////////////////////////////////////
 func TestCreateBlb(t *testing.T) {
-	getReq := &api.CreateBlbArgs{BlbName: "xxxx-test", Region: api.RegionEastChina,
-		City: "HANGZHOU", LbType: "vm", ServiceProvider: api.ServiceChinaMobile}
+	getReq := &api.CreateBlbArgs{
+		BlbName:     "gosdk-test",
+		RegionId:    "cn-hangzhou-cm",
+		LbType:      "vm",
+		NetworkType: "vpc",
+	}
+	res, err := CLIENT.CreateBlb(getReq)
+	ExpectEqual(t.Errorf, nil, err)
+	t.Logf("%+v", res)
+}
+
+func TestCreateBlbVpc(t *testing.T) {
+	getReq := &api.CreateBlbArgs{
+		BlbName:             "gosdk-test1",
+		RegionId:            "cn-baoding-ix",
+		LbType:              "vm",
+		NetworkType:         "vpc",
+		SubServiceProviders: []string{"cm"},
+	}
 	res, err := CLIENT.CreateBlb(getReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
@@ -31,88 +48,92 @@ func TestGetBlbList(t *testing.T) {
 }
 
 func TestGetBlbDetail(t *testing.T) {
-	res, err := CLIENT.GetBlbDetail("lb-uf1rv3o5")
+	res, err := CLIENT.GetBlbDetail("applb-cn-hangzhou-cm-wkfdcbin")
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
 
 func TestUpdateBlb(t *testing.T) {
-	getReq := &api.UpdateBlbArgs{BlbName: "xxxxx-test-update", BandwidthInMbpsLimit: 1000}
-	res, err := CLIENT.UpdateBlb("xxxxx", getReq)
+	getReq := &api.UpdateBlbArgs{BlbName: "applb-cn-hangzhou-cm-wkfdcbin", BandwidthInMbpsLimit: 1000, Type: "bandwidth"}
+	res, err := CLIENT.UpdateBlb("applb-cn-hangzhou-cm-wkfdcbin", getReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
 
 func TestCreateBlbMonitorPort(t *testing.T) {
-	getReq := &api.BlbMonitorArgs{LbMode: api.LbModeWrr, FrontendPort: &api.Port{Protocol: api.ProtocolUdp, Port: 80},
-		BackendPort: 80, HealthCheck: &api.HealthCheck{HealthCheckString: "", HealthCheckType: "udp",
-			HealthyThreshold: 1000, UnhealthyThreshold: 1000, TimeoutInSeconds: 900, IntervalInSeconds: 3}}
-	res, err := CLIENT.CreateBlbMonitorPort("lb-xxx", getReq)
+
+	str := ""
+	t.Logf("%v", &str)
+	getReq := &api.BlbMonitorArgs{LbMode: api.LbModeWrr, FrontendPort: &api.Port{Protocol: api.ProtocolTcp, Port: 80},
+		BackendPort: 80, HealthCheck: &api.HealthCheck{HealthCheckString: &str, HealthCheckType: "tcp",
+			HealthyThreshold: 1000, UnhealthyThreshold: 1000, TimeoutInSeconds: 50, IntervalInSeconds: 3}}
+	res, err := CLIENT.CreateBlbMonitorPort("applb-cn-hangzhou-cm-wkfdcbin", getReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
 
 func TestDeleteBlbMonitorPort(t *testing.T) {
-	req := []api.Port{{Protocol: api.ProtocolUdp, Port: 80}}
-	res, err := CLIENT.DeleteBlbMonitorPort("lb-xxx", &req)
+	req := []api.Port{{Protocol: api.ProtocolUdp, Port: 81}}
+	res, err := CLIENT.DeleteBlbMonitorPort("applb-cn-hangzhou-cm-3vkqupsp", &req)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
 
 func TestGetBlbMonitorPortList(t *testing.T) {
-	res, err := CLIENT.GetBlbMonitorPortList("lb-xxx", 1, 100)
+	res, err := CLIENT.GetBlbMonitorPortList("applb-cn-hangzhou-cm-wkfdcbin", 1, 100)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
 
 func TestUpdateBlbMonitorPort(t *testing.T) {
+	str := ""
 	getReq := &api.BlbMonitorArgs{LbMode: api.LbModeWrr, FrontendPort: &api.Port{Protocol: api.ProtocolTcp, Port: 80},
-		BackendPort: 8080, HealthCheck: &api.HealthCheck{HealthCheckString: "", HealthCheckType: "tcp",
-			HealthyThreshold: 1000, UnhealthyThreshold: 1000, TimeoutInSeconds: 900, IntervalInSeconds: 3}}
-	res, err := CLIENT.UpdateBlbMonitorPort("lb-uf1rv3o5", getReq)
+		BackendPort: 8090, HealthCheck: &api.HealthCheck{HealthCheckString: &str, HealthCheckType: "tcp",
+			HealthyThreshold: 1000, UnhealthyThreshold: 1000, TimeoutInSeconds: 60, IntervalInSeconds: 3}}
+	res, err := CLIENT.UpdateBlbMonitorPort("applb-cn-hangzhou-cm-wkfdcbin", getReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
 
 func TestGetBlbMonitorPortDetails(t *testing.T) {
-	res, err := CLIENT.GetBlbMonitorPortDetails("lb-xxx", api.ProtocolUdp, 80)
+	res, err := CLIENT.GetBlbMonitorPortDetails("applb-cn-hangzhou-cm-3vkqupsp", api.ProtocolTcp, 80)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
 
 func TestGetBlbBackendPodList(t *testing.T) {
-	res, err := CLIENT.GetBlbBackendPodList("lb-xxx", 0, 0)
+	res, err := CLIENT.GetBlbBackendPodList("applb-cn-langfang-ct-whak2ian", 0, 0)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
 
 func TestGetBlbBackendBindingStsList(t *testing.T) {
-	res, err := CLIENT.GetBlbBackendBindingStsList("lb-xxx", 0, 0, "", "")
+	res, err := CLIENT.GetBlbBackendBindingStsList("applb-cn-langfang-ct-whak2ian", 0, 0, "", "")
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
 
 func TestGetBlbBindingPodListWithSts(t *testing.T) {
-	res, err := CLIENT.GetBlbBindingPodListWithSts("lb-xxx", "sts-xxxx")
+	res, err := CLIENT.GetBlbBindingPodListWithSts("lb-pclalzin", "sts-loy3f9tk-2-t-langfang")
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
 
 func TestCreateBlbBinding(t *testing.T) {
 	getReq := &api.CreateBlbBindingArgs{BindingForms: &[]api.BlbBindingForm{
-		api.BlbBindingForm{DeploymentId: "xxxx", PodWeight: &[]api.Backends{
-			api.Backends{Name: "xxxxxx", Ip: "172.xx.x.xx", Weight: 100}},
+		api.BlbBindingForm{DeploymentId: "vm-xqjitfy1-cn-langfang-ct", PodWeight: &[]api.Backends{
+			api.Backends{Name: "vm-xqjitfy1-cn-langfang-ct-d1f7x", Ip: "172.16.8.22", Weight: 100}},
 		}}}
-	res, err := CLIENT.CreateBlbBinding("lb-xxx", getReq)
+	res, err := CLIENT.CreateBlbBinding("lb-jgvg4pbz", getReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
 
 func TestDeleteBlbBindPod(t *testing.T) {
 	getReq := &api.DeleteBlbBindPodArgs{PodWeightList: &[]api.Backends{
-		api.Backends{Name: "vm-xxx", Ip: "172.16.9xxx.xxx", Weight: 10}},
-		DeploymentIds: []string{"vmrs-xxxx"}}
-	res, err := CLIENT.DeleteBlbBindPod("lb-xxxx", getReq)
+		api.Backends{Name: "vm-xqjitfy1-cn-langfang-ct-d1f7x", Ip: "172.16.8.22", Weight: 100}},
+		DeploymentIds: []string{"vvm-xqjitfy1-cn-langfang-ct"}}
+	res, err := CLIENT.DeleteBlbBindPod("lb-jgvg4pbz", getReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
@@ -127,8 +148,8 @@ func TestUpdateBlbBindPodWeight(t *testing.T) {
 }
 
 func TestGetBlbMetrics(t *testing.T) {
-	res, err := CLIENT.GetBlbMetrics("lb-xxxxxx", "extranet", "",
-		"", 1, api.MetricsTypeBandwidthReceive)
+	res, err := CLIENT.GetBlbMetrics("applb-cn-langfang-ct-lpcfbjv6", "extranet", "", "",
+		1657613108, 1660291508, 1, api.MetricsTypeTrafficReceive)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
@@ -149,10 +170,11 @@ func TestBatchDeleteBlb(t *testing.T) {
 }
 
 func TestBatchCreateBlbMonitor(t *testing.T) {
-	getReq := &api.BatchCreateBlbMonitorArg{Protocol: api.ProtocolUdp, LbMode: api.LbModeWrr, HealthCheck: &api.HealthCheck{HealthCheckString: "", HealthCheckType: "udp",
-		HealthyThreshold: 1000, UnhealthyThreshold: 1000, TimeoutInSeconds: 900, IntervalInSeconds: 3}, PortGroups: &[]api.PortGroup{api.PortGroup{
-		Port: 80, BackendPort: 80}, api.PortGroup{Port: 443, BackendPort: 443}}}
-	res, err := CLIENT.BatchCreateBlbMonitor("lb-xxxx", getReq)
+	str := "\\00\\01\\01\\00\\01\\00\\00\\00\\00\\00\\00\\05baidu\\03com\\00\\00\\01\\00\\01"
+	getReq := &api.BatchCreateBlbMonitorArg{Protocol: api.ProtocolUdp, LbMode: api.LbModeWrr, HealthCheck: &api.HealthCheck{HealthCheckString: &str, HealthCheckType: "udp",
+		HealthyThreshold: 1000, UnhealthyThreshold: 1000, TimeoutInSeconds: 60, IntervalInSeconds: 3}, PortGroups: &[]api.PortGroup{api.PortGroup{
+		Port: 82, BackendPort: 82}, api.PortGroup{Port: 443, BackendPort: 443}}}
+	res, err := CLIENT.BatchCreateBlbMonitor("applb-cn-hangzhou-cm-3vkqupsp", getReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }

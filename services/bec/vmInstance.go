@@ -27,6 +27,25 @@ import (
 	"github.com/baidubce/bce-sdk-go/services/bec/api"
 )
 
+// CreateVmServiceInstance - create service vm instance with the specific parameters
+//
+// PARAMS:
+//     - serviceId: service Id
+//     - args: the arguments to create service vm instance
+// RETURNS:
+//     - *CreateVmServiceResult: the result of create service instance
+//     - error: nil if ok otherwise the specific error
+func (c *Client) CreateVmServiceInstance(serviceId string, args *api.CreateVmServiceArgs) (*api.CreateVmServiceResult, error) {
+	if serviceId == "" || args == nil {
+		return nil, fmt.Errorf("please set argments")
+	}
+	result := &api.CreateVmServiceResult{}
+	req := &api.PostHttpReq{Url: api.GetVmURI() + "/" + serviceId + "/instance", Result: result, Body: args}
+	err := api.Post(c, req)
+
+	return result, err
+}
+
 // GetVmInstanceList - get vm list with the specific parameters
 //
 // PARAMS:
@@ -82,64 +101,6 @@ func (c *Client) GetVmInstanceList(args *api.ListRequest) (*api.LogicPageVmInsta
 	return result, err
 }
 
-// GetNodeVmInstanceList - get node vm instance list with the specific parameters
-//
-// PARAMS:
-//     - args: the arguments to get node vm instance list
-//     - region: region
-//     - serviceProvider: service provider
-//     - city: city
-// RETURNS:
-//     - *GetNodeVmInstanceListResult: the result of get node vm instance list
-//     - error: nil if ok otherwise the specific error
-func (c *Client) GetNodeVmInstanceList(args *api.ListRequest, region, serviceProvider, city string) (*api.GetNodeVmInstanceListResult, error) {
-	if args == nil {
-		return nil, fmt.Errorf("please set argments")
-	}
-
-	params := make(map[string]string)
-	if args.PageSize != 0 {
-		params["pageSize"] = strconv.Itoa(args.PageSize)
-	}
-	if args.PageNo != 0 {
-		params["pageNo"] = strconv.Itoa(args.PageNo)
-	}
-	if args.OrderBy != "" {
-		params["orderBy"] = args.OrderBy
-	}
-	if args.Order != "" {
-		params["order"] = args.Order
-	}
-	if args.KeywordType != "" {
-		params["keywordType"] = args.KeywordType
-	}
-	if args.Keyword != "" {
-		params["keyword"] = args.Keyword
-	}
-	if args.Status != "" {
-		params["status"] = args.Status
-	}
-	if args.Region != "" {
-		params["region"] = args.Region
-	}
-	if args.OsName != "" {
-		params["osName"] = args.OsName
-	}
-	if args.ServiceId != "" {
-		params["serviceId"] = args.ServiceId
-	}
-
-	result := &api.GetNodeVmInstanceListResult{}
-	err := bce.NewRequestBuilder(c).
-		WithMethod(http.GET).
-		WithURL(api.GetVmInstanceURI() + "/regions/" + region + "/sps/" + serviceProvider + "/cities/" + city).
-		WithQueryParams(params).
-		WithResult(result).
-		Do()
-
-	return result, err
-}
-
 // GetVirtualMachine - get vm with the specific parameters
 //
 // PARAMS:
@@ -184,7 +145,7 @@ func (c *Client) DeleteVmInstance(vmID string) (*api.ActionInfoVo, error) {
 	return result, err
 }
 
-// UpdateVmDeployment - update vm with the specific parameters
+// UpdateVmInstance - update vm with the specific parameters
 //
 // PARAMS:
 //     - vmID: vm id
@@ -192,7 +153,7 @@ func (c *Client) DeleteVmInstance(vmID string) (*api.ActionInfoVo, error) {
 // RETURNS:
 //     - *UpdateVmDeploymentResult: the result of update vm
 //     - error: nil if ok otherwise the specific error
-func (c *Client) UpdateVmDeployment(vmID string, args *api.UpdateVmDeploymentArgs) (*api.UpdateVmDeploymentResult, error) {
+func (c *Client) UpdateVmInstance(vmID string, args *api.UpdateVmInstanceArgs) (*api.UpdateVmDeploymentResult, error) {
 	if vmID == "" {
 		return nil, fmt.Errorf("please set argments")
 	}
@@ -201,6 +162,22 @@ func (c *Client) UpdateVmDeployment(vmID string, args *api.UpdateVmDeploymentArg
 	req := &api.PostHttpReq{Url: api.GetVmInstanceURI() + "/" + vmID, Result: result, Body: args}
 	err := api.Put(c, req)
 
+	return result, err
+}
+
+// BindSecurityGroup - bind vm instance to security group
+//
+// PARAMS:
+//     - action: bind
+//     - args: the arguments to update vm
+// RETURNS:
+//     - *UpdateVmDeploymentResult: the result of update vm
+//     - error: nil if ok otherwise the specific error
+func (c *Client) BindSecurityGroup(action string, args *api.BindSecurityGroupInstances) (*api.BindSecurityGroupInstancesResponse, error) {
+
+	result := &api.BindSecurityGroupInstancesResponse{}
+	req := &api.PostHttpReq{Url: api.GetVmInstanceURI() + "/securityGroup" + "/" + action, Result: result, Body: args}
+	err := api.Put(c, req)
 	return result, err
 }
 
@@ -254,21 +231,29 @@ func (c *Client) OperateVmDeployment(vmID string, action api.VmInstanceBatchOper
 // RETURNS:
 //     - *ServiceMetricsResult: the result of get vm metrics
 //     - error: nil if ok otherwise the specific error
-func (c *Client) GetVmInstanceMetrics(vmID string, serviceProvider api.ServiceProvider, offsetInSeconds int, metricsType api.MetricsType) (*api.ServiceMetricsResult, error) {
-	if vmID == "" {
-		return nil, fmt.Errorf("please set argments")
-	}
+
+func (c *Client) GetVmInstanceMetrics(vmId, serviceProviderStr string, start, end, stepInMin int, metricsType api.MetricsType) (*api.ServiceMetricsResult, error) {
 
 	params := make(map[string]string)
-	if serviceProvider != "" {
-		params["serviceProvider"] = string(serviceProvider)
+	if serviceProviderStr != "" {
+		params["serviceProvider"] = serviceProviderStr
 	}
-	params["offsetInSeconds"] = strconv.Itoa(offsetInSeconds)
-
+	if metricsType != "" {
+		params["metricsType"] = string(metricsType)
+	}
+	if start != 0 {
+		params["start"] = strconv.Itoa(start)
+	}
+	if end != 0 {
+		params["end"] = strconv.Itoa(end)
+	}
+	if stepInMin != 0 {
+		params["stepInMin"] = strconv.Itoa(stepInMin)
+	}
 	result := &api.ServiceMetricsResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithURL(api.GetVmInstanceURI() + "/" + vmID + "/metrics/" + string(metricsType)).
+		WithURL(api.GetVmMonitorURI() + "/" + vmId).
 		WithQueryParams(params).
 		WithResult(result).
 		Do()

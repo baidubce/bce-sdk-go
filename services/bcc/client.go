@@ -250,7 +250,7 @@ func (c *Client) DeleteInstance(instanceId string) error {
 //     - error: nil if success otherwise the specific error
 func (c *Client) AutoReleaseInstance(instanceId string, releaseTime string) error {
 	args := &api.AutoReleaseArgs{
-		ReleaseTime:	releaseTime,
+		ReleaseTime: releaseTime,
 	}
 	return api.AutoReleaseInstance(c, instanceId, args)
 }
@@ -1015,7 +1015,6 @@ func (c *Client) RemoteCopyImage(imageId string, args *api.RemoteCopyImageArgs) 
 	return api.RemoteCopyImage(c, imageId, args)
 }
 
-
 // RemoteCopyImageReturnImageIds - copy an image from other region
 //
 // PARAMS:
@@ -1531,7 +1530,6 @@ func (c *Client) GetAvailableDiskInfo(zoneName string) (*api.GetAvailableDiskInf
 	return api.GetAvailableDiskInfo(c, zoneName)
 }
 
-
 // DeletePrepayVolume - delete the volumes for prepay
 //
 // PARAMS:
@@ -1691,5 +1689,99 @@ func (c *Client) ListInstanceByInstanceIds(args *api.ListInstanceByInstanceIdArg
 	return api.ListInstanceByInstanceIds(c, args)
 }
 
+// BatchDeleteInstanceWithRelateResource - batch delete instance and all eip/cds relate it
+//
+// PARAMS:
+//     - args: the arguments to batch delete instance and its relate resource
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchDeleteInstanceWithRelateResource(args *api.BatchDeleteInstanceWithRelateResourceArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
 
+	return api.BatchDeleteInstanceWithRelatedResource(c, body)
+}
 
+// BatchStartInstance - batch start instance
+//
+// PARAMS:
+//     - args: the arguments to batch start instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchStartInstance(args *api.BatchStartInstanceArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.BatchStartInstance(c, body)
+}
+
+// BatchStopInstance - batch stop instance
+//
+// PARAMS:
+//     - args: the arguments to batch stop instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchStopInstance(args *api.BatchStopInstanceArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return api.BatchStopInstance(c, body)
+}
+
+// ListInstanceTypes - list all instance type with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to list all instance type
+// RETURNS:
+//     - *api.ListInstanceTypeResults: the result of list Instance type
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListInstanceTypes(args *api.ListInstanceTypeArgs) (*api.ListInstanceTypeResults, error) {
+	return api.ListInstanceTypes(c, args)
+}
+
+// ListIdMappings - Long and short ID conversion parameters
+//
+// PARAMS:
+//     - args: the arguments to Long and short ID conversion
+// RETURNS:
+//     - *api.ListIdMappingResults: result of the Long short mapping
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListIdMappings(args *api.ListIdMappingArgs) (*api.ListIdMappingResults, error) {
+	return api.ListIdMappings(c, args)
+}
+
+// BatchResizeInstance - batch resize a specific instance
+//
+// PARAMS:
+//     - args: the arguments to resize a specific instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchResizeInstance(args *api.BatchResizeInstanceArgs) (*api.BatchResizeInstanceResults, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.BatchResizeInstance(c, body)
+}

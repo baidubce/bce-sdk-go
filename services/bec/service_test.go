@@ -17,7 +17,7 @@ func TestListService(t *testing.T) {
 }
 
 func TestGetService(t *testing.T) {
-	res, err := CLIENT.GetService("s-xxx")
+	res, err := CLIENT.GetService("s-f9ngbkbc")
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
@@ -37,7 +37,7 @@ func TestCreateService(t *testing.T) {
 				Commands: []string{"sh",
 					"-c",
 					"echo OK!&& sleep 3660"},
-				VolumeMounts: &[]api.V1VolumeMount{
+				VolumeMounts: []api.V1VolumeMount{
 					api.V1VolumeMount{
 						MountPath: "/temp",
 						Name:      "emptydir01",
@@ -46,10 +46,9 @@ func TestCreateService(t *testing.T) {
 		},
 		DeployInstances: &[]api.DeploymentInstance{
 			api.DeploymentInstance{
-				Region:          "EAST_CHINA",
-				Replicas:        1,
-				City:            "SHANGHAI",
-				ServiceProvider: "CHINA_TELECOM"},
+				Replicas: 1,
+				RegionId: "cn-langfang-ct",
+			},
 		},
 		Volumes: &api.Volume{
 			EmptyDir: &[]api.EmptyDir{
@@ -68,28 +67,28 @@ func TestCreateService(t *testing.T) {
 }
 
 func TestGetServiceMetrics(t *testing.T) {
-	res, err := CLIENT.GetServiceMetrics("s-xxx", api.MetricsTypeBandwidthReceive, api.ServiceChinaMobile, 87200)
+	res, err := CLIENT.GetServiceMetrics("s-f9ngbkbc", api.MetricsTypeMemory, "", 1661270400, 1661356800, 0)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
 
 func TestUpdateService(t *testing.T) {
-	getReq := &api.UpdateServiceArgs{ServiceName: "xxxx-1-test", Type: api.UpdateServiceTypeReplicas, DeployInstances: &[]api.DeploymentInstance{
-		api.DeploymentInstance{Region: api.RegionEastChina, Replicas: 4, City: "HANGZHOU", ServiceProvider: api.ServiceChinaMobile},
+	getReq := &api.UpdateServiceArgs{ServiceName: "s-f9ngbkbc", Type: api.UpdateServiceTypeReplicas, DeployInstances: &[]api.DeploymentInstance{
+		api.DeploymentInstance{Region: api.RegionEastChina, Replicas: 1, City: "HANGZHOU", ServiceProvider: api.ServiceChinaMobile},
 	}}
-	res, err := CLIENT.UpdateService("xxxx-1", getReq)
+	res, err := CLIENT.UpdateService("s-f9ngbkbc", getReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
 
 func TestStopService(t *testing.T) {
-	res, err := CLIENT.ServiceAction("xxxx-1", api.ServiceActionStop)
+	res, err := CLIENT.ServiceAction("s-f9ngbkbc", api.ServiceActionStop)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
 
 func TestStartService(t *testing.T) {
-	res, err := CLIENT.ServiceAction("xxxx-1", api.ServiceActionStart)
+	res, err := CLIENT.ServiceAction("s-f9ngbkbc", api.ServiceActionStart)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
@@ -113,4 +112,50 @@ func TestClient_ServiceBatchDelete(t *testing.T) {
 	res, err := CLIENT.ServiceBatchDelete(getReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
+}
+
+func TestGetPodDeployment(t *testing.T) {
+	res, err := CLIENT.GetPodDeployment("sts-f9ngbkbc-cn-langfang-ct-uxe4z")
+	ExpectEqual(t.Errorf, nil, err)
+	t.Logf("%+v", res)
+}
+func TestGetPodDeploymentMetrics(t *testing.T) {
+	res, err := CLIENT.GetPodDeploymentMetrics("sts-f9ngbkbc-cn-langfang-ct-uxe4z", api.MetricsTypeMemory, "", 1661270400, 1661356800, 0)
+	ExpectEqual(t.Errorf, nil, err)
+	t.Logf("%+v", res)
+}
+func TestUpdatePodDeploymentReplicas(t *testing.T) {
+	getReq := &api.UpdateDeploymentReplicasRequest{
+		Replicas: 2,
+	}
+	res, err := CLIENT.UpdatePodDeploymentReplicas("sts-f9ngbkbc-cn-langfang-ct-uxe4z", getReq)
+	ExpectEqual(t.Errorf, nil, err)
+	t.Logf("%+v", res)
+}
+func TestDeletePodDeployment(t *testing.T) {
+	getReq := &[]string{"sts-f9ngbkbc-cn-jinan-un-0cloi"}
+	res, err := CLIENT.DeletePodDeployment(getReq)
+	ExpectEqual(t.Errorf, nil, err)
+	t.Logf("%+v", res)
+}
+
+func TestGetPodList(t *testing.T) {
+	res, err := CLIENT.GetPodList(1, 100,
+		"", "", "", "", "")
+	ExpectEqual(t.Errorf, nil, err)
+	t.Logf("%+v", res)
+}
+func TestGetPodMetrics(t *testing.T) {
+	res, err := CLIENT.GetPodMetrics("sts-f9ngbkbc-cn-langfang-ct-uxe4z-0", api.MetricsTypeMemory, "", 1661270400, 1661356800, 0)
+	ExpectEqual(t.Errorf, nil, err)
+	t.Logf("%+v", res)
+}
+func TestGetPodDetail(t *testing.T) {
+	res, err := CLIENT.GetPodDetail("sts-f9ngbkbc-cn-langfang-ct-uxe4z-0")
+	ExpectEqual(t.Errorf, nil, err)
+	t.Logf("%+v", res)
+}
+func TestRestartPod(t *testing.T) {
+	err := CLIENT.RestartPod("sts-f9ngbkbc-cn-langfang-ct-uxe4z-0")
+	ExpectEqual(t.Errorf, nil, err)
 }

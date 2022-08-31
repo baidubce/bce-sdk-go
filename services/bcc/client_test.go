@@ -1310,3 +1310,68 @@ func TestDeletePrepayVolume(t *testing.T) {
 		fmt.Printf("delete volume : %s", data)
 	}
 }
+
+func TestBatchDeleteInstanceWithRelateResource(t *testing.T) {
+	args := &api.BatchDeleteInstanceWithRelateResourceArgs{
+		RelatedReleaseFlag: true,
+		BccRecycleFlag:     true,
+		InstanceIds:        []string{"i-gRYyYyjx", "i-GGc7Buqd"},
+	}
+
+	err := BCC_CLIENT.BatchDeleteInstanceWithRelateResource(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBatchStartInstance(t *testing.T) {
+	args := &api.BatchStartInstanceArgs{
+		InstanceIds: []string{"i-gRYyYyjx", "i-GGc7Buqd"},
+	}
+	err := BCC_CLIENT.BatchStartInstance(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBatchStopInstance(t *testing.T) {
+	args := &api.BatchStopInstanceArgs{
+		ForceStop:        true,
+		StopWithNoCharge: false,
+		InstanceIds:      []string{"i-gRYyYyjx", "i-GGc7Buqd"},
+	}
+	err := BCC_CLIENT.BatchStopInstance(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestListInstanceTypes(t *testing.T) {
+	listArgs := &api.ListInstanceTypeArgs{
+		ZoneName: "cn-bj-a",
+	}
+	res, err := BCC_CLIENT.ListInstanceTypes(listArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestListIdMappings(t *testing.T) {
+	listArgs := &api.ListIdMappingArgs{
+		IdType:     "shot",
+		ObjectType: "vm",
+		InstanceIds: []string{
+			"i-wQzV1qYZ",
+			"i-b1jcrdt5",
+		},
+	}
+	res, err := BCC_CLIENT.ListIdMappings(listArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestBatchResizeInstance(t *testing.T) {
+	listArgs := &api.BatchResizeInstanceArgs{
+		Spec: "spec",
+		InstanceIdList: []string{
+			"i-wQzV1qYZ",
+			"i-b1jcrdt5",
+		},
+	}
+	res, err := BCC_CLIENT.BatchResizeInstance(listArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}

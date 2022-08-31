@@ -1756,3 +1756,56 @@ type VolumeDeleteResultModel struct {
 type DeletionProtectionArgs struct {
 	DeletionProtection int `json:"deletionProtection"`
 }
+
+type BatchDeleteInstanceWithRelateResourceArgs struct {
+	RelatedReleaseFlag bool     `json:"relatedRelease"`
+	BccRecycleFlag     bool     `json:"bccRecycleFlag"`
+	InstanceIds        []string `json:"instanceIds"`
+}
+
+type BatchStartInstanceArgs struct {
+	InstanceIds []string `json:"instanceIds"`
+}
+
+type BatchStopInstanceArgs struct {
+	ForceStop        bool     `json:"forceStop"`
+	StopWithNoCharge bool     `json:"stopWithNoCharge"`
+	InstanceIds      []string `json:"instanceIds"`
+}
+
+type ListInstanceTypeArgs struct {
+	ZoneName string `json:"zoneName"`
+}
+
+type ListInstanceTypeResults struct {
+	ZoneInstanceTypes []ZoneInstanceTypes `json:"zoneInstanceTypes"`
+}
+
+type ZoneInstanceTypes struct {
+	ZoneName      string   `json:"zoneName"`
+	InstanceTypes []string `json:"instanceTypes"`
+}
+
+type ListIdMappingArgs struct {
+	IdType      string   `json:"idType"`
+	ObjectType  string   `json:"objectType"`
+	InstanceIds []string `json:"instanceIds"`
+}
+
+type ListIdMappingResults struct {
+	IdMapping []IdMapping `json:"mappings"`
+}
+
+type IdMapping struct {
+	Uuid string `json:"uuid"`
+	Id   string `json:"id"`
+}
+
+type BatchResizeInstanceArgs struct {
+	Spec           string   `json:"spec"`
+	InstanceIdList []string `json:"instanceIdList"`
+}
+
+type BatchResizeInstanceResults struct {
+	OrderUuidResults []string `json:"orderUuidResults"`
+}

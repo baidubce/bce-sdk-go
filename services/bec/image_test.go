@@ -11,15 +11,15 @@ import (
 //////////////////////////////////////////////
 
 func TestCreateVmImage(t *testing.T) {
-	getReq := &api.CreateVmImageArgs{VmId: "vm-xxxx-1", Name: "xxxx-test"}
+	getReq := &api.CreateVmImageArgs{VmId: "vm-dstkrmda-cn-jinan-cm-235ew", Name: "wcw-test"}
 	res, err := CLIENT.CreateVmImage(getReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
 
 func TestUpdateVmImage(t *testing.T) {
-	getReq := &api.UpdateVmImageArgs{Name: "xxxx-test-update"}
-	res, err := CLIENT.UpdateVmImage("xxxxxx-i", getReq)
+	getReq := &api.UpdateVmImageArgs{Name: "wcw-test1"}
+	res, err := CLIENT.UpdateVmImage("im-dqoicjmz", getReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
@@ -32,7 +32,7 @@ func TestListVmImage(t *testing.T) {
 }
 
 func TestDeleteVmImage(t *testing.T) {
-	req := []string{"xxxxxx-1", "xxxxxx-2"}
+	req := []string{"im-dqoicjmz"}
 	res, err := CLIENT.DeleteVmImage(req)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)

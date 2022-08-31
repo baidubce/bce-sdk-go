@@ -104,7 +104,7 @@ func main() {
 	bosClient, err := bos.NewClient(AK, SK, ENDPOINT)
 
 	// 创建Bucket
-	location, err := bosClient.PutBucket("<your-bucket-name>")
+	location, err := bosClient.PutBucket("<your-bucket-name>"); err != nil {
 	if err != nil {
 		fmt.Println("create bucket failed:", err)
 	}

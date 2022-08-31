@@ -85,8 +85,8 @@ args := &api.CreateVmServiceArgs{
     Cpu: 1, 
     // memory大小,必须大于1
     Memory: 2,
-    // 部署区域
-    DeployInstances: &[]api.DeploymentInstance{api.DeploymentInstance{City: "HANGZHOU", Region: "EAST_CHINA", ServiceProvider: "CHINA_MOBILE", Replicas: 1}}, 
+    // 部署区域,支持创建vpc虚机
+    DeployInstances: &[]api.DeploymentInstance{api.DeploymentInstance{City: "HANGZHOU", Region: "EAST_CHINA", ServiceProvider: "CHINA_MOBILE", Replicas: 1,NetworkType: "vpc",}}, 
     // 镜像类型（默认为bcc、仅使用bec虚机自定义镜像时为bec）
     ImageType: "bec", 
     // 密码或密钥配置
@@ -117,7 +117,7 @@ args := &api.UpdateVmServiceArgs{
 	// 服务名称
 	ServiceName: "xxxxtest-2", 
 	// 部署区域列表
-	DeployInstances: &[]bec.api.DeploymentInstance{bec.api.DeploymentInstance{Region: "SOUTH_CHINA", City: "GUANGZHOU", Replicas: 1, ServiceProvider: api.ServiceChinaUnicom}}
+	DeployInstances: &[]bec.api.DeploymentInstance{bec.api.DeploymentInstance{Region: "SOUTH_CHINA", City: "GUANGZHOU", Replicas: 1, ServiceProvider: api.ServiceChinaUnicom,NetworkType: "vpc",}}
 }
 
 err := client.UpdateVmService(serviceId, args)
@@ -366,35 +366,196 @@ if err != nil {
 >
 > - 详细的参数配置及限制条件，可以参考BEC API 文档[DeleteService删除BEC容器服务](https://cloud.baidu.com/doc/BEC/s/Uk3zb1nwe)
 
+### 更新BEC服务
+
+通过以下代码，可以更新BEC服务
+```go
+getReq := &api.UpdateServiceArgs{ServiceName: "s-f9ngbkbc", Type: api.UpdateServiceTypeReplicas, DeployInstances: &[]api.DeploymentInstance{
+    api.DeploymentInstance{Region: api.RegionEastChina, Replicas: 1, City: "HANGZHOU", ServiceProvider: api.ServiceChinaMobile},
+}}
+res, err := CLIENT.UpdateService("s-f9ngbkbc", getReq)
+if err != nil {
+    fmt.Println("update bec service failed:", err)
+} else {
+    fmt.Println("update bec service success: ")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[更新BEC服务](https://cloud.baidu.com/doc/BEC/s/Tk3zaz9by)
+
+### 启动BEC服务
+
+通过以下代码，可以启动BEC服务
+```go
+res, err := CLIENT.ServiceAction("s-xxx", api.ServiceActionStart)
+if err != nil {
+    fmt.Println("start bec service failed:", err)
+} else {
+    fmt.Println("start bec service success: ")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[启动BEC服务](https://cloud.baidu.com/doc/BEC/s/sk3zb12kh)
+
+### 停止BEC服务
+
+通过以下代码，可以停止BEC服务
+```go
+res, err := CLIENT.ServiceAction("s-xxx",  api.ServiceActionStop)
+if err != nil {
+    fmt.Println("stop bec service failed:", err)
+} else {
+    fmt.Println("stop bec service success: ")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[停止BEC服务](https://cloud.baidu.com/doc/BEC/s/gk412paz1)
+
+
+
+
 ### 获取BEC容器服务详情
 
 通过以下代码，可以获取BEC容器服务详情
 ```go
 result, err := client.GetService(serviceId)
 if err != nil {
-    fmt.Println("describe backend servers failed:", err)
+    fmt.Println("get bec pod service failed:", err)
 } else {
-    fmt.Println("describe backend servers success: ", result)
+    fmt.Println("get bec pod service success: ", result)
 }
 ```
 > **提示：**
 >
 > - 详细的参数配置及限制条件，可以参考BEC API 文档[GetService获取BEC容器服务详情](https://cloud.baidu.com/doc/BEC/s/Hk413e70s)
 
-### 删除BEC容器服务
+### 查询部署详情
 
-通过以下代码，可以删除BEC容器服务
+通过以下代码，可以查询部署详情
 ```go
-result, err := client.DeleteService(serviceId)
+result, err := CLIENT.GetPodDeployment("sts-xxxx")
 if err != nil {
-    fmt.Println("describe health status failed:", err)
+    fmt.Println("get bec pod deployment failed:", err)
 } else {
-    fmt.Println("describe health status success: ", result)
+    fmt.Println("get bec pod deployment success: ", result)
 }
 ```
 > **提示：**
 >
-> - 详细的参数配置及限制条件，可以参考BEC API 文档[DeleteService删除BEC容器服务](https://cloud.baidu.com/doc/BEC/s/Uk3zb1nwe)
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[查询部署详情](https://cloud.baidu.com/doc/BEC/s/Lk3fmy6v2)
+
+### 查询部署资源监控
+
+通过以下代码，可以获取查询部署资源监控
+```go
+res, err := CLIENT.GetPodDeploymentMetrics("sts-xxxx", api.MetricsTypeMemory, "", 1661270400, 1661356800, 0)
+if err != nil {
+    fmt.Println("get bec pod deployment failed:", err)
+} else {
+    fmt.Println("get bec pod deployment success: ", res)
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[查询部署资源监控](https://cloud.baidu.com/doc/BEC/s/Wk3h9n5n1)
+### 更新部署副本数
+
+通过以下代码，可以获取更新部署副本数
+```go
+getReq := &api.UpdateDeploymentReplicasRequest{
+    Replicas: 2,
+}
+res, err := CLIENT.UpdatePodDeploymentReplicas("sts-xxxx", getReq)
+if err != nil {
+    fmt.Println("update bec pod deployment replicas failed:", err)
+} else {
+    fmt.Println("update bec pod deployment replicas success: ", res)
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[更新部署副本数](https://cloud.baidu.com/doc/BEC/s/Wk3h9n5n1)
+
+### 删除部署
+
+通过以下代码，可以删除部署
+```go
+getReq := &[]string{"sts-xxxx"}
+res, err := CLIENT.DeletePodDeployment(getReq)
+if err != nil {
+    fmt.Println("delete bec pod deployment failed:", err)
+} else {
+    fmt.Println("delete bec pod deployment success: ", res)
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[删除部署](https://cloud.baidu.com/doc/BEC/s/jk3h9bcr5)
+
+### 查询pod列表
+
+通过以下代码，可以查询pod列表
+```go
+res, err := CLIENT.GetPodList(1, 100, "", "", "", "", "")
+if err != nil {
+    fmt.Println("get bec pod list failed:", err)
+} else {
+    fmt.Println("get bec pod list success: ", res)
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[查询pod列表](https://cloud.baidu.com/doc/BEC/s/2k3i3ucrh)
+
+### 查询pod资源监控
+
+通过以下代码，可以查询pod资源监控
+```go
+res, err := CLIENT.GetPodMetrics("sts-xxx-0", api.MetricsTypeMemory, "", 1661270400, 1661356800, 0)
+
+if err != nil {
+    fmt.Println("get bec pod metrics failed:", err)
+} else {
+    fmt.Println("get bec pod metrics success: ", res)
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[查询pod资源监控](https://cloud.baidu.com/doc/BEC/s/Rk3ibrrdu)
+
+### 查询pod详情
+
+通过以下代码，可以查询pod详情
+```go
+res, err := CLIENT.GetPodDetail("sts-xzzxxxx-0")
+if err != nil {
+    fmt.Println("get bec pod detail failed:", err)
+} else {
+    fmt.Println("get bec pod detail success: ", res)
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[查询pod详情](https://cloud.baidu.com/doc/BEC/s/Ok3i3vgl7)
+
+### 重启容器组
+
+通过以下代码，可以重启容器组
+```go
+err := CLIENT.RestartPod("sts-xxxxx-0")
+if err != nil {
+    fmt.Println("restart bec pod failed:", err)
+} else {
+    fmt.Println("restart bec pod success: ", res)
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[重启容器组](https://cloud.baidu.com/doc/BEC/s/Jk3ib7df8)
+
 
 ## 负载均衡器
 
@@ -411,6 +572,8 @@ args := &api.CreateBlbArgs{
     City: "HANGZHOU", 
     LbType: "vm", 
     ServiceProvider: api.ServiceChinaMobile
+	// 创建applb
+    NetworkType: "vpc",
 }
 err := client.CreateBlb(args)
 if err != nil {
@@ -583,7 +746,647 @@ if err != nil {
 >
 > - 详细的参数配置及限制条件，可以参考BEC API 文档[DeleteVmImage批量删除BEC虚机镜像](https://cloud.baidu.com/doc/BEC/s/Sklgbqn7g)
 
+## 部署集相关
+### 创建部署集
+
+通过以下代码，可以创建部署集
+```go
+getReq := &api.CreateDeploySetArgs{
+Name: "xxx_test",
+Desc: "xxx-test",
+}
+res, err := CLIENT.CreateDeploySet(getReq)
+if err != nil {
+    fmt.Println("create deploy set failed:", err)
+} else {
+    fmt.Println("create deploy set success")
+}
 ```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[创建部署集](https://cloud.baidu.com/doc/BEC/s/Sl0t89s48)
+
+### 修改部署集
+
+通过以下代码，可以修改部署集
+```go
+getReq := &api.CreateDeploySetArgs{
+    Name: "xxx_test",
+    Desc: "xxx-test",
+}
+err := CLIENT.UpdateDeploySet("dset-xxx", getReq)
+res, err := CLIENT.CreateDeploySet(getReq)
+if err != nil {
+    fmt.Println("update deploy set failed:", err)
+} else {
+    fmt.Println("update deploy set success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[修改部署集](https://cloud.baidu.com/doc/BEC/s/Ml0tb0d5s)
+
+### 获取部署集列表
+
+通过以下代码，可以获取部署集列表
+```go
+getReq := &api.ListRequest{}
+res, err := CLIENT.GetDeploySetList(getReq)
+if err != nil {
+    fmt.Println("get deploy set list failed:", err)
+} else {
+    fmt.Println("get deploy set list success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[获取部署集列表](https://cloud.baidu.com/doc/BEC/s/Cl0t8xm4g)
+
+### 获取部署集详情
+
+通过以下代码，可以获取部署集详情
+```go
+res, err := CLIENT.GetDeploySetDetail("dset-xxxx")
+if err != nil {
+    fmt.Println("get deploy set details failed:", err)
+} else {
+    fmt.Println("get deploy set details success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[获取部署集详情](https://cloud.baidu.com/doc/BEC/s/9l0talan1)
+
+### 删除部署集
+
+通过以下代码，可以删除部署集
+```go
+err := CLIENT.DeleteDeploySet("dset-y4tumnel")
+if err != nil {
+    fmt.Println("delete deploy set failed:", err)
+} else {
+    fmt.Println("delete deploy set success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[删除部署集](https://cloud.baidu.com/doc/BEC/s/1l0ulgpsv)
+
+### 虚机实例调整部署集
+
+通过以下代码，可以调整虚机实例的部署集
+```go
+getReq := &api.UpdateVmDeploySetArgs{
+InstanceId:      "vm-xxxx",
+DeploysetIdList: []string{"dset-xxxx"},
+}
+err := CLIENT.UpdateVmInstanceDeploySet(getReq)
+if err != nil {
+    fmt.Println("update vm instance deploy set failed:", err)
+} else {
+    fmt.Println("update vm instance deploy set success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[虚机实例调整部署集](https://cloud.baidu.com/doc/BEC/s/nl0um3hvs)
+
+### 部署集移除虚机实例
+
+通过以下代码，可以将虚机实例从部署集移除
+```go
+getReq := &api.DeleteVmDeploySetArgs{
+    DeploysetId:    "dset-y4tumnel",
+    InstanceIdList: []string{"vm-dstkrmda-cn-langfang-ct-4thbz"},
+}
+err := CLIENT.DeleteVmInstanceFromDeploySet(getReq)
+if err != nil {
+    fmt.Println("remove vm instance from deploy set failed:", err)
+} else {
+    fmt.Println("remove vm instance from deploy set success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[部署集移除实例](https://cloud.baidu.com/doc/BEC/s/Ml0ulrz5z)
+## APPBLB相关
+### 创建APPBLB实例
+
+通过以下代码，可以创建APPBLB实例
+```go
+getReq := &api.CreateAppBlbRequest{
+    Name:         "xxx_test_applb",
+    Desc:         "xxx-test",
+    RegionId:     "cn-hangzhou-cm",
+    NeedPublicIp: true,
+    SubnetId:     "sbn-xx",
+    VpcId:        "vpc-xx",
+}
+res, err := CLIENT.CreateAppBlb("testCreateAppBlb", getReq)
+
+if err != nil {
+    fmt.Println("create app blb instance failed:", err)
+} else {
+    fmt.Println("create app blb instance success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[创建APPBLB实例](https://cloud.baidu.com/doc/BEC/s/zl4nug4yg)
+
+### 修改APPBLB实例
+通过以下代码，可以修改APPBLB实例
+```go
+getReq := &api.ModifyBecBlbRequest{
+    Name: "xx_test_applb",
+    Desc: "xx-test1",
+}
+err := CLIENT.UpdateAppBlb("testUpdateAppBlb", "applb-xx", getReq)
+
+if err != nil {
+    fmt.Println("update app blb instance failed:", err)
+} else {
+    fmt.Println("update app blb instance success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[修改APPBLB实例](https://cloud.baidu.com/doc/BEC/s/Ul4nuv8n2)
+### 查询APPBLB实例列表
+通过以下代码，可以查询APPBLB实例列表
+```go
+getReq := &api.MarkerRequest{}
+res, err := CLIENT.GetAppBlbList(getReq)
+
+if err != nil {
+    fmt.Println("get app blb instance list failed:", err)
+} else {
+    fmt.Println("get app blb instance list success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[查询APPBLB实例列表](https://cloud.baidu.com/doc/BEC/s/9l4nv22ji)
+
+### 查询APPBLB实例详情
+通过以下代码，可以查询APPBLB实例详情
+```go
+res, err := CLIENT.GetAppBlbDetails("applb-xxxx")
+
+if err != nil {
+    fmt.Println("get app blb instance detail failed:", err)
+} else {
+    fmt.Println("get app blb instance detail success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[查询APPBLB实例详情](https://cloud.baidu.com/doc/BEC/s/Ul4nvz6d8)
+
+### 删除APPBLB实例
+通过以下代码，可以删除APPBLB实例
+```go
+err := CLIENT.DeleteAppBlbInstance("applb-xxx", "")
+
+if err != nil {
+    fmt.Println("delete app blb instance  failed:", err)
+} else {
+    fmt.Println("delete app blb instance  success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[删除APPBLB实例](https://cloud.baidu.com/doc/BEC/s/7l4nwir90)
+
+### 创建TCP监听器
+通过以下代码，可以创建TCP监听器
+```go
+getReq := &api.CreateBecAppBlbTcpListenerRequest{
+    ListenerPort:      80,
+    Scheduler:         "RoundRobin",
+    TcpSessionTimeout: 1000,
+}
+err := CLIENT.CreateTcpListener("testCreateTcpListener", "applb-xxx", getReq)
+if err != nil {
+    fmt.Println("create app tcp listener failed:", err)
+} else {
+    fmt.Println("create app tcp listener success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[创建TCP监听器](https://cloud.baidu.com/doc/BEC/s/il4nwx3ts)
+
+### 创建UDP监听器
+通过以下代码，可以创建UDP监听器
+```go
+getReq := &api.CreateBecAppBlbUdpListenerRequest{
+    ListenerPort:      80,
+    Scheduler:         "RoundRobin",
+    UdpSessionTimeout: 1000,
+}
+err := CLIENT.CreateUdpListener("testCreateTcpListener", "applb-xxxx", getReq)
+if err != nil {
+    fmt.Println("create app udp listener failed:", err)
+} else {
+    fmt.Println("create app udp listener success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[创建UDP监听器](https://cloud.baidu.com/doc/BEC/s/sl4p73e1g)
+
+### 新建监听器策略
+通过以下代码，可以新建监听器策略
+```go
+getReq := &api.CreateAppBlbPoliciesRequest{
+    ListenerPort: 80,
+    AppPolicyVos: []api.AppPolicyVo{
+        {
+            AppIpGroupId: "bec_ip_group-xxx",
+            Priority:     1,
+            Desc:         "xxx-test",
+        },
+    },
+}
+err := CLIENT.CreateListenerPolicy("", "applb-xxx", getReq)
+if err != nil {
+    fmt.Println("create app blb listener policy failed:", err)
+} else {
+    fmt.Println("create app blb listener policy success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[新建监听器策略](https://cloud.baidu.com/doc/BEC/s/Hl4qgo88o)
+
+### 查询监听器策略
+通过以下代码，可以查询监听器策略
+```go
+getReq := &api.GetBlbListenerPolicyRequest{
+    Port: 80,
+}
+res, err := CLIENT.GetListenerPolicy("applb-xxx", getReq)
+if err != nil {
+    fmt.Println("get app blb listener policy failed:", err)
+} else {
+    fmt.Println("get app blb listener policy success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[查询监听器策略](https://cloud.baidu.com/doc/BEC/s/cl4qgvkbp)
+
+### 删除监听器策略
+通过以下代码，可以删除监听器策略
+```go
+getReq := &api.DeleteAppBlbPoliciesRequest{
+    Port: 80,
+    PolicyIdList: []string{
+        "bec_policy-scr9cwtk",
+    },
+}
+err := CLIENT.DeleteListenerPolicy("", "applb-xxxxx", getReq)
+if err != nil {
+    fmt.Println("delete app blb listener policy failed:", err)
+} else {
+    fmt.Println("delete app blb listener policy success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[删除监听器策略](https://cloud.baidu.com/doc/BEC/s/Bl4qhc0vy)
+
+### 修改TCP监听器
+通过以下代码，可以修改TCP监听器
+```go
+getReq := &api.UpdateBecAppBlbTcpListenerRequest{
+    Scheduler:         "RoundRobin",
+    TcpSessionTimeout: 800,
+}
+err := CLIENT.UpdateTcpListener("testUpdateTcpListener", "applb-xxx", "80", getReq)
+if err != nil {
+    fmt.Println("update app tcp listener failed:", err)
+} else {
+    fmt.Println("update app tcp listener success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[修改TCP监听器](https://cloud.baidu.com/doc/BEC/s/sl4p73e1g)
+
+### 修改UDP监听器
+通过以下代码，可以修改UDP监听器
+```go
+getReq := &api.UpdateBecAppBlbUdpListenerRequest{
+    Scheduler:         "RoundRobin",
+    UdpSessionTimeout: 800,
+}
+err := CLIENT.UpdateUdpListener("testUpdateUdpListener", "applb-xxx", "80", getReq)
+if err != nil {
+    fmt.Println("update app udp listener failed:", err)
+} else {
+    fmt.Println("update app udp listener success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[修改UDP监听器](https://cloud.baidu.com/doc/BEC/s/al4p7c82y)
+
+### 查询TCP监听器
+通过以下代码，可以查询TCP监听器
+```go
+getReq := &api.GetBecAppBlbListenerRequest{
+    ListenerPort: 80,
+}
+res, err := CLIENT.GetTcpListener("applb-xxxx", getReq)
+if err != nil {
+    fmt.Println("get app udp listener failed:", err)
+} else {
+    fmt.Println("get app udp listener success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[查询TCP监听器](https://cloud.baidu.com/doc/BEC/s/Ul4nxiz6l)
+
+### 查询TCP监听器
+通过以下代码，可以查询UDP监听器
+```go
+getReq := &api.GetBecAppBlbListenerRequest{
+    ListenerPort: 80,
+}
+res, err := CLIENT.GetUdpListener("applb-xxxx", getReq)
+if err != nil {
+    fmt.Println("get app udp listener failed:", err)
+} else {
+    fmt.Println("get app udp listener success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[查询UDP监听器](https://cloud.baidu.com/doc/BEC/s/4l4p7ih5s)
+
+### 删除监听器
+通过以下代码，可以删除监听器
+```go
+getReq := &api.DeleteBlbListenerRequest{
+PortTypeList: []api.PortTypeList{
+        {
+            Port: 80,
+            Type: "TCP",
+        },
+        {
+            Port: 80,
+            Type: "UDP",
+        },
+    },
+}
+err := CLIENT.DeleteAppBlbListener("applb-xxx", "deleteApplbInstance", getReq)
+if err != nil {
+    fmt.Println("delete app listener failed:", err)
+} else {
+    fmt.Println("delete app listener success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[删除监听器](https://cloud.baidu.com/doc/BEC/s/dl4p7sfyb)
+
+### 创建IP组
+通过以下代码，可以创建IP组
+```go
+getReq := &api.CreateBlbIpGroupRequest{
+    Name: "xxx-testIpGroup",
+    Desc: "xxx-test",
+}
+res, err := CLIENT.CreateIpGroup("testIpGroup", "applb-xxx", getReq)
+if err != nil {
+    fmt.Println("create app blb ip group failed:", err)
+} else {
+    fmt.Println("create app blb ip group success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[创建IP组](https://cloud.baidu.com/doc/BEC/s/nl4p9vtw2)
+
+### 更新IP组
+通过以下代码，可以更新IP组
+```go
+getReq := &api.UpdateBlbIpGroupRequest{
+    Name:      "xxx-testIpGroupupdate",
+    Desc:      "xxx-testupdate",
+    IpGroupId: "bec_ip_group-xxx",
+}
+err := CLIENT.UpdateIpGroup("testIpGroup", "applb-xxx", getReq)
+if err != nil {
+    fmt.Println("update app blb ip group failed:", err)
+} else {
+    fmt.Println("update app blb ip group success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[更新IP组](https://cloud.baidu.com/doc/BEC/s/wl4pahvlw)
+
+### 查询IP组列表
+通过以下代码，可以查询IP组列表
+```go
+getReq := &api.GetBlbIpGroupListRequest{}
+res, err := CLIENT.GetIpGroup("applb-xxxx", getReq)
+if err != nil {
+    fmt.Println("get app blb ip group list failed:", err)
+} else {
+    fmt.Println("get app blb ip group list success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[查询IP组列表](https://cloud.baidu.com/doc/BEC/s/El4pan7ox)
+
+### 删除IP组
+通过以下代码，可以删除IP组
+```go
+getReq := &api.DeleteBlbIpGroupRequest{
+    IpGroupId: "bec_ip_group-ukadxdrq",
+}
+err := CLIENT.DeleteIpGroup("testDeleteIpGroup", "applb-xxxx", getReq)
+if err != nil {
+    fmt.Println("delete app blb ip group failed:", err)
+} else {
+    fmt.Println("delete app blb ip group success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[删除IP组](https://cloud.baidu.com/doc/BEC/s/Ml4qem709)
+
+### 创建IP组协议
+通过以下代码，可以创建IP组协议
+```go
+getReq := &api.CreateBlbIpGroupBackendPolicyRequest{
+    IpGroupId:                   "bec_ip_group-xxx,
+    Type:                        "TCP",
+    HealthCheck:                 "TCP",
+    HealthCheckPort:             80,
+    HealthCheckTimeoutInSecond:  10,
+    HealthCheckIntervalInSecond: 3,
+    HealthCheckDownRetry:        4,
+    HealthCheckUpRetry:          5,
+}
+res, err := CLIENT.CreateIpGroupPolicy("", "applb-xxx", getReq)
+if err != nil {
+    fmt.Println("create app blb ip group policy failed:", err)
+} else {
+    fmt.Println("create app blb ip group policy success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[创建IP组协议](https://cloud.baidu.com/doc/BEC/s/Ml4qem709)
+
+### 更新IP组协议
+通过以下代码，可以更新IP组协议
+```go
+getReq := &api.UpdateBlbIpGroupBackendPolicyRequest{
+    IpGroupId:       "bec_ip_group-xxx",
+    Id:              "bec_ip_group_policy-xxx",
+    HealthCheckPort: 80,
+}
+err := CLIENT.UpdateIpGroupPolicy("", "applb-xxx", getReq)
+if err != nil {
+    fmt.Println("update app blb ip group policy failed:", err)
+} else {
+    fmt.Println("update app blb ip group policy success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[更新IP组协议](https://cloud.baidu.com/doc/BEC/s/5l4qexv01)
+
+### 查询IP组协议列表
+通过以下代码，可以查询IP组协议列表
+```go
+getReq := &api.GetBlbIpGroupPolicyListRequest{
+    IpGroupId: "bec_ip_group-xxx",
+}
+res, err := CLIENT.GetIpGroupPolicyList("applb-xxx", getReq)
+if err != nil {
+    fmt.Println("get app blb ip group policy list failed:", err)
+} else {
+    fmt.Println("get app blb ip group policy list success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[查询IP组协议列表](https://cloud.baidu.com/doc/BEC/s/2l4qf4jv6)
+
+### 删除IP组协议
+通过以下代码，可以删除IP组协议
+```go
+getReq := &api.DeleteBlbIpGroupBackendPolicyRequest{
+    IpGroupId:           "bec_ip_group-xxx",
+    BackendPolicyIdList: []string{"bec_ip_group_policy-xx"},
+}
+err := CLIENT.DeleteIpGroupPolicy("", "applb-xxx", getReq)
+if err != nil {
+    fmt.Println("delete app blb ip group policy failed:", err)
+} else {
+    fmt.Println("delete app blb ip group policy success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[删除IP组协议](https://cloud.baidu.com/doc/BEC/s/Ll4qg1hun)
+
+### 创建IP组成员
+通过以下代码，可以创建IP组成员
+```go
+getReq := &api.CreateBlbIpGroupMemberRequest{
+    IpGroupId: "bec_ip_group-ukadxdrq",
+    MemberList: []api.BlbIpGroupMember{
+        {
+            Ip:     "172.16.240.25",
+            Port:   90,
+            Weight: 100,
+        },
+    },
+}
+res, err := CLIENT.CreateIpGroupMember("", "applb-xxxx", getReq)
+if err != nil {
+    fmt.Println("create app blb ip group member failed:", err)
+} else {
+    fmt.Println("create app blb ip group member success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[创建IP组成员](https://cloud.baidu.com/doc/BEC/s/yl4qf9xbw)
+
+### 更新IP组成员
+通过以下代码，可以更新IP组成员
+```go
+getReq := &api.UpdateBlbIpGroupMemberRequest{
+    IpGroupId: "bec_ip_group-ukadxdrq",
+    MemberList: []api.UpdateBlbIpGroupMember{
+        {
+            MemberId: "bec_ip_member-ouiinabp",
+            Port:     8080,
+            Weight:   100,
+        },
+    },
+}
+err := CLIENT.UpdateIpGroupMember("", "applb-xxxx", getReq)
+if err != nil {
+    fmt.Println("update app blb ip group member failed:", err)
+} else {
+    fmt.Println("update app blb ip group member success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[更新IP组成员](https://cloud.baidu.com/doc/BEC/s/Gl4qfi31t)
+
+### 查询IP组成员列表
+通过以下代码，可以查询IP组成员列表
+```go
+getReq := &api.GetBlbIpGroupMemberListRequest{
+    IpGroupId: "bec_ip_group-xxx",
+}
+res, err := CLIENT.GetIpGroupMemberList("applb-xxxx", getReq)
+if err != nil {
+    fmt.Println("get app blb ip group member list failed:", err)
+} else {
+    fmt.Println("get app blb ip group member list success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[查询IP组成员列表](https://cloud.baidu.com/doc/BEC/s/Il4qfnftj)
+
+### 删除IP组成员
+通过以下代码，可以删除IP组成员
+```go
+getReq := &api.DeleteBlbIpGroupBackendMemberRequest{
+    IpGroupId:    "bec_ip_group-xxx",
+    MemberIdList: []string{"bec_ip_member-xxx"},
+}
+err := CLIENT.DeleteIpGroupMember("", "applb-xxx", getReq)
+if err != nil {
+    fmt.Println("delete app blb ip group member failed:", err)
+} else {
+    fmt.Println("delete app blb ip group member success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[删除IP组成员](https://cloud.baidu.com/doc/BEC/s/Hl4qftd63)
+
+
+
+
+
 
 ## 客户端异常
 
@@ -594,6 +1397,27 @@ if err != nil {
 当BEC服务端出现异常时，BEC服务端会返回给用户相应的错误信息，以便定位问题。常见服务端异常可参见[BEC错误返回](https://cloud.baidu.com/doc/BEC/s/5k4106ncs)
 
 # 版本变更记录
+
+## 更新日期 [2022-08-25]
+
+更新内容
+
+- 更新虚机相关的参数、支持创建VPC虚机、更新获取虚机监控的接口
+- 更新负载均衡相关参数、支持创建APPLB、更新获取负载均衡监控的接口
+- 更新了容器服务接口的相关参数
+
+新增内容
+
+- 创建、删除、列表、更新、详情虚机部署集
+- 将虚机移入、移除部署集
+- 监控接口新增stepInMin参数
+- 创建、修改、查询、删除APPBLB
+- 创建、修改、查询、删除APPBLB监听器以及监听器策略
+- 创建、修改、查询、删除APPBLB IP组、IP组协议、IP组成员
+- 查询容器部署详情、查询容器部署监控、更新容器部署副本、删除容器部署
+- 查询POD列表、详情、资源监控，重启容器组
+
+
 
 ## v0.9.11 [2021-04-21]
 
@@ -608,4 +1432,3 @@ if err != nil {
  - 列表、详情、删除、更新、重装、操作虚机实例、获取虚机实例配置、获取所在节点的BEC虚机列表、获取虚机监控信息
  - 创建、列表、详情、操作、更新、删除、批量操作、批量删除容器服务、获取BEC容器服务监控
 
-```

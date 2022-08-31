@@ -1731,3 +1731,197 @@ func ListInstanceByInstanceIds(cli bce.Client, args *ListInstanceByInstanceIdArg
 	}
 	return jsonBody, nil
 }
+
+// BatchDeleteInstanceWithRelatedResource - delete instance with related resources
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: request body to delete instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func BatchDeleteInstanceWithRelatedResource(cli bce.Client, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getBatchDeleteInstanceWithRelatedResourceUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// BatchStartInstance - batch start specified instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: request body to batch start instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func BatchStartInstance(cli bce.Client, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getBatchStartInstanceUri())
+	req.SetMethod(http.PUT)
+	req.SetParam("start", "")
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { _ = resp.Body().Close() }()
+	return nil
+}
+
+// BatchStopInstance - batch stop specified instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//	   - reqBody: the request body to batch stop instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func BatchStopInstance(cli bce.Client, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getBatchStopInstanceUri())
+	req.SetMethod(http.PUT)
+	req.SetParam("stop", "")
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// ListInstanceTypes - list all instances type with the specified parameters
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - args: the arguments to list instances type
+// RETURNS:
+//     - *ListInstanceTypeResults: result of the instance type list
+//     - error: nil if success otherwise the specific error
+func ListInstanceTypes(cli bce.Client, args *ListInstanceTypeArgs) (*ListInstanceTypeResults, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getListInstanceTypesUri())
+	req.SetMethod(http.GET)
+
+	// Optional arguments settings
+	if args != nil {
+		if len(args.ZoneName) != 0 {
+			req.SetParam("zoneName", args.ZoneName)
+		}
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ListInstanceTypeResults{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+// ListIdMappings - Long and short ID conversion parameters
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - args: the arguments to Long and short ID conversion
+// RETURNS:
+//     - *ListIdMappingResults: result of the Long short mapping
+//     - error: nil if success otherwise the specific error
+func ListIdMappings(cli bce.Client, args *ListIdMappingArgs) (*ListIdMappingResults, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getListIdMappingsUri())
+	req.SetMethod(http.POST)
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return nil, err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ListIdMappingResults{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+// BatchResizeInstance - batch resize a specified instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: the request body to resize instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func BatchResizeInstance(cli bce.Client, reqBody *bce.Body) (*BatchResizeInstanceResults, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getBatchResizeInstanceUri())
+	req.SetMethod(http.PUT)
+	req.SetParam("resize", "")
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &BatchResizeInstanceResults{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}

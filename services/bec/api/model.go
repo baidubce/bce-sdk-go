@@ -120,10 +120,15 @@ const (
 )
 
 type DeploymentInstance struct {
-	Region          Region          `json:"region,omitempty"`
-	ServiceProvider ServiceProvider `json:"serviceProvider,omitempty"`
-	Replicas        int             `json:"replicas,omitempty"`
-	City            string          `json:"city,omitempty"`
+	Region              Region          `json:"region,omitempty"`
+	ServiceProvider     ServiceProvider `json:"serviceProvider,omitempty"`
+	Replicas            int             `json:"replicas,omitempty"`
+	City                string          `json:"city,omitempty"`
+	RegionId            string          `json:"regionId,omitempty"`
+	NetworkType         string          `json:"networkType,omitempty"`
+	VpcId               string          `json:"vpcId,omitempty"`
+	SubnetId            string          `json:"subnetId,omitempty"`
+	SubServiceProviders []string        `json:"subServiceProviders,omitempty"`
 }
 
 type ResourceBriefVo struct {
@@ -143,6 +148,109 @@ type ResourceBriefVo struct {
 	ImageList            []string              `json:"imageList"`
 	Containers           []ContainerDetails    `json:"containers"`
 	ImageRegistrySecrets []ImageRegistrySecret `json:"imageRegistrySecrets"`
+}
+
+type DeploymentResourceBriefVo struct {
+	ServiceId      string             `json:"serviceId"`
+	ServiceName    string             `json:"serviceName"`
+	ResourceId     string             `json:"resourceId"`
+	ResourceName   string             `json:"resourceName"`
+	TotalPods      int                `json:"totalPods"`
+	RunningPods    int                `json:"runningPods"`
+	DeployInstance DeploymentInstance `json:"deployInstance"`
+	Containers     []ContainerDetails `json:"containers"`
+	PodBriefVos    []PodBriefVo       `json:"podBriefVos"`
+	CreateTime     string             `json:"createTime"`
+	LastUpdateTime string             `json:"lastUpdateTime"`
+}
+type PodBriefVo struct {
+	ServiceId        string             `json:"serviceId"`
+	DeploymentName   string             `json:"deploymentName"`
+	DeploymentId     string             `json:"deploymentId"`
+	PodName          string             `json:"podName"`
+	Region           string             `json:"region"`
+	City             string             `json:"city"`
+	RegionName       string             `json:"regionName"`
+	CityName         string             `json:"cityName"`
+	Country          string             `json:"country"`
+	CountryName      string             `json:"countryName"`
+	RegionId         string             `json:"regionId"`
+	Labels           map[string]string  `json:"labels"`
+	Status           string             `json:"status"`
+	Cpu              int                `json:"cpu"`
+	Mem              int                `json:"mem"`
+	IngressBandwidth string             `json:"ingressBandwidth"`
+	PublicIp         string             `json:"publicIp"`
+	Ipv6PublicIp     string             `json:"ipv6PublicIp"`
+	InternalIp       string             `json:"internalIp"`
+	ImageList        []string           `json:"imageList"`
+	Containers       []ContainerDetails `json:"containers"`
+}
+
+type PodDetailVo struct {
+	PodId             string              `json:"podId"`
+	Region            string              `json:"region"`
+	City              string              `json:"city"`
+	RegionName        string              `json:"regionName"`
+	CityName          string              `json:"cityName"`
+	Country           string              `json:"country"`
+	CountryName       string              `json:"countryName"`
+	RegionId          string              `json:"regionId"`
+	Labels            map[string]string   `json:"labels"`
+	Status            string              `json:"status"`
+	Cpu               int                 `json:"cpu"`
+	Mem               int                 `json:"mem"`
+	IngressBandwidth  string              `json:"ingressBandwidth"`
+	PublicIp          string              `json:"publicIp"`
+	PodIp             string              `json:"podIp"`
+	Ipv6PublicIp      string              `json:"ipv6PublicIp"`
+	InternalIp        string              `json:"internalIp"`
+	ImageList         []string            `json:"imageList"`
+	PodDataStorage    int                 `json:"podDataStorage"`
+	PodEventDetails   []PodEventDetails   `json:"podEventDetails"`
+	Containers        []ContainerDetails  `json:"containers"`
+	ContainerStatuses []V1ContainerStatus `json:"containerStatuses"`
+	CreateTime        string              `json:"createTime"`
+}
+type PodEventDetails struct {
+	EventName    string `json:"eventName"`
+	EventType    string `json:"eventType"`
+	EventMessage string `json:"eventMessage"`
+}
+type V1ContainerStatus struct {
+	ContainerID  string           `json:"containerID"`
+	Image        string           `json:"image"`
+	ImageID      string           `json:"imageID"`
+	Name         string           `json:"name"`
+	Ready        bool             `json:"ready"`
+	RestartCount int              `json:"restartCount"`
+	LastState    V1ContainerState `json:"lastState"`
+	State        V1ContainerState `json:"state"`
+}
+type V1ContainerState struct {
+	Running    V1ContainerStateRunning    `json:"running"`
+	Terminated V1ContainerStateTerminated `json:"terminated"`
+	Waiting    V1ContainerStateWaiting    `json:"waiting"`
+}
+type V1ContainerStateRunning struct {
+	StartedAt int `json:"startedAt"`
+}
+type V1ContainerStateTerminated struct {
+	ContainerID string `json:"containerID"`
+	ExitCode    int    `json:"exitCode"`
+	Signal      int    `json:"signal"`
+	StartedAt   int    `json:"startedAt"`
+	FinishedAt  int    `json:"finishedAt"`
+	Message     string `json:"message"`
+	Reason      string `json:"reason"`
+}
+type V1ContainerStateWaiting struct {
+	Message string `json:"message"`
+	Reason  string `json:"reason"`
+}
+
+type UpdateDeploymentReplicasRequest struct {
+	Replicas int `json:"replicas,omitempty"`
 }
 
 type ServiceDetailsVo struct {
@@ -184,18 +292,18 @@ type ServiceBriefVo struct {
 }
 
 type ContainerDetails struct {
-	Name         string             `json:"name,omitempty"`
-	ImageVersion string             `json:"imageVersion,omitempty"`
-	ImageAddress string             `json:"imageAddress,omitempty"`
-	Memory       int                `json:"memory,omitempty"`
-	Cpu          int                `json:"cpu,omitempty"`
-	Gpu          int                `json:"gpu,omitempty"`
-	WorkingDir   string             `json:"workingDir,omitempty"`
-	Commands     []string           `json:"commands,omitempty"`
-	Args         []string           `json:"args,omitempty"`
-	VolumeMounts *[]V1VolumeMount   `json:"volumeMounts,omitempty"`
-	Ports        *[]V1ContainerPort `json:"ports,omitempty"`
-	Envs         *[]V1EnvVar        `json:"envs,omitempty"`
+	Name         string            `json:"name,omitempty"`
+	ImageVersion string            `json:"imageVersion,omitempty"`
+	ImageAddress string            `json:"imageAddress,omitempty"`
+	Memory       int               `json:"memory,omitempty"`
+	Cpu          int               `json:"cpu,omitempty"`
+	Gpu          int               `json:"gpu,omitempty"`
+	WorkingDir   string            `json:"workingDir,omitempty"`
+	Commands     []string          `json:"commands,omitempty"`
+	Args         []string          `json:"args,omitempty"`
+	VolumeMounts []V1VolumeMount   `json:"volumeMounts,omitempty"`
+	Ports        []V1ContainerPort `json:"ports,omitempty"`
+	Envs         []V1EnvVar        `json:"envs,omitempty"`
 }
 
 type LogCollectDetail struct {
@@ -223,6 +331,7 @@ type CreateServiceArgs struct {
 	ImageRegistrySecrets *[]ImageRegistrySecret `json:"imageRegistrySecrets,omitempty"`
 	Volumes              *Volume                `json:"volumes,omitempty"`
 	NeedPublicIp         bool                   `json:"needPublicIp,omitempty"`
+	NeedIpv6PublicIp     bool                   `json:"needIpv6PublicIp,omitempty"`
 	Bandwidth            int                    `json:"bandwidth,omitempty"`
 	Tags                 *[]Tag                 `json:"tags,omitempty"`
 	DeployInstances      *[]DeploymentInstance  `json:"deployInstances,omitempty"`
@@ -247,6 +356,15 @@ type ListServiceResult struct {
 	PageNo     int              `json:"pageNo"`
 	PageSize   int              `json:"pageSize"`
 	TotalCount int              `json:"totalCount"`
+}
+
+type ListPodResult struct {
+	Result     []PodBriefVo `json:"result"`
+	OrderBy    string       `json:"orderBy"`
+	Order      string       `json:"order"`
+	PageNo     int          `json:"pageNo"`
+	PageSize   int          `json:"pageSize"`
+	TotalCount int          `json:"totalCount"`
 }
 
 type MetricsType string
@@ -295,9 +413,9 @@ const (
 )
 
 type ServiceActionResult struct {
-	Result bool              `json:"result"`
-	Action string            `json:"action"`
-	Detail map[string]string `json:"detail"`
+	Result  bool              `json:"result"`
+	Action  string            `json:"action"`
+	Details map[string]string `json:"details"`
 }
 
 type UpdateServiceType string
@@ -312,9 +430,10 @@ type UpdateServiceArgs struct {
 	Type                 UpdateServiceType      `json:"type,omitempty"`
 	DeployInstances      *[]DeploymentInstance  `json:"deployInstances,omitempty"`
 	ServiceName          string                 `json:"serviceName,omitempty"`
+	NeedIpv6PublicIp     string                 `json:"needIpv6PublicIp,omitempty"`
 	Containers           *[]ContainerDetails    `json:"containers,omitempty"`
 	ImageRegistrySecrets *[]ImageRegistrySecret `json:"imageRegistrySecrets,omitempty"`
-	Bandwidth            float32                `json:"bandwidth,omitempty"`
+	Bandwidth            int                    `json:"bandwidth,omitempty"`
 }
 
 type UpdateServiceResult struct {
@@ -345,9 +464,22 @@ type ListDeploymentArgs struct {
 }
 
 type Networks struct {
-	NetType string `json:"netType,omitempty"`
-	NetName string `json:"netName,omitempty"`
+	NetType    string     `json:"netType,omitempty"`
+	NetName    string     `json:"netName,omitempty"`
+	NicIndex   int        `json:"nicIndex,omitempty"`
+	EniId      string     `json:"eniId,omitempty"`
+	Mac        string     `json:"mac,omitempty"`
+	Ipv4       *IpAddress `json:"ipv4,omitempty"`
+	Ipv6       *IpAddress `json:"ipv6,omitempty"`
+	ReserveIps []string   `json:"reserveIps,omitempty"`
 }
+type IpAddress struct {
+	Ip   string `json:"ip,omitempty"`
+	Gw   string `json:"gw,omitempty"`
+	Cidr string `json:"cidr,omitempty"`
+	Mask string `json:"mask,omitempty"`
+}
+
 type NetworkConfig struct {
 	NodeType     string      `json:"nodeType,omitempty"` //NoneType
 	NetworksList *[]Networks `json:"networksList,omitempty"`
@@ -365,6 +497,7 @@ const (
 	DiskTypeSATA             DiskType = "SATA"
 	DiskTypeCDSHDD           DiskType = "CDS_HDD"
 	DiskTypeCDSSSD           DiskType = "CDS_SSD"
+	DiskTypeRBDSSD           DiskType = "RBD_SSD"
 	DiskTypeHDDPASSTHROUGH4T DiskType = "HDD_PASSTHROUGH_4T"
 	DiskTypeSSDPASSTHROUGH4T DiskType = "SSD_PASSTHROUGH_4T"
 )
@@ -398,24 +531,29 @@ type KeyConfig struct {
 type CreateVmServiceArgs struct {
 	ServiceName       string                `json:"serviceName,omitempty"`
 	VmName            string                `json:"vmName,omitempty"`
-	NeedIpv6PublicIp  bool                  `json:"needIpv6PublicIp,omitempty"`
-	DisableIntranet   bool                  `json:"disableIntranet,omitempty"`
-	DisableCloudInit  bool                  `json:"disableCloudInit,omitempty"`
-	PaymentMethod     string                `json:"paymentMethod,omitempty"`
 	NeedPublicIp      bool                  `json:"needPublicIp,omitempty"`
 	Bandwidth         int                   `json:"bandwidth,omitempty"`
 	DeployInstances   *[]DeploymentInstance `json:"deployInstances,omitempty"`
+	DnsConfig         *DnsConfig            `json:"dnsConfig,omitempty"`
+	Spec              string                `json:"spec,omitempty"`
 	Cpu               int                   `json:"cpu,omitempty"`
 	Memory            int                   `json:"memory,omitempty"`
-	Gpu               *GpuRequest           `json:"gpu,omitempty"`
 	ImageId           string                `json:"imageId,omitempty"`
 	ImageType         ImageType             `json:"imageType,omitempty"`
-	DataVolumeList    *[]VolumeConfig       `json:"dataVolumeList,omitempty"`
+	NeedIpv6PublicIp  bool                  `json:"needIpv6PublicIp,omitempty"`
 	SystemVolume      *SystemVolumeConfig   `json:"systemVolume,omitempty"`
-	NetworkConfigList *[]NetworkConfig      `json:"networkConfigList,omitempty"`
-	AdminPass         string                `json:"adminPass,omitempty"`
-	DnsConfig         *DnsConfig            `json:"dnsConfig,omitempty"`
+	DataVolumeList    *[]VolumeConfig       `json:"dataVolumeList,omitempty"`
 	KeyConfig         *KeyConfig            `json:"keyConfig,omitempty"`
+	DisableIntranet   bool                  `json:"disableIntranet,omitempty"`
+	DisableCloudInit  bool                  `json:"disableCloudInit,omitempty"`
+	NetworkConfigList *[]NetworkConfig      `json:"networkConfigList,omitempty"`
+	SecurityGroupIds  []string              `json:"securityGroupIds,omitempty"`
+	Hostname          string                `json:"hostname,omitempty"`
+	DeploysetIdList   []string              `json:"deploysetIdList,omitempty"`
+	PaymentMethod     string                `json:"paymentMethod,omitempty"`
+	Gpu               *GpuRequest           `json:"gpu,omitempty"`
+	AdminPass         string                `json:"adminPass,omitempty"`
+	TemplateId        string                `json:"templateId,omitempty"`
 }
 
 type ImageDetail struct {
@@ -453,6 +591,7 @@ type VmInstanceIdVo struct {
 	VmId            string `json:"vmId"`
 	VmName          string `json:"vmName"`
 	Region          string `json:"region"`
+	RegionId        string `json:"regionId"`
 	City            string `json:"city"`
 	ServiceProvider string `json:"serviceProvider"`
 }
@@ -485,7 +624,7 @@ const (
 type VmServiceBriefVo struct {
 	ServiceId        string               `json:"serviceId"`
 	ServiceName      string               `json:"serviceName"`
-	Status           ResourceStatus       `json:"status"`
+	Status           string               `json:"status"`
 	TotalCpu         int                  `json:"totalCpu"`
 	TotalMem         int                  `json:"totalMem"`
 	TotalDisk        int                  `json:"totalDisk"`
@@ -524,28 +663,41 @@ const (
 	UpdateVmPassWord        UpdateVmType = "password"
 	UpdateVmReplicas        UpdateVmType = "replicas"
 	UpdateVmResource        UpdateVmType = "resource"
+	UpdateVmSecurityGroup   UpdateVmType = "securityGroup"
+	UpdateVmHostname        UpdateVmType = "hostname"
 )
 
 type UpdateBecVmForm struct {
-	Type           UpdateVmType        `json:"type,omitempty"`
-	Cpu            int                 `json:"cpu,omitempty"`
-	Memory         int                 `json:"memory,omitempty"`
-	NeedRestart    bool                `json:"needRestart,omitempty"`
-	AdminPass      string              `json:"adminPass,omitempty"`
-	ImageId        string              `json:"imageId,omitempty"`
-	Bandwidth      int                 `json:"bandwidth,omitempty"`
-	ImageType      ImageType           `json:"imageType,omitempty"`
-	VmName         string              `json:"vmName,omitempty"`
-	DataVolumeList *[]VolumeConfig     `json:"dataVolumeList,omitempty"`
-	SystemVolume   *SystemVolumeConfig `json:"systemVolume,omitempty"`
+	Type              UpdateVmType        `json:"type,omitempty"`
+	Cpu               int                 `json:"cpu,omitempty"`
+	Memory            int                 `json:"memory,omitempty"`
+	NeedRestart       bool                `json:"needRestart,omitempty"`
+	AdminPass         string              `json:"adminPass,omitempty"`
+	ImageId           string              `json:"imageId,omitempty"`
+	Bandwidth         int                 `json:"bandwidth,omitempty"`
+	ImageType         ImageType           `json:"imageType,omitempty"`
+	VmName            string              `json:"vmName,omitempty"`
+	Hostname          string              `json:"hostname,omitempty"`
+	VmId              string              `json:"vmId,omitempty"`
+	DataVolumeList    *[]VolumeConfig     `json:"dataVolumeList,omitempty"`
+	SecurityGroupIds  []string            `json:"securityGroupIds,omitempty"`
+	SystemVolume      *SystemVolumeConfig `json:"systemVolume,omitempty"`
+	KeyConfig         *KeyConfig          `json:"keyConfig,omitempty"`
+	DnsConfig         *DnsConfig          `json:"dnsConfig,omitempty"`
+	NeedIpv6PublicIp  bool                `json:"needIpv6PublicIp"`
+	NetworkConfigList *[]NetworkConfig    `json:"networkConfigList,omitempty"`
 }
 
 type UpdateVmServiceArgs struct {
 	UpdateBecVmForm
 	ServiceName     string                `json:"serviceName,omitempty"`
 	DeployInstances *[]DeploymentInstance `json:"deployInstances,omitempty"`
+	ReplicaTemplate ReplicaTemplate       `json:"replicaTemplate,omitempty"`
 }
-
+type ReplicaTemplate struct {
+	Type       string `json:"type,omitempty"`
+	TemplateId string `json:"templateId,omitempty"`
+}
 type UpdateVmServiceResult struct {
 	Details VmServiceBriefVo `json:"details"`
 	Result  bool             `json:"result"`
@@ -682,15 +834,31 @@ type ListVmImageResult struct {
 type CreateBlbArgs struct {
 	LbType               string          `json:"lbType,omitempty"`
 	PaymentMethod        string          `json:"paymentMethod,omitempty"`
-	RegionSelection      string          `json:"regionSelection,omitempty"`
 	Region               Region          `json:"region,omitempty"`
 	City                 string          `json:"city,omitempty"`
 	ServiceProvider      ServiceProvider `json:"serviceProvider,omitempty"`
+	RegionId             string          `json:"regionId,omitempty"`
+	SubServiceProviders  []string        `json:"subServiceProviders,omitempty"`
+	NetworkType          string          `json:"networkType,omitempty"`
+	VpcId                string          `json:"vpcId,omitempty"`
+	SubnetId             string          `json:"subnetId,omitempty"`
 	BlbName              string          `json:"blbName,omitempty"`
 	NeedPublicIp         bool            `json:"needPublicIp,omitempty"`
 	BandwidthInMbpsLimit int             `json:"bandwidthInMbpsLimit,omitempty"`
 	Tags                 *[]Tag          `json:"tags,omitempty"`
 	Listeners            *[]Listeners    `json:"listeners,omitempty"`
+}
+
+type BatchCreateBlbArgs struct {
+	LbType               string                `json:"lbType,omitempty"`
+	PaymentMethod        string                `json:"paymentMethod,omitempty"`
+	RegionSelection      string                `json:"regionSelection,omitempty"`
+	DeployInstances      *[]DeploymentInstance `json:"deployInstances,omitempty"`
+	BlbName              string                `json:"blbName,omitempty"`
+	NeedPublicIp         bool                  `json:"needPublicIp,omitempty"`
+	BandwidthInMbpsLimit int                   `json:"bandwidthInMbpsLimit,omitempty"`
+	Tags                 *[]Tag                `json:"tags,omitempty"`
+	Listeners            *[]Listeners          `json:"listeners,omitempty"`
 }
 
 type Protocol string
@@ -728,6 +896,7 @@ type BlbInstanceVo struct {
 	Region               Region          `json:"region"`
 	ServiceProvider      ServiceProvider `json:"serviceProvider"`
 	City                 string          `json:"city"`
+	RegionId             string          `json:"regionId"`
 	PublicIp             string          `json:"publicIp"`
 	CmPublicIP           string          `json:"cmPublicIP"`
 	CtPublicIP           string          `json:"ctPublicIP"`
@@ -835,18 +1004,6 @@ type GetBlbBackendPodListResult struct {
 	Result     []BlbBackendPodBriefVo `json:"result"`
 }
 
-type BatchCreateBlbArgs struct {
-	LbType               string                `json:"lbType,omitempty"`
-	PaymentMethod        string                `json:"paymentMethod,omitempty"`
-	RegionSelection      string                `json:"regionSelection,omitempty"`
-	DeployInstances      *[]DeploymentInstance `json:"deployInstances,omitempty"`
-	BlbName              string                `json:"blbName,omitempty"`
-	NeedPublicIp         bool                  `json:"needPublicIp,omitempty"`
-	BandwidthInMbpsLimit int                   `json:"bandwidthInMbpsLimit,omitempty"`
-	Tags                 *[]Tag                `json:"tags,omitempty"`
-	Listeners            *[]Listeners          `json:"listeners,omitempty"`
-}
-
 type BatchCreateBlbResult struct {
 	Result  bool            `json:"result"`
 	Action  string          `json:"action"`
@@ -864,12 +1021,12 @@ type PortGroup struct {
 	BackendPort int `json:"backendPort,omitempty"`
 }
 type HealthCheck struct {
-	TimeoutInSeconds   int    `json:"timeoutInSeconds,omitempty"`
-	IntervalInSeconds  int    `json:"intervalInSeconds,omitempty"`
-	UnhealthyThreshold int    `json:"unhealthyThreshold,omitempty"`
-	HealthyThreshold   int    `json:"healthyThreshold,omitempty"`
-	HealthCheckString  string `json:"healthCheckString,omitempty"`
-	HealthCheckType    string `json:"healthCheckType,omitempty"`
+	TimeoutInSeconds   int     `json:"timeoutInSeconds,omitempty"`
+	IntervalInSeconds  int     `json:"intervalInSeconds,omitempty"`
+	UnhealthyThreshold int     `json:"unhealthyThreshold,omitempty"`
+	HealthyThreshold   int     `json:"healthyThreshold,omitempty"`
+	HealthCheckString  *string `json:"healthCheckString"`
+	HealthCheckType    string  `json:"healthCheckType,omitempty"`
 }
 type BatchCreateBlbMonitorArg struct {
 	Protocol         Protocol     `json:"protocol,omitempty"`
@@ -888,16 +1045,18 @@ type BatchCreateBlbMonitorResult struct {
 }
 
 type ListRequest struct {
-	KeywordType string `json:"keywordType"`
-	Keyword     string `json:"keyword"`
-	PageNo      int    `json:"pageNo,omitempty"`
-	PageSize    int    `json:"pageSize,omitempty"`
-	Order       string `json:"order,omitempty"`
-	OrderBy     string `json:"orderBy,omitempty"`
-	Status      string `json:"status"`
-	Region      string `json:"region"`
-	OsName      string `json:"osName"`
-	ServiceId   string `json:"serviceId"`
+	KeywordType     string          `json:"keywordType"`
+	Keyword         string          `json:"keyword"`
+	PageNo          int             `json:"pageNo,omitempty"`
+	PageSize        int             `json:"pageSize,omitempty"`
+	Order           string          `json:"order,omitempty"`
+	OrderBy         string          `json:"orderBy,omitempty"`
+	Status          string          `json:"status,omitempty"`
+	Region          string          `json:"region,omitempty"`
+	OsName          string          `json:"osName,omitempty"`
+	ServiceId       string          `json:"serviceId,omitempty"`
+	City            string          `json:"city,omitempty"`
+	ServiceProvider ServiceProvider `json:"serviceProvider,omitempty"`
 }
 
 type VmInstanceDetailsVo struct {
@@ -932,6 +1091,11 @@ type ActionInfoVo struct {
 	Action  string            `json:"action"`
 	Details map[string]string `json:"details"`
 }
+type DeleteDeploymentActionInfoVo struct {
+	Result  bool                `json:"result"`
+	Action  string              `json:"action"`
+	Details map[string][]string `json:"details"`
+}
 
 type ImageType string
 
@@ -940,25 +1104,56 @@ const (
 	ImageTypeBec ImageType = "bec"
 )
 
-type UpdateVmDeploymentArgs struct {
-	Type           string              `json:"type,omitempty"`
-	Cpu            int                 `json:"cpu,omitempty"`
-	Memory         int                 `json:"memory,omitempty"`
-	NeedRestart    bool                `json:"needRestart,omitempty"`
-	AdminPass      string              `json:"adminPass,omitempty"`
-	ImageId        string              `json:"imageId,omitempty"`
-	Bandwidth      int                 `json:"bandwidth,omitempty"`
-	ImageType      ImageType           `json:"imageType,omitempty"`
-	VmName         string              `json:"vmName,omitempty"`
-	DataVolumeList *[]VolumeConfig     `json:"dataVolumeList,omitempty"`
-	SystemVolume   *SystemVolumeConfig `json:"systemVolume,omitempty"`
-	KeyConfig      *KeyConfig          `json:"keyConfig,omitempty"`
+type UpdateVmInstanceArgs struct {
+	VmId             string                         `json:"vmId,omitempty"`
+	Type             string                         `json:"type,omitempty"`
+	Spec             string                         `json:"spec,omitempty"`
+	Cpu              int                            `json:"cpu,omitempty"`
+	Memory           int                            `json:"memory,omitempty"`
+	NeedRestart      bool                           `json:"needRestart,omitempty"`
+	AdminPass        string                         `json:"adminPass,omitempty"`
+	ImageId          string                         `json:"imageId,omitempty"`
+	Hostname         string                         `json:"hostname,omitempty"`
+	Bandwidth        int                            `json:"bandwidth,omitempty"`
+	ImageType        ImageType                      `json:"imageType,omitempty"`
+	VmName           string                         `json:"vmName,omitempty"`
+	DataVolumeList   *[]VolumeConfig                `json:"dataVolumeList,omitempty"`
+	SystemVolume     *SystemVolumeConfig            `json:"systemVolume,omitempty"`
+	KeyConfig        *KeyConfig                     `json:"keyConfig,omitempty"`
+	DnsConfig        *DnsConfig                     `json:"dnsConfig,omitempty"`
+	NeedIpv6PublicIp bool                           `json:"needIpv6PublicIp"`
+	NetworkConfig    *NetworkConfigUpdateVmInstance `json:"networkConfig,omitempty"`
+	SecurityGroupIds []string                       `json:"securityGroupIds,omitempty"`
+}
+
+type NetworkConfigUpdateVmInstance struct {
+	NeedPrivateNetwork            bool   `json:"needPrivateNetwork,omitempty"`
+	NeedPublicNetwork             bool   `json:"needPublicNetwork,omitempty"`
+	PrivateNetworkName            string `json:"privateNetworkName,omitempty"`
+	PublicNetworkName             string `json:"publicNetworkName,omitempty"`
+	PublicNetworkChinaMobileName  string `json:"publicNetworkChinaMobileName,omitempty"`
+	PublicNetworkChinaUnicomName  string `json:"publicNetworkChinaUnicomName,omitempty"`
+	PublicNetworkChinaTelecomName string `json:"publicNetworkChinaTelecomName,omitempty"`
 }
 
 type IpInfo struct {
 	ServiceProvider ServiceProvider `json:"serviceProvider"`
 	Ip              string          `json:"ip"`
 	Ipv6            string          `json:"ipv6"`
+}
+
+type BindSecurityGroupInstances struct {
+	Instances []InstancesBinding `json:"instances"`
+}
+
+type InstancesBinding struct {
+	InstanceId       string   `json:"instanceId"`
+	SecurityGroupIds []string `json:"securityGroupIds"`
+}
+type BindSecurityGroupInstancesResponse struct {
+	Action  string        `json:"action"`
+	Result  bool          `json:"result"`
+	Details []OperationVo `json:"details"`
 }
 
 type IpPackageVo struct {
@@ -971,21 +1166,52 @@ type IpPackageVo struct {
 
 type VmInstanceBriefVo struct {
 	IpPackageVo
-	VmId             string      `json:"vmId"`
-	Uuid             string      `json:"uuid"`
-	VmName           string      `json:"vmName"`
-	Status           string      `json:"status"`
-	Cpu              int         `json:"cpu"`
-	Mem              int         `json:"mem"`
-	Gpu              int         `json:"gpu"`
-	Region           Region      `json:"region"`
-	City             string      `json:"city"`
-	NeedPublicIp     bool        `json:"needPublicIp"`
-	NeedIpv6PublicIp bool        `json:"needIpv6PublicIp"`
-	Bandwidth        string      `json:"bandwidth"`
-	OsImage          ImageDetail `json:"osImage"`
-	ServiceId        string      `json:"serviceId"`
-	CreateTime       string      `json:"createTime"`
+	VmId             string          `json:"vmId"`
+	Uuid             string          `json:"uuid"`
+	VmName           string          `json:"vmName"`
+	Status           string          `json:"status"`
+	Spec             string          `json:"spec"`
+	Cpu              int             `json:"cpu"`
+	Mem              int             `json:"mem"`
+	Gpu              int             `json:"gpu"`
+	Region           Region          `json:"region"`
+	City             string          `json:"city"`
+	RegionId         string          `json:"regionId"`
+	NeedPublicIp     bool            `json:"needPublicIp"`
+	NeedIpv6PublicIp bool            `json:"needIpv6PublicIp"`
+	Bandwidth        string          `json:"bandwidth"`
+	OsImage          ImageDetail     `json:"osImage"`
+	ServiceId        string          `json:"serviceId"`
+	CreateTime       string          `json:"createTime"`
+	SecurityGroups   []SecurityGroup `json:"securityGroups"`
+	Vpc              Vpc             `json:"vpc"`
+	deploysetList    []DeploySetVo   `json:"deploysetList"`
+}
+
+type DeploySetVo struct {
+	DeploysetId string `json:"deploysetId"`
+	Name        string `json:"name"`
+}
+
+type SecurityGroup struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+	Desc string `json:"desc"`
+}
+
+type Vpc struct {
+	VpcId       string `json:"vpcId"`
+	Name        string `json:"name"`
+	Cidr        string `json:"cidr"`
+	Description string `json:"description"`
+	subnet      Subnet `json:"subnet"`
+}
+
+type Subnet struct {
+	SubnetId    string `json:"subnetId"`
+	Name        string `json:"name"`
+	Cidr        string `json:"cidr"`
+	Description string `json:"description"`
 }
 
 type UpdateVmDeploymentResult struct {
@@ -1028,6 +1254,7 @@ type VmConfigResult struct {
 	Region          Region             `json:"region"`
 	ServiceProvider ServiceProvider    `json:"serviceProvider"`
 	City            string             `json:"city"`
+	RegionId        string             `json:"regionId"`
 	NeedPublicIp    bool               `json:"needPublicIp"`
 	Bandwidth       string             `json:"bandwidth"`
 	OsImage         ImageDetail        `json:"osImage"`
@@ -1042,8 +1269,24 @@ type Backends struct {
 }
 
 type LbDeployPo struct {
-	ServiceName string     `json:"serviceName"`
-	Backends    []Backends `json:"backends"`
+	ServiceName     string          `json:"serviceName"`
+	DeploymentName  string          `json:"deploymentName"`
+	CustomOrigName  string          `json:"customOrigName"`
+	ServiceId       string          `json:"serviceId"`
+	DeploymentType  string          `json:"deploymentType"`
+	Region          Region          `json:"region"`
+	ServiceProvider ServiceProvider `json:"serviceProvider"`
+	City            string          `json:"city"`
+	Replicas        int             `json:"replicas"`
+	PodCpu          int             `json:"podCpu"`
+	PodMemory       int             `json:"podMemory"`
+	PodGpu          int             `json:"podGpu"`
+	PodDataStorage  string          `json:"podDataStorage"`
+	Sata            int             `json:"sata"`
+	Nvme            int             `json:"nvme"`
+	DataDiskNum     int             `json:"dataDiskNum"`
+	PodIpRequired   bool            `json:"podIpRequired"`
+	Backends        []Backends      `json:"backends"`
 }
 
 type GetBlbBackendBindingStsListResult struct {
@@ -1133,5 +1376,350 @@ type RegionInfo struct {
 }
 
 type GetBecAvailableNodeInfoVoResult struct {
-	RegionList []RegionInfo `json:"regionList"`
+	RegionList []RegionInfo `json:"regionList,omitempty"`
+	NodeSum    int          `json:"nodeSum,omitempty"`
+}
+type UpdateVmDeploySetArgs struct {
+	InstanceId      string   `json:"instanceId,omitempty"`
+	DeploysetIdList []string `json:"deploysetIdList,omitempty"`
+}
+type DeleteVmDeploySetArgs struct {
+	DeploysetId    string   `json:"deploysetId,omitempty"`
+	InstanceIdList []string `json:"instanceIdList,omitempty"`
+}
+type CreateDeploySetArgs struct {
+	Name string `json:"name,omitempty"`
+	Desc string `json:"desc,omitempty"`
+}
+type CreateDeploySetResponseArgs struct {
+	DeploysetIdList []string `json:"deploysetIdList,omitempty"`
+}
+
+type LogicPageDeploySetResult struct {
+	Orders     []OrderModel       `json:"orders"`
+	OrderBy    string             `json:"orderBy"`
+	Order      string             `json:"order"`
+	PageNo     int                `json:"pageNo"`
+	PageSize   int                `json:"pageSize"`
+	TotalCount int                `json:"totalCount"`
+	Result     []DeploySetDetails `json:"result"`
+}
+
+type DeploySetDetails struct {
+	DeploysetId            string               `json:"deploysetId"`
+	Name                   string               `json:"name"`
+	Desc                   string               `json:"desc"`
+	InstanceCount          int                  `json:"instanceCount"`
+	InstanceTotal          int                  `json:"instanceTotal"`
+	CreateTime             string               `json:"createTime"`
+	NodeInstanceStatisList []NodeInstanceStatis `json:"nodeInstanceStatisList"`
+}
+
+type NodeInstanceStatis struct {
+	RegionId      string   `json:"regionId"`
+	InstanceCount int      `json:"instanceCount"`
+	InstanceTotal int      `json:"instanceTotal"`
+	InstanceIds   []string `json:"instanceIds"`
+}
+
+type CreateAppBlbRequest struct {
+	Desc                string   `json:"desc,omitempty"`
+	Name                string   `json:"name,omitempty"`
+	RegionId            string   `json:"regionId,omitempty"`
+	SubServiceProviders []string `json:"subServiceProviders,omitempty"`
+	NeedPublicIp        bool     `json:"needPublicIp,omitempty"`
+	SubnetId            string   `json:"subnetId,omitempty"`
+	VpcId               string   `json:"vpcId,omitempty"`
+}
+
+type CreateAppBlbResponse struct {
+	Desc  string `json:"desc"`
+	Name  string `json:"name"`
+	BlbId string `json:"blbId"`
+}
+type ModifyBecBlbRequest struct {
+	Desc string `json:"desc,omitempty"`
+	Name string `json:"name,omitempty"`
+}
+
+type AppBlbDetails struct {
+	Address    string           `json:"address"`
+	BlbId      string           `json:"blbId"`
+	Cidr       string           `json:"cidr"`
+	CreateTime string           `json:"createTime"`
+	Desc       string           `json:"desc"`
+	Listener   []AppBlbListener `json:"listener"`
+	Name       string           `json:"name"`
+	PublicIp   string           `json:"publicIp"`
+	RegionId   string           `json:"regionId"`
+	Status     string           `json:"status"`
+	SubnetCidr string           `json:"subnetCidr"`
+	SubnetId   string           `json:"subnetId"`
+	VpcId      string           `json:"vpcId"`
+	SubnetName string           `json:"subnetName"`
+	VpcName    string           `json:"vpcName"`
+}
+type AppBlbListener struct {
+	Port string `json:"port"`
+	Type string `json:"type"`
+}
+
+type AppBlbListResponse struct {
+	BlbList     []AppBlbDetails `json:"blbList"`
+	IsTruncated bool            `json:"isTruncated"`
+	NextMarker  string          `json:"nextMarker"`
+	Marker      string          `json:"marker"`
+	MaxKeys     int             `json:"maxKeys"`
+}
+
+type MarkerRequest struct {
+	Marker  string `json:"marker,omitempty"`
+	MaxKeys int    `json:"maxKeys,omitempty"`
+}
+
+type CreateBecAppBlbTcpListenerRequest struct {
+	ListenerPort      int    `json:"listenerPort,omitempty"`
+	Scheduler         string `json:"scheduler,omitempty"`
+	TcpSessionTimeout int    `json:"tcpSessionTimeout,omitempty"`
+}
+
+type CreateBecAppBlbUdpListenerRequest struct {
+	ListenerPort      int    `json:"listenerPort,omitempty"`
+	Scheduler         string `json:"scheduler,omitempty"`
+	UdpSessionTimeout int    `json:"udpSessionTimeout,omitempty"`
+}
+
+type UpdateBecAppBlbTcpListenerRequest struct {
+	Scheduler         string `json:"scheduler,omitempty"`
+	TcpSessionTimeout int    `json:"tcpSessionTimeout,omitempty"`
+}
+
+type UpdateBecAppBlbUdpListenerRequest struct {
+	Scheduler         string `json:"scheduler,omitempty"`
+	UdpSessionTimeout int    `json:"udpSessionTimeout,omitempty"`
+}
+
+type GetBecAppBlbListenerRequest struct {
+	ListenerPort int `json:"listenerPort,omitempty"`
+	MarkerRequest
+}
+
+type GetBecAppBlbTcpListenerResponse struct {
+	IsTruncated  bool                       `json:"isTruncated"`
+	ListenerList []AppBlbLTcpListenerDetail `json:"listenerList"`
+	NextMarker   string                     `json:"nextMarker"`
+	Marker       string                     `json:"marker"`
+	MaxKeys      int                        `json:"maxKeys"`
+}
+type GetBecAppBlbUdpListenerResponse struct {
+	IsTruncated  bool                      `json:"isTruncated"`
+	ListenerList []AppBlbUdpListenerDetail `json:"listenerList"`
+	NextMarker   string                    `json:"nextMarker"`
+	Marker       string                    `json:"marker"`
+	MaxKeys      int                       `json:"maxKeys"`
+}
+
+type AppBlbLTcpListenerDetail struct {
+	Scheduler         string `json:"scheduler"`
+	ListenerPort      int    `json:"listenerPort"`
+	TcpSessionTimeout int    `json:"tcpSessionTimeout"`
+}
+
+type AppBlbUdpListenerDetail struct {
+	Scheduler         string `json:"scheduler"`
+	ListenerPort      int    `json:"listenerPort"`
+	UdpSessionTimeout int    `json:"udpSessionTimeout"`
+}
+
+type DeleteBlbListenerRequest struct {
+	PortTypeList []PortTypeList `json:"portTypeList,omitempty"`
+}
+type PortTypeList struct {
+	Port int    `json:"port,omitempty"`
+	Type string `json:"type,omitempty"`
+}
+type UpdateBlbIpGroupRequest struct {
+	Desc      string `json:"desc,omitempty"`
+	Name      string `json:"name,omitempty"`
+	IpGroupId string `json:"ipGroupId,omitempty"`
+}
+type CreateBlbIpGroupRequest struct {
+	Desc       string             `json:"desc,omitempty"`
+	Name       string             `json:"name,omitempty"`
+	MemberList []BlbIpGroupMember `json:"memberList,omitempty"`
+}
+type BlbIpGroupMember struct {
+	Ip     string `json:"ip,omitempty"`
+	Port   int    `json:"port,omitempty"`
+	Weight int    `json:"weight,omitempty"`
+}
+type CreateBlbIpGroupResponse struct {
+	Desc string `json:"desc"`
+	Name string `json:"name"`
+	Id   string `json:"id"`
+}
+type GetBlbIpGroupListRequest struct {
+	ExactlyMatch bool   `json:"exactlyMatch,omitempty"`
+	Name         string `json:"name,omitempty"`
+	MarkerRequest
+}
+type GetBlbIpGroupListResponse struct {
+	IsTruncated    bool               `json:"isTruncated"`
+	AppIpGroupList []AppIpGroupDetail `json:"appIpGroupList"`
+	NextMarker     string             `json:"nextMarker"`
+	Marker         string             `json:"marker"`
+	MaxKeys        int                `json:"maxKeys"`
+}
+
+type AppIpGroupDetail struct {
+	BackendPolicyList []BackendPolicy `json:"backendPolicyList"`
+	Id                string          `json:"id"`
+	Desc              string          `json:"desc"`
+	Name              string          `json:"name"`
+}
+type BackendPolicy struct {
+	HealthCheck                 string `json:"healthCheck"`
+	HealthCheckHost             string `json:"healthCheckHost"`
+	HealthCheckNormalStatus     string `json:"healthCheckNormalStatus"`
+	HealthCheckUrlPath          string `json:"healthCheckUrlPath"`
+	HealthCheckDownRetry        int    `json:"healthCheckDownRetry"`
+	HealthCheckIntervalInSecond int    `json:"healthCheckIntervalInSecond"`
+	HealthCheckPort             int    `json:"healthCheckPort"`
+	HealthCheckTimeoutInSecond  int    `json:"healthCheckTimeoutInSecond"`
+	HealthCheckUpRetry          int    `json:"healthCheckUpRetry"`
+	Id                          string `json:"id"`
+	Type                        string `json:"type"`
+	UdpHealthCheckString        string `json:"udpHealthCheckString"`
+}
+type DeleteBlbIpGroupRequest struct {
+	IpGroupId string `json:"ipGroupId,omitempty"`
+}
+type CreateBlbIpGroupBackendPolicyRequest struct {
+	HealthCheck                 string `json:"healthCheck,omitempty"`
+	HealthCheckHost             string `json:"healthCheckHost,omitempty"`
+	HealthCheckNormalStatus     string `json:"healthCheckNormalStatus,omitempty"`
+	HealthCheckUrlPath          string `json:"healthCheckUrlPath,omitempty"`
+	HealthCheckDownRetry        int    `json:"healthCheckDownRetry,omitempty"`
+	HealthCheckIntervalInSecond int    `json:"healthCheckIntervalInSecond,omitempty"`
+	HealthCheckPort             int    `json:"healthCheckPort,omitempty"`
+	HealthCheckTimeoutInSecond  int    `json:"healthCheckTimeoutInSecond,omitempty"`
+	HealthCheckUpRetry          int    `json:"healthCheckUpRetry,omitempty"`
+	IpGroupId                   string `json:"ipGroupId,omitempty"`
+	Type                        string `json:"type,omitempty"`
+	UdpHealthCheckString        string `json:"udpHealthCheckString,omitempty"`
+}
+type CreateBlbIpGroupBackendPolicyResponse struct {
+	Id string `json:"id"`
+}
+type UpdateBlbIpGroupBackendPolicyRequest struct {
+	HealthCheckHost             string `json:"healthCheckHost,omitempty"`
+	HealthCheckNormalStatus     string `json:"healthCheckNormalStatus,omitempty"`
+	HealthCheckUrlPath          string `json:"healthCheckUrlPath,omitempty"`
+	HealthCheckDownRetry        int    `json:"healthCheckDownRetry,omitempty"`
+	HealthCheckIntervalInSecond int    `json:"healthCheckIntervalInSecond,omitempty"`
+	HealthCheckPort             int    `json:"healthCheckPort,omitempty"`
+	HealthCheckTimeoutInSecond  int    `json:"healthCheckTimeoutInSecond,omitempty"`
+	HealthCheckUpRetry          int    `json:"healthCheckUpRetry,omitempty"`
+	IpGroupId                   string `json:"ipGroupId,omitempty"`
+	Id                          string `json:"id,omitempty"`
+	UdpHealthCheckString        string `json:"udpHealthCheckString,omitempty"`
+}
+type GetBlbIpGroupPolicyListRequest struct {
+	IpGroupId string `json:"ipGroupId,omitempty"`
+	MarkerRequest
+}
+type GetBlbIpGroupPolicyListResponse struct {
+	IsTruncated       bool            `json:"isTruncated"`
+	BackendPolicyList []BackendPolicy `json:"backendPolicyList"`
+	NextMarker        string          `json:"nextMarker"`
+	Marker            string          `json:"marker"`
+	MaxKeys           int             `json:"maxKeys"`
+}
+type DeleteBlbIpGroupBackendPolicyRequest struct {
+	IpGroupId           string   `json:"ipGroupId,omitempty"`
+	BackendPolicyIdList []string `json:"backendPolicyIdList,omitempty"`
+}
+type CreateBlbIpGroupMemberRequest struct {
+	IpGroupId  string             `json:"ipGroupId,omitempty"`
+	MemberList []BlbIpGroupMember `json:"memberList,omitempty"`
+}
+type CreateBlbIpGroupMemberResponse struct {
+	MemberList []BlbIpGroupMemberResponse `json:"memberList"`
+}
+type BlbIpGroupMemberResponse struct {
+	Ip       string `json:"ip"`
+	MemberId string `json:"memberId"`
+	Port     int    `json:"port"`
+	Weight   int    `json:"weight"`
+}
+type UpdateBlbIpGroupMemberRequest struct {
+	IpGroupId  string                   `json:"ipGroupId,omitempty"`
+	MemberList []UpdateBlbIpGroupMember `json:"memberList,omitempty"`
+}
+type UpdateBlbIpGroupMember struct {
+	MemberId string `json:"memberId,omitempty"`
+	Port     int    `json:"port,omitempty"`
+	Weight   int    `json:"weight,omitempty"`
+}
+type GetBlbIpGroupMemberListRequest struct {
+	IpGroupId string `json:"ipGroupId,omitempty"`
+	MarkerRequest
+}
+type GetBlbIpGroupMemberListResponse struct {
+	IsTruncated bool                     `json:"isTruncated"`
+	NextMarker  string                   `json:"nextMarker"`
+	Marker      string                   `json:"marker"`
+	MaxKeys     int                      `json:"maxKeys"`
+	MemberList  []BlbIpGroupMemberDetail `json:"memberList"`
+}
+type BlbIpGroupMemberDetail struct {
+	MemberId string `json:"memberId"`
+	Ip       string `json:"ip"`
+	Port     int    `json:"port"`
+	Weight   int    `json:"weight"`
+}
+type DeleteBlbIpGroupBackendMemberRequest struct {
+	IpGroupId    string   `json:"ipGroupId,omitempty"`
+	MemberIdList []string `json:"memberIdList,omitempty"`
+}
+type CreateAppBlbPoliciesRequest struct {
+	ListenerPort int           `json:"listenerPort,omitempty"`
+	Type         string        `json:"type,omitempty"`
+	AppPolicyVos []AppPolicyVo `json:"appPolicyVos,omitempty"`
+}
+type AppPolicyVo struct {
+	AppIpGroupId string `json:"appIpGroupId,omitempty"`
+	Desc         string `json:"desc,omitempty"`
+	Priority     int    `json:"priority,omitempty"`
+}
+type GetBlbListenerPolicyRequest struct {
+	Port int    `json:"port,omitempty"`
+	Type string `json:"type,omitempty"`
+	MarkerRequest
+}
+type GetBlbListenerPolicyResponse struct {
+	IsTruncated bool                `json:"isTruncated"`
+	NextMarker  string              `json:"nextMarker"`
+	Marker      string              `json:"marker"`
+	MaxKeys     int                 `json:"maxKeys"`
+	PolicyList  []BlbListenerPolicy `json:"policyList"`
+}
+type BlbListenerPolicy struct {
+	AppIpGroupId   string                  `json:"appIpGroupId"`
+	AppIpGroupName string                  `json:"appIpGroupName"`
+	Desc           string                  `json:"desc"`
+	Type           string                  `json:"type"`
+	Id             string                  `json:"id"`
+	FrontendPort   int                     `json:"frontendPort"`
+	Priority       int                     `json:"priority"`
+	RuleList       []BlbListenerPolicyRule `json:"ruleList"`
+}
+type BlbListenerPolicyRule struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+type DeleteAppBlbPoliciesRequest struct {
+	Type         string   `json:"type,omitempty"`
+	Port         int      `json:"port,omitempty"`
+	PolicyIdList []string `json:"policyIdList,omitempty"`
 }

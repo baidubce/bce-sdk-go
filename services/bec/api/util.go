@@ -22,15 +22,35 @@ import (
 const (
 	URI_PREFIX = bce.URI_PREFIX + "v1"
 
+	URI_PREFIX_V2 = bce.URI_PREFIX + "v2"
+
 	DEFAULT_BEC_DOMAIN = "bec." + bce.DEFAULT_REGION + bce.DEFAULT_DOMAIN
 
 	REQUEST_SERVICE_URL = URI_PREFIX + "/service"
+	REQUEST_POD_URL     = URI_PREFIX + "/pod"
 
 	REQUEST_VM_URL = URI_PREFIX + "/vm" + "/service"
+
+	DEPLOY_SET_URL = URI_PREFIX + "/deployset"
+
+	DEPLOYMENT_URL = URI_PREFIX + "/deployment"
+
+	REQUEST_VM_MONITOR_URL = URI_PREFIX + "/monitor" + "/vm"
+
+	SERVICE_MONITOR_URL = URI_PREFIX + "/monitor" + "/service" + "/sts"
+
+	DEPLOYMENT_MONITOR_URL = URI_PREFIX + "/monitor" + "/deployment"
+	POD_MONITOR_URL        = URI_PREFIX + "/monitor" + "/pod"
+
+	REQUEST_VM_SERVICE_MONITOR_URL = URI_PREFIX + "/monitor" + "/service" + "/vm"
 
 	REQUEST_VM_IMAGE_URL = URI_PREFIX + "/vm" + "/image"
 
 	REQUEST_LOADBALANCER_URL = URI_PREFIX + "/blb"
+
+	REQUEST_LOADBALANCER_URL_V2 = URI_PREFIX_V2 + "/appblb"
+
+	REQUEST_LOADBALANCER_MONITOR_URL = URI_PREFIX + "/monitor" + "/lb"
 
 	REQUEST_VM_INSTANCE_URL = URI_PREFIX + "/vm/instance"
 
@@ -63,12 +83,20 @@ func GetServiceURI() string {
 	return REQUEST_SERVICE_URL
 }
 
-func GetServiceMetricsURI(serviceId, metricsType string) string {
-	return REQUEST_SERVICE_URL + "/" + serviceId + "/metrics/" + metricsType
+func GetServiceMetricsURI(serviceId string) string {
+	return SERVICE_MONITOR_URL + "/" + serviceId
 }
-
+func GetDeploymentMetricsURI(deploymentId string) string {
+	return DEPLOYMENT_MONITOR_URL + "/" + deploymentId
+}
+func GetPodMetricsURI(podId string) string {
+	return POD_MONITOR_URL + "/" + podId
+}
 func GetServiceDetailURI(serviceId string) string {
 	return REQUEST_SERVICE_URL + "/" + serviceId
+}
+func GetDeploymentDetailURI(deploymentId string) string {
+	return DEPLOYMENT_URL + "/" + deploymentId
 }
 
 func GetStartServiceURI(serviceId, action string) string {
@@ -95,6 +123,14 @@ func GetVmURI() string {
 	return REQUEST_VM_URL
 }
 
+func GetDeploySetURI() string {
+	return DEPLOY_SET_URL
+}
+
+func GetAppBlbURI() string {
+	return REQUEST_LOADBALANCER_URL_V2
+}
+
 func GetVmServiceActionURI(serviceId, action string) string {
 	return REQUEST_VM_URL + "/" + serviceId + "/" + action
 }
@@ -105,6 +141,18 @@ func GetVmImageURI() string {
 
 func GetLoadBalancerURI() string {
 	return REQUEST_LOADBALANCER_URL
+}
+
+func GetLoadBalancerMonitorURI() string {
+	return REQUEST_LOADBALANCER_MONITOR_URL
+}
+
+func GetVmMonitorURI() string {
+	return REQUEST_VM_MONITOR_URL
+}
+
+func GetVmServiceMonitorURI() string {
+	return REQUEST_VM_SERVICE_MONITOR_URL
 }
 
 func GetLoadBalancerBatchURI() string {

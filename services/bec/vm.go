@@ -27,26 +27,7 @@ import (
 	"github.com/baidubce/bce-sdk-go/services/bec/api"
 )
 
-// CreateVmServiceInstance - create service vm instance with the specific parameters
-//
-// PARAMS:
-//     - serviceId: service Id
-//     - args: the arguments to create service vm instance
-// RETURNS:
-//     - *CreateVmServiceResult: the result of create service instance
-//     - error: nil if ok otherwise the specific error
-func (c *Client) CreateVmServiceInstance(serviceId string, args *api.CreateVmServiceArgs) (*api.CreateVmServiceResult, error) {
-	if serviceId == "" || args == nil {
-		return nil, fmt.Errorf("please set argments")
-	}
-	result := &api.CreateVmServiceResult{}
-	req := &api.PostHttpReq{Url: api.GetVmURI() + "/" + serviceId + "/instance", Result: result, Body: args}
-	err := api.Post(c, req)
-
-	return result, err
-}
-
-// CreateCluster - create vm service with the specific parameters
+// CreateVmService - create vm service with the specific parameters
 //
 // PARAMS:
 //     - args: the arguments to create a vm service
@@ -166,17 +147,29 @@ func (c *Client) GetVmServiceDetail(serviceId string) (*api.VmServiceDetailsVo, 
 // RETURNS:
 //     - *ServiceMetricsResult: the result of get vm service metrics
 //     - error: nil if ok otherwise the specific error
-func (c *Client) GetVmServiceMetrics(serviceId string, metricType api.MetricsType, offsetInSeconds int, serviceProviderStr api.ServiceProvider) (*api.ServiceMetricsResult, error) {
+func (c *Client) GetVmServiceMetrics(serviceId, serviceProviderStr string, start, end, stepInMin int, metricsType api.MetricsType) (*api.ServiceMetricsResult, error) {
 
 	params := make(map[string]string)
+	params["serviceId"] = serviceId
 	if serviceProviderStr != "" {
-		params["serviceProvider"] = string(serviceProviderStr)
+		params["serviceProvider"] = serviceProviderStr
 	}
-	params["offsetInSeconds"] = strconv.Itoa(offsetInSeconds)
+	if metricsType != "" {
+		params["metricsType"] = string(metricsType)
+	}
+	if start != 0 {
+		params["start"] = strconv.Itoa(start)
+	}
+	if end != 0 {
+		params["end"] = strconv.Itoa(end)
+	}
+	if stepInMin != 0 {
+		params["stepInMin"] = strconv.Itoa(stepInMin)
+	}
 	result := &api.ServiceMetricsResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithURL(api.GetVmServiceMetricsURI(serviceId, string(metricType))).
+		WithURL(api.GetVmServiceMonitorURI() + "/" + serviceId).
 		WithQueryParams(params).
 		WithResult(result).
 		Do()

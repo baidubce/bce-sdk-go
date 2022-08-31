@@ -524,12 +524,13 @@ func (c *Client) UpdateBlbBindPodWeight(blbId string, args *api.UpdateBindPodWei
 // RETURNS:
 //     - *api.ServiceMetricsResult: the list of vm images
 //     - error: nil if ok otherwise the specific error
-func (c *Client) GetBlbMetrics(blbId, ipType, port, serviceProviderStr string, offsetInSeconds int, metricsType api.MetricsType) (*api.ServiceMetricsResult, error) {
+func (c *Client) GetBlbMetrics(blbId, ipType, port, serviceProviderStr string, start, end, stepInMin int, metricsType api.MetricsType) (*api.ServiceMetricsResult, error) {
 	if blbId == "" {
 		return nil, fmt.Errorf("please set argments")
 	}
 
 	params := make(map[string]string)
+	params["blbId"] = blbId
 	if port != "" {
 		params["port"] = port
 	}
@@ -541,13 +542,24 @@ func (c *Client) GetBlbMetrics(blbId, ipType, port, serviceProviderStr string, o
 	if ipType != "" {
 		params["ipType"] = ipType
 	}
+	if start != 0 {
+		params["start"] = strconv.Itoa(start)
+	}
+	if metricsType != "" {
+		params["metricsType"] = string(metricsType)
+	}
 
-	params["offsetInSeconds"] = strconv.Itoa(offsetInSeconds)
+	if end != 0 {
+		params["end"] = strconv.Itoa(end)
+	}
+	if stepInMin != 0 {
+		params["stepInMin"] = strconv.Itoa(stepInMin)
+	}
 
 	result := &api.ServiceMetricsResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithURL(api.GetLoadBalancerURI() + "/" + blbId + "/metrics/" + string(metricsType)).
+		WithURL(api.GetLoadBalancerMonitorURI() + "/" + blbId).
 		WithQueryParams(params).
 		WithResult(result).
 		Do()

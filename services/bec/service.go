@@ -177,17 +177,31 @@ func (c *Client) DeleteService(serviceId string) (*api.ServiceActionResult, erro
 // RETURNS:
 //     - *ServiceMetricsResult: the result of get service metrics
 //     - error: nil if ok otherwise the specific error
-func (c *Client) GetServiceMetrics(serviceId string, metricsType api.MetricsType, serviceProviderStr api.ServiceProvider, offsetInSeconds int) (*api.ServiceMetricsResult, error) {
+func (c *Client) GetServiceMetrics(serviceId string, metricsType api.MetricsType, serviceProviderStr api.ServiceProvider, start, end, stepInMin int) (*api.ServiceMetricsResult, error) {
 	params := make(map[string]string)
 	if serviceProviderStr != "" {
 		params["serviceProvider"] = string(serviceProviderStr)
 	}
-	params["offsetInSeconds"] = strconv.Itoa(offsetInSeconds)
+	if metricsType != "" {
+		params["metricsType"] = string(metricsType)
+	}
+	if serviceId != "" {
+		params["serviceId"] = string(serviceId)
+	}
+	if stepInMin != 0 {
+		params["stepInMin"] = strconv.Itoa(stepInMin)
+	}
+	if start != 0 {
+		params["start"] = strconv.Itoa(start)
+	}
+	if end != 0 {
+		params["end"] = strconv.Itoa(end)
+	}
 
 	result := &api.ServiceMetricsResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
-		WithURL(api.GetServiceMetricsURI(serviceId, string(metricsType))).
+		WithURL(api.GetServiceMetricsURI(serviceId)).
 		WithQueryParams(params).
 		WithResult(result).
 		Do()
@@ -235,4 +249,225 @@ func (c *Client) ServiceBatchDelete(args *[]string) (*api.ServiceBatchOperateRes
 	err := api.Post(c, req)
 
 	return result, err
+}
+
+// GetPodDeployment - get pod deployment with the specific parameters
+//
+// PARAMS:
+//     - deploymentId: the deploymentId id
+// RETURNS:
+//     - *DeploymentResourceBriefVo: the result of get pod deployment
+//     - error: nil if ok otherwise the specific error
+func (c *Client) GetPodDeployment(deploymentId string) (*api.DeploymentResourceBriefVo, error) {
+	result := &api.DeploymentResourceBriefVo{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(api.GetDeploymentDetailURI(deploymentId)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// GetPodDeploymentMetrics - get Pod Deployment metrics with the specific parameters
+//
+// PARAMS:
+//     - deploymentId: the pod deployment id
+//     - metricsType: metrics Type
+//     - serviceProviderStr: service Provider
+//     - offsetInSeconds: offset Seconds
+// RETURNS:
+//     - *ServiceMetricsResult: the result of get Pod Deployment metrics
+//     - error: nil if ok otherwise the specific error
+func (c *Client) GetPodDeploymentMetrics(deploymentId string, metricsType api.MetricsType, serviceProviderStr api.ServiceProvider, start, end, stepInMin int) (*api.ServiceMetricsResult, error) {
+	params := make(map[string]string)
+	if serviceProviderStr != "" {
+		params["serviceProvider"] = string(serviceProviderStr)
+	}
+	if metricsType != "" {
+		params["metricsType"] = string(metricsType)
+	}
+	if deploymentId != "" {
+		params["deploymentId"] = deploymentId
+	}
+	if stepInMin != 0 {
+		params["stepInMin"] = strconv.Itoa(stepInMin)
+	}
+	if start != 0 {
+		params["start"] = strconv.Itoa(start)
+	}
+	if end != 0 {
+		params["end"] = strconv.Itoa(end)
+	}
+
+	result := &api.ServiceMetricsResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(api.GetDeploymentMetricsURI(deploymentId)).
+		WithQueryParams(params).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// UpdatePodDeploymentReplicas - update pod deployment replicas with the specific parameters
+//
+// PARAMS:
+//     - deploymentId: the deploymentId id
+// RETURNS:
+//     - error: nil if ok otherwise the specific error
+func (c *Client) UpdatePodDeploymentReplicas(deploymentId string, args *api.UpdateDeploymentReplicasRequest) (*api.ActionInfoVo, error) {
+	if args == nil || deploymentId == "" {
+		return nil, fmt.Errorf("please set argments")
+	}
+	res := &api.ActionInfoVo{}
+	req := &api.PostHttpReq{Url: api.DEPLOYMENT_URL + "/" + deploymentId, Result: res, Body: args}
+	err := api.Put(c, req)
+	return res, err
+}
+
+// DeletePodDeployment - delete pod deployment with the specific parameters
+//
+// PARAMS:
+//     - deploymentIDs: the deployment id array
+// RETURNS:
+//     - *ServiceActionResult: the result of delete service
+//     - error: nil if ok otherwise the specific error
+func (c *Client) DeletePodDeployment(args *[]string) (*api.DeleteDeploymentActionInfoVo, error) {
+	result := &api.DeleteDeploymentActionInfoVo{}
+	req := &api.PostHttpReq{Url: api.DEPLOYMENT_URL, Body: args, Result: result}
+	err := api.Delete(c, req)
+	return result, err
+}
+
+// GetPodList - list pod with the specific parameters
+//
+// PARAMS:
+//     - pageNo: page No
+//     - pageSize: page Size
+//     - keyword: keyword
+//     - order: order
+//     - orderBy: orderBy
+// RETURNS:
+//     - *ListPodResult: the result of list pod
+//     - error: nil if ok otherwise the specific error
+func (c *Client) GetPodList(pageNo, pageSize int, keyword, order, orderBy, serviceId, deploymentId string) (*api.ListPodResult, error) {
+
+	params := make(map[string]string)
+	if pageNo != 0 {
+		params["pageNo"] = strconv.Itoa(pageNo)
+	}
+	if pageSize != 0 {
+		params["pageSize"] = strconv.Itoa(pageSize)
+	}
+	if keyword != "" {
+		params["keyword"] = keyword
+	}
+	if order != "" {
+		params["order"] = order
+	}
+	if orderBy != "" {
+		params["orderBy"] = orderBy
+	}
+	if serviceId != "" {
+		params["serviceId"] = serviceId
+	}
+	if deploymentId != "" {
+		params["deploymentId"] = deploymentId
+	}
+
+	result := &api.ListPodResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(api.REQUEST_POD_URL).
+		WithQueryParams(params).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// GetPodMetrics - get Pod metrics with the specific parameters
+//
+// PARAMS:
+//     - deploymentId: the pod deployment id
+//     - metricsType: metrics Type
+//     - serviceProviderStr: service Provider
+//     - offsetInSeconds: offset Seconds
+// RETURNS:
+//     - *ServiceMetricsResult: the result of get Pod Deployment metrics
+//     - error: nil if ok otherwise the specific error
+func (c *Client) GetPodMetrics(podId string, metricsType api.MetricsType, serviceProviderStr api.ServiceProvider, start, end, stepInMin int) (*api.ServiceMetricsResult, error) {
+	params := make(map[string]string)
+	if serviceProviderStr != "" {
+		params["serviceProvider"] = string(serviceProviderStr)
+	}
+	if metricsType != "" {
+		params["metricsType"] = string(metricsType)
+	}
+	if podId != "" {
+		params["podId"] = podId
+	}
+	if stepInMin != 0 {
+		params["stepInMin"] = strconv.Itoa(stepInMin)
+	}
+	if start != 0 {
+		params["start"] = strconv.Itoa(start)
+	}
+	if end != 0 {
+		params["end"] = strconv.Itoa(end)
+	}
+
+	result := &api.ServiceMetricsResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(api.GetPodMetricsURI(podId)).
+		WithQueryParams(params).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// GetPodDetail - get pod detail with the specific parameters
+//
+// PARAMS:
+//     - podId: pod id
+//RETURNS:
+//     - *ListPodResult: the result of list pod
+//     - error: nil if ok otherwise the specific error
+func (c *Client) GetPodDetail(podId string) (*api.PodDetailVo, error) {
+
+	if podId == "" {
+		return nil, fmt.Errorf("please set argments")
+	}
+	result := &api.PodDetailVo{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(api.REQUEST_POD_URL + "/" + podId).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// RestartPod - restart pod with the specific parameters
+//
+// PARAMS:
+//     - podId: pod id
+//RETURNS:
+//     - *ListPodResult: the result of restart pod
+//     - error: nil if ok otherwise the specific error
+func (c *Client) RestartPod(podId string) error {
+
+	if podId == "" {
+		return fmt.Errorf("please set argments")
+	}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(api.REQUEST_POD_URL + "/" + podId + "/restart").
+		Do()
+
+	return err
 }

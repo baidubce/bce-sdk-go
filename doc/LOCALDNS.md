@@ -261,7 +261,7 @@ log.Debug(string(r))
 ```go
 args := &BindVpcRequest{
     Region: "bj",
-	VpcIds: ["vpc-cxvqgxipk36r", "vpc-0n1hhh8759b0"],
+	VpcIds: []string{"vpc-cxvqgxipk36r", "vpc-0n1hhh8759b0"},
 }
 err := LdClient.BindVpc("zone-mk2guy4qxd7c", args)
 ExpectEqual(t.Errorf, nil, err)
@@ -272,7 +272,7 @@ ExpectEqual(t.Errorf, nil, err)
 ```go
 args := &UnbindVpcRequest{
     Region: "bj",
-	VpcIds: ["vpc-cxvqgxipk36r", "vpc-0n1hhh8759b0"],
+	VpcIds: []string{"vpc-cxvqgxipk36r", "vpc-0n1hhh8759b0"},
 }
 err := LdClient.UnbindVpc("zone-mk2guy4qxd7c", args)
 ExpectEqual(t.Errorf, nil, err)
