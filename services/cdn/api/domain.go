@@ -28,6 +28,8 @@ type OriginPeer struct {
 	Host      string `json:"host,omitempty"`
 	Backup    bool   `json:"backup"`
 	Follow302 bool   `json:"follow302"`
+	Weight    int    `json:"weight,omitempty"`
+	ISP       string `json:"isp,omitempty"`
 }
 
 // OriginInit defined a struct for creating a new CDN service in `OPENCDN`
