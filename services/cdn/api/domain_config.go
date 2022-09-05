@@ -51,7 +51,7 @@ type RequestAuth struct {
 	WhiteList       []string `json:"whiteList,omitempty"`
 	SignArg         string   `json:"signArg,omitempty"`
 	TimeArg         string   `json:"timeArg,omitempty"`
-	TimestampMetric string   `json:"timestampMetric,omitempty"`
+	TimestampMetric int      `json:"timestampMetric,omitempty"`
 }
 
 // HTTPSConfig defined a struct for configuration about HTTPS
