@@ -60,3 +60,11 @@ func getURLForVpnConn() string {
 func getURLForVpnConnId(vpnConnId string) string {
 	return getURLForVPN() + "/vpnconn/" + vpnConnId
 }
+
+func getURLForSslVpnServerByVpnId(vpnId string) string {
+	return getURLForVPNId(vpnId) + "/sslVpnServer"
+}
+
+func getURLForSslVpnUserByVpnId(vpnId string) string {
+	return getURLForVPNId(vpnId) + "/sslVpnUser"
+}

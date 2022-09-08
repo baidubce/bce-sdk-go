@@ -48,11 +48,13 @@ bce-sdk-go
 |  |--cfc                 //函数计算
 |  |--cfs                 //CFS文件存储服务
 |  |--cfw                 //云防火墙
+|  |--csn                 //云智能网
 |  |--ddc                 //DDC数据库专属集群
 |  |--dts                 //数据传输服务
 |  |--eip                 //弹性公网IP
 |  |--endpoint            //SNIC服务网卡
 |  |--eni                 //ENIC弹性网卡
+|  |--esg                 //企业安全组
 |  |--etGateway           //专线网关
 |  |--rds                 //云数据库
 |  |--scs                 //SCS服务目录
@@ -248,10 +250,12 @@ SSL证书服务 | CERT      | github.com/baidubce/bce-sdk-go/services/cert      
 函数计算 | CFC       | github.com/baidubce/bce-sdk-go/services/cfc       | [CFC.md](./doc/CFC.md)
 文件存储服务 | CFS       | github.com/baidubce/bce-sdk-go/services/cfs       | [CFS.md](./doc/CFS.md)
 云防火墙 | CFW       | github.com/baidubce/bce-sdk-go/services/cfw       | [CFW.md](./doc/CFW.md)
+云智能网 | CSN       | github.com/baidubce/bce-sdk-go/services/csn       | [CSN.md](./doc/CSN.md)
 文档服务 | DOC       | github.com/baidubce/bce-sdk-go/services/doc       | [DOC.md](./doc/DOC.md)
 数据传输服务 | DTS       | github.com/baidubce/bce-sdk-go/services/dts       | [DTS.md](./doc/DTS.md)
 弹性公网IP | EIP       | github.com/baidubce/bce-sdk-go/services/eip       | [EIP.md](./doc/EIP.md)
 ENIC弹性网卡 | ENIC      | github.com/baidubce/bce-sdk-go/services/eni       | [ENIC.md](./doc/ENIC.md)
+企业安全组 | ESG       | github.com/baidubce/bce-sdk-go/services/esg       | [ESG.md](./doc/ESG.md)
 专线网关 | EtGateway | github.com/baidubce/bce-sdk-go/services/etGateway | [ETGateway.md](./doc/ETGateway.md)
 内网DNS | LOCALDNS  | github.com/baidubce/bce-sdk-go/services/localDns  | [LOCALDNS.md](./doc/LOCALDNS.md)
 云数据库 | RDS       | github.com/baidubce/bce-sdk-go/services/rds       | [RDS.md](./doc/RDS.md)

@@ -44,13 +44,14 @@ type CacheShared struct {
 
 // RequestAuth defined a struct for the authorization setting
 type RequestAuth struct {
-	Type      string   `json:"type"`
-	Key1      string   `json:"key1"`
-	Key2      string   `json:"key2,omitempty"`
-	Timeout   int      `json:"timeout,omitempty"`
-	WhiteList []string `json:"whiteList,omitempty"`
-	SignArg   string   `json:"signArg,omitempty"`
-	TimeArg   string   `json:"timeArg,omitempty"`
+	Type            string   `json:"type"`
+	Key1            string   `json:"key1"`
+	Key2            string   `json:"key2,omitempty"`
+	Timeout         int      `json:"timeout,omitempty"`
+	WhiteList       []string `json:"whiteList,omitempty"`
+	SignArg         string   `json:"signArg,omitempty"`
+	TimeArg         string   `json:"timeArg,omitempty"`
+	TimestampMetric int      `json:"timestampMetric,omitempty"`
 }
 
 // HTTPSConfig defined a struct for configuration about HTTPS
@@ -79,8 +80,8 @@ type SeoSwitch struct {
 type TrafficLimit struct {
 	Enabled          bool   `json:"enable"`
 	LimitRate        int    `json:"limitRate,omitempty"`
-	LimitStartHour   int    `json:"limitStartHour,omitempty"`
-	LimitEndHour     int    `json:"limitEndHour,omitempty"`
+	LimitStartHour   int    `json:"limitStartHour"`
+	LimitEndHour     int    `json:"limitEndHour"`
 	LimitRateAfter   int    `json:"limitRateAfter,omitempty"`
 	TrafficLimitArg  string `json:"trafficLimitArg,omitempty"`
 	TrafficLimitUnit string `json:"trafficLimitUnit,omitempty"`
@@ -97,21 +98,21 @@ type HttpHeader struct {
 
 // RefererACL defined a struct for referer ACL setting
 type RefererACL struct {
-	BlackList  []string `json:"blackList,omitempty"`
-	WhiteList  []string `json:"whiteList,omitempty"`
+	BlackList  []string `json:"blackList"`
+	WhiteList  []string `json:"whiteList"`
 	AllowEmpty bool     `json:"allowEmpty"`
 }
 
 // IpACL defined a struct for black IP and white IP
 type IpACL struct {
-	BlackList []string `json:"blackList,omitempty"`
-	WhiteList []string `json:"whiteList,omitempty"`
+	BlackList []string `json:"blackList"`
+	WhiteList []string `json:"whiteList"`
 }
 
 // UaACL defined a struct for black UA and white UA
 type UaACL struct {
-	BlackList []string `json:"blackList,omitempty"`
-	WhiteList []string `json:"whiteList,omitempty"`
+	BlackList []string `json:"blackList"`
+	WhiteList []string `json:"whiteList"`
 }
 
 // ErrorPage defined a struct for redirecting to the custom page when error occur
@@ -838,11 +839,22 @@ func SetDomainRequestAuth(cli bce.Client, domain string, requestAuth *RequestAut
 		"requestAuth": "",
 	}
 
-	err := httpRequest(cli, "PUT", urlPath, params, &struct {
-		RequestAuth *RequestAuth `json:"requestAuth"`
-	}{
-		RequestAuth: requestAuth,
-	}, nil)
+	var body interface{}
+	if requestAuth == nil {
+		body = &struct {
+			RequestAuth []string `json:"requestAuth"`
+		}{
+			RequestAuth: []string{},
+		}
+	} else {
+		body = &struct {
+			RequestAuth *RequestAuth `json:"requestAuth"`
+		}{
+			RequestAuth: requestAuth,
+		}
+	}
+
+	err := httpRequest(cli, "PUT", urlPath, params, body, nil)
 	if err != nil {
 		return err
 	}

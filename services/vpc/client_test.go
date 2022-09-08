@@ -922,3 +922,21 @@ func TestGetNetworkTopologyInfo(t *testing.T) {
 	r, err := json.Marshal(result)
 	fmt.Println(string(r))
 }
+
+func TestClient_BindDnatEips(t *testing.T) {
+	args := &BindDnatEipsArgs{
+		ClientToken: getClientToken(),
+		DnatEips:    []string{"100.88.14.243"},
+	}
+	err := VPC_CLIENT.BindDnatEips("nat-bc39ugw5ry9z", args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UnBindDnatEips(t *testing.T) {
+	args := &UnBindDnatEipsArgs{
+		ClientToken: getClientToken(),
+		DnatEips:    []string{"100.88.14.243"},
+	}
+	err := VPC_CLIENT.UnBindDnatEips("nat-bc39ugw5ry9z", args)
+	ExpectEqual(t.Errorf, nil, err)
+}

@@ -20,7 +20,6 @@ package bcc
 
 import (
 	"encoding/json"
-
 	"github.com/baidubce/bce-sdk-go/auth"
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/services/bcc/api"
@@ -1784,4 +1783,24 @@ func (c *Client) BatchResizeInstance(args *api.BatchResizeInstanceArgs) (*api.Ba
 	}
 
 	return api.BatchResizeInstance(c, body)
+}
+
+// DeleteSecurityGroupRule - delete a security group rule
+//
+// PARAMS:
+//	   - securityGroupRuleId: the id of the specific security group rule
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeleteSecurityGroupRule(args *api.DeleteSecurityGroupRuleArgs) error {
+	return api.DeleteSecurityGroupRule(c, args)
+}
+
+// UpdateSecurityGroupRule - update security group rule with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to update the specific security group rule
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateSecurityGroupRule(args *api.UpdateSecurityGroupRuleArgs) error {
+	return api.UpdateSecurityGroupRule(c, args)
 }

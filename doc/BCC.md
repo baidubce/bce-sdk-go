@@ -2691,6 +2691,39 @@ if err != nil {
 > -   同一安全组中的规则以remark、protocol、direction、portRange、sourceIp|destIp、sourceGroupId|destGroupId六元组作为唯一性索引，若安全组中不存在对应的规则将报404错误。
 > -   具体的接口描述BCC API 文档[撤销安全组规则](https://cloud.baidu.com/doc/BCC/s/yjwvynxk0)。
 
+## 更新普通安全组规则
+
+使用以下代码可以在指定普通安全组中更新安全组规则:
+
+```go
+args := &api.UpdateSecurityGroupRuleArgs{
+   SecurityGroupRuleId: SecurityGroupRuleId,
+   Remark:              Remark,
+}
+err := client.UpdateSecurityGroupRule(args)
+if err != nil {
+    fmt.Println("update security group new rule failed:", err)
+} else {
+    fmt.Println("update security group new rule success")
+}
+```
+
+## 删除普通安全组规则
+
+使用以下代码可以在指定普通安全组中删除指定安全组规则:
+
+```go
+args := &api.DeleteSecurityGroupRuleArgs{
+    SecurityGroupRuleId: SecurityGroupRuleId,
+}
+err := client.DeleteSecurityGroupRule(args)
+if err != nil {
+    fmt.Println("delete security group rule failed:", err)
+} else {
+    fmt.Println("delete security group rule success")
+}
+```
+
 ## 部署集
 ### 创建部署集
 

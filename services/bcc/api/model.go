@@ -1809,3 +1809,22 @@ type BatchResizeInstanceArgs struct {
 type BatchResizeInstanceResults struct {
 	OrderUuidResults []string `json:"orderUuidResults"`
 }
+
+// UpdateSecurityGroupRuleArgs defines the structure of input parameters for the UpdateSecurityGroupRule api
+type UpdateSecurityGroupRuleArgs struct {
+	SgVersion           int64   `json:"sgVersion,omitempty"`
+	SecurityGroupRuleId string  `json:"securityGroupRuleId"`
+	Remark              *string `json:"remark,omitempty"`
+	PortRange           *string `json:"portRange,omitempty"`
+	SourceIp            *string `json:"sourceIp,omitempty"`
+	SourceGroupId       *string `json:"sourceGroupId,omitempty"`
+	DestIp              *string `json:"destIp,omitempty"`
+	DestGroupId         *string `json:"destGroupId,omitempty"`
+	Protocol            *string `json:"protocol,omitempty"`
+}
+
+// DeleteSecurityGroupRuleArgs defines the structure of input parameters for the DeleteSecurityGroupRule api
+type DeleteSecurityGroupRuleArgs struct {
+	SgVersion           int64  `json:"sgVersion,omitempty"`
+	SecurityGroupRuleId string `json:"securityGroupRuleId"`
+}

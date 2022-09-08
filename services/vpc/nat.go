@@ -159,6 +159,48 @@ func (c *Client) UnBindEips(natId string, args *UnBindEipsArgs) error {
 		Do()
 }
 
+// BindDnatEips - bind dnatEips for the specific nat gateway
+//
+// PARAMS:
+//     - natId: the id of the specific nat gateway
+//     - args: the arguments to bind dnatEips
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BindDnatEips(natId string, args *BindDnatEipsArgs) error {
+	if args == nil {
+		return fmt.Errorf("The bindDnatEipsArgs cannot be nil.")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForNatId(natId)).
+		WithMethod(http.PUT).
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithQueryParam("bind", "").
+		Do()
+}
+
+// UnBindDnatEips - unbind dnatEips for the specific nat gateway
+//
+// PARAMS:
+//     - natId: the id of the specific nat gateway
+//     - args: the arguments to unbind dnatEips
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UnBindDnatEips(natId string, args *UnBindDnatEipsArgs) error {
+	if args == nil {
+		return fmt.Errorf("the unBindDnatEipArgs cannot be nil")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForNatId(natId)).
+		WithMethod(http.PUT).
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithQueryParam("unbind", "").
+		Do()
+}
+
 // DeleteNatGateway - delete the specific nat gateway
 //
 // PARAMS:
