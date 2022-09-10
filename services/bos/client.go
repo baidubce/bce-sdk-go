@@ -58,6 +58,7 @@ type BosClientConfiguration struct {
 	Ak               string
 	Sk               string
 	Endpoint         string
+	Token            string
 	RedirectDisabled bool
 }
 
@@ -71,14 +72,31 @@ func NewClient(ak, sk, endpoint string) (*Client, error) {
 		RedirectDisabled: false,
 	})
 }
+
+// NewClientWithToken make the BOS service client with default configuration and session token.
+// Use `cli.Config.xxx` to access the config or change it to non-default value.
+func NewClientWithToken(ak, sk, token, endpoint string) (*Client, error) {
+	return NewClientWithConfig(&BosClientConfiguration{
+		Ak:               ak,
+		Sk:               sk,
+		Endpoint:         endpoint,
+		Token:            token,
+		RedirectDisabled: false,
+	})
+}
+
 func NewClientWithConfig(config *BosClientConfiguration) (*Client, error) {
 	var credentials *auth.BceCredentials
 	var err error
-	ak, sk, endpoint := config.Ak, config.Sk, config.Endpoint
+	ak, sk, endpoint, token := config.Ak, config.Sk, config.Endpoint, config.Token
 	if len(ak) == 0 && len(sk) == 0 { // to support public-read-write request
 		credentials, err = nil, nil
 	} else {
-		credentials, err = auth.NewBceCredentials(ak, sk)
+		if token != "" {
+			credentials, err = auth.NewSessionBceCredentials(ak, sk, token)
+		}else{
+			credentials, err = auth.NewBceCredentials(ak, sk)
+		}
 		if err != nil {
 			return nil, err
 		}
