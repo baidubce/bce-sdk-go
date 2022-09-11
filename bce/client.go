@@ -86,6 +86,7 @@ func (c *BceClient) buildHttpRequest(request *BceRequest) {
 
 	// Set the BCE request headers
 	request.SetHeader(http.HOST, request.Host())
+	request.SetHeader(http.CONTENT_TYPE, "application/json;charset=UTF-8")
 	request.SetHeader(http.USER_AGENT, c.Config.UserAgent)
 	request.SetHeader(http.BCE_DATE, util.FormatISO8601Date(util.NowUTCSeconds()))
 
@@ -253,12 +254,12 @@ func NewBceClientWithAkSk(ak, sk, endPoint string) (*BceClient, error) {
 		HeadersToSign: auth.DEFAULT_HEADERS_TO_SIGN,
 		ExpireSeconds: auth.DEFAULT_EXPIRE_SECONDS}
 	defaultConf := &BceClientConfiguration{
-		Endpoint:    endPoint,
-		Region:      DEFAULT_REGION,
-		UserAgent:   DEFAULT_USER_AGENT,
-		Credentials: credentials,
-		SignOption:  defaultSignOptions,
-		Retry:       DEFAULT_RETRY_POLICY,
+		Endpoint:                  endPoint,
+		Region:                    DEFAULT_REGION,
+		UserAgent:                 DEFAULT_USER_AGENT,
+		Credentials:               credentials,
+		SignOption:                defaultSignOptions,
+		Retry:                     DEFAULT_RETRY_POLICY,
 		ConnectionTimeoutInMillis: DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS,
 		RedirectDisabled:          false}
 	v1Signer := &auth.BceV1Signer{}
