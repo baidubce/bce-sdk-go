@@ -657,6 +657,28 @@ func (c *Client) ListImage(args *ListImageArgs) (*ListImageResult, error) {
 	return ListImage(c, args)
 }
 
+//ListImage - list Custom Flavor images
+//
+// PARAMS:
+//     - args: the arguments to list all images
+// RETURNS:
+//     - *ListImageResult: the result of list all images
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListCustomFlavorImage(args *ListImageArgs) (*FlavorImageResult, error) {
+	return ListCustomFlavorImage(c, args)
+}
+
+//ListImage - list Flavor images
+//
+// PARAMS:
+//     - args: the arguments to list all images
+// RETURNS:
+//     - *ListImageResult: the result of list all images
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListFlavorImage(args *ListImageArgs) (*FlavorImageResult, error) {
+	return ListFlavorImage(c, args)
+}
+
 // GetImageDetail - get an image's detail info
 //
 // PARAMS:

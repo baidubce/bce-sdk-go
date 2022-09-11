@@ -108,6 +108,98 @@ func ListImage(cli bce.Client, queryArgs *ListImageArgs) (*ListImageResult, erro
 	return jsonBody, nil
 }
 
+//ListImage - list custom flavor images
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - args: the arguments to list all images
+// RETURNS:
+//     - *ListImageResult: the result of list all images
+//     - error: nil if success otherwise the specific error
+func ListCustomFlavorImage(cli bce.Client, queryArgs *ListImageArgs) (*FlavorImageResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getCustomFlavorImageUri())
+	req.SetMethod(http.POST)
+
+	if queryArgs != nil {
+		if len(queryArgs.Marker) != 0 {
+			req.SetParam("marker", queryArgs.Marker)
+		}
+		if queryArgs.MaxKeys != 0 {
+			req.SetParam("maxKeys", strconv.Itoa(queryArgs.MaxKeys))
+		}
+		if len(queryArgs.ImageType) != 0 {
+			req.SetParam("imageType", queryArgs.ImageType)
+		}
+	}
+
+	if queryArgs == nil || queryArgs.MaxKeys == 0 {
+		req.SetParam("maxKeys", "1000")
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &FlavorImageResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
+//ListImage - list flavor images
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - args: the arguments to list all images
+// RETURNS:
+//     - *ListImageResult: the result of list all images
+//     - error: nil if success otherwise the specific error
+func ListFlavorImage(cli bce.Client, queryArgs *ListImageArgs) (*FlavorImageResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getFlavorImageUri())
+	req.SetMethod(http.POST)
+
+	if queryArgs != nil {
+		if len(queryArgs.Marker) != 0 {
+			req.SetParam("marker", queryArgs.Marker)
+		}
+		if queryArgs.MaxKeys != 0 {
+			req.SetParam("maxKeys", strconv.Itoa(queryArgs.MaxKeys))
+		}
+		if len(queryArgs.ImageType) != 0 {
+			req.SetParam("imageType", queryArgs.ImageType)
+		}
+	}
+
+	if queryArgs == nil || queryArgs.MaxKeys == 0 {
+		req.SetParam("maxKeys", "1000")
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &FlavorImageResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
 // GetImageDetail - get an image's detail info
 //
 // PARAMS:
@@ -447,6 +539,13 @@ func RemoteCopyImageReturnImageIds(cli bce.Client, imageId string, args *RemoteC
 
 func getImageUri() string {
 	return URI_PREFIX_V1 + REQUEST_IMAGE_URI
+}
+
+func getFlavorImageUri() string {
+	return URI_PREFIX_V1 + "/flavor/image"
+}
+func getCustomFlavorImageUri() string {
+	return URI_PREFIX_V1 + "/customFlavor/image"
 }
 
 func getImageUriWithId(id string) string {

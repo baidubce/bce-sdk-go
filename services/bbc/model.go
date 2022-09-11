@@ -424,6 +424,13 @@ type ListImageResult struct {
 	MaxKeys     int          `json:"maxKeys"`
 	Images      []ImageModel `json:"images"`
 }
+type FlavorImageMapping struct {
+	FlavorID string       `json:"flavorId"`
+	Images   []ImageModel `json:"images"`
+}
+type FlavorImageResult struct {
+	Result []FlavorImageMapping `json:"result"`
+}
 
 type ImageModel struct {
 	OsVersion      string      `json:"osVersion"`
