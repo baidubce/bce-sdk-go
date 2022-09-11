@@ -108,6 +108,10 @@ func getCreateUri() string {
 func getReadUri() string {
 	return "/api/bes/cluster/detail"
 }
+func getDeleteUri() string {
+	return "/api/bes/cluster/delete"
+}
+
 func GetCluster(cli bce.Client, args *GetESClusterRequest, reqBody *bce.Body) (*DetailESClusterResponse, error) {
 	//clientToken := args.ClientToken
 	//requestToken := args.RequestToken
@@ -115,6 +119,7 @@ func GetCluster(cli bce.Client, args *GetESClusterRequest, reqBody *bce.Body) (*
 	req := &bce.BceRequest{}
 	req.SetUri(getReadUri())
 	req.SetHeader("Content-Type", "application/json;charset=UTF-8")
+	req.SetHeader("X-Region", cli.GetBceClientConfig().Region)
 	req.SetMethod(http.POST)
 	req.SetBody(reqBody)
 	//req.SetHeader("x-request-token", requestToken)
@@ -145,8 +150,9 @@ func DeleteCluster(cli bce.Client, args *GetESClusterRequest, reqBody *bce.Body)
 	//requestToken := args.RequestToken
 	// Build the request
 	req := &bce.BceRequest{}
-	req.SetUri(getReadUri())
+	req.SetUri(getDeleteUri())
 	req.SetHeader("Content-Type", "application/json;charset=UTF-8")
+	req.SetHeader("X-Region", cli.GetBceClientConfig().Region)
 	req.SetMethod(http.POST)
 	req.SetBody(reqBody)
 	//req.SetHeader("x-request-token", requestToken)
@@ -178,6 +184,7 @@ func CreateCluster(cli bce.Client, args *ESClusterRequest, reqBody *bce.Body) (*
 	req := &bce.BceRequest{}
 	req.SetUri(getCreateUri())
 	req.SetHeader("Content-Type", "application/json;charset=UTF-8")
+	req.SetHeader("X-Region", cli.GetBceClientConfig().Region)
 	req.SetMethod(http.POST)
 	req.SetBody(reqBody)
 	//req.SetHeader("x-request-token", requestToken)

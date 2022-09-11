@@ -1,17 +1,28 @@
 package bes
 
+type ESDiskSlotInfo struct {
+	Size int    `json:"size,omitempty"`
+	Type string `json:"type,omitempty"`
+}
+type ESAutoRenewInfo struct {
+	RenewTimeUnit string `json:"renewTimeUnit,omitempty"`
+	RenewTime     int    `json:"renewTime,omitempty"`
+}
 type ESClusterModule struct {
-	InstanceNum  int    `json:"instanceNum"`
-	SlotType     string `json:"slotType"`
-	DiskSlotInfo struct {
-		Size int    `json:"size"`
-		Type string `json:"type"`
-	} `json:"diskSlotInfo,omitempty"`
-	Type string `json:"type"`
+	InstanceNum  int             `json:"instanceNum"`
+	SlotType     string          `json:"slotType"`
+	DiskSlotInfo *ESDiskSlotInfo `json:"diskSlotInfo,omitempty"`
+	Type         string          `json:"type"`
+}
+type ESBilling struct {
+	PaymentType     string           `json:"paymentType,omitempty"`
+	Time            *int             `json:"time,omitempty"`
+	EnableAutoRenew *bool            `json:"enableAutoRenew,omitempty"`
+	AutoRenewInfo   *ESAutoRenewInfo `json:"autoRenewInfo,omitempty"`
 }
 type ESClusterRequest struct {
 	Name            string             `json:"name"`
-	Password        string             `json:"password"`
+	Password        string             `json:"password,omitempty"`
 	SecurityGroupID string             `json:"securityGroupId"`
 	SubnetUUID      string             `json:"subnetUuid"`
 	AvailableZone   string             `json:"availableZone"`
@@ -19,10 +30,7 @@ type ESClusterRequest struct {
 	IsOldPackage    bool               `json:"isOldPackage"`
 	Version         string             `json:"version"`
 	Modules         []*ESClusterModule `json:"modules"`
-	Billing         struct {
-		PaymentType string `json:"paymentType"`
-		Time        int    `json:"time"`
-	} `json:"billing"`
+	Billing         ESBilling          `json:"billing"`
 }
 
 type DetailESClusterResponse struct {
@@ -75,9 +83,18 @@ type GetESClusterRequest struct {
 }
 
 type ESClusterResponse struct {
-	Status  int  `json:"status"`
-	Success bool `json:"success"`
-	Result  struct {
+	Status  int    `json:"status"`
+	Success bool   `json:"success"`
+	Code    string `json:"code"`
+	Error   struct {
+		RequestId string `json:"requestId"`
+		Code      string `json:"code"`
+		Message   string `json:"message"`
+	}
+	Message struct {
+		Global string `json:"global"`
+	}
+	Result struct {
 		OrderId   string `json:"orderId"`
 		ClusterId string `json:"clusterId"`
 	} `json:"result"`
