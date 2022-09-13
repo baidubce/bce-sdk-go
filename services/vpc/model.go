@@ -340,6 +340,7 @@ type CreateNatGatewayArgs struct {
 	Name        string             `json:"name"`
 	VpcId       string             `json:"vpcId"`
 	Spec        NatGatewaySpecType `json:"spec"`
+	CuNum       string             `json:"cuNum,omitempty"`
 	Eips        []string           `json:"eips,omitempty"`
 	Billing     *Billing           `json:"billing"`
 }
@@ -384,6 +385,7 @@ type NAT struct {
 	Name          string        `json:"name"`
 	VpcId         string        `json:"vpcId"`
 	Spec          string        `json:"spec"`
+	CuNum         string        `json:"cuNum"`
 	Status        NatStatusType `json:"status"`
 	Eips          []string      `json:"eips"`
 	PaymentTiming string        `json:"paymentTiming"`

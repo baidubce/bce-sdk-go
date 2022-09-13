@@ -51,6 +51,35 @@ func (c *Client) CreateEip(args *CreateEipArgs) (*CreateEipResult, error) {
 	return result, err
 }
 
+// BatchCreateEip - create EIPs with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to create eips
+// RETURNS:
+//     - *BatchCreateEipResult: the result of create EIP, contains new EIP's address
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchCreateEip(args *BatchCreateEipArgs) (*BatchCreateEipResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("please set create eip argments")
+	}
+
+	if args.Billing == nil {
+		return nil, fmt.Errorf("please set billing")
+	}
+
+	result := &BatchCreateEipResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getEipUri()).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithQueryParam("action", "batch").
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
 // ResizeEip - resize an EIP with the specific parameters
 //
 // PARAMS:

@@ -972,3 +972,7 @@ type BbcStock struct {
 	CollectionTime    string `json:"collectionTime"`
 	ZoneName          string `json:"logicalZone"`
 }
+
+type ListInstanceByInstanceIdArgs struct {
+	InstanceIds []string `json:"instanceIdList"`
+}

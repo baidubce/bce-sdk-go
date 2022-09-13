@@ -319,12 +319,30 @@ func TestUpdateAclRule(t *testing.T) {
 	}
 }
 
-func TestCreateNatGateway(t *testing.T) {
+func TestCreateDefaultNatGateway(t *testing.T) {
 	args := &CreateNatGatewayArgs{
 		ClientToken: getClientToken(),
 		Name:        "Test-SDK-NatGateway",
 		VpcId:       VPCID,
 		Spec:        NAT_GATEWAY_SPEC_SMALL,
+		Billing: &Billing{
+			PaymentTiming: PAYMENT_TIMING_POSTPAID,
+		},
+	}
+	result, err := VPC_CLIENT.CreateNatGateway(args)
+	ExpectEqual(t.Errorf, nil, err)
+	NatID = result.NatId
+
+	err = waitStateForNatGateway(NatID, NAT_STATUS_UNCONFIGURED)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestCreateEnhanceNatGateway(t *testing.T) {
+	args := &CreateNatGatewayArgs{
+		ClientToken: getClientToken(),
+		Name:        "Test-SDK-NatGateway-CU",
+		VpcId:       VPCID,
+		CuNum:       "3",
 		Billing: &Billing{
 			PaymentTiming: PAYMENT_TIMING_POSTPAID,
 		},
