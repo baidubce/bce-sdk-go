@@ -73,29 +73,9 @@ type ClientConfig struct {
 
 var customizeInit sync.Once
 
-func InitClient(config ClientConfig) {
-	customizeInit.Do(func() {
-		httpClient = &http.Client{}
-		transport = &http.Transport{
-			MaxIdleConnsPerHost:   defaultMaxIdleConnsPerHost,
-			ResponseHeaderTimeout: defaultResponseHeaderTimeout,
-			Dial: func(network, address string) (net.Conn, error) {
-				conn, err := net.DialTimeout(network, address, defaultDialTimeout)
-				if err != nil {
-					return nil, err
-				}
-				tc := &timeoutConn{conn, defaultSmallInterval, defaultLargeInterval}
-				tc.SetReadDeadline(time.Now().Add(defaultLargeInterval))
-				return tc, nil
-			},
-		}
-		httpClient.Transport = transport
-		if config.RedirectDisabled {
-			httpClient.CheckRedirect = func(req *http.Request, via []*http.Request) error {
-				return http.ErrUseLastResponse
-			}
-		}
-	})
+type Client struct {
+	httpClient *http.Client
+	transport  *http.Transport
 }
 
 // Execute - do the http requset and get the response
@@ -105,7 +85,7 @@ func InitClient(config ClientConfig) {
 // RETURNS:
 //     - response: the http response returned from the server
 //     - error: nil if ok otherwise the specific error
-func Execute(request *Request) (*Response, error) {
+func (c *Client) Execute(request *Request) (*Response, error) {
 	// Build the request object for the current requesting
 	httpRequest := &http.Request{
 		Proto:      "HTTP/1.1",
@@ -114,7 +94,7 @@ func Execute(request *Request) (*Response, error) {
 	}
 
 	// Set the connection timeout for current request
-	httpClient.Timeout = time.Duration(request.Timeout()) * time.Second
+	c.httpClient.Timeout = time.Duration(request.Timeout()) * time.Second
 
 	// Set the request method
 	httpRequest.Method = request.Method()
@@ -148,7 +128,7 @@ func Execute(request *Request) (*Response, error) {
 
 	// Set the proxy setting if needed
 	if len(request.ProxyUrl()) != 0 {
-		transport.Proxy = func(_ *http.Request) (*url.URL, error) {
+		c.transport.Proxy = func(_ *http.Request) (*url.URL, error) {
 			return url.Parse(request.ProxyUrl())
 		}
 	}
@@ -158,17 +138,45 @@ func Execute(request *Request) (*Response, error) {
 	// that may continue sending request's data subsequently.
 	start := time.Now()
 
-	httpResponse, err := httpClient.Do(httpRequest)
+	httpResponse, err := c.httpClient.Do(httpRequest)
 
 	end := time.Now()
 	if err != nil {
-		transport.CloseIdleConnections()
+		c.transport.CloseIdleConnections()
 		return nil, err
 	}
 	if httpResponse.StatusCode >= 400 &&
 		(httpRequest.Method == PUT || httpRequest.Method == POST) {
-		transport.CloseIdleConnections()
+		c.transport.CloseIdleConnections()
 	}
 	response := &Response{httpResponse, end.Sub(start)}
 	return response, nil
+}
+
+func NewClient(config ClientConfig) Client {
+	httpClient = &http.Client{}
+	transport = &http.Transport{
+		MaxIdleConnsPerHost:   defaultMaxIdleConnsPerHost,
+		ResponseHeaderTimeout: defaultResponseHeaderTimeout,
+		Dial: func(network, address string) (net.Conn, error) {
+			conn, err := net.DialTimeout(network, address, defaultDialTimeout)
+			if err != nil {
+				return nil, err
+			}
+			tc := &timeoutConn{conn, defaultSmallInterval, defaultLargeInterval}
+			tc.SetReadDeadline(time.Now().Add(defaultLargeInterval))
+			return tc, nil
+		},
+	}
+	httpClient.Transport = transport
+	if config.RedirectDisabled {
+		httpClient.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		}
+	}
+
+	return Client{
+		httpClient: httpClient,
+		transport:  transport,
+	}
 }
