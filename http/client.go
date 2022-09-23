@@ -35,13 +35,6 @@ const (
 	defaultLargeInterval         = 1200 * time.Second
 )
 
-// The httpClient is the global variable to send the request and get response
-// for reuse and the Client provided by the Go standard library is thread safe.
-var (
-	httpClient *http.Client
-	transport  *http.Transport
-)
-
 type timeoutConn struct {
 	conn          net.Conn
 	smallInterval time.Duration
@@ -154,8 +147,8 @@ func (c *Client) Execute(request *Request) (*Response, error) {
 }
 
 func NewClient(config ClientConfig) Client {
-	httpClient = &http.Client{}
-	transport = &http.Transport{
+	httpClient := &http.Client{}
+	transport := &http.Transport{
 		MaxIdleConnsPerHost:   defaultMaxIdleConnsPerHost,
 		ResponseHeaderTimeout: defaultResponseHeaderTimeout,
 		Dial: func(network, address string) (net.Conn, error) {
