@@ -49,7 +49,6 @@ func init() {
 	VPN_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.VPCEndpoint)
 
 	region = confObj.VPCEndpoint[4:6]
-
 }
 
 // ExpectEqual is the helper function for test each case
@@ -231,6 +230,126 @@ func TestClient_DeleteVpnConn(t *testing.T) {
 
 func TestClient_DeleteVpn(t *testing.T) {
 	err := VPN_CLIENT.DeleteVpn("vpn-sd3vxkwisgux", getClientToken())
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_CreateSslVpnServer(t *testing.T) {
+	interfaceTypeStr := "tun"
+	ClientDnsStr := ""
+	args := &CreateSslVpnServerArgs{
+		ClientToken:      getClientToken(),
+		VpnId:            "vpn-s5bi05y3yyds", // ssl vpn
+		SslVpnServerName: "server_1",
+		InterfaceType:    &interfaceTypeStr,
+		LocalSubnets:     []string{"192.168.0.0/20"},
+		RemoteSubnet:     "192.168.100.0/24",
+		ClientDns:        &ClientDnsStr,
+	}
+	log.Info(args)
+	log.Info("args.InterfaceType:", args.InterfaceType)
+	log.Info("args.ClientDns:", args.ClientDns)
+	if args.InterfaceType == nil {
+		log.Info("args.InterfaceType is unassigned")
+	}
+	res, err := VPN_CLIENT.CreateSslVpnServer(args)
+	ExpectEqual(t.Errorf, nil, err)
+	e, err1 := json.Marshal(res)
+	if err1 != nil {
+		log.Error("json format result error")
+	}
+	log.Info(string(e))
+}
+
+func TestClient_GetSslVpnServer(t *testing.T) {
+	res, err := VPN_CLIENT.GetSslVpnServer("vpn-s5bi05y3yyds", getClientToken())
+	ExpectEqual(t.Errorf, nil, err)
+	e, err1 := json.Marshal(res)
+	if err1 != nil {
+		log.Error("json format result error")
+	}
+	log.Info(string(e))
+}
+
+func TestClient_UpdateSslVpnServer(t *testing.T) {
+	clientDnsStr := "100.88.0.83"
+	args := &UpdateSslVpnServerArgs{
+		ClientToken:    getClientToken(),
+		VpnId:          "vpn-s5bi05y3yyds",
+		SslVpnServerId: "sslvpn-s8aqk5iw6ki1",
+		UpdateSslVpnServer: &UpdateSslVpnServer{
+			SslVpnServerName: "SslVpnServer1test twice",
+			LocalSubnets:     []string{"192.168.0.0/20"},
+			RemoteSubnet:     "192.168.100.0/24",
+			ClientDns:        &clientDnsStr,
+		},
+	}
+	err := VPN_CLIENT.UpdateSslVpnServer(args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DeleteSslVpnServer(t *testing.T) {
+	err := VPN_CLIENT.DeleteSslVpnServer("vpn-s5bi05y3yyds", "sslvpn-1swvxqrzn1we", getClientToken())
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_BatchCreateSslVpnUser(t *testing.T) {
+	desc1 := "user1 description"
+	args := &BatchCreateSslVpnUserArgs{
+		ClientToken: getClientToken(),
+		VpnId:       "vpn-s5bi05y3yyds", // ssl vpn
+		SslVpnUsers: []SslVpnUser{
+			SslVpnUser{
+				UserName:    "user1test",
+				Password:    "psd123456!",
+				Description: &desc1,
+			},
+			SslVpnUser{
+				UserName: "user2test",
+				Password: "psd123456!",
+			},
+		},
+	}
+	res, err := VPN_CLIENT.BatchCreateSslVpnUser(args)
+	ExpectEqual(t.Errorf, nil, err)
+	e, err1 := json.Marshal(res)
+	if err1 != nil {
+		log.Error("json format result error")
+	}
+	log.Info(string(e))
+}
+
+func TestClient_ListSslVpnUser(t *testing.T) {
+	args := &ListSslVpnUserArgs{
+		MaxKeys: 1000,
+		VpnId:   "vpn-s5bi05y3yyds",
+	}
+	result, err := VPN_CLIENT.ListSslVpnUser(args)
+	ExpectEqual(t.Errorf, nil, err)
+	e, err1 := json.Marshal(result)
+	if err1 != nil {
+		log.Error("json format result error")
+	}
+	log.Info(string(e))
+}
+
+func TestClient_UpdateSslVpnUser(t *testing.T) {
+	psdStr := "123abcd!!!"
+	desc := "333"
+	args := &UpdateSslVpnUserArgs{
+		ClientToken: getClientToken(),
+		VpnId:       "vpn-s5bi05y3yyds",
+		UserId:      "vpn-ssl-user-ebfysi53dye3",
+		SslVpnUser: &UpdateSslVpnUser{
+			Password:    psdStr,
+			Description: &desc,
+		},
+	}
+	err := VPN_CLIENT.UpdateSslVpnUser(args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DeleteSslVpnUser(t *testing.T) {
+	err := VPN_CLIENT.DeleteSslVpnUser("vpn-s5bi05y3yyds", "vpn-ssl-user-ggngktunui0k", getClientToken())
 	ExpectEqual(t.Errorf, nil, err)
 }
 

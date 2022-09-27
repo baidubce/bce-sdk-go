@@ -199,4 +199,24 @@ func (c *Client) DescribeLbClusters(args *DescribeLbClustersArgs) (*DescribeLbCl
 	return result, err
 }
 
+// UpdateLoadBalancerAcl - update the specified LoadBalancer to support the acl feature
+//
+// PARAMS:
+//     - blbId: LoadBalancer's ID
+//     - args: parameters to update LoadBalancer acl
+// RETURNS:
+//     - error: nil if ok otherwise the specific error
+func (c *Client) UpdateLoadBalancerAcl(blbId string, args *UpdateLoadBalancerAclArgs) error {
+	if args == nil || args.SupportAcl == nil {
+		args = &UpdateLoadBalancerAclArgs{
+		}
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getBlbAclUriWithId(blbId)).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithBody(args).
+		Do()
+}
 

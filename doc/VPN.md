@@ -522,6 +522,189 @@ if err != nil {
 
 fmt.Printf("delete vpnconn success\n")
 ```
+## 创建SSL-VPN服务端
+使用一下代码可以创建指定VPN的SSL-VPN服务端
+```go
+// import "github.com/baidubce/bce-sdk-go/services/vpn"
+
+args := &vpn.CreateSslVpnServerArgs{
+    ClientToken:      ClientToken(),
+    VpnId:            VpnId,
+    SslVpnServerName: SslVpnServerName,
+    InterfaceType:    InterfaceType,
+    LocalSubnets:     []string{"subnet"},
+    RemoteSubnet:     RemoteSubnet,
+    ClientDns:        ClientDns,
+}
+res, err := client.CreateSslVpnServer(args)
+ExpectEqual(t.Errorf, nil, err)
+if err1 != nil {
+    fmt.Printf("create ssl-vpn server error: %+v\n", err)
+	return
+}
+fmt.Printf("create ssl-vpn server success,sslVpnServerId is: %+v",res.SslVpnServerId)
+```
+> 一个vpn中已经存在的ssl-vpn server只能有一个，如果某个vpn已经存在ssl-vpn server，则再次创建会失败，只能先删除再创建
+## 查询SSL-VPN服务端
+使用一下代码可以查询指定VPN的SSL-VPN服务端
+```go
+// import "github.com/baidubce/bce-sdk-go/services/vpn"
+
+result,err := client.GetSslVpnServer(vpnId,clientToken)
+if  err != nil {
+  fmt.Printf("get ssl-vpn server error: %+v\n", err)
+  return
+}
+
+// 查询得到vpn的id
+fmt.Println("vpn id: ", result.VpnId)
+// 查询得到SSL-VPN服务端的id
+fmt.Println("SSL-VPN server id: ", result.SslVpnServerId)
+// 查询得到SSL-VPN服务端的名称
+fmt.Println("SSL-VPN server name: ", result.SslVpnServerName)
+// 查询得到SSL-VPN服务端的接口类型
+fmt.Println("SSL-VPN server interface type: ", result.InterfaceType)
+// 查询得到SSL-VPN服务端状态
+fmt.Println("SSL-VPN server status: ", result.Status)
+// 查询得到本端网络CIDR列表
+fmt.Println("SSL-VPN server local subnets: ", result.LocalSubnets)
+// 查询得到客户端网络CIDR
+fmt.Println("SSL-VPN server remote subnet: ", result.RemoteSubnet)
+// 查询得到客户端的DNS地址
+fmt.Println("SSL-VPN server client dns: ", result.ClientDns)
+// 查询得到SSL-VPN最大客户端连接数
+fmt.Println("SSL-VPN server max connection: ", result.MaxConnection)
+```
+## 更新SSL-VPN服务端
+使用以下代码可以修改指定VPN的SSL-VPN服务端
+```go
+// import "github.com/baidubce/bce-sdk-go/services/vpn"
+
+args := &vpn.UpdateSslVpnServerArgs{
+    ClientToken:    ClientToken(),
+    VpnId:          VpnId,
+    SslVpnServerId: SslVpnServerId,
+    RemoteSubnets:  []string{"subnet"},
+    UpdateSslVpnServer: &UpdateSslVpnServer{
+        SslVpnServerName: SslVpnServerName,
+        LocalSubnets:     LocalSubnets,
+        RemoteSubnet:     RemoteSubnet,
+        ClientDns:        ClientDns,
+    },
+}
+err := client.UpdateSslVpnServer(args)
+if  err != nil {
+    fmt.Printf("update ssl-vpn server error: %+v\n", err)
+    return
+}
+fmt.Printf("update ssl-vpn server success")
+```
+## 删除SSL-VPN服务端
+使用以下代码可以删除指定VPN的SSL-VPN服务端
+```go
+// import "github.com/baidubce/bce-sdk-go/services/vpn"
+
+err := client.DeleteSslVpnServer(vpnId, sslVpnServerId, clientToken)
+if err != nil {
+    fmt.Printf("delete ssl-vpn server error: %+v\n", err)
+    return
+}
+
+fmt.Printf("delete ssl-vpn server success\n")
+```
+> 删除SSL-VPN服务端需要保证这个server里面的用户全部删除之后，server才能删除成功
+## 批量创建SSL-VPN用户
+使用以下代码可以批量创建指定VPN的SSL-VPN用户
+```go
+// import "github.com/baidubce/bce-sdk-go/services/vpn"
+
+args := &BatchCreateSslVpnUserArgs{
+    ClientToken: ClientToken(),
+    VpnId:       VpnId,
+    SslVpnUsers: []SslVpnUser{
+        SslVpnUser{
+            UserName:    UserName,
+            Password:    Password,
+            Description: Description,
+        },
+        SslVpnUser{
+            UserName: UserName
+            Password: UserName,
+        },
+    },
+}
+res, err := client.BatchCreateSslVpnUser(args)
+ExpectEqual(t.Errorf, nil, err)
+if err1 != nil {
+    fmt.Printf("batch create ssl-vpn user error: %+v\n", err)
+	return
+}
+fmt.Printf("batch create ssl-vpn user success,SslVpnUserIds are: %+v",res.SslVpnUserIds)
+```
+## 查询SSL-VPN用户
+使用一下代码可以查询指定VPN的SSL-VPN用户列表
+```go
+// import "github.com/baidubce/bce-sdk-go/services/vpn"
+
+args := &ListSslVpnUserArgs{
+    MaxKeys: MaxKeys,
+    VpnId:   VpnId,
+}
+result,err := client.ListSslVpnUser(args)
+if  err != nil {
+  fmt.Printf("get ssl-vpn user error: %+v\n", err)
+  return
+}
+
+// 返回标记查询的起始位置
+fmt.Println("ssl-vpn user list marker: ", result.Marker)
+// true表示后面还有数据，false表示已经是最后一页
+fmt.Println("ssl-vpn user list isTruncated: ", result.IsTruncated)
+// 获取下一页所需要传递的marker值。当isTruncated为false时，该域不出现
+fmt.Println("ssl-vpn user list nextMarker: ", result.NextMarker)
+// 每页包含的最大数量
+fmt.Println("ssl-vpn user list maxKeys: ", result.MaxKeys)
+// 获取ssl-vpn user的具体信息
+for _, v := range result.SslVpnUsers {
+    fmt.Println("ssl-vpn user id: ", v.UserId)
+    fmt.Println("ssl-vpn username: ", v.UserName)
+    fmt.Println("ssl-vpn user description: ", v.Description)
+}
+```
+## 更新SSL-VPN用户
+使用以下代码可以修改指定VPN的SSL-VPN用户信息
+```go
+// import "github.com/baidubce/bce-sdk-go/services/vpn"
+
+args := &UpdateSslVpnUserArgs{
+    ClientToken: ClientToken(),
+    VpnId:       VpnId,
+    UserId:      UserId,
+    SslVpnUser: &UpdateSslVpnUser{
+        Password:    Password,
+        Description: Description,
+    },
+}
+err := client.UpdateSslVpnUser(args)
+if  err != nil {
+    fmt.Printf("update ssl-vpn user error: %+v\n", err)
+    return
+}
+fmt.Printf("update ssl-vpn user success")
+```
+> SSL-VPN用户的用户名不能更改，这个用户名一般是唯一不变的账户名称
+## 删除SSL-VPN用户
+```go
+// import "github.com/baidubce/bce-sdk-go/services/vpn"
+
+err := client.DeleteSslVpnUser(vpnId, userId, clientToken)
+if err != nil {
+    fmt.Printf("delete ssl-vpn user error: %+v\n", err)
+    return
+}
+
+fmt.Printf("delete ssl-vpn user success\n")
+```
 # 错误处理
 
 GO语言以error类型标识错误，VPN支持两种错误见下表：

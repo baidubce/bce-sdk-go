@@ -1031,6 +1031,46 @@ if err := client.UnBindEips(natId, args); err != nil {
 fmt.Println("unbind eips success.")
 ```
 
+## 绑定DNAT EIP
+
+使用以下代码可以为nat网关绑定DNAT EIP。
+```go
+//import "github.com/baidubce/bce-sdk-go/services/vpc"
+
+args := &vpc.BindDnatEipsArgs{
+	// 设置绑定的DNAT EIP ID列表
+    DnatEips: []string{dnatEips},
+}
+if err := client.BindDnatEips(natId, args); err != nil {
+    fmt.Println("bind DNAT Eips error: ", err)
+    return 
+}
+
+fmt.Println("bind DNAT Eips success.")
+```
+
+注意:
+- 若该NAT DNAT已经绑定EIP，必须解绑后才可绑定。
+- 若该NAT DNAT已经绑定共享带宽，可以继续绑定该共享带宽中的其他IP。
+
+## 解绑DNAT EIP
+
+使用以下代码可以为nat网关解绑DNAT EIP。
+```go
+//import "github.com/baidubce/bce-sdk-go/services/vpc"
+
+args := &vpc.UnBindDnatEipsArgs{
+	// 设置解绑的DNAT EIP ID列表
+    DnatEips: []string{dnatEips},
+}
+if err := client.UnBindDnatEips(natId, args); err != nil {
+    fmt.Println("unbind DNAT Eips error: ", err)
+    return 
+}
+
+fmt.Println("unbind DNAT Eips success.")
+```
+
 ## 释放NAT网关
 
 使用以下代码释放特定的nat网关。

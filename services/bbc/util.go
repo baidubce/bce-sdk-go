@@ -89,3 +89,7 @@ func getVolumeUri() string {
 func geBbcStockWithDeploySetUri() string {
 	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + "/getStockWithDeploySet"
 }
+
+func getListInstancesByIdsUrl() string {
+	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + "/listByInstanceId"
+}

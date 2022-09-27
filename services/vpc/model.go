@@ -340,6 +340,7 @@ type CreateNatGatewayArgs struct {
 	Name        string             `json:"name"`
 	VpcId       string             `json:"vpcId"`
 	Spec        NatGatewaySpecType `json:"spec"`
+	CuNum       string             `json:"cuNum,omitempty"`
 	Eips        []string           `json:"eips,omitempty"`
 	Billing     *Billing           `json:"billing"`
 }
@@ -384,6 +385,7 @@ type NAT struct {
 	Name          string        `json:"name"`
 	VpcId         string        `json:"vpcId"`
 	Spec          string        `json:"spec"`
+	CuNum         string        `json:"cuNum"`
 	Status        NatStatusType `json:"status"`
 	Eips          []string      `json:"eips"`
 	PaymentTiming string        `json:"paymentTiming"`
@@ -436,10 +438,22 @@ type BindEipsArgs struct {
 	Eips        []string `json:"eips"`
 }
 
+// BindDnatEipsArgs defines the structure of the input parameters for the BindDnatEips api
+type BindDnatEipsArgs struct {
+	ClientToken string   `json:"-"`
+	DnatEips    []string `json:"dnatEips"`
+}
+
 // UnBindEipsArgs defines the structure of the input parameters for the UnBindEips api
 type UnBindEipsArgs struct {
 	ClientToken string   `json:"-"`
 	Eips        []string `json:"eips"`
+}
+
+// UnBindDnatEipsArgs defines the structure of the input parameters for the UnBindDnatEips api
+type UnBindDnatEipsArgs struct {
+	ClientToken string   `json:"-"`
+	DnatEips    []string `json:"dnatEips"`
 }
 
 // RenewNatGatewayArgs defines the structure of the input parameters for the RenewNatGateway api

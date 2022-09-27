@@ -38,11 +38,30 @@ type CreateEipArgs struct {
 	AutoRenewTimeUnit string           `json:"autoRenewTimeUnit,omitempty"`
 	AutoRenewTime     int              `json:"autoRenewTime,omitempty"`
 	RouteType         string           `json:"routeType,omitempty"`
+	Idc               string           `json:"idc,omitempty"`
+	ClientToken       string           `json:"-"`
+}
+
+type BatchCreateEipArgs struct {
+	Name              string           `json:"name,omitempty"`
+	BandWidthInMbps   int              `json:"bandwidthInMbps"`
+	Billing           *Billing         `json:"billing"`
+	Tags              []model.TagModel `json:"tags"`
+	AutoRenewTimeUnit string           `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime     int              `json:"autoRenewTime,omitempty"`
+	RouteType         string           `json:"routeType,omitempty"`
+	Idc               string           `json:"idc,omitempty"`
+	Continuous        bool             `json:"continuous,omitempty"`
+	Count             int              `json:"count,omitempty"`
 	ClientToken       string           `json:"-"`
 }
 
 type CreateEipResult struct {
 	Eip string `json:"eip"`
+}
+
+type BatchCreateEipResult struct {
+	Eips []string `json:"eips"`
 }
 
 type ResizeEipArgs struct {
@@ -206,4 +225,91 @@ type EipTpDetail struct {
 	ActiveTime   string `json:"activeTime,omitempty"`
 	ExpireTime   string `json:"expireTime,omitempty"`
 	CreateTime   string `json:"createTime,omitempty"`
+}
+
+type CreateEipGroupArgs struct {
+	Name            string           `json:"name,omitempty"`
+	EipCount        int              `json:"eipCount"`
+	BandWidthInMbps int              `json:"bandwidthInMbps"`
+	Billing         *Billing         `json:"billing"`
+	Tags            []model.TagModel `json:"tags"`
+	RouteType       string           `json:"routeType,omitempty"`
+	Idc             string           `json:"idc,omitempty"`
+	Continuous      bool             `json:"continuous,omitempty"`
+	ClientToken     string           `json:"-"`
+}
+
+type CreateEipGroupResult struct {
+	Id string `json:"id"`
+}
+
+type ResizeEipGroupArgs struct {
+	BandWidthInMbps int    `json:"bandwidthInMbps"`
+	ClientToken     string `json:"-"`
+}
+
+type GroupAddEipCountArgs struct {
+	EipAddCount int    `json:"eipAddCount"`
+	ClientToken string `json:"-"`
+}
+
+type ReleaseEipGroupIpsArgs struct {
+	ReleaseIps  []string `json:"releaseIps"`
+	ClientToken string   `json:"-"`
+}
+
+type RenameEipGroupArgs struct {
+	Name        string `json:"name"`
+	ClientToken string `json:"-"`
+}
+
+type ListEipGroupArgs struct {
+	Id      string
+	Name    string
+	Marker  string
+	MaxKeys int
+	Status  string
+}
+
+type ListEipGroupResult struct {
+	Marker      string          `json:"marker"`
+	MaxKeys     int             `json:"maxKeys"`
+	NextMarker  string          `json:"nextMarker"`
+	IsTruncated bool            `json:"isTruncated"`
+	EipGroup    []EipGroupModel `json:"eipgroups"`
+}
+
+type EipGroupModel struct {
+	Name                      string     `json:"name"`
+	Status                    string     `json:"status"`
+	Id                        string     `json:"id"`
+	BandWidthInMbps           int        `json:"bandwidthInMbps"`
+	DefaultDomesticBandwidth  int        `json:"defaultDomesticBandwidth"`
+	BwShortId                 string     `json:"bwShortId"`
+	BwBandwidthInMbps         int        `json:"bwBandwidthInMbps"`
+	DomesticBwShortId         string     `json:"domesticBwShortId"`
+	DomesticBwBandwidthInMbps int        `json:"domesticBwBandwidthInMbps"`
+	PaymentTiming             string     `json:"paymentTiming"`
+	BillingMethod             string     `json:"billingMethod"`
+	CreateTime                string     `json:"createTime"`
+	ExpireTime                string     `json:"expireTime"`
+	Region                    string     `json:"region"`
+	RouteType                 string     `json:"routeType"`
+	Eips                      []EipModel `json:"eips"`
+}
+
+type EipGroupMoveOutArgs struct {
+	MoveOutEips []MoveOutEip `json:"moveOutEips"`
+	ClientToken string       `json:"-"`
+}
+
+type MoveOutEip struct {
+	Eip             string   `json:"eip"`
+	BandWidthInMbps int      `json:"bandwidthInMbps"`
+	Billing         *Billing `json:"billing"`
+}
+
+type EipGroupMoveInArgs struct {
+	Eips        []string `json:"eips"`
+	ClientToken string   `json:"-"`
 }

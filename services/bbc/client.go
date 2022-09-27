@@ -1198,3 +1198,12 @@ func (c *Client) ListCDSVolume(queryArgs *ListCDSVolumeArgs) (*ListCDSVolumeResu
 func (c *Client) GetBbcStockWithDeploySet(args *GetBbcStockArgs) (*GetBbcStocksResult, error) {
 	return GetStockWithDeploySet(c, args)
 }
+
+// ListInstanceByInstanceIds - list bbc detail info by instanceId
+//
+// RETURNS:
+//		- *ListInstancesResult: the result of list bbc detail info
+//		- error: nil if success otherwise the specific error
+func (c *Client) ListInstanceByInstanceIds(args *ListInstanceByInstanceIdArgs) (*ListInstancesResult, error) {
+	return ListInstanceByInstanceIds(c, args)
+}

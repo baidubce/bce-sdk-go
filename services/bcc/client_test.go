@@ -1375,3 +1375,21 @@ func TestBatchResizeInstance(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(res)
 }
+
+func TestClient_DeleteSecurityGroupRule(t *testing.T) {
+	args := &api.DeleteSecurityGroupRuleArgs{
+		SecurityGroupRuleId: "r-zkcrsnesy13b",
+	}
+	err := BCC_CLIENT.DeleteSecurityGroupRule(args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UpdateSecurityGroupRule(t *testing.T) {
+	remark := ""
+	args := &api.UpdateSecurityGroupRuleArgs{
+		SecurityGroupRuleId: "r-sdxzpzxe2igh",
+		Remark:              &remark,
+	}
+	err := BCC_CLIENT.UpdateSecurityGroupRule(args)
+	ExpectEqual(t.Errorf, nil, err)
+}

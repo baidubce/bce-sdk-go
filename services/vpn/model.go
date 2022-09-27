@@ -184,3 +184,107 @@ type UpdateVpnConnArgs struct {
 type ListVpnConnResult struct {
 	VpnConns []VpnConn `json:"vpnConns"`
 }
+
+// SslVpnServer defines the structure of the output parameters for the GetSslVpnServer api
+type SslVpnServer struct {
+	VpnId            string   `json:"vpnId"`
+	SslVpnServerId   string   `json:"sslVpnServerId"`
+	SslVpnServerName string   `json:"sslVpnServerName"`
+	InterfaceType    string   `json:"interfaceType"`
+	Status           string   `json:"status"`
+	LocalSubnets     []string `json:"localSubnets"`
+	RemoteSubnet     string   `json:"remoteSubnet"`
+	ClientDns        string   `json:"clientDns"`
+	MaxConnection    int      `json:"maxConnection"`
+}
+
+// CreateSslVpnServerArgs defines the structure of the input parameters for the CreateSslVpnServer api
+type CreateSslVpnServerArgs struct {
+	ClientToken      string   `json:"-"`
+	VpnId            string   `json:"vpnId"`
+	SslVpnServerName string   `json:"sslVpnServerName"`
+	InterfaceType    *string  `json:"interfaceType,omitempty"`
+	LocalSubnets     []string `json:"localSubnets"`
+	RemoteSubnet     string   `json:"remoteSubnet"`
+	ClientDns        *string  `json:"clientDns,omitempty"`
+}
+
+// UpdateSslVpnServer defines part of the structure of the input parameters for the UpdateSslVpnServer api
+type UpdateSslVpnServer struct {
+	SslVpnServerName string   `json:"sslVpnServerName,omitempty"`
+	LocalSubnets     []string `json:"localSubnets,omitempty"`
+	RemoteSubnet     string   `json:"remoteSubnet,omitempty"`
+	ClientDns        *string  `json:"clientDns,omitempty"`
+}
+
+// CreateSslVpnServerResult defines the structure of the output parameters for the CreateSslVpnServer api
+type CreateSslVpnServerResult struct {
+	SslVpnServerId string `json:"sslVpnServerId"`
+}
+
+// UpdateSslVpnServerArgs defines the structure of input parameters for the UpdateSslVpnServer api
+type UpdateSslVpnServerArgs struct {
+	ClientToken        string              `json:"-"`
+	VpnId              string              `json:"VpnId"`
+	SslVpnServerId     string              `json:"sslVpnServerId"`
+	UpdateSslVpnServer *UpdateSslVpnServer `json:"updateSslVpnServer"`
+}
+
+// ListSslVpnServerResult defines the structure of output parameters for the ListSslVpnServer api
+type ListSslVpnServerResult struct {
+	SslVpnServers []SslVpnServer `json:"sslVpnServers"`
+}
+
+type SslVpnUser struct {
+	UserName    string  `json:"userName"`
+	Password    string  `json:"password"`
+	Description *string `json:"description,omitempty"`
+}
+
+type SelectSslVpnUser struct {
+	UserId      string `json:"userId"`
+	UserName    string `json:"userName"`
+	Description string `json:"description"`
+}
+
+type UpdateSslVpnUser struct {
+	Password    string  `json:"password,omitempty"`
+	Description *string `json:"description,omitempty"`
+}
+
+// BatchCreateSslVpnUserArgs defines the structure of the input parameters for the CreateSslVpnUser api
+type BatchCreateSslVpnUserArgs struct {
+	ClientToken string       `json:"-"`
+	VpnId       string       `json:"vpnId"`
+	SslVpnUsers []SslVpnUser `json:"sslVpnUsers"`
+}
+
+// BatchCreateSslVpnUserResult defines the structure of the output parameters for the BatchCreateSslVpnUser api
+type BatchCreateSslVpnUserResult struct {
+	SslVpnUserIds []string `json:"sslVpnUserIds"`
+}
+
+// UpdateSslVpnUserArgs defines the structure of input parameters for the UpdateSslVpnUser api
+type UpdateSslVpnUserArgs struct {
+	ClientToken string            `json:"-"`
+	VpnId       string            `json:"vpnId"`
+	UserId      string            `json:"userId"`
+	SslVpnUser  *UpdateSslVpnUser `json:"sslVpnUser"`
+}
+
+// ListSslVpnUserArgs defines the structure of input parameters for the ListSslVpnUser api
+type ListSslVpnUserArgs struct {
+	Marker   string `json:"marker"`
+	MaxKeys  int    `json:"maxKeys"`
+	VpnId    string `json:"vpnId"`
+	UserName string `json:"username"`
+}
+
+// ListSslVpnUserResult defines the structure of output parameters for the ListSslVpnUser api
+type ListSslVpnUserResult struct {
+	Marker      string             `json:"marker"`
+	IsTruncated bool               `json:"isTruncated"`
+	NextMarker  string             `json:"nextMarker"`
+	MaxKeys     int                `json:"maxKeys"`
+	SslVpnUsers []SelectSslVpnUser `json:"sslVpnUsers"`
+}

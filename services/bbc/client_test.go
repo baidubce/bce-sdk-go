@@ -848,3 +848,21 @@ func TestGetBbcStockWithDeploySet(t *testing.T) {
 		fmt.Printf("get bbc stock, result : %s", data)
 	}
 }
+
+func TestListInstanceByInstanceIds(t *testing.T) {
+	args := &ListInstanceByInstanceIdArgs{
+		InstanceIds: []string{"i-3s8MUcfl"},
+	}
+	result, err := BBC_CLIENT.ListInstanceByInstanceIds(args)
+	if err != nil {
+		fmt.Println("list instance failed: ", err)
+	} else {
+		fmt.Println("list instance  success")
+		data, e := json.Marshal(result)
+		if e != nil {
+			fmt.Println("json marshal failed!")
+			return
+		}
+		fmt.Printf("list instance : %s", data)
+	}
+}

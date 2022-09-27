@@ -216,6 +216,7 @@ type UpdateLoadBalancerArgs struct {
 	ClientToken string `json:"-"`
 	Name        string `json:"name,omitempty"`
 	Description string `json:"desc,omitempty"`
+	AllowDelete *bool  `json:"allowDelete,omitempty"`
 }
 
 type DescribeLoadBalancersArgs struct {
@@ -240,7 +241,8 @@ type AppBLBModel struct {
 	Layer4ClusterId string           `json:"layer4ClusterId"`
 	Layer7ClusterId string           `json:"layer7ClusterId"`
 	Tags            []model.TagModel `json:"tags"`
-	EipRouteType	string			 `json:"eipRouteType"`
+	EipRouteType    string           `json:"eipRouteType"`
+	AllowDelete     bool             `json:"allowDelete"`
 }
 
 type DescribeLoadBalancersResult struct {

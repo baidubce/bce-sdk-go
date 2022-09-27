@@ -97,6 +97,18 @@ type VPCConfig struct {
 	VPCSubnetCIDRIPv6 string         `json:"vpcSubnetCIDRIPv6,omitempty"`
 
 	AvailableZone AvailableZone `json:"availableZone,omitempty"`
+
+	SecurityGroup SecurityGroup `json:"securityGroup,omitempty"`
+}
+
+// SecurityGroup 定义 Instance 安全组配置
+type SecurityGroup struct {
+	// 是否附加 CCE 必须安全组
+	EnableCCERequiredSecurityGroup bool `json:"enableCCERequiredSecurityGroup"`
+	// 是否附加 CCE 可选安全组
+	EnableCCEOptionalSecurityGroup bool `json:"enableCCEOptionalSecurityGroup"`
+	// 用户自定义安全组 ID 列表
+	CustomSecurityGroupIDs []string `json:"customSecurityGroups,omitempty"`
 }
 
 // InstanceResource 定义 Instance CPU/MEM/Disk 配置

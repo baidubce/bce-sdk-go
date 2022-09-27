@@ -188,6 +188,10 @@ func getSecurityGroupUriWithId(id string) string {
 	return URI_PREFIXV2 + REQUEST_SECURITYGROUP_URI + "/" + id
 }
 
+func getSecurityGroupRuleUri() string {
+	return URI_PREFIXV2 + REQUEST_SECURITYGROUP_URI + "/rule"
+}
+
 func getImageUri() string {
 	return URI_PREFIXV2 + REQUEST_IMAGE_URI
 }

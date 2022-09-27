@@ -44,6 +44,7 @@ type CreateLoadBalancerArgs struct {
 	SubnetId        string           `json:"subnetId"`
 	VpcId           string           `json:"vpcId"`
 	ClusterProperty string           `json:"clusterProperty"`
+	Type            string           `json:"type,omitempty"`
 	Tags            []model.TagModel `json:"tags,omitempty"`
 }
 
@@ -58,6 +59,12 @@ type UpdateLoadBalancerArgs struct {
 	ClientToken string `json:"-"`
 	Name        string `json:"name,omitempty"`
 	Description string `json:"desc,omitempty"`
+	AllowDelete *bool  `json:"allowDelete,omitempty"`
+}
+
+type UpdateLoadBalancerAclArgs struct {
+	ClientToken string `json:"-"`
+	SupportAcl  *bool  `json:"supportAcl,omitempty"`
 }
 
 type DescribeLoadBalancersArgs struct {
@@ -83,7 +90,8 @@ type BLBModel struct {
 	Layer4ClusterId string           `json:"layer4ClusterId"`
 	Layer7ClusterId string           `json:"layer7ClusterId"`
 	Tags            []model.TagModel `json:"tags"`
-	EipRouteType    string			 `json:"eipRouteType"`
+	EipRouteType    string           `json:"eipRouteType"`
+	AllowDelete     bool             `json:"allowDelete"`
 }
 
 type DescribeLoadBalancersResult struct {
@@ -562,4 +570,33 @@ type ClusterModel struct {
 	ClusterType   string `json:"clusterType"`
 	ClusterRegion string `json:"clusterRegion"`
 	ClusterAz     string `json:"clusterAz"`
+}
+
+type UpdateSecurityGroupsArgs struct {
+	ClientToken      string   `json:"-"`
+	SecurityGroupIds []string `json:"securityGroupIds"`
+}
+
+type DescribeSecurityGroupsResult struct {
+	BlbSecurityGroups []BlbSecurityGroupModel `json:"blbSecurityGroups"`
+}
+
+type BlbSecurityGroupModel struct {
+	SecurityGroupId    string                  `json:"securityGroupId"`
+	SecurityGroupName  string                  `json:"securityGroupName"`
+	SecurityGroupDesc  string                  `json:"securityGroupDesc"`
+	VpcName            string                  `json:"vpcName"`
+	SecurityGroupRules []BlbSecurityGroupRuleModel `json:"securityGroupRules"`
+}
+
+type BlbSecurityGroupRuleModel struct {
+	SecurityGroupRuleId string `json:"securityGroupRuleId"`
+	Direction           string `json:"direction"`
+	Ethertype           string `json:"ethertype,omitempty"`
+	PortRange           string `json:"portRange,omitempty"`
+	Protocol            string `json:"protocol,omitempty"`
+	SourceGroupId       string `json:"sourceGroupId,omitempty"`
+	SourceIp            string `json:"sourceIp,omitempty"`
+	DestGroupId         string `json:"destGroupId,omitempty"`
+	DestIp              string `json:"destIp,omitempty"`
 }

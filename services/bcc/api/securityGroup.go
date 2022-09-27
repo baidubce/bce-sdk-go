@@ -19,6 +19,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"github.com/baidubce/bce-sdk-go/bce"
@@ -224,4 +225,39 @@ func DeleteSecurityGroup(cli bce.Client, securityGroupId string) error {
 
 	defer func() { resp.Body().Close() }()
 	return nil
+}
+
+// DeleteSecurityGroupRule - delete a security group rule
+//
+// PARAMS:
+//	   - securityGroupRuleId: the id of the specific security group rule
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func DeleteSecurityGroupRule(cli bce.Client, args *DeleteSecurityGroupRuleArgs) error {
+	builder := bce.NewRequestBuilder(cli).
+		WithURL(getSecurityGroupRuleUri() + "/" + args.SecurityGroupRuleId).
+		WithMethod(http.DELETE)
+	if args.SgVersion != 0 {
+		builder.WithQueryParamFilter("sgVersion", strconv.FormatInt(args.SgVersion, 10))
+	}
+	return builder.Do()
+}
+
+// UpdateSecurityGroupRule - update security group rule with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to update the specific security group rule
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func UpdateSecurityGroupRule(cli bce.Client, args *UpdateSecurityGroupRuleArgs) error {
+	if args == nil {
+		return fmt.Errorf("the UpdateSecurityGroupRuleArgs cannot be nil")
+	}
+	builder := bce.NewRequestBuilder(cli).
+		WithURL(getSecurityGroupRuleUri() + "/update").
+		WithMethod(http.PUT)
+	if args.SgVersion != 0 {
+		builder.WithQueryParamFilter("sgVersion", strconv.FormatInt(args.SgVersion, 10))
+	}
+	return builder.WithBody(args).Do()
 }

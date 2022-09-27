@@ -19,7 +19,7 @@ var (
 	CLUSTER_ID  string
 	// set this value before start test
 	BCC_TEST_ID = ""
-	EIP_TP_ID = "tp-R4E8cWijbf"
+	EIP_TP_ID   = ""
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -86,6 +86,29 @@ func TestClient_CreateEip(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 
 	EIP_ADDRESS = result.Eip
+}
+
+func TestClient_BatchCreateEip(t *testing.T) {
+	args := &BatchCreateEipArgs{
+		Name:            "sdk-eip",
+		BandWidthInMbps: 1,
+		Billing: &Billing{
+			PaymentTiming: "Postpaid",
+			BillingMethod: "ByBandwidth",
+		},
+		Count:     254,
+		RouteType: "BGP",
+		//Idc:         "bjdd_cu",
+		Continuous:  true,
+		ClientToken: getClientToken(),
+	}
+	result, err := EIP_CLIENT.BatchCreateEip(args)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		r, _ := json.Marshal(result)
+		fmt.Println(string(r))
+	}
 }
 
 func TestClient_ResizeEip(t *testing.T) {
@@ -175,7 +198,7 @@ func TestClient_UnDirectEip(t *testing.T) {
 
 func TestClient_ListRecycleEip(t *testing.T) {
 	args := &ListRecycleEipArgs{
-		Marker: "",
+		Marker:  "",
 		MaxKeys: 1,
 	}
 	result, err := EIP_CLIENT.ListRecycleEip(args)
@@ -208,15 +231,116 @@ func TestClient_CreateEipTp(t *testing.T) {
 
 func TestClient_ListEipTp(t *testing.T) {
 	args := &ListEipTpArgs{
-		Id: "tp-R4E8cWijbf",
+		Id:           "tp-R4E8cWijbf",
 		DeductPolicy: "FullTimeDurationPackage",
-		Status: "RUNNING",
+		Status:       "RUNNING",
 	}
 	fmt.Println(EIP_CLIENT.ListEipTp(args))
 }
 
 func TestClient_GetEipTp(t *testing.T) {
 	fmt.Println(EIP_CLIENT.GetEipTp("tp-hfI9pKIL58"))
+}
+
+func TestClient_CreateEipGroup(t *testing.T) {
+	args := &CreateEipGroupArgs{
+		Name:            "sdk-eipGroup",
+		BandWidthInMbps: 500,
+		Billing: &Billing{
+			PaymentTiming: "Postpaid",
+			BillingMethod: "ByBandwidth",
+		},
+		EipCount:    254,
+		RouteType:   "BGP",
+		Continuous:  true,
+		ClientToken: getClientToken(),
+	}
+	result, err := EIP_CLIENT.CreateEipGroup(args)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		r, _ := json.Marshal(result)
+		fmt.Println(string(r))
+	}
+}
+
+func TestClient_ResizeEipGroupBandWidth(t *testing.T) {
+	args := &ResizeEipGroupArgs{
+		BandWidthInMbps: 22,
+		ClientToken:     getClientToken(),
+	}
+	EIP_CLIENT.ResizeEipGroupBandWidth("eg-2b1ef0db", args)
+}
+
+func TestClient_EipGroupAddEipCount(t *testing.T) {
+	args := &GroupAddEipCountArgs{
+		EipAddCount: 1,
+		ClientToken: getClientToken(),
+	}
+	EIP_CLIENT.EipGroupAddEipCount("eg-2b1ef0db", args)
+}
+
+func TestClient_ReleaseEipGroupIps(t *testing.T) {
+	Eips := []string{"100.88.3.216"}
+	args := &ReleaseEipGroupIpsArgs{
+		ReleaseIps:  Eips,
+		ClientToken: getClientToken(),
+	}
+	EIP_CLIENT.ReleaseEipGroupIps("eg-2b1ef0db", args)
+}
+
+func TestClient_RenameEipGroup(t *testing.T) {
+	args := &RenameEipGroupArgs{
+		Name:        "new_SDK_111",
+		ClientToken: getClientToken(),
+	}
+	EIP_CLIENT.RenameEipGroup("eg-2b1ef0db", args)
+}
+
+func TestClient_ListEipGroup(t *testing.T) {
+	result, err := EIP_CLIENT.ListEipGroup(nil)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		r, _ := json.Marshal(result)
+		fmt.Println(string(r))
+	}
+}
+
+func TestClient_EipGroupDetail(t *testing.T) {
+	result, err := EIP_CLIENT.EipGroupDetail("eg-2b1ef0db")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		r, _ := json.Marshal(result)
+		fmt.Println(string(r))
+	}
+}
+
+func TestClient_EipGroupMoveIn(t *testing.T) {
+	Ips := []string{"100.88.1.231"}
+	args := &EipGroupMoveInArgs{
+		Eips:        Ips,
+		ClientToken: getClientToken(),
+	}
+	EIP_CLIENT.EipGroupMoveIn("eg-2b1ef0db", args)
+}
+
+func TestClient_EipGroupMoveOut(t *testing.T) {
+	args := &EipGroupMoveOutArgs{
+		MoveOutEips: []MoveOutEip{
+			{
+				Eip:             "100.88.11.128",
+				BandWidthInMbps: 11,
+				Billing: &Billing{
+					PaymentTiming: "Postpaid",
+					BillingMethod: "ByBandwidth",
+				},
+			},
+		},
+		ClientToken: getClientToken(),
+	}
+	EIP_CLIENT.EipGroupMoveOut("eg-2b1ef0db", args)
 }
 
 func getClientToken() string {

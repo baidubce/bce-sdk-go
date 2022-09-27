@@ -319,12 +319,30 @@ func TestUpdateAclRule(t *testing.T) {
 	}
 }
 
-func TestCreateNatGateway(t *testing.T) {
+func TestCreateDefaultNatGateway(t *testing.T) {
 	args := &CreateNatGatewayArgs{
 		ClientToken: getClientToken(),
 		Name:        "Test-SDK-NatGateway",
 		VpcId:       VPCID,
 		Spec:        NAT_GATEWAY_SPEC_SMALL,
+		Billing: &Billing{
+			PaymentTiming: PAYMENT_TIMING_POSTPAID,
+		},
+	}
+	result, err := VPC_CLIENT.CreateNatGateway(args)
+	ExpectEqual(t.Errorf, nil, err)
+	NatID = result.NatId
+
+	err = waitStateForNatGateway(NatID, NAT_STATUS_UNCONFIGURED)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestCreateEnhanceNatGateway(t *testing.T) {
+	args := &CreateNatGatewayArgs{
+		ClientToken: getClientToken(),
+		Name:        "Test-SDK-NatGateway-CU",
+		VpcId:       VPCID,
+		CuNum:       "3",
 		Billing: &Billing{
 			PaymentTiming: PAYMENT_TIMING_POSTPAID,
 		},
@@ -921,4 +939,22 @@ func TestGetNetworkTopologyInfo(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 	r, err := json.Marshal(result)
 	fmt.Println(string(r))
+}
+
+func TestClient_BindDnatEips(t *testing.T) {
+	args := &BindDnatEipsArgs{
+		ClientToken: getClientToken(),
+		DnatEips:    []string{"100.88.14.243"},
+	}
+	err := VPC_CLIENT.BindDnatEips("nat-bc39ugw5ry9z", args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UnBindDnatEips(t *testing.T) {
+	args := &UnBindDnatEipsArgs{
+		ClientToken: getClientToken(),
+		DnatEips:    []string{"100.88.14.243"},
+	}
+	err := VPC_CLIENT.UnBindDnatEips("nat-bc39ugw5ry9z", args)
+	ExpectEqual(t.Errorf, nil, err)
 }

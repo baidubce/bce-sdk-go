@@ -374,6 +374,41 @@ func TestClient_DescribeLbClusterDetail(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
+func TestClient_UpdateLoadBalancerAcl(t *testing.T) {
+	supportAcl := new(bool)
+	*supportAcl = true
+	updateArgs := &UpdateLoadBalancerAclArgs{
+		ClientToken: getClientToken(),
+		SupportAcl: supportAcl,
+	}
+	err := BLB_CLIENT.UpdateLoadBalancerAcl(BLB_ID, updateArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_BindSecurityGroups(t *testing.T) {
+	updateArgs := &UpdateSecurityGroupsArgs{
+		ClientToken: getClientToken(),
+		SecurityGroupIds:    []string{"sg-id"},
+	}
+	err := BLB_CLIENT.BindSecurityGroups(BLB_ID, updateArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UnbindSecurityGroups(t *testing.T) {
+	updateArgs := &UpdateSecurityGroupsArgs{
+		ClientToken: getClientToken(),
+		SecurityGroupIds:    []string{"sg-id"},
+	}
+	err := BLB_CLIENT.UnbindSecurityGroups(BLB_ID, updateArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DescribeSecurityGroups(t *testing.T) {
+	res, err := BLB_CLIENT.DescribeSecurityGroups(BLB_ID)
+	fmt.Println(res)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
 func getClientToken() string {
 	return util.NewUUID()
 }
