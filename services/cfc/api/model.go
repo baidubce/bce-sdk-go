@@ -300,7 +300,7 @@ const (
 	BosEventTypePostObject              BosEventType = "PostObject"
 	BosEventTypeAppendObject            BosEventType = "AppendObject"
 	BosEventTypeCopyObject              BosEventType = "CopyObject"
-	BosEventTypeCompleteMultipartObject BosEventType = "CompleteMultipartObject"
+	BosEventTypeCompleteMultipartObject BosEventType = "CompleteMultipartUpload"
 )
 
 type BosTriggerData struct {
