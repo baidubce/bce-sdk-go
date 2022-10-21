@@ -123,6 +123,7 @@ type CreateInstanceArgs struct {
 	InternalIps               []string         `json:"internalIps,omitempty"`
 	RequestToken              string           `json:"requestToken"`
 	EnableNuma                bool             `json:"enableNuma"`
+	EnableHt                  bool             `json:"enableHt"`
 	RootPartitionType         string           `json:"rootPartitionType,omitempty"`
 	DataPartitionType         string           `json:"dataPartitionType,omitempty"`
 }
@@ -164,6 +165,7 @@ type CreateSpecialInstanceArgs struct {
 	InternalIps               []string         `json:"internalIps,omitempty"`
 	RequestToken              string           `json:"requestToken"`
 	EnableNuma                bool             `json:"enableNuma"`
+	EnableHt                  bool             `json:"enableHt"`
 	RootPartitionType         string           `json:"rootPartitionType,omitempty"`
 	DataPartitionType         string           `json:"dataPartitionType,omitempty"`
 	// CreateInstanceArgs 的基础上增加的参数

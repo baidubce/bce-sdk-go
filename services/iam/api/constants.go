@@ -15,11 +15,16 @@
 package api
 
 const (
-	URI_PREFIX = "/v1"
-	URI_USER   = "/user"
-	URI_GROUP  = "/group"
-	URI_POLICY = "/policy"
+	URI_PREFIX    = "/v1"
+	URI_USER      = "/user"
+	URI_GROUP     = "/group"
+	URI_POLICY    = "/policy"
+	URI_ACCESSKEY = "/accesskey"
+	URI_ROLE      = "/role"
 
 	POLICY_TYPE_SYSTEM = "System"
 	POLICY_TYPE_CUSTOM = "Custom"
+
+	ACCESSKEY_STATUS_ENABLE  = "enable"
+	ACCESSKEY_STATUS_DISABLE = "disable"
 )

@@ -37,6 +37,7 @@ func CreateGroup(cli bce.Client, body *bce.Body) (*CreateGroupResult, error) {
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
+	defer func() { resp.Body().Close() }()
 	return jsonBody, nil
 }
 
@@ -56,6 +57,7 @@ func GetGroup(cli bce.Client, name string) (*GetGroupResult, error) {
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
+	defer func() { resp.Body().Close() }()
 	return jsonBody, nil
 }
 
@@ -77,6 +79,7 @@ func UpdateGroup(cli bce.Client, name string, body *bce.Body) (*UpdateGroupResul
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
+	defer func() { resp.Body().Close() }()
 	return jsonBody, nil
 }
 
@@ -92,6 +95,7 @@ func DeleteGroup(cli bce.Client, name string) error {
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
@@ -111,6 +115,7 @@ func ListGroup(cli bce.Client) (*ListGroupResult, error) {
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
+	defer func() { resp.Body().Close() }()
 	return jsonBody, nil
 }
 
@@ -126,6 +131,7 @@ func AddUserToGroup(cli bce.Client, userName string, groupName string) error {
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
@@ -141,6 +147,7 @@ func DeleteUserFromGroup(cli bce.Client, userName string, groupName string) erro
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
@@ -160,6 +167,7 @@ func ListUsersInGroup(cli bce.Client, name string) (*ListUsersInGroupResult, err
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
+	defer func() { resp.Body().Close() }()
 	return jsonBody, nil
 }
 
@@ -179,6 +187,7 @@ func ListGroupsForUser(cli bce.Client, name string) (*ListGroupsForUserResult, e
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
+	defer func() { resp.Body().Close() }()
 	return jsonBody, nil
 }
 

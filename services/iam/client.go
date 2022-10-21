@@ -194,6 +194,66 @@ func (c *Client) ListGroupAttachedPolicies(name string) (*api.ListPolicyResult, 
 	return api.ListGroupAttachedPolicies(c, name)
 }
 
+func (c *Client) CreateAccessKey(userName string) (*api.CreateAccessKeyResult, error) {
+	return api.CreateAccessKey(c, userName)
+}
+
+func (c *Client) DisableAccessKey(userName, accessKeyId string) (*api.UpdateAccessKeyResult, error) {
+	return api.DisableAccessKey(c, userName, accessKeyId)
+}
+
+func (c *Client) EnableAccessKey(userName, accessKeyId string) (*api.UpdateAccessKeyResult, error) {
+	return api.EnableAccessKey(c, userName, accessKeyId)
+}
+
+func (c *Client) DeleteAccessKey(userName, accessKeyId string) error {
+	return api.DeleteAccessKey(c, userName, accessKeyId)
+}
+
+func (c *Client) ListAccessKey(userName string) (*api.ListAccessKeyResult, error) {
+	return api.ListAccessKey(c, userName)
+}
+
+func (c *Client) CreateRole(args *api.CreateRoleArgs) (*api.CreateRoleResult, error) {
+	body, err := NewBodyFromStruct(args)
+	if err != nil {
+		return nil, err
+	}
+	return api.CreateRole(c, body)
+}
+
+func (c *Client) GetRole(roleName string) (*api.GetRoleResult, error) {
+	return api.GetRole(c, roleName)
+}
+
+func (c *Client) UpdateRole(roleName string, args *api.UpdateRoleArgs) (*api.UpdateRoleResult, error) {
+	body, err := NewBodyFromStruct(args)
+	if err != nil {
+		return nil, err
+	}
+	return api.UpdateRole(c, roleName, body)
+}
+
+func (c *Client) DeleteRole(roleName string) error {
+	return api.DeleteRole(c, roleName)
+}
+
+func (c *Client) ListRole() (*api.ListRoleResult, error) {
+	return api.ListRole(c)
+}
+
+func (c *Client) AttachPolicyToRole(args *api.AttachPolicyToRoleArgs) error {
+	return api.AttachPolicyToRole(c, args)
+}
+
+func (c *Client) DetachPolicyFromRole(args *api.DetachPolicyToRoleArgs) error {
+	return api.DetachPolicyFromRole(c, args)
+}
+
+func (c *Client) ListRoleAttachedPolicies(name string) (*api.ListPolicyResult, error) {
+	return api.ListRoleAttachedPolicies(c, name)
+}
+
 func NewBodyFromStruct(args interface{}) (*bce.Body, error) {
 	jsonBytes, err := json.Marshal(args)
 	if err != nil {

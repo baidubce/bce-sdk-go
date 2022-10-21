@@ -44,6 +44,23 @@ type ListUserResult struct {
 	Users []UserModel `json:"users"`
 }
 
+type AccessKeyModel struct {
+	Id           string    `json:"id"`
+	Secret       string    `json:"secret"`
+	CreateTime   time.Time `json:"createTime"`
+	LastUsedTime time.Time `json:"lastUsedTime"`
+	Enabled      bool      `json:"enabled"`
+	Description  string    `json:"description"`
+}
+
+type CreateAccessKeyResult AccessKeyModel
+
+type UpdateAccessKeyResult AccessKeyModel
+
+type ListAccessKeyResult struct {
+	AccessKeys []AccessKeyModel `json:"accessKeys"`
+}
+
 type LoginProfileModel struct {
 	Password          string `json:"password,omitempty"`
 	NeedResetPassword bool   `json:"needResetPassword"`
@@ -91,12 +108,17 @@ type ListUsersInGroupResult ListUserResult
 type ListGroupsForUserResult ListGroupResult
 
 type AclEntry struct {
-	Eid        string   `json:"eid,omitempty"`
-	Service    string   `json:"service"`
-	Region     string   `json:"region"`
-	Permission []string `json:"permission"`
-	Resource   []string `json:"resource"`
-	Effect     string   `json:"effect"`
+	Eid        string    `json:"eid,omitempty"`
+	Service    string    `json:"service"`
+	Region     string    `json:"region"`
+	Permission []string  `json:"permission"`
+	Resource   []string  `json:"resource,omitempty"`
+	Grantee    []Grantee `json:"grantee,omitempty"`
+	Effect     string    `json:"effect"`
+}
+
+type Grantee struct {
+	ID string `json:"id"`
 }
 
 type Acl struct {
@@ -149,4 +171,45 @@ type DetachPolicyFromGroupArgs struct {
 	GroupName  string `json:"groupName"`
 	PolicyName string `json:"policyName"`
 	PolicyType string `json:"policyType,omitempty"`
+}
+
+type AttachPolicyToRoleArgs struct {
+	RoleName   string `json:"roleName"`
+	PolicyName string `json:"policyName"`
+	PolicyType string `json:"policyType,omitempty"`
+}
+
+type DetachPolicyToRoleArgs struct {
+	RoleName   string `json:"roleName"`
+	PolicyName string `json:"policyName"`
+	PolicyType string `json:"policyType,omitempty"`
+}
+
+type RoleModel struct {
+	Id                       string    `json:"id"`
+	Name                     string    `json:"name"`
+	CreateTime               time.Time `json:"createTime"`
+	Description              string    `json:"description"`
+	AssumeRolePolicyDocument string    `json:"assumeRolePolicyDocument"`
+}
+
+type CreateRoleArgs struct {
+	Name                     string `json:"name"`
+	Description              string `json:"description,omitempty"`
+	AssumeRolePolicyDocument string `json:"assumeRolePolicyDocument"`
+}
+
+type UpdateRoleArgs struct {
+	Description              string `json:"description"`
+	AssumeRolePolicyDocument string `json:"assumeRolePolicyDocument,omitempty"`
+}
+
+type CreateRoleResult RoleModel
+
+type GetRoleResult RoleModel
+
+type UpdateRoleResult RoleModel
+
+type ListRoleResult struct {
+	Roles []RoleModel `json:"roles"`
 }

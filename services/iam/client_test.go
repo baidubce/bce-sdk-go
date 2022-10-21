@@ -28,8 +28,9 @@ import (
 
 // For security reason, ak/sk should not hard write here.
 type Conf struct {
-	AK string
-	SK string
+	AK       string
+	SK       string
+	Endpoint string
 }
 
 var IAM_CLIENT *Client
@@ -48,7 +49,7 @@ func init() {
 	decoder := json.NewDecoder(fp)
 	confObj := &Conf{}
 	decoder.Decode(confObj)
-	IAM_CLIENT, _ = NewClient(confObj.AK, confObj.SK)
+	IAM_CLIENT, _ = NewClientWithEndpoint(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.DEBUG)
 }
 
@@ -256,6 +257,26 @@ func getPolicyDocument() string {
 	return string(document)
 }
 
+func getAssumeRolePolicyDocument() string {
+
+	grantee := api.Grantee{
+		ID: "test-account-id",
+	}
+
+	aclEntry := api.AclEntry{
+		Service:    "bce:iam",
+		Region:     "*",
+		Permission: []string{"AssumeRole"},
+		Grantee:    []api.Grantee{grantee},
+		Effect:     "Allow",
+	}
+	acl := &api.Acl{
+		AccessControlList: []api.AclEntry{aclEntry},
+	}
+	document, _ := json.Marshal(acl)
+	return string(document)
+}
+
 func TestCreateGetListDeletePolicy(t *testing.T) {
 	name := "test_sdk_go_policy"
 	args := &api.CreatePolicyArgs{
@@ -374,4 +395,171 @@ func TestGroupAttachDetachPolicy(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 	err = IAM_CLIENT.DeleteGroup(groupName)
 	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestAccessKeyCreateAndDelete(t *testing.T) {
+	name := "test-user-sdk-go-ak"
+	args := &api.CreateUserArgs{
+		Name:        name,
+		Description: "description",
+	}
+	res, err := IAM_CLIENT.CreateUser(args)
+	ExpectEqual(t.Errorf, err, nil)
+	jsonRes, _ := json.Marshal(res)
+	t.Logf(string(jsonRes))
+	ExpectEqual(t.Errorf, res.Name, args.Name)
+	ExpectEqual(t.Errorf, res.Description, args.Description)
+
+	akRes, err := IAM_CLIENT.CreateAccessKey(name)
+	jsonAkRes, _ := json.Marshal(akRes)
+	t.Logf(string(jsonAkRes))
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, akRes.Enabled, true)
+
+	accessKeys, err := IAM_CLIENT.ListAccessKey(name)
+	ExpectEqual(t.Errorf, err, nil)
+	if accessKeys == nil || len(accessKeys.AccessKeys) == 0 {
+		t.Errorf("list accessKeys return no result")
+	}
+	aksJsonRes, _ := json.Marshal(accessKeys)
+	t.Logf(string(aksJsonRes))
+
+	err = IAM_CLIENT.DeleteAccessKey(name, akRes.Id)
+	ExpectEqual(t.Errorf, err, nil)
+
+	err = IAM_CLIENT.DeleteUser(name)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestAccessKeyDisableAndEnable(t *testing.T) {
+	name := "test-user-sdk-go-ak"
+	args := &api.CreateUserArgs{
+		Name:        name,
+		Description: "description",
+	}
+	res, err := IAM_CLIENT.CreateUser(args)
+	ExpectEqual(t.Errorf, err, nil)
+	jsonRes, _ := json.Marshal(res)
+	t.Logf(string(jsonRes))
+	ExpectEqual(t.Errorf, res.Name, args.Name)
+	ExpectEqual(t.Errorf, res.Description, args.Description)
+
+	akRes, err := IAM_CLIENT.CreateAccessKey(name)
+	jsonAkRes, _ := json.Marshal(akRes)
+	t.Logf(string(jsonAkRes))
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, akRes.Enabled, true)
+
+	disAbleAkRes, err := IAM_CLIENT.DisableAccessKey(name, akRes.Id)
+	ExpectEqual(t.Errorf, err, nil)
+	jsonDisAbleAkRes, _ := json.Marshal(disAbleAkRes)
+	t.Logf(string(jsonDisAbleAkRes))
+	ExpectEqual(t.Errorf, disAbleAkRes.Enabled, false)
+
+	enAbleAkRes, err := IAM_CLIENT.EnableAccessKey(name, akRes.Id)
+	ExpectEqual(t.Errorf, err, nil)
+	jsonEnAbleAkRes, _ := json.Marshal(enAbleAkRes)
+	t.Logf(string(jsonEnAbleAkRes))
+	ExpectEqual(t.Errorf, enAbleAkRes.Enabled, true)
+
+	err = IAM_CLIENT.DeleteAccessKey(name, akRes.Id)
+	ExpectEqual(t.Errorf, err, nil)
+
+	err = IAM_CLIENT.DeleteUser(name)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestRoleCreateAndDelete(t *testing.T) {
+	name := "test-role-sdk-go"
+	args := &api.CreateRoleArgs{
+		Name:                     name,
+		Description:              "description",
+		AssumeRolePolicyDocument: getAssumeRolePolicyDocument(),
+	}
+	res, err := IAM_CLIENT.CreateRole(args)
+	ExpectEqual(t.Errorf, err, nil)
+	jsonRes, _ := json.Marshal(res)
+	t.Logf(string(jsonRes))
+	ExpectEqual(t.Errorf, res.Name, args.Name)
+	ExpectEqual(t.Errorf, res.Description, args.Description)
+
+	getRes, err := IAM_CLIENT.GetRole(name)
+	ExpectEqual(t.Errorf, err, nil)
+	getJsonRes, _ := json.Marshal(getRes)
+	t.Logf(string(getJsonRes))
+	ExpectEqual(t.Errorf, res.Name, args.Name)
+	ExpectEqual(t.Errorf, res.Description, args.Description)
+
+	rolesRes, err := IAM_CLIENT.ListRole()
+	ExpectEqual(t.Errorf, err, nil)
+	if rolesRes == nil || len(rolesRes.Roles) == 0 {
+		t.Errorf("list roles return no result")
+	}
+	rolesResJson, _ := json.Marshal(rolesRes)
+	t.Logf(string(rolesResJson))
+
+	newDescription := "newDescription"
+	updateArgs := &api.UpdateRoleArgs{
+		Description: newDescription,
+	}
+	updateRes, err := IAM_CLIENT.UpdateRole(name, updateArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, updateRes.Description, newDescription)
+
+	err = IAM_CLIENT.DeleteRole(name)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestRoleAttachPolicyAndDetachPolicy(t *testing.T) {
+	roleName := "test-role-sdk-go"
+	args := &api.CreateRoleArgs{
+		Name:                     roleName,
+		Description:              "description",
+		AssumeRolePolicyDocument: getAssumeRolePolicyDocument(),
+	}
+	res, err := IAM_CLIENT.CreateRole(args)
+	ExpectEqual(t.Errorf, err, nil)
+	jsonRes, _ := json.Marshal(res)
+	t.Logf(string(jsonRes))
+	ExpectEqual(t.Errorf, res.Name, args.Name)
+	ExpectEqual(t.Errorf, res.Description, args.Description)
+
+	policyName := "test_sdk_go_policy"
+	policyArgs := &api.CreatePolicyArgs{
+		Name:        policyName,
+		Description: "description",
+		Document:    getPolicyDocument(),
+	}
+
+	_, err = IAM_CLIENT.CreatePolicy(policyArgs)
+	ExpectEqual(t.Errorf, err, nil)
+
+	attachArgs := &api.AttachPolicyToRoleArgs{
+		RoleName:   roleName,
+		PolicyName: policyName,
+	}
+	err = IAM_CLIENT.AttachPolicyToRole(attachArgs)
+	ExpectEqual(t.Errorf, err, nil)
+
+	policies, err := IAM_CLIENT.ListRoleAttachedPolicies(roleName)
+	ExpectEqual(t.Errorf, err, nil)
+	if policies == nil || len(policies.Policies) != 1 {
+		t.Errorf("list policy result is not 1")
+	}
+	policy := policies.Policies[0]
+	ExpectEqual(t.Errorf, policyName, policy.Name)
+
+	detachArgs := &api.DetachPolicyToRoleArgs{
+		RoleName:   roleName,
+		PolicyName: policyName,
+	}
+	err = IAM_CLIENT.DetachPolicyFromRole(detachArgs)
+	ExpectEqual(t.Errorf, err, nil)
+
+	err = IAM_CLIENT.DeletePolicy(policyName)
+	ExpectEqual(t.Errorf, err, nil)
+
+	err = IAM_CLIENT.DeleteRole(roleName)
+	ExpectEqual(t.Errorf, err, nil)
+
 }

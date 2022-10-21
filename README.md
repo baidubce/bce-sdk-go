@@ -56,6 +56,7 @@ bce-sdk-go
 |  |--eni                 //ENIC弹性网卡
 |  |--esg                 //企业安全组
 |  |--etGateway           //专线网关
+|  |--iam                 //身份管理
 |  |--rds                 //云数据库
 |  |--scs                 //SCS服务目录
 |  |--sms                 //SMS服务目录
@@ -257,6 +258,7 @@ SSL证书服务 | CERT      | github.com/baidubce/bce-sdk-go/services/cert      
 ENIC弹性网卡 | ENIC      | github.com/baidubce/bce-sdk-go/services/eni       | [ENIC.md](./doc/ENIC.md)
 企业安全组 | ESG       | github.com/baidubce/bce-sdk-go/services/esg       | [ESG.md](./doc/ESG.md)
 专线网关 | EtGateway | github.com/baidubce/bce-sdk-go/services/etGateway | [ETGateway.md](./doc/ETGateway.md)
+身份管理 | IAM       | github.com/baidubce/bce-sdk-go/services/iam       | [IAM.md](./doc/IAM.md)
 内网DNS | LOCALDNS  | github.com/baidubce/bce-sdk-go/services/localDns  | [LOCALDNS.md](./doc/LOCALDNS.md)
 云数据库 | RDS       | github.com/baidubce/bce-sdk-go/services/rds       | [RDS.md](./doc/RDS.md)
 分布式缓存服务 | SCS       | github.com/baidubce/bce-sdk-go/services/scs       | [SCS.md](./doc/SCS.md)

@@ -233,9 +233,9 @@ func (c *Client) CreateVpnConn(args *CreateVpnConnArgs) (*CreateVpnConnResult, e
 //     - error: nil if success otherwise the specific error
 func (c *Client) UpdateVpnConn(args *UpdateVpnConnArgs) error {
 	return bce.NewRequestBuilder(c).
-		WithURL(getURLForVpnConnId(args.vpnConnId)).
+		WithURL(getURLForVpnConnId(args.VpnConnId)).
 		WithMethod(http.PUT).
-		WithBody(args.updateVpnconn).
+		WithBody(args.UpdateVpnconn).
 		Do()
 }
 
