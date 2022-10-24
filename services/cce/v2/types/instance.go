@@ -167,9 +167,9 @@ type BBCOption struct {
 // DeployCustomConfig - 部署自定义配置
 type DeployCustomConfig struct {
 	// Docker相关配置
-	DockerConfig DockerConfig `json:"dockerConfig,omitempty"`
+	DockerConfig *DockerConfig `json:"dockerConfig,omitempty"`
 	// containerd相关配置
-	ContainerdConfig ContainerdConfig `json:"containerdConfig,omitempty"`
+	ContainerdConfig *ContainerdConfig `json:"containerdConfig,omitempty"`
 
 	// kubelet数据目录
 	KubeletRootDir string `json:"kubeletRootDir,omitempty"`
