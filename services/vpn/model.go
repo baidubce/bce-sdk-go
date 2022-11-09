@@ -176,8 +176,8 @@ type CreateVpnConnResult struct {
 
 // UpdateVpnConnArgs defines the structure of input parameters for the UpdateVpnConn api
 type UpdateVpnConnArgs struct {
-	vpnConnId     string             `json:"vpnConnId"`
-	updateVpnconn *CreateVpnConnArgs `json:"updateVpnconn"`
+	VpnConnId     string             `json:"vpnConnId"`
+	UpdateVpnconn *CreateVpnConnArgs `json:"updateVpnconn"`
 }
 
 // ListVpnConnResult defines the structure of output parameters for the ListVpnConn api

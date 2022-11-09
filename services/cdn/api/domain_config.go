@@ -11,21 +11,36 @@ import (
 
 // DomainConfig defined a struct for a specified domain's configuration
 type DomainConfig struct {
-	Domain         string       `json:"domain"`
-	Cname          string       `json:"cname"`
-	Status         string       `json:"status"`
-	CreateTime     string       `json:"createTime"`
-	LastModifyTime string       `json:"lastModifyTime"`
-	IsBan          string       `json:"isBan"`
-	Origin         []OriginPeer `json:"origin"`
-	DefaultHost    string       `json:"defaultHost,omitempty"`
-	CacheTTL       []CacheTTL   `json:"cacheTTL"`
-	LimitRate      int          `json:"limitRate"`
-	RequestAuth    *RequestAuth `json:"requestAuth,omitempty"`
-	Https          *HTTPSConfig `json:"https,omitempty"`
-	FollowProtocol bool         `json:"followProtocol"`
-	SeoSwitch      *SeoSwitch   `json:"seoSwitch"`
-	Form           string       `json:"form"`
+	Domain         string         `json:"domain"`
+	Cname          string         `json:"cname"`
+	Status         string         `json:"status"`
+	CreateTime     string         `json:"createTime"`
+	LastModifyTime string         `json:"lastModifyTime"`
+	IsBan          string         `json:"isBan"`
+	Origin         []OriginPeer   `json:"origin"`
+	DefaultHost    string         `json:"defaultHost,omitempty"`
+	CacheTTL       []CacheTTL     `json:"cacheTTL"`
+	LimitRate      int            `json:"limitRate"`
+	RequestAuth    *RequestAuth   `json:"requestAuth,omitempty"`
+	Https          *HTTPSConfig   `json:"https,omitempty"`
+	FollowProtocol bool           `json:"followProtocol"`
+	SeoSwitch      *SeoSwitch     `json:"seoSwitch"`
+	Form           string         `json:"form"`
+	RangeSwitch    string         `json:"rangeSwitch"`
+	OfflineMode    bool           `json:"offlineMode"`
+	ClientIp       *ClientIp      `json:"clientIp"`
+	OCSP           bool           `json:"ocsp"`
+	HttpHeader     []HttpHeader   `json:"httpHeader"`
+	MediaDragConf  *MediaDragConf `json:"mediaDragConf"`
+	FileTrim       bool           `json:"fileTrim"`
+	QUIC           bool           `json:"quic"`
+	RefererACL     *RefererACL    `json:"refererACL"`
+	IpACL          *IpACL         `json:"ipACL"`
+	UaAcl          *UaACL         `json:"uaAcl"`
+	AccessLimit    *AccessLimit   `json:"accessLimit"`
+	TrafficLimit   *TrafficLimit  `json:"trafficLimit"`
+	ErrorPage      []ErrorPage    `json:"errorPage"`
+	CacheShare     *CacheShared   `json:"cacheShare"`
 }
 
 // CacheTTL defined a struct for cached rules setting
@@ -56,14 +71,16 @@ type RequestAuth struct {
 
 // HTTPSConfig defined a struct for configuration about HTTPS
 type HTTPSConfig struct {
-	Enabled           bool   `json:"enabled"`
-	CertId            string `json:"certId,omitempty"`
-	HttpRedirect      bool   `json:"httpRedirect"`
-	HttpRedirectCode  int    `json:"httpRedirectCode,omitempty"`
-	HttpsRedirect     bool   `json:"httpsRedirect"`
-	HttpsRedirectCode int    `json:"httpsRedirectCode"`
-	Http2Enabled      bool   `json:"http2Enabled"`
-	SslVersion        string `json:"sslVersion,omitempty"`
+	Enabled           bool     `json:"enabled"`
+	CertId            string   `json:"certId,omitempty"`
+	HttpRedirect      bool     `json:"httpRedirect"`
+	HttpRedirectCode  int      `json:"httpRedirectCode,omitempty"`
+	HttpsRedirect     bool     `json:"httpsRedirect"`
+	HttpsRedirectCode int      `json:"httpsRedirectCode"`
+	Http2Enabled      bool     `json:"http2Enabled"`
+	SslVersion        string   `json:"sslVersion,omitempty"`
+	VerifyClient      bool     `json:"verifyClient"`
+	SslProtocols      []string `json:"sslProtocols,omitempty"`
 
 	// Deprecated: You can no longer use this field,
 	// The better choice is use SetOriginProtocol/GetOriginProtocol.
@@ -1763,9 +1780,9 @@ func GetRangeSwitch(cli bce.Client, domain string) (bool, error) {
 // RETURNS:
 //     - error: nil if success otherwise the specific error
 func SetContentEncoding(cli bce.Client, domain string, enabled bool, encodingType string) error {
-	if enabled && encodingType != "gzip" && encodingType != "br" {
+	if enabled && encodingType != "gzip" && encodingType != "br" && encodingType != "all" {
 		errMsg := fmt.Sprintf("invalid encoding type \"%s\" for setting Content-Encoding,"+
-			" it must in \"gzip\" and \"br\"", encodingType)
+			" it must in \"gzip\", \"br\" and \"all\"", encodingType)
 		return errors.New(errMsg)
 	}
 

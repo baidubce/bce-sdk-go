@@ -57,9 +57,9 @@ func NewStsClient(ak, sk, endpoint string) (*Client, error) {
 		endpoint = DEFAULT_SERVICE_DOMAIN
 	}
 	defaultSignOptions := &auth.SignOptions{
-		auth.DEFAULT_HEADERS_TO_SIGN,
-		util.NowUTCSeconds(),
-		auth.DEFAULT_EXPIRE_SECONDS}
+		HeadersToSign:   	auth.DEFAULT_HEADERS_TO_SIGN,
+		Timestamp: 			util.NowUTCSeconds(),
+		ExpireSeconds:		auth.DEFAULT_EXPIRE_SECONDS}
 	defaultConf := &bce.BceClientConfiguration{
 		Endpoint:    endpoint,
 		Region:      bce.DEFAULT_REGION,

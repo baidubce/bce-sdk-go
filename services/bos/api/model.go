@@ -259,6 +259,7 @@ type PutObjectArgs struct {
 	ContentCrc32       string
 	StorageClass       string
 	Process            string
+	TrafficLimit       int64
 }
 
 // CopyObjectArgs defines the optional args structure for the copy object api.
@@ -269,6 +270,7 @@ type CopyObjectArgs struct {
 	IfNoneMatch       string
 	IfModifiedSince   string
 	IfUnmodifiedSince string
+	TrafficLimit       int64
 }
 
 type MultiCopyObjectArgs struct {
@@ -397,6 +399,7 @@ type AppendObjectArgs struct {
 	ContentSha256      string
 	ContentCrc32       string
 	StorageClass       string
+	TrafficLimit       int64
 }
 
 // AppendObjectResult defines the result data structure for appending object.
@@ -449,6 +452,7 @@ type UploadPartArgs struct {
 	ContentMD5    string
 	ContentSha256 string
 	ContentCrc32  string
+	TrafficLimit  int64
 }
 
 // UploadPartCopyArgs defines the optional arguments of UploadPartCopy.
@@ -458,6 +462,7 @@ type UploadPartCopyArgs struct {
 	IfNoneMatch       string
 	IfModifiedSince   string
 	IfUnmodifiedSince string
+	TrafficLimit  int64
 }
 
 type PutSymlinkArgs struct {

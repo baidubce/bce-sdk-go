@@ -19,9 +19,9 @@ import (
 	"github.com/baidubce/bce-sdk-go/http"
 )
 
-func CreateUser(cli bce.Client, body *bce.Body) (*CreateUserResult, error) {
+func CreateRole(cli bce.Client, body *bce.Body) (*CreateRoleResult, error) {
 	req := &bce.BceRequest{}
-	req.SetUri(URI_PREFIX + URI_USER)
+	req.SetUri(URI_PREFIX + URI_ROLE)
 	req.SetMethod(http.POST)
 	req.SetBody(body)
 	req.SetHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE)
@@ -33,7 +33,8 @@ func CreateUser(cli bce.Client, body *bce.Body) (*CreateUserResult, error) {
 	if resp.IsFail() {
 		return nil, resp.ServiceError()
 	}
-	jsonBody := &CreateUserResult{}
+
+	jsonBody := &CreateRoleResult{}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
@@ -41,9 +42,9 @@ func CreateUser(cli bce.Client, body *bce.Body) (*CreateUserResult, error) {
 	return jsonBody, nil
 }
 
-func GetUser(cli bce.Client, name string) (*GetUserResult, error) {
+func GetRole(cli bce.Client, roleName string) (*GetRoleResult, error) {
 	req := &bce.BceRequest{}
-	req.SetUri(getUserUri(name))
+	req.SetUri(getRoleUri(roleName))
 	req.SetMethod(http.GET)
 
 	resp := &bce.BceResponse{}
@@ -53,7 +54,7 @@ func GetUser(cli bce.Client, name string) (*GetUserResult, error) {
 	if resp.IsFail() {
 		return nil, resp.ServiceError()
 	}
-	jsonBody := &GetUserResult{}
+	jsonBody := &GetRoleResult{}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
@@ -61,9 +62,31 @@ func GetUser(cli bce.Client, name string) (*GetUserResult, error) {
 	return jsonBody, nil
 }
 
-func DeleteUser(cli bce.Client, name string) error {
+func UpdateRole(cli bce.Client, roleName string, body *bce.Body) (*UpdateRoleResult, error) {
 	req := &bce.BceRequest{}
-	req.SetUri(getUserUri(name))
+	req.SetUri(getRoleUri(roleName))
+	req.SetMethod(http.PUT)
+	req.SetBody(body)
+	req.SetHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	jsonBody := &UpdateRoleResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	defer func() { resp.Body().Close() }()
+	return jsonBody, nil
+}
+
+func DeleteRole(cli bce.Client, roleName string) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getRoleUri(roleName))
 	req.SetMethod(http.DELETE)
 
 	resp := &bce.BceResponse{}
@@ -77,31 +100,9 @@ func DeleteUser(cli bce.Client, name string) error {
 	return nil
 }
 
-func UpdateUser(cli bce.Client, name string, body *bce.Body) (*UpdateUserResult, error) {
+func ListRole(cli bce.Client) (*ListRoleResult, error) {
 	req := &bce.BceRequest{}
-	req.SetUri(getUserUri(name))
-	req.SetMethod(http.PUT)
-	req.SetBody(body)
-	req.SetHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE)
-
-	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
-		return nil, err
-	}
-	if resp.IsFail() {
-		return nil, resp.ServiceError()
-	}
-	jsonBody := &UpdateUserResult{}
-	if err := resp.ParseJsonBody(jsonBody); err != nil {
-		return nil, err
-	}
-	defer func() { resp.Body().Close() }()
-	return jsonBody, nil
-}
-
-func ListUser(cli bce.Client) (*ListUserResult, error) {
-	req := &bce.BceRequest{}
-	req.SetUri(URI_PREFIX + URI_USER)
+	req.SetUri(URI_PREFIX + URI_ROLE)
 	req.SetMethod(http.GET)
 
 	resp := &bce.BceResponse{}
@@ -111,7 +112,7 @@ func ListUser(cli bce.Client) (*ListUserResult, error) {
 	if resp.IsFail() {
 		return nil, resp.ServiceError()
 	}
-	jsonBody := &ListUserResult{}
+	jsonBody := &ListRoleResult{}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
@@ -119,64 +120,6 @@ func ListUser(cli bce.Client) (*ListUserResult, error) {
 	return jsonBody, nil
 }
 
-func UpdateUserLoginProfile(cli bce.Client, name string, body *bce.Body) (*UpdateUserLoginProfileResult, error) {
-	req := &bce.BceRequest{}
-	req.SetUri(getUserUri(name) + "/loginProfile")
-	req.SetMethod(http.PUT)
-	req.SetBody(body)
-	req.SetHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE)
-
-	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
-		return nil, err
-	}
-	if resp.IsFail() {
-		return nil, resp.ServiceError()
-	}
-	jsonBody := &UpdateUserLoginProfileResult{}
-	if err := resp.ParseJsonBody(jsonBody); err != nil {
-		return nil, err
-	}
-	defer func() { resp.Body().Close() }()
-	return jsonBody, nil
-}
-
-func GetUserLoginProfile(cli bce.Client, name string) (*GetUserLoginProfileResult, error) {
-	req := &bce.BceRequest{}
-	req.SetUri(getUserUri(name) + "/loginProfile")
-	req.SetMethod(http.GET)
-
-	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
-		return nil, err
-	}
-	if resp.IsFail() {
-		return nil, resp.ServiceError()
-	}
-	jsonBody := &GetUserLoginProfileResult{}
-	if err := resp.ParseJsonBody(jsonBody); err != nil {
-		return nil, err
-	}
-	defer func() { resp.Body().Close() }()
-	return jsonBody, nil
-}
-
-func DeleteUserLoginProfile(cli bce.Client, name string) error {
-	req := &bce.BceRequest{}
-	req.SetUri(getUserUri(name) + "/loginProfile")
-	req.SetMethod(http.DELETE)
-
-	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
-		return err
-	}
-	if resp.IsFail() {
-		return resp.ServiceError()
-	}
-	defer func() { resp.Body().Close() }()
-	return nil
-}
-
-func getUserUri(name string) string {
-	return URI_PREFIX + URI_USER + "/" + name
+func getRoleUri(roleName string) string {
+	return URI_PREFIX + URI_ROLE + "/" + roleName
 }

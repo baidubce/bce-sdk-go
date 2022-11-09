@@ -123,7 +123,8 @@ type DescribeLoadBalancerDetailResult struct {
 	Layer7ClusterId string           `json:"layer7ClusterId"`
 	Listener        []ListenerModel  `json:"listener"`
 	Tags            []model.TagModel `json:"tags"`
-	EipRouteType	string			 `json:"eipRouteType"`
+	EipRouteType    string           `json:"eipRouteType"`
+	Ipv6            string           `json:"ipv6,omitempty"`
 }
 
 type CreateTCPListenerArgs struct {

@@ -37,6 +37,7 @@ func CreatePolicy(cli bce.Client, body *bce.Body) (*CreatePolicyResult, error) {
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
+	defer func() { resp.Body().Close() }()
 	return jsonBody, nil
 }
 
@@ -59,6 +60,7 @@ func GetPolicy(cli bce.Client, name, policyType string) (*GetPolicyResult, error
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
+	defer func() { resp.Body().Close() }()
 	return jsonBody, nil
 }
 
@@ -74,6 +76,7 @@ func DeletePolicy(cli bce.Client, name string) error {
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
@@ -99,6 +102,7 @@ func ListPolicy(cli bce.Client, nameFilter, policyType string) (*ListPolicyResul
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
+	defer func() { resp.Body().Close() }()
 	return jsonBody, nil
 }
 
@@ -117,6 +121,7 @@ func AttachPolicyToUser(cli bce.Client, args *AttachPolicyToUserArgs) error {
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
@@ -135,6 +140,7 @@ func DetachPolicyFromUser(cli bce.Client, args *DetachPolicyFromUserArgs) error 
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
@@ -154,6 +160,7 @@ func ListUserAttachedPolicies(cli bce.Client, name string) (*ListPolicyResult, e
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
+	defer func() { resp.Body().Close() }()
 	return jsonBody, nil
 }
 
@@ -172,6 +179,7 @@ func AttachPolicyToGroup(cli bce.Client, args *AttachPolicyToGroupArgs) error {
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
@@ -190,6 +198,7 @@ func DetachPolicyFromGroup(cli bce.Client, args *DetachPolicyFromGroupArgs) erro
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
+	defer func() { resp.Body().Close() }()
 	return nil
 }
 
@@ -209,6 +218,65 @@ func ListGroupAttachedPolicies(cli bce.Client, name string) (*ListPolicyResult, 
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
+	defer func() { resp.Body().Close() }()
+	return jsonBody, nil
+}
+
+func AttachPolicyToRole(cli bce.Client, args *AttachPolicyToRoleArgs) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getRoleUri(args.RoleName) + URI_POLICY + "/" + args.PolicyName)
+	req.SetMethod(http.PUT)
+	if args.PolicyType != "" {
+		req.SetParam("policyType", args.PolicyType)
+	}
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+func DetachPolicyFromRole(cli bce.Client, args *DetachPolicyToRoleArgs) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getRoleUri(args.RoleName) + URI_POLICY + "/" + args.PolicyName)
+	req.SetMethod(http.DELETE)
+	if args.PolicyType != "" {
+		req.SetParam("policyType", args.PolicyType)
+	}
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+func ListRoleAttachedPolicies(cli bce.Client, roleName string) (*ListPolicyResult, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getRoleUri(roleName) + URI_POLICY)
+	req.SetMethod(http.GET)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	jsonBody := &ListPolicyResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	defer func() { resp.Body().Close() }()
 	return jsonBody, nil
 }
 

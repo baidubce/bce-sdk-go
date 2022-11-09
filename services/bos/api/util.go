@@ -45,6 +45,9 @@ const (
 
 	THRESHOLD_100_CONTINUE = 1 << 20 // add 100 continue header if body size bigger than 1MB
 
+	TRAFFIC_LIMIT_MAX      = 8 * (100 << 20)  // 100M bit = 838860800
+	TRAFFIC_LIMIT_MIN      = 8 * (100 << 10)  // 100K bit = 819200
+
 	STATUS_ENABLED  = "enabled"
 	STATUS_DISABLED = "disabled"
 
