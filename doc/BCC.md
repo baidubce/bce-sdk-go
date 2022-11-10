@@ -278,7 +278,7 @@ args := &api.CreateInstanceArgs{
     SubnetId              string           "subnetId"
     // 设置创建BCC使用的安全组
     SecurityGroupId       string           "securityGroupId"
-    // 设置创建BCC使用的企业安全组
+    // 设置创建BCC使用的企业安全组，不允许同时设置企业安全组和普通安全组
     EnterpriseSecurityGroupId       string           "enterpriseSecurityGroupId"
     // 设置需要创建GPU卡信息
     GpuCard               string           "gpuCard"
@@ -413,7 +413,7 @@ createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
     SubnetId              string           "subnetId"
     // 设置创建BCC使用的安全组
     SecurityGroupId       string           "securityGroupId"
-    // 设置创建BCC使用的企业安全组
+    // 设置创建BCC使用的企业安全组，不允许同时设置企业安全组和普通安全组
     EnterpriseSecurityGroupId       string           "enterpriseSecurityGroupId"
     // 设置按月付费或者按年付费 月是"month",年是"year"
     AutoRenewTimeUnit     string           "autoRenewTimeUnit"
@@ -1214,6 +1214,8 @@ deleteInstanceWithRelateResourceArgs := &DeleteInstanceWithRelateResourceArgs{
     // 设置释放的时候是否关联释放当前时刻，实例挂载的eip+数据盘 false代表否 true代表是
     // (只有该字段为true时 deleteCdsSnapshotFlag字段才会有效，若该字段为false,deleteCdsSnapshotFlag字段的值无效）
     RelatedReleaseFlag    bool "relatedReleaseFlag"
+    //设置是否释放弹性网卡 false代表否 true代表是，默认false
+    DeleteRelatedEnisFlag bool "deleteRelatedEnisFlag"
 	// 设置是否释放云磁盘快照 false代表否 true代表是
     DeleteCdsSnapshotFlag bool "deleteCdsSnapshotFlag"
     // 设置是否进入回收站 true表示进入回收站， false和null表示不进入回收站
@@ -1235,14 +1237,14 @@ if err := bccClient.DeleteInstanceWithRelateResource(instanceId, deleteInstanceW
 		InstanceId:      "instanceid",
 		//设置是否释放eip和cds false代表eip和cds与实例解绑，实例进回收站；true代表eip解绑，cds与实例绑定进回收站
 		RelatedReleaseFlag: true,
-		//设置是否释放 false代表否 true代表是，默认false
+		//设置是否释放弹性网卡 false代表否 true代表是，默认false
 		DeleteRelatedEnisFlag:true,
 		//设置是否释放云磁盘快照 false代表否 true代表是，默认false，释放预付费bcc时DeleteCdsSnapshotFlag和RelatedReleaseFlag存在绑定关系，
         RelatedReleaseFlag为true时，DeleteCdsSnapshotFlag必须为true
 		// 选择DeleteCdsSnapshotFlag=true即会释放虚机绑定的各种快照
 		// 释放后付费bcc时，DeleteCdsSnapshotFlag和RelatedReleaseFlag之间逻辑和之前逻辑保持一致
 		DeleteCdsSnapshotFlag:true,
-        //设置是否立即释放，默认false，保持释放进入回收站逻辑；为true时，实例和设置了关联释放的cds、eip资源，一起立即释放
+        //设置是否立即释放，默认false，保持释放进入回收站逻辑；为true时，实例和设置了关联释放的cds资源，一起立即释放
         DeleteImmediate: false,
 
 	}

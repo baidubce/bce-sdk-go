@@ -386,3 +386,17 @@ func (c *Client) ListNatGatewayDnatRules(natId string, args *ListNatGatewaDnatRu
 
 	return result, err
 }
+
+func (c *Client) ResizeNatGateway(natId string, args *ResizeNatGatewayArgs) error {
+	if args == nil {
+		return fmt.Errorf("The ResizeNatGatewayArgs cannot be nil.")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForNatId(natId)).
+		WithMethod(http.PUT).
+		WithBody(args).
+		WithQueryParamFilter("resize", " ").
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
+}

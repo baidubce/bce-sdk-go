@@ -114,7 +114,7 @@ func GetMultiDomainLog(cli bce.Client, queryData *LogQueryData) ([]LogEntry, err
 		return nil, err
 	}
 
-	result := make([]LogEntry, len(respObj.Urls))
+	result := make([]LogEntry, 0, len(respObj.Urls))
 
 	for i, _ := range respObj.Urls {
 		log := LogEntry{

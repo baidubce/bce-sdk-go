@@ -159,7 +159,7 @@ createInstanceArgs := &CreateInstanceArgs{
     InternalIps           []string         internalIps
     // 指定安全组id，可选参数
     SecurityGroupId:  "your-choose-security-group-id"
-    // 设置创建BCC使用的企业安全组
+    // 设置创建BCC使用的企业安全组，不允许同时设置企业安全组和普通安全组
     EnterpriseSecurityGroupId:  "enterpriseSecurityGroupId"
     // 使用 uuid 生成一个长度不超过64位的ASCII字符串
     ClientToken:      "random-uuid",

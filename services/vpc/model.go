@@ -345,6 +345,11 @@ type CreateNatGatewayArgs struct {
 	Billing     *Billing           `json:"billing"`
 }
 
+type ResizeNatGatewayArgs struct {
+	ClientToken string `json:"-"`
+	CuNum       int    `json:"cuNum"`
+}
+
 type Reservation struct {
 	ReservationLength   int    `json:"reservationLength"`
 	ReservationTimeUnit string `json:"reservationTimeUnit"`
@@ -384,8 +389,8 @@ type NAT struct {
 	Id            string        `json:"id"`
 	Name          string        `json:"name"`
 	VpcId         string        `json:"vpcId"`
-	Spec          string        `json:"spec"`
-	CuNum         string        `json:"cuNum"`
+	Spec          string        `json:"spec,omitempty"`
+	CuNum         int           `json:"cuNum,omitempty"`
 	Status        NatStatusType `json:"status"`
 	Eips          []string      `json:"eips"`
 	PaymentTiming string        `json:"paymentTiming"`

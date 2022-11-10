@@ -401,7 +401,9 @@ func TestListNatGateway(t *testing.T) {
 }
 
 func TestGetNatGatewayDetail(t *testing.T) {
-	result, err := VPC_CLIENT.GetNatGatewayDetail(NatID)
+	result, err := VPC_CLIENT.GetNatGatewayDetail("nat-bzrav7t2ppb5")
+	r, _ := json.Marshal(result)
+	fmt.Println(string(r))
 	ExpectEqual(t.Errorf, nil, err)
 	ExpectEqual(t.Errorf, "Test-SDK-NatGateway", result.Name)
 	ExpectEqual(t.Errorf, VPCID, result.VpcId)
@@ -420,6 +422,17 @@ func TestUpdateNatGateway(t *testing.T) {
 	result, err := VPC_CLIENT.GetNatGatewayDetail(NatID)
 	ExpectEqual(t.Errorf, nil, err)
 	ExpectEqual(t.Errorf, "Test-SDK-NatGateway-update", result.Name)
+}
+
+func TestResizeNatGateway(t *testing.T) {
+	args := &ResizeNatGatewayArgs{
+		ClientToken: getClientToken(),
+		CuNum:       8,
+	}
+	err := VPC_CLIENT.ResizeNatGateway(NatID, args)
+	ExpectEqual(t.Errorf, nil, err)
+	err = waitCuNumForNatGateway(NatID, args.CuNum)
+	ExpectEqual(t.Errorf, nil, err)
 }
 
 func TestBindEips(t *testing.T) {
@@ -814,6 +827,40 @@ func waitStateForNatGateway(natID string, status NatStatusType) error {
 					nat = &NAT{Status: NAT_STATUS_DELETED}
 				}
 				if nat.Status == status {
+					errChan <- nil
+					return
+				}
+			}
+		}
+	}()
+
+	select {
+	case <-time.After(10 * time.Minute):
+		return fmt.Errorf("Test nat gateway %s timeout.", natID)
+	case err := <-errChan:
+		return err
+	}
+}
+
+func waitCuNumForNatGateway(natID string, cuNum int) error {
+	ticker := time.NewTicker(2 * time.Second)
+	errChan := make(chan error, 1)
+
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				nat, err := VPC_CLIENT.GetNatGatewayDetail(natID)
+				r, _ := json.Marshal(nat)
+				fmt.Println(string(r))
+				fmt.Println(cuNum)
+				if err != nil {
+					if !strings.Contains(err.Error(), "NoSuchNat") {
+						errChan <- err
+						return
+					}
+				}
+				if nat.CuNum == cuNum {
 					errChan <- nil
 					return
 				}

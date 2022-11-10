@@ -570,10 +570,16 @@ type CreateAppIpGroupArgs struct {
 }
 
 type AppIpGroupMember struct {
-	Ip     string `json:"ip,omitempty"`
-	Port   int    `json:"port,omitempty"`
-	Weight int    `json:"weight,omitempty"`
-	MemberId     string `json:"memberId,omitempty"`
+	Ip       string                      `json:"ip,omitempty"`
+	Port     int                         `json:"port,omitempty"`
+	Weight   int                         `json:"weight,omitempty"`
+	MemberId string                      `json:"memberId,omitempty"`
+	PortList []AppIpGroupMemberPortModel `json:"portList,omitempty"`
+}
+
+type AppIpGroupMemberPortModel struct {
+	HealthCheckPortType string `json:"healthCheckPortType"`
+	Status              string `json:"status"`
 }
 
 type CreateAppIpGroupResult struct {
