@@ -107,6 +107,9 @@ func getInstanceBySpecUri() string {
 func getInstanceUriWithId(id string) string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/" + id
 }
+func getDeletePrepaidInstanceUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/delete"
+}
 
 func getRecoveryInstanceUri() string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_RECOVERY_URI

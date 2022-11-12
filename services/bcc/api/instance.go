@@ -968,6 +968,33 @@ func InstancePurchaseReserved(cli bce.Client, instanceId, relatedRenewFlag, clie
 	return nil
 }
 
+// DeletePrepaidInstanceWithRelatedResource - delete a prepaid instance with related resources
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: request body to delete instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func DeletePrepaidInstanceWithRelatedResource(cli bce.Client, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getDeletePrepaidInstanceUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
 // DeleteInstanceWithRelatedResource - delete an instance with related resources
 //
 // PARAMS:

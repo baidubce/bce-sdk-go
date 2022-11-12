@@ -780,6 +780,13 @@ type DeleteInstanceWithRelateResourceArgs struct {
 	DeleteRelatedEnisFlag bool `json:"deleteRelatedEnisFlag"`
 }
 
+type DeletePrepaidInstanceWithRelateResourceArgs struct {
+	RelatedReleaseFlag    bool   `json:"relatedReleaseFlag"`
+	DeleteCdsSnapshotFlag bool   `json:"deleteCdsSnapshotFlag"`
+	InstanceId            string `json:"instanceId"`
+	DeleteRelatedEnisFlag bool   `json:"deleteRelatedEnisFlag"`
+}
+
 type InstanceChangeVpcArgs struct {
 	InstanceId                 string   `json:"instanceId"`
 	SubnetId                   string   `json:"subnetId"`

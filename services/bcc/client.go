@@ -250,7 +250,7 @@ func (c *Client) DeleteInstance(instanceId string) error {
 //     - error: nil if success otherwise the specific error
 func (c *Client) AutoReleaseInstance(instanceId string, releaseTime string) error {
 	args := &api.AutoReleaseArgs{
-		ReleaseTime:	releaseTime,
+		ReleaseTime: releaseTime,
 	}
 	return api.AutoReleaseInstance(c, instanceId, args)
 }
@@ -630,6 +630,25 @@ func (c *Client) DeleteInstanceWithRelateResource(instanceId string, args *api.D
 	}
 
 	return api.DeleteInstanceWithRelatedResource(c, instanceId, body)
+}
+
+// DeletePrepaidInstanceWithRelateResource - delete a prepaid instance and all eip/cds relate it
+//
+// PARAMS:
+//     - args: the arguments to delete instance and its relate resource
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeletePrepaidInstanceWithRelateResource(args *api.DeletePrepaidInstanceWithRelateResourceArgs) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.DeletePrepaidInstanceWithRelatedResource(c, body)
 }
 
 // InstanceChangeSubnet - change an instance's subnet
@@ -1014,7 +1033,6 @@ func (c *Client) DeleteImage(imageId string) error {
 func (c *Client) RemoteCopyImage(imageId string, args *api.RemoteCopyImageArgs) error {
 	return api.RemoteCopyImage(c, imageId, args)
 }
-
 
 // RemoteCopyImageReturnImageIds - copy an image from other region
 //
@@ -1531,7 +1549,6 @@ func (c *Client) GetAvailableDiskInfo(zoneName string) (*api.GetAvailableDiskInf
 	return api.GetAvailableDiskInfo(c, zoneName)
 }
 
-
 // DeletePrepayVolume - delete the volumes for prepay
 //
 // PARAMS:
@@ -1690,6 +1707,3 @@ func (c *Client) DeleteRecycledInstance(instanceId string) error {
 func (c *Client) ListInstanceByInstanceIds(args *api.ListInstanceByInstanceIdArgs) (*api.ListInstancesResult, error) {
 	return api.ListInstanceByInstanceIds(c, args)
 }
-
-
-
