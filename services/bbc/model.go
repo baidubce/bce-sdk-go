@@ -125,6 +125,7 @@ type CreateInstanceArgs struct {
 	EnableHt          bool             `json:"enableHt,omitempty"`
 	RootPartitionType string           `json:"rootPartitionType,omitempty"`
 	DataPartitionType string           `json:"dataPartitionType,omitempty"`
+	KeypairId         string           `json:"keypairId,omitempty"`
 }
 
 const (
@@ -305,6 +306,7 @@ type ModifyInstanceHostnameArgs struct {
 type RebuildInstanceArgs struct {
 	ImageId           string `json:"imageId"`
 	AdminPass         string `json:"adminPass"`
+	KeypairId         string `json:"keypairId,omitempty"`
 	IsPreserveData    bool   `json:"isPreserveData"`
 	RaidId            string `json:"raidId,omitempty"`
 	SysRootSize       int    `json:"sysRootSize,omitempty"`
