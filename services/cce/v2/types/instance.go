@@ -108,6 +108,7 @@ type VPCConfig struct {
 // InstanceResource 定义 Instance CPU/MEM/Disk 配置
 type InstanceResource struct {
 	MachineSpec string `json:"machineSpec,omitempty"` // 机器规格，例：bcc.g5.c2m8
+	SpecId      string `json:"specId,omitempty"`      // 机器规格系列，例: g5
 
 	CPU int `json:"cpu,omitempty"` // unit: Core
 	MEM int `json:"mem,omitempty"` // unit: GB
