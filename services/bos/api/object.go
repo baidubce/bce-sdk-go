@@ -108,6 +108,10 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 			req.SetHeader(http.BCE_PROCESS, args.Process)
 		}
 	}
+	// add content-type if not assigned by user
+	if req.Header(http.CONTENT_TYPE) == "" {
+		req.SetHeader(http.CONTENT_TYPE, getDefaultContentType(object))
+	}
 
 	resp := &bce.BceResponse{}
 	if err := SendRequest(cli, req, resp); err != nil {

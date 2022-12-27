@@ -21,7 +21,7 @@ type CreateEsgArgs struct {
 	Name        string                        `json:"name"`
 	Desc        string                        `json:"desc"`
 	Rules       []EnterpriseSecurityGroupRule `json:"rules"`
-	Tags        []model.TagModel              `json:"tags"`
+	Tags        []model.TagModel              `json:"tags,omitempty"`
 }
 
 type CreateEsgResult struct {

@@ -1059,12 +1059,18 @@ type ListRequest struct {
 	ServiceProvider ServiceProvider `json:"serviceProvider,omitempty"`
 }
 
+type KeyPair struct {
+	KeyPairId string `json:"keyPairId"`
+	Name      string `json:"name"`
+}
+
 type VmInstanceDetailsVo struct {
 	VmInstanceBriefVo
 	RootDiskSize   int                `json:"rootDiskSize"`
 	DataStorage    int                `json:"dataStorage"`
 	DataVolumeList []VolumeConfig     `json:"dataVolumeList"`
 	SystemVolume   SystemVolumeConfig `json:"systemVolume"`
+	BccKeyPairList []KeyPair          `json:"bccKeyPairList"`
 	RackId         string             `json:"rackId,omitempty"`
 	HostId         string             `json:"hostId,omitempty"`
 	SwitchId       string             `json:"switchId"`
@@ -1127,8 +1133,8 @@ type UpdateVmInstanceArgs struct {
 }
 
 type NetworkConfigUpdateVmInstance struct {
-	NeedPrivateNetwork            bool   `json:"needPrivateNetwork,omitempty"`
-	NeedPublicNetwork             bool   `json:"needPublicNetwork,omitempty"`
+	NeedPrivateNetwork            bool   `json:"needPrivateNetwork"`
+	NeedPublicNetwork             bool   `json:"needPublicNetwork"`
 	PrivateNetworkName            string `json:"privateNetworkName,omitempty"`
 	PublicNetworkName             string `json:"publicNetworkName,omitempty"`
 	PublicNetworkChinaMobileName  string `json:"publicNetworkChinaMobileName,omitempty"`
@@ -1186,6 +1192,8 @@ type VmInstanceBriefVo struct {
 	SecurityGroups   []SecurityGroup `json:"securityGroups"`
 	Vpc              Vpc             `json:"vpc"`
 	deploysetList    []DeploySetVo   `json:"deploysetList"`
+	Hostname         string          `json:"hostname"`
+	Dns              string          `json:"dns"`
 }
 
 type DeploySetVo struct {
@@ -1360,6 +1368,7 @@ type VmPrivateIpResult struct {
 type ServiceProviderInfo struct {
 	ServiceProvider ServiceProvider `json:"serviceProvider"`
 	Name            string          `json:"name"`
+	RegionId        string          `json:"regionId"`
 	Capability      []string        `json:"capability"`
 }
 
@@ -1370,9 +1379,11 @@ type CityInfo struct {
 }
 
 type RegionInfo struct {
-	Region   Region     `json:"region"`
-	Name     string     `json:"name"`
-	CityList []CityInfo `json:"cityList"`
+	Region      Region     `json:"region"`
+	Name        string     `json:"name"`
+	Country     string     `json:"country"`
+	CountryName string     `json:"countryName"`
+	CityList    []CityInfo `json:"cityList"`
 }
 
 type GetBecAvailableNodeInfoVoResult struct {

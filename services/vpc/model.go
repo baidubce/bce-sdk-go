@@ -343,6 +343,7 @@ type CreateNatGatewayArgs struct {
 	CuNum       string             `json:"cuNum,omitempty"`
 	Eips        []string           `json:"eips,omitempty"`
 	Billing     *Billing           `json:"billing"`
+	Tags        []model.TagModel   `json:"tags,omitempty"`
 }
 
 type ResizeNatGatewayArgs struct {
@@ -386,15 +387,16 @@ type ListNatGatewayResult struct {
 
 // NAT is the result for getNatGatewayDetail api.
 type NAT struct {
-	Id            string        `json:"id"`
-	Name          string        `json:"name"`
-	VpcId         string        `json:"vpcId"`
-	Spec          string        `json:"spec,omitempty"`
-	CuNum         int           `json:"cuNum,omitempty"`
-	Status        NatStatusType `json:"status"`
-	Eips          []string      `json:"eips"`
-	PaymentTiming string        `json:"paymentTiming"`
-	ExpiredTime   string        `json:"expiredTime"`
+	Id            string           `json:"id"`
+	Name          string           `json:"name"`
+	VpcId         string           `json:"vpcId"`
+	Spec          string           `json:"spec,omitempty"`
+	CuNum         int              `json:"cuNum,omitempty"`
+	Status        NatStatusType    `json:"status"`
+	Eips          []string         `json:"eips"`
+	PaymentTiming string           `json:"paymentTiming"`
+	ExpiredTime   string           `json:"expiredTime"`
+	Tags          []model.TagModel `json:"tags"`
 }
 
 type SnatRule struct {
@@ -556,16 +558,17 @@ type BatchCreateNatGatewayDnatRuleResult struct {
 
 // CreatePeerConnArgs defines the structure of the input parameters for the CreatePeerConn api
 type CreatePeerConnArgs struct {
-	ClientToken     string   `json:"-"`
-	BandwidthInMbps int      `json:"bandwidthInMbps"`
-	Description     string   `json:"description,omitempty"`
-	LocalIfName     string   `json:"localIfName,omitempty"`
-	LocalVpcId      string   `json:"localVpcId"`
-	PeerAccountId   string   `json:"peerAccountId,omitempty"`
-	PeerVpcId       string   `json:"peerVpcId"`
-	PeerRegion      string   `json:"peerRegion"`
-	PeerIfName      string   `json:"peerIfName,omitempty"`
-	Billing         *Billing `json:"billing"`
+	ClientToken     string           `json:"-"`
+	BandwidthInMbps int              `json:"bandwidthInMbps"`
+	Description     string           `json:"description,omitempty"`
+	LocalIfName     string           `json:"localIfName,omitempty"`
+	LocalVpcId      string           `json:"localVpcId"`
+	PeerAccountId   string           `json:"peerAccountId,omitempty"`
+	PeerVpcId       string           `json:"peerVpcId"`
+	PeerRegion      string           `json:"peerRegion"`
+	PeerIfName      string           `json:"peerIfName,omitempty"`
+	Billing         *Billing         `json:"billing"`
+	Tags            []model.TagModel `json:"tags,omitempty"`
 }
 
 // CreatePeerConnResult defines the structure of the output parameters for the CreatePeerConn api
@@ -606,6 +609,7 @@ type PeerConn struct {
 	DnsStatus       DnsStatusType      `json:"dnsStatus"`
 	CreatedTime     string             `json:"createdTime"`
 	ExpiredTime     string             `json:"expiredTime"`
+	Tags            []model.TagModel   `json:"tags"`
 }
 
 // UpdatePeerConnArgs defines the structure of the input parameters for the UpdatePeerConn api
@@ -633,12 +637,14 @@ type PeerConnSyncDNSArgs struct {
 	ClientToken string           `json:"-"`
 }
 
-/* Get VpcPrivateIpAddressedInfo args
-   VpcId:the vpc you want to query ips
-   PrivateIpAddresses:the privateIp list you want to query
-   PrivateIpRange:the range of privateIp .ex:"192.168.0.1-192.168.0.5"
-   pay attention that the size of PrivateIpAddresses and PrivateIpRange must less than 100
-   if both PrivateIpAddresses and PrivateIpRange ,the PrivateIpRange will effect
+/*
+Get VpcPrivateIpAddressedInfo args
+
+	VpcId:the vpc you want to query ips
+	PrivateIpAddresses:the privateIp list you want to query
+	PrivateIpRange:the range of privateIp .ex:"192.168.0.1-192.168.0.5"
+	pay attention that the size of PrivateIpAddresses and PrivateIpRange must less than 100
+	if both PrivateIpAddresses and PrivateIpRange ,the PrivateIpRange will effect
 */
 type GetVpcPrivateIpArgs struct {
 	VpcId              string   `json:"vpcId"`
@@ -658,10 +664,12 @@ type VpcPrivateIpAddressesResult struct {
 	VpcPrivateIpAddresses []VpcPrivateIpAddress `json:"vpcPrivateIpAddresses"`
 }
 
-/* Get NetworkTopologyInfo args
-   HostIp:the host ip of the network topology to be queried
-   HostId:the host id of the network topology to be queried
-   If both HostIp and HostId are passed in, the HostIp will effect (only need to pass in one of the two)
+/*
+Get NetworkTopologyInfo args
+
+	HostIp:the host ip of the network topology to be queried
+	HostId:the host id of the network topology to be queried
+	If both HostIp and HostId are passed in, the HostIp will effect (only need to pass in one of the two)
 */
 type GetNetworkTopologyArgs struct {
 	HostIp string `json:"hostIp,omitempty"`

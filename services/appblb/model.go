@@ -262,6 +262,7 @@ type PortTypeModel struct {
 
 type DescribeLoadBalancerDetailResult struct {
 	BlbId           string           `json:"blbId"`
+	Name            string           `json:"name"`
 	Status          BLBStatus        `json:"status"`
 	Description     string           `json:"desc"`
 	Address         string           `json:"address"`

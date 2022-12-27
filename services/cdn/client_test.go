@@ -407,19 +407,47 @@ func TestGetOCSP(t *testing.T) {
 }
 
 func TestSetDomainRequestAuth(t *testing.T) {
-	err := testCli.SetDomainRequestAuth(testAuthorityDomain, &api.RequestAuth{
+	var err error
+	err = testCli.SetDomainRequestAuth(testAuthorityDomain, &api.RequestAuth{
 		Type:    "c",
 		Key1:    "secretekey1",
 		Key2:    "secretekey2",
-		Timeout: 300,
+		Timeout: 1800,
 		WhiteList: []string{
 			"/crossdomain.xml",
 		},
-		SignArg: "sign",
-		TimeArg: "t",
+		SignArg:         "sign",
+		TimeArg:         "t",
+		TimestampFormat: "hex",
 	})
-
 	checkClientErr(t, "SetDomainRequestAuth", err)
+
+	err = testCli.SetDomainRequestAuth(testAuthorityDomain, &api.RequestAuth{
+		Type:    "b",
+		Key1:    "secretekey1",
+		Key2:    "secretekey2",
+		Timeout: 3600,
+		WhiteList: []string{
+			"/crossdomain.xml",
+		},
+		TimestampFormat: "yyyyMMDDhhmm",
+	})
+	checkClientErr(t, "SetDomainRequestAuth", err)
+
+	// Type A does not support TimestampMetric 'yyyyMMDDhhmm', SetDomainRequestAuth would return error.
+	err = testCli.SetDomainRequestAuth(testAuthorityDomain, &api.RequestAuth{
+		Type:    "a",
+		Key1:    "secretekey1",
+		Key2:    "secretekey2",
+		Timeout: 3600,
+		WhiteList: []string{
+			"/crossdomain.xml",
+		},
+		TimestampFormat: "yyyyMMDDhhmm",
+	})
+	if err == nil {
+		t.Fatalf(`Type A support TimestampMetric 'yyyyMMDDhhmm' is unexpected`)
+	}
 }
 
 func TestSetFollowProtocol(t *testing.T) {

@@ -66,7 +66,10 @@ type RequestAuth struct {
 	WhiteList       []string `json:"whiteList,omitempty"`
 	SignArg         string   `json:"signArg,omitempty"`
 	TimeArg         string   `json:"timeArg,omitempty"`
-	TimestampMetric int      `json:"timestampMetric,omitempty"`
+	TimestampFormat string   `json:"timestampFormat"`
+
+	// Deprecated, please use TimestampFormat as replacement.
+	TimestampMetric int `json:"-"`
 }
 
 // HTTPSConfig defined a struct for configuration about HTTPS
@@ -851,24 +854,20 @@ func GetOCSP(cli bce.Client, domain string) (bool, error) {
 // RETURNS:
 //     - error: nil if success otherwise the specific error
 func SetDomainRequestAuth(cli bce.Client, domain string, requestAuth *RequestAuth) error {
+	if requestAuth != nil && requestAuth.TimestampMetric != 0 {
+		return errors.New("TimestampMetric is deprecated, please use TimestampFormat as replacement")
+	}
+
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
 		"requestAuth": "",
 	}
 
 	var body interface{}
-	if requestAuth == nil {
-		body = &struct {
-			RequestAuth []string `json:"requestAuth"`
-		}{
-			RequestAuth: []string{},
-		}
-	} else {
-		body = &struct {
-			RequestAuth *RequestAuth `json:"requestAuth"`
-		}{
-			RequestAuth: requestAuth,
-		}
+	body = &struct {
+		RequestAuth *RequestAuth `json:"requestAuth"`
+	}{
+		RequestAuth: requestAuth,
 	}
 
 	err := httpRequest(cli, "PUT", urlPath, params, body, nil)

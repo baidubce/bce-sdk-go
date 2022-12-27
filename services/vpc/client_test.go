@@ -328,6 +328,12 @@ func TestCreateDefaultNatGateway(t *testing.T) {
 		Billing: &Billing{
 			PaymentTiming: PAYMENT_TIMING_POSTPAID,
 		},
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagKey",
+				TagValue: "tagValue",
+			},
+		},
 	}
 	result, err := VPC_CLIENT.CreateNatGateway(args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -402,6 +408,12 @@ func TestListNatGateway(t *testing.T) {
 
 func TestGetNatGatewayDetail(t *testing.T) {
 	result, err := VPC_CLIENT.GetNatGatewayDetail("nat-bzrav7t2ppb5")
+	tags := []model.TagModel{
+		{
+			TagKey:   "tagKey",
+			TagValue: "tagValue",
+		},
+	}
 	r, _ := json.Marshal(result)
 	fmt.Println(string(r))
 	ExpectEqual(t.Errorf, nil, err)
@@ -409,6 +421,7 @@ func TestGetNatGatewayDetail(t *testing.T) {
 	ExpectEqual(t.Errorf, VPCID, result.VpcId)
 	ExpectEqual(t.Errorf, NAT_GATEWAY_SPEC_SMALL, result.Spec)
 	ExpectEqual(t.Errorf, PAYMENT_TIMING_POSTPAID, result.PaymentTiming)
+	ExpectEqual(t.Errorf, tags, result.Tags)
 }
 
 func TestUpdateNatGateway(t *testing.T) {
@@ -654,6 +667,12 @@ func TestCreatePeerConn(t *testing.T) {
 		Billing: &Billing{
 			PaymentTiming: PAYMENT_TIMING_POSTPAID,
 		},
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagKey",
+				TagValue: "tagValue",
+			},
+		},
 	}
 	result, err := VPC_CLIENT.CreatePeerConn(args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -676,12 +695,21 @@ func TestListPeerConn(t *testing.T) {
 
 func TestGetPeerConnDetail(t *testing.T) {
 	result, err := VPC_CLIENT.GetPeerConnDetail(PeerConnID, PEERCONN_ROLE_INITIATOR)
+	r, _ := json.Marshal(result)
+	fmt.Println(string(r))
+	tags := []model.TagModel{
+		{
+			TagKey:   "tagKey",
+			TagValue: "tagValue",
+		},
+	}
 	ExpectEqual(t.Errorf, nil, err)
 	ExpectEqual(t.Errorf, 10, result.BandwidthInMbps)
 	ExpectEqual(t.Errorf, "test peer conn", result.Description)
 	ExpectEqual(t.Errorf, "local-interface", result.LocalIfName)
 	ExpectEqual(t.Errorf, VPCID, result.LocalVpcId)
 	ExpectEqual(t.Errorf, PAYMENT_TIMING_POSTPAID, result.PaymentTiming)
+	ExpectEqual(t.Errorf, tags, result.Tags)
 
 	LocalIfID = result.LocalIfId
 }

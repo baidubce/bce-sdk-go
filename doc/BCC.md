@@ -1207,7 +1207,7 @@ if err != nil {
 }
 ```
 
-## 释放实例（POST）
+### 释放实例（POST）
 使用以下代码释放实例:
 ```go
 deleteInstanceWithRelateResourceArgs := &DeleteInstanceWithRelateResourceArgs{
@@ -1219,7 +1219,7 @@ deleteInstanceWithRelateResourceArgs := &DeleteInstanceWithRelateResourceArgs{
 	// 设置是否释放云磁盘快照 false代表否 true代表是
     DeleteCdsSnapshotFlag bool "deleteCdsSnapshotFlag"
     // 设置是否进入回收站 true表示进入回收站， false和null表示不进入回收站
-    bccRecycleFlag        bool "bccRecycleFlag"
+    BccRecycleFlag        bool "bccRecycleFlag"
 }
 // 设置你要操作的instanceId
 instanceId := "your-choose-instance-id"
@@ -1230,7 +1230,30 @@ if err := bccClient.DeleteInstanceWithRelateResource(instanceId, deleteInstanceW
     fmt.Println("release instance success.")
 }
 ```
-## 释放实例（包含预付费实例）
+### 批量释放实例（POST）
+使用以下代码批量释放实例:
+```go
+deleteInstanceWithRelateResourceArgs := &BatchDeleteInstanceWithRelateResourceArgs{
+    // 设置释放的时候是否关联释放当前时刻，实例挂载的eip+数据盘 false代表否 true代表是
+    // (只有该字段为true时 deleteCdsSnapshotFlag字段才会有效，若该字段为false,deleteCdsSnapshotFlag字段的值无效）
+    RelatedReleaseFlag    bool "relatedReleaseFlag"
+    //设置是否释放弹性网卡 false代表否 true代表是，默认false
+    DeleteRelatedEnisFlag bool "deleteRelatedEnisFlag"
+	// 设置是否释放云磁盘快照 false代表否 true代表是
+    DeleteCdsSnapshotFlag bool "deleteCdsSnapshotFlag"
+    // 设置是否进入回收站 true表示进入回收站， false和null表示不进入回收站
+    BccRecycleFlag        bool "bccRecycleFlag"
+    // 批量释放的实例id
+    InstanceIds           []string "instanceIds"
+}
+if err := bccClient.BatchDeleteInstanceWithRelateResource(deleteInstanceWithRelateResourceArgs); err != nil {
+    fmt.Println("release instance failed: ", err)
+} else {
+    fmt.Println("release instance success.")
+}
+```
+
+### 释放实例（包含预付费实例）
 不区分后付费还是预付费实例，释放bcc以及关联的资源，可以使用以下代码将其释放:
 ```go
 	args := &api.DeleteInstanceIngorePaymentArgs{
@@ -1256,7 +1279,7 @@ if err := bccClient.DeleteInstanceWithRelateResource(instanceId, deleteInstanceW
 
 ```
 
-## 释放回收站实例
+### 释放回收站实例
 回收站实例7天后自动释放，清理回收站资源，可以使用以下代码将其释放:
 ```go
 // 设置你要操作的instanceId
@@ -1274,7 +1297,7 @@ if err := bccClient.DeleteRecycledInstance(instanceId); err != nil {
 > -   实例释放后，已挂载的CDS磁盘自动卸载，，基于此CDS磁盘的快照会保留。
 > -   实例释放后，基于原系统盘的快照会自动删除，基于原系统盘的自定义镜像会保留。
 
-## 定时释放 (限定后付费实例)
+### 定时释放 (限定后付费实例)
 
 后付费实例定时释放，到达预设时间后自动释放bcc，自动释放时间可查询实例详情ReleaseTime。设定空字符串可以取消定时释放。请谨慎使用该功能，避免遗忘定时设置
 ```go
@@ -1293,7 +1316,7 @@ if err != nil {
 > -   实例释放后不可恢复
 > -   关联的网卡资源会被自动卸载，且被释放
 
-## 释放保护
+### 释放保护
 使用以下代码可以为BCC实例设置释放保护，实例当前设置可查询实例详情DeletionProtection，默认0不保护，1释放保护中（创建和查询入口限v2版本使用）:
 
 ```go
@@ -1316,7 +1339,7 @@ if err := bccClient.ModifyDeletionProtection(instanceId, args); err != nil {
 > -   已开启释放保护的实例将无法通过控制台或API释放，只有在关闭的情况下才能被手动释放。定时释放，欠费释放以及实例过期释放不受释放保护属性的影响
 > -   实例释放保护默认不开启
 
-## 变配实例
+### 变配实例
 使用以下代码可以选择CPU,MemoryCapacityInGB,EphemeralDisks变配指定BCC实例:
 
 ```go
@@ -1337,7 +1360,7 @@ if err := bccClient.ResizeInstance(instanceId, resizeInstanceArgs); err != nil {
     fmt.Println("resize instance success.")
 }
 ```
-## 变配实例（通过实例套餐规格）
+### 变配实例（通过实例套餐规格）
 使用以下代码可以选择CPU,MemoryCapacityInGB,EphemeralDisks变配指定BCC实例:
 
 ```go
@@ -1355,7 +1378,7 @@ if err := bccClient.ResizeInstanceBySpec(instanceId, resizeInstanceArgs); err !=
 }
 ```
 
-## 绑定安全组
+### 绑定安全组
 使用以下代码绑定安全组:
 
 ```go
@@ -1370,7 +1393,7 @@ if err := bccClient.BindSecurityGroup(instanceId, SecurityGroupId); err != nil {
     fmt.Println("Bind Security Group success.")
 }
 ```
-## 解绑安全组
+### 解绑安全组
 使用以下代码解绑安全组:
 
 ```go
@@ -1469,26 +1492,6 @@ if err := bccClient.InstancePurchaseReserved(instanceId, ModifyInstanceDescArgs)
 > - 续费时若实例已欠费停机，续费成功后有个BCC虚机实例启动的过程。
 > - 该接口是一个异步接口。
 > - 专属实例不支持续费。
-
-### 释放实例（POST请求的释放）
-
-如下代码可以释放实例及相关联的资源，如EIP, CDS等
-```go
-args := &api.DeleteInstanceWithRelateResourceArgs{
-    RelatedReleaseFlag:    true,
-    DeleteCdsSnapshotFlag: true,
-}
-err := client.DeleteInstanceWithRelateResource(instanceId, args)
-if err != nil {
-    fmt.Println("delete instance failed:", err)
-} else {
-    fmt.Println("delete instance success")
-}
-```
-
-> **提示：**
-> - 释放后实例所使用的物理资源都被收回，相关数据全部丢失且不可恢复。
-> - 释放的时候默认只释放实例和系统盘，用户可以选择是否关联释放当前实例挂载的eip+数据盘（只能统一释放完或者不释放。而不是挂载的数据盘释放一个或者多个）是否一起释放。
 
 ### 实例变更子网
 
@@ -3222,6 +3225,121 @@ if err != nil {
     fmt.Println("list instance failed:", err)
 } else {
     fmt.Println("list instance success: ", result)
+}
+```
+
+### 创建磁盘专属集群
+以下代码可以根据实例ID批量查询实例列表
+```go
+args := &CreateVolumeClusterArgs{
+    // 创建一个磁盘磁盘专属集群，若要同时创建多个，可以修改此参数
+	PurchaseCount:   1,
+	// 集群大小,支持最小容量:85TB（87040GB）,支持最大容量：1015TB（1039360GB）,购买步长：10TB
+	ClusterSizeInGB: 97280,
+    // 集群名称
+	ClusterName:     "dbsc",
+	// 集群磁盘类型：通用型HDD，通用型SSD
+	StorageType:     StorageTypeHdd, 
+	Billing: &Billing{
+        // 只支持预付费
+		Reservation: &Reservation{
+            // 购买时长
+			ReservationLength:   6,
+			ReservationTimeUnit: "MONTH",
+		},
+	},
+    // 自动续费时长
+	RenewTimeUnit: "MONTH",
+	RenewTime:     6,
+}
+result, err := DBSC_CLIENT.CreateVolumeCluster(args)
+if err != nil {
+	fmt.Println(err)
+}
+clusterId := result.ClusterIds[0]
+fmt.Print(clusterId)
+```
+
+### 磁盘专属集群列表
+以下代码可以根据实例ID批量查询实例列表
+```go
+args := &ListVolumeClusterArgs{
+}
+result, err := DBSC_CLIENT.ListVolumeCluster(args)
+if err != nil {
+	fmt.Println(err)
+}
+fmt.Println(result)
+```
+
+### 磁盘专属集群详情
+以下代码可以根据实例ID批量查询实例列表
+```go
+clusterId := "clusterId"
+result, err := DBSC_CLIENT.GetVolumeClusterDetail(clusterId)
+if err != nil {
+	fmt.Println(err)
+}
+fmt.Println(result)
+```
+
+### 磁盘专属集群扩容
+以下代码可以根据实例ID批量查询实例列表
+```go
+clusterId := "clusterId"
+args := &ResizeVolumeClusterArgs{
+	NewClusterSizeInGB int  `json:"newClusterSizeInGB"`
+}
+err := DBSC_CLIENT.ResizeVolumeCluster(clusterId, args)
+if err != nil {
+	fmt.Println(err)
+}
+```
+
+### 磁盘专属集群续费
+以下代码可以根据实例ID批量查询实例列表
+```go
+args := &PurchaseReservedVolumeClusterArgs{
+	Billing: &Billing{
+		Reservation: &Reservation{
+            // 续费时长
+			ReservationLength:   6,
+			ReservationTimeUnit: "MONTH",
+		},
+	},
+}
+clusterId := "clusterId"
+err := DBSC_CLIENT.PurchaseReservedVolumeCluster(clusterId, args)
+if err != nil {
+	fmt.Println(err)
+}
+```
+
+### 磁盘专属集群自动续费
+以下代码可以根据实例ID批量查询实例列表
+```go
+clusterId := "clusterId"
+args := &AutoRenewVolumeClusterArgs{
+	ClusterId:     clusterId,
+	RenewTime:     6,
+	RenewTimeUnit: "month",
+}
+err := DBSC_CLIENT.AutoRenewVolumeCluster(args)
+if err != nil {
+	fmt.Println(err)
+}
+```
+
+### 磁盘专属集群取消自动续费
+以下代码可以根据实例ID批量查询实例列表
+```go
+clusterId := "clusterId"
+args := &CancelAutoRenewVolumeClusterArgs{
+	ClusterId: clusterId,
+}
+err := DBSC_CLIENT.CancelAutoRenewVolumeCluster(args)
+if err != nil {
+	fmt.Println(err)
 }
 ```
 

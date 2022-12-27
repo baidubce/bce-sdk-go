@@ -209,7 +209,9 @@ func TestCreateInstanceV3(t *testing.T) {
 
 func TestCreateSecurityGroup(t *testing.T) {
 	args := &api.CreateSecurityGroupArgs{
-		Name: "testSecurityGroup",
+		Name:  "testSecurityGroup",
+		VpcId: "vpc-uiudcexceb7y",
+		Desc:  "vpc1 sdk test create security group",
 		Rules: []api.SecurityGroupRuleModel{
 			{
 				Remark:        "备注",
@@ -218,6 +220,12 @@ func TestCreateSecurityGroup(t *testing.T) {
 				Direction:     "ingress",
 				SourceIp:      "",
 				SourceGroupId: "",
+			},
+		},
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagKey",
+				TagValue: "tagValue",
 			},
 		},
 	}
@@ -682,8 +690,12 @@ func TestCancelAutoRenewCDSVolume(t *testing.T) {
 }
 
 func TestListSecurityGroup(t *testing.T) {
-	queryArgs := &api.ListSecurityGroupArgs{}
-	_, err := BCC_CLIENT.ListSecurityGroup(queryArgs)
+	queryArgs := &api.ListSecurityGroupArgs{
+		VpcId: "vpc-uiudcexceb7y",
+	}
+	result, err := BCC_CLIENT.ListSecurityGroup(queryArgs)
+	r, _ := json.Marshal(result)
+	fmt.Println(string(r))
 	ExpectEqual(t.Errorf, err, nil)
 }
 

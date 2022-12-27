@@ -872,6 +872,12 @@ args := &vpc.CreateNatGatewayArgs{
     Billing: &vpc.Billing{
         PaymentTiming: vpc.PAYMENT_TIMING_POSTPAID,
     },
+    Tags: []model.TagModel{
+        {
+            TagKey:   "tagKey",
+            TagValue: "tagValue",
+        },
+    },
 }
 result, err := client.CreateNatGateway(args)
 if err != nil {
@@ -932,6 +938,7 @@ for _, nat := range result.Nats {
     fmt.Println("nat status: ", nat.Status)
     fmt.Println("nat paymentTiming: ", nat.PaymentTiming)
     fmt.Println("nat expireTime: ", nat.ExpiredTime)
+    fmt.Println("nat tags: ", nat.Tags)
 }
 ```
 
@@ -1240,6 +1247,12 @@ args := &vpc.CreatePeerConnArgs{
     Billing: &vpc.Billing{
         PaymentTiming: vpc.PAYMENT_TIMING_POSTPAID,
     },
+    Tags: []model.TagModel{
+        {
+            TagKey:   "tagKey",
+            TagValue: "tagValue",
+        },
+    },
 }
 result, err := client.CreatePeerConn(args)
 if err != nil {
@@ -1353,6 +1366,8 @@ fmt.Println("peerconn dnsStatus: ", result.DnsStatus)
 fmt.Println("peerconn createdTime: ", result.CreatedTime)
 // 查询得到对等连接的过期时间
 fmt.Println("peerconn expiredTime: ", result.ExpiredTime)
+// 查询得到对等连接的标签
+fmt.Println("peerconn tags: ", result.Tags)
 ```
 
 > 注意: "initiator"表示发起端"acceptor"表示接受端，同region的对等连接可以据此进行详情查询，若不设置该参数，同region则随机返回一端信息。
@@ -1615,6 +1630,8 @@ myLogger.Info("this is my own logger from the VPC go sdk")
 
 
 # 版本变更记录
+## v0.9.7 [2022-11-14]
+- NAT、对等连接创建、详情接口支持Tags
 ## v0.9.6 [2020-12-27]
 - 增加vpc查询PrivateIpAddress信息接口
 ## v0.9.5 [2019-09-24]

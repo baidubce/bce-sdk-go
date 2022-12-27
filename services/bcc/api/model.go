@@ -69,6 +69,7 @@ const (
 	StorageTypeLocalSSD      StorageType = "local-ssd"
 	StorageTypeLocalHDD      StorageType = "local-hdd"
 	StorageTypeLocalNVME     StorageType = "local-nvme"
+	StorageTypeEnhancedPl2   StorageType = "enhanced_ssd_pl2"
 )
 
 type StorageTypeV3 string
@@ -86,6 +87,7 @@ const (
 	StorageTypeV3LocalPVHDD         StorageTypeV3 = "Local_PV_HDD"
 	StorageTypeV3LocalPVSSD         StorageTypeV3 = "Local_PV_SSD"
 	StorageTypeV3LocalPVNVME        StorageTypeV3 = "Local_PV_NVME"
+	StorageTypeV3EnhancedPl2        StorageTypeV3 = "enhanced_ssd_pl2"
 )
 
 type PaymentTimingType string
@@ -1758,9 +1760,11 @@ type DeletionProtectionArgs struct {
 }
 
 type BatchDeleteInstanceWithRelateResourceArgs struct {
-	RelatedReleaseFlag bool     `json:"relatedRelease"`
-	BccRecycleFlag     bool     `json:"bccRecycleFlag"`
-	InstanceIds        []string `json:"instanceIds"`
+	RelatedReleaseFlag    bool     `json:"relatedReleaseFlag"`
+	DeleteCdsSnapshotFlag bool     `json:"deleteCdsSnapshotFlag"`
+	BccRecycleFlag        bool     `json:"bccRecycleFlag"`
+	DeleteRelatedEnisFlag bool     `json:"deleteRelatedEnisFlag"`
+	InstanceIds           []string `json:"instanceIds"`
 }
 
 type BatchStartInstanceArgs struct {
