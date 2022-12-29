@@ -122,7 +122,7 @@ type CreateInstanceArgs struct {
 	InternalIps       []string         `json:"internalIps,omitempty"`
 	RequestToken      string           `json:"requestToken"`
 	EnableNuma        bool             `json:"enableNuma,omitempty"`
-	EnableHt          bool             `json:"enableHt,omitempty"`
+	EnableHt          bool             `json:"enableHt"`
 	RootPartitionType string           `json:"rootPartitionType,omitempty"`
 	DataPartitionType string           `json:"dataPartitionType,omitempty"`
 	KeypairId         string           `json:"keypairId,omitempty"`
