@@ -70,6 +70,9 @@ type InstanceModel struct {
 	InstanceID         string           `json:"instanceId"`
 	InstanceName       string           `json:"instanceName"`
 	InstanceStatus     string           `json:"instanceStatus"`
+	InstanceExpireTime string           `json:"instanceExpireTime"`
+	ShardNum 		   int           	`json:"shardNum"`
+	ReplicationNum 	   int           	`json:"replicationNum"`
 	ClusterType        string           `json:"clusterType"`
 	Engine             string           `json:"engine"`
 	EngineVersion      string           `json:"engineVersion"`
