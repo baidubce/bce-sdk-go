@@ -36,6 +36,7 @@ import (
 	_ "github.com/baidubce/bce-sdk-go/services/dcc"
 	_ "github.com/baidubce/bce-sdk-go/services/ddc"
 	_ "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+	_ "github.com/baidubce/bce-sdk-go/services/eccr"
 	_ "github.com/baidubce/bce-sdk-go/services/eip"
 	_ "github.com/baidubce/bce-sdk-go/services/etGateway"
 	_ "github.com/baidubce/bce-sdk-go/services/iam"

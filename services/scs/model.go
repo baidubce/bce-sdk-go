@@ -73,7 +73,6 @@ type InstanceModel struct {
 	InstanceExpireTime string           `json:"instanceExpireTime"`
 	ShardNum 		   int           	`json:"shardNum"`
 	ReplicationNum 	   int           	`json:"replicationNum"`
-	DiskFlavor 	   	   int           	`json:"diskFlavor"`
 	ClusterType        string           `json:"clusterType"`
 	Engine             string           `json:"engine"`
 	EngineVersion      string           `json:"engineVersion"`

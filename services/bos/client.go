@@ -28,6 +28,7 @@ import (
 
 	"github.com/baidubce/bce-sdk-go/auth"
 	"github.com/baidubce/bce-sdk-go/bce"
+	sdk_http "github.com/baidubce/bce-sdk-go/http"
 	"github.com/baidubce/bce-sdk-go/services/bos/api"
 	"github.com/baidubce/bce-sdk-go/services/sts"
 	"github.com/baidubce/bce-sdk-go/util/log"
@@ -183,7 +184,8 @@ func (c *Client) SimpleListObjects(bucket, prefix string, maxKeys int, marker,
 // RETURNS:
 //     - error: nil if exists and have authority otherwise the specific error
 func (c *Client) HeadBucket(bucket string) error {
-	return api.HeadBucket(c, bucket)
+	err, _ := api.HeadBucket(c, bucket)
+	return err
 }
 
 // DoesBucketExist - test the given bucket existed or not
@@ -194,7 +196,7 @@ func (c *Client) HeadBucket(bucket string) error {
 //     - bool: true if exists and false if not exists or occurs error
 //     - error: nil if exists or not exist, otherwise the specific error
 func (c *Client) DoesBucketExist(bucket string) (bool, error) {
-	err := api.HeadBucket(c, bucket)
+	err, _ := api.HeadBucket(c, bucket)
 	if err == nil {
 		return true, nil
 	}
@@ -207,6 +209,21 @@ func (c *Client) DoesBucketExist(bucket string) (bool, error) {
 		}
 	}
 	return false, err
+}
+
+//IsNsBucket - test the given bucket is namespace bucket or not
+func (c *Client) IsNsBucket(bucket string) bool {
+	err, resp := api.HeadBucket(c, bucket)
+	if err == nil && resp.Header(sdk_http.BCE_BUCKET_TYPE) == api.NAMESPACE_BUCKET {
+		return true
+	}
+	if realErr, ok := err.(*bce.BceServiceError); ok {
+		if realErr.StatusCode == http.StatusForbidden &&
+			resp.Header(sdk_http.BCE_BUCKET_TYPE) == api.NAMESPACE_BUCKET {
+			return true
+		}
+	}
+	return false
 }
 
 // PutBucket - create a new bucket

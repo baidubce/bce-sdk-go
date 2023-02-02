@@ -106,20 +106,21 @@ func ListObjects(cli bce.Client, bucket string,
 //     - bucket: the bucket name
 // RETURNS:
 //     - error: nil if exists and have authority otherwise the specific error
-func HeadBucket(cli bce.Client, bucket string) error {
+func HeadBucket(cli bce.Client, bucket string) (error, *bce.BceResponse) {
 	req := &bce.BceRequest{}
 	req.SetUri(getBucketUri(bucket))
 	req.SetMethod(http.HEAD)
 	resp := &bce.BceResponse{}
 	if err := SendRequest(cli, req, resp); err != nil {
-		return err
+		return err, resp
 	}
 	if resp.IsFail() {
-		return resp.ServiceError()
+		return resp.ServiceError(), resp
 	}
 	defer func() { resp.Body().Close() }()
-	return nil
+	return nil, resp
 }
+
 
 // PutBucket - create a new bucket with the given name
 //

@@ -51,6 +51,7 @@ bce-sdk-go
 |  |--csn                 //云智能网
 |  |--ddc                 //DDC数据库专属集群
 |  |--dts                 //数据传输服务
+|  |--eccr                //容器镜像服务企业版
 |  |--eip                 //弹性公网IP
 |  |--endpoint            //SNIC服务网卡
 |  |--eni                 //ENIC弹性网卡
@@ -254,6 +255,7 @@ SSL证书服务 | CERT      | github.com/baidubce/bce-sdk-go/services/cert      
 云智能网 | CSN       | github.com/baidubce/bce-sdk-go/services/csn       | [CSN.md](./doc/CSN.md)
 文档服务 | DOC       | github.com/baidubce/bce-sdk-go/services/doc       | [DOC.md](./doc/DOC.md)
 数据传输服务 | DTS       | github.com/baidubce/bce-sdk-go/services/dts       | [DTS.md](./doc/DTS.md)
+容器镜像服务 企业版 | ECCR      | github.com/baidubce/bce-sdk-go/services/eccr      | [ECCR.md](./doc/ECCR.md)
 弹性公网IP | EIP       | github.com/baidubce/bce-sdk-go/services/eip       | [EIP.md](./doc/EIP.md)
 ENIC弹性网卡 | ENIC      | github.com/baidubce/bce-sdk-go/services/eni       | [ENIC.md](./doc/ENIC.md)
 企业安全组 | ESG       | github.com/baidubce/bce-sdk-go/services/esg       | [ESG.md](./doc/ESG.md)
