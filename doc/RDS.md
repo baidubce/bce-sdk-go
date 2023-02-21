@@ -10,15 +10,18 @@
 
 在确认您使用SDK时配置的Endpoint时，可先阅读开发人员指南中关于[RDS服务域名](https://cloud.baidu.com/doc/RDS/s/Ejwvz0uoq)的部分，理解Endpoint相关的概念。百度云目前开放了多区域支持，请参考[区域选择说明](https://cloud.baidu.com/doc/Reference/s/2jwvz23xx/)。
 
-目前支持“华北-北京”、“华南-广州”、“华东-苏州”和“金融华中-武汉”四个区域。对应信息为：
+目前支持“华北-北京”、“华北-保定”、“华南-广州”、“华东-苏州”、“金融华中-武汉”、“华东-上海”、“中国香港”、“新加坡”区域。对应信息为：
 
 访问区域 | 对应Endpoint | 协议
 ---|---|---
-BJ | rds.bj.baidubce.com | HTTP and HTTPS
-GZ | rds.gz.baidubce.com | HTTP and HTTPS
-SU | rds.su.baidubce.com | HTTP and HTTPS
-FWH| rds.fwh.baidubce.com| HTTP and HTTPS
-
+北京 | rds.bj.baidubce.com | HTTP and HTTPS
+保定 | rds.bj.baidubce.com | HTTP and HTTPS
+广州 | rds.gz.baidubce.com | HTTP and HTTPS
+苏州 | rds.su.baidubce.com | HTTP and HTTPS
+武汉 | rds.fwh.baidubce.com| HTTP and HTTPS
+上海 | rds.fsh.baidubce.com| HTTP and HTTPS
+香港 | rds.hkg.baidubce.com| HTTP and HTTPS
+新加坡 | rds.sin.baidubce.com| HTTP and HTTPS
 ## 获取密钥
 
 要使用百度云RDS，您需要拥有一个有效的AK(Access Key ID)和SK(Secret Access Key)用来进行签名认证。AK/SK是由系统分配给用户的，均为字符串，用于标识用户，为访问RDS做签名验证。
@@ -50,7 +53,7 @@ func main() {
 	ENDPOINT := <domain-name>
 
 	// 初始化一个RDSClient
-	rdsClient, err := rds.NewClient(AK, SK, ENDPOINT)
+	rdsClient, err := rds.NewClient(ACCESS_KEY_ID, SECRET_ACCESS_KEY, ENDPOINT)
 }
 ```
 
@@ -265,7 +268,7 @@ args := &rds.CreateRdsArgs{
     Category: "Standard",
     //指定zone信息，默认为空，由系统自动选择，可选
     //zoneName命名规范是小写的“国家-region-可用区序列"，例如北京可用区A为"cn-bj-a"。
-    ZoneNames: ["cn-bj-a"],
+    ZoneNames: []string{"cn-bj-d"},
     //vpc，如果不提供则属于默认vpc，可选
     VpcId: "vpc-IyrqYIQ7",
     //是否进行直接支付，默认false，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑，可选
@@ -327,7 +330,7 @@ args := &rds.CreateReadReplicaArgs{
     InstanceName: "instanceName",
     //指定zone信息，默认为空，由系统自动选择，可选
     //zoneName命名规范是小写的“国家-region-可用区序列"，例如北京可用区A为"cn-bj-a"。
-    ZoneNames: ["cn-bj-a"],
+    ZoneNames: []string{"cn-bj-d"},
     //与主实例 vpcId 相同，可选
     VpcId: "vpc-IyrqYIQ7",
     //是否进行直接支付，默认false，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑，可选
@@ -387,7 +390,7 @@ args := &rds.CreateRdsProxyArgs{
     InstanceName: "instanceName",
     //指定zone信息，默认为空，由系统自动选择，可选
     //zoneName命名规范是小写的“国家-region-可用区序列"，例如北京可用区A为"cn-bj-a"，建议与主实例的可用区保持一致
-    ZoneNames: ["cn-bj-a"],
+    ZoneNames: []string{"cn-bj-d"},
     //与主实例 vpcId 相同，可选
     VpcId: "vpc-IyrqYIQ7",
     //是否进行直接支付，默认false，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑，可选
@@ -900,7 +903,30 @@ if err != nil {
 fmt.Printf("modify backup policy success\n")
 ```
 
+# 慢日志下载任务
 
+## 慢日志下载任务列表
+``` go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetSlowLogDownloadTaskList(instanceId, datetime)
+if err != nil {
+    fmt.Printf("get slowlog download task list error: %+v\n", err)
+    return
+}
+fmt.Printf("get slowlog download task list success\n")
+fmt.Printf(result)
+```
+## 慢日志下载详情 
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetSlowLogDownloadDetail(instanceId, logId, downloadValidTimeInSec)
+if err != nil {
+    fmt.Printf("get slowlog download detail error: %+v\n", err)
+    return
+}
+fmt.Printf("get slowlog download detail success\n")
+fmt.Printf(result)
+```
 # 其它
 
 ## 获取可用区列表

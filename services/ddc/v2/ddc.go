@@ -389,7 +389,7 @@ func (c *DDCClient) UpdateRoGroup(roGroupId string, args *UpdateRoGroupArgs) err
 		DelayThreshold:      Int(args.DelayThreshold),
 		LeastInstanceAmount: Int(args.LeastInstanceAmount),
 		IsBalanceRoLoad:     Int(args.IsBalanceRoLoad),
-		MasterDelay:     	 Int(args.MasterDelay),
+		MasterDelay:         Int(args.MasterDelay),
 	}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
@@ -418,7 +418,7 @@ func (c *DDCClient) UpdateRoGroupReplicaWeight(roGroupId string, args *UpdateRoG
 		DelayThreshold:      Int(args.DelayThreshold),
 		LeastInstanceAmount: Int(args.LeastInstanceAmount),
 		IsBalanceRoLoad:     Int(args.IsBalanceRoLoad),
-		MasterDelay:     	 Int(args.MasterDelay),
+		MasterDelay:         Int(args.MasterDelay),
 		ReplicaList:         args.ReplicaList,
 	}
 	err := bce.NewRequestBuilder(c).
@@ -2393,6 +2393,56 @@ func (c *DDCClient) InstanceSyncDelayReplication(instanceId string, args *Instan
 		WithURL(getInstanceSyncDelayReplicationUrl(instanceId)).
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// SnapshotAccessDetail - get snapshot access detail
+//
+// PARAMS:
+//     - args: the arguments to get snapshot access detail
+// RETURNS:
+//     - *AccessDetail
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) SnapshotAccessDetail(args *AccessDetailArgs) (*BackupAccessDetail, error) {
+
+	result := &BackupAccessDetail{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getDdcUri()+"/snapshot/accessdetail").
+		WithQueryParam("startDateTime", args.StartDateTime).
+		WithQueryParam("endDateTime", args.EndDateTime).
+		WithQueryParam("marker", args.Marker).
+		WithQueryParam("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithQueryParam("dataType", args.DataType).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// BinlogAccessDetail - get snapshot access detail
+//
+// PARAMS:
+//     - args: the arguments to get snapshot access detail
+// RETURNS:
+//     - *AccessDetail
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) BinlogAccessDetail(args *AccessDetailArgs) (*BackupAccessDetail, error) {
+
+	result := &BackupAccessDetail{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getDdcUri()+"/binlog/accessdetail").
+		WithQueryParam("startDateTime", args.StartDateTime).
+		WithQueryParam("endDateTime", args.EndDateTime).
+		WithQueryParam("marker", args.Marker).
+		WithQueryParam("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithQueryParam("dataType", args.DataType).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithResult(result).
 		Do()
 	return result, err

@@ -46,7 +46,7 @@ func main() {
 	ENDPOINT := <domain-name>
 
 	// 初始化一个DDC-RDSClient
-	client, err := ddcrds.NewClient(AK, SK, ENDPOINT)
+	client, err := ddcrds.NewClient(ACCESS_KEY_ID, SECRET_ACCESS_KEY, ENDPOINT)
 }
 ```
 
@@ -2427,6 +2427,45 @@ fmt.Println("get access logs success.")
 fmt.Println("mysql access logs link: ", downloadInfo.Downloadurl.Mysql)
 fmt.Println("bbc access logs link: ", downloadInfo.Downloadurl.Bbc)
 fmt.Println("bos access logs link: ", downloadInfo.Downloadurl.Bos)
+```
+## 访问快照日志详情
+通过此接口可以获取访问快照日志的详情列表(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+// import "time"
+
+args := &AccessDetailArgs{
+    StartDateTime: "2023-02-02T01:00:00Z",
+    EndDateTime:   "2023-02-02T10:00:00Z",
+    Marker:        "0",
+    MaxKeys:       100,
+}
+result, err := client.SnapshotAccessDetail(args)
+if err != nil {
+    fmt.Printf("get snapshot access detail error: %+v\n", err)
+    return
+}
+fmt.Printf("get snapshot access detail success\n %+v", result)
+```
+
+## 访问binlog日志详情
+通过此接口可以获取访问binlog日志的详情列表(仅支持DDC)。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+// import "time"
+
+args := &AccessDetailArgs{
+    StartDateTime: "2023-02-02T01:00:00Z",
+    EndDateTime:   "2023-02-02T10:00:00Z",
+    Marker:        "0",
+    MaxKeys:       100,
+}
+result, err := client.BinlogAccessDetail(args)
+if err != nil {
+    fmt.Printf("get binlog access detail error: %+v\n", err)
+    return
+}
+fmt.Printf("get binlog access detail success\n %+v", result)
 ```
 
 ## 错误日志

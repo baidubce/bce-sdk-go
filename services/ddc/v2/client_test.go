@@ -288,7 +288,7 @@ func TestClient_UpdateRoGroup(t *testing.T) {
 		EnableDelayOff:      "1",
 		DelayThreshold:      "0",
 		LeastInstanceAmount: "1",
-		MasterDelay: 		 "1",
+		MasterDelay:         "1",
 	}
 	err = client.UpdateRoGroup(roGroupId, args, "ddc")
 	if err != nil {
@@ -322,7 +322,7 @@ func TestClient_UpdateRoGroupReplicaWeight(t *testing.T) {
 		DelayThreshold:      "",
 		LeastInstanceAmount: "0",
 		IsBalanceRoLoad:     "0",
-		MasterDelay: 		 "1",
+		MasterDelay:         "1",
 		ReplicaList:         []ReplicaWeight{replicaWeight},
 	}
 	err = client.UpdateRoGroupReplicaWeight(roGroupId, args, "ddc")
@@ -1776,5 +1776,36 @@ func TestClient_InstanceSyncDelayReplication(t *testing.T) {
 		fmt.Printf("instance syncDelay replication faild: %+v\n", err)
 		return
 	}
-	fmt.Printf("instance syncDelay replication success. success:%s\n", result.Success)
+	fmt.Printf("instance syncDelay replication success. success:%+v\n", result.Success)
+}
+
+func TestClient_BinlogAccessDetail(t *testing.T) {
+	args := &AccessDetailArgs{
+		StartDateTime: "2023-02-02T01:00:00Z",
+		EndDateTime:   "2023-02-02T10:00:00Z",
+		Marker:        "0",
+		MaxKeys:       100,
+	}
+	result, err := client.BinlogAccessDetail(args)
+	if err != nil {
+		fmt.Printf("get binlog access detail error: %+v\n", err)
+		return
+	}
+	fmt.Printf("get binlog access detail success\n")
+	fmt.Println("result: ", result)
+}
+
+func TestClient_SnapshotAccessDetail(t *testing.T) {
+	args := &AccessDetailArgs{
+		StartDateTime: "2023-02-02T01:00:00Z",
+		EndDateTime:   "2023-02-02T10:00:00Z",
+		Marker:        "0",
+		MaxKeys:       100,
+	}
+	result, err := client.SnapshotAccessDetail(args)
+	if err != nil {
+		fmt.Printf("get snapshot access detail error: %+v\n", err)
+		return
+	}
+	fmt.Printf("get snapshot access detail success\n %+v", result)
 }

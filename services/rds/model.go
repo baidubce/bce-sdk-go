@@ -31,7 +31,7 @@ type CreateRdsArgs struct {
 	CpuCount          int              `json:"cpuCount"`
 	MemoryCapacity    float64          `json:"memoryCapacity"`
 	VolumeCapacity    int              `json:"volumeCapacity"`
-	DiskIoType    	  string           `json:"diskIoType"`
+	DiskIoType        string           `json:"diskIoType"`
 	ZoneNames         []string         `json:"zoneNames,omitempty"`
 	VpcId             string           `json:"vpcId,omitempty"`
 	IsDirectPay       bool             `json:"isDirectPay,omitempty"`
@@ -303,4 +303,23 @@ type AutoRenewArgs struct {
 	InstanceIds       []string `json:"instanceIds"`
 	AutoRenewTimeUnit string   `json:"autoRenewTimeUnit"`
 	AutoRenewTime     int      `json:"autoRenewTime"`
+}
+
+type SlowLogDownloadTaskListResult struct {
+	Slowlogs []Slowlog `json:"slowlogs"`
+}
+
+type SlowLogDownloadDetail struct {
+	Slowlogs []SlowlogDetail `json:"slowlogs"`
+}
+type Slowlog struct {
+	SlowlogId          string `json:"slowlogId"`
+	SlowlogSizeInBytes int    `json:"slowlogSizeInBytes"`
+	SlowlogStartTime   string `json:"slowlogStartTime"`
+	SlowlogEndTime     string `json:"slowlogEndTime"`
+}
+
+type SlowlogDetail struct {
+	Url             string `json:"url"`
+	DownloadExpires string `json:"downloadExpires"`
 }

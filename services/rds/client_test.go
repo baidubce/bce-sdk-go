@@ -90,8 +90,11 @@ func TestClient_CreateRds(t *testing.T) {
 		Category:       "Standard",
 		InstanceName:   SDK_NAME_PREFIX + id,
 		CpuCount:       1,
+		DiskIoType:     "normal_io",
 		MemoryCapacity: 1,
 		VolumeCapacity: 5,
+		VpcId:          "vpc-it3vbqt3jhv",
+		ZoneNames:      []string{"cn-bj-d"},
 		Billing: Billing{
 			PaymentTiming: "Prepaid",
 			Reservation: Reservation{
@@ -127,6 +130,7 @@ func TestClient_ListRds(t *testing.T) {
 	result, err := RDS_CLIENT.ListRds(args)
 	ExpectEqual(t.Errorf, nil, err)
 	for _, e := range result.Instances {
+		fmt.Println(e.InstanceId)
 		if e.InstanceId == RDS_ID {
 			ExpectEqual(t.Errorf, "MySQL", e.Engine)
 			ExpectEqual(t.Errorf, "5.6", e.EngineVersion)
@@ -135,7 +139,10 @@ func TestClient_ListRds(t *testing.T) {
 }
 
 func TestClient_GetDetail(t *testing.T) {
-	result, err := RDS_CLIENT.GetDetail("rds-TTDYFqXr")
+	result, err := RDS_CLIENT.GetDetail("rds-XNd7nidO")
+	re, error := json.Marshal(result)
+	fmt.Print(error)
+	fmt.Println(string(re))
 	ExpectEqual(t.Errorf, nil, err)
 	ExpectEqual(t.Errorf, "MySQL", result.Engine)
 	ExpectEqual(t.Errorf, "5.6", result.EngineVersion)
@@ -416,6 +423,18 @@ func TestClient_AutoRenew(t *testing.T) {
 			"rds-rbmh6gJl",
 		},
 	})
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GetSlowLogDownloadTaskList(t *testing.T) {
+	res, err := RDS_CLIENT.GetSlowLogDownloadTaskList("rdsmv5aumcrpynd", "2022-11-14T16:00:00Z")
+	fmt.Print(res)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GetSlowLogDownloadDetail(t *testing.T) {
+	res, err := RDS_CLIENT.GetSlowLogDownloadDetail("rds-qJG8sHPY", "slowlog.202211141158", "60")
+	fmt.Print(res)
 	ExpectEqual(t.Errorf, nil, err)
 }
 

@@ -1532,3 +1532,27 @@ func (c *Client) GetInstanceSyncDelay(instanceId string) (*InstanceSyncDelayResp
 func (c *Client) InstanceSyncDelayReplication(instanceId string, args *InstanceSyncDelayReplicationArg) (*InstanceSyncDelayReplicationResponse, error) {
 	return c.ddcClient.InstanceSyncDelayReplication(instanceId, args)
 }
+
+// SnapshotAccessDetail - get snapshot access detail
+//
+// PARAMS:
+//     - args: the arguments to get snapshot access detail
+// RETURNS:
+//     - *AccessDetail
+//     - error: nil if success otherwise the specific error
+func (c *Client) SnapshotAccessDetail(args *AccessDetailArgs) (*BackupAccessDetail, error) {
+
+	return c.ddcClient.SnapshotAccessDetail(args)
+}
+
+// BinlogAccessDetail - get snapshot access detail
+//
+// PARAMS:
+//     - args: the arguments to get snapshot access detail
+// RETURNS:
+//     - *AccessDetail
+//     - error: nil if success otherwise the specific error
+func (c *Client) BinlogAccessDetail(args *AccessDetailArgs) (*BackupAccessDetail, error) {
+
+	return c.ddcClient.BinlogAccessDetail(args)
+}

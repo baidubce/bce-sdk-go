@@ -46,7 +46,7 @@ func main() {
 	ENDPOINT := <domain-name>
 
 	// 初始化一个DDCClient
-	ddcClient, err := ddc.NewClient(AK, SK, ENDPOINT)
+	ddcClient, err := ddc.NewClient(ACCESS_KEY_ID, SECRET_ACCESS_KEY, ENDPOINT)
 }
 ```
 

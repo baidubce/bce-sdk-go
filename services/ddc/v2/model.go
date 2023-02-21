@@ -383,7 +383,7 @@ type UpdateRoGroupArgs struct {
 	EnableDelayOff      string `json:"enableDelayOff,omitempty"`
 	DelayThreshold      string `json:"delayThreshold,omitempty"`
 	LeastInstanceAmount string `json:"leastInstanceAmount,omitempty"`
-	MasterDelay 		string `json:"masterDelay,omitempty"`
+	MasterDelay         string `json:"masterDelay,omitempty"`
 }
 
 type UpdateRoGroupRealArgs struct {
@@ -392,7 +392,7 @@ type UpdateRoGroupRealArgs struct {
 	EnableDelayOff      Integer `json:"enableDelayOff,omitempty"`
 	DelayThreshold      Integer `json:"delayThreshold,omitempty"`
 	LeastInstanceAmount Integer `json:"leastInstanceAmount,omitempty"`
-	MasterDelay 		Integer `json:"masterDelay,omitempty"`
+	MasterDelay         Integer `json:"masterDelay,omitempty"`
 }
 
 type UpdateRoGroupWeightArgs struct {
@@ -401,7 +401,7 @@ type UpdateRoGroupWeightArgs struct {
 	DelayThreshold      string          `json:"delayThreshold,omitempty"`
 	LeastInstanceAmount string          `json:"leastInstanceAmount,omitempty"`
 	IsBalanceRoLoad     string          `json:"isBalanceRoLoad,omitempty"`
-	MasterDelay 		string 			`json:"masterDelay,omitempty"`
+	MasterDelay         string          `json:"masterDelay,omitempty"`
 	ReplicaList         []ReplicaWeight `json:"replicaList,omitempty"`
 }
 
@@ -411,7 +411,7 @@ type UpdateRoGroupWeightRealArgs struct {
 	DelayThreshold      Integer         `json:"delayThreshold,omitempty"`
 	LeastInstanceAmount Integer         `json:"leastInstanceAmount,omitempty"`
 	IsBalanceRoLoad     Integer         `json:"isBalanceRoLoad,omitempty"`
-	MasterDelay 		Integer 		`json:"masterDelay,omitempty"`
+	MasterDelay         Integer         `json:"masterDelay,omitempty"`
 	ReplicaList         []ReplicaWeight `json:"replicaList,omitempty"`
 }
 
@@ -1194,5 +1194,44 @@ type InstanceSyncDelayReplicationArg struct {
 }
 
 type InstanceSyncDelayReplicationResponse struct {
-	Success bool  `json:"success"`
+	Success bool `json:"success"`
+}
+
+type AccessDetailItem struct {
+	BackupID             string `json:"backupID"`
+	AccessDateTime       string `json:"accessDateTime"`
+	AccessResult         string `json:"accessResult"`
+	AccessSrcAddressType string `json:"accessSrcAddressType"`
+	AvailableZone        string `json:"availableZone"`
+	AccessSrcAddress     string `json:"accessSrcAddress"`
+	AccessOperationType  string `json:"accessOperationType"`
+	StorageType          string `json:"storageType"`
+	StorageAddress       string `json:"storageAddress"`
+	Region               string `json:"region"`
+	BackupName           string `json:"backupName"`
+	AccessSrcAgent       string `json:"accessSrcAgent"`
+	StorageID            string `json:"storageID"`
+}
+
+type Pagination struct {
+	IsTruncated bool   `json:"isTruncated"`
+	NextMarker  string `json:"nextMarker"`
+	MaxKeys     int    `json:"maxKeys"`
+	Marker      string `json:"marker"`
+	TotalKeys   int    `json:"totalKeys"`
+}
+type BackupAccessDetail struct {
+	StartDateTime       string             `json:"startDateTime"`
+	EndDateTime         string             `json:"endDateTime"`
+	DataType            string             `json:"dataType"`
+	BackupAccessDetails []AccessDetailItem `json:"backupAccessDetails"`
+	Pagination          Pagination         `json:"pagination"`
+}
+
+type AccessDetailArgs struct {
+	StartDateTime string `json:"startDateTime"`
+	EndDateTime   string `json:"endDateTime"`
+	Marker        string `json:"marker,omitempty"`
+	MaxKeys       int    `json:"maxKeys,omitempty"`
+	DataType      string `json:"dataType,omitempty"`
 }

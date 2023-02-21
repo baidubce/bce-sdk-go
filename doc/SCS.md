@@ -41,7 +41,7 @@ func main() {
 	ENDPOINT := <domain-name>
 
 	// 初始化一个SCSClient
-	scsClient, err := scs.NewClient(AK, SK, ENDPOINT)
+	scsClient, err := scs.NewClient(ACCESS_KEY_ID, SECRET_ACCESS_KEY, ENDPOINT)
 }
 ```
 

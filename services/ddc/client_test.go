@@ -3,13 +3,14 @@ package ddc
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/util"
-	"github.com/baidubce/bce-sdk-go/util/log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"testing"
+
+	"github.com/baidubce/bce-sdk-go/util"
+	"github.com/baidubce/bce-sdk-go/util/log"
 )
 
 var (
@@ -495,4 +496,35 @@ func TestClient_UpdateInstanceName(t *testing.T) {
 		return
 	}
 	fmt.Printf("update instance name success\n")
+}
+
+func TestClient_BinlogAccessDetail(t *testing.T) {
+	args := &AccessDetailArgs{
+		StartDateTime: "2023-02-02T01:00:00Z",
+		EndDateTime:   "2023-02-02T10:00:00Z",
+		Marker:        "0",
+		MaxKeys:       100,
+	}
+	result, err := DDC_CLIENT.BinlogAccessDetail(args)
+	if err != nil {
+		fmt.Printf("get binlog access detail error: %+v\n", err)
+		return
+	}
+	fmt.Printf("get binlog access detail success\n")
+	fmt.Println("result: ", result)
+}
+
+func TestClient_SnapshotAccessDetail(t *testing.T) {
+	args := &AccessDetailArgs{
+		StartDateTime: "2023-02-02T01:00:00Z",
+		EndDateTime:   "2023-02-02T10:00:00Z",
+		Marker:        "0",
+		MaxKeys:       100,
+	}
+	result, err := DDC_CLIENT.SnapshotAccessDetail(args)
+	if err != nil {
+		fmt.Printf("get snapshot access detail error: %+v\n", err)
+		return
+	}
+	fmt.Printf("get snapshot access detail success\n %+v", result)
 }

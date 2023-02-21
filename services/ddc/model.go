@@ -776,3 +776,42 @@ type ModifySyncModeArgs struct {
 type Disk struct {
 	CapacityRatio []string `json:"capacityRatio"`
 }
+
+type AccessDetailItem struct {
+	BackupID             string `json:"backupID"`
+	AccessDateTime       string `json:"accessDateTime"`
+	AccessResult         string `json:"accessResult"`
+	AccessSrcAddressType string `json:"accessSrcAddressType"`
+	AvailableZone        string `json:"availableZone"`
+	AccessSrcAddress     string `json:"accessSrcAddress"`
+	AccessOperationType  string `json:"accessOperationType"`
+	StorageType          string `json:"storageType"`
+	StorageAddress       string `json:"storageAddress"`
+	Region               string `json:"region"`
+	BackupName           string `json:"backupName"`
+	AccessSrcAgent       string `json:"accessSrcAgent"`
+	StorageID            string `json:"storageID"`
+}
+
+type Pagination struct {
+	IsTruncated bool   `json:"isTruncated"`
+	NextMarker  string `json:"nextMarker"`
+	MaxKeys     int    `json:"maxKeys"`
+	Marker      string `json:"marker"`
+	TotalKeys   int    `json:"totalKeys"`
+}
+type BackupAccessDetail struct {
+	StartDateTime       string             `json:"startDateTime"`
+	EndDateTime         string             `json:"endDateTime"`
+	DataType            string             `json:"dataType"`
+	BackupAccessDetails []AccessDetailItem `json:"backupAccessDetails"`
+	Pagination          Pagination         `json:"pagination"`
+}
+
+type AccessDetailArgs struct {
+	StartDateTime string `json:"startDateTime"`
+	EndDateTime   string `json:"endDateTime"`
+	Marker        string `json:"marker,omitempty"`
+	MaxKeys       int    `json:"maxKeys,omitempty"`
+	DataType      string `json:"dataType,omitempty"`
+}

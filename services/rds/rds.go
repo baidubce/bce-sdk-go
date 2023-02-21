@@ -594,6 +594,41 @@ func (c *Client) AutoRenew(args *AutoRenewArgs) error {
 		Do()
 }
 
+// getSlowLogDownloadTaskList
+//
+// PARAMS:
+//     - instanceId: the specific rds Instance's ID
+//     - datetime: the log time. range(datetime, datetime + 24 hours)
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetSlowLogDownloadTaskList(instanceId, datetime string) (*SlowLogDownloadTaskListResult, error) {
+	fmt.Println(getRdsUriWithInstanceId(instanceId) + "/slowlogs/logList/" + datetime)
+	result := &SlowLogDownloadTaskListResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getRdsUriWithInstanceId(instanceId) + "/slowlogs/logList/" + datetime).
+		WithResult(result).
+		Do()
+	fmt.Println(result, err)
+	return result, err
+}
+
+// getSlowLogDownloadDetail
+//
+// PARAMS:
+//     - Args: *slowLogDownloadTaskListArgs
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetSlowLogDownloadDetail(instanceId, logId, downloadValidTimeInSec string) (*SlowLogDownloadDetail, error) {
+	result := &SlowLogDownloadDetail{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getRdsUriWithInstanceId(instanceId) + "/slowlogs/download_url/" + logId + "/" + downloadValidTimeInSec).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
 func (c *Client) Request(method, uri string, body interface{}) (interface{}, error) {
 	res := struct{}{}
 	req := bce.NewRequestBuilder(c).

@@ -19,10 +19,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/bce"
-	"github.com/baidubce/bce-sdk-go/http"
 	"strconv"
 	"strings"
+
+	"github.com/baidubce/bce-sdk-go/bce"
+	"github.com/baidubce/bce-sdk-go/http"
 )
 
 const (
@@ -1750,6 +1751,56 @@ func (c *Client) GetDisk(instanceId string) (*Disk, error) {
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
 		WithURL(getDdcUriWithInstanceId(instanceId)+"/disk").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// SnapshotAccessDetail - get snapshot access detail
+//
+// PARAMS:
+//     - args: the arguments to get snapshot access detail
+// RETURNS:
+//     - *AccessDetail
+//     - error: nil if success otherwise the specific error
+func (c *Client) SnapshotAccessDetail(args *AccessDetailArgs) (*BackupAccessDetail, error) {
+
+	result := &BackupAccessDetail{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getDdcUri()+"/snapshot/accessdetail").
+		WithQueryParam("startDateTime", args.StartDateTime).
+		WithQueryParam("endDateTime", args.EndDateTime).
+		WithQueryParam("marker", args.Marker).
+		WithQueryParam("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithQueryParam("dataType", args.DataType).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// BinlogAccessDetail - get snapshot access detail
+//
+// PARAMS:
+//     - args: the arguments to get snapshot access detail
+// RETURNS:
+//     - *AccessDetail
+//     - error: nil if success otherwise the specific error
+func (c *Client) BinlogAccessDetail(args *AccessDetailArgs) (*BackupAccessDetail, error) {
+
+	result := &BackupAccessDetail{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getDdcUri()+"/binlog/accessdetail").
+		WithQueryParam("startDateTime", args.StartDateTime).
+		WithQueryParam("endDateTime", args.EndDateTime).
+		WithQueryParam("marker", args.Marker).
+		WithQueryParam("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithQueryParam("dataType", args.DataType).
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithResult(result).
 		Do()
