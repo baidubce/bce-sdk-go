@@ -1,3 +1,3 @@
 module github.com/baidubce/bce-sdk-go
 
-go 1.11
+go 1.18
