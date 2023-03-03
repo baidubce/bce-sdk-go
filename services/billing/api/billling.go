@@ -20,6 +20,7 @@ var (
 		"prefer": {
 			checkFormatOfBeginTime,
 			checkFormatOfEndTime,
+			checkBeginAndEndTimeInMonth,
 		},
 	}
 )
@@ -80,7 +81,18 @@ func GetBilling(cli bce.Client, queryArgs *BillingParams) (*BillingResponse, err
 
 }
 
-// Check the field of begin or end time in billing query parameters is legal
+// Check begin and end time in the month
+func checkBeginAndEndTimeInMonth(bp *BillingParams) error {
+	if bp.BeginTime[:7] != bp.Month {
+		return errors.New("begin time is not in the month")
+	}
+	if bp.EndTime[:7] != bp.Month {
+		return errors.New("end time is not in the month")
+	}
+	return nil
+}
+
+// Check begin or end time in billing query parameters is legal
 func checkFormatOfBeginTime(bp *BillingParams) error {
 	_, err := time.Parse("2006-01-02", bp.BeginTime)
 	if err != nil {
@@ -97,14 +109,13 @@ func checkFormatOfEndTime(bp *BillingParams) error {
 	return nil
 }
 
-// Check the field of month in billing query parameters is legal
+// Check month in billing query parameters is legal
 func checkNullOfMonth(bp *BillingParams) error {
 	if bp.Month == "" {
 		return errors.New("month must not be null")
 	}
 	return nil
 }
-
 func checkFormatOfMonth(bp *BillingParams) error {
 	_, err := time.Parse("2006-01", bp.Month)
 	if err != nil {
@@ -113,14 +124,13 @@ func checkFormatOfMonth(bp *BillingParams) error {
 	return nil
 }
 
-// Check the field of productType in billing query parameters is legal
+// Check productType in billing query parameters is legal
 func checkNullOfProductType(bp *BillingParams) error {
 	if bp.ProductType == "" {
 		return errors.New("product type must not be null")
 	}
 	return nil
 }
-
 func checkTypeOfProductType(bp *BillingParams) error {
 	if (bp.ProductType == "postpay") || (bp.ProductType == "prepay") {
 		return nil
