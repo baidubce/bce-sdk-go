@@ -177,6 +177,49 @@ func DeleteUserLoginProfile(cli bce.Client, name string) error {
 	return nil
 }
 
+func UserOperationMfaSwitch(cli bce.Client, body *bce.Body) error {
+	req := &bce.BceRequest{}
+	req.SetUri(URI_PREFIX + URI_USER + "/operation/mfa/switch")
+	req.SetMethod(http.POST)
+	req.SetBody(body)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+func SubUserUpdate(cli bce.Client, body *bce.Body, name string) (*UpdateUserResult, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getSubUserUri(name) + "/update")
+	req.SetMethod(http.PUT)
+	req.SetBody(body)
+	req.SetHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	jsonBody := &UpdateUserResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	defer func() { resp.Body().Close() }()
+	return jsonBody, nil
+}
+
 func getUserUri(name string) string {
 	return URI_PREFIX + URI_USER + "/" + name
+}
+
+func getSubUserUri(name string) string {
+	return URI_PREFIX + SUB_USER + "/" + name
 }

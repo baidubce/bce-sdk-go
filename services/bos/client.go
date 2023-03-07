@@ -957,15 +957,15 @@ func (c *Client) BasicCopyObject(bucket, object, srcBucket,
 // PARAMS:
 //     - bucket: the name of the bucket
 //     - object: the name of the object
-//     - responseHeaders: the optional response headers to get the given object
+//     - args: the optional args in querysring
 //     - ranges: the optional range start and end to get the given object
 // RETURNS:
 //     - *api.GetObjectResult: result struct which contains "Body" and header fields
 //       for details reference https://cloud.baidu.com/doc/BOS/API.html#GetObject.E6.8E.A5.E5.8F.A3
 //     - error: any error if it occurs
-func (c *Client) GetObject(bucket, object string, responseHeaders map[string]string,
+func (c *Client) GetObject(bucket, object string, args map[string]string,
 	ranges ...int64) (*api.GetObjectResult, error) {
-	return api.GetObject(c, bucket, object, responseHeaders, ranges...)
+	return api.GetObject(c, bucket, object, args, ranges...)
 }
 
 // BasicGetObject - the basic interface of geting the given object

@@ -22,6 +22,8 @@ const (
 	URI_ACCESSKEY = "/accesskey"
 	URI_ROLE      = "/role"
 
+	SUB_USER = "/subUser"
+
 	POLICY_TYPE_SYSTEM = "System"
 	POLICY_TYPE_CUSTOM = "Custom"
 

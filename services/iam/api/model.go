@@ -213,3 +213,15 @@ type UpdateRoleResult RoleModel
 type ListRoleResult struct {
 	Roles []RoleModel `json:"roles"`
 }
+
+type UserSwitchMfaArgs struct {
+	UserName   string `json:"userName,omitempty"`
+	EnabledMfa bool   `json:"enabledMfa"`
+	MfaType    string `json:"mfaType,omitempty"`
+}
+
+type UpdateSubUserArgs struct {
+	Password string `json:"password,omitempty"`
+	Provider string `json:"provider,omitempty"`
+	Enable   bool   `json:"enable"`
+}

@@ -15,6 +15,7 @@ import (
 var (
 	CCR_CLIENT      *Client
 	CCR_INSTANCE_ID string
+	CCR_REGISTRY_ID string
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -111,6 +112,79 @@ func TestClient_GetInstanceDetail(t *testing.T) {
 	fmt.Println("Response:" + string(s))
 }
 
+func TestClient_CreateInstance(t *testing.T) {
+
+	billing := Billing{
+		ReservationTimeUnit: "MONTH",
+		ReservationTime:     1,
+		AutoRenew:           false,
+		AutoRenewTimeUnit:   "MONTH",
+		AutoRenewTime:       1,
+	}
+
+	args := &CreateInstanceArgs{
+		Type:          "BASIC",
+		Name:          "instanceName",
+		Bucket:        "",
+		PaymentTiming: "prepay",
+		Billing:       billing,
+		PaymentMethod: []PaymentMethod{},
+	}
+
+	resp, err := CCR_CLIENT.CreateInstance(args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:", string(s))
+}
+
+func TestClient_RenewInstance(t *testing.T) {
+
+	orderType := "RENEW"
+	args := &RenewInstanceArgs{
+		Items:         []Item{},
+		PaymentMethod: []PaymentMethod{},
+	}
+
+	resp, err := CCR_CLIENT.RenewInstance(orderType, args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:", string(s))
+}
+
+func TestClient_UpdateInstance(t *testing.T) {
+
+	args := &UpdateInstanceArgs{
+		Name: "InstanceName",
+	}
+
+	resp, err := CCR_CLIENT.UpdateInstance(CCR_INSTANCE_ID, args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+
+	fmt.Println("Response:", string(s))
+}
+
+func TestClient_UpgradeInstance(t *testing.T) {
+
+	args := &UpgradeInstanceArgs{
+		Type:          "STANDARD",
+		PaymentMethod: []PaymentMethod{},
+	}
+
+	resp, err := CCR_CLIENT.UpgradeInstance(CCR_INSTANCE_ID, args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:", string(s))
+}
+
 func TestClient_ListPrivateNetworks(t *testing.T) {
 
 	resp, err := CCR_CLIENT.ListPrivateNetworks(CCR_INSTANCE_ID)
@@ -119,4 +193,197 @@ func TestClient_ListPrivateNetworks(t *testing.T) {
 
 	s, _ := json.MarshalIndent(resp, "", "\t")
 	fmt.Println("Response:" + string(s))
+}
+
+func TestClient_CreatePrivateNetwork(t *testing.T) {
+
+	args := &CreatePrivateNetworkArgs{
+		VpcID:          "VpcID",
+		SubnetID:       "SubnetID",
+		IPAddress:      "",
+		IPType:         "",
+		AutoDNSResolve: false,
+	}
+
+	resp, err := CCR_CLIENT.CreatePrivateNetwork(CCR_INSTANCE_ID, args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:", string(s))
+}
+
+func TestClient_DeletePrivateNetwork(t *testing.T) {
+
+	args := &DeletePrivateNetworkArgs{
+		VpcID:    "VpcID",
+		SubnetID: "SubnetID",
+	}
+
+	err := CCR_CLIENT.DeletePrivateNetwork(CCR_INSTANCE_ID, args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	fmt.Println("Delete Private Network Test Passed")
+}
+
+func TestClient_ListPublicNetworks(t *testing.T) {
+
+	resp, err := CCR_CLIENT.ListPublicNetworks(CCR_INSTANCE_ID)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:", string(s))
+}
+
+func TestClient_UpdatePublicNetwork(t *testing.T) {
+	args := &UpdatePublicNetworkArgs{
+		Action: "open",
+	}
+
+	err := CCR_CLIENT.UpdatePublicNetwork(CCR_INSTANCE_ID, args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	fmt.Println("Update Public Network Test Passed")
+
+}
+
+func TestClient_DeletePublicNetworkWhitelist(t *testing.T) {
+	args := &DeletePublicNetworkWhitelistArgs{
+		Items: []string{"PublicNetworkWhiteListArgs"},
+	}
+
+	err := CCR_CLIENT.DeletePublicNetworkWhitelist(CCR_INSTANCE_ID, args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	fmt.Println("Delete Public Network Whitelist Test Passed")
+}
+
+func TestClient_AddPublicNetworkWhitelist(t *testing.T) {
+	args := &AddPublicNetworkWhitelistArgs{
+		IPAddr:      "cidrv4",
+		Description: "",
+	}
+
+	err := CCR_CLIENT.AddPublicNetworkWhitelist(CCR_INSTANCE_ID, args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	fmt.Println("Add Public Network Whitelist Test Passed")
+}
+
+func TestClient_ResetPassword(t *testing.T) {
+	args := &ResetPasswordArgs{
+		Password: "Password",
+	}
+
+	resp, err := CCR_CLIENT.ResetPassword(CCR_INSTANCE_ID, args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:", string(s))
+}
+
+func TestClient_CreateTemporaryToken(t *testing.T) {
+	args := &CreateTemporaryTokenArgs{
+		Duration: 10,
+	}
+
+	resp, err := CCR_CLIENT.CreateTemporaryToken(CCR_INSTANCE_ID, args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:", string(s))
+}
+
+func TestClient_CreateRegistry(t *testing.T) {
+	args := &CreateRegistryArgs{
+		Credential:  &RegistryCredential{},
+		Description: "",
+		Insecure:    false,
+		Name:        "",
+		Type:        "harbor",
+		URL:         "https://baidu.com",
+	}
+
+	resp, err := CCR_CLIENT.CreateRegistry(CCR_INSTANCE_ID, args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:", string(s))
+}
+
+func TestClient_GetRegistryDetail(t *testing.T) {
+
+	resp, err := CCR_CLIENT.GetRegistryDetail(CCR_INSTANCE_ID, CCR_REGISTRY_ID)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:" + string(s))
+}
+
+func TestClient_ListRegistries(t *testing.T) {
+	args := &ListRegistriesArgs{
+		RegistryName: "",
+		RegistryType: "",
+		PageNo:       1,
+		PageSize:     10,
+	}
+
+	resp, err := CCR_CLIENT.ListRegistries(CCR_INSTANCE_ID, args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.Marshal(resp)
+	fmt.Println("Response:" + string(s))
+}
+
+func TestClient_CheckHealthRegistry(t *testing.T) {
+	args := &RegistryRequestArgs{
+		Credential:  &RegistryCredential{},
+		Description: "",
+		Insecure:    false,
+		Name:        "",
+		Type:        "harbor",
+		URL:         "https://registry.baidubce.com",
+	}
+
+	err := CCR_CLIENT.CheckHealthRegistry(CCR_INSTANCE_ID, args)
+
+	ExpectEqual(t.Errorf, nil, err)
+	fmt.Println("Check Health Registry Test Passed")
+}
+
+func TestClient_UpdateRegistry(t *testing.T) {
+	args := &RegistryRequestArgs{
+		Credential:  &RegistryCredential{},
+		Description: "",
+		Insecure:    true,
+		Name:        "",
+		Type:        "harbor",
+		URL:         "https://registry.baidubce.com",
+	}
+
+	resp, err := CCR_CLIENT.UpdateRegistry(CCR_INSTANCE_ID, CCR_REGISTRY_ID, args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:", string(s))
+}
+
+func TestClient_DeleteRegistry(t *testing.T) {
+
+	err := CCR_CLIENT.DeleteRegistry(CCR_INSTANCE_ID, CCR_REGISTRY_ID)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	fmt.Println("Delete Registry Test Passed")
 }
