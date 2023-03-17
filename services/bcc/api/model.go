@@ -1832,3 +1832,7 @@ type DeleteSecurityGroupRuleArgs struct {
 	SgVersion           int64  `json:"sgVersion,omitempty"`
 	SecurityGroupRuleId string `json:"securityGroupRuleId"`
 }
+
+type GetInstanceDeleteProgressArgs struct {
+	InstanceIds []string `json:"instanceIds"`
+}

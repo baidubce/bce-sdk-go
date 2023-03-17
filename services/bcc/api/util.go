@@ -359,3 +359,7 @@ func getListIdMappingsUri() string {
 func getBatchResizeInstanceUri() string {
 	return URI_PREFIXV2 + "/instanceBatchBySpec"
 }
+
+func getInstanceDeleteProgress() string {
+	return URI_PREFIXV2 + "/instance/deleteProgress"
+}

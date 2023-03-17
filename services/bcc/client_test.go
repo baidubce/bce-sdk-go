@@ -1405,3 +1405,16 @@ func TestClient_UpdateSecurityGroupRule(t *testing.T) {
 	err := BCC_CLIENT.UpdateSecurityGroupRule(args)
 	ExpectEqual(t.Errorf, nil, err)
 }
+
+func TestGetInstanceDeleteProgress(t *testing.T) {
+
+	args := &api.GetInstanceDeleteProgressArgs{
+		InstanceIds: []string{
+			BCC_TestBccId,
+		},
+	}
+
+	res, err := BCC_CLIENT.GetInstanceDeleteProgress(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}

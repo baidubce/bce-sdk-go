@@ -1804,3 +1804,17 @@ func (c *Client) DeleteSecurityGroupRule(args *api.DeleteSecurityGroupRuleArgs) 
 func (c *Client) UpdateSecurityGroupRule(args *api.UpdateSecurityGroupRuleArgs) error {
 	return api.UpdateSecurityGroupRule(c, args)
 }
+
+func (c *Client) GetInstanceDeleteProgress(args *api.GetInstanceDeleteProgressArgs) (map[string]interface{}, error) {
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.GetInstanceDeleteProgress(c, body)
+}

@@ -3343,6 +3343,23 @@ if err != nil {
 }
 ```
 
+### 批量查询实例是否删除完成
+以下代码可以根据实例ID批量查询实例是否删除完成
+```go
+ bccId := "bccId"
+ args := &api.GetInstanceDeleteProgressArgs{
+     InstanceIds: []string{
+         bccId,
+     },
+ }
+
+ res, err := BCC_CLIENT.GetInstanceDeleteProgress(args)
+ if err != nil {
+    fmt.Println(err)
+ }
+ fmt.Println(res)
+```
+
 # 错误处理
 
 GO语言以error类型标识错误，BCC支持两种错误见下表：

@@ -1925,3 +1925,28 @@ func BatchResizeInstance(cli bce.Client, reqBody *bce.Body) (*BatchResizeInstanc
 
 	return jsonBody, nil
 }
+
+func GetInstanceDeleteProgress(cli bce.Client, reqBody *bce.Body) (map[string]interface{}, error) {
+
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getInstanceDeleteProgress())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	var jsonBody map[string]interface{}
+	if err := resp.ParseJsonBody(&jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
