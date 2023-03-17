@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 )
 
@@ -342,7 +343,6 @@ func (args CreateEventSourceArgs) Validate() error {
 	} else {
 		return fmt.Errorf(EventSourceTypeNotSupport, args.Type)
 	}
-	return nil
 }
 
 func (args UpdateEventSourceArgs) Validate() error {
@@ -355,12 +355,52 @@ func (args UpdateEventSourceArgs) Validate() error {
 		return fmt.Errorf(EventSourceTypeNotSupport, args.FuncEventSource.Type)
 	}
 
-	return nil
 }
 
 func (args DeleteEventSourceArgs) Validate() error {
 	if args.UUID == "" {
 		return fmt.Errorf(requiredIllegal, "UUID")
+	}
+	return nil
+}
+
+func (args GetExecutionHistoryArgs) Validate() error {
+	if args.Limit <= 0 {
+		return fmt.Errorf(getExecutionHistoryLimitIllegal)
+	}
+	if !validateFlowName(args.FlowName) {
+		return fmt.Errorf(flowNameInvalid, args.FlowName)
+	}
+	if !validateExecutionName(args.ExecutionName) {
+		return fmt.Errorf(executionNameInvalid, args.ExecutionName)
+	}
+	return nil
+}
+
+func (args CreateUpdateFlowArgs) Validate() error {
+	if !validateFlowName(args.Name) {
+		return fmt.Errorf(flowNameInvalid, args.Name)
+	}
+	if args.Type != "" && args.Type != "FDL" {
+		return fmt.Errorf(flowTypeInvalid, args.Type)
+	}
+	return nil
+}
+
+func (args StartExecutionArgs) Validate() error {
+	if !validateFlowName(args.FlowName) {
+		return fmt.Errorf(flowNameInvalid, args.FlowName)
+	}
+	if args.ExecutionName != "" {
+		if !validateExecutionName(args.ExecutionName) {
+			return fmt.Errorf(executionNameInvalid, args.ExecutionName)
+		}
+	}
+
+	var input = map[string]interface{}{}
+	err := json.Unmarshal([]byte(args.Input), &input)
+	if err != nil {
+		return fmt.Errorf(executionInputInvalid, err.Error())
 	}
 	return nil
 }

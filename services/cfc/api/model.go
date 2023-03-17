@@ -77,7 +77,7 @@ type Function struct {
 	SourceTag    string       `json:"SourceTag"`
 }
 
-//functionInfo
+// functionInfo
 type FunctionInfo struct {
 	Code          *CodeStorage `json:"Code"`
 	Configuration *Function    `json:"Configuration"`
@@ -435,4 +435,78 @@ type DatahubConfig struct {
 	StartPoint       int64  `json:"StartPoint,omitempty"`       // 起始订阅点  正常情况下id为正整数, 2个特殊的点 -1: 表示pipelet内的最新一条消息；-2: 表示pipelet内最旧的一条消息
 	AclName          string `json:"ACLName,omitempty"`          // ACL name
 	AclPassword      string `json:"ACLPassword,omitempty"`      // ACL passwd
+}
+
+type StartExecutionArgs struct {
+	FlowName      string `json:"flowName,omitempty"`      // flowName
+	ExecutionName string `json:"executionName,omitempty"` // executionName
+	Input         string `json:"input,omitempty"`         // input
+}
+
+type Execution struct {
+	Name           string `json:"name"`
+	Status         string `json:"status"`
+	FlowName       string `json:"flowName"`
+	FlowDefinition string `json:"flowDefinition"`
+	Input          string `json:"input"`
+	Output         string `json:"output"`
+	StartedTime    int64  `json:"startedTime"`
+	StoppedTime    int64  `json:"stoppedTime"`
+}
+
+type ListExecutionsResult struct {
+	Total      int         `json:"total"`
+	Executions []Execution `json:"executions"`
+}
+
+type GetWorkflowResult struct {
+	Code          CodeStorage
+	Configuration Function
+}
+
+type GetExecutionHistoryResult struct {
+	Events []*ExecutionEvent `json:"events"`
+}
+
+type ExecutionEvent struct {
+	CostTime    int64  `json:"costTime"`
+	EventDetail string `json:"eventDetail"`
+	EventId     string `json:"eventId"`
+	ExecutionId string `json:"executionId"`
+	StateName   string `json:"stateName"`
+	Time        int64  `json:"time"`
+	Type        string `json:"type"`
+}
+
+type Flow struct {
+	Name        string `json:"name"`
+	Type        string `json:"type"`
+	Definition  string `json:"definition"`
+	Description string `json:"description"`
+	CreatedAt   string `json:"created_at"`
+	UpdatedAt   string `json:"updated_at"`
+}
+
+type ListFlowResult struct {
+	Flows []*struct {
+		Name             string `json:"name"`
+		Type             string `json:"type"`
+		LastModifiedTime string `json:"lastModifiedTime"`
+		Description      string `json:"description"`
+		Definition       string `json:"definition"`
+		CreatedTime      string `json:"createdTime"`
+	} `json:"flows"`
+}
+
+type CreateUpdateFlowArgs struct {
+	Name        string `json:"name"`
+	Type        string `json:"type"` // 当前只支持 "FDL"
+	Definition  string `json:"definition"`
+	Description string `json:"description"`
+}
+
+type GetExecutionHistoryArgs struct {
+	FlowName      string `json:"name"`
+	ExecutionName string `json:"type"`
+	Limit         int    `json:"limit"`
 }

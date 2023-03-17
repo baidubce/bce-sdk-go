@@ -570,8 +570,10 @@ func DeleteTrigger(cli bce.Client, args *DeleteTriggerArgs) error {
 }
 
 func caller(cli bce.Client, op *Operation, request *cfcRequest, response *cfcResult) error {
-	if err := request.Args.(Validator).Validate(); err != nil {
-		return err
+	if request.Args != nil {
+		if err := request.Args.(Validator).Validate(); err != nil {
+			return err
+		}
 	}
 	req := new(bce.BceRequest)
 	if op.HTTPUri == "" {

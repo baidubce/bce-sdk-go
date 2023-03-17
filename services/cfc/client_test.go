@@ -621,3 +621,102 @@ func TestDeleteEventSource(t *testing.T) {
 		t.Fatalf("err (%v)", err)
 	}
 }
+
+func TestListFlow(t *testing.T) {
+	res, err := CfcClient.ListFlow()
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	t.Logf("res %+v", res.Flows[0])
+}
+
+func TestCreateFlow(t *testing.T) {
+	res, err := CfcClient.CreateFlow(&api.CreateUpdateFlowArgs{
+		Name:        "demo-x2",
+		Type:        "FDL",
+		Definition:  "name: demo\nstart: initData\nstates:\n  - type: pass\n    name: initData\n    data:\n      hello: world\n    end: true",
+		Description: "ut test demo",
+	})
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	t.Logf("res %+v", res)
+}
+
+func TestUpdateFlow(t *testing.T) {
+	res, err := CfcClient.UpdateFlow(&api.CreateUpdateFlowArgs{
+		Name:        "demo-x2",
+		Type:        "FDL",
+		Definition:  "name: demo\nstart: initData2\nstates:\n  - type: pass\n    name: initData2\n    data:\n      hello: world\n    end: true",
+		Description: "ut test demo2",
+	})
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	t.Logf("res %+v", res)
+}
+
+func TestDescribeFlow(t *testing.T) {
+	res, err := CfcClient.DescribeFlow("demo-x2")
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	t.Logf("res %+v", res)
+}
+
+func TestDeleteFlow(t *testing.T) {
+	err := CfcClient.DeleteFlow("demo-x2")
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+}
+
+func TestStartExecution(t *testing.T) {
+	res, err := CfcClient.StartExecution(&api.StartExecutionArgs{
+		FlowName:      "demo-x2",
+		ExecutionName: "s3",
+		Input:         "{\"fruits\":[\"apple\", \"banana\"]}",
+	})
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	t.Logf("res %+v", res)
+}
+
+func TestStopExecution(t *testing.T) {
+	res, err := CfcClient.StopExecution("demo-x2", "s3")
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	t.Logf("res %+v", res)
+}
+
+func TestDescribeExecution(t *testing.T) {
+	res, err := CfcClient.DescribeExecution("demo-x2", "s3")
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	t.Logf("res %+v", res)
+}
+
+func TestListExecutions(t *testing.T) {
+	res, err := CfcClient.ListExecutions("demo-x2")
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	t.Logf("res %+v", res)
+}
+
+func TestGetExecutionHistory(t *testing.T) {
+	res, err := CfcClient.GetExecutionHistory(&api.GetExecutionHistoryArgs{
+		FlowName:      "demo-x2",
+		ExecutionName: "s3",
+		Limit:         40,
+	})
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	for _, e := range res.Events {
+		t.Logf("event %+v", e)
+	}
+}
