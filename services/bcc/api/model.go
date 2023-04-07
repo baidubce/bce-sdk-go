@@ -117,6 +117,8 @@ type InstanceModel struct {
 	PublicIP              string                 `json:"publicIp"`
 	InternalIP            string                 `json:"internalIp"`
 	CpuCount              int                    `json:"cpuCount"`
+	IsomerismCard         string                 `json:"isomerismCard"`
+	NpuVideoMemory        string                 `json:"npuVideoMemory"`
 	GpuCard               string                 `json:"gpuCard"`
 	FpgaCard              string                 `json:"fpgaCard"`
 	CardCount             string                 `json:"cardCount"`
@@ -139,6 +141,7 @@ type InstanceModel struct {
 	DeploysetId           string                 `json:"deploysetId"`
 	RackId                string                 `json:"rackId"`
 	NicInfo               NicInfo                `json:"nicInfo"`
+	EniNum                int                    `json:"eniNum"`
 	DeploySetList         []DeploySetSimpleModel `json:"deploysetList"`
 	DeletionProtection    int                    `json:"deletionProtection"`
 }
@@ -276,11 +279,14 @@ type CreateInstanceArgs struct {
 	EnterpriseSecurityGroupId string           `json:"enterpriseSecurityGroupId,omitempty"`
 	GpuCard                   string           `json:"gpuCard,omitempty"`
 	FpgaCard                  string           `json:"fpgaCard,omitempty"`
+	KunlunCard                string           `json:"kunlunCard,omitempty"`
+	IsomerismCard             string           `json:"isomerismCard,omitempty"`
 	CardCount                 string           `json:"cardCount,omitempty"`
 	AutoRenewTimeUnit         string           `json:"autoRenewTimeUnit"`
 	AutoRenewTime             int              `json:"autoRenewTime"`
 	CdsAutoRenew              bool             `json:"cdsAutoRenew"`
 	RelationTag               bool             `json:"relationTag,omitempty"`
+	IsOpenIpv6                bool             `json:"isOpenIpv6,omitempty"`
 	Tags                      []model.TagModel `json:"tags,omitempty"`
 	DeployId                  string           `json:"deployId,omitempty"`
 	BidModel                  string           `json:"bidModel,omitempty"`
@@ -294,6 +300,15 @@ type CreateInstanceArgs struct {
 	RequestToken              string           `json:"requestToken"`
 	DeployIdList              []string         `json:"deployIdList"`
 	DetetionProtection        int              `json:"deletionProtection"`
+	FileSystems               []FileSystemModel `json:"fileSystems,omitempty"`
+	IsOpenHostEye             bool             `json:"isOpenHostEye,omitempty"`
+}
+
+type FileSystemModel struct {
+	FsID     string `json:"fsId"`
+	MountAds string `json:"mountAds"`
+	Path     string `json:"path"`
+	Protocol string `json:"protocol"`
 }
 
 type CreateInstanceStockArgs struct {
@@ -400,6 +415,11 @@ type CreateInstanceBySpecArgs struct {
 	RequestToken              string           `json:"requestToken"`
 	DeployIdList              []string         `json:"deployIdList"`
 	DetetionProtection        int              `json:"deletionProtection"`
+	IsOpenIpv6                bool             `json:"isOpenIpv6,omitempty"`
+	SpecId                    string           `json:"specId,omitempty"`
+	IsOpenHostEye             bool             `json:"isOpenHostEye,omitempty"`
+	BidModel                  string           `json:"bidModel,omitempty"`
+	BidPrice                  string           `json:"bidPrice,omitempty"`
 }
 
 const (
@@ -530,15 +550,27 @@ const (
 
 type CreateInstanceBySpecResult struct {
 	InstanceIds []string `json:"instanceIds"`
+	OrderId     string   `json:"orderId,omitempty"`
 }
 
 type ListInstanceArgs struct {
-	Marker          string
-	MaxKeys         int
-	InternalIp      string
-	DedicatedHostId string
-	ZoneName        string
-	KeypairId       string
+	Marker           string
+	MaxKeys          int
+	InternalIp       string
+	DedicatedHostId  string
+	ZoneName         string
+	KeypairId        string
+	AutoRenew        bool
+	InstanceIds      string
+	InstanceNames    string
+	CdsIds           string
+	DeploySetIds     string
+	SecurityGroupIds string
+	PaymentTiming    string
+	Status           string
+	Tags             string
+	VpcId            string
+	PrivateIps       string
 }
 
 type ListInstanceResult struct {
@@ -696,6 +728,7 @@ type AutoReleaseArgs struct {
 
 type ResizeInstanceArgs struct {
 	CpuCount           int             `json:"cpuCount"`
+	GpuCardCount	   int             `json:"gpuCardCount"`
 	MemoryCapacityInGB int             `json:"memoryCapacityInGB"`
 	EphemeralDisks     []EphemeralDisk `json:"ephemeralDisks,omitempty"`
 	Spec               string          `json:"spec"`
@@ -704,9 +737,15 @@ type ResizeInstanceArgs struct {
 }
 
 type RebuildInstanceArgs struct {
-	ImageId   string `json:"imageId"`
-	AdminPass string `json:"adminPass"`
-	KeypairId string `json:"keypairId"`
+	ImageId           string `json:"imageId"`
+	AdminPass         string `json:"adminPass"`
+	KeypairId         string `json:"keypairId"`
+	IsOpenHostEye     bool   `json:"isOpenHostEye"`
+	IsPreserveData    bool   `json:"isPreserveData"`
+	RaidId            string `json:"raidId,omitempty"`
+	SysRootSize       int    `json:"sysRootSize,omitempty"`
+	RootPartitionType string `json:"rootPartitionType,omitempty"`
+	DataPartitionType string `json:"dataPartitionType,omitempty"`
 }
 
 type StopInstanceArgs struct {
@@ -783,6 +822,7 @@ type DeleteInstanceWithRelateResourceArgs struct {
 	DeleteCdsSnapshotFlag bool `json:"deleteCdsSnapshotFlag"`
 	BccRecycleFlag        bool `json:"bccRecycleFlag"`
 	DeleteRelatedEnisFlag bool `json:"deleteRelatedEnisFlag"`
+	DeleteImmediate       bool `json:"deleteImmediate"`
 }
 
 type InstanceChangeVpcArgs struct {
@@ -937,6 +977,10 @@ type VolumeModel struct {
 	EnableAutoRenew    bool                     `json:"enableAutoRenew"`
 	AutoRenewTime      int                      `json:"autoRenewTime"`
 	Encrypted          bool                     `json:"encrypted"`
+	ClusterId          string                   `json:"clusterId"`
+	RoleName           string                   `json:"roleName"`
+	CreatedFrom        string                   `json:"createdFrom"`
+	ReleaseTime        string                    `json:"releaseTime"`
 }
 
 type VolumeModelV3 struct {
@@ -991,7 +1035,15 @@ type CreateCDSVolumeArgs struct {
 	EncryptKey    string      `json:"encryptKey"`
 	RenewTimeUnit string      `json:"renewTimeUnit"`
 	RenewTime     int         `json:"renewTime"`
+	InstanceId    string      `json:"instanceId"`
+	ClusterId    string       `json:"clusterId"`
+	Tags          []model.TagModel `json:"tags"`
+	AutoSnapshotPolicy          []AutoSnapshotPolicy `json:"autoSnapshotPolicy"`
 	ClientToken   string      `json:"-"`
+}
+
+type AutoSnapshotPolicy struct {
+	AutoSnapshotPolicyId string `json:"autoSnapshotPolicyId"`
 }
 
 type CreateCDSVolumeV3Args struct {
@@ -1051,6 +1103,7 @@ type ListCDSVolumeArgs struct {
 	InstanceId string
 	ZoneName   string
 	Marker     string
+	ClusterId  string
 }
 
 type AutoRenewCDSVolumeArgs struct {
@@ -1172,6 +1225,7 @@ const (
 type SharedUser struct {
 	AccountId string `json:"accountId,omitempty"`
 	Account   string `json:"account,omitempty"`
+	UcAccount string `json:"ucAccount,omitempty"`
 }
 
 type GetImageSharedUserResult struct {
@@ -1236,6 +1290,7 @@ type CreateImageArgs struct {
 	SnapshotId  string `json:"snapshotId,omitempty"`
 	ImageName   string `json:"imageName"`
 	IsRelateCds bool   `json:"relateCds"`
+	EncryptKey  string `json:"encryptKey"`
 	ClientToken string `json:"-"`
 }
 
@@ -1265,6 +1320,7 @@ type CreateSnapshotArgs struct {
 	VolumeId     string `json:"volumeId"`
 	SnapshotName string `json:"snapshotName"`
 	Description  string `json:"desc,omitempty"`
+	Tags  []model.TagModel         `json:"tags"`
 }
 
 type CreateSnapshotResult struct {
@@ -1324,6 +1380,7 @@ type ListSnapshotChainResult struct {
 	PageSize    int              `json:"pageSize"`
 	PageNo      int              `json:"pageNo"`
 	IsTruncated bool             `json:"isTruncated"`
+	VolumeId    string            `json:"volumeId"`
 	Snapchains  []SnapchainModel `json:"snapchains"`
 }
 
@@ -1442,12 +1499,13 @@ type ListDeploySetsResult struct {
 }
 
 type DeploySetModel struct {
-	Strategy     string              `json:"strategy"`
-	InstanceList []AzIntstanceStatis `json:"azIntstanceStatisList"`
-	Name         string              `json:"name"`
-	Desc         string              `json:"desc"`
-	DeploySetId  string              `json:"deploysetId"`
-	Concurrency  int                 `json:"concurrency"`
+	InstanceCount string              `json:"instanceCount"`
+	Strategy      string              `json:"strategy"`
+	InstanceList  []AzIntstanceStatis `json:"azIntstanceStatisList"`
+	Name          string              `json:"name"`
+	Desc          string              `json:"desc"`
+	DeploySetId   string              `json:"deploysetId"`
+	Concurrency   int                 `json:"concurrency"`
 }
 
 type DeploySetResult struct {
@@ -1495,10 +1553,16 @@ type GetDeploySetResult struct {
 }
 
 type RebuildBatchInstanceArgs struct {
-	ImageId     string   `json:"imageId"`
-	AdminPass   string   `json:"adminPass"`
-	KeypairId   string   `json:"keypairId"`
-	InstanceIds []string `json:"instanceIds"`
+	ImageId           string   `json:"imageId"`
+	AdminPass         string   `json:"adminPass"`
+	KeypairId         string   `json:"keypairId"`
+	InstanceIds       []string `json:"instanceIds"`
+	IsOpenHostEye     bool     `json:"isOpenHostEye"`
+	IsPreserveData    bool     `json:"isPreserveData"`
+	RaidId            string   `json:"raidId,omitempty"`
+	SysRootSize       int      `json:"sysRootSize,omitempty"`
+	RootPartitionType string   `json:"rootPartitionType,omitempty"`
+	DataPartitionType string   `json:"dataPartitionType,omitempty"`
 }
 
 type ChangeToPrepaidRequest struct {
@@ -1538,6 +1602,7 @@ type ListFlavorSpecResult struct {
 type ZoneResourceDetailSpec struct {
 	ZoneName     string       `json:"zoneName"`
 	BccResources BccResources `json:"bccResources"`
+	EbcResources EbcResources `json:"ebcResources"`
 }
 
 type BccResources struct {
@@ -1559,6 +1624,34 @@ type BccFlavor struct {
 	GpuCardCount       int    `json:"gpuCardCount"`
 	FpgaCardType       string `json:"fpgaCardType"`
 	FpgaCardCount      int    `json:"fpgaCardCount"`
+	ProductType        string `json:"productType"`
+	Spec               string `json:"spec"`
+	SpecId             string `json:"specId"`
+	CpuModel           string `json:"cpuModel"`
+	CpuGHz             string `json:"cpuGHz"`
+	NetworkBandwidth   string `json:"networkBandwidth"`
+	NetworkPackage     string `json:"networkPackage"`
+}
+
+type EbcResources struct {
+	FlavorGroups []EbcFlavorGroup `json:"flavorGroups"`
+}
+
+type EbcFlavorGroup struct {
+	GroupId string      `json:"groupId"`
+	Flavors []EbcFlavor `json:"flavors"`
+}
+
+type EbcFlavor struct {
+	CpuCount           int    `json:"cpuCount"`
+	MemoryCapacityInGB int    `json:"memoryCapacityInGB"`
+	EphemeralDiskInGb  int    `json:"ephemeralDiskInGb"`
+	EphemeralDiskCount string `json:"ephemeralDiskCount"`
+	EphemeralDiskType  string `json:"ephemeralDiskType"`
+	GpuCardType        string `json:"gpuCardType"`
+	GpuCardCount       string  `json:"gpuCardCount"`
+	FpgaCardType       string `json:"fpgaCardType"`
+	FpgaCardCount      string    `json:"fpgaCardCount"`
 	ProductType        string `json:"productType"`
 	Spec               string `json:"spec"`
 	SpecId             string `json:"specId"`
@@ -1691,10 +1784,14 @@ type BccCreateAutoRenewArgs struct {
 	InstanceId    string `json:"instanceId"`
 	RenewTimeUnit string `json:"renewTimeUnit"`
 	RenewTime     int    `json:"renewTime"`
+	RenewCds      bool   `json:"renewCds"`
+	RenewEip      bool   `json:"renewEip"`
 }
 
 type BccDeleteAutoRenewArgs struct {
 	InstanceId string `json:"instanceId"`
+	RenewCds   bool   `json:"renewCds"`
+	RenewEip   bool   `json:"renewEip"`
 }
 
 type DeleteInstanceIngorePaymentArgs struct {
@@ -1832,7 +1929,143 @@ type DeleteSecurityGroupRuleArgs struct {
 	SgVersion           int64  `json:"sgVersion,omitempty"`
 	SecurityGroupRuleId string `json:"securityGroupRuleId"`
 }
-
 type GetInstanceDeleteProgressArgs struct {
 	InstanceIds []string `json:"instanceIds"`
+}
+
+type Tag struct {
+	TagKey   string `json:"tagKey"`
+	TagValue string `json:"tagValue"`
+}
+
+type TagVolumeArgs struct {
+	ChangeTags  []Tag `json:"changeTags"`
+	RelationTag bool  `json:"relationTag"`
+}
+
+type Volume struct {
+	VolumeId string `json:"volumeId"`
+	SizeInGB int    `json:"sizeInGb"`
+}
+
+
+type ListAvailableResizeSpecsArgs struct {
+	Spec           string   `json:"spec"`
+	SpecId         string   `json:"specId"`
+	Zone           string   `json:"zone"`
+	InstanceIdList []string `json:"instanceIdList"`
+}
+
+type ListAvailableResizeSpecResults struct {
+	SpecList []string `json:"specList"`
+}
+
+type BatchChangeInstanceToPrepayArgs struct {
+	Config []PrepayConfig `json:"config"`
+}
+
+type PrepayConfig struct {
+	InstanceId  string   `json:"instanceId"`
+	Duration    int      `json:"duration"`
+	RelationCds bool     `json:"relationCds"`
+	CdsList     []string `json:"cdsList"`
+	AutoPay     bool     `json:"autoPay"`
+}
+
+type BatchChangeInstanceToPostpayArgs struct {
+	Config []PostpayConfig `json:"config"`
+}
+
+type PostpayConfig struct {
+	InstanceId  string   `json:"instanceId"`
+	RelationCds bool     `json:"relationCds"`
+	CdsList     []string `json:"cdsList"`
+}
+
+type BatchChangeInstanceBillingMethodResult struct {
+	OrderId string `json:"orderId"`
+}
+
+type ListInstanceRolesResult struct {
+	Roles []string `json:"Roles"`
+}
+
+type BindInstanceRoleResult struct {
+	FailInstances            []FailInstances            `json:"failInstances"`
+	InstanceRoleAssociations []InstanceRoleAssociations `json:"instanceRoleAssociations"`
+}
+
+type FailInstances struct {
+	InstanceId  string `json:"instanceId"`
+	FailMessage string `json:"failMessage"`
+}
+
+type InstanceRoleAssociations struct {
+	InstanceID string `json:"instanceId"`
+}
+
+type BindInstanceRoleArgs struct {
+	RoleName  string      `json:"roleName"`
+	Instances []Instances `json:"instances"`
+}
+
+type Instances struct {
+	InstanceId string `json:"instanceId"`
+}
+
+type UnBindInstanceRoleArgs struct {
+	RoleName  string      `json:"roleName"`
+	Instances []Instances `json:"instances"`
+}
+
+type UnBindInstanceRoleResult struct {
+	FailInstances            []FailInstances            `json:"failInstances"`
+	InstanceRoleAssociations []InstanceRoleAssociations `json:"instanceRoleAssociations"`
+}
+
+type DeleteIpv6Args struct {
+	InstanceId string `json:"instanceId"`
+	Reboot     bool   `json:"reboot"`
+}
+
+type AddIpv6Args struct {
+	InstanceId  string `json:"instanceId"`
+	Ipv6Address string `json:"ipv6Address"`
+	Reboot      bool   `json:"reboot"`
+}
+
+type AddIpv6Result struct {
+	Ipv6Address string `json:"ipv6Address"`
+}
+
+type RemoteCopySnapshotArgs struct {
+	ClientToken     string           `json:"-"`
+	DestRegionInfos []DestRegionInfo `json:"destRegionInfos"`
+}
+
+type DestRegionInfo struct {
+	Name       string `json:"name"`
+	DestRegion string `json:"destRegion"`
+}
+
+type RemoteCopySnapshotResult struct {
+	Result []RemoteCopySnapshotResultItem `json:"result"`
+}
+
+type RemoteCopySnapshotResultItem struct {
+	Region     string `json:"region"`
+	SnapshotID string `json:"snapshotId"`
+}
+
+type ImportCustomImageArgs struct {
+	OsName    string `json:"osName"`
+	OsArch    string `json:"osArch"`
+	OsType    string `json:"osType"`
+	OsVersion string `json:"osVersion"`
+	Name      string `json:"name"`
+	BosURL    string `json:"bosUrl"`
+}
+
+type ImportCustomImageResult struct {
+	Id string `json:"id"`
 }

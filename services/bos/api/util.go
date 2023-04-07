@@ -61,6 +61,7 @@ const (
 	FORBID_OVERWRITE_TRUE  = "true"
 
 	NAMESPACE_BUCKET = "namespace"
+	BOS_CONFIG_PREFIX = "bos://"
 )
 
 var DEFAULT_CNAME_LIKE_LIST = []string{

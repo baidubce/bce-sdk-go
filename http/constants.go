@@ -80,6 +80,7 @@ const (
 	BCE_RESTORE                         = "x-bce-restore"
 	BCE_FORBID_OVERWRITE                = "x-bce-forbid-overwrite"
 	BCE_SYMLINK_TARGET                  = "x-bce-symlink-target"
+	BCE_SYMLINK_BUCKET					= "x-bce-symlink-bucket"
 	BCE_TRAFFIC_LIMIT					= "x-bce-traffic-limit"
 	BCE_BUCKET_TYPE                     = "x-bce-bucket-type"
 )

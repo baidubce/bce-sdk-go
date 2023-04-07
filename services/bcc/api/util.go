@@ -363,3 +363,71 @@ func getBatchResizeInstanceUri() string {
 func getInstanceDeleteProgress() string {
 	return URI_PREFIXV2 + "/instance/deleteProgress"
 }
+
+func getTagVolumeUri(id string) string {
+	return URI_PREFIXV2 + REQUEST_VOLUME_URI + "/" + id + REQUEST_TAG_URI
+}
+
+func getUntagVolumeUri(id string) string {
+	return URI_PREFIXV2 + REQUEST_VOLUME_URI + "/" + id + REQUEST_TAG_URI
+}
+
+func getTagSnapshotChainUri(id string) string {
+	return URI_PREFIXV2 + REQUEST_SNAPSHOT_URI + REQUEST_CHAIN_URI + "/" + id + REQUEST_TAG_URI
+}
+
+func getUntagSnapshotChainUri(id string) string {
+	return URI_PREFIXV2 + REQUEST_SNAPSHOT_URI + REQUEST_CHAIN_URI + "/" + id + REQUEST_TAG_URI
+}
+
+func getListInstancesByOrderIdUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/getServersByOrderId"
+}
+
+func getCreateInstanceReturnOrderIdUri() string {
+	return URI_PREFIXV2 + "/instanceReturnOrderId"
+}
+
+func getListAvailableResizeSpecsUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI
+}
+
+func getBatchChangeInstanceToPrepay() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/batch/charging"
+}
+
+func getBatchChangeInstanceToPostpay() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/batch/charging"
+}
+
+func getResizeInstanceReturnOrderId(instanceId string) string {
+	return URI_PREFIXV2 + "/instanceReturnOrderId" + instanceId
+}
+
+func listInstanceRoles() string {
+	return URI_PREFIXV2 + "/instance/role/list"
+}
+
+func postInstanceRole() string {
+	return URI_PREFIXV2 + "/instance/role"
+}
+
+func deleteIpv6() string {
+	return URI_PREFIXV2 + "/instance/delIpv6"
+}
+
+func addIpv6() string {
+	return URI_PREFIXV2 + "/instance/addIpv6"
+}
+
+func getImageToTagsUri(id string) string {
+	return URI_PREFIXV2 + REQUEST_IMAGE_URI + "/" + id + REQUEST_TAG_URI
+}
+
+func getRemoteCopySnapshotUri(id string) string {
+	return URI_PREFIXV2 + REQUEST_SNAPSHOT_URI + "/remote_copy/" + id
+}
+
+func getImportCustomImageUri() string {
+	return URI_PREFIXV2 + "/image/import"
+}

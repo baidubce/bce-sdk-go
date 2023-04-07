@@ -134,6 +134,18 @@ func (c *Client) CreateFunction(args *api.CreateFunctionArgs) (*api.CreateFuncti
 	return api.CreateFunction(c, args)
 }
 
+// CreateFunctionByBlueprint - create a cfc function by a blueprint
+//
+// PARAMS:
+//   - args: the arguments to create a cfc function
+//
+// RETURNS:
+//   - *api.CreateFunctionResult: the result of create a cfc function, it contains function information
+//   - error: nil if success otherwise the specific error
+func (c *Client) CreateFunctionByBlueprint(args *api.CreateFunctionByBlueprintArgs) (*api.CreateFunctionResult, error) {
+	return api.CreateFunctionByBlueprint(c, args)
+}
+
 // DeleteFunction - delete a specific cfc function
 //
 // PARAMS:

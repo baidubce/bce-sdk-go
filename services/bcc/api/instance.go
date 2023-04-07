@@ -19,6 +19,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"github.com/baidubce/bce-sdk-go/bce"
@@ -214,6 +215,39 @@ func ListInstances(cli bce.Client, args *ListInstanceArgs) (*ListInstanceResult,
 		}
 		if len(args.KeypairId) != 0 {
 			req.SetParam("keypairId", args.KeypairId)
+		}
+		if args.AutoRenew {
+			req.SetParam("autoRenew", fmt.Sprint(args.AutoRenew))
+		}
+		if len(args.InstanceIds) != 0 {
+			req.SetParam("instanceIds", args.InstanceIds)
+		}
+		if len(args.InstanceNames) != 0 {
+			req.SetParam("instanceNames", args.InstanceNames)
+		}
+		if len(args.CdsIds) != 0 {
+			req.SetParam("volumeIds", args.CdsIds)
+		}
+		if len(args.DeploySetIds) != 0 {
+			req.SetParam("deploySetIds", args.DeploySetIds)
+		}
+		if len(args.SecurityGroupIds) != 0 {
+			req.SetParam("securityGroupIds", args.SecurityGroupIds)
+		}
+		if len(args.PaymentTiming) != 0 {
+			req.SetParam("paymentTiming", args.PaymentTiming)
+		}
+		if len(args.Status) != 0 {
+			req.SetParam("status", args.Status)
+		}
+		if len(args.Tags) != 0 {
+			req.SetParam("tags", args.Tags)
+		}
+		if len(args.PrivateIps) != 0 {
+			req.SetParam("privateIps", args.PrivateIps)
+		}
+		if len(args.VpcId) != 0 {
+			req.SetParam("vpcId", args.VpcId)
 		}
 	}
 	if args == nil || args.MaxKeys == 0 {
@@ -1945,6 +1979,203 @@ func GetInstanceDeleteProgress(cli bce.Client, reqBody *bce.Body) (map[string]in
 
 	var jsonBody map[string]interface{}
 	if err := resp.ParseJsonBody(&jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+
+func ListAvailableResizeSpecs(cli bce.Client, reqBody *bce.Body) (
+	*ListAvailableResizeSpecResults, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getListAvailableResizeSpecsUri())
+	req.SetParam("resizeList", "")
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ListAvailableResizeSpecResults{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+func BatchChangeInstanceToPrepay(cli bce.Client, reqBody *bce.Body) (*BatchChangeInstanceBillingMethodResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getBatchChangeInstanceToPrepay())
+	req.SetParam("toPrepay", "")
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &BatchChangeInstanceBillingMethodResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+func BatchChangeInstanceToPostpay(cli bce.Client, reqBody *bce.Body) (*BatchChangeInstanceBillingMethodResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getBatchChangeInstanceToPostpay())
+	req.SetParam("toPostpay", "")
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &BatchChangeInstanceBillingMethodResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+func ListInstanceRoles(cli bce.Client) (*ListInstanceRolesResult, error) {
+
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(listInstanceRoles())
+	req.SetMethod(http.GET)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ListInstanceRolesResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
+func BindInstanceRole(cli bce.Client, reqBody *bce.Body) (*BindInstanceRoleResult, error) {
+
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(postInstanceRole())
+	req.SetMethod(http.POST)
+	req.SetParam("bind", "")
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &BindInstanceRoleResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+func UnBindInstanceRole(cli bce.Client, reqBody *bce.Body) (*UnBindInstanceRoleResult, error) {
+
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(postInstanceRole())
+	req.SetMethod(http.POST)
+	req.SetParam("unbind", "")
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &UnBindInstanceRoleResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+func DeleteIpv6(cli bce.Client, reqBody *bce.Body) error {
+
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(deleteIpv6())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	return nil
+}
+
+func AddIpv6(cli bce.Client, reqBody *bce.Body) (*AddIpv6Result, error) {
+
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(addIpv6())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &AddIpv6Result{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}
 

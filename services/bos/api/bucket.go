@@ -1092,3 +1092,60 @@ func DeleteBucketNotification(cli bce.Client, bucket string) error {
 	defer func() { resp.Body().Close() }()
 	return nil
 }
+
+func PutBucketMirror(cli bce.Client, bucket string, putBucketMirrorArgs *PutBucketMirrorArgs) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.PUT)
+	req.SetParam("mirroring", "")
+	reqByte, _ := json.Marshal(putBucketMirrorArgs)
+	body, err := bce.NewBodyFromString(string(reqByte))
+	if err != nil {
+		return err
+	}
+	req.SetBody(body)
+	resp := &bce.BceResponse{}
+	if err := SendRequest(cli, req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+func GetBucketMirror(cli bce.Client, bucket string) (*PutBucketMirrorArgs, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.GET)
+	req.SetParam("mirroring", "")
+	resp := &bce.BceResponse{}
+	if err := SendRequest(cli, req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	result := &PutBucketMirrorArgs{}
+	if err := resp.ParseJsonBody(result); err != nil {
+		return nil, err
+	}
+	return result, nil	
+}
+
+func DeleteBucketMirror(cli bce.Client, bucket string) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.DELETE)
+	req.SetParam("mirroring", "")
+	resp := &bce.BceResponse{}
+	if err := SendRequest(cli, req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}

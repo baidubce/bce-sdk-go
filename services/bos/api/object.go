@@ -945,6 +945,9 @@ func PutObjectSymlink(cli bce.Client, bucket string, object string, symlinkKey s
 				return err
 			}
 		}
+		if len(symlinkArgs.SymlinkBucket) != 0 {
+			req.SetHeader(http.BCE_SYMLINK_BUCKET, symlinkArgs.SymlinkBucket)
+		}
 	}
 	req.SetHeader(http.BCE_SYMLINK_TARGET, object)
 
@@ -981,5 +984,9 @@ func GetObjectSymlink(cli bce.Client, bucket string, symlinkKey string) (string,
 		return "", resp.ServiceError()
 	}
 	defer func() { resp.Body().Close() }()
+	if resp.Header(http.BCE_SYMLINK_BUCKET) != "" {
+		result := BOS_CONFIG_PREFIX + resp.Header(http.BCE_SYMLINK_BUCKET) + "/" + resp.Header(http.BCE_SYMLINK_TARGET)
+		return result, nil
+	}
 	return resp.Header(http.BCE_SYMLINK_TARGET), nil
 }

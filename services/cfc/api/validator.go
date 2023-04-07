@@ -404,3 +404,13 @@ func (args StartExecutionArgs) Validate() error {
 	}
 	return nil
 }
+
+func (args CreateFunctionByBlueprintArgs) Validate() error {
+	if args.BlueprintID == "" {
+		return fmt.Errorf(requiredIllegal, args.BlueprintID)
+	}
+	if !validateFunctionName(args.FunctionName) {
+		return fmt.Errorf(functionNameInvalid, args.FunctionName)
+	}
+	return nil
+}

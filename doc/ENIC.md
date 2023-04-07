@@ -255,6 +255,12 @@ args := &eni.CreateEniArgs{
                     PrivateIpAddress: "192.168.0.54",
                 },
             },
+            Ipv6PrivateIpSet: []PrivateIp{
+                {
+                    Primary: false,
+                    PrivateIpAddress: "2400:da00:e003:0:1d2:100:0:1",
+                },
+            },
             Description: "go sdk test",
             ClientToken: getClientToken(),
 }
@@ -345,6 +351,44 @@ r, err := json.Marshal(result)
 fmt.Println("add private ip success", string(r))
 ```
 
+## 批量增加ENIC内网IP
+
+```go
+args := &client.EniBatchPrivateIpArgs{
+        EniId:       "eniId",
+        ClientToken: getClientToken(),
+        PrivateIpAddresses: []string{
+            "192.168.0.28", 
+            "192.168.0.29", 
+        },
+}
+result, err := client.BatchAddPrivateIp(args)
+if err != nil {
+    fmt.Printf("batch add enic private ip error: %+v\n", err)
+    return
+}
+r, err := json.Marshal(result)
+fmt.Println("batch add private ip success", string(r))
+```
+
+## 跨子网批量增加ENIC内网IP
+
+```go
+args := &client.EniBatchAddPrivateIpCrossSubnetArgs{
+        EniId:       "eniId",
+        ClientToken: getClientToken(),
+        SubnetId:    "subnetId",
+        PrivateIpAddressCount: 2
+}
+result, err := client.BatchAddPrivateIpCrossSubnet(args)
+if err != nil {
+    fmt.Printf("cross subnet and batch add enic private ip error: %+v\n", err)
+    return
+}
+r, err := json.Marshal(result)
+fmt.Println("cross subnet and batch add private ip success", string(r))
+```
+
 ## 删除ENIC内网IP
 
 ```go
@@ -359,6 +403,25 @@ if err != nil {
     return
 }
 fmt.Println("delete private ip success")
+```
+
+## 批量删除ENIC内网IP
+
+```go
+args := &client.EniBatchPrivateIpArgs{
+        EniId: "eniId",
+        ClientToken: getClientToken(),
+        PrivateIpAddresses: []string{
+            "192.168.0.34",
+            "192.168.0.35",
+        },
+}
+err := client.BatchDeletePrivateIp(args)
+if err != nil {
+    fmt.Printf("batch delete enic private ip error: %+v\n", err)
+    return
+}
+fmt.Println("batch delete private ip success")
 ```
 
 ## ENIC挂载云主机
@@ -426,7 +489,7 @@ if err != nil {
 fmt.Println("enic unbind public ip success")
 ```
 
-## ENIC更新安全组
+## ENIC更新普通安全组
 
 ```go
 args := &client.UpdateEniSecurityGroupArgs{
@@ -442,8 +505,28 @@ if err != nil {
     fmt.Printf("enic update security group error: %+v\n", err)
     return
 }
-fmt.Println("eenic update security group success")
+fmt.Println("enic update security group success")
 ```
+
+## ENIC更新企业安全组
+
+```go
+args := &client.UpdateEniEnterpriseSecurityGroupArgs{
+        EniId: "eniId",
+        ClientToken: getClientToken(),
+        EnterpriseSecurityGroupIds: []string{
+                "esgId1",
+                "esgId2",
+        },
+}
+err := client.UpdateEniEnterpriseSecurityGroup(args)
+if err != nil {
+    fmt.Printf("enic update enterprise security group error: %+v\n", err)
+    return
+}
+fmt.Println("enic update enterprise security group success")
+```
+
 ## ENIC查询配额
 
 ```go

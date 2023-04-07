@@ -23,6 +23,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	"os"
 
@@ -2127,7 +2128,10 @@ func (c *Client) parallelPartCopy(srcMeta api.GetObjectMetaResult, source string
 	var err error
 	size := srcMeta.ContentLength
 	partSize := int64(DEFAULT_MULTIPART_SIZE)
-
+	if partSize * MAX_PART_NUMBER < size {
+		lowerLimit := int64(math.Ceil(float64(size) / MAX_PART_NUMBER))
+		partSize = int64(math.Ceil(float64(lowerLimit)/float64(partSize))) * partSize
+	}
 	partNum := (size + partSize - 1) / partSize
 
 	parallelChan := make(chan int, c.MaxParallel)
@@ -2234,4 +2238,16 @@ func (c *Client) PutSymlink(bucket string, object string, symlinkKey string, sym
 //     - error: the put error if any occurs
 func (c *Client) GetSymlink(bucket string, object string) (string, error) {
 	return api.GetObjectSymlink(c, bucket, object)
+}
+
+func (c *Client) PutBucketMirror(bucket string, putBucketMirrorArgs *api.PutBucketMirrorArgs) error {
+	return api.PutBucketMirror(c, bucket, putBucketMirrorArgs)
+}
+
+func (c *Client) GetBucketMirror(bucket string) (*api.PutBucketMirrorArgs, error) {
+	return api.GetBucketMirror(c, bucket)
+}
+
+func (c *Client) DeleteBucketMirror(bucket string) error {
+	return api.DeleteBucketMirror(c, bucket)
 }

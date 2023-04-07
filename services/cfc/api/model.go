@@ -174,6 +174,14 @@ type CreateFunctionArgs struct {
 	VpcConfig    *VpcConfig
 	LogType      string
 	LogBosDir    string
+	ServiceName  string
+}
+
+type CreateFunctionByBlueprintArgs struct {
+	BlueprintID  string
+	ServiceName  string
+	FunctionName string
+	Environment  *Environment
 }
 
 type CreateFunctionResult Function

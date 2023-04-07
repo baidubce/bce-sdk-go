@@ -74,6 +74,10 @@ func getEventSourceUri() string {
 	return "/v1/event-source-mappings"
 }
 
+func getBlueprintUri(blueprintId string) string {
+	return fmt.Sprintf("/v1/blueprints/%s/function", blueprintId)
+}
+
 func getExecutionStartUri() string {
 	return "/v1/execution/start"
 }

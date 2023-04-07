@@ -325,7 +325,7 @@ func (c *Client) BindEniPublicIp(args *BindEniPublicIpArgs) error {
 // UnBindEniPublicIp - eni unbind public ip
 //
 // PARAMS:
-//     - args: the arguments to bind public ip
+//     - args: the arguments to unbind public ip
 // RETURNS:
 //     - error: nil if success otherwise the specific error
 func (c *Client) UnBindEniPublicIp(args *UnBindEniPublicIpArgs) error {

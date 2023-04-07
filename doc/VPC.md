@@ -425,6 +425,8 @@ args := &vpc.CreateSubnetArgs{
     SubnetType:  vpc.SUBNET_TYPE_BCC,
     // 设置子网的描述
     Description: "test subnet",
+    // 是否分配IPv6网段，true表示开启，默认false不开启
+    EnableIpv6: true,
     // 设置子网的标签键值对列表
     Tags: []model.TagModel{
         {
@@ -559,6 +561,8 @@ args := &vpc.UpdateSubnetArgs{
     Name:        "TestSDK-Subnet-update",
     // 设置更新后的子网描述
     Description: "subnet update",
+    // 是否分配IPv6网段，true表示开启，默认false不开启
+    EnableIpv6: true,
 }
 if err := client.UpdateSubnet(subnetId, args); err != nil {
     fmt.Println("update subnet error: ", err)
@@ -627,8 +631,10 @@ args := &vpc.CreateRouteRuleArgs{
     SourceAddress:      "192.168.1.0/24",
     // 设置目标网段，必选
     DestinationAddress: "172.17.0.0/16",
-    // 设置下一跳类型，必选
+    // 设置下一跳类型，必选, 创建单线路由必填
     NexthopType:        vpc.NEXTHOP_TYPE_NAT,
+	// 多线路由下一跳信息，创建多线路由时该字段必填,NextHop的nexthopType目前只支持专线网关类型："dcGateway"
+    NextHopList:       []NextHop,
     // 设置下一跳id，必选
     NexthopId:          NatID,
     // 设置路由规则的描述信息，可选
@@ -646,7 +652,20 @@ fmt.Println("create route rule success, route rule id: ", result.RouteRuleId)
 - 源网段选择自定义时，自定义网段需在已有子网范围内,0.0.0.0/0除外；
 - 目标网段不能与当前所在VPC cidr重叠（目标网段或本VPC cidr为0.0.0.0/0时例外）；
 - 新增路由条目的源网段和目标网段，不能与路由表中已有条目源网段和目标网段完全一致。
-- 针对下一跳的类型，目前支持三种: Bcc类型是"custom"；VPN类型是"vpn"；NAT类型是"nat"
+- 针对下一跳的类型，目前支持如下几种:
+  - Bcc类型是 "custom"；
+  - VPN类型是 "vpn"；
+  - NAT类型是 "nat"；
+  - 专线网关类型是 "dcGateway"；
+    - 创建单线路由时该字段必填NexthopType
+    - NextHopList 多线路由下一跳信息，创建多线路由时该字段必填
+      - NextHop.nexthopId 下一跳ID
+      - NextHop.nexthopType 路由类型。目前只支持专线网关类型："dcGateway"
+      - NextHop.pathType 多线模式。负载均衡取值为ecmp；主备模式取值ha:active、ha:standby，分别表示主、备路由
+  - 对等连接类型是 "peerConn"，nexthopId需要传端口ID（qpif-vx034sff4tsm）
+  - IPv6网关类型是 "ipv6gateway"
+  - 弹性网卡类型是 "enic"
+  - 高可用虚拟IP是 "havip"
 
 ## 删除路由规则
 
@@ -1630,6 +1649,8 @@ myLogger.Info("this is my own logger from the VPC go sdk")
 
 
 # 版本变更记录
+## v0.9.8 [2022-11-14]
+- 路由支持：专线网关、对等连接、IPv6网关、弹性网卡、高可用虚拟IP类型
 ## v0.9.7 [2022-11-14]
 - NAT、对等连接创建、详情接口支持Tags
 ## v0.9.6 [2020-12-27]

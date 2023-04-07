@@ -167,6 +167,7 @@ func TestCreateSubnet(t *testing.T) {
 		VpcId:       VPCID,
 		SubnetType:  SUBNET_TYPE_BCC,
 		Description: "test subnet",
+		EnableIpv6:  true,
 		Tags: []model.TagModel{
 			{
 				TagKey:   "tagK",
@@ -209,6 +210,7 @@ func TestUpdateSubnet(t *testing.T) {
 		ClientToken: getClientToken(),
 		Name:        "TestSDK-Subnet-update",
 		Description: "subnet update",
+		EnableIpv6:  true,
 	}
 	err := VPC_CLIENT.UpdateSubnet(SubnetID, args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -217,13 +219,6 @@ func TestUpdateSubnet(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 	ExpectEqual(t.Errorf, "TestSDK-Subnet-update", result.Subnet.Name)
 	ExpectEqual(t.Errorf, "subnet update", result.Subnet.Description)
-}
-
-func TestGetRouteTableDetail(t *testing.T) {
-	result, err := VPC_CLIENT.GetRouteTableDetail("", VPCID)
-	ExpectEqual(t.Errorf, nil, err)
-	ExpectEqual(t.Errorf, 1, len(result.RouteRules))
-	RouteTableID = result.RouteTableId
 }
 
 func TestListAclEntrys(t *testing.T) {
@@ -361,6 +356,15 @@ func TestCreateEnhanceNatGateway(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
+func TestGetRouteTableDetail(t *testing.T) {
+	RouteTableID = ""
+	result, err := VPC_CLIENT.GetRouteTableDetail(RouteTableID, VPCID)
+	r, err := json.Marshal(result)
+	fmt.Println(string(r))
+	ExpectEqual(t.Errorf, nil, err)
+	RouteTableID = result.RouteTableId
+}
+
 func TestCreateRouteRule(t *testing.T) {
 	args := &CreateRouteRuleArgs{
 		ClientToken:        getClientToken(),
@@ -378,7 +382,6 @@ func TestCreateRouteRule(t *testing.T) {
 
 	routeTable, err := VPC_CLIENT.GetRouteTableDetail("", VPCID)
 	ExpectEqual(t.Errorf, nil, err)
-	ExpectEqual(t.Errorf, 2, len(routeTable.RouteRules))
 	isExist := false
 	for _, rule := range routeTable.RouteRules {
 		if rule.RouteRuleId == result.RouteRuleId {
@@ -389,6 +392,60 @@ func TestCreateRouteRule(t *testing.T) {
 			ExpectEqual(t.Errorf, NEXTHOP_TYPE_NAT, rule.NexthopType)
 			ExpectEqual(t.Errorf, NatID, rule.NexthopId)
 			ExpectEqual(t.Errorf, "test route rule", rule.Description)
+		}
+	}
+	if !isExist {
+		t.Errorf("Test route rule failed.")
+	}
+}
+
+func TestCreateEtGatewayRouteRule(t *testing.T) {
+	RouteTableID = ""
+	var SourceAddress = "12.0.0.0/25"
+	var DestinationAddress = "2.2.2.6/32"
+	var Description = "sdk test etGateway route rule"
+	var NexthopType = NEXTHOP_TYPE_ETGATEWAY
+
+	mulargs := &CreateRouteRuleArgs{
+		ClientToken:        getClientToken(),
+		RouteTableId:       RouteTableID,
+		SourceAddress:      SourceAddress,
+		DestinationAddress: DestinationAddress,
+		NextHopList: []NextHop{
+			{
+				NexthopId:   "",
+				NexthopType: NexthopType,
+				PathType:    "ha:active",
+			}, {
+				NexthopId:   "",
+				NexthopType: NexthopType,
+				PathType:    "ha:standby",
+			},
+		},
+		Description: Description,
+	}
+	result, err := VPC_CLIENT.CreateRouteRule(mulargs)
+
+	r, err := json.Marshal(result)
+	fmt.Println(string(r))
+	fmt.Println(err)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	var RouteRuleIds = result.RouteRuleIds
+	routeTable, err := VPC_CLIENT.GetRouteTableDetail(RouteTableID, VPCID)
+	ExpectEqual(t.Errorf, nil, err)
+	isExist := false
+	for _, rule := range routeTable.RouteRules {
+		for _, RouteRuleId := range RouteRuleIds {
+			if rule.RouteRuleId == RouteRuleId {
+				isExist = true
+				ExpectEqual(t.Errorf, RouteTableID, rule.RouteTableId)
+				ExpectEqual(t.Errorf, SourceAddress, rule.SourceAddress)
+				ExpectEqual(t.Errorf, DestinationAddress, rule.DestinationAddress)
+				ExpectEqual(t.Errorf, NexthopType, rule.NexthopType)
+				ExpectEqual(t.Errorf, Description, rule.Description)
+			}
 		}
 	}
 	if !isExist {

@@ -102,6 +102,28 @@ func CreateFunction(cli bce.Client, args *CreateFunctionArgs) (*CreateFunctionRe
 	return nil, nil
 }
 
+func CreateFunctionByBlueprint(cli bce.Client, args *CreateFunctionByBlueprintArgs) (*CreateFunctionResult, error) {
+	op := &Operation{
+		HTTPUri:    getBlueprintUri(args.BlueprintID),
+		HTTPMethod: POST,
+	}
+	request := &cfcRequest{
+		Args: args,
+		Body: args,
+	}
+	result := &cfcResult{
+		Result: &CreateFunctionResult{},
+	}
+	err := caller(cli, op, request, result)
+	if err != nil {
+		return nil, err
+	}
+	if value, ok := result.Result.(*CreateFunctionResult); ok {
+		return value, nil
+	}
+	return nil, nil
+}
+
 func DeleteFunction(cli bce.Client, args *DeleteFunctionArgs) error {
 	op := &Operation{
 		HTTPUri:    getFunctionUri(args.FunctionName),

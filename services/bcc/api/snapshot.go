@@ -216,3 +216,98 @@ func DeleteSnapshot(cli bce.Client, snapshotId string) error {
 	defer func() { resp.Body().Close() }()
 	return nil
 }
+
+func TagSnapshotChain(cli bce.Client, chainId string, args *TagVolumeArgs) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getTagSnapshotChainUri(chainId))
+	req.SetMethod(http.PUT)
+	req.SetParam("bind", "")
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	return nil
+}
+
+func UntagSnapshotChain(cli bce.Client, chainId string, args *TagVolumeArgs) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getUntagSnapshotChainUri(chainId))
+	req.SetMethod(http.PUT)
+	req.SetParam("unbind", "")
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	return nil
+}
+
+func CreateRemoteCopySnapshot(cli bce.Client, snapshotId string, args *RemoteCopySnapshotArgs) (
+	*RemoteCopySnapshotResult, error) {
+
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getRemoteCopySnapshotUri(snapshotId))
+	req.SetMethod(http.PUT)
+
+	if len(args.ClientToken) != 0 {
+		req.SetParam("clientToken", args.ClientToken)
+	}
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return nil, err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &RemoteCopySnapshotResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}

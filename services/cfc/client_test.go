@@ -121,6 +121,31 @@ func TestCreateFunction(t *testing.T) {
 	}
 }
 
+func TestCreateFunctionByBlueprint(t *testing.T) {
+	cases := []api.CreateFunctionByBlueprintArgs{
+		{
+			FunctionName: "f2",
+			ServiceName:  "default",
+			BlueprintID:  "6b850453-00f2-473f-8f9c-b88e1705d9e6",
+			Environment: &api.Environment{
+				Variables: map[string]string{
+					"k1": "v1",
+				},
+			},
+		},
+	}
+	for _, args := range cases {
+		res, err := CfcClient.CreateFunctionByBlueprint(&args)
+		if err != nil {
+			t.Fatalf("err (%v)", err)
+		}
+		resStr, err := json.MarshalIndent(res, "", "	")
+		if logSuccess && err == nil {
+			t.Logf("res %s ", resStr)
+		}
+	}
+}
+
 func TestListFunctions(t *testing.T) {
 	args := &api.ListFunctionsArgs{
 		FunctionVersion: "1",
