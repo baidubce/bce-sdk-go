@@ -188,6 +188,14 @@ func UploadPartFromBytes(cli bce.Client, bucket, object, uploadId string, partNu
 			http.BCE_CONTENT_SHA256: args.ContentSha256,
 			http.BCE_CONTENT_CRC32:  args.ContentCrc32,
 		})
+		//set traffic-limit
+		if args.TrafficLimit > 0 {
+			if args.TrafficLimit > TRAFFIC_LIMIT_MAX || args.TrafficLimit < TRAFFIC_LIMIT_MIN {
+				return "", bce.NewBceClientError(fmt.Sprintf("TrafficLimit must between %d ~ %d, current value:%d",
+					TRAFFIC_LIMIT_MIN, TRAFFIC_LIMIT_MAX, args.TrafficLimit))
+			}
+			req.SetHeader(http.BCE_TRAFFIC_LIMIT, fmt.Sprintf("%d", args.TrafficLimit))
+		}
 	}
 	// Send request and get the result
 	resp := &bce.BceResponse{}

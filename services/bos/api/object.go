@@ -220,12 +220,12 @@ func CopyObject(cli bce.Client, bucket, object, source string,
 //     - cli: the client agent which can perform sending request
 //     - bucket: the bucket name of the object
 //     - object: the name of the object
-//     - responseHeaders: the optional response headers to get the given object
+//     - args: the optional args in querysring
 //     - ranges: the optional range start and end to get the given object
 // RETURNS:
 //     - *GetObjectResult: the output content result of the object
 //     - error: nil if ok otherwise the specific error
-func GetObject(cli bce.Client, bucket, object string, responseHeaders map[string]string,
+func GetObject(cli bce.Client, bucket, object string, args map[string]string, // nolint:gocyclo
 	ranges ...int64) (*GetObjectResult, error) {
 
 	if object == "" {
@@ -237,10 +237,13 @@ func GetObject(cli bce.Client, bucket, object string, responseHeaders map[string
 	req.SetMethod(http.GET)
 
 	// Optional arguments settings
-	if responseHeaders != nil {
-		for k, v := range responseHeaders {
+	if args != nil {
+		for k, v := range args {
 			if _, ok := GET_OBJECT_ALLOWED_RESPONSE_HEADERS[k]; ok {
 				req.SetParam("response"+k, v)
+			}
+			if strings.HasPrefix(k, http.BCE_PREFIX) {
+				req.SetParam(k, v)
 			}
 		}
 	}
@@ -942,6 +945,9 @@ func PutObjectSymlink(cli bce.Client, bucket string, object string, symlinkKey s
 				return err
 			}
 		}
+		if len(symlinkArgs.SymlinkBucket) != 0 {
+			req.SetHeader(http.BCE_SYMLINK_BUCKET, symlinkArgs.SymlinkBucket)
+		}
 	}
 	req.SetHeader(http.BCE_SYMLINK_TARGET, object)
 
@@ -978,5 +984,9 @@ func GetObjectSymlink(cli bce.Client, bucket string, symlinkKey string) (string,
 		return "", resp.ServiceError()
 	}
 	defer func() { resp.Body().Close() }()
+	if resp.Header(http.BCE_SYMLINK_BUCKET) != "" {
+		result := BOS_CONFIG_PREFIX + resp.Header(http.BCE_SYMLINK_BUCKET) + "/" + resp.Header(http.BCE_SYMLINK_TARGET)
+		return result, nil
+	}
 	return resp.Header(http.BCE_SYMLINK_TARGET), nil
 }

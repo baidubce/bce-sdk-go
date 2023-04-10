@@ -22,6 +22,7 @@ type CreateEniArgs struct {
 	SecurityGroupIds           []string    `json:"securityGroupIds"`
 	EnterpriseSecurityGroupIds []string    `json:"enterpriseSecurityGroupIds"`
 	PrivateIpSet               []PrivateIp `json:"privateIpSet"`
+	Ipv6PrivateIpSet           []PrivateIp `json:"ipv6PrivateIpSet,omitempty"`
 	Description                string      `json:"description,omitempty"`
 }
 
@@ -69,6 +70,7 @@ type Eni struct {
 	SubnetId                   string      `json:"subnetId"`
 	Status                     string      `json:"status"`
 	PrivateIpSet               []PrivateIp `json:"privateIpSet"`
+	Ipv6PrivateIpSet           []PrivateIp `json:"ipv6PrivateIpSet"`
 	SecurityGroupIds           []string    `json:"securityGroupIds"`
 	EnterpriseSecurityGroupIds []string    `json:"enterpriseSecurityGroupIds"`
 	CreatedTime                string      `json:"createdTime"`
@@ -83,12 +85,14 @@ type PrivateIp struct {
 type EniPrivateIpArgs struct {
 	EniId            string `json:"-"`
 	ClientToken      string `json:"-"`
+	IsIpv6           bool   `json:"isIpv6,omitempty"`
 	PrivateIpAddress string `json:"privateIpAddress"`
 }
 
 type EniBatchPrivateIpArgs struct {
 	EniId                 string   `json:"-"`
 	ClientToken           string   `json:"-"`
+	IsIpv6                bool     `json:"isIpv6,omitempty"`
 	PrivateIpAddresses    []string `json:"privateIpAddresses"`
 	PrivateIpAddressCount int      `json:"privateIpAddressCount,omitempty"`
 }
@@ -97,6 +101,7 @@ type EniBatchAddPrivateIpCrossSubnetArgs struct {
 	EniId                 string          `json:"-"`
 	ClientToken           string          `json:"-"`
 	SubnetId              string          `json:"subnetId"`
+	IsIpv6                bool            `json:"isIpv6,omitempty"`
 	PrivateIps            []PrivateIpArgs `json:"privateIps"`
 	PrivateIpAddressCount int             `json:"privateIpAddressCount,omitempty"`
 }

@@ -98,7 +98,7 @@ func getClientToken() string {
 
 func TestClient_CreateEni(t *testing.T) {
 	args := &CreateEniArgs{
-		Name:     "enitest66",
+		Name:     "GO_SDK_TEST_CREATE",
 		SubnetId: "sbn-56s25qecigix",
 		EnterpriseSecurityGroupIds: []string{
 			"esg-rn49gxbin4x7",
@@ -107,6 +107,12 @@ func TestClient_CreateEni(t *testing.T) {
 			{
 				Primary:          true,
 				PrivateIpAddress: "",
+			},
+		},
+		Ipv6PrivateIpSet: []PrivateIp{
+			{
+				Primary:          false,
+				PrivateIpAddress: "2400:da00:e003:0:1d2:100:0:15",
 			},
 		},
 		Description: "go sdk test",
@@ -152,7 +158,7 @@ func TestClient_ListEnis(t *testing.T) {
 }
 
 func TestClient_GetEniDetail(t *testing.T) {
-	result, err := ENI_CLIENT.GetEniDetail("eni-7c9yzhkfn9c2")
+	result, err := ENI_CLIENT.GetEniDetail("eni-wbi6thg2p6vj")
 	ExpectEqual(t.Errorf, nil, err)
 	r, err := json.Marshal(result)
 	fmt.Println(string(r))
@@ -160,9 +166,9 @@ func TestClient_GetEniDetail(t *testing.T) {
 
 func TestClient_AddPrivateIp(t *testing.T) {
 	args := &EniPrivateIpArgs{
-		EniId:            "eni-mmwvvbvfjch3",
+		EniId:            "eni-6c6b8dt4m8rt",
 		ClientToken:      getClientToken(),
-		PrivateIpAddress: "192.168.0.53",
+		PrivateIpAddress: "192.168.0.32",
 	}
 	result, err := ENI_CLIENT.AddPrivateIp(args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -200,9 +206,9 @@ func TestClient_BatchAddPrivateIpCrossSubnet(t *testing.T) {
 
 func TestClient_DeletePrivateIp(t *testing.T) {
 	args := &EniPrivateIpArgs{
-		EniId:            "eni-mmwvvbvfjch3",
+		EniId:            "eni-6c6b8dt4m8rt",
 		ClientToken:      getClientToken(),
-		PrivateIpAddress: "192.168.0.53",
+		PrivateIpAddress: "192.168.0.32",
 	}
 	err := ENI_CLIENT.DeletePrivateIp(args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -210,11 +216,11 @@ func TestClient_DeletePrivateIp(t *testing.T) {
 
 func TestClient_BatchDeletePrivateIp(t *testing.T) {
 	args := &EniBatchPrivateIpArgs{
-		EniId:       "eni-gay686fr93e3",
+		EniId:       "eni-6c6b8dt4m8rt",
 		ClientToken: getClientToken(),
 		PrivateIpAddresses: []string{
-			"192.168.0.28",
-			"192.168.32.17",
+			"192.168.0.34",
+			"192.168.0.35",
 		},
 	}
 	err := ENI_CLIENT.BatchDeletePrivateIp(args)

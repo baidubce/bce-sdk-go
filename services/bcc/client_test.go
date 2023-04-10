@@ -48,8 +48,9 @@ func init() {
 	BCC_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
 	//log.SetLogLevel(log.DEBUG)
-	BCC_TestBccId = "bcc_id"
+	BCC_TestBccId = "i-7pxLG046"
 	BCC_TestCdsId = "cds_id"
+	BCC_TestImageId = "m-Q0ezqMIa"
 }
 
 // ExpectEqual is the helper function for test each case
@@ -83,13 +84,13 @@ func TestCreateInstance(t *testing.T) {
 	InternalIps := []string{"ip"}
 	DeploySetIds := []string{"DeploySetId1", "DeploySetId2"}
 	createInstanceArgs := &api.CreateInstanceArgs{
-		ImageId: "ImageId",
+		ImageId: "m-aCVG7Jxt",
 		Billing: api.Billing{
 			PaymentTiming: api.PaymentTimingPostPaid,
 		},
-		InstanceType:        api.InstanceTypeN3,
+		InstanceType:        api.InstanceTypeN5,
 		CpuCount:            1,
-		MemoryCapacityInGB:  4,
+		MemoryCapacityInGB:  1,
 		RootDiskSizeInGb:    40,
 		RootDiskStorageType: api.StorageTypeHP1,
 		ZoneName:            "ZoneName",
@@ -401,6 +402,11 @@ func TestCreateCDSVolume(t *testing.T) {
 				ReservationTimeUnit: "MONTH",
 			},
 		},
+		AutoSnapshotPolicy :   []api.AutoSnapshotPolicy{
+			{
+				AutoSnapshotPolicyId: "Test_AutoSnapshotPolicyId",
+			},
+		},
 		RenewTimeUnit: "month",
 		RenewTime:     2,
 	}
@@ -453,6 +459,12 @@ func TestCreateSnapshot(t *testing.T) {
 	args := &api.CreateSnapshotArgs{
 		VolumeId:     BCC_TestCdsId,
 		SnapshotName: "testSnapshotName",
+		Tags: []model.TagModel{
+			{
+				TagKey: "test",
+				TagValue: "val",
+			},
+		},
 	}
 	result, err := BCC_CLIENT.CreateSnapshot(args)
 	ExpectEqual(t.Errorf, err, nil)
@@ -834,6 +846,7 @@ func TestDeleteInstance(t *testing.T) {
 func TestDeleteInstanceWithRelateResource(t *testing.T) {
 	args := &api.DeleteInstanceWithRelateResourceArgs{
 		BccRecycleFlag: true,
+		DeleteImmediate: true,
 	}
 
 	err := BCC_CLIENT.DeleteInstanceWithRelateResource(BCC_TestBccId, args)
@@ -1404,4 +1417,229 @@ func TestClient_UpdateSecurityGroupRule(t *testing.T) {
 	}
 	err := BCC_CLIENT.UpdateSecurityGroupRule(args)
 	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestGetInstanceDeleteProgress(t *testing.T) {
+
+	args := &api.GetInstanceDeleteProgressArgs{
+		InstanceIds: []string{
+			BCC_TestBccId,
+		},
+	}
+
+	res, err := BCC_CLIENT.GetInstanceDeleteProgress(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestTagVolume(t *testing.T) {
+	tagArgs := &api.TagVolumeArgs{
+		ChangeTags: []api.Tag{
+			{
+				TagKey:   "go-SDK-Tag-Key3",
+				TagValue: "go_SDK-Tag-Value2",
+			},
+		},
+	}
+	err := BCC_CLIENT.TagVolume(BCC_TestCdsId, tagArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestUntagVolume(t *testing.T) {
+	tagArgs := &api.TagVolumeArgs{
+		ChangeTags: []api.Tag{
+			{
+				TagKey:   "go-SDK-Tag-Key3",
+				TagValue: "go_SDK-Tag-Value2",
+			},
+		},
+	}
+	err := BCC_CLIENT.UntagVolume(BCC_TestCdsId, tagArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestTagSnapshotChain(t *testing.T) {
+	tagArgs := &api.TagVolumeArgs{
+		ChangeTags: []api.Tag{
+			{
+				TagKey:   "go-k",
+				TagValue: "go-v",
+			},
+		},
+	}
+	err := BCC_CLIENT.TagSnapshotChain("sl-PdPu6Oel", tagArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestUntagSnapshotChain(t *testing.T) {
+	tagArgs := &api.TagVolumeArgs{
+		ChangeTags: []api.Tag{
+			{
+				TagKey:   "go-k",
+				TagValue: "go-v",
+			},
+		},
+	}
+	err := BCC_CLIENT.UntagSnapshotChain("sl-PdPu6Oel", tagArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestListAvailableResizeSpecs(t *testing.T) {
+	listAvailableResizeSpecsArgs := &api.ListAvailableResizeSpecsArgs{
+		Spec: "bcc.ic5.c1m1",
+		Zone: "cn-bj-a",
+	}
+	createResult, err := BCC_CLIENT.ListAvailableResizeSpecs(listAvailableResizeSpecsArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(createResult)
+}
+
+func TestBatchChangeInstanceToPrepay(t *testing.T) {
+	batchChangeInstanceToPrepayArgs := &api.BatchChangeInstanceToPrepayArgs{
+		Config: []api.PrepayConfig{
+			{
+				InstanceId:  BCC_TestBccId,
+				Duration:    1,
+				RelationCds: false,
+			},
+		},
+	}
+	result, err := BCC_CLIENT.BatchChangeInstanceToPrepay(batchChangeInstanceToPrepayArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}
+
+func TestBatchChangeInstanceToPostpay(t *testing.T) {
+	batchChangeInstanceToPostArgs := &api.BatchChangeInstanceToPostpayArgs{
+		Config: []api.PostpayConfig{
+			{
+				InstanceId:  "i-43TqYnnq",
+				RelationCds: false,
+			},
+		},
+	}
+	result, err := BCC_CLIENT.BatchChangeInstanceToPostpay(batchChangeInstanceToPostArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}
+
+func TestListInstanceRoles(t *testing.T) {
+
+	result, err := BCC_CLIENT.ListInstanceRoles()
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}
+
+func TestBindInstanceRole(t *testing.T) {
+
+	bindInstanceRoleArgs := &api.BindInstanceRoleArgs{
+		RoleName: "Test_BCC",
+		Instances: []api.Instances{
+			{
+				InstanceId: BCC_TestBccId,
+			},
+		},
+	}
+
+	result, err := BCC_CLIENT.BindInstanceRole(bindInstanceRoleArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}
+
+func TestUnBindInstanceRole(t *testing.T) {
+
+	unbindInstanceRoleArgs := &api.UnBindInstanceRoleArgs{
+		RoleName: "Test_BCC",
+		Instances: []api.Instances{
+			{
+				InstanceId: BCC_TestBccId,
+			},
+		},
+	}
+
+	result, err := BCC_CLIENT.UnBindInstanceRole(unbindInstanceRoleArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}
+
+func TestDeleteIpv6(t *testing.T) {
+
+	deleteIpv6Args := &api.DeleteIpv6Args{
+		InstanceId: BCC_TestBccId,
+		Reboot:     true,
+	}
+
+	err := BCC_CLIENT.DeleteIpv6(deleteIpv6Args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestAddIpv6(t *testing.T) {
+
+	addIpv6Args := &api.AddIpv6Args{
+		InstanceId:  BCC_TestBccId,
+		Reboot:      true,
+		Ipv6Address: "2400:da00:e003:0:41c:4100:0:2",
+	}
+
+	result, err := BCC_CLIENT.AddIpv6(addIpv6Args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}
+
+func TestBindImageToTags(t *testing.T) {
+	args := &api.BindTagsRequest{
+		ChangeTags: []model.TagModel{
+			{
+				TagKey:   "TagKey",
+				TagValue: "TagValue",
+			},
+		},
+	}
+	err := BCC_CLIENT.BindImageToTags(BCC_TestImageId, args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestUnBindImageToTags(t *testing.T) {
+	args := &api.UnBindTagsRequest{
+		ChangeTags: []model.TagModel{
+			{
+				TagKey:   "TagKey",
+				TagValue: "TagValue",
+			},
+		},
+	}
+	err := BCC_CLIENT.UnBindImageToTags(BCC_TestImageId, args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestCreateRemoteCopySnapshot(t *testing.T) {
+
+	args := &api.RemoteCopySnapshotArgs{
+		ClientToken: "ClientTokenForTest",
+		DestRegionInfos: []api.DestRegionInfo{
+			{
+				Name:       "Test",
+				DestRegion: "bj",
+			},
+		},
+	}
+	result, err := BCC_CLIENT.CreateRemoteCopySnapshot("s-S9HdTie0", args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}
+
+func TestImportCustomImage(t *testing.T) {
+
+	args := &api.ImportCustomImageArgs{
+		OsName:    "Centos",
+		OsArch:    "32",
+		OsType:    "linux",
+		OsVersion: "6.5",
+		Name:      "import_image_test",
+		BosURL:    "http://cloud.baidu.com/testurl",
+	}
+
+	result, err := BCC_CLIENT.ImportCustomImage(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
 }

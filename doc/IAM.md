@@ -865,6 +865,45 @@ if err != nil {
 > **提示：**
 > - 详细的参数配置及限制条件，可以参考IAM API 文档[列举角色的权限](https://cloud.baidu.com/doc/IAM/s/Wjx35jxes#%E5%88%97%E4%B8%BE%E8%A7%92%E8%89%B2%E7%9A%84%E6%9D%83%E9%99%90)
 
+### 修改子用户操作保护
+通过以下代码修改子用户操作保护
+```go
+    userName := "test-user-sdk-go-switch-operation-mfa"
+    enableMfa := true
+    mfaType := "PHONE,TOTP"
+    args := &api.UserSwitchMfaArgs{
+        UserName:   userName,
+        EnabledMfa: enableMfa,
+        MfaType:    mfaType,
+    }
+    err := IAM_CLIENT.UserOperationMfaSwitch(args)
+    if err != nil {
+        fmt.Println("switch user mfa failed", err)
+    } else {
+        fmt.Println("switch user mfa success", result)
+    }
+```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考IAM API 文档[UserOperationMfaSwitch修改子用户操作保护](https://cloud.baidu.com/doc/IAM/s/mjx35fixq#%E4%BF%AE%E6%94%B9%E5%AD%90%E7%94%A8%E6%88%B7%E6%93%8D%E4%BD%9C%E4%BF%9D%E6%8A%A4)
+
+
+### 修改子用户密码
+通过以下代码修改子用户密码
+```go
+    userName := "test-user-name-sdk-go-sub-update"
+    Password := "Baidu@123"
+    args := &api.UpdateSubUserArgs{
+        Password: Password,
+    }
+    res, err := IAM_CLIENT.SubUserUpdate(userName, args)
+    if err != nil {
+        fmt.Println("update sub user failed", err)
+    } else {
+        fmt.Println("update sub user success", result)
+    }
+```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考IAM API 文档[SubUserUpdate修改子用户密码](https://cloud.baidu.com/doc/IAM/s/mjx35fixq#%E4%BF%AE%E6%94%B9%E5%AD%90%E7%94%A8%E6%88%B7%E5%AF%86%E7%A0%81)
 
 # 错误处理
 
@@ -895,3 +934,8 @@ BceServiceError | IAM服务返回的错误
 - 创建、查看、列表、更新、删除IAM用户组
 - 创建、列表、列表、更新、删除角色
 - 创建、查看、列表、更新、删除、关联用户权限、解除用户权限、列举用户权限、关联组权限、解除组权限、列举组权限、关联角色权限、解除角色权限、列举角色的权限
+
+## v0.9.12 [2023-02-13]
+
+- 修改子用户的操作保护
+- 修改子用户密码

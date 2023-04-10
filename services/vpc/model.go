@@ -40,9 +40,14 @@ const (
 	SUBNET_TYPE_BCCNAT SubnetType = "BCC_NAT"
 	SUBNET_TYPE_BBC    SubnetType = "BBC"
 
-	NEXTHOP_TYPE_CUSTOM NexthopType = "custom"
-	NEXTHOP_TYPE_VPN    NexthopType = "vpn"
-	NEXTHOP_TYPE_NAT    NexthopType = "nat"
+	NEXTHOP_TYPE_CUSTOM      NexthopType = "custom"
+	NEXTHOP_TYPE_VPN         NexthopType = "vpn"
+	NEXTHOP_TYPE_NAT         NexthopType = "nat"
+	NEXTHOP_TYPE_ETGATEWAY   NexthopType = "dcGateway"
+	NEXTHOP_TYPE_PEERCONN    NexthopType = "peerConn"
+	NEXTHOP_TYPE_IPV6GATEWAY NexthopType = "ipv6gateway"
+	NEXTHOP_TYPE_ENIC        NexthopType = "enic"
+	NEXTHOP_TYPE_HAVIP       NexthopType = "havip"
 
 	ACL_RULE_PROTOCOL_TCP  AclRuleProtocolType = "tcp"
 	ACL_RULE_PROTOCOL_UDP  AclRuleProtocolType = "udp"
@@ -186,6 +191,7 @@ type CreateSubnetArgs struct {
 	VpcSecondaryCidr string           `json:"vpcSecondaryCidr,omitempty"`
 	SubnetType       SubnetType       `json:"subnetType,omitempty"`
 	Description      string           `json:"description,omitempty"`
+	EnableIpv6       bool             `json:"enableIpv6,omitempty"`
 	Tags             []model.TagModel `json:"tags,omitempty"`
 }
 
@@ -222,6 +228,7 @@ type UpdateSubnetArgs struct {
 	ClientToken string `json:"-"`
 	Name        string `json:"name"`
 	Description string `json:"description,omitempty"`
+	EnableIpv6  bool   `json:"enableIpv6"`
 }
 
 type RouteRule struct {
@@ -232,6 +239,7 @@ type RouteRule struct {
 	NexthopId          string      `json:"nexthopId"`
 	NexthopType        NexthopType `json:"nexthopType"`
 	Description        string      `json:"description"`
+	PathType           string      `json:"pathType"`
 }
 
 // GetRouteTableResult defines the structure of the output parameters for the GetRouteTableDetail api
@@ -248,13 +256,22 @@ type CreateRouteRuleArgs struct {
 	SourceAddress      string      `json:"sourceAddress"`
 	DestinationAddress string      `json:"destinationAddress"`
 	NexthopId          string      `json:"nexthopId,omitempty"`
+	IpVersion          string      `json:"ipVersion,omitempty"`
 	NexthopType        NexthopType `json:"nexthopType"`
+	NextHopList        []NextHop   `json:"nextHopList,omitempty"`
 	Description        string      `json:"description,omitempty"`
+}
+
+type NextHop struct {
+	NexthopId   string      `json:"nexthopId"`
+	NexthopType NexthopType `json:"nexthopType"`
+	PathType    string      `json:"pathType"`
 }
 
 // CreateRouteRuleResult defines the structure of the output parameters for the CreateRouteRule api
 type CreateRouteRuleResult struct {
-	RouteRuleId string `json:"routeRuleId"`
+	RouteRuleId  string   `json:"routeRuleId"`
+	RouteRuleIds []string `json:"routeRuleIds,omitempty"`
 }
 
 // ListAclEntrysResult defines the structure of the output parameters for the ListAclEntrys api

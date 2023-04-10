@@ -254,6 +254,22 @@ func (c *Client) ListRoleAttachedPolicies(name string) (*api.ListPolicyResult, e
 	return api.ListRoleAttachedPolicies(c, name)
 }
 
+func (c *Client) UserOperationMfaSwitch(args *api.UserSwitchMfaArgs) error {
+	body, err := NewBodyFromStruct(args)
+	if err != nil {
+		return err
+	}
+	return api.UserOperationMfaSwitch(c, body)
+}
+
+func (c *Client) SubUserUpdate(userName string, args *api.UpdateSubUserArgs) (*api.UpdateUserResult, error) {
+	body, err := NewBodyFromStruct(args)
+	if err != nil {
+		return nil, err
+	}
+	return api.SubUserUpdate(c, body, userName)
+}
+
 func NewBodyFromStruct(args interface{}) (*bce.Body, error) {
 	jsonBytes, err := json.Marshal(args)
 	if err != nil {

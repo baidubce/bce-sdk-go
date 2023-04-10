@@ -23,6 +23,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	"os"
 
@@ -957,15 +958,15 @@ func (c *Client) BasicCopyObject(bucket, object, srcBucket,
 // PARAMS:
 //     - bucket: the name of the bucket
 //     - object: the name of the object
-//     - responseHeaders: the optional response headers to get the given object
+//     - args: the optional args in querysring
 //     - ranges: the optional range start and end to get the given object
 // RETURNS:
 //     - *api.GetObjectResult: result struct which contains "Body" and header fields
 //       for details reference https://cloud.baidu.com/doc/BOS/API.html#GetObject.E6.8E.A5.E5.8F.A3
 //     - error: any error if it occurs
-func (c *Client) GetObject(bucket, object string, responseHeaders map[string]string,
+func (c *Client) GetObject(bucket, object string, args map[string]string,
 	ranges ...int64) (*api.GetObjectResult, error) {
-	return api.GetObject(c, bucket, object, responseHeaders, ranges...)
+	return api.GetObject(c, bucket, object, args, ranges...)
 }
 
 // BasicGetObject - the basic interface of geting the given object
@@ -2127,7 +2128,10 @@ func (c *Client) parallelPartCopy(srcMeta api.GetObjectMetaResult, source string
 	var err error
 	size := srcMeta.ContentLength
 	partSize := int64(DEFAULT_MULTIPART_SIZE)
-
+	if partSize * MAX_PART_NUMBER < size {
+		lowerLimit := int64(math.Ceil(float64(size) / MAX_PART_NUMBER))
+		partSize = int64(math.Ceil(float64(lowerLimit)/float64(partSize))) * partSize
+	}
 	partNum := (size + partSize - 1) / partSize
 
 	parallelChan := make(chan int, c.MaxParallel)
@@ -2234,4 +2238,16 @@ func (c *Client) PutSymlink(bucket string, object string, symlinkKey string, sym
 //     - error: the put error if any occurs
 func (c *Client) GetSymlink(bucket string, object string) (string, error) {
 	return api.GetObjectSymlink(c, bucket, object)
+}
+
+func (c *Client) PutBucketMirror(bucket string, putBucketMirrorArgs *api.PutBucketMirrorArgs) error {
+	return api.PutBucketMirror(c, bucket, putBucketMirrorArgs)
+}
+
+func (c *Client) GetBucketMirror(bucket string) (*api.PutBucketMirrorArgs, error) {
+	return api.GetBucketMirror(c, bucket)
+}
+
+func (c *Client) DeleteBucketMirror(bucket string) error {
+	return api.DeleteBucketMirror(c, bucket)
 }

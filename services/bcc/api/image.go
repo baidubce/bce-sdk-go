@@ -437,3 +437,75 @@ func GetImageOS(cli bce.Client, args *GetImageOsArgs) (*GetImageOsResult, error)
 	}
 	return jsonBody, nil
 }
+
+
+func BindImageToTags(cli bce.Client, imageId string, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getImageToTagsUri(imageId))
+	req.SetMethod(http.PUT)
+	req.SetBody(reqBody)
+	req.SetParam("bind", "")
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	return nil
+}
+
+func UnBindImageToTags(cli bce.Client, imageId string, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getImageToTagsUri(imageId))
+	req.SetMethod(http.PUT)
+	req.SetBody(reqBody)
+	req.SetParam("unbind", "")
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	return nil
+}
+
+func ImportCustomImage(cli bce.Client, args *ImportCustomImageArgs) (*ImportCustomImageResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getImportCustomImageUri())
+	req.SetMethod(http.POST)
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return nil, err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ImportCustomImageResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}

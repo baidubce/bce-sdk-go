@@ -25,6 +25,10 @@ const (
 	RegularFunctionBRN  = `^(brn:(bce[a-zA-Z-]*):cfc:)([a-z]{2,5}[0-9]*:)([0-9a-z]{32}:)(function:)([a-zA-Z0-9-_]+)(:(\$LATEST|[a-zA-Z0-9-_]+))?$`
 	RegularVersion      = `^\$LATEST|([0-9]+)$`
 
+	RegularFlowName      = `^[a-zA-Z_]{1}[a-zA-Z0-9_-]{0,63}$`
+	RegularExecutionName = `^[a-zA-Z_0-9]{1}[a-zA-Z0-9_-]{0,63}$`
+	FlowType             = "FDL"
+
 	MemoryBase     = 128
 	minMemoryLimit = 128
 	maxMemoryLimit = 3008
@@ -67,7 +71,39 @@ func getFunctionAliasUri(functionName string, aliasName string) string {
 }
 
 func getEventSourceUri() string {
-	return fmt.Sprintf("/v1/event-source-mappings")
+	return "/v1/event-source-mappings"
+}
+
+func getBlueprintUri(blueprintId string) string {
+	return fmt.Sprintf("/v1/blueprints/%s/function", blueprintId)
+}
+
+func getExecutionStartUri() string {
+	return "/v1/execution/start"
+}
+
+func getExecutionStopUri() string {
+	return "/v1/execution/stop"
+}
+
+func getExecutionsUri() string {
+	return "/v1/executions"
+}
+
+func getExecutionUri() string {
+	return "/v1/execution"
+}
+
+func getExecutionHistory() string {
+	return "/v1/execution/history"
+}
+
+func getWorkflowsUri() string {
+	return "/v1/flows"
+}
+
+func getWorkflowUri() string {
+	return "/v1/flow"
 }
 
 func getOneEventSourceUri(uuid string) string {
@@ -80,6 +116,22 @@ func getTriggerUri() string {
 
 func validateFunctionName(name string) bool {
 	res, err := regexp.MatchString(RegularFunctionName, name)
+	if err != nil {
+		return false
+	}
+	return res
+}
+
+func validateFlowName(name string) bool {
+	res, err := regexp.MatchString(RegularFlowName, name)
+	if err != nil {
+		return false
+	}
+	return res
+}
+
+func validateExecutionName(name string) bool {
+	res, err := regexp.MatchString(RegularExecutionName, name)
 	if err != nil {
 		return false
 	}

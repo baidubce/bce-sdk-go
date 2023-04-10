@@ -563,3 +563,29 @@ func TestRoleAttachPolicyAndDetachPolicy(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 
 }
+
+func TestUserOperationMfaSwitch(t *testing.T) {
+	userName := "test-user-sdk-go-switch-operation-mfa"
+	enableMfa := true
+	mfaType := "PHONE,TOTP"
+	args := &api.UserSwitchMfaArgs{
+		UserName:   userName,
+		EnabledMfa: enableMfa,
+		MfaType:    mfaType,
+	}
+	err := IAM_CLIENT.UserOperationMfaSwitch(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestSubUserUpdate(t *testing.T) {
+	userName := "test-user-name-sdk-go-sub-update"
+	Password := "Baidu@123"
+	args := &api.UpdateSubUserArgs{
+		Password: Password,
+	}
+	res, err := IAM_CLIENT.SubUserUpdate(userName, args)
+	ExpectEqual(t.Errorf, err, nil)
+	jsonRes, _ := json.Marshal(res)
+	t.Logf(string(jsonRes))
+	ExpectEqual(t.Errorf, res.Name, userName)
+}

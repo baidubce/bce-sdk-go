@@ -469,6 +469,7 @@ type PutSymlinkArgs struct {
 	ForbidOverwrite string
 	StorageClass    string
 	UserMeta        map[string]string
+	SymlinkBucket   string
 }
 
 // UploadInfoType defines an uploaded part info structure.
@@ -583,3 +584,31 @@ type PutBucketNotificationAppsSt struct {
 	EventUrl string `json:"eventUrl"`
 	XVars    string `json:"xVars"`
 }
+
+
+type MirrorConfigurationRule struct {
+	Prefix          string       `json:"prefix,omitempty"`
+	SourceUrl       string       `json:"sourceUrl"`
+	PassQueryString bool         `json:"passQuerystring"`
+	Mode            string       `json:"mode"`
+	StorageClass    string       `json:"storageClass"`
+	PassHeaders     []string     `json:"passHeaders"`
+	IgnoreHeaders   []string     `json:"ignoreHeaders"`
+	CustomHeaders   []HeaderPair `json:"customHeaders"`
+	BackSourceUrl   string       `json:"backSourceUrl"`
+	Resource        string       `json:"resource"`
+	Suffix          string       `json:"suffix"`
+	FixedKey        string       `json:"fixedKey"`
+	PrefixReplace   string       `json:"prefixReplace"`
+	Version         string       `json:"version"`
+}
+
+type HeaderPair struct {
+	HeaderName  string `json:"headerName"`
+	HeaderValue string `json:"headerValue"`
+}
+
+type PutBucketMirrorArgs struct {
+	BucketMirroringConfiguration []MirrorConfigurationRule `json:"bucketMirroringConfiguration"`
+}
+

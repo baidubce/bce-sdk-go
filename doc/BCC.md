@@ -1160,7 +1160,19 @@ args := &api.RebuildInstanceArgs{
 	ImageId:   "m-DpgNg8lO",
 	AdminPass: "123qaz!@#",
 	// 设置要绑定的密钥对ID
-    KeypairId string "keypairId"
+    KeypairId string "keypairId",
+    // 是否开启hosteye服务，选填
+	IsOpenHostEye bool `json:"isOpenHostEye"`,
+    // 以下参数机型相关，使用部分ebc套餐时选填
+    IsPreserveData: false,
+    // 此参数在isPreserveData为false时为必填，在isPreserveData为true时不生效
+    RaidId:         "your_raid_id",
+    // 系统盘根分区大小，默认为20G，取值范围为20-100。此参数在isPreserveData为true时不生效
+    SysRootSize: 20,
+    // 指定系统盘文件系统，当前合法值：xfs，ext4
+    RootPartitionType: "your-choose-rootPartitionType",
+    // 指定数据盘文件系统，当前合法值：xfs，ext4
+    DataPartitionType: "your-choose-dataPartitionType",
 }
 err := client.RebuildInstance(instanceId, args)
 if err != nil {
@@ -1176,13 +1188,25 @@ if err != nil {
 ```go
 rebuildBatchInstanceArgs := &RebuildBatchInstanceArgs{
     // 输入你要重装instance使用的镜像ID
-    ImageId   string "imageId"
+    ImageId   string "imageId",
 	// 设置BCC虚机密码
-    AdminPass string "adminPass"
+    AdminPass string "adminPass",
 	// 设置要绑定的密钥对ID
-    KeypairId string "keypairId"
+    KeypairId string "keypairId",
     // 实例ID集合
-    InstanceIds []string "instanceIds"
+    InstanceIds []string "instanceIds",
+    // 是否开启hosteye服务，选填
+	IsOpenHostEye bool `json:"isOpenHostEye"`,
+    // 以下参数机型相关，使用部分ebc套餐时选填
+    IsPreserveData: false,
+    // 此参数在isPreserveData为false时为必填，在isPreserveData为true时不生效
+    RaidId:         "your_raid_id",
+    // 系统盘根分区大小，默认为20G，取值范围为20-100。此参数在isPreserveData为true时不生效
+    SysRootSize: 20,
+    // 指定系统盘文件系统，当前合法值：xfs，ext4
+    RootPartitionType: "your-choose-rootPartitionType",
+    // 指定数据盘文件系统，当前合法值：xfs，ext4
+    DataPartitionType: "your-choose-dataPartitionType",
 }
 
 if err := bccClient.BatchRebuildInstances(rebuildBatchInstanceArgs); err != nil {
@@ -1635,7 +1659,7 @@ if err := BCC_CLIENT.RecoveryInstance(args); err != nil {
 		
 ```
 
-## 计费变更-转预付费
+### 计费变更-转预付费
 使用以下代码对实例计费变更-转预付费:
 
 ```go
@@ -1655,7 +1679,7 @@ if err := bccClient.ChangeToPrepaid(instanceId, changeToPrepaidRequest); err != 
 }
 ```
 
-## 实例绑定标签
+### 实例绑定标签
 使用以下代码对实例绑定标签:
 
 ```go
@@ -1677,7 +1701,8 @@ if err := bccClient.BindInstanceToTags(instanceId, bindTagsRequest); err != nil 
     fmt.Println("BindInstanceToTags success.")
 }
 ```
-## 实例解绑标签
+
+###  实例解绑标签
 使用以下代码对实例解绑标签:
 
 ```go
@@ -1700,6 +1725,160 @@ if err := bccClient.UnBindInstanceToTags(instanceId, unBindTagsRequest); err != 
 }
 ```
 
+###  查询可以变配的实例规格
+使用以下代码可以查询可以变配的实例规格
+```go
+ listAvailableResizeSpecsArgs := &api.ListAvailableResizeSpecsArgs{
+     Spec: "bcc.ic5.c1m1",
+     Zone: "cn-bj-a",
+ }
+ res, _ := BCC_CLIENT.ListAvailableResizeSpecs(listAvailableResizeSpecsArgs)
+ fmt.Println(res)
+```
+
+### 批量转预付费
+使用以下代码可以将实例批量转预付费
+```go
+ batchChangeInstanceToPrepayArgs := &api.BatchChangeInstanceToPrepayArgs{
+     Config: []api.PrepayConfig{
+         {
+             InstanceId:  BCC_TestBccId,
+             Duration:    1,
+             RelationCds: false,
+         },
+     },
+ }
+ result, _ := BCC_CLIENT.BatchChangeInstanceToPrepay(batchChangeInstanceToPrepayArgs)
+ fmt.Println(result)
+```
+
+### 批量转后付费
+使用以下代码可以将实例批量转后付费
+```go
+ batchChangeInstanceToPostArgs := &api.BatchChangeInstanceToPostpayArgs{
+     Config: []api.PostpayConfig{
+         {
+             InstanceId:  "i-43TqYnnq",
+             RelationCds: false,
+         },
+     },
+ }
+ result, _ := BCC_CLIENT.BatchChangeInstanceToPostpay(batchChangeInstanceToPostArgs)
+ fmt.Println(result)
+```
+
+### 获取实例角色列表
+使用以下代码可以获取实例角色列表
+```go
+ res, _ := BCC_CLIENT.ListInstanceRoles()
+ fmt.Println(res)
+```
+
+
+### 绑定角色
+使用以下代码可以为BCC实例绑定角色
+```
+ bindInstanceRoleArgs := &api.BindInstanceRoleArgs{
+     RoleName: "Test_BCC",
+     Instances: []api.Instances{
+         {
+             InstanceId: BCC_TestBccId,
+         },
+     },
+ }
+
+ result, _ := BCC_CLIENT.BindInstanceRole(bindInstanceRoleArgs)
+ fmt.Println(result)
+```
+
+### 解绑角色
+使用以下代码可以为BCC实例解绑角色
+```
+	unbindInstanceRoleArgs := &api.UnBindInstanceRoleArgs{
+		RoleName: "Test_BCC",
+		Instances: []api.Instances{
+			{
+				InstanceId: BCC_TestBccId,
+			},
+		},
+	}
+
+	result, _ := BCC_CLIENT.UnBindInstanceRole(unbindInstanceRoleArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+```
+
+### 添加Ipv6
+使用以下代码可以为BCC实例添加Ipv6
+```go
+ addIpv6Args := &api.AddIpv6Args{
+     InstanceId:  BCC_TestBccId,
+     Reboot:      true,
+     Ipv6Address: "2400:da00:e003:0:41c:4100:0:2",
+ }
+
+ result, _ := BCC_CLIENT.AddIpv6(addIpv6Args)
+ ExpectEqual(t.Errorf, err, nil)
+ fmt.Println(result)
+```
+
+### 释放Ipv6
+使用以下代码可以为BCC实例释放Ipv6
+```	go
+deleteIpv6Args := &api.DeleteIpv6Args{
+     InstanceId: BCC_TestBccId,
+     Reboot:     true,
+ }
+
+ err := BCC_CLIENT.DeleteIpv6(deleteIpv6Args)
+ fmt.Println(err)
+```
+
+### 根据实例ID批量查询实例列表
+以下代码可以根据实例ID批量查询实例列表
+```go
+args := &api.ListInstanceByInstanceIdArgs{}
+result, err := BCC_CLIENT.ListInstanceByInstanceIds(args)
+if err != nil {
+    fmt.Println("list instance failed:", err)
+} else {
+    fmt.Println("list instance success: ", result)
+}
+```
+
+### 批量查询实例是否删除完成
+以下代码可以根据实例ID批量查询实例是否删除完成
+```go
+ bccId := "bccId"
+ args := &api.GetInstanceDeleteProgressArgs{
+     InstanceIds: []string{
+         bccId,
+     },
+ }
+
+ res, err := BCC_CLIENT.GetInstanceDeleteProgress(args)
+ if err != nil {
+    fmt.Println(err)
+ }
+ fmt.Println(res)
+```
+
+### 查询实例绑定的弹性网卡列表
+
+使用以下代码可以查询实例绑定的弹性网卡列表
+
+```go
+// 设置你要操作的instanceId
+instanceId := "instanceId"
+if res, err := BCC_CLIENT.ListInstanceEnis(instanceId); err != nil {
+	fmt.Println("Get specific instance eni failed: ", err)
+} else {
+	fmt.Println("Get specific instance eni success, result: ", res)
+}
+```
+
+## 磁盘管理
+
 ### 查询可用区的磁盘信息
 使用以下代码可以查询指定可用区的磁盘信息
 ```GO
@@ -1711,8 +1890,6 @@ if res, err := bccClient.GetAvailableDiskInfo(zoneName); err != nil {
     fmt.Println("Get the specific zone flavor success, result: ", res)
 }
 ```
-
-## 磁盘管理
 
 ### 创建CDS磁盘
 
@@ -2155,6 +2332,36 @@ if res, err := bccClient.GetAvailableDiskInfo(zoneName); err != nil {
 }
 ```
 
+### 磁盘绑定标签
+使用以下代码可以给指定磁盘绑定标签
+```go
+ tagArgs := &api.TagVolumeArgs{
+     ChangeTags: []api.Tag{
+         {
+             TagKey:   "go-SDK-Tag-Key3",
+             TagValue: "go_SDK-Tag-Value2",
+         },
+     },
+ }
+ 
+ BCC_CLIENT.TagVolume("v-SKy***", tagArgs)
+```
+
+### 磁盘解绑标签
+使用以下代码可以给指定磁盘绑定标签
+```go
+ tagArgs := &api.TagVolumeArgs{
+     ChangeTags: []api.Tag{
+         {
+             TagKey:   "go-SDK-Tag-Key3",
+             TagValue: "go_SDK-Tag-Value2",
+         },
+     },
+ }
+ 
+ BCC_CLIENT.UntagVolume("v-Crt***", tagArgs)
+```
+
 ## 镜像管理
 
 ### 创建自定义镜像
@@ -2379,6 +2586,52 @@ if err != nil {
 }
 ```
 
+### 镜像链绑定标签
+使用以下代码可以给指定镜像绑定标签
+```go
+ args := &api.BindTagsRequest{
+     ChangeTags: []model.TagModel{
+         {
+             TagKey:   "TagKey",
+             TagValue: "TagValue",
+         },
+     },
+ }
+ 
+ BCC_CLIENT.BindImageToTags("your-image-id", args)
+```
+
+### 镜像解绑标签
+使用以下代码可以给指定镜像绑定标签
+```go
+ args := &api.BindTagsRequest{
+     ChangeTags: []model.TagModel{
+         {
+             TagKey:   "go-SDK-Tag-Key3",
+             TagValue: "go_SDK-Tag-Value2",
+         },
+     },
+ }
+ 
+ BCC_CLIENT.UnBindImageToTags("your-image-id", args)
+```
+
+### 导入镜像
+使用以下代码可以导入个镜像
+```go
+ args := &api.ImportCustomImageArgs{
+     OsName:    "Centos",
+     OsArch:    "32",
+     OsType:    "linux",
+     OsVersion: "6.5",
+     Name:      "import_image_test",
+     BosURL:    "http://cloud.baidu.com/testurl",
+ }
+
+ result, _ := BCC_CLIENT.ImportCustomImage(args)
+ fmt.Println(result)
+```
+
 ## 快照管理
 
 ### 创建快照
@@ -2459,6 +2712,53 @@ if res, err := bccClient.ListSnapshotChain(args); err != nil {
 } else {
     fmt.Println("get snapshot chain list success, SnapshotId: ", res.Snapshot.Id)
 }
+```
+
+
+### 快照链绑定标签
+使用以下代码可以给指定快照链绑定标签
+```go
+ tagArgs := &api.TagSnapshotChain{
+     ChangeTags: []api.Tag{
+         {
+             TagKey:   "go-SDK-Tag-Key3",
+             TagValue: "go_SDK-Tag-Value2",
+         },
+     },
+ }
+ 
+ BCC_CLIENT.TagVolume("your-chain-id", tagArgs)
+```
+
+### 快照链解绑标签
+使用以下代码可以给指定快照链绑定标签
+```go
+ tagArgs := &api.TagVolumeArgs{
+     ChangeTags: []api.Tag{
+         {
+             TagKey:   "go-SDK-Tag-Key3",
+             TagValue: "go_SDK-Tag-Value2",
+         },
+     },
+ }
+ 
+ BCC_CLIENT.UntagSnapshotChain("your-chain-id", tagArgs)
+```
+
+### 跨区域复制快照
+使用以下代码可以将一份磁盘快照从一个地域复制到另一个地域
+```go
+ args := &api.RemoteCopySnapshotArgs{
+     ClientToken: "ClientTokenForTest",
+     DestRegionInfos: []api.DestRegionInfo{
+         {
+             Name:       "Test",
+             DestRegion: "bj",
+         },
+     },
+ }
+ result, _ := BCC_CLIENT.CreateRemoteCopySnapshot("s-S9HdTie0", args)
+ fmt.Println(result)
 ```
 
 ## 自动快照策略管理
@@ -2577,7 +2877,7 @@ if err != nil {
 
 ## 安全组管理
 
-## 查询安全组列表
+### 查询安全组列表
 
  以下代码可以查询安全组列表：
 
@@ -2598,7 +2898,7 @@ if err != nil {
 }
 ```
 
-## 创建安全组
+### 创建安全组
 
 以下代码可以创建一个安全组：
 
@@ -2634,7 +2934,7 @@ if err != nil {
 >   protocol的取值（tcp|udp|icmp），默认值为空，代表all。
 >   具体的创建安全组规则接口描述BCC API 文档[创建安全组](https://cloud.baidu.com/doc/BCC/s/0jwvynwij)。
 
-## 删除安全组
+### 删除安全组
 
 以下代码可以删除指定的安全组:
 
@@ -2647,7 +2947,7 @@ if err != nil {
 }
 ```
 
-## 授权安全组规则
+### 授权安全组规则
 
 使用以下代码可以在指定安全组中添加授权安全组规则:
 
@@ -2671,7 +2971,7 @@ if err != nil {
 > -   同一安全组中的规则以remark、protocol、direction、portRange、sourceIp|destIp、sourceGroupId|destGroupId六元组作为唯一性索引，若安全组中已存在相同的规则将报409错误。
 > -   具体的接口描述BCC API 文档[授权安全组规则](https://cloud.baidu.com/doc/BCC/s/pjwvynxvl)。
 
-## 撤销安全组规则
+### 撤销安全组规则
 
 使用以下代码可以在指定安全组中撤销指定安全组规则授权:
 
@@ -2696,7 +2996,7 @@ if err != nil {
 > -   同一安全组中的规则以remark、protocol、direction、portRange、sourceIp|destIp、sourceGroupId|destGroupId六元组作为唯一性索引，若安全组中不存在对应的规则将报404错误。
 > -   具体的接口描述BCC API 文档[撤销安全组规则](https://cloud.baidu.com/doc/BCC/s/yjwvynxk0)。
 
-## 更新普通安全组规则
+### 更新普通安全组规则
 
 使用以下代码可以在指定普通安全组中更新安全组规则:
 
@@ -2713,7 +3013,7 @@ if err != nil {
 }
 ```
 
-## 删除普通安全组规则
+### 删除普通安全组规则
 
 使用以下代码可以在指定普通安全组中删除指定安全组规则:
 
@@ -3202,32 +3502,7 @@ if res, err := bccClient.ResizeInstanceStockArgs(args); err != nil {
 }
 ```
 
-### 查询实例绑定的弹性网卡列表
-
-使用以下代码可以查询实例绑定的弹性网卡列表
-
-```go
-// 设置你要操作的instanceId
-instanceId := "instanceId"
-if res, err := BCC_CLIENT.ListInstanceEnis(instanceId); err != nil {
-	fmt.Println("Get specific instance eni failed: ", err)
-} else {
-	fmt.Println("Get specific instance eni success, result: ", res)
-}
-```
-
-### 根据实例ID批量查询实例列表
-以下代码可以根据实例ID批量查询实例列表
-```go
-args := &api.ListInstanceByInstanceIdArgs{}
-result, err := BCC_CLIENT.ListInstanceByInstanceIds(args)
-if err != nil {
-    fmt.Println("list instance failed:", err)
-} else {
-    fmt.Println("list instance success: ", result)
-}
-```
-
+## 磁盘专属集群
 ### 创建磁盘专属集群
 以下代码可以根据实例ID批量查询实例列表
 ```go
@@ -3342,6 +3617,7 @@ if err != nil {
 	fmt.Println(err)
 }
 ```
+
 
 # 错误处理
 

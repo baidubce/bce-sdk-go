@@ -1804,3 +1804,174 @@ func (c *Client) DeleteSecurityGroupRule(args *api.DeleteSecurityGroupRuleArgs) 
 func (c *Client) UpdateSecurityGroupRule(args *api.UpdateSecurityGroupRuleArgs) error {
 	return api.UpdateSecurityGroupRule(c, args)
 }
+
+func (c *Client) GetInstanceDeleteProgress(args *api.GetInstanceDeleteProgressArgs) (map[string]interface{}, error) {
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.GetInstanceDeleteProgress(c, body)
+}
+func (c *Client) TagVolume(volumeId string, args *api.TagVolumeArgs) error {
+	return api.TagVolume(c, volumeId, args)
+}
+
+func (c *Client) UntagVolume(volumeId string, args *api.TagVolumeArgs) error {
+	return api.UntagVolume(c, volumeId, args)
+}
+
+func (c *Client) TagSnapshotChain(chainId string, args *api.TagVolumeArgs) error {
+	return api.TagSnapshotChain(c, chainId, args)
+}
+
+func (c *Client) UntagSnapshotChain(chainId string, args *api.TagVolumeArgs) error {
+	return api.UntagSnapshotChain(c, chainId, args)
+}
+
+
+func (c *Client) ListAvailableResizeSpecs(args *api.ListAvailableResizeSpecsArgs) (
+	*api.ListAvailableResizeSpecResults, error) {
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.ListAvailableResizeSpecs(c, body)
+}
+
+func (c *Client) BatchChangeInstanceToPrepay(args *api.BatchChangeInstanceToPrepayArgs) (
+	*api.BatchChangeInstanceBillingMethodResult, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return api.BatchChangeInstanceToPrepay(c, body)
+
+}
+
+func (c *Client) BatchChangeInstanceToPostpay(args *api.BatchChangeInstanceToPostpayArgs) (
+	*api.BatchChangeInstanceBillingMethodResult, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return api.BatchChangeInstanceToPostpay(c, body)
+}
+
+func (c *Client) ListInstanceRoles() (*api.ListInstanceRolesResult, error) {
+
+	return api.ListInstanceRoles(c)
+}
+
+func (c *Client) BindInstanceRole(args *api.BindInstanceRoleArgs) (*api.BindInstanceRoleResult, error) {
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.BindInstanceRole(c, body)
+}
+
+func (c *Client) UnBindInstanceRole(args *api.UnBindInstanceRoleArgs) (*api.UnBindInstanceRoleResult, error) {
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.UnBindInstanceRole(c, body)
+}
+
+func (c *Client) DeleteIpv6(args *api.DeleteIpv6Args) error {
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.DeleteIpv6(c, body)
+}
+
+func (c *Client) AddIpv6(args *api.AddIpv6Args) (*api.AddIpv6Result, error) {
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.AddIpv6(c, body)
+}
+
+func (c *Client) BindImageToTags(imageId string, args *api.BindTagsRequest) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.BindImageToTags(c, imageId, body)
+}
+
+func (c *Client) UnBindImageToTags(imageId string, args *api.UnBindTagsRequest) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.UnBindImageToTags(c, imageId, body)
+}
+
+func (c *Client) CreateRemoteCopySnapshot(snapshotId string, args *api.RemoteCopySnapshotArgs) (*api.RemoteCopySnapshotResult,
+	error) {
+
+	return api.CreateRemoteCopySnapshot(c, snapshotId, args)
+}
+
+func (c *Client) ImportCustomImage(args *api.ImportCustomImageArgs) (*api.ImportCustomImageResult,
+	error) {
+
+	return api.ImportCustomImage(c, args)
+}

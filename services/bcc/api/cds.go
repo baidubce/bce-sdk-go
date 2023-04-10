@@ -134,6 +134,9 @@ func ListCDSVolume(cli bce.Client, queryArgs *ListCDSVolumeArgs) (*ListCDSVolume
 		if len(queryArgs.ZoneName) != 0 {
 			req.SetParam("zoneName", queryArgs.ZoneName)
 		}
+		if len(queryArgs.ClusterId) != 0 {
+			req.SetParam("clusterId", queryArgs.ClusterId)
+		}
 		if len(queryArgs.Marker) != 0 {
 			req.SetParam("marker", queryArgs.Marker)
 		}
@@ -802,4 +805,60 @@ func DeletePrepayVolume(cli bce.Client, args *VolumePrepayDeleteRequestArgs) (*V
 		return nil, err
 	}
 	return jsonBody, nil
+}
+
+
+func TagVolume(cli bce.Client, volumeId string, args *TagVolumeArgs) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getTagVolumeUri(volumeId))
+	req.SetMethod(http.PUT)
+	req.SetParam("bind","")
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	return nil
+}
+
+
+func UntagVolume(cli bce.Client, volumeId string, args *TagVolumeArgs) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getUntagVolumeUri(volumeId))
+	req.SetMethod(http.PUT)
+	req.SetParam("unbind","")
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	return nil
 }

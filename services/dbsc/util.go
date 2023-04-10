@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Baidu, Inc.
+ * Copyright 2020 Baidu, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -12,21 +12,22 @@
  * and limitations under the License.
  */
 
-package api
+// util.go - define the utilities for api package of BBC service
+package dbsc
+
+import (
+	"github.com/baidubce/bce-sdk-go/bce"
+)
 
 const (
-	URI_PREFIX    = "/v1"
-	URI_USER      = "/user"
-	URI_GROUP     = "/group"
-	URI_POLICY    = "/policy"
-	URI_ACCESSKEY = "/accesskey"
-	URI_ROLE      = "/role"
+	URI_PREFIX_V2      = bce.URI_PREFIX + "v2"
+	REQUEST_VOLUME_URI = "/volume"
 
-	SUB_USER = "/subUser"
-
-	POLICY_TYPE_SYSTEM = "System"
-	POLICY_TYPE_CUSTOM = "Custom"
-
-	ACCESSKEY_STATUS_ENABLE  = "enable"
-	ACCESSKEY_STATUS_DISABLE = "disable"
+	REQUEST_CREATE_URI            = "/cluster"
+	REQUEST_AUTO_RENEW_URI        = "/cluster/autoRenew"
+	REQUEST_CANCEL_AUTO_RENEW_URI = "/cluster/cancelAutoRenew"
 )
+
+func getVolumeClusterUri() string {
+	return URI_PREFIX_V2 + REQUEST_VOLUME_URI
+}

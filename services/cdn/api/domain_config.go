@@ -11,36 +11,43 @@ import (
 
 // DomainConfig defined a struct for a specified domain's configuration
 type DomainConfig struct {
-	Domain         string         `json:"domain"`
-	Cname          string         `json:"cname"`
-	Status         string         `json:"status"`
-	CreateTime     string         `json:"createTime"`
-	LastModifyTime string         `json:"lastModifyTime"`
-	IsBan          string         `json:"isBan"`
-	Origin         []OriginPeer   `json:"origin"`
-	DefaultHost    string         `json:"defaultHost,omitempty"`
-	CacheTTL       []CacheTTL     `json:"cacheTTL"`
-	LimitRate      int            `json:"limitRate"`
-	RequestAuth    *RequestAuth   `json:"requestAuth,omitempty"`
-	Https          *HTTPSConfig   `json:"https,omitempty"`
-	FollowProtocol bool           `json:"followProtocol"`
-	SeoSwitch      *SeoSwitch     `json:"seoSwitch"`
-	Form           string         `json:"form"`
-	RangeSwitch    string         `json:"rangeSwitch"`
-	OfflineMode    bool           `json:"offlineMode"`
-	ClientIp       *ClientIp      `json:"clientIp"`
-	OCSP           bool           `json:"ocsp"`
-	HttpHeader     []HttpHeader   `json:"httpHeader"`
-	MediaDragConf  *MediaDragConf `json:"mediaDragConf"`
-	FileTrim       bool           `json:"fileTrim"`
-	QUIC           bool           `json:"quic"`
-	RefererACL     *RefererACL    `json:"refererACL"`
-	IpACL          *IpACL         `json:"ipACL"`
-	UaAcl          *UaACL         `json:"uaAcl"`
-	AccessLimit    *AccessLimit   `json:"accessLimit"`
-	TrafficLimit   *TrafficLimit  `json:"trafficLimit"`
-	ErrorPage      []ErrorPage    `json:"errorPage"`
-	CacheShare     *CacheShared   `json:"cacheShare"`
+	Domain         string          `json:"domain"`
+	Cname          string          `json:"cname"`
+	Status         string          `json:"status"`
+	CreateTime     string          `json:"createTime"`
+	LastModifyTime string          `json:"lastModifyTime"`
+	IsBan          string          `json:"isBan"`
+	Origin         []OriginPeer    `json:"origin"`
+	OriginProtocol *OriginProtocol `json:"originProtocol,omitempty"`
+	OriginTimeout  *OriginTimeout  `json:"originTimeout,omitempty"`
+	OriginFixedISP bool            `json:"originFixedISP,omitempty"`
+	DefaultHost    string          `json:"defaultHost,omitempty"`
+	CacheTTL       []CacheTTL      `json:"cacheTTL"`
+	LimitRate      int             `json:"limitRate"`
+	RequestAuth    *RequestAuth    `json:"requestAuth,omitempty"`
+	Https          *HTTPSConfig    `json:"https,omitempty"`
+	FollowProtocol bool            `json:"followProtocol"`
+	SeoSwitch      *SeoSwitch      `json:"seoSwitch"`
+	Form           string          `json:"form"`
+	RangeSwitch    string          `json:"rangeSwitch"`
+	OfflineMode    bool            `json:"offlineMode"`
+	ClientIp       *ClientIp       `json:"clientIp"`
+	OCSP           bool            `json:"ocsp"`
+	HttpHeader     []HttpHeader    `json:"httpHeader"`
+	MediaDragConf  *MediaDragConf  `json:"mediaDragConf"`
+	FileTrim       bool            `json:"fileTrim"`
+	QUIC           bool            `json:"quic"`
+	RefererACL     *RefererACL     `json:"refererACL"`
+	IpACL          *IpACL          `json:"ipACL"`
+	UaAcl          *UaACL          `json:"uaAcl"`
+	AccessLimit    *AccessLimit    `json:"accessLimit"`
+	TrafficLimit   *TrafficLimit   `json:"trafficLimit"`
+	ErrorPage      []ErrorPage     `json:"errorPage"`
+	CacheShare     *CacheShared    `json:"cacheShare"`
+	Compress       *Compress       `json:"compress,omitempty"`
+	Cors           *CorsCfg        `json:"cors,omitempty"`
+	Ipv6Dispatch   *Ipv6Dispatch   `json:"ipv6Dispatch,omitempty"`
+	RetryOrigin    *RetryOrigin    `json:"retryOrigin,omitempty"`
 }
 
 // CacheTTL defined a struct for cached rules setting
@@ -183,6 +190,28 @@ type CacheUrlArgs struct {
 type CorsCfg struct {
 	IsAllow bool
 	Origins []string
+}
+
+// OriginProtocol defined a struct for originProtocol setting
+type OriginProtocol struct {
+	Value string `json:"value"`
+}
+
+// OriginTimeout defined a struct for originTimeout setting
+type OriginTimeout struct {
+	ConnectTimeout int `json:"connectTimeout"`
+	LoadTimeout    int `json:"loadTimeout"`
+}
+
+// Compress defined a struct for page compression function
+type Compress struct {
+	Allow string `json:"allow"`
+	Type  string `json:"type,omitempty"`
+}
+
+// Ipv6Dispatch defined a struct for ipv6 setting
+type Ipv6Dispatch struct {
+	Enable bool `json:"enable"`
 }
 
 // GetDomainConfig - get the configuration for the specified domain
