@@ -166,6 +166,7 @@ type Subnet struct {
 	Name        string           `json:"name"`
 	ZoneName    string           `json:"zoneName"`
 	Cidr        string           `json:"cidr"`
+	Ipv6Cidr    string           `json:"ipv6Cidr"`
 	VPCId       string           `json:"vpcId"`
 	SubnetType  SubnetType       `json:"subnetType"`
 	Description string           `json:"description"`

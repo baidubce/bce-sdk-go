@@ -57,6 +57,7 @@ bce-sdk-go
 |  |--eni                 //ENIC弹性网卡
 |  |--esg                 //企业安全组
 |  |--etGateway           //专线网关
+|  |--havip               //高可用虚拟IP
 |  |--iam                 //身份管理
 |  |--media               //音视频处理MCP
 |  |--rds                 //云数据库
@@ -260,6 +261,7 @@ SSL证书服务 | CERT      | github.com/baidubce/bce-sdk-go/services/cert      
 弹性公网IP | EIP       | github.com/baidubce/bce-sdk-go/services/eip       | [EIP.md](./doc/EIP.md)
 ENIC弹性网卡 | ENIC      | github.com/baidubce/bce-sdk-go/services/eni       | [ENIC.md](./doc/ENIC.md)
 企业安全组 | ESG       | github.com/baidubce/bce-sdk-go/services/esg       | [ESG.md](./doc/ESG.md)
+高可用虚拟IP | HAVIP       | github.com/baidubce/bce-sdk-go/services/havip       | [HAVIP.md](./doc/HAVIP.md)
 专线网关 | EtGateway | github.com/baidubce/bce-sdk-go/services/etGateway | [ETGateway.md](./doc/ETGateway.md)
 身份管理 | IAM       | github.com/baidubce/bce-sdk-go/services/iam       | [IAM.md](./doc/IAM.md)
 内网DNS | LOCALDNS  | github.com/baidubce/bce-sdk-go/services/localDns  | [LOCALDNS.md](./doc/LOCALDNS.md)
