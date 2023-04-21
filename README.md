@@ -42,6 +42,7 @@ bce-sdk-go
 |  |     |--multipart.go  //BOS的Multipart相关API实现
 |  |     |--module.go     //BOS相关API的数据模型
 |  |     |--util.go       //BOS相关API实现使用的工具
+|  |--bvw                 //BVW服务目录
 |  |--cce                 //容器引擎
 |  |--cdn                 //内容分布网络
 |  |--cert                //SSL证书服务
@@ -248,6 +249,7 @@ myLogger.Info("this is my own logger from the sdk")
 负载均衡 | BLB       | github.com/baidubce/bce-sdk-go/services/blb       | [BLB.md](./doc/BLB.md)
 日志服务 | BLS       | github.com/baidubce/bce-sdk-go/services/bls       | [BLS.md](./doc/BLS.md)
 百度对象存储 | BOS       | github.com/baidubce/bce-sdk-go/services/bos       | [BOS.md](./doc/BOS.md)
+百度视频创作分发平台 | BVW       | github.com/baidubce/bce-sdk-go/services/bvw       | [BVW.md](./doc/BVW.md)
 容器引擎 | CCE       | github.com/baidubce/bce-sdk-go/services/cce       | [CCE.md](./doc/CCE.md)
 内容分布网络 | CDN       | github.com/baidubce/bce-sdk-go/services/cdn       | [CDN.md](./doc/CDN.md)
 SSL证书服务 | CERT      | github.com/baidubce/bce-sdk-go/services/cert      | [CERT.md](./doc/CERT.md)

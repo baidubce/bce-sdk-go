@@ -141,7 +141,7 @@ type InstanceModel struct {
 	DeploysetId           string                 `json:"deploysetId"`
 	RackId                string                 `json:"rackId"`
 	NicInfo               NicInfo                `json:"nicInfo"`
-	EniNum                int                    `json:"eniNum"`
+	EniNum                string                    `json:"eniNum"`
 	DeploySetList         []DeploySetSimpleModel `json:"deploysetList"`
 	DeletionProtection    int                    `json:"deletionProtection"`
 }

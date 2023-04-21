@@ -246,7 +246,9 @@ func TestCreateImage(t *testing.T) {
 }
 
 func TestListInstances(t *testing.T) {
-	listArgs := &api.ListInstanceArgs{}
+	listArgs := &api.ListInstanceArgs{
+		ZoneName: "cn-bj-a",
+	}
 	res, err := BCC_CLIENT.ListInstances(listArgs)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(res)
