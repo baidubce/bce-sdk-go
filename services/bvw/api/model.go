@@ -159,10 +159,10 @@ type GetMaterialResponse struct {
 	UserID         string   `json:"userId,omitempty"`
 	ActualUserID   string   `json:"actualUserId,omitempty"`
 	SaasType       string   `json:"saasType,omitempty"`
-	InfoType       []string `json:"infoType,omitempty"`
-	MediaType      []string `json:"mediaType,omitempty"`
-	SourceType     []string `json:"sourceType,omitempty"`
-	Status         []string `json:"status,omitempty"`
+	InfoType       string   `json:"infoType,omitempty"`
+	MediaType      string   `json:"mediaType,omitempty"`
+	SourceType     string   `json:"sourceType,omitempty"`
+	Status         string   `json:"status,omitempty"`
 	Title          string   `json:"title,omitempty"`
 	SourceURL      string   `json:"sourceUrl,omitempty"`
 	SourceURL360P  string   `json:"sourceUrl360p,omitempty"`

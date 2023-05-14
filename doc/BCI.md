@@ -261,14 +261,8 @@ args := &CreateInstanceArgs{
     EipRouteType: "BGP",
     // 公网带宽，单位为Mbps
     EipBandwidthInMbps: 1,
-    // 付款时间
-    EipPaymentTiming: "Postpaid",
     // 计费方式
     EipBillingMethod: "ByTraffic",
-    // 支持创建 EIP同时开通自动续费单位
-    EipAutoRenewTimeUnit: "month",
-    // 支持创建 EIP同时开通自动续费时间
-    EipAutoRenewTime: 1,
     // 实例所需的 CPU 资源型号
     CPUType: "intel",
     // 实例所需的 GPU 资源型号

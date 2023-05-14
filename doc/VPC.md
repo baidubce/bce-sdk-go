@@ -334,7 +334,7 @@ fmt.Println("VPC subnets: ", result.VPC.Subnets)
 fmt.Println("VPC secondaryCidr: ", result.VPC.SecondaryCidr)
 ```
 
-查询得到的VPC详情信息包括名称、网段、描述等信息。
+查询得到的VPC详情信息包括名称、网段、创建时间、描述等信息。
 
 ## 删除VPC
 

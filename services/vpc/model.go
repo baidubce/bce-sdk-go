@@ -139,6 +139,7 @@ type VPC struct {
 	VPCID         string           `json:"vpcId"`
 	Name          string           `json:"name"`
 	Cidr          string           `json:"cidr"`
+	CreatedTime   string           `json:"createdTime"`
 	Description   string           `json:"description"`
 	IsDefault     bool             `json:"isDefault"`
 	SecondaryCidr []string         `json:"secondaryCidr"`
@@ -154,6 +155,7 @@ type ShowVPCModel struct {
 	VPCId         string           `json:"vpcId"`
 	Name          string           `json:"name"`
 	Cidr          string           `json:"cidr"`
+	CreatedTime   string           `json:"createdTime"`
 	Description   string           `json:"description"`
 	IsDefault     bool             `json:"isDefault"`
 	Subnets       []Subnet         `json:"subnets"`

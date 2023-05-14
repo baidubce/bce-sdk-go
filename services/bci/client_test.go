@@ -89,7 +89,6 @@ func TestClient_CreateInstance(t *testing.T) {
 		AutoCreateEip:      false,
 		EipRouteType:       "BGP",
 		EipBandwidthInMbps: 150,
-		EipPaymentTiming:   "Postpaid",
 		EipBillingMethod:   "ByTraffic",
 		Tags: []Tag{
 			{

@@ -406,6 +406,10 @@ type CreateInstanceBySpecArgs struct {
 	KeypairId                 string           `json:"keypairId"`
 	AutoRenewTimeUnit         string           `json:"autoRenewTimeUnit"`
 	AutoRenewTime             int              `json:"autoRenewTime"`
+	RaidId                    string           `json:"raidId,omitempty"`
+	EnableNuma                bool             `json:"enableNuma,omitempty"`
+	DataPartitionType         string           `json:"dataPartitionType,omitempty"`
+	RootPartitionType         string           `json:"rootPartitionType,omitempty"`
 	CdsAutoRenew              bool             `json:"cdsAutoRenew"`
 	AspId                     string           `json:"aspId"`
 	InternalIps               []string         `json:"internalIps,omitempty"`

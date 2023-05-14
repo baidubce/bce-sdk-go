@@ -118,13 +118,18 @@ func TestListVPC(t *testing.T) {
 		MaxKeys:   1000,
 		IsDefault: "false",
 	}
-	_, err := VPC_CLIENT.ListVPC(args)
+	res, err := VPC_CLIENT.ListVPC(args)
+	fmt.Println(res.VPCs[0].CreatedTime)
 	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(res)
+	fmt.Println(string(r))
 }
 
 func TestGetVPCDetail(t *testing.T) {
 	result, err := VPC_CLIENT.GetVPCDetail(VPCID)
 	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(result)
+	fmt.Println(string(r))
 	ExpectEqual(t.Errorf, "TestSDK-VPC", result.VPC.Name)
 	ExpectEqual(t.Errorf, "vpc test", result.VPC.Description)
 	ExpectEqual(t.Errorf, "192.168.0.0/16", result.VPC.Cidr)
