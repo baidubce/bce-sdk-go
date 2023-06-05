@@ -31,6 +31,7 @@ bce-sdk-go
 |  |--appblb              //应用型负载均衡服务目录
 |  |--bbc                 //物理服务器
 |  |--bcc                 //云服务器
+|  |--bcm                 //云监控
 |  |--bec                 //百度边缘计算
 |  |--bie                 //百度智能边缘
 |  |--bls                 //日志服务
@@ -244,6 +245,7 @@ myLogger.Info("this is my own logger from the sdk")
 应用型负载均衡 | APPBLB    | github.com/baidubce/bce-sdk-go/services/appblb    | [APPBLB.md](./doc/APPBLB.md)
 物理服务器 | BBC       | github.com/baidubce/bce-sdk-go/services/bbc       | [BBC.md](./doc/BBC.md)
 云服务器 | BCC       | github.com/baidubce/bce-sdk-go/services/bcc       | [BCC.md](./doc/BCC.md)
+云监控 | BCM       | github.com/baidubce/bce-sdk-go/services/bcm       | [BCM.md](./doc/BCM.md)
 边缘计算节点 | BEC       | github.com/baidubce/bce-sdk-go/services/bec       |[BEC.md](./doc/BEC.md)
 百度智能边缘 | BIE       | github.com/baidubce/bce-sdk-go/services/bie       |
 负载均衡 | BLB       | github.com/baidubce/bce-sdk-go/services/blb       | [BLB.md](./doc/BLB.md)
