@@ -263,8 +263,6 @@ args := &CreateInstanceArgs{
     EipBandwidthInMbps: 1,
     // 计费方式
     EipBillingMethod: "ByTraffic",
-    // 实例所需的 CPU 资源型号
-    CPUType: "intel",
     // 实例所需的 GPU 资源型号
     GPUType: "Nvidia A10 PCIE",
     // 程序的缓冲时间，用于处理关闭之前的操作
@@ -395,7 +393,6 @@ fmt.Printf("CreateInstance success, bci instance id: %+v \n", result.InstanceId)
 > - 计费方式，按流量（ByTraffic）、按带宽（ByBandwidth）、按增强95（ByPeak95）（只有共享带宽后付费支持）。当autoCreateEip为true时，此字段才生效。增强型BGP_S不支持按流量计费（ByTraffic），需要按带宽计费（ByBandwidth）。默认值为ByTraffic。
 > - 支持创建 EIP同时开通自动续费单位，取值为 month 获 year （默认 month）。当autoCreateEip为true时，此字段才生效。默认值为month。
 > - 支持创建 EIP同时开通自动续费时间。根据autoRenewTimeUnit的取值有不同的范围，month 为1到9，year 为1到3。当autoCreateEip为true时，此字段才生效。默认值为1。
-> - 实例所需的 CPU 资源型号，如果不填写则默认不强制指定 CPU 类型。
 > - 实例所需的 GPU 资源型号。目前仅支持：Nvidia A10 PCIE。
 
 ## 查询实例列表

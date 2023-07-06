@@ -1,6 +1,8 @@
 package eccr
 
-import "time"
+import (
+	"time"
+)
 
 type PagedListOption struct {
 	PageNo      int
@@ -332,4 +334,48 @@ type RegistryRequestArgs struct {
 
 	// The registry URL string.
 	URL string `json:"url"`
+}
+
+type ListBuildRepositoryTaskArgs struct {
+	KeywordType string `json:"keywordType"`
+	Keyword     string `json:"keyword"`
+	PageNo      int    `json:"pageNo"`
+	PageSize    int    `json:"pageSize"`
+}
+
+// ListBuildRepositoryTaskResponse list repository task response
+type ListBuildRepositoryTaskResponse struct {
+	PageInfo `json:",inline"`
+	Items    []*BuildRepositoryTaskResult `json:"items"`
+}
+
+// BuildRepositoryTaskResult build repository task result
+type BuildRepositoryTaskResult struct {
+	ID         string    `json:"id"`
+	TagName    string    `json:"tagName"`
+	IsLatest   bool      `json:"isLatest"`
+	Status     string    `json:"status"`
+	FromType   string    `json:"fromType"`
+	Dockerfile string    `json:"dockerfile"`
+	CreateBy   string    `json:"createBy"`
+	CreateAt   time.Time `json:"createAt"`
+	Image      string    `json:"image"`
+}
+
+// BuildRepositoryTaskArgs build repository task request
+type BuildRepositoryTaskArgs struct {
+	TagName    string `json:"tagName"`
+	IsLatest   bool   `json:"isLatest"`
+	FromType   string `json:"fromType"`
+	Dockerfile string `json:"dockerfile"`
+}
+
+// BuildRepositoryTaskResponse build repository task response
+type BuildRepositoryTaskResponse struct {
+	ID string `json:"id"`
+}
+
+// BatchDeleteBuildRepositoryTaskArgs delete task request
+type BatchDeleteBuildRepositoryTaskArgs struct {
+	Items []string `json:"items"`
 }

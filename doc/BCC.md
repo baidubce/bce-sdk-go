@@ -280,6 +280,10 @@ args := &api.CreateInstanceArgs{
     SecurityGroupId       string           "securityGroupId"
     // 设置创建BCC使用的企业安全组，不允许同时设置企业安全组和普通安全组
     EnterpriseSecurityGroupId       string           "enterpriseSecurityGroupId"
+    // 设置创建BCC使用的安全组列表
+    SecurityGroupIds      []string          securityGroupIds
+    // 设置创建BCC使用的企业安全组列表，不允许同时设置企业安全组和普通安全组
+    EnterpriseSecurityGroupIds      []string           enterpriseSecurityGroupIds
     // 设置需要创建GPU卡信息
     GpuCard               string           "gpuCard"
     // 设置需要创建FPGA卡信息
@@ -405,6 +409,8 @@ createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
     NetWorkCapacityInMbps int              networkCapacityInMbps
     // 设置待查询的竞价实例的购买个数
     PurchaseCount         int              purchaseCount
+    // 开启部分交付,并设置最小交付虚机个数
+    PurchaseMinCount         int              purchaseMinCount
     // 设置可用区
     ZoneName              string           "zoneName"
     // 指定子网和安全组创建，要求子网和安全组必须同时指定或同时不指定，
@@ -415,6 +421,10 @@ createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
     SecurityGroupId       string           "securityGroupId"
     // 设置创建BCC使用的企业安全组，不允许同时设置企业安全组和普通安全组
     EnterpriseSecurityGroupId       string           "enterpriseSecurityGroupId"
+    // 设置创建BCC使用的安全组列表
+    SecurityGroupIds      []string          securityGroupIds
+    // 设置创建BCC使用的企业安全组列表，不允许同时设置企业安全组和普通安全组
+    EnterpriseSecurityGroupIds      []string           enterpriseSecurityGroupIds
     // 设置按月付费或者按年付费 月是"month",年是"year"
     AutoRenewTimeUnit     string           "autoRenewTimeUnit"
     // 设置自动续费的时间 按月是1-9 按年是 1-3
@@ -641,6 +651,12 @@ createInstanceArgs := &CreateInstanceArgs{
     SubnetId              string           "subnetId"
 	// // 设置创建BCC使用的安全组
     SecurityGroupId       string           "securityGroupId"
+    // 设置创建BCC使用的企业安全组，不允许同时设置企业安全组和普通安全组
+    EnterpriseSecurityGroupId       string           "enterpriseSecurityGroupId"
+    // 设置创建BCC使用的安全组列表
+    SecurityGroupIds      []string          securityGroupIds
+    // 设置创建BCC使用的企业安全组列表，不允许同时设置企业安全组和普通安全组
+    EnterpriseSecurityGroupIds      []string           enterpriseSecurityGroupIds
 	// 设置需要创建GPU卡信息
     GpuCard               string           "gpuCard"
 	// 设置需要创建FPGA卡信息
@@ -1571,9 +1587,11 @@ batchAddIpArgs := &BatchAddIpArgs{
     // 实例ID
     InstanceId string "instanceId"
     // 辅助IP，和SecondaryPrivateIpAddressCount不可同时使用
-	PrivateIps []string "privateIps"
+    PrivateIps []string "privateIps"
     // 自动分配IP数量，和PrivateIps不可同时使用
     SecondaryPrivateIpAddressCount int 1
+    // 是否是创建ipv6,ipv6必须是true,默认为false,创建ipv4
+    AllocateMultiIpv6Addr bool "allocateMultiIpv6Addr"
     // 幂等性Token，使用 uuid 生成一个长度不超过64位的ASCII字符串，可选参数
     ClietnToken string "clientToken"
 }

@@ -919,6 +919,7 @@ func (c *Client) PutObjectFromStream(bucket, object string, reader io.Reader,
 	return api.PutObject(c, bucket, object, body, args)
 }
 
+
 // CopyObject - copy a remote object to another one
 //
 // PARAMS:
@@ -2128,7 +2129,7 @@ func (c *Client) parallelPartCopy(srcMeta api.GetObjectMetaResult, source string
 	var err error
 	size := srcMeta.ContentLength
 	partSize := int64(DEFAULT_MULTIPART_SIZE)
-	if partSize * MAX_PART_NUMBER < size {
+	if partSize*MAX_PART_NUMBER < size {
 		lowerLimit := int64(math.Ceil(float64(size) / MAX_PART_NUMBER))
 		partSize = int64(math.Ceil(float64(lowerLimit)/float64(partSize))) * partSize
 	}

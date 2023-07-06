@@ -387,3 +387,89 @@ func TestClient_DeleteRegistry(t *testing.T) {
 
 	fmt.Println("Delete Registry Test Passed")
 }
+
+func TestClient_CreateBuildRepositoryTask(t *testing.T) {
+	args := &BuildRepositoryTaskArgs{
+		TagName:    "v1.0",
+		IsLatest:   false,
+		Dockerfile: "from busybox \n yum install pip",
+		FromType:   "dcokerfile",
+	}
+
+	resp, err := CCR_CLIENT.CreateBuildRepositoryTask(CCR_INSTANCE_ID, "test", "pip", args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:", string(s))
+}
+
+func TestClient_ListBuildRepositoryTaskArgs(t *testing.T) {
+	args := &ListBuildRepositoryTaskArgs{
+		KeywordType: "tag",
+		Keyword:     "v1.0",
+		PageNo:      1,
+		PageSize:    10,
+	}
+
+	resp, err := CCR_CLIENT.ListBuildRepositoryTask(CCR_INSTANCE_ID, "test", "pip", args)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:", string(s))
+}
+
+func TestClient_GetBuildRepositoryTask(t *testing.T) {
+	resp, err := CCR_CLIENT.GetBuildRepositoryTask(CCR_INSTANCE_ID, "test", "pip", "1")
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	s, _ := json.MarshalIndent(resp, "", "\t")
+	fmt.Println("Response:", string(s))
+}
+
+func TestClient_BatchDeleteBuildRepositoryTask(t *testing.T) {
+	args := &BatchDeleteBuildRepositoryTaskArgs{
+		Items: []string{"1", "2"},
+	}
+	err := CCR_CLIENT.BatchDeleteBuildRepositoryTask(CCR_INSTANCE_ID, "test", "pip", args)
+
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DeleteBuildRepositoryTask(t *testing.T) {
+	err := CCR_CLIENT.DeleteBuildRepositoryTask(CCR_INSTANCE_ID, "test", "pip", "1")
+
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func Test_getImageBuildURI(t *testing.T) {
+	type args struct {
+		instanceID     string
+		projectName    string
+		repositoryName string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "image build uri",
+			args: args{
+				instanceID:     "test_instance",
+				projectName:    "test_project",
+				repositoryName: "test_repository",
+			},
+			want: fmt.Sprintf(`/v1/projects/%s/repositories/%s/imageBuilds/%s`, "test_instance", "test_project", "test_repository"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := getImageBuildURI(tt.args.instanceID, tt.args.projectName, tt.args.repositoryName); got != tt.want {
+				t.Errorf("getImageBuildURI() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

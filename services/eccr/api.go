@@ -1,6 +1,7 @@
 package eccr
 
 import (
+	"encoding/base64"
 	"strconv"
 
 	"github.com/baidubce/bce-sdk-go/bce"
@@ -29,6 +30,11 @@ type Interface interface {
 	CheckHealthRegistry(instanceID string, args *RegistryRequestArgs) error
 	UpdateRegistry(instanceID, registryID string, args *RegistryRequestArgs) (*RegistryResponse, error)
 	DeleteRegistry(instanceID, registryID string) error
+	ListBuildRepositoryTask(instanceID, projectName, repositoryName string, args *ListBuildRepositoryTaskArgs) (*ListBuildRepositoryTaskResponse, error)
+	CreateBuildRepositoryTask(instanceID, projectName, repositoryName string, args *BuildRepositoryTaskArgs) (*BuildRepositoryTaskResponse, error)
+	GetBuildRepositoryTask(instanceID, projectName, repositoryName, imageBuildID string) (*BuildRepositoryTaskResult, error)
+	DeleteBuildRepositoryTask(instanceID, projectName, repositoryName, imageBuildID string) error
+	BatchDeleteBuildRepositoryTask(instanceID, projectName, repositoryName string, args *BatchDeleteBuildRepositoryTaskArgs) error
 }
 
 // ListInstances - list all instance with the specific parameters
@@ -149,8 +155,9 @@ func (c *Client) UpdateInstance(instanceID string, args *UpdateInstanceArgs) (*U
 //   - UpgradeInstanceArgs: parameters required to upgrade instance information
 //
 // RETURNS:
-//   = UpgradeInstanceResponse: the result of upgrade instance
-//   - error: nil if success otherwise the specific error
+//
+//	= UpgradeInstanceResponse: the result of upgrade instance
+//	- error: nil if success otherwise the specific error
 func (c *Client) UpgradeInstance(instanceID string, args *UpgradeInstanceArgs) (*UpgradeInstanceResponse, error) {
 	result := &UpgradeInstanceResponse{}
 
@@ -455,6 +462,127 @@ func (c *Client) DeleteRegistry(instanceID, registryID string) error {
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
 		WithURL(getInstanceRegistryIDURI(instanceID, registryID)).
+		Do()
+
+	return err
+}
+
+// ListBuildRepositoryTask - list the build task info
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - projectName: the specific project Name
+//   - repositoryName: the specific registry Name
+//   - ListBuildRepositoryTaskArgs: parameters required to get task list
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - ListBuildRepositoryTaskResponse: the result of build task list
+
+func (c *Client) ListBuildRepositoryTask(instanceID, projectName, repositoryName string, args *ListBuildRepositoryTaskArgs) (
+	*ListBuildRepositoryTaskResponse, error) {
+	result := &ListBuildRepositoryTaskResponse{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithQueryParamFilter("keywordType", args.KeywordType).
+		WithQueryParamFilter("keyword", args.Keyword).
+		WithQueryParamFilter("pageNo", strconv.Itoa(args.PageNo)).
+		WithQueryParamFilter("pageSize", strconv.Itoa(args.PageSize)).
+		WithURL(getImageBuildURI(instanceID, projectName, base64.RawURLEncoding.EncodeToString([]byte(repositoryName)))).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// CreateBuildRepositoryTask - create the build task
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - projectName: the specific project Name
+//   - repositoryName: the specific registry Name
+//	 - BuildRepositoryTaskArgs: parameters required to create build task
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - BuildRepositoryTaskResponse: the result of build task
+
+func (c *Client) CreateBuildRepositoryTask(instanceID, projectName, repositoryName string, args *BuildRepositoryTaskArgs) (
+	*BuildRepositoryTaskResponse, error) {
+	result := &BuildRepositoryTaskResponse{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getImageBuildURI(instanceID, projectName, base64.RawURLEncoding.EncodeToString([]byte(repositoryName)))).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// GetBuildRepositoryTask - get the build task
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - projectName: the specific project Name
+//   - repositoryName: the specific registry Name
+//	 - imageBuildID: the specific image build ID
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - BuildRepositoryTaskResult: the result of build task
+
+func (c *Client) GetBuildRepositoryTask(instanceID, projectName, repositoryName, imageBuildID string) (*BuildRepositoryTaskResult, error) {
+	result := &BuildRepositoryTaskResult{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getImageBuildInfoURI(instanceID, projectName, base64.RawURLEncoding.EncodeToString([]byte(repositoryName)), imageBuildID)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// DeleteBuildRepositoryTask - batch delete the build task
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - projectName: the specific project Name
+//   - repositoryName: the specific registry Name
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+
+func (c *Client) DeleteBuildRepositoryTask(instanceID, projectName, repositoryName, imageBuildID string) error {
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(getImageBuildInfoURI(instanceID, projectName, base64.RawURLEncoding.EncodeToString([]byte(repositoryName)), imageBuildID)).
+		Do()
+
+	return err
+}
+
+// BatchDeleteBuildRepositoryTask - batch delete the build task
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - projectName: the specific project Name
+//   - repositoryName: the specific registry Name
+//   - BatchDeleteBuildRepositoryTaskArgs: parameters required to batch delete build task
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+
+func (c *Client) BatchDeleteBuildRepositoryTask(instanceID, projectName, repositoryName string, args *BatchDeleteBuildRepositoryTaskArgs) error {
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithBody(args).
+		WithURL(getImageBuildURI(instanceID, projectName, base64.RawURLEncoding.EncodeToString([]byte(repositoryName)))).
 		Do()
 
 	return err

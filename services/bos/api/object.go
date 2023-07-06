@@ -194,6 +194,10 @@ func CopyObject(cli bce.Client, bucket, object, source string,
 			req.SetHeader(http.BCE_TRAFFIC_LIMIT, fmt.Sprintf("%d", args.TrafficLimit))
 		}
 
+		if validCannedAcl(args.CannedAcl) {
+            req.SetHeader(http.BCE_ACL, args.CannedAcl)
+        }
+
 		if err := setUserMetadata(req, args.UserMeta); err != nil {
 			return nil, err
 		}

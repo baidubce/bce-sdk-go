@@ -20,6 +20,12 @@ const (
 	REQUEST_CREDENTIAL_URL = "/credential"
 
 	REQUEST_REGISTRY_URL = "/registries"
+
+	REQUEST_REPOSITORIES_URL = "/repositories"
+
+	REQUEST_PROJECT_URL = "/projects"
+
+	REQUEST_IMAGEBUILD_URL = "/imagebuilds"
 )
 
 // Client ccr enterprise interface.Interface
@@ -88,4 +94,14 @@ func getInstanceRegistryIDURI(instanceID, registryID string) string {
 
 func getCheckHealthRegistryURI(instanceID string) string {
 	return URI_PREFIX + REQUEST_INSTANCE_URL + "/" + instanceID + REQUEST_REGISTRY_URL + "/ping"
+}
+
+func getImageBuildURI(instanceID, projectName, repositoryName string) string {
+	return URI_PREFIX + REQUEST_INSTANCE_URL + "/" + instanceID + REQUEST_PROJECT_URL + "/" + projectName +
+		REQUEST_REPOSITORIES_URL + "/" + repositoryName + REQUEST_IMAGEBUILD_URL
+}
+
+func getImageBuildInfoURI(instanceID, projectName, repositoryName, imageBuildID string) string {
+	return URI_PREFIX + REQUEST_INSTANCE_URL + "/" + instanceID + REQUEST_PROJECT_URL + "/" + projectName +
+		REQUEST_REPOSITORIES_URL + "/" + repositoryName + REQUEST_IMAGEBUILD_URL + "/" + imageBuildID
 }

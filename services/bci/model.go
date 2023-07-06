@@ -27,7 +27,6 @@ type CreateInstanceArgs struct {
 	EipRouteType                  string                    `json:"eipRouteType,omitempty"`
 	EipBandwidthInMbps            int                       `json:"eipBandwidthInMbps,omitempty"`
 	EipBillingMethod              string                    `json:"eipBillingMethod,omitempty"`
-	CPUType                       string                    `json:"cpuType,omitempty"`
 	GPUType                       string                    `json:"gpuType,omitempty"`
 	TerminationGracePeriodSeconds int64                     `json:"terminationGracePeriodSeconds,omitempty"`
 	HostName                      string                    `json:"hostName,omitempty"`

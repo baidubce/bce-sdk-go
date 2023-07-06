@@ -271,6 +271,7 @@ type CopyObjectArgs struct {
 	IfModifiedSince   string
 	IfUnmodifiedSince string
 	TrafficLimit       int64
+	CannedAcl          string
 }
 
 type MultiCopyObjectArgs struct {
