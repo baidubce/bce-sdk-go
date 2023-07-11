@@ -70,6 +70,7 @@ const (
 	StorageTypeLocalSSD      StorageType = "local-ssd"
 	StorageTypeLocalHDD      StorageType = "local-hdd"
 	StorageTypeLocalNVME     StorageType = "local-nvme"
+	StorageTypeEnhancedPl1   StorageType = "enhanced_ssd_pl1"
 	StorageTypeEnhancedPl2   StorageType = "enhanced_ssd_pl2"
 )
 
@@ -306,6 +307,7 @@ type CreateInstanceArgs struct {
 	DetetionProtection         int               `json:"deletionProtection"`
 	FileSystems                []FileSystemModel `json:"fileSystems,omitempty"`
 	IsOpenHostEye              bool              `json:"isOpenHostEye,omitempty"`
+	ResGroupId                 string            `json:"resGroupId,omitempty"`
 }
 
 type FileSystemModel struct {
@@ -395,7 +397,7 @@ type CreateInstanceBySpecArgs struct {
 	EipName                    string           `json:"eipName,omitempty"`
 	InternetChargeType         string           `json:"internetChargeType,omitempty"`
 	PurchaseCount              int              `json:"purchaseCount,omitempty"`
-	PurchaseMinCount          int              `json:"purchaseMinCount,omitempty"`
+	PurchaseMinCount           int              `json:"purchaseMinCount,omitempty"`
 	Name                       string           `json:"name,omitempty"`
 	Hostname                   string           `json:"hostname,omitempty"`
 	IsOpenHostnameDomain       bool             `json:"isOpenHostnameDomain,omitempty"`
@@ -431,6 +433,7 @@ type CreateInstanceBySpecArgs struct {
 	IsOpenHostEye              bool             `json:"isOpenHostEye,omitempty"`
 	BidModel                   string           `json:"bidModel,omitempty"`
 	BidPrice                   string           `json:"bidPrice,omitempty"`
+	ResGroupId                 string           `json:"resGroupId,omitempty"`
 }
 
 const (
@@ -489,6 +492,7 @@ type CreateSpecialInstanceBySpecArgs struct {
 
 	// CreateInstanceBySpecArgs 的基础上增加的参数
 	LabelConstraints []LabelConstraint `json:"labelConstraints,omitempty"`
+	ResGroupId       string            `json:"resGroupId,omitempty"`
 }
 
 type CreateSpecialInstanceBySpecResult struct {
@@ -526,6 +530,7 @@ type CreateInstanceV3Args struct {
 	InternetAccessible    InternetAccessible    `json:"internetAccessible,omitempty"`
 	ClientToken           string                `json:"-"`
 	RequestToken          string                `json:"requestToken"`
+	ResGroupId            string                `json:"resGroupId,omitempty"`
 }
 
 type CreateInstanceV3Result struct {

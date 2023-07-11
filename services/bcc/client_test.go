@@ -33,7 +33,6 @@ type Conf struct {
 }
 
 func init() {
-
 	_, f, _, _ := runtime.Caller(0)
 	conf := filepath.Join(filepath.Dir(f), "config.json")
 	fp, err := os.Open(conf)
@@ -47,7 +46,7 @@ func init() {
 
 	BCC_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
-	//log.SetLogLevel(log.DEBUG)
+	// log.SetLogLevel(log.DEBUG)
 	BCC_TestBccId = "i-7pxLG046"
 	BCC_TestCdsId = "cds_id"
 	BCC_TestImageId = "m-Q0ezqMIa"
@@ -92,7 +91,7 @@ func TestCreateInstance(t *testing.T) {
 		CpuCount:            1,
 		MemoryCapacityInGB:  1,
 		RootDiskSizeInGb:    40,
-		RootDiskStorageType: api.StorageTypeHP1,
+		RootDiskStorageType: api.StorageTypeEnhancedPl1,
 		ZoneName:            "ZoneName",
 		SubnetId:            "SubnetId",
 		SecurityGroupId:     "SecurityGroupId",
@@ -109,7 +108,6 @@ func TestCreateInstance(t *testing.T) {
 }
 
 func TestCreateSpecialInstanceBySpec(t *testing.T) {
-
 	createInstanceBySpecArgs := &api.CreateSpecialInstanceBySpecArgs{
 		ImageId:  "ImageId",
 		Spec:     "bcc.g5.c1m4",
@@ -190,7 +188,7 @@ func TestCreateInstanceV3(t *testing.T) {
 			"ip",
 		},
 		DeployIdList: []string{
-			//"dset-PAAeNoJt",
+			// "dset-PAAeNoJt",
 			"DeployId",
 		},
 		ImageId: "ImageId",
@@ -404,7 +402,7 @@ func TestCreateCDSVolume(t *testing.T) {
 				ReservationTimeUnit: "MONTH",
 			},
 		},
-		AutoSnapshotPolicy :   []api.AutoSnapshotPolicy{
+		AutoSnapshotPolicy: []api.AutoSnapshotPolicy{
 			{
 				AutoSnapshotPolicyId: "Test_AutoSnapshotPolicyId",
 			},
@@ -463,7 +461,7 @@ func TestCreateSnapshot(t *testing.T) {
 		SnapshotName: "testSnapshotName",
 		Tags: []model.TagModel{
 			{
-				TagKey: "test",
+				TagKey:   "test",
 				TagValue: "val",
 			},
 		},
@@ -847,7 +845,7 @@ func TestDeleteInstance(t *testing.T) {
 
 func TestDeleteInstanceWithRelateResource(t *testing.T) {
 	args := &api.DeleteInstanceWithRelateResourceArgs{
-		BccRecycleFlag: true,
+		BccRecycleFlag:  true,
 		DeleteImmediate: true,
 	}
 
@@ -1058,7 +1056,7 @@ func TestInstancePurchaseReserved(t *testing.T) {
 		RelatedRenewFlag: "",
 	}
 	err := BCC_CLIENT.InstancePurchaseReserved(BCC_TestBccId, purchaseReservedArgs)
-	//fmt.Print(err)
+	// fmt.Print(err)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -1233,7 +1231,6 @@ func TestDeleteInstanceIngorePayment(t *testing.T) {
 }
 
 func TestRecoveryInstance(t *testing.T) {
-
 	args := &api.RecoveryInstanceArgs{
 		InstanceIds: []api.RecoveryInstanceModel{
 			{
@@ -1422,7 +1419,6 @@ func TestClient_UpdateSecurityGroupRule(t *testing.T) {
 }
 
 func TestGetInstanceDeleteProgress(t *testing.T) {
-
 	args := &api.GetInstanceDeleteProgressArgs{
 		InstanceIds: []string{
 			BCC_TestBccId,
@@ -1526,14 +1522,12 @@ func TestBatchChangeInstanceToPostpay(t *testing.T) {
 }
 
 func TestListInstanceRoles(t *testing.T) {
-
 	result, err := BCC_CLIENT.ListInstanceRoles()
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(result)
 }
 
 func TestBindInstanceRole(t *testing.T) {
-
 	bindInstanceRoleArgs := &api.BindInstanceRoleArgs{
 		RoleName: "Test_BCC",
 		Instances: []api.Instances{
@@ -1549,7 +1543,6 @@ func TestBindInstanceRole(t *testing.T) {
 }
 
 func TestUnBindInstanceRole(t *testing.T) {
-
 	unbindInstanceRoleArgs := &api.UnBindInstanceRoleArgs{
 		RoleName: "Test_BCC",
 		Instances: []api.Instances{
@@ -1565,7 +1558,6 @@ func TestUnBindInstanceRole(t *testing.T) {
 }
 
 func TestDeleteIpv6(t *testing.T) {
-
 	deleteIpv6Args := &api.DeleteIpv6Args{
 		InstanceId: BCC_TestBccId,
 		Reboot:     true,
@@ -1576,7 +1568,6 @@ func TestDeleteIpv6(t *testing.T) {
 }
 
 func TestAddIpv6(t *testing.T) {
-
 	addIpv6Args := &api.AddIpv6Args{
 		InstanceId:  BCC_TestBccId,
 		Reboot:      true,
@@ -1615,7 +1606,6 @@ func TestUnBindImageToTags(t *testing.T) {
 }
 
 func TestCreateRemoteCopySnapshot(t *testing.T) {
-
 	args := &api.RemoteCopySnapshotArgs{
 		ClientToken: "ClientTokenForTest",
 		DestRegionInfos: []api.DestRegionInfo{
@@ -1631,7 +1621,6 @@ func TestCreateRemoteCopySnapshot(t *testing.T) {
 }
 
 func TestImportCustomImage(t *testing.T) {
-
 	args := &api.ImportCustomImageArgs{
 		OsName:    "Centos",
 		OsArch:    "32",

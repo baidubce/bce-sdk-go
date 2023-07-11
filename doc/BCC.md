@@ -303,7 +303,7 @@ args := &api.CreateInstanceArgs{
     // 指定实例所在的部署集id
     DeployId              string           "deployId"
     // 指定实例所在的部署集id 列表
-	DeployIdList          []string         "deployIdList"
+    DeployIdList          []string         "deployIdList"
     // 设置释放保护 默认0不启用，1启用
     DetetionProtection    int              "deletionProtection"
     // 设置要绑定的密钥对ID
@@ -317,7 +317,9 @@ args := &api.CreateInstanceArgs{
     // 使用 uuid 生成一个长度不超过64位的ASCII字符串
     ClientToken           string           "random-uuid"
     //创建实例支持幂等的token
-    RequestToken     string  "requestToken"
+    RequestToken          string           "requestToken"
+    // 设置要绑定的资源组id
+    ResGroupId            string           "resGroupId"
 }
 
 // 若要生成预付费实例，可以按以下配置生成一个月的预付费实例
@@ -431,8 +433,8 @@ createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
     AutoRenewTime         int              autoRenewTime
     // cds是否自动续费 是:true 否:false
     CdsAutoRenew          bool             cdsAutoRenew
-	// 指定实例所在的部署集id 列表
-	DeployIdList          []string         "deployIdList"
+    // 指定实例所在的部署集id 列表
+    DeployIdList          []string         "deployIdList"
     // 设置释放保护 默认0不启用，1启用
     DetetionProtection    int              "deletionProtection"
     // 待创建实例指定的标签是否需要和已有标签键进行关联，默认为false。注意值为true时要保证该标签键已存在
@@ -449,9 +451,10 @@ createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
     InternalIps           []string         internalIps
     // 使用 uuid 生成一个长度不超过64位的ASCII字符串
     ClientToken           string           "random-uuid"
-	// 创建实例支持幂等的token,成功后永久有效
+    // 创建实例支持幂等的token,成功后永久有效
     RequestToken          string           "requestToken"
-
+    // 设置要绑定的资源组id
+    ResGroupId            string           "resGroupId"
 }
 result, err := client.CreateInstanceBySpec(args)
 if err != nil {
@@ -581,6 +584,8 @@ createInstanceV3Args := &api.CreateInstanceV3Args{
     ClientToken: "random-uuid",
 	// 创建实例支持幂等的token,成功后永久有效
     RequestToken: "requestToken",
+    // 设置要绑定的资源组id
+    ResGroupId            string           "resGroupId"
 }
 result, err := client.CreateInstanceV3(args)
 if err != nil {
@@ -695,6 +700,8 @@ createInstanceArgs := &CreateInstanceArgs{
     ClientToken           string           "random-uuid"
     // 创建实例支持幂等的token,成功后永久有效
     RequestToken          string           "requestToken"
+    // 设置要绑定的资源组id
+    ResGroupId            string           "resGroupId"
 }
 if res, err := bccClient.CreateBidInstance(createInstanceBySpecArgs); err != nil {
     fmt.Println("create instance failed: ", err)
