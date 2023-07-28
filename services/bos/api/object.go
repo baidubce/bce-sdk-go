@@ -195,8 +195,8 @@ func CopyObject(cli bce.Client, bucket, object, source string,
 		}
 
 		if validCannedAcl(args.CannedAcl) {
-            req.SetHeader(http.BCE_ACL, args.CannedAcl)
-        }
+			req.SetHeader(http.BCE_ACL, args.CannedAcl)
+		}
 
 		if err := setUserMetadata(req, args.UserMeta); err != nil {
 			return nil, err
@@ -674,6 +674,11 @@ func DeleteMultipleObjects(cli bce.Client, bucket string,
 		return nil, resp.ServiceError()
 	}
 	jsonBody := &DeleteMultipleObjectsResult{}
+
+	if resp.Header(http.CONTENT_LENGTH) == "0" {
+		resp.Body().Close()
+		return jsonBody, nil
+	}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}

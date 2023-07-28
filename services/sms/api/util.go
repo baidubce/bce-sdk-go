@@ -25,6 +25,7 @@ const (
 	REQUEST_URI_SIGNATURE = "/sms/v3/signatureApply"
 	REQUEST_URI_TEMPLATE  = "/sms/v3/template"
 	REQUEST_URI_QUOTA     = "/sms/v3/quota"
+	REQUEST_URI_BLACK     = "/sms/v3/blacklist"
 	CLIENT_TOKEN          = "clientToken"
 )
 

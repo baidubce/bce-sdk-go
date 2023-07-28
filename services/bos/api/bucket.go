@@ -121,7 +121,6 @@ func HeadBucket(cli bce.Client, bucket string) (error, *bce.BceResponse) {
 	return nil, resp
 }
 
-
 // PutBucket - create a new bucket with the given name
 //
 // PARAMS:
@@ -1131,7 +1130,7 @@ func GetBucketMirror(cli bce.Client, bucket string) (*PutBucketMirrorArgs, error
 	if err := resp.ParseJsonBody(result); err != nil {
 		return nil, err
 	}
-	return result, nil	
+	return result, nil
 }
 
 func DeleteBucketMirror(cli bce.Client, bucket string) error {
@@ -1139,6 +1138,64 @@ func DeleteBucketMirror(cli bce.Client, bucket string) error {
 	req.SetUri(getBucketUri(bucket))
 	req.SetMethod(http.DELETE)
 	req.SetParam("mirroring", "")
+	resp := &bce.BceResponse{}
+	if err := SendRequest(cli, req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+
+func PutBucketTag(cli bce.Client, bucket string, putBucketTagReq PutBucketTagReq) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.PUT)
+	req.SetParam("tagging", "")
+	reqByte, _ := json.Marshal(putBucketTagReq)
+	body, err := bce.NewBodyFromString(string(reqByte))
+	if err != nil {
+		return err
+	}
+	req.SetBody(body)
+	resp := &bce.BceResponse{}
+	if err := SendRequest(cli, req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+func GetBucketTag(cli bce.Client, bucket string) (*PutBucketTagReq, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.GET)
+	req.SetParam("tagging", "")
+	resp := &bce.BceResponse{}
+	if err := SendRequest(cli, req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	result := &PutBucketTagReq{}
+	if err := resp.ParseJsonBody(result); err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func DeleteBucketTag(cli bce.Client, bucket string) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getBucketUri(bucket))
+	req.SetMethod(http.DELETE)
+	req.SetParam("tagging", "")
 	resp := &bce.BceResponse{}
 	if err := SendRequest(cli, req, resp); err != nil {
 		return err

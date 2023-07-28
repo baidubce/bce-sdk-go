@@ -150,13 +150,58 @@ type UpdateQuotaRateArgs struct {
 
 // QueryQuotaRateResult defines the data structure of querying the user's quota and rate limit
 type QueryQuotaRateResult struct {
-	QuotaPerDay          int  `json:"quotaPerDay"`
-	QuotaRemainToday     int  `json:"quotaRemainToday"`
-	QuotaPerMonth        int  `json:"quotaPerMonth"`
-	QuotaRemainThisMonth int  `json:"quotaRemainThisMonth"`
-	QuotaWhitelist       bool `json:"quotaWhitelist"`
-	RateLimitPerDay      int  `json:"rateLimitPerMobilePerSignByDay"`
-	RateLimitPerHour     int  `json:"rateLimitPerMobilePerSignByHour"`
-	RateLimitPerMinute   int  `json:"rateLimitPerMobilePerSignByMinute"`
-	RateLimitWhitelist   bool `json:"rateLimitWhitelist"`
+	QuotaPerDay          int    `json:"quotaPerDay"`
+	QuotaRemainToday     int    `json:"quotaRemainToday"`
+	QuotaPerMonth        int    `json:"quotaPerMonth"`
+	QuotaRemainThisMonth int    `json:"quotaRemainThisMonth"`
+	ApplyQuotaPerDay     int    `json:"applyQuotaPerDay"`
+	ApplyQuotaPerMonth   int    `json:"applyQuotaPerMonth"`
+	ApplyCheckStatus     string `json:"applyCheckStatus"`
+	ApplyCheckReply      string `json:"checkReply"`
+	RateLimitPerDay      int    `json:"rateLimitPerMobilePerSignByDay"`
+	RateLimitPerHour     int    `json:"rateLimitPerMobilePerSignByHour"`
+	RateLimitPerMinute   int    `json:"rateLimitPerMobilePerSignByMinute"`
+	RateLimitWhitelist   bool   `json:"rateLimitWhitelist"`
+}
+
+// CreateMobileBlackArgs defines the data structure for creating a mobileBlack
+type CreateMobileBlackArgs struct {
+	Type           string `json:"type"`
+	SmsType        string `json:"smsType"`
+	SignatureIdStr string `json:"signatureIdStr"`
+	Phone          string `json:"phone"`
+}
+
+// DeleteMobileBlackArgs defines the data structure for deleting mobileBlack by phones
+type DeleteMobileBlackArgs struct {
+	Phones string `json:"phones"`
+}
+
+// GetMobileBlackArgs defines the data structure for get mobileBlackList
+// startTime、endTime format is yyyy-MM-dd
+type GetMobileBlackArgs struct {
+	Phone          string
+	SmsType        string
+	SignatureIdStr string
+	StartTime      string
+	EndTime        string
+	PageNo         string
+	PageSize       string
+}
+
+// GetMobileBlackResult defines the data structure for get mobileBlackList
+type GetMobileBlackResult struct {
+	TotalCount int                 `json:"totalCount"`
+	PageNo     int                 `json:"pageNo"`
+	PageSize   int                 `json:"pageSize"`
+	BlackLists []MobileBlackDetail `json:"blacklists"`
+}
+
+// MobileBlackDetail defines the data structure for mobileBlackList detail
+type MobileBlackDetail struct {
+	Phone          string `json:"phone"`
+	Type           string `json:"type"`
+	SmsType        string `json:"smsType"`
+	SignatureIdStr string `json:"signatureIdStr"`
+	UpdateDate     string `json:"updateDate"`
 }

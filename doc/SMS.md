@@ -404,6 +404,60 @@ ExpireSeconds | int   | 签名字符串的有效期
 > **提示：**
 > - 详细参数配置及限制条件，可以参考SMS API 文档[变更配额和频控](https://cloud.baidu.com/doc/SMS/s/Yjwvxrwzb)
 
+## 手机号黑名单
+### 创建手机号黑名单
+通过以下代码，可以创建手机号黑名单
+```go
+	err := client.CreateMobileBlack(&api.CreateMobileBlackArgs{
+            Type:                "MerchantBlack",
+            SmsType:             "CommonNotice",
+            SignatureIdStr:      "sddd",
+            Phone:               "12345678901",
+	})
+	if err != nil {
+		fmt.Printf("CreateMobileBlack error, %s", err)
+		return
+	}
+	fmt.Printf("CreateMobileBlack success")
+```
+
+### 查询手机号黑名单
+通过以下代码，可以查询手机号黑名单
+```go
+	err := client.GetMobileBlack(&api.GetMobileBlackArgs{
+            SmsType:            "CommonNotice",
+            SignatureIdStr:     "sddd",
+            Phone:              "12345678901",
+            StartTime:          "2023-07-18",
+            EndTime:            "2023-07-19",
+            PageNo:             "1",
+            PageSize:           "10",
+	})
+	if err != nil {
+		fmt.Printf("GetMobileBlack error, %s", err)
+		return
+	}
+	fmt.Printf("GetMobileBlack success")
+```
+
+### 删除手机号黑名单
+通过以下代码，可以删除手机号黑名单
+```go
+	err := client.DeleteMobileBlack(&api.DeleteMobileBlackArgs{
+            Phones:   "12345678901",
+	})
+	if err != nil {
+		fmt.Printf("DeleteMobileBlack error, %s", err)
+		return
+	}
+	fmt.Printf("DeleteMobileBlack success")
+```
+
+> **提示：**
+> - 详细参数配置及限制条件，可以参考SMS API 文档[手机号黑名单](https://cloud.baidu.com/doc/SMS/s/Yjwvxrwzb)
+
+
+
 # 错误处理
 
 GO语言以error类型标识错误，SMS支持两种错误见下表：
@@ -448,3 +502,7 @@ if err != nil {
 - 支持短信发送接口
 - 支持签名、模板管理接口
 - 支持配额、频控查看和变更
+
+## v0.9.32 [2023-07-20]
+- 配额频控查询增加申请信息字段
+- 增加手机号黑名单增、删、查接口

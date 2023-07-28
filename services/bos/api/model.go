@@ -613,3 +613,12 @@ type PutBucketMirrorArgs struct {
 	BucketMirroringConfiguration []MirrorConfigurationRule `json:"bucketMirroringConfiguration"`
 }
 
+
+type PutBucketTagReq struct {
+	Tags []Tag `json:"tags"`
+}
+
+type Tag struct {
+	TagKey string `json:"tagKey"`
+	TagValue string `json:"tagValue"`
+}

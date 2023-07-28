@@ -177,3 +177,34 @@ func (c *Client) QueryQuotaAndRateLimit() (*api.QueryQuotaRateResult, error) {
 func (c *Client) UpdateQuotaAndRateLimit(args *api.UpdateQuotaRateArgs) error {
 	return api.UpdateQuotaRate(c, args)
 }
+
+// CreateMobileBlack - create an sms mobileBlack
+//
+// PARAMS:
+//     - args: the arguments to create an sms mobileBlack
+// RETURNS:
+//     - error: the return error if any occurs
+func (c *Client) CreateMobileBlack(args *api.CreateMobileBlackArgs) error {
+	return api.CreateMobileBlack(c, args)
+}
+
+// DeleteMobileBlack - delete sms mobileBlack by phones
+//
+// PARAMS:
+//     - args: the arguments to delete an sms mobileBlack
+// RETURNS:
+//     - error: the return error if any occurs
+func (c *Client) DeleteMobileBlack(args *api.DeleteMobileBlackArgs) error {
+	return api.DeleteMobileBlack(c, args)
+}
+
+// GetMobileBlack - get an sms mobileBlack
+//
+// PARAMS:
+//     - args: the arguments to get sms mobileBlack
+// RETURNS:
+//     - error: the return error if any occurs
+//     - *api.GetMobileBlackResult: the result of creating an sms mobileBlack
+func (c *Client) GetMobileBlack(args *api.GetMobileBlackArgs) (*api.GetMobileBlackResult, error) {
+	return api.GetMobileBlack(c, args)
+}

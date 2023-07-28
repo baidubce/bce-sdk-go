@@ -159,3 +159,34 @@ func TestDeleteTemplate(t *testing.T) {
 	})
 	ExpectEqual(t.Errorf, err, nil)
 }
+
+func TestCreateMobileBlack(t *testing.T) {
+	err := SMS_CLIENT.CreateMobileBlack(&api.CreateMobileBlackArgs{
+		Type:           "SignatureBlack",
+		Phone:          "17600000000",
+		SmsType:        "CommonNotice",
+		SignatureIdStr: "1234",
+	})
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestGetMobileBlack(t *testing.T) {
+	res, err := SMS_CLIENT.GetMobileBlack(&api.GetMobileBlackArgs{
+		Phone:          "17600000000",
+		SmsType:        "CommonNotice",
+		SignatureIdStr: "1234",
+		StartTime:      "2023-07-10",
+		EndTime:        "2023-07-20",
+		PageSize:       "10",
+		PageNo:         "1",
+	})
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%v", res)
+}
+
+func TestDeleteMobileBlack(t *testing.T) {
+	err := SMS_CLIENT.DeleteMobileBlack(&api.DeleteMobileBlackArgs{
+		Phones: "17600000000,17600000001",
+	})
+	ExpectEqual(t.Errorf, err, nil)
+}
