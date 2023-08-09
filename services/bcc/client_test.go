@@ -1122,6 +1122,7 @@ func TestListKeypairs(t *testing.T) {
 	args := &api.ListKeypairArgs{
 		Marker:  "",
 		MaxKeys: 0,
+		Name:    "ac",
 	}
 	if res, err := BCC_CLIENT.ListKeypairs(args); err != nil {
 		fmt.Println("Get specific instance eni failed: ", err)

@@ -217,8 +217,10 @@ func ListKeypairs(cli bce.Client, queryArgs *ListKeypairArgs) (*ListKeypairResul
 		if queryArgs.MaxKeys != 0 {
 			req.SetParam("maxKeys", strconv.Itoa(queryArgs.MaxKeys))
 		}
+		if len(queryArgs.Name) != 0 {
+			req.SetParam("name", queryArgs.Name)
+		}
 	}
-
 	if queryArgs == nil || queryArgs.MaxKeys == 0 {
 		req.SetParam("maxKeys", "1000")
 	}

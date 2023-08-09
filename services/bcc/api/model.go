@@ -1780,6 +1780,7 @@ type DeleteKeypairArgs struct {
 type ListKeypairArgs struct {
 	Marker  string `json:"marker"`
 	MaxKeys int    `json:"maxKeys"`
+	Name    string `json:"name,omitempty"`
 }
 
 type ListKeypairResult struct {

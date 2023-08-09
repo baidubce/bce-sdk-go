@@ -3266,10 +3266,13 @@ if res, err := bccClient.GetKeypairDetail(keypairId); err != nil {
 marker := "your-marker"
 // 每页包含的最大数量，最大数量通常不超过1000。缺省值为1000,可选参数
 maxKeys := your-maxKeys
+// 根据name过滤keypair列表，返回精确匹配结果
+name := "your-keyPairName"
 
 args := &api.ListKeypairArgs{
     Marker     marker,
     MaxKeys    maxKeys,
+    Name       name,
 }
 if res, err := bccClient.ListKeypair(args); err != nil {
     fmt.Println("get keypair list failed: ", err)
