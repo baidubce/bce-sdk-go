@@ -30,10 +30,11 @@ import (
 // CreateService - create a container service with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create a container service
+//   - args: the arguments to create a container service
+//
 // RETURNS:
-//     - *CreateClusterResult: the result of create a container service
-//     - error: nil if ok otherwise the specific error
+//   - *CreateClusterResult: the result of create a container service
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateService(args *api.CreateServiceArgs) (*api.CreateServiceResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -49,16 +50,17 @@ func (c *Client) CreateService(args *api.CreateServiceArgs) (*api.CreateServiceR
 // ListService - list container service with the specific parameters
 //
 // PARAMS:
-//     - pageNo: page No
-//     - pageSize: page Size
-//     - keywordType: keyword Type
-//     - keyword: keyword
-//     - order: order
-//     - orderBy: orderBy
-//     - status: status
+//   - pageNo: page No
+//   - pageSize: page Size
+//   - keywordType: keyword Type
+//   - keyword: keyword
+//   - order: order
+//   - orderBy: orderBy
+//   - status: status
+//
 // RETURNS:
-//     - *ListServiceResult: the result of list container service
-//     - error: nil if ok otherwise the specific error
+//   - *ListServiceResult: the result of list container service
+//   - error: nil if ok otherwise the specific error
 func (c *Client) ListService(pageNo, pageSize int, keywordType, keyword, order, orderBy, status string) (*api.ListServiceResult, error) {
 
 	params := make(map[string]string)
@@ -98,10 +100,11 @@ func (c *Client) ListService(pageNo, pageSize int, keywordType, keyword, order, 
 // GetService - get container service with the specific parameters
 //
 // PARAMS:
-//     - serviceId: the service id
+//   - serviceId: the service id
+//
 // RETURNS:
-//     - *ServiceBriefVo: the result of get container service
-//     - error: nil if ok otherwise the specific error
+//   - *ServiceBriefVo: the result of get container service
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetService(serviceId string) (*api.ServiceDetailsVo, error) {
 	result := &api.ServiceDetailsVo{}
 	err := bce.NewRequestBuilder(c).
@@ -116,11 +119,12 @@ func (c *Client) GetService(serviceId string) (*api.ServiceDetailsVo, error) {
 // ServiceAction - operate service with the specific parameters
 //
 // PARAMS:
-//     - serviceId: the service id
-//     - action: operate action
+//   - serviceId: the service id
+//   - action: operate action
+//
 // RETURNS:
-//     - *ServiceActionResult: the result of operate service
-//     - error: nil if ok otherwise the specific error
+//   - *ServiceActionResult: the result of operate service
+//   - error: nil if ok otherwise the specific error
 func (c *Client) ServiceAction(serviceId string, action api.ServiceAction) (*api.ServiceActionResult, error) {
 	result := &api.ServiceActionResult{}
 	req := &api.PostHttpReq{Url: api.GetStartServiceURI(serviceId, string(action)), Result: result, Body: nil}
@@ -132,11 +136,12 @@ func (c *Client) ServiceAction(serviceId string, action api.ServiceAction) (*api
 // UpdateService - update service with the specific parameters
 //
 // PARAMS:
-//     - serviceId: the service id
-//     - args: the arguments to update service
+//   - serviceId: the service id
+//   - args: the arguments to update service
+//
 // RETURNS:
-//     - *UpdateServiceResult: the result of  update service
-//     - error: nil if ok otherwise the specific error
+//   - *UpdateServiceResult: the result of  update service
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateService(serviceId string, args *api.UpdateServiceArgs) (*api.UpdateServiceResult, error) {
 	if args == nil {
 		args = &api.UpdateServiceArgs{}
@@ -152,10 +157,11 @@ func (c *Client) UpdateService(serviceId string, args *api.UpdateServiceArgs) (*
 // DeleteService - delete service with the specific parameters
 //
 // PARAMS:
-//     - serviceId: the service id
+//   - serviceId: the service id
+//
 // RETURNS:
-//     - *ServiceActionResult: the result of delete service
-//     - error: nil if ok otherwise the specific error
+//   - *ServiceActionResult: the result of delete service
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteService(serviceId string) (*api.ServiceActionResult, error) {
 	result := &api.ServiceActionResult{}
 	err := bce.NewRequestBuilder(c).
@@ -170,13 +176,14 @@ func (c *Client) DeleteService(serviceId string) (*api.ServiceActionResult, erro
 // GetServiceMetrics - get service metrics with the specific parameters
 //
 // PARAMS:
-//     - serviceId: the service id
-//     - metricsType: metrics Type
-//     - serviceProviderStr: service Provider
-//     - offsetInSeconds: offset Seconds
+//   - serviceId: the service id
+//   - metricsType: metrics Type
+//   - serviceProviderStr: service Provider
+//   - offsetInSeconds: offset Seconds
+//
 // RETURNS:
-//     - *ServiceMetricsResult: the result of get service metrics
-//     - error: nil if ok otherwise the specific error
+//   - *ServiceMetricsResult: the result of get service metrics
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetServiceMetrics(serviceId string, metricsType api.MetricsType, serviceProviderStr api.ServiceProvider, start, end, stepInMin int) (*api.ServiceMetricsResult, error) {
 	params := make(map[string]string)
 	if serviceProviderStr != "" {
@@ -212,10 +219,11 @@ func (c *Client) GetServiceMetrics(serviceId string, metricsType api.MetricsType
 // ServiceBatchOperate - batch operate service with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to batch operate service
+//   - args: the arguments to batch operate service
+//
 // RETURNS:
-//     - *ServiceBatchOperateResult: the result of batch operate service
-//     - error: nil if ok otherwise the specific error
+//   - *ServiceBatchOperateResult: the result of batch operate service
+//   - error: nil if ok otherwise the specific error
 func (c *Client) ServiceBatchOperate(args *api.ServiceBatchOperateArgs) (*api.ServiceBatchOperateResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -235,10 +243,11 @@ func (c *Client) ServiceBatchOperate(args *api.ServiceBatchOperateArgs) (*api.Se
 // ServiceBatchDelete - batch delete service with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to batch delete service
+//   - args: the arguments to batch delete service
+//
 // RETURNS:
-//     - *ServiceBatchOperateResult: the result of batch delete service
-//     - error: nil if ok otherwise the specific error
+//   - *ServiceBatchOperateResult: the result of batch delete service
+//   - error: nil if ok otherwise the specific error
 func (c *Client) ServiceBatchDelete(args *[]string) (*api.ServiceBatchOperateResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -254,10 +263,11 @@ func (c *Client) ServiceBatchDelete(args *[]string) (*api.ServiceBatchOperateRes
 // GetPodDeployment - get pod deployment with the specific parameters
 //
 // PARAMS:
-//     - deploymentId: the deploymentId id
+//   - deploymentId: the deploymentId id
+//
 // RETURNS:
-//     - *DeploymentResourceBriefVo: the result of get pod deployment
-//     - error: nil if ok otherwise the specific error
+//   - *DeploymentResourceBriefVo: the result of get pod deployment
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetPodDeployment(deploymentId string) (*api.DeploymentResourceBriefVo, error) {
 	result := &api.DeploymentResourceBriefVo{}
 	err := bce.NewRequestBuilder(c).
@@ -272,13 +282,14 @@ func (c *Client) GetPodDeployment(deploymentId string) (*api.DeploymentResourceB
 // GetPodDeploymentMetrics - get Pod Deployment metrics with the specific parameters
 //
 // PARAMS:
-//     - deploymentId: the pod deployment id
-//     - metricsType: metrics Type
-//     - serviceProviderStr: service Provider
-//     - offsetInSeconds: offset Seconds
+//   - deploymentId: the pod deployment id
+//   - metricsType: metrics Type
+//   - serviceProviderStr: service Provider
+//   - offsetInSeconds: offset Seconds
+//
 // RETURNS:
-//     - *ServiceMetricsResult: the result of get Pod Deployment metrics
-//     - error: nil if ok otherwise the specific error
+//   - *ServiceMetricsResult: the result of get Pod Deployment metrics
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetPodDeploymentMetrics(deploymentId string, metricsType api.MetricsType, serviceProviderStr api.ServiceProvider, start, end, stepInMin int) (*api.ServiceMetricsResult, error) {
 	params := make(map[string]string)
 	if serviceProviderStr != "" {
@@ -314,9 +325,10 @@ func (c *Client) GetPodDeploymentMetrics(deploymentId string, metricsType api.Me
 // UpdatePodDeploymentReplicas - update pod deployment replicas with the specific parameters
 //
 // PARAMS:
-//     - deploymentId: the deploymentId id
+//   - deploymentId: the deploymentId id
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdatePodDeploymentReplicas(deploymentId string, args *api.UpdateDeploymentReplicasRequest) (*api.ActionInfoVo, error) {
 	if args == nil || deploymentId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -330,10 +342,11 @@ func (c *Client) UpdatePodDeploymentReplicas(deploymentId string, args *api.Upda
 // DeletePodDeployment - delete pod deployment with the specific parameters
 //
 // PARAMS:
-//     - deploymentIDs: the deployment id array
+//   - deploymentIDs: the deployment id array
+//
 // RETURNS:
-//     - *ServiceActionResult: the result of delete service
-//     - error: nil if ok otherwise the specific error
+//   - *ServiceActionResult: the result of delete service
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeletePodDeployment(args *[]string) (*api.DeleteDeploymentActionInfoVo, error) {
 	result := &api.DeleteDeploymentActionInfoVo{}
 	req := &api.PostHttpReq{Url: api.DEPLOYMENT_URL, Body: args, Result: result}
@@ -344,14 +357,15 @@ func (c *Client) DeletePodDeployment(args *[]string) (*api.DeleteDeploymentActio
 // GetPodList - list pod with the specific parameters
 //
 // PARAMS:
-//     - pageNo: page No
-//     - pageSize: page Size
-//     - keyword: keyword
-//     - order: order
-//     - orderBy: orderBy
+//   - pageNo: page No
+//   - pageSize: page Size
+//   - keyword: keyword
+//   - order: order
+//   - orderBy: orderBy
+//
 // RETURNS:
-//     - *ListPodResult: the result of list pod
-//     - error: nil if ok otherwise the specific error
+//   - *ListPodResult: the result of list pod
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetPodList(pageNo, pageSize int, keyword, order, orderBy, serviceId, deploymentId string) (*api.ListPodResult, error) {
 
 	params := make(map[string]string)
@@ -391,13 +405,14 @@ func (c *Client) GetPodList(pageNo, pageSize int, keyword, order, orderBy, servi
 // GetPodMetrics - get Pod metrics with the specific parameters
 //
 // PARAMS:
-//     - deploymentId: the pod deployment id
-//     - metricsType: metrics Type
-//     - serviceProviderStr: service Provider
-//     - offsetInSeconds: offset Seconds
+//   - deploymentId: the pod deployment id
+//   - metricsType: metrics Type
+//   - serviceProviderStr: service Provider
+//   - offsetInSeconds: offset Seconds
+//
 // RETURNS:
-//     - *ServiceMetricsResult: the result of get Pod Deployment metrics
-//     - error: nil if ok otherwise the specific error
+//   - *ServiceMetricsResult: the result of get Pod Deployment metrics
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetPodMetrics(podId string, metricsType api.MetricsType, serviceProviderStr api.ServiceProvider, start, end, stepInMin int) (*api.ServiceMetricsResult, error) {
 	params := make(map[string]string)
 	if serviceProviderStr != "" {
@@ -433,10 +448,11 @@ func (c *Client) GetPodMetrics(podId string, metricsType api.MetricsType, servic
 // GetPodDetail - get pod detail with the specific parameters
 //
 // PARAMS:
-//     - podId: pod id
-//RETURNS:
-//     - *ListPodResult: the result of list pod
-//     - error: nil if ok otherwise the specific error
+//   - podId: pod id
+//
+// RETURNS:
+//   - *ListPodResult: the result of list pod
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetPodDetail(podId string) (*api.PodDetailVo, error) {
 
 	if podId == "" {
@@ -455,10 +471,11 @@ func (c *Client) GetPodDetail(podId string) (*api.PodDetailVo, error) {
 // RestartPod - restart pod with the specific parameters
 //
 // PARAMS:
-//     - podId: pod id
-//RETURNS:
-//     - *ListPodResult: the result of restart pod
-//     - error: nil if ok otherwise the specific error
+//   - podId: pod id
+//
+// RETURNS:
+//   - *ListPodResult: the result of restart pod
+//   - error: nil if ok otherwise the specific error
 func (c *Client) RestartPod(podId string) error {
 
 	if podId == "" {

@@ -11,10 +11,11 @@ import (
 // BindSecurityGroups - Bind Security Groups
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - reqBody: http request body
+//   - cli: the client agent which can perform sending request
+//   - reqBody: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func BindSecurityGroups(cli bce.Client, reqBody *bce.Body) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -39,10 +40,11 @@ func BindSecurityGroups(cli bce.Client, reqBody *bce.Body) error {
 // UnBindSecurityGroups - UnBind Security Groups
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - reqBody: http request body
+//   - cli: the client agent which can perform sending request
+//   - reqBody: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func UnBindSecurityGroups(cli bce.Client, reqBody *bce.Body) error {
 	// Build the request
 	req := &bce.BceRequest{}

@@ -27,11 +27,12 @@ import (
 // CreateTemplate - create an sms template
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to create an sms template
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to create an sms template
+//
 // RETURNS:
-//     - *api.CreateTemplateResult: the result of creating an sms template
-//     - error: the return error if any occurs
+//   - *api.CreateTemplateResult: the result of creating an sms template
+//   - error: the return error if any occurs
 func CreateTemplate(cli bce.Client, args *CreateTemplateArgs) (*CreateTemplateResult, error) {
 	if err := CheckError(args != nil, "CreateTemplateArgs can not be nil"); err != nil {
 		return nil, err
@@ -79,10 +80,11 @@ func CreateTemplate(cli bce.Client, args *CreateTemplateArgs) (*CreateTemplateRe
 // DeleteTemplate - delete an sms template
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to delete an sms template
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to delete an sms template
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func DeleteTemplate(cli bce.Client, args *DeleteTemplateArgs) error {
 	if err := CheckError(args != nil, "DeleteTemplateArgs can not be nil"); err != nil {
 		return err
@@ -99,10 +101,11 @@ func DeleteTemplate(cli bce.Client, args *DeleteTemplateArgs) error {
 // ModifyTemplate - modify an sms template
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to modify an sms template
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to modify an sms template
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func ModifyTemplate(cli bce.Client, args *ModifyTemplateArgs) error {
 	if err := CheckError(args != nil, "ModifyTemplateArgs can not be nil"); err != nil {
 		return err
@@ -149,10 +152,11 @@ func ModifyTemplate(cli bce.Client, args *ModifyTemplateArgs) error {
 // GetTemplate - modify an sms template
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to modify an sms template
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to modify an sms template
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func GetTemplate(cli bce.Client, args *GetTemplateArgs) (*GetTemplateResult, error) {
 	if err := CheckError(args != nil, "GetTemplateResult can not be nil"); err != nil {
 		return nil, err

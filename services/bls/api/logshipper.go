@@ -26,11 +26,12 @@ import (
 // CreateLogShipper - create logShipper
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - body: logShipper parameters body
+//   - cli: the client agent which can perform sending request
+//   - body: logShipper parameters body
+//
 // RETURNS:
-// 	   - string: snowflake base64 id for logShipper, empty string if creation fail
-//     - error: nil if success otherwise the specific error
+//   - string: snowflake base64 id for logShipper, empty string if creation fail
+//   - error: nil if success otherwise the specific error
 func CreateLogShipper(cli bce.Client, body *bce.Body) (string, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(LOGSHIPPER_PREFIX)
@@ -55,11 +56,12 @@ func CreateLogShipper(cli bce.Client, body *bce.Body) (string, error) {
 // UpdateLogShipper - update logShipper name and destConfig
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - logShipperID: logShipperID to update
-//     - body: logShipper parameters body
+//   - cli: the client agent which can perform sending request
+//   - logShipperID: logShipperID to update
+//   - body: logShipper parameters body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func UpdateLogShipper(cli bce.Client, body *bce.Body, logShipperID string) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getLogShipperUri(logShipperID))
@@ -79,11 +81,12 @@ func UpdateLogShipper(cli bce.Client, body *bce.Body, logShipperID string) error
 // GetLogShipper - get logShipper info
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - logShipperID: logShipper to get
+//   - cli: the client agent which can perform sending request
+//   - logShipperID: logShipper to get
+//
 // RETURNS:
-//     - *LogShipper: logShipper info
-//     - error: nil if success otherwise the specific error
+//   - *LogShipper: logShipper info
+//   - error: nil if success otherwise the specific error
 func GetLogShipper(cli bce.Client, logShipperID string) (*LogShipper, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getLogShipperUri(logShipperID))
@@ -105,11 +108,12 @@ func GetLogShipper(cli bce.Client, logShipperID string) (*LogShipper, error) {
 // ListLogShipper - get all pattern-match logShipper info
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: conditions logShipper should match
+//   - cli: the client agent which can perform sending request
+//   - args: conditions logShipper should match
+//
 // RETURNS:
-//     - *ListShipperResult: logShipper result set
-//     - error: nil if success otherwise the specific error
+//   - *ListShipperResult: logShipper result set
+//   - error: nil if success otherwise the specific error
 func ListLogShipper(cli bce.Client, args *ListLogShipperCondition) (*ListShipperResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(LOGSHIPPER_PREFIX)
@@ -160,12 +164,13 @@ func ListLogShipper(cli bce.Client, args *ListLogShipperCondition) (*ListShipper
 // ListLogShipperRecord - get logShipper's execution records
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - logShipperID: logShipper to get
-//     - args: conditions records should match
+//   - cli: the client agent which can perform sending request
+//   - logShipperID: logShipper to get
+//   - args: conditions records should match
+//
 // RETURNS:
-//     - *ListShipperRecordResult: logShipper records result set
-//     - error: nil if success otherwise the specific error
+//   - *ListShipperRecordResult: logShipper records result set
+//   - error: nil if success otherwise the specific error
 func ListLogShipperRecord(cli bce.Client, logShipperID string, args *ListShipperRecordCondition) (*ListShipperRecordResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getLogShipperRecordUri(logShipperID))
@@ -198,10 +203,11 @@ func ListLogShipperRecord(cli bce.Client, logShipperID string, args *ListShipper
 // DeleteSingleLogShipper - delete logShipper by id
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - logShipperID: logShipper to delete
+//   - cli: the client agent which can perform sending request
+//   - logShipperID: logShipper to delete
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func DeleteSingleLogShipper(cli bce.Client, logShipperID string) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getLogShipperUri(logShipperID))
@@ -220,10 +226,11 @@ func DeleteSingleLogShipper(cli bce.Client, logShipperID string) error {
 // BulkDeleteLogShipper - bulk delete logShipper by id
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - body: bulkDeleteLogShipper parameters body
+//   - cli: the client agent which can perform sending request
+//   - body: bulkDeleteLogShipper parameters body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func BulkDeleteLogShipper(cli bce.Client, body *bce.Body) error {
 	req := &bce.BceRequest{}
 	req.SetUri(LOGSHIPPER_PREFIX)
@@ -243,11 +250,12 @@ func BulkDeleteLogShipper(cli bce.Client, body *bce.Body) error {
 // SetSingleLogShipperStatus - set logShipper status by id
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - logShipperID: logShipper to set
-//     - body: setSingleLogShipperStatus parameters body
+//   - cli: the client agent which can perform sending request
+//   - logShipperID: logShipper to set
+//   - body: setSingleLogShipperStatus parameters body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetSingleLogShipperStatus(cli bce.Client, logShipperID string, body *bce.Body) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getLogShipperStatusUri(logShipperID))
@@ -267,10 +275,11 @@ func SetSingleLogShipperStatus(cli bce.Client, logShipperID string, body *bce.Bo
 // BulkSetLogShipperStatus - bulk set logShipper status by id
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - body: bulkSetLogShipperStatus parameters body
+//   - cli: the client agent which can perform sending request
+//   - body: bulkSetLogShipperStatus parameters body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func BulkSetLogShipperStatus(cli bce.Client, body *bce.Body) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getBulkSetLogShipperStatusUri())

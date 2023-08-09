@@ -73,11 +73,12 @@ func NewClient(ak, sk, endpoint string) (*Client, error) {
 // AddRecord -
 //
 // PARAMS:
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
-//     - body: body参数
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
+//   - body: body参数
+//
 // RETURNS:
-//     - *api.AddRecordResponse:
-//     - error: the return error if any occurs
+//   - *api.AddRecordResponse:
+//   - error: the return error if any occurs
 func (c *Client) AddRecord(zoneId string, body *AddRecordRequest) (
 	*AddRecordResponse, error) {
 	return AddRecord(c, zoneId, body, body.ClientToken)
@@ -86,10 +87,11 @@ func (c *Client) AddRecord(zoneId string, body *AddRecordRequest) (
 // DeletePrivateZone -
 //
 // PARAMS:
-//     - zoneId: zone的id
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
+//   - zoneId: zone的id
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) DeletePrivateZone(zoneId string, clientToken string) error {
 	return DeletePrivateZone(c, zoneId, clientToken)
 }
@@ -97,10 +99,11 @@ func (c *Client) DeletePrivateZone(zoneId string, clientToken string) error {
 // CreatePrivateZone -
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - *api.CreatePrivateZoneResponse:
-//     - error: the return error if any occurs
+//   - *api.CreatePrivateZoneResponse:
+//   - error: the return error if any occurs
 func (c *Client) CreatePrivateZone(body *CreatePrivateZoneRequest) (
 	*CreatePrivateZoneResponse, error) {
 	return CreatePrivateZone(c, body, body.ClientToken)
@@ -109,10 +112,11 @@ func (c *Client) CreatePrivateZone(body *CreatePrivateZoneRequest) (
 // BindVpc -
 //
 // PARAMS:
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
-//     - body: body参数
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
+//   - body: body参数
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) BindVpc(zoneId string, body *BindVpcRequest) error {
 	return BindVpc(c, zoneId, body, body.ClientToken)
 }
@@ -120,11 +124,12 @@ func (c *Client) BindVpc(zoneId string, body *BindVpcRequest) error {
 // DeleteRecord -
 //
 // PARAMS:
-//     - recordId: 解析记录ID
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
-//     - body: body参数
+//   - recordId: 解析记录ID
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
+//   - body: body参数
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) DeleteRecord(recordId string, clientToken string) error {
 	return DeleteRecord(c, recordId, clientToken)
 }
@@ -132,10 +137,11 @@ func (c *Client) DeleteRecord(recordId string, clientToken string) error {
 // DisableRecord -
 //
 // PARAMS:
-//     - recordId: 解析记录ID
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
+//   - recordId: 解析记录ID
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) DisableRecord(recordId string, clientToken string) error {
 	return DisableRecord(c, recordId, clientToken)
 }
@@ -143,10 +149,11 @@ func (c *Client) DisableRecord(recordId string, clientToken string) error {
 // EnableRecord -
 //
 // PARAMS:
-//     - recordId: 解析记录ID
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
+//   - recordId: 解析记录ID
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) EnableRecord(recordId string, clientToken string) error {
 	return EnableRecord(c, recordId, clientToken)
 }
@@ -154,10 +161,11 @@ func (c *Client) EnableRecord(recordId string, clientToken string) error {
 // GetPrivateZone -
 //
 // PARAMS:
-//     - zoneId: zone的ID
+//   - zoneId: zone的ID
+//
 // RETURNS:
-//     - *api.GetPrivateZoneResponse:
-//     - error: the return error if any occurs
+//   - *api.GetPrivateZoneResponse:
+//   - error: the return error if any occurs
 func (c *Client) GetPrivateZone(zoneId string) (*GetPrivateZoneResponse, error) {
 	return GetPrivateZone(c, zoneId)
 }
@@ -165,10 +173,11 @@ func (c *Client) GetPrivateZone(zoneId string) (*GetPrivateZoneResponse, error) 
 // ListPrivateZone -
 //
 // PARAMS:
-//     - request: 获取privateZone列表的入参
+//   - request: 获取privateZone列表的入参
+//
 // RETURNS:
-//     - *api.ListPrivateZoneResponse:
-//     - error: the return error if any occurs
+//   - *api.ListPrivateZoneResponse:
+//   - error: the return error if any occurs
 func (c *Client) ListPrivateZone(request *ListPrivateZoneRequest) (
 	*ListPrivateZoneResponse, error) {
 	return ListPrivateZone(c, request.Marker, request.MaxKeys)
@@ -177,10 +186,11 @@ func (c *Client) ListPrivateZone(request *ListPrivateZoneRequest) (
 // ListRecord -
 //
 // PARAMS:
-//     - zoneId: Zone的ID
+//   - zoneId: Zone的ID
+//
 // RETURNS:
-//     - *api.ListRecordResponse:
-//     - error: the return error if any occurs
+//   - *api.ListRecordResponse:
+//   - error: the return error if any occurs
 func (c *Client) ListRecord(zoneId string) (*ListRecordResponse, error) {
 	return ListRecord(c, zoneId)
 }
@@ -188,10 +198,11 @@ func (c *Client) ListRecord(zoneId string) (*ListRecordResponse, error) {
 // UnbindVpc -
 //
 // PARAMS:
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
-//     - body: body参数
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
+//   - body: body参数
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) UnbindVpc(zoneId string, body *UnbindVpcRequest) error {
 	return UnbindVpc(c, zoneId, body, body.ClientToken)
 }
@@ -199,11 +210,12 @@ func (c *Client) UnbindVpc(zoneId string, body *UnbindVpcRequest) error {
 // UpdateRecord -
 //
 // PARAMS:
-//     - recordId: 解析记录的ID
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
-//     - body: body参数
+//   - recordId: 解析记录的ID
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
+//   - body: body参数
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) UpdateRecord(recordId string, body *UpdateRecordRequest) error {
 	return UpdateRecord(c, recordId, body, body.ClientToken)
 }

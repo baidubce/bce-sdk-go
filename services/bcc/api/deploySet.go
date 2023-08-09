@@ -25,12 +25,13 @@ import (
 // CreateDeploySet - create a deploy set
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - clientToken: idempotent token,  an ASCII string no longer than 64 bits
-//     - reqBody: http request body
+//   - cli: the client agent which can perform sending request
+//   - clientToken: idempotent token,  an ASCII string no longer than 64 bits
+//   - reqBody: http request body
+//
 // RETURNS:
-//     - *CreateDeploySetResult: results of creating a deploy set
-//     - error: nil if success otherwise the specific error
+//   - *CreateDeploySetResult: results of creating a deploy set
+//   - error: nil if success otherwise the specific error
 func CreateDeploySet(cli bce.Client, clientToken string, reqBody *bce.Body) (*CreateDeploySetResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -66,11 +67,12 @@ func CreateDeploySet(cli bce.Client, clientToken string, reqBody *bce.Body) (*Cr
 
 // ListDeploySets - list all deploy sets
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - clientToken: idempotent token,  an ASCII string no longer than 64 bits
+//   - cli: the client agent which can perform sending request
+//   - clientToken: idempotent token,  an ASCII string no longer than 64 bits
+//
 // RETURNS:
-//     - *ListDeploySetsResult: the result of list all deploy sets
-//     - error: nil if success otherwise the specific error
+//   - *ListDeploySetsResult: the result of list all deploy sets
+//   - error: nil if success otherwise the specific error
 func ListDeploySets(cli bce.Client) (*ListDeploySetsResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -95,12 +97,13 @@ func ListDeploySets(cli bce.Client) (*ListDeploySetsResult, error) {
 // ModifyDeploySet - modify the deploy set atrribute
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - deploySetId: the id of the deploy set
-//     - clientToken: idempotent token,  an ASCII string no longer than 64 bits
-//     - reqBody: http request body
+//   - cli: the client agent which can perform sending request
+//   - deploySetId: the id of the deploy set
+//   - clientToken: idempotent token,  an ASCII string no longer than 64 bits
+//   - reqBody: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func ModifyDeploySet(cli bce.Client, deploySetId string, clientToken string, reqBody *bce.Body) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -130,11 +133,12 @@ func ModifyDeploySet(cli bce.Client, deploySetId string, clientToken string, req
 // DeleteDeploySet - delete a deploy set
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - deploySetId: the id of the deploy set
-//     - clientToken: idempotent token,  an ASCII string no longer than 64 bits
+//   - cli: the client agent which can perform sending request
+//   - deploySetId: the id of the deploy set
+//   - clientToken: idempotent token,  an ASCII string no longer than 64 bits
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func DeleteDeploySet(cli bce.Client, deploySetId string) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -158,11 +162,12 @@ func DeleteDeploySet(cli bce.Client, deploySetId string) error {
 // GetDeploySet - get details of the deploy set
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - deploySetId: the id of the deploy set
+//   - cli: the client agent which can perform sending request
+//   - deploySetId: the id of the deploy set
+//
 // RETURNS:
-//     - *GetDeploySetResult: the detail of the deploy set
-//     - error: nil if success otherwise the specific error
+//   - *GetDeploySetResult: the detail of the deploy set
+//   - error: nil if success otherwise the specific error
 func GetDeploySet(cli bce.Client, deploySetId string) (*DeploySetResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}

@@ -27,10 +27,11 @@ import (
 // CreateVPC - create a new VPC with the specified parameters
 //
 // PARAMS:
-//     - args: the arguments to create VPC
+//   - args: the arguments to create VPC
+//
 // RETURNS:
-//     - *CreateVPCResult: the id of the VPC newly created
-//     - error: nil if success otherwise the specific error
+//   - *CreateVPCResult: the id of the VPC newly created
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateVPC(args *CreateVPCArgs) (*CreateVPCResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("The createVPCArgs cannot be nil.")
@@ -51,10 +52,11 @@ func (c *Client) CreateVPC(args *CreateVPCArgs) (*CreateVPCResult, error) {
 // ListVPC - list all VPCs with the specified parameters
 //
 // PARAMS:
-//     - args: the arguments to list VPCs
+//   - args: the arguments to list VPCs
+//
 // RETURNS:
-//     - *ListVPCResult: the result of all VPCs
-//     - error: nil if success otherwise the specific error
+//   - *ListVPCResult: the result of all VPCs
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListVPC(args *ListVPCArgs) (*ListVPCResult, error) {
 	if args == nil {
 		args = &ListVPCArgs{}
@@ -84,10 +86,11 @@ func (c *Client) ListVPC(args *ListVPCArgs) (*ListVPCResult, error) {
 // GetVPCDetail - get details of the specified VPC
 //
 // PARAMS:
-//     - vpcId: the VPC id
+//   - vpcId: the VPC id
+//
 // RETURNS:
-//     - *GetVPCDetailResult: the details of the specified VPC
-//     - error: nil if success otherwise the specific error
+//   - *GetVPCDetailResult: the details of the specified VPC
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetVPCDetail(vpcId string) (*GetVPCDetailResult, error) {
 	result := &GetVPCDetailResult{}
 
@@ -103,10 +106,11 @@ func (c *Client) GetVPCDetail(vpcId string) (*GetVPCDetailResult, error) {
 // UpdateVPC - update a specified VPC
 //
 // PARAMS:
-//     - vpcId: the id of the specified VPC
-//     - updateVPCArgs: the arguments to udpate VPC
+//   - vpcId: the id of the specified VPC
+//   - updateVPCArgs: the arguments to udpate VPC
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateVPC(vpcId string, updateVPCArgs *UpdateVPCArgs) error {
 	if updateVPCArgs == nil {
 		return fmt.Errorf("The updateVPCArgs cannot be nil.")
@@ -124,10 +128,11 @@ func (c *Client) UpdateVPC(vpcId string, updateVPCArgs *UpdateVPCArgs) error {
 // DeleteVPC - delete a specified VPC
 //
 // PARAMS:
-//     - vpcId: the VPC id to be deleted
-//     - clientToken: the idempotent token
+//   - vpcId: the VPC id to be deleted
+//   - clientToken: the idempotent token
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteVPC(vpcId, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForVPCId(vpcId)).
@@ -139,10 +144,11 @@ func (c *Client) DeleteVPC(vpcId, clientToken string) error {
 // GetPrivateIpAddressesInfo - get the privateIpAddressesInfo from vpc
 //
 // PARAMS:
-//     - getVpcPrivateIpArgs: the arguments to GetPrivateIpAddressInfo
+//   - getVpcPrivateIpArgs: the arguments to GetPrivateIpAddressInfo
+//
 // RETURNS:
-//     - *VpcPrivateIpAddressesResult: the privateIpAddresses info of the specified privateIps in specified vpc
-//     - error: nil if success otherwise the specific error
+//   - *VpcPrivateIpAddressesResult: the privateIpAddresses info of the specified privateIps in specified vpc
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetPrivateIpAddressesInfo(args *GetVpcPrivateIpArgs) (*VpcPrivateIpAddressesResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("The GetVpcPrivateIpArgs cannot be nil.")
@@ -163,10 +169,11 @@ func (c *Client) GetPrivateIpAddressesInfo(args *GetVpcPrivateIpArgs) (*VpcPriva
 // GetNetworkTopologyInfo - get the network topology info
 //
 // PARAMS:
-//     - getNetworkTopologyArgs: the arguments to GetNetworkTopologyInfo
+//   - getNetworkTopologyArgs: the arguments to GetNetworkTopologyInfo
+//
 // RETURNS:
-//     - *NetworkTopologyResult: the network topologies info obtained based on host ip or host id
-//     - error: nil if success otherwise the specific error
+//   - *NetworkTopologyResult: the network topologies info obtained based on host ip or host id
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetNetworkTopologyInfo(args *GetNetworkTopologyArgs) (*NetworkTopologyResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("The GetNetworkTopologyArgs cannot be nil.")

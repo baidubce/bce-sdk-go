@@ -32,13 +32,14 @@ type CertificateDetail struct {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/qjzuz2hp8
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - userCert: certificate data
-//     - httpsEnabled: "ON" for enable HTTPS, "OFF" for disable HTTPS, otherwise invalid.
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - userCert: certificate data
+//   - httpsEnabled: "ON" for enable HTTPS, "OFF" for disable HTTPS, otherwise invalid.
+//
 // RETURNS:
-//     - string: certId
-//     - error: nil if success otherwise the specific error
+//   - string: certId
+//   - error: nil if success otherwise the specific error
 func PutCert(cli bce.Client, domain string, userCert *UserCertificate, httpsEnabled string) (certId string, err error) {
 	if userCert == nil {
 		return "", errors.New("userCert can not be nil")
@@ -72,11 +73,12 @@ func PutCert(cli bce.Client, domain string, userCert *UserCertificate, httpsEnab
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/kjzuvz70t
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *CertificateDetail: certificate details
-//     - error: nil if success otherwise the specific error
+//   - *CertificateDetail: certificate details
+//   - error: nil if success otherwise the specific error
 func GetCert(cli bce.Client, domain string) (certDetail *CertificateDetail, err error) {
 	urlPath := fmt.Sprintf("/v2/%s/certificates", domain)
 	respObj := &CertificateDetail{}
@@ -90,11 +92,12 @@ func GetCert(cli bce.Client, domain string) (certDetail *CertificateDetail, err 
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Ljzuylmee
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *CertificateDetail: certificate details
-//     - error: nil if success otherwise the specific error
+//   - *CertificateDetail: certificate details
+//   - error: nil if success otherwise the specific error
 func DeleteCert(cli bce.Client, domain string) error {
 	urlPath := fmt.Sprintf("/v2/%s/certificates", domain)
 	var respObj interface{}

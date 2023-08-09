@@ -27,11 +27,12 @@ import (
 // CreateSignature - create an sms signature
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to create an sms signature
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to create an sms signature
+//
 // RETURNS:
-//     - *api.CreateSignatureResult: the result of creating an sms signature
-//     - error: the return error if any occurs
+//   - *api.CreateSignatureResult: the result of creating an sms signature
+//   - error: the return error if any occurs
 func CreateSignature(cli bce.Client, args *CreateSignatureArgs) (*CreateSignatureResult, error) {
 	if err := CheckError(args != nil, "CreateSignatureArgs can not be nil"); err != nil {
 		return nil, err
@@ -76,10 +77,11 @@ func CreateSignature(cli bce.Client, args *CreateSignatureArgs) (*CreateSignatur
 // DeleteSignature - delete an sms signature
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to delete an sms signature
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to delete an sms signature
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func DeleteSignature(cli bce.Client, args *DeleteSignatureArgs) error {
 	if err := CheckError(args != nil, "DeleteSignatureArgs can not be nil"); err != nil {
 		return err
@@ -96,10 +98,11 @@ func DeleteSignature(cli bce.Client, args *DeleteSignatureArgs) error {
 // ModifySignature - modify an sms signature
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to modify an sms signature
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to modify an sms signature
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func ModifySignature(cli bce.Client, args *ModifySignatureArgs) error {
 	if err := CheckError(args != nil, "ModifySignatureArgs can not be nil"); err != nil {
 		return err
@@ -143,11 +146,12 @@ func ModifySignature(cli bce.Client, args *ModifySignatureArgs) error {
 // GetSignature - get the detail of an sms signature
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to get the detail of an sms signature
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to get the detail of an sms signature
+//
 // RETURNS:
-// 	   - *api.GetSignatureResult: the detail of an sms signature
-//     - error: the return error if any occurs
+//   - *api.GetSignatureResult: the detail of an sms signature
+//   - error: the return error if any occurs
 func GetSignature(cli bce.Client, args *GetSignatureArgs) (*GetSignatureResult, error) {
 	if err := CheckError(args != nil, "GetSignatureArgs can not be nil"); err != nil {
 		return nil, err

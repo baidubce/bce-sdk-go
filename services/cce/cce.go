@@ -27,9 +27,10 @@ import (
 // CreateCluster - create an CCE Cluster with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create a cce cluster
+//   - args: the arguments to create a cce cluster
+//
 // RETURNS:
-//     - *CreateClusterResult: the result of create cluster, contains new Cluster's uuid and order id
+//   - *CreateClusterResult: the result of create cluster, contains new Cluster's uuid and order id
 func (c *Client) CreateCluster(args *CreateClusterArgs) (*CreateClusterResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set create cluster argments")
@@ -49,9 +50,10 @@ func (c *Client) CreateCluster(args *CreateClusterArgs) (*CreateClusterResult, e
 // ListClusters - list CCE Clusters with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list cce cluster
+//   - args: the arguments to list cce cluster
+//
 // RETURNS:
-//     - *ListClusterResult: the result of list cluster
+//   - *ListClusterResult: the result of list cluster
 func (c *Client) ListClusters(args *ListClusterArgs) (*ListClusterResult, error) {
 	if args == nil {
 		args = &ListClusterArgs{}
@@ -78,9 +80,10 @@ func (c *Client) ListClusters(args *ListClusterArgs) (*ListClusterResult, error)
 // GetCluster - get a CCE Cluster with the specific cluster uuid
 //
 // PARAMS:
-//     - args: the specific cluster uuid
+//   - args: the specific cluster uuid
+//
 // RETURNS:
-//     - *GetClusterResult: the detail information about the CCE Cluster
+//   - *GetClusterResult: the detail information about the CCE Cluster
 func (c *Client) GetCluster(clusterUuid string) (*GetClusterResult, error) {
 	result := &GetClusterResult{}
 	err := bce.NewRequestBuilder(c).
@@ -95,7 +98,7 @@ func (c *Client) GetCluster(clusterUuid string) (*GetClusterResult, error) {
 // DeleteCluster - delete a CCE Cluster
 //
 // PARAMS:
-//     - args: the arguments to delete a cce cluster
+//   - args: the arguments to delete a cce cluster
 func (c *Client) DeleteCluster(args *DeleteClusterArgs) error {
 	if args == nil || args.ClusterUuid == "" {
 		return fmt.Errorf("please set delete cluster uuid")
@@ -112,9 +115,10 @@ func (c *Client) DeleteCluster(args *DeleteClusterArgs) error {
 // ScalingUp - scaling up a CCE Cluster
 //
 // PARAMS:
-//     - args: the arguments to create a cce cluster
+//   - args: the arguments to create a cce cluster
+//
 // RETURNS:
-//     - *ScalingUpResult: the result of scaling up cluster, contains new Cluster's uuid and order id
+//   - *ScalingUpResult: the result of scaling up cluster, contains new Cluster's uuid and order id
 func (c *Client) ScalingUp(args *ScalingUpArgs) (*ScalingUpResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set scaling up cluster argments")
@@ -139,7 +143,7 @@ func (c *Client) ScalingUp(args *ScalingUpArgs) (*ScalingUpResult, error) {
 // ScalingDown - scaling down a CCE Cluster
 //
 // PARAMS:
-//     - args: the arguments to scaling down a cce cluster
+//   - args: the arguments to scaling down a cce cluster
 func (c *Client) ScalingDown(args *ScalingDownArgs) error {
 	if args == nil {
 		return fmt.Errorf("please set scaling down cluster argments")
@@ -164,9 +168,10 @@ func (c *Client) ScalingDown(args *ScalingDownArgs) error {
 // ListNodes - list all nodes in CCE Cluster
 //
 // PARAMS:
-//     - args: the arguments to list all nodes
+//   - args: the arguments to list all nodes
+//
 // RETURNS:
-//     - *ListNodeResult: the result of list nodes, contains a Cluster's nodes
+//   - *ListNodeResult: the result of list nodes, contains a Cluster's nodes
 func (c *Client) ListNodes(args *ListNodeArgs) (*ListNodeResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set list node argments")
@@ -197,7 +202,7 @@ func (c *Client) ListNodes(args *ListNodeArgs) (*ListNodeResult, error) {
 // ShiftInNode - shift nodes into cluster
 //
 // PARAMS:
-//     - args: the arguments about shift nodes into cce cluster
+//   - args: the arguments about shift nodes into cce cluster
 func (c *Client) ShiftInNode(args *ShiftInNodeArgs) error {
 	if args == nil {
 		return fmt.Errorf("please set shift in argments")
@@ -218,7 +223,7 @@ func (c *Client) ShiftInNode(args *ShiftInNodeArgs) error {
 // ShiftOutNode - shift nodes out from CCE Cluster
 //
 // PARAMS:
-//     - args: the arguments about shift nodes out from cce cluster
+//   - args: the arguments about shift nodes out from cce cluster
 func (c *Client) ShiftOutNode(args *ShiftOutNodeArgs) error {
 	if args == nil {
 		return fmt.Errorf("please set shift out argments")
@@ -239,9 +244,10 @@ func (c *Client) ShiftOutNode(args *ShiftOutNodeArgs) error {
 // ListExistedBccNode - list all bcc nodes which can shifted into CCE cluster
 //
 // PARAMS:
-//     - args: the arguments to list bcc nodes
+//   - args: the arguments to list bcc nodes
+//
 // RETURNS:
-//     - *ListExistedNodeResult: the result of list nodes
+//   - *ListExistedNodeResult: the result of list nodes
 func (c *Client) ListExistedBccNode(args *ListExistedNodeArgs) (*ListExistedNodeResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set list existed bcc node argments")
@@ -265,9 +271,10 @@ func (c *Client) ListExistedBccNode(args *ListExistedNodeArgs) (*ListExistedNode
 // GetContainerNet - get container net in vpc
 //
 // PARAMS:
-//     - args: the arguments to get args
+//   - args: the arguments to get args
+//
 // RETURNS:
-//     - *GetContainerNetResult: the result of container net
+//   - *GetContainerNetResult: the result of container net
 func (c *Client) GetContainerNet(args *GetContainerNetArgs) (*GetContainerNetResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set container net argments")
@@ -287,9 +294,10 @@ func (c *Client) GetContainerNet(args *GetContainerNetArgs) (*GetContainerNetRes
 // GetKubeConfig - get config file of CCE Cluster
 //
 // PARAMS:
-//     - args: the arguments to get config file of a cce cluster
+//   - args: the arguments to get config file of a cce cluster
+//
 // RETURNS:
-//     - *GetKubeConfigResult: the kubeconfig file data
+//   - *GetKubeConfigResult: the kubeconfig file data
 func (c *Client) GetKubeConfig(args *GetKubeConfigArgs) (*GetKubeConfigResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set kube config argments")
@@ -314,7 +322,7 @@ func (c *Client) GetKubeConfig(args *GetKubeConfigArgs) (*GetKubeConfigResult, e
 // ListVersions - list all support kubernetes version
 //
 // RETURNS:
-//     - *ListVersionsResult: all support kubernetes version list
+//   - *ListVersionsResult: all support kubernetes version list
 func (c *Client) ListVersions() (*ListVersionsResult, error) {
 	result := &ListVersionsResult{}
 	err := bce.NewRequestBuilder(c).

@@ -25,10 +25,11 @@ import (
 // CreateEipGroup - create an EIP_GROUP with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create an eipGroup
+//   - args: the arguments to create an eipGroup
+//
 // RETURNS:
-//     - *CreateEipGroupResult: the result of create EIP_GROUP, contains new EIP_GROUP's id
-//     - error: nil if success otherwise the specific error
+//   - *CreateEipGroupResult: the result of create EIP_GROUP, contains new EIP_GROUP's id
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateEipGroup(args *CreateEipGroupArgs) (*CreateEipGroupResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set create eip argments")
@@ -53,10 +54,11 @@ func (c *Client) CreateEipGroup(args *CreateEipGroupArgs) (*CreateEipGroupResult
 // ResizeEipGroupBandWidth - resize an EIP_GROUP with the specific parameters
 //
 // PARAMS:
-//     - id: the eipGroup's id
-//     - args: the arguments to resize an EIP_GROUP
+//   - id: the eipGroup's id
+//   - args: the arguments to resize an EIP_GROUP
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ResizeEipGroupBandWidth(id string, args *ResizeEipGroupArgs) error {
 	if args == nil {
 		return fmt.Errorf("please set resize argments")
@@ -74,10 +76,11 @@ func (c *Client) ResizeEipGroupBandWidth(id string, args *ResizeEipGroupArgs) er
 // EipGroupAddEipCount - increase EIP_GROUP's ip count with the specific parameters
 //
 // PARAMS:
-//     - id: the eipGroup's id
-//     - args: the arguments to increase EIP_GROUP's ip count
+//   - id: the eipGroup's id
+//   - args: the arguments to increase EIP_GROUP's ip count
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) EipGroupAddEipCount(id string, args *GroupAddEipCountArgs) error {
 	if args == nil {
 		return fmt.Errorf("please set resize argments")
@@ -95,10 +98,11 @@ func (c *Client) EipGroupAddEipCount(id string, args *GroupAddEipCountArgs) erro
 // ReleaseEipGroupIps - release EIP_GROUP's ips with the specific parameters
 //
 // PARAMS:
-//     - id: the eipGroup's id
-//     - args: the arguments to release EIP_GROUP's ips
+//   - id: the eipGroup's id
+//   - args: the arguments to release EIP_GROUP's ips
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ReleaseEipGroupIps(id string, args *ReleaseEipGroupIpsArgs) error {
 	if args == nil {
 		return fmt.Errorf("please set resize argments")
@@ -116,10 +120,11 @@ func (c *Client) ReleaseEipGroupIps(id string, args *ReleaseEipGroupIpsArgs) err
 // RenameEipGroup - rename EIP_GROUP's name with the specific parameters
 //
 // PARAMS:
-//     - id: the eipGroup's id
-//     - args: the arguments to rename EIP_GROUP
+//   - id: the eipGroup's id
+//   - args: the arguments to rename EIP_GROUP
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RenameEipGroup(id string, args *RenameEipGroupArgs) error {
 	if args == nil {
 		return fmt.Errorf("please set rename argments")
@@ -137,10 +142,11 @@ func (c *Client) RenameEipGroup(id string, args *RenameEipGroupArgs) error {
 // DeleteEipGroup - delete an EIP_GROUP
 //
 // PARAMS:
-//     - id: the specific EIP_GROUP's id
-//     - clientToken: optional parameter, an Idempotent Token
+//   - id: the specific EIP_GROUP's id
+//   - clientToken: optional parameter, an Idempotent Token
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteEipGroup(id, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
@@ -152,10 +158,11 @@ func (c *Client) DeleteEipGroup(id, clientToken string) error {
 // ListEipGroup - list all EIP_GROUP with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all eipGroup
+//   - args: the arguments to list all eipGroup
+//
 // RETURNS:
-//     - *ListEipGroupResult: the result of list all eipGroup
-//     - error: nil if success otherwise the specific error
+//   - *ListEipGroupResult: the result of list all eipGroup
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListEipGroup(args *ListEipGroupArgs) (*ListEipGroupResult, error) {
 	if args == nil {
 		args = &ListEipGroupArgs{}
@@ -183,10 +190,11 @@ func (c *Client) ListEipGroup(args *ListEipGroupArgs) (*ListEipGroupResult, erro
 // EipGroupDetail - get EIP_GROUP detail
 //
 // PARAMS:
-//     - id: the eipGroup's id
+//   - id: the eipGroup's id
+//
 // RETURNS:
-//     - *EipGroupModel: the result of list all eip in the recycle bin
-//     - error: nil if success otherwise the specific error
+//   - *EipGroupModel: the result of list all eip in the recycle bin
+//   - error: nil if success otherwise the specific error
 func (c *Client) EipGroupDetail(id string) (*EipGroupModel, error) {
 	result := &EipGroupModel{}
 	err := bce.NewRequestBuilder(c).
@@ -201,10 +209,11 @@ func (c *Client) EipGroupDetail(id string) (*EipGroupModel, error) {
 // EipGroupMoveOut - move eips out of EIP_GROUP with the specific parameters
 //
 // PARAMS:
-//     - id: the eipGroup's id
-//     - args: the arguments to move out EIP_GROUP
+//   - id: the eipGroup's id
+//   - args: the arguments to move out EIP_GROUP
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) EipGroupMoveOut(id string, args *EipGroupMoveOutArgs) error {
 	if args == nil {
 		return fmt.Errorf("please set argments")
@@ -222,10 +231,11 @@ func (c *Client) EipGroupMoveOut(id string, args *EipGroupMoveOutArgs) error {
 // EipGroupMoveIn - move eips into to EIP_GROUP with the specific parameters
 //
 // PARAMS:
-//     - id: the eipGroup's id
-//     - args: the arguments to move in EIP_GROUP
+//   - id: the eipGroup's id
+//   - args: the arguments to move in EIP_GROUP
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) EipGroupMoveIn(id string, args *EipGroupMoveInArgs) error {
 	if args == nil {
 		return fmt.Errorf("please set argments")

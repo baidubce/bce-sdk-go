@@ -270,8 +270,8 @@ type CopyObjectArgs struct {
 	IfNoneMatch       string
 	IfModifiedSince   string
 	IfUnmodifiedSince string
-	TrafficLimit       int64
-	CannedAcl          string
+	TrafficLimit      int64
+	CannedAcl         string
 }
 
 type MultiCopyObjectArgs struct {
@@ -463,7 +463,7 @@ type UploadPartCopyArgs struct {
 	IfNoneMatch       string
 	IfModifiedSince   string
 	IfUnmodifiedSince string
-	TrafficLimit  int64
+	TrafficLimit      int64
 }
 
 type PutSymlinkArgs struct {
@@ -586,7 +586,6 @@ type PutBucketNotificationAppsSt struct {
 	XVars    string `json:"xVars"`
 }
 
-
 type MirrorConfigurationRule struct {
 	Prefix          string       `json:"prefix,omitempty"`
 	SourceUrl       string       `json:"sourceUrl"`
@@ -613,12 +612,11 @@ type PutBucketMirrorArgs struct {
 	BucketMirroringConfiguration []MirrorConfigurationRule `json:"bucketMirroringConfiguration"`
 }
 
-
 type PutBucketTagReq struct {
 	Tags []Tag `json:"tags"`
 }
 
 type Tag struct {
-	TagKey string `json:"tagKey"`
+	TagKey   string `json:"tagKey"`
 	TagValue string `json:"tagValue"`
 }

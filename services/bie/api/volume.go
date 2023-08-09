@@ -32,10 +32,11 @@ const (
 // ListVolumeTpl - list all volume template
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
+//   - cli: the client agent which can perform sending request
+//
 // RETURNS:
-//     - *ListVolTemplate: the result volume template list
-//     - error: nil if ok otherwise the specific error
+//   - *ListVolTemplate: the result volume template list
+//   - error: nil if ok otherwise the specific error
 func ListVolumeTpl(cli bce.Client) (*ListVolTemplate, error) {
 	url := PREFIX_V3VOLTPL
 	result := &ListVolTemplate{}
@@ -50,11 +51,12 @@ func ListVolumeTpl(cli bce.Client) (*ListVolTemplate, error) {
 // CreateVolume - create a volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - CreateVolReq: the request parameters
+//   - cli: the client agent which can perform sending request
+//   - CreateVolReq: the request parameters
+//
 // RETURNS:
-//     - *VolumeResult: the result volume
-//     - error: nil if ok otherwise the specific error
+//   - *VolumeResult: the result volume
+//   - error: nil if ok otherwise the specific error
 func CreateVolume(cli bce.Client, cvr *CreateVolReq) (*VolumeResult, error) {
 	url := PREFIX_V3VOL
 	result := &VolumeResult{}
@@ -69,11 +71,12 @@ func CreateVolume(cli bce.Client, cvr *CreateVolReq) (*VolumeResult, error) {
 // ListVolume - list a bunch of volumes
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - ListVolReq: the request parameters
+//   - cli: the client agent which can perform sending request
+//   - ListVolReq: the request parameters
+//
 // RETURNS:
-//     - *ListVolumeResult: the result list
-//     - error: nil if ok otherwise the specific error
+//   - *ListVolumeResult: the result list
+//   - error: nil if ok otherwise the specific error
 func ListVolume(cli bce.Client, lvr *ListVolumeReq) (*ListVolumeResult, error) {
 	url := PREFIX_V3VOL
 	result := &ListVolumeResult{}
@@ -98,11 +101,12 @@ func ListVolume(cli bce.Client, lvr *ListVolumeReq) (*ListVolumeResult, error) {
 // GetVolume - get a volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - name: the requested volume name
+//   - cli: the client agent which can perform sending request
+//   - name: the requested volume name
+//
 // RETURNS:
-//     - *VolumeResult: the result vaolume
-//     - error: nil if ok otherwise the specific error
+//   - *VolumeResult: the result vaolume
+//   - error: nil if ok otherwise the specific error
 func GetVolume(cli bce.Client, name string) (*VolumeResult, error) {
 	url := PREFIX_V3VOL + "/" + name
 	result := &VolumeResult{}
@@ -117,12 +121,13 @@ func GetVolume(cli bce.Client, name string) (*VolumeResult, error) {
 // EditVolume - edit a volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - name: the requested volume name
-//     - *EditVolumeReq: request parameters
+//   - cli: the client agent which can perform sending request
+//   - name: the requested volume name
+//   - *EditVolumeReq: request parameters
+//
 // RETURNS:
-//     - *VolumeResult: the result vaolume
-//     - error: nil if ok otherwise the specific error
+//   - *VolumeResult: the result vaolume
+//   - error: nil if ok otherwise the specific error
 func EditVolume(cli bce.Client, name string, evr *EditVolumeReq) (*VolumeResult, error) {
 	url := PREFIX_V3VOL + "/" + name
 	result := &VolumeResult{}
@@ -137,10 +142,11 @@ func EditVolume(cli bce.Client, name string, evr *EditVolumeReq) (*VolumeResult,
 // DeleteVolume - delete a volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - name: the requested volume name
+//   - cli: the client agent which can perform sending request
+//   - name: the requested volume name
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func DeleteVolume(cli bce.Client, name string) error {
 	url := PREFIX_V3VOL + "/" + name
 	req := &bce.BceRequest{}
@@ -160,11 +166,12 @@ func DeleteVolume(cli bce.Client, name string) error {
 // ListVolumeVer - list version list of a volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - NameVersion: the request parameters, version can be empty
+//   - cli: the client agent which can perform sending request
+//   - NameVersion: the request parameters, version can be empty
+//
 // RETURNS:
-//     - *ListVolumeVerResult: the result list
-//     - error: nil if ok otherwise the specific error
+//   - *ListVolumeVerResult: the result list
+//   - error: nil if ok otherwise the specific error
 func ListVolumeVer(cli bce.Client, nv *NameVersion) (*ListVolumeVerResult, error) {
 	url := PREFIX_V3VOL + "/" + nv.Name + "/version"
 	params := map[string]string{}
@@ -184,11 +191,12 @@ func ListVolumeVer(cli bce.Client, nv *NameVersion) (*ListVolumeVerResult, error
 // PubVolumeVer - pub version list of a volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - name: the request volume name
+//   - cli: the client agent which can perform sending request
+//   - name: the request volume name
+//
 // RETURNS:
-//     - *VolumeResult: the result volume
-//     - error: nil if ok otherwise the specific error
+//   - *VolumeResult: the result volume
+//   - error: nil if ok otherwise the specific error
 func PubVolumeVer(cli bce.Client, name string) (*VolumeResult, error) {
 	url := PREFIX_V3VOL + "/" + name + "/version"
 
@@ -204,12 +212,13 @@ func PubVolumeVer(cli bce.Client, name string) (*VolumeResult, error) {
 // DownloadVolVer - get the download address of a specific version of volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - name: the request volume name
-//     - version: the request volume version
+//   - cli: the client agent which can perform sending request
+//   - name: the request volume name
+//   - version: the request volume version
+//
 // RETURNS:
-//     - *VolDownloadResult: the result
-//     - error: nil if ok otherwise the specific error
+//   - *VolDownloadResult: the result
+//   - error: nil if ok otherwise the specific error
 func DownloadVolVer(cli bce.Client, name string,
 	version string) (*VolDownloadResult, error) {
 	url := PREFIX_V3VOL + "/" + name + "/version/" + version + "/zipfile"
@@ -226,12 +235,13 @@ func DownloadVolVer(cli bce.Client, name string,
 // CreateVolFile - create a volume file
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - name: the request volume name
-//     - *CreateVolFileReq: request parameters
+//   - cli: the client agent which can perform sending request
+//   - name: the request volume name
+//   - *CreateVolFileReq: request parameters
+//
 // RETURNS:
-//     - *CreateVolFileReq: the result
-//     - error: nil if ok otherwise the specific error
+//   - *CreateVolFileReq: the result
+//   - error: nil if ok otherwise the specific error
 func CreateVolFile(cli bce.Client, name string,
 	cvf *CreateVolFileReq) (*CreateVolFileReq, error) {
 	url := PREFIX_V3VOL + "/" + name + "/file"
@@ -248,11 +258,12 @@ func CreateVolFile(cli bce.Client, name string,
 // GetVolumeFile - get a volume file
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - GetVolFileReq: volume name, version anf filename
+//   - cli: the client agent which can perform sending request
+//   - GetVolFileReq: volume name, version anf filename
+//
 // RETURNS:
-//     - *ListVolumeVerResult: the result list
-//     - error: nil if ok otherwise the specific error
+//   - *ListVolumeVerResult: the result list
+//   - error: nil if ok otherwise the specific error
 func GetVolumeFile(cli bce.Client, cvfr *GetVolFileReq) (*CreateVolFileReq, error) {
 	url := PREFIX_V3VOL + "/" + cvfr.Name + "/version/" + cvfr.Version + "/file/" + cvfr.FileName
 
@@ -268,12 +279,13 @@ func GetVolumeFile(cli bce.Client, cvfr *GetVolFileReq) (*CreateVolFileReq, erro
 // EditVolumeFile - edit a volume file
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - *Name2: the requested volume name and file name
-//     - *EditVolFileReq: the content, the request body
+//   - cli: the client agent which can perform sending request
+//   - *Name2: the requested volume name and file name
+//   - *EditVolFileReq: the content, the request body
+//
 // RETURNS:
-//     - *CreateVolFileReq: the result
-//     - error: nil if ok otherwise the specific error
+//   - *CreateVolFileReq: the result
+//   - error: nil if ok otherwise the specific error
 func EditVolumeFile(cli bce.Client, names *Name2,
 	body *EditVolFileReq) (*CreateVolFileReq, error) {
 	url := PREFIX_V3VOL + "/" + names.Name + "/file/" + names.FileName
@@ -290,11 +302,12 @@ func EditVolumeFile(cli bce.Client, names *Name2,
 // DeleteVolFile - delete a volume file
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - name: the requested volume name
-//     - filename: the requested volume filename
+//   - cli: the client agent which can perform sending request
+//   - name: the requested volume name
+//   - filename: the requested volume filename
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func DeleteVolFile(cli bce.Client, name string, filename string) error {
 	url := PREFIX_V3VOL + "/" + name + "/file/" + filename
 	req := &bce.BceRequest{}
@@ -314,10 +327,11 @@ func DeleteVolFile(cli bce.Client, name string, filename string) error {
 // ClearVolFile - clear all volume files
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - name: the requested volume name
+//   - cli: the client agent which can perform sending request
+//   - name: the requested volume name
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func ClearVolFile(cli bce.Client, name string) error {
 	url := PREFIX_V3VOL + "/" + name + "/file"
 	req := &bce.BceRequest{}
@@ -337,11 +351,12 @@ func ClearVolFile(cli bce.Client, name string) error {
 // ListVolCore - list the cores associated with the volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - *ListVolCoreReq: the request parameters
+//   - cli: the client agent which can perform sending request
+//   - *ListVolCoreReq: the request parameters
+//
 // RETURNS:
-//     - *ListVolumeVerResult: the result list
-//     - error: nil if ok otherwise the specific error
+//   - *ListVolumeVerResult: the result list
+//   - error: nil if ok otherwise the specific error
 func ListVolCore(cli bce.Client, lvcr *ListVolCoreReq) (*ListVolCoreResult, error) {
 	url := PREFIX_V3VOL + "/" + lvcr.Name + "/core"
 	params := map[string]string{
@@ -360,11 +375,12 @@ func ListVolCore(cli bce.Client, lvcr *ListVolCoreReq) (*ListVolCoreResult, erro
 // EditCoreVolVer - edit core version
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - name: the volume name
-//     - *EditCoreVolVerReq: the request parameters
+//   - cli: the client agent which can perform sending request
+//   - name: the volume name
+//   - *EditCoreVolVerReq: the request parameters
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func EditCoreVolVer(cli bce.Client, name string,
 	ecvr *EditCoreVolVerReq) error {
 	url := PREFIX_V3VOL + "/" + name + "/core"
@@ -381,11 +397,12 @@ func EditCoreVolVer(cli bce.Client, name string,
 // ImportCfc - import a CFC function into volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - name: the volume name
-//     - *ImportCfcReq: the request parameters
+//   - cli: the client agent which can perform sending request
+//   - name: the volume name
+//   - *ImportCfcReq: the request parameters
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func ImportCfc(cli bce.Client, name string,
 	icr *ImportCfcReq) error {
 	url := PREFIX_V3VOL + "/" + name + "/cfc"
@@ -400,11 +417,12 @@ func ImportCfc(cli bce.Client, name string,
 // ImportBos - import a BOS file into volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - name: the volume name
-//     - *ImportBosReq: the request parameters
+//   - cli: the client agent which can perform sending request
+//   - name: the volume name
+//   - *ImportBosReq: the request parameters
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func ImportBos(cli bce.Client, name string,
 	ibr *ImportBosReq) error {
 	url := PREFIX_V3VOL + "/" + name + "/bos"

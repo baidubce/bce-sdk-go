@@ -27,11 +27,12 @@ import (
 // ListGroup - list all groups of the account
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - *ListGroupReq: page no, page size, and name
+//   - cli: the client agent which can perform sending request
+//   - *ListGroupReq: page no, page size, and name
+//
 // RETURNS:
-//     - *ListGroupResult: the result group list structure
-//     - error: nil if ok otherwise the specific error
+//   - *ListGroupResult: the result group list structure
+//   - error: nil if ok otherwise the specific error
 func ListGroup(cli bce.Client, lgr *ListGroupReq) (*ListGroupResult, error) {
 	url := PREFIX
 	params := map[string]string{}
@@ -57,11 +58,12 @@ func ListGroup(cli bce.Client, lgr *ListGroupReq) (*ListGroupResult, error) {
 // GetGroup - get a group of the account
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - groupUuid: id of the group
+//   - cli: the client agent which can perform sending request
+//   - groupUuid: id of the group
+//
 // RETURNS:
-//     - *ListGroupResult: the result group list structure
-//     - error: nil if ok otherwise the specific error
+//   - *ListGroupResult: the result group list structure
+//   - error: nil if ok otherwise the specific error
 func GetGroup(cli bce.Client, groupUuid string) (*Group, error) {
 	url := PREFIX + "/" + groupUuid
 
@@ -78,11 +80,12 @@ func GetGroup(cli bce.Client, groupUuid string) (*Group, error) {
 // CreateGroup - create a group
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - cgr: parameters to create group
+//   - cli: the client agent which can perform sending request
+//   - cgr: parameters to create group
+//
 // RETURNS:
-//     - *CreateGroupResult: the result group
-//     - error: nil if ok otherwise the specific error
+//   - *CreateGroupResult: the result group
+//   - error: nil if ok otherwise the specific error
 func CreateGroup(cli bce.Client, cgr *CreateGroupReq) (*CreateGroupResult, error) {
 	url := PREFIX
 	params := map[string]string{"withCore": "true"}
@@ -100,12 +103,13 @@ func CreateGroup(cli bce.Client, cgr *CreateGroupReq) (*CreateGroupResult, error
 // EditGroup - edit a group
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - groupId: the group to edit
-//     - egr: parameters to update group
+//   - cli: the client agent which can perform sending request
+//   - groupId: the group to edit
+//   - egr: parameters to update group
+//
 // RETURNS:
-//     - *Group: the result group
-//     - error: nil if ok otherwise the specific error
+//   - *Group: the result group
+//   - error: nil if ok otherwise the specific error
 func EditGroup(cli bce.Client, groupId string, egr *EditGroupReq) (*Group, error) {
 	url := PREFIX + "/" + groupId
 	params := map[string]string{"withCore": "true"}
@@ -123,10 +127,11 @@ func EditGroup(cli bce.Client, groupId string, egr *EditGroupReq) (*Group, error
 // DeleteGroup - delete a group of the account
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - groupUuid: id of the group
+//   - cli: the client agent which can perform sending request
+//   - groupUuid: id of the group
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func DeleteGroup(cli bce.Client, groupUuid string) error {
 	req := &bce.BceRequest{}
 	req.SetUri(PREFIX + "/" + groupUuid)

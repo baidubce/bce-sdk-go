@@ -17,14 +17,14 @@
 package dts
 
 type CreateDtsArgs struct {
-	ClientToken        string `json:"-"`
-	ProductType        string `json:"productType"`
-	Type               string `json:"type"`
-	Standard           string `json:"standard"`
-	SourceInstanceType string `json:"sourceInstanceType"`
-	TargetInstanceType string `json:"targetInstanceType"`
-	CrossRegionTag     int    `json:"crossRegionTag"`
-	DirectionType      string `json:"directionType"`
+	ClientToken        string    `json:"-"`
+	ProductType        string    `json:"productType"`
+	Type               string    `json:"type"`
+	Standard           string    `json:"standard"`
+	SourceInstanceType string    `json:"sourceInstanceType"`
+	TargetInstanceType string    `json:"targetInstanceType"`
+	CrossRegionTag     int       `json:"crossRegionTag"`
+	DirectionType      string    `json:"directionType"`
 	OrderInfo          OrderInfo `json:"orderInfo"`
 }
 
@@ -256,23 +256,23 @@ type OrderInfo struct {
 }
 
 type Src struct {
-    InstanceType    string  `json:"instanceType"`
-    DbType          string  `json:"dbType"`
-    SliceNum        string   `json:"sliceNum"`
+	InstanceType string `json:"instanceType"`
+	DbType       string `json:"dbType"`
+	SliceNum     string `json:"sliceNum"`
 }
 
 type Dst struct {
-    InstanceType    string  `json:"instanceType"`
-    DbType          string  `json:"dbType"`
+	InstanceType string `json:"instanceType"`
+	DbType       string `json:"dbType"`
 }
 
 type DtsVpcsResult struct {
-	Vpcs    []VpcVo   `json:"vpcs"`
+	Vpcs []VpcVo `json:"vpcs"`
 }
 
 type VpcVo struct {
-	VpcId   string  `json:"vpcId"`
-	ShortId string  `json:"shortId"`
-	Name    string  `json:"name"`
-	Cidr    string  `json:"cidr"`
+	VpcId   string `json:"vpcId"`
+	ShortId string `json:"shortId"`
+	Name    string `json:"name"`
+	Cidr    string `json:"cidr"`
 }

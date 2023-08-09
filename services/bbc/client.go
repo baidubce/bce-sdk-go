@@ -61,10 +61,11 @@ func NewClient(ak, sk, endPoint string) (*Client, error) {
 // CreateInstance - create an instance with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create instance
+//   - args: the arguments to create instance
+//
 // RETURNS:
-//     - *CreateInstanceResult: the result of create Instance, contains new Instance ID
-//     - error: nil if success otherwise the specific error
+//   - *CreateInstanceResult: the result of create Instance, contains new Instance ID
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateInstance(args *CreateInstanceArgs) (*CreateInstanceResult, error) {
 	if len(args.AdminPass) > 0 {
 		cryptedPass, err := Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
@@ -97,10 +98,11 @@ func (c *Client) CreateInstance(args *CreateInstanceArgs) (*CreateInstanceResult
 // CreateInstance - create an instance with specific parameters and support the passing in of label
 //
 // PARAMS:
-//     - args: the arguments to create instance
+//   - args: the arguments to create instance
+//
 // RETURNS:
-//     - *CreateInstanceResult: the result of create Instance, contains new Instance ID
-//     - error: nil if success otherwise the specific erro
+//   - *CreateInstanceResult: the result of create Instance, contains new Instance ID
+//   - error: nil if success otherwise the specific erro
 func (c *Client) CreateInstanceByLabel(args *CreateSpecialInstanceArgs) (*CreateInstanceResult, error) {
 	if len(args.AdminPass) > 0 {
 		cryptedPass, err := Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
@@ -133,10 +135,11 @@ func (c *Client) CreateInstanceByLabel(args *CreateSpecialInstanceArgs) (*Create
 // ListInstances - list all instance with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all instance
+//   - args: the arguments to list all instance
+//
 // RETURNS:
-//     - *ListInstanceResult: the result of list Instance
-//     - error: nil if success otherwise the specific error
+//   - *ListInstanceResult: the result of list Instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListInstances(args *ListInstancesArgs) (*ListInstancesResult, error) {
 	return ListInstances(c, args)
 }
@@ -144,10 +147,11 @@ func (c *Client) ListInstances(args *ListInstancesArgs) (*ListInstancesResult, e
 // GetInstanceDetail - get a specific instance detail info
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
+//   - instanceId: the specific instance ID
+//
 // RETURNS:
-//     - *GetInstanceDetailResult: the result of get instance detail info
-//     - error: nil if success otherwise the specific error
+//   - *GetInstanceDetailResult: the result of get instance detail info
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetInstanceDetail(instanceId string) (*InstanceModel, error) {
 	return GetInstanceDetail(c, instanceId)
 }
@@ -164,9 +168,10 @@ func (c *Client) GetInstanceDetailWithDeploySetAndFailed(instanceId string,
 // StartInstance - start an instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
+//   - instanceId: the specific instance ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) StartInstance(instanceId string) error {
 	return StartInstance(c, instanceId)
 }
@@ -174,10 +179,11 @@ func (c *Client) StartInstance(instanceId string) error {
 // StopInstance - stop an instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - forceStop: choose to force stop an instance or not
+//   - instanceId: the specific instance ID
+//   - forceStop: choose to force stop an instance or not
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) StopInstance(instanceId string, forceStop bool) error {
 	args := &StopInstanceArgs{
 		ForceStop: forceStop,
@@ -198,10 +204,11 @@ func (c *Client) StopInstance(instanceId string, forceStop bool) error {
 // RebootInstance - restart an instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - forceStop: choose to force stop an instance or not
+//   - instanceId: the specific instance ID
+//   - forceStop: choose to force stop an instance or not
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RebootInstance(instanceId string, forceStop bool) error {
 	args := &StopInstanceArgs{
 		ForceStop: forceStop,
@@ -222,10 +229,11 @@ func (c *Client) RebootInstance(instanceId string, forceStop bool) error {
 // ModifyInstanceName - modify an instance's name
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - args: the arguments of now instance's name
+//   - instanceId: the specific instance ID
+//   - args: the arguments of now instance's name
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyInstanceName(instanceId string, args *ModifyInstanceNameArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -242,10 +250,11 @@ func (c *Client) ModifyInstanceName(instanceId string, args *ModifyInstanceNameA
 // ModifyInstanceDesc - modify an instance's description
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - args: the arguments of now instance's description
+//   - instanceId: the specific instance ID
+//   - args: the arguments of now instance's description
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyInstanceDesc(instanceId string, args *ModifyInstanceDescArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -263,11 +272,12 @@ func (c *Client) ModifyInstanceDesc(instanceId string, args *ModifyInstanceDescA
 // RebuildInstance - rebuild an instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-// 	   - isPreserveData: choose to preserve data or not
-//     - args: the arguments to rebuild an instance
+//   - instanceId: the specific instance ID
+//   - isPreserveData: choose to preserve data or not
+//   - args: the arguments to rebuild an instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RebuildInstance(instanceId string, isPreserveData bool, args *RebuildInstanceArgs) error {
 	cryptedPass, err := Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
 	if err != nil {
@@ -296,10 +306,11 @@ func (c *Client) RebuildInstance(instanceId string, isPreserveData bool, args *R
 // GetInstanceVNC - get an instance's VNC url
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
+//   - instanceId: the specific instance ID
+//
 // RETURNS:
-//     - *api.GetInstanceVNCResult: the result of get instance's VNC url
-//     - error: nil if success otherwise the specific error
+//   - *api.GetInstanceVNCResult: the result of get instance's VNC url
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetInstanceVNC(instanceId string) (*GetInstanceVNCResult, error) {
 	return GetInstanceVNC(c, instanceId)
 }
@@ -307,10 +318,11 @@ func (c *Client) GetInstanceVNC(instanceId string) (*GetInstanceVNCResult, error
 // RebuildBatchInstance - batch rebuild instances
 //
 // PARAMS:
-//     - args: the arguments to batch rebuild instances
+//   - args: the arguments to batch rebuild instances
+//
 // RETURNS:
-//     - *BatchRebuildResponse: the result of batch rebuild the instances
-//     - error: nil if success otherwise the specific error
+//   - *BatchRebuildResponse: the result of batch rebuild the instances
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchRebuildInstances(args *RebuildBatchInstanceArgs) (*BatchRebuildResponse, error) {
 	encryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
 	if err != nil {
@@ -333,10 +345,11 @@ func (c *Client) BatchRebuildInstances(args *RebuildBatchInstanceArgs) (*BatchRe
 // InstancePurchaseReserved - purchase reserve an instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - args: the arguments to purchase reserved an instance
+//   - instanceId: the specific instance ID
+//   - args: the arguments to purchase reserved an instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) InstancePurchaseReserved(instanceId string, args *PurchaseReservedArgs) error {
 	// this api only support Prepaid instance
 	args.Billing.PaymentTiming = PaymentTimingPrePaid
@@ -356,9 +369,10 @@ func (c *Client) InstancePurchaseReserved(instanceId string, args *PurchaseReser
 // DeleteInstance - delete an instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
+//   - instanceId: the specific instance ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteInstance(instanceId string) error {
 	return DeleteInstance(c, instanceId)
 }
@@ -366,10 +380,11 @@ func (c *Client) DeleteInstance(instanceId string) error {
 // ListInstances - list all instance with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all instance
+//   - args: the arguments to list all instance
+//
 // RETURNS:
-//     - *ListInstanceResult: the result of list Instance
-//     - error: nil if success otherwise the specific error
+//   - *ListInstanceResult: the result of list Instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListRecycledInstances(args *ListRecycledInstancesArgs) (*ListRecycledInstancesResult, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -385,10 +400,11 @@ func (c *Client) ListRecycledInstances(args *ListRecycledInstancesArgs) (*ListRe
 // ListInstances - list all instance with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all instance
+//   - args: the arguments to list all instance
+//
 // RETURNS:
-//     - *ListInstanceResult: the result of list Instance
-//     - error: nil if success otherwise the specific error
+//   - *ListInstanceResult: the result of list Instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) RecoveryInstances(args *RecoveryInstancesArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -404,9 +420,10 @@ func (c *Client) RecoveryInstances(args *RecoveryInstancesArgs) error {
 // DeleteInstance - delete an instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
+//   - instanceId: the specific instance ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteInstances(args *DeleteInstanceArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -422,10 +439,11 @@ func (c *Client) DeleteInstances(args *DeleteInstanceArgs) error {
 // ModifyInstancePassword - modify an instance's password
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - args: the arguments of now instance's password
+//   - instanceId: the specific instance ID
+//   - args: the arguments of now instance's password
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyInstancePassword(instanceId string, args *ModifyInstancePasswordArgs) error {
 	cryptedPass, err := Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
 	if err != nil {
@@ -448,9 +466,10 @@ func (c *Client) ModifyInstancePassword(instanceId string, args *ModifyInstanceP
 // InstanceChangeSubnet - change an instance's subnet
 //
 // PARAMS:
-//     - args: the arguments to change an instance's subnet
+//   - args: the arguments to change an instance's subnet
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) InstanceChangeSubnet(args *InstanceChangeSubnetArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -467,9 +486,10 @@ func (c *Client) InstanceChangeSubnet(args *InstanceChangeSubnetArgs) error {
 // InstanceChangeVpc - change an instance's vpc
 //
 // PARAMS:
-//     - args: the arguments to change an instance's vpc
+//   - args: the arguments to change an instance's vpc
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) InstanceChangeVpc(args *InstanceChangeVpcArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -486,10 +506,11 @@ func (c *Client) InstanceChangeVpc(args *InstanceChangeVpcArgs) error {
 // GetVpcSubnet - get multi instances vpc and subnet
 //
 // PARAMS:
-//      - args: the instanceId of bbc instances
+//   - args: the instanceId of bbc instances
+//
 // RETURNS:
-// 	   - *GetVpcSubnetResult: result of vpc and subnet
-//     - error: nil if success otherwise the specific error
+//   - *GetVpcSubnetResult: result of vpc and subnet
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetVpcSubnet(args *GetVpcSubnetArgs) (*GetVpcSubnetResult, error) {
 
 	jsonBytes, jsonErr := json.Marshal(args)
@@ -506,9 +527,10 @@ func (c *Client) GetVpcSubnet(args *GetVpcSubnetArgs) (*GetVpcSubnetResult, erro
 // BatchAddIP - Add ips to instance
 //
 // PARAMS:
-//      - args: the arguments to add ips to bbc instance
+//   - args: the arguments to add ips to bbc instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchAddIP(args *BatchAddIpArgs) (*BatchAddIpResponse, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -524,9 +546,10 @@ func (c *Client) BatchAddIP(args *BatchAddIpArgs) (*BatchAddIpResponse, error) {
 // BatchDelIP - Delete ips of instance
 //
 // PARAMS:
-//      - args: the arguments to add ips to bbc instance
+//   - args: the arguments to add ips to bbc instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchDelIP(args *BatchDelIpArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -542,9 +565,10 @@ func (c *Client) BatchDelIP(args *BatchDelIpArgs) error {
 // BatchAddIPCrossSubnet - Add ips to instance cross subnet
 //
 // PARAMS:
-//      - args: the arguments to add ips to bbc instance
+//   - args: the arguments to add ips to bbc instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchAddIPCrossSubnet(args *BatchAddIpCrossSubnetArgs) (*BatchAddIpResponse, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -560,10 +584,11 @@ func (c *Client) BatchAddIPCrossSubnet(args *BatchAddIpCrossSubnetArgs) (*BatchA
 // BindTags - bind an instance tags
 //
 // PARAMS:
-//     - instanceId: the id of the instance
-//     - args: tags of an instance to bind
+//   - instanceId: the id of the instance
+//   - args: tags of an instance to bind
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BindTags(instanceId string, args *BindTagsArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -579,10 +604,11 @@ func (c *Client) BindTags(instanceId string, args *BindTagsArgs) error {
 // UnbindTags - unbind an instance tags
 //
 // PARAMS:
-//     - instanceId: the id of the instance
-//     - args: tags of an instance to unbind
+//   - instanceId: the id of the instance
+//   - args: tags of an instance to unbind
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UnbindTags(instanceId string, args *UnbindTagsArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -598,8 +624,8 @@ func (c *Client) UnbindTags(instanceId string, args *UnbindTagsArgs) error {
 // ListFlavors - list all available flavors
 //
 // RETURNS:
-//     - *ListFlavorsResult: the result of list all flavors
-//     - error: nil if success otherwise the specific error
+//   - *ListFlavorsResult: the result of list all flavors
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListFlavors() (*ListFlavorsResult, error) {
 	return ListFlavors(c)
 }
@@ -607,10 +633,11 @@ func (c *Client) ListFlavors() (*ListFlavorsResult, error) {
 // GetFlavorDetail - get details of the specified flavor
 //
 // PARAMS:
-//     - flavorId: the id of the flavor
+//   - flavorId: the id of the flavor
+//
 // RETURNS:
-//     - *GetFlavorDetailResult: the detail of the specified flavor
-//     - error: nil if success otherwise the specific error
+//   - *GetFlavorDetailResult: the detail of the specified flavor
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetFlavorDetail(flavorId string) (*GetFlavorDetailResult, error) {
 	return GetFlavorDetail(c, flavorId)
 }
@@ -618,10 +645,11 @@ func (c *Client) GetFlavorDetail(flavorId string) (*GetFlavorDetailResult, error
 // GetFlavorRaid - get the RAID detail and disk size of the specified flavor
 //
 // PARAMS:
-//     - flavorId: the id of the flavor
+//   - flavorId: the id of the flavor
+//
 // RETURNS:
-//     - *GetFlavorRaidResult: the detail of the raid of the specified flavor
-//     - error: nil if success otherwise the specific error
+//   - *GetFlavorRaidResult: the detail of the raid of the specified flavor
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetFlavorRaid(flavorId string) (*GetFlavorRaidResult, error) {
 	return GetFlavorRaid(c, flavorId)
 }
@@ -629,10 +657,11 @@ func (c *Client) GetFlavorRaid(flavorId string) (*GetFlavorRaidResult, error) {
 // CreateImageFromInstanceId - create image from specified instance
 //
 // PARAMS:
-//     - args: the arguments to create image
+//   - args: the arguments to create image
+//
 // RETURNS:
-//     - *CreateImageResult: the result of create Image
-//     - error: nil if success otherwise the specific error
+//   - *CreateImageResult: the result of create Image
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateImageFromInstanceId(args *CreateImageArgs) (*CreateImageResult, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -645,13 +674,14 @@ func (c *Client) CreateImageFromInstanceId(args *CreateImageArgs) (*CreateImageR
 	return CreateImageFromInstanceId(c, args.ClientToken, body)
 }
 
-//ListImage - list all images
+// ListImage - list all images
 //
 // PARAMS:
-//     - args: the arguments to list all images
+//   - args: the arguments to list all images
+//
 // RETURNS:
-//     - *ListImageResult: the result of list all images
-//     - error: nil if success otherwise the specific error
+//   - *ListImageResult: the result of list all images
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListImage(args *ListImageArgs) (*ListImageResult, error) {
 	return ListImage(c, args)
 }
@@ -659,10 +689,11 @@ func (c *Client) ListImage(args *ListImageArgs) (*ListImageResult, error) {
 // GetImageDetail - get an image's detail info
 //
 // PARAMS:
-//     - imageId: the specific image ID
+//   - imageId: the specific image ID
+//
 // RETURNS:
-//     - *GetImageDetailResult: the result of get image's detail
-//     - error: nil if success otherwise the specific error
+//   - *GetImageDetailResult: the result of get image's detail
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetImageDetail(imageId string) (*GetImageDetailResult, error) {
 	return GetImageDetail(c, imageId)
 }
@@ -670,9 +701,10 @@ func (c *Client) GetImageDetail(imageId string) (*GetImageDetailResult, error) {
 // DeleteImage - delete an image
 //
 // PARAMS:
-//     - imageId: the specific image ID
+//   - imageId: the specific image ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteImage(imageId string) error {
 	return DeleteImage(c, imageId)
 }
@@ -680,10 +712,11 @@ func (c *Client) DeleteImage(imageId string) error {
 // GetOperationLog - get operation log
 //
 // PARAMS:
-//     - args: the arguments to get operation log
+//   - args: the arguments to get operation log
+//
 // RETURNS:
-//     - *GetOperationLogResult: results of getting operation log
-//     - error: nil if success otherwise the specific error
+//   - *GetOperationLogResult: results of getting operation log
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetOperationLog(args *GetOperationLogArgs) (*GetOperationLogResult, error) {
 	return GetOperationLog(c, args)
 }
@@ -691,10 +724,11 @@ func (c *Client) GetOperationLog(args *GetOperationLogArgs) (*GetOperationLogRes
 // CreateDeploySet - create a deploy set
 //
 // PARAMS:
-//     - args: the arguments to create a deploy set
+//   - args: the arguments to create a deploy set
+//
 // RETURNS:
-//     - *CreateDeploySetResult: results of creating a deploy set
-//     - error: nil if success otherwise the specific error
+//   - *CreateDeploySetResult: results of creating a deploy set
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateDeploySet(args *CreateDeploySetArgs) (*CreateDeploySetResult, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -710,18 +744,19 @@ func (c *Client) CreateDeploySet(args *CreateDeploySetArgs) (*CreateDeploySetRes
 // ListDeploySets - list all deploy sets
 //
 // RETURNS:
-//     - *ListDeploySetsResult: the result of list all deploy sets
-//     - error: nil if success otherwise the specific error
+//   - *ListDeploySetsResult: the result of list all deploy sets
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListDeploySets() (*ListDeploySetsResult, error) {
 	return ListDeploySets(c)
 }
 
 // ListDeploySets - list all deploy sets
 // PARAMS:
-//     - args: the arguments to filter
+//   - args: the arguments to filter
+//
 // RETURNS:
-//     - *ListDeploySetsResult: the result of list all deploy sets
-//     - error: nil if success otherwise the specific error
+//   - *ListDeploySetsResult: the result of list all deploy sets
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListDeploySetsPage(args *ListDeploySetsArgs) (*ListDeploySetsResult, error) {
 	return ListDeploySetsPage(c, args)
 }
@@ -729,10 +764,11 @@ func (c *Client) ListDeploySetsPage(args *ListDeploySetsArgs) (*ListDeploySetsRe
 // GetDeploySet - get details of the deploy set
 //
 // PARAMS:
-//     - deploySetId: the id of the deploy set
+//   - deploySetId: the id of the deploy set
+//
 // RETURNS:
-//     - *GetDeploySetResult: the detail of the deploy set
-//     - error: nil if success otherwise the specific error
+//   - *GetDeploySetResult: the detail of the deploy set
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetDeploySet(deploySetId string) (*DeploySetResult, error) {
 	return GetDeploySet(c, deploySetId)
 }
@@ -740,9 +776,10 @@ func (c *Client) GetDeploySet(deploySetId string) (*DeploySetResult, error) {
 // DeleteDeploySet - delete a deploy set
 //
 // PARAMS:
-//     - deploySetId: the id of the deploy set
+//   - deploySetId: the id of the deploy set
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteDeploySet(deploySetId string) error {
 	return DeleteDeploySet(c, deploySetId)
 }
@@ -750,9 +787,10 @@ func (c *Client) DeleteDeploySet(deploySetId string) error {
 // BindSecurityGroups - Bind Security Groups
 //
 // PARAMS:
-//     - args: the arguments of bind security groups
+//   - args: the arguments of bind security groups
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BindSecurityGroups(args *BindSecurityGroupsArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -769,9 +807,10 @@ func (c *Client) BindSecurityGroups(args *BindSecurityGroupsArgs) error {
 // UnBindSecurityGroups - UnBind Security Groups
 //
 // PARAMS:
-//     - args: the arguments of bind security groups
+//   - args: the arguments of bind security groups
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UnBindSecurityGroups(args *UnBindSecurityGroupsArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -787,11 +826,12 @@ func (c *Client) UnBindSecurityGroups(args *UnBindSecurityGroupsArgs) error {
 // ListFlavorZones - get the zone list of the specified flavor which can buy
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - flavorId: the id of the flavor
+//   - cli: the client agent which can perform sending request
+//   - flavorId: the id of the flavor
+//
 // RETURNS:
-//     - *ListZonesResult: the list of zone names
-//     - error: nil if success otherwise the specific error
+//   - *ListZonesResult: the list of zone names
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListFlavorZones(args *ListFlavorZonesArgs) (*ListZonesResult, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -807,11 +847,12 @@ func (c *Client) ListFlavorZones(args *ListFlavorZonesArgs) (*ListZonesResult, e
 // ListZoneFlavors - get the flavor detail of the specific zone
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - zoneName: the zone name
+//   - cli: the client agent which can perform sending request
+//   - zoneName: the zone name
+//
 // RETURNS:
-//     - *ListZoneResult: flavor detail of the specific zone
-//     - error: nil if success otherwise the specific error
+//   - *ListZoneResult: flavor detail of the specific zone
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListZoneFlavors(args *ListZoneFlavorsArgs) (*ListFlavorInfosResult, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -827,11 +868,12 @@ func (c *Client) ListZoneFlavors(args *ListZoneFlavorsArgs) (*ListFlavorInfosRes
 // GetCommonImage - get common flavor image list
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - flavorIds: the specific flavorIds, can be nil
+//   - cli: the client agent which can perform sending request
+//   - flavorIds: the specific flavorIds, can be nil
+//
 // RETURNS:
-//     - *GetImageDetailResult: the result of get image's detail
-//     - error: nil if success otherwise the specific error
+//   - *GetImageDetailResult: the result of get image's detail
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetCommonImage(args *GetFlavorImageArgs) (*GetImagesResult, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -847,11 +889,12 @@ func (c *Client) GetCommonImage(args *GetFlavorImageArgs) (*GetImagesResult, err
 // GetCustomImage - get user onwer flavor image list
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - flavorIds: the specific flavorIds, can be nil
+//   - cli: the client agent which can perform sending request
+//   - flavorIds: the specific flavorIds, can be nil
+//
 // RETURNS:
-//     - *GetImageDetailResult: the result of get image's detail
-//     - error: nil if success otherwise the specific error
+//   - *GetImageDetailResult: the result of get image's detail
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetCustomImage(args *GetFlavorImageArgs) (*GetImagesResult, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -867,10 +910,11 @@ func (c *Client) GetCustomImage(args *GetFlavorImageArgs) (*GetImagesResult, err
 // ShareImage - share an image
 //
 // PARAMS:
-//     - imageId: the specific image ID
-//     - args: the arguments to share an image
+//   - imageId: the specific image ID
+//   - args: the arguments to share an image
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ShareImage(imageId string, args *SharedUser) error {
 	return ShareImage(c, imageId, args)
 }
@@ -878,10 +922,11 @@ func (c *Client) ShareImage(imageId string, args *SharedUser) error {
 // UnShareImage - cancel share an image
 //
 // PARAMS:
-//     - imageId: the specific image ID
-//     - args: the arguments to cancel share an image
+//   - imageId: the specific image ID
+//   - args: the arguments to cancel share an image
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UnShareImage(imageId string, args *SharedUser) error {
 	return UnShareImage(c, imageId, args)
 }
@@ -889,10 +934,11 @@ func (c *Client) UnShareImage(imageId string, args *SharedUser) error {
 // GetImageSharedUser - get user list use this image
 //
 // PARAMS:
-//     - imageId: the specific image ID
+//   - imageId: the specific image ID
+//
 // RETURNS:
-//     - *api.GetImageSharedUserResult: the result of user list
-//     - error: nil if success otherwise the specific error
+//   - *api.GetImageSharedUserResult: the result of user list
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetImageSharedUser(imageId string) (*GetImageSharedUserResult, error) {
 	return GetImageSharedUser(c, imageId)
 }
@@ -900,22 +946,23 @@ func (c *Client) GetImageSharedUser(imageId string) (*GetImageSharedUserResult, 
 // RemoteCopyImage - copy a bbc image from other region
 //
 // PARAMS:
-//     - imageId: the specific image ID
-//     - args: the arguments to remote copy an image
+//   - imageId: the specific image ID
+//   - args: the arguments to remote copy an image
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RemoteCopyImage(imageId string, args *RemoteCopyImageArgs) error {
 	return RemoteCopyImage(c, imageId, args)
 }
 
-
 // RemoteCopyImageReturnImageIds - copy an image from other region
 //
 // PARAMS:
-//     - imageId: the specific image ID
-//     - args: the arguments to remote copy an image
+//   - imageId: the specific image ID
+//   - args: the arguments to remote copy an image
+//
 // RETURNS:
-//     - imageIds of destination region if success otherwise the specific error
+//   - imageIds of destination region if success otherwise the specific error
 func (c *Client) RemoteCopyImageReturnImageIds(imageId string, args *RemoteCopyImageArgs) (*RemoteCopyImageResult, error) {
 	return RemoteCopyImageReturnImageIds(c, imageId, args)
 }
@@ -923,9 +970,10 @@ func (c *Client) RemoteCopyImageReturnImageIds(imageId string, args *RemoteCopyI
 // CancelRemoteCopyImage - cancel a copy image from other region operation
 //
 // PARAMS:
-//     - imageId: the specific image ID
+//   - imageId: the specific image ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) CancelRemoteCopyImage(imageId string) error {
 	return CancelRemoteCopyImage(c, imageId)
 }
@@ -1029,10 +1077,11 @@ func (c *Client) GetRepairTaskRecord(args *TaskIdArgs) (*GetRepairRecords, error
 // ListRule - list the repair plat rules
 //
 // PARAMS:
-//     - args: the arguments of listing the repair plat rules
+//   - args: the arguments of listing the repair plat rules
+//
 // RETURNS:
-//     - *ListRuleResult: results of listing the repair plat rules
-//     - error: nil if success otherwise the specific error
+//   - *ListRuleResult: results of listing the repair plat rules
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListRule(args *ListRuleArgs) (*ListRuleResult, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1048,10 +1097,11 @@ func (c *Client) ListRule(args *ListRuleArgs) (*ListRuleResult, error) {
 // GetRuleDetail - list the repair plat rules
 //
 // PARAMS:
-//     - ruleId: the specified rule id
+//   - ruleId: the specified rule id
+//
 // RETURNS:
-//     - *Rule: results of the specified repair plat rule
-//     - error: nil if success otherwise the specific error
+//   - *Rule: results of the specified repair plat rule
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetRuleDetail(ruleId string) (*Rule, error) {
 	return GetRuleDetail(c, ruleId)
 }
@@ -1059,10 +1109,11 @@ func (c *Client) GetRuleDetail(ruleId string) (*Rule, error) {
 // CreateRule - create the repair plat rule
 //
 // PARAMS:
-//     - args: the arguments of creating the repair plat rule
+//   - args: the arguments of creating the repair plat rule
+//
 // RETURNS:
-//     - *CreateRuleResult: results of the id of the repair plat rule which is created
-//     - error: nil if success otherwise the specific error
+//   - *CreateRuleResult: results of the id of the repair plat rule which is created
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateRule(args *CreateRuleArgs) (*CreateRuleResult, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1078,9 +1129,10 @@ func (c *Client) CreateRule(args *CreateRuleArgs) (*CreateRuleResult, error) {
 // DeleteRule - delete the repair plat rule
 //
 // PARAMS:
-//     - args: the arguments of deleting the repair plat rule
+//   - args: the arguments of deleting the repair plat rule
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteRule(args *DeleteRuleArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1096,9 +1148,10 @@ func (c *Client) DeleteRule(args *DeleteRuleArgs) error {
 // DisableRule - disable the repair plat rule
 //
 // PARAMS:
-//     - args: the arguments of disabling the repair plat rule
+//   - args: the arguments of disabling the repair plat rule
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DisableRule(args *DisableRuleArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1114,9 +1167,10 @@ func (c *Client) DisableRule(args *DisableRuleArgs) error {
 // EnableRule - enable the repair plat rule
 //
 // PARAMS:
-//     - args: the arguments of enabling the repair plat rule
+//   - args: the arguments of enabling the repair plat rule
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) EnableRule(args *EnableRuleArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1132,9 +1186,10 @@ func (c *Client) EnableRule(args *EnableRuleArgs) error {
 // BatchCreateAutoRenewRules - Batch Create AutoRenew Rules
 //
 // PARAMS:
-//      - args: the arguments to batch create autorenew rules
+//   - args: the arguments to batch create autorenew rules
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchCreateAutoRenewRules(args *BbcCreateAutoRenewArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1150,9 +1205,10 @@ func (c *Client) BatchCreateAutoRenewRules(args *BbcCreateAutoRenewArgs) error {
 // BatchDeleteAutoRenewRules - Batch Delete AutoRenew Rules
 //
 // PARAMS:
-//      - args: the arguments to batch delete autorenew rules
+//   - args: the arguments to batch delete autorenew rules
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchDeleteAutoRenewRules(args *BbcDeleteAutoRenewArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1172,9 +1228,10 @@ func (c *Client) DeleteInstanceIngorePayment(args *DeleteInstanceIngorePaymentAr
 // DeleteRecycledInstance - delete an recycled instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
+//   - instanceId: the specific instance ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteRecycledInstance(instanceId string) error {
 	return DeleteRecycledInstance(c, instanceId)
 }
@@ -1182,10 +1239,11 @@ func (c *Client) DeleteRecycledInstance(instanceId string) error {
 // ListCDSVolume - list all cds volume with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all cds
+//   - args: the arguments to list all cds
+//
 // RETURNS:
-//     - *api.ListCDSVolumeResult: the result of list all CDS volume
-//     - error: nil if success otherwise the specific error
+//   - *api.ListCDSVolumeResult: the result of list all CDS volume
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListCDSVolume(queryArgs *ListCDSVolumeArgs) (*ListCDSVolumeResult, error) {
 	return ListCDSVolume(c, queryArgs)
 }
@@ -1193,8 +1251,8 @@ func (c *Client) ListCDSVolume(queryArgs *ListCDSVolumeArgs) (*ListCDSVolumeResu
 // GetBbcStockWithDeploySet - get the bbc's stock with deploySet
 //
 // RETURNS:
-//     - *GetBbcStocksResult: the result of the bbc's stock
-//     - error: nil if success otherwise the specific error
+//   - *GetBbcStocksResult: the result of the bbc's stock
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetBbcStockWithDeploySet(args *GetBbcStockArgs) (*GetBbcStocksResult, error) {
 	return GetStockWithDeploySet(c, args)
 }
@@ -1202,8 +1260,8 @@ func (c *Client) GetBbcStockWithDeploySet(args *GetBbcStockArgs) (*GetBbcStocksR
 // ListInstanceByInstanceIds - list bbc detail info by instanceId
 //
 // RETURNS:
-//		- *ListInstancesResult: the result of list bbc detail info
-//		- error: nil if success otherwise the specific error
+//   - *ListInstancesResult: the result of list bbc detail info
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListInstanceByInstanceIds(args *ListInstanceByInstanceIdArgs) (*ListInstancesResult, error) {
 	return ListInstanceByInstanceIds(c, args)
 }

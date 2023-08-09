@@ -27,11 +27,12 @@ import (
 // CreateAppIpGroup - create an ip group
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: parameters to create IpGroup
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to create IpGroup
+//
 // RETURNS:
-//     - *CreateAppIpGroupResult: the result of create IpGroup, contains new IpGroup's ID
-//     - error: nil if ok otherwise the specific error
+//   - *CreateAppIpGroupResult: the result of create IpGroup, contains new IpGroup's ID
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateAppIpGroup(blbId string, args *CreateAppIpGroupArgs) (*CreateAppIpGroupResult, error) {
 	if args == nil {
 		args = &CreateAppIpGroupArgs{}
@@ -52,10 +53,11 @@ func (c *Client) CreateAppIpGroup(blbId string, args *CreateAppIpGroupArgs) (*Cr
 // UpdateAppIpGroup - update an ip group
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: parameters to update an ip group
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to update an ip group
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateAppIpGroup(blbId string, args *UpdateAppIpGroupArgs) error {
 	if args == nil || len(args.IpGroupId) == 0 {
 		return fmt.Errorf("unset ip group id")
@@ -72,11 +74,12 @@ func (c *Client) UpdateAppIpGroup(blbId string, args *UpdateAppIpGroupArgs) erro
 // DescribeAppIpGroup - describe all ip groups
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: parameters to describe all ip groups
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to describe all ip groups
+//
 // RETURNS:
-//     - *DescribeAppIpGroupResult: the result of describe all ip groups
-//     - error: nil if ok otherwise the specific error
+//   - *DescribeAppIpGroupResult: the result of describe all ip groups
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DescribeAppIpGroup(blbId string, args *DescribeAppIpGroupArgs) (*DescribeAppIpGroupResult, error) {
 	if args == nil {
 		args = &DescribeAppIpGroupArgs{}
@@ -106,10 +109,11 @@ func (c *Client) DescribeAppIpGroup(blbId string, args *DescribeAppIpGroupArgs) 
 // DeleteAppIpGroup - delete an ip group
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: parameters to delete an ip group
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to delete an ip group
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteAppIpGroup(blbId string, args *DeleteAppIpGroupArgs) error {
 	if args == nil || len(args.IpGroupId) == 0 {
 		return fmt.Errorf("unset ip group id")
@@ -127,10 +131,11 @@ func (c *Client) DeleteAppIpGroup(blbId string, args *DeleteAppIpGroupArgs) erro
 // CreateAppIpGroupBackendPolicy - create an ip group backend policy
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: parameters to create an ip group backend policy
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to create an ip group backend policy
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateAppIpGroupBackendPolicy(blbId string, args *CreateAppIpGroupBackendPolicyArgs) error {
 	if args == nil || len(args.IpGroupId) == 0 {
 		return fmt.Errorf("unset ip group id")
@@ -155,11 +160,12 @@ func (c *Client) CreateAppIpGroupBackendPolicy(blbId string, args *CreateAppIpGr
 // UpdateAppIpGroupBackendPolicy - update ip group backend policy
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: parameters to update ip group backend policy
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to update ip group backend policy
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
-func (c *Client) UpdateAppIpGroupBackendPolicy (blbId string, args *UpdateAppIpGroupBackendPolicyArgs) error {
+//   - error: nil if ok otherwise the specific error
+func (c *Client) UpdateAppIpGroupBackendPolicy(blbId string, args *UpdateAppIpGroupBackendPolicyArgs) error {
 	if args == nil || len(args.IpGroupId) == 0 {
 		return fmt.Errorf("unset ip group id")
 	}
@@ -179,10 +185,11 @@ func (c *Client) UpdateAppIpGroupBackendPolicy (blbId string, args *UpdateAppIpG
 // DeleteAppIpGroupBackendPolicy - delete an ip group backend policy
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: parameters to delete ip group backend policies
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to delete ip group backend policies
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteAppIpGroupBackendPolicy(blbId string, args *DeleteAppIpGroupBackendPolicyArgs) error {
 	if args == nil || len(args.IpGroupId) == 0 {
 		return fmt.Errorf("unset ip group id")
@@ -200,10 +207,11 @@ func (c *Client) DeleteAppIpGroupBackendPolicy(blbId string, args *DeleteAppIpGr
 // CreateAppIpGroupMember - create ip group members
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: parameters to create ip group members
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to create ip group members
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateAppIpGroupMember(blbId string, args *CreateAppIpGroupMemberArgs) error {
 	if args == nil || len(args.IpGroupId) == 0 {
 		return fmt.Errorf("unset ip group id")
@@ -220,10 +228,11 @@ func (c *Client) CreateAppIpGroupMember(blbId string, args *CreateAppIpGroupMemb
 // UpdateAppIpGroupMember - update ip group members
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: parameters to update ip group members
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to update ip group members
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateAppIpGroupMember(blbId string, args *UpdateAppIpGroupMemberArgs) error {
 	if args == nil || len(args.IpGroupId) == 0 {
 		return fmt.Errorf("unset ip group id")
@@ -240,11 +249,12 @@ func (c *Client) UpdateAppIpGroupMember(blbId string, args *UpdateAppIpGroupMemb
 // DescribeAppIpGroupMember - describe ip group members
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: parameters to describe ip group members
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to describe ip group members
+//
 // RETURNS:
-//     - *DescribeAppIpGroupMemberResult: the result of describe ip group members
-//     - error: nil if ok otherwise the specific error
+//   - *DescribeAppIpGroupMemberResult: the result of describe ip group members
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DescribeAppIpGroupMember(blbId string, args *DescribeAppIpGroupMemberArgs) (*DescribeAppIpGroupMemberResult, error) {
 	if args == nil || len(args.IpGroupId) == 0 {
 		return nil, fmt.Errorf("unset ip group id")
@@ -270,10 +280,11 @@ func (c *Client) DescribeAppIpGroupMember(blbId string, args *DescribeAppIpGroup
 // DeleteAppIpGroupMember - delete ip group members
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: parameters to delete ip group members
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to delete ip group members
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteAppIpGroupMember(blbId string, args *DeleteAppIpGroupMemberArgs) error {
 	if args == nil || len(args.IpGroupId) == 0 {
 		return fmt.Errorf("unset ip group id")
@@ -287,5 +298,3 @@ func (c *Client) DeleteAppIpGroupMember(blbId string, args *DeleteAppIpGroupMemb
 		WithBody(args).
 		Do()
 }
-
-

@@ -25,10 +25,11 @@ import (
 // CreateCert - create a cert with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create a cert
+//   - args: the arguments to create a cert
+//
 // RETURNS:
-//     - *CreateCertResult: the result of create Cert, contains new Cert's ID
-//     - error: nil if success otherwise the specific error
+//   - *CreateCertResult: the result of create Cert, contains new Cert's ID
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateCert(args *CreateCertArgs) (*CreateCertResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -60,10 +61,11 @@ func (c *Client) CreateCert(args *CreateCertArgs) (*CreateCertResult, error) {
 // UpdateCertName - update a cert's name
 //
 // PARAMS:
-//     - id: the specific cert's ID
-//     - args: the arguments to update a cert's name
+//   - id: the specific cert's ID
+//   - args: the arguments to update a cert's name
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateCertName(id string, args *UpdateCertNameArgs) error {
 	if args == nil || args.CertName == "" {
 		return fmt.Errorf("unset CertName")
@@ -80,8 +82,8 @@ func (c *Client) UpdateCertName(id string, args *UpdateCertNameArgs) error {
 // ListCerts - list all certs
 //
 // RETURNS:
-//     - *ListCertResult: the result of list all certs, contains all certs' meta
-//     - error: nil if success otherwise the specific error
+//   - *ListCertResult: the result of list all certs, contains all certs' meta
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListCerts() (*ListCertResult, error) {
 	result := &ListCertResult{}
 	err := bce.NewRequestBuilder(c).
@@ -96,10 +98,11 @@ func (c *Client) ListCerts() (*ListCertResult, error) {
 // GetCertMeta - get a specific cert's meta
 //
 // PARAMS:
-//     - id: the specific cert's ID
+//   - id: the specific cert's ID
+//
 // RETURNS:
-//     - *CertificateMeta: the specific cert's meta with
-//     - error: nil if success otherwise the specific error
+//   - *CertificateMeta: the specific cert's meta with
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetCertMeta(id string) (*CertificateMeta, error) {
 	result := &CertificateMeta{}
 	err := bce.NewRequestBuilder(c).
@@ -114,9 +117,10 @@ func (c *Client) GetCertMeta(id string) (*CertificateMeta, error) {
 // DeleteCert - delete a specific cert
 //
 // PARAMS:
-//     - id: the specific cert's ID
+//   - id: the specific cert's ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteCert(id string) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
@@ -127,10 +131,11 @@ func (c *Client) DeleteCert(id string) error {
 // UpdateCertData - update a specific cert's data, include update key
 //
 // PARAMS:
-//     - id: the specific cert's ID
-//     - args: the arguments to update a specific cert
+//   - id: the specific cert's ID
+//   - args: the arguments to update a specific cert
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateCertData(id string, args *UpdateCertDataArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")

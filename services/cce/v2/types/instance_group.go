@@ -15,7 +15,6 @@ const (
 )
 
 type InstanceGroupSpec struct {
-
 	CCEInstanceGroupID string `json:"cceInstanceGroupID,omitempty" `
 	InstanceGroupName  string `json:"instanceGroupName" `
 
@@ -31,7 +30,7 @@ type InstanceGroupSpec struct {
 	CleanPolicy CleanPolicy `json:"cleanPolicy,omitempty" `
 
 	InstanceTemplate InstanceTemplate `json:"instanceTemplate" `
-	Replicas int `json:"replicas" `
+	Replicas         int              `json:"replicas" `
 
 	ClusterAutoscalerSpec *ClusterAutoscalerSpec `json:"clusterAutoscalerSpec,omitempty" `
 }
@@ -49,21 +48,20 @@ type UpdatePolicy string
 type CleanPolicy string
 
 type ClusterAutoscalerSpec struct {
-	Enabled bool `json:"enabled" `
-	MinReplicas int `json:"minReplicas" `
-	MaxReplicas int `json:"maxReplicas" `
-	ScalingGroupPriority int `json:"scalingGroupPriority" `
+	Enabled              bool `json:"enabled" `
+	MinReplicas          int  `json:"minReplicas" `
+	MaxReplicas          int  `json:"maxReplicas" `
+	ScalingGroupPriority int  `json:"scalingGroupPriority" `
 }
 
-
 type InstanceGroupStatus struct {
-	ReadyReplicas int `json:"readyReplicas" `
+	ReadyReplicas       int                 `json:"readyReplicas" `
 	UndeliveredMachines UndeliveredMachines `json:"undeliveredMachines,omitempty" `
-	Pause *PauseDetail `json:"pause,omitempty" `
+	Pause               *PauseDetail        `json:"pause,omitempty" `
 }
 
 type UndeliveredMachines struct {
-	FailedMachines []string `json:"failedMachines,omitempty"`
+	FailedMachines  []string `json:"failedMachines,omitempty"`
 	PendingMachines []string `json:"pendingMachines,omitempty"`
 }
 
@@ -73,14 +71,14 @@ type PauseDetail struct {
 }
 
 type LabelSelector struct {
-	MatchLabels map[string]string `json:"matchLabels,omitempty" protobuf:"bytes,1,rep,name=matchLabels"`
+	MatchLabels      map[string]string          `json:"matchLabels,omitempty" protobuf:"bytes,1,rep,name=matchLabels"`
 	MatchExpressions []LabelSelectorRequirement `json:"matchExpressions,omitempty" protobuf:"bytes,2,rep,name=matchExpressions"`
 }
 
 type LabelSelectorRequirement struct {
-	Key string `json:"key" patchStrategy:"merge" patchMergeKey:"key" protobuf:"bytes,1,opt,name=key"`
+	Key      string                `json:"key" patchStrategy:"merge" patchMergeKey:"key" protobuf:"bytes,1,opt,name=key"`
 	Operator LabelSelectorOperator `json:"operator" protobuf:"bytes,2,opt,name=operator,casttype=LabelSelectorOperator"`
-	Values []string `json:"values,omitempty" protobuf:"bytes,3,rep,name=values"`
+	Values   []string              `json:"values,omitempty" protobuf:"bytes,3,rep,name=values"`
 }
 
 type LabelSelectorOperator string

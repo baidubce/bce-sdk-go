@@ -30,10 +30,11 @@ import (
 // CreateBlb - create lb
 //
 // PARAMS:
-//     - args: the lb create args
+//   - args: the lb create args
+//
 // RETURNS:
-//     - *api.CreateBlbResult: the create lb result
-//     - error: nil if ok otherwise the specific error
+//   - *api.CreateBlbResult: the create lb result
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateBlb(args *api.CreateBlbArgs) (*api.CreateBlbResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -49,10 +50,11 @@ func (c *Client) CreateBlb(args *api.CreateBlbArgs) (*api.CreateBlbResult, error
 // DeleteBlb - delete lb
 //
 // PARAMS:
-//     - blbId: lb id
+//   - blbId: lb id
+//
 // RETURNS:
-//     - *api.DeleteBlbResult: delete lb result
-//     - error: nil if ok otherwise the specific error
+//   - *api.DeleteBlbResult: delete lb result
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteBlb(blbId string) (*api.DeleteBlbResult, error) {
 	if blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -71,18 +73,19 @@ func (c *Client) DeleteBlb(blbId string) (*api.DeleteBlbResult, error) {
 // GetBlbList - get lb list
 //
 // PARAMS:
-//     - lbType: lb type
-//     - order: list order
-//     - orderBy: order by
-//     - keyword: the key word
-//     - keywordType: key word type
-//     - status: lb status
-//     - region: lb's region
-//	   - pageNo: page NO
-//	   - pageSize: page size
+//   - lbType: lb type
+//   - order: list order
+//   - orderBy: order by
+//   - keyword: the key word
+//   - keywordType: key word type
+//   - status: lb status
+//   - region: lb's region
+//   - pageNo: page NO
+//   - pageSize: page size
+//
 // RETURNS:
-//     - *api.GetBlbListResult: the list of lb
-//     - error: nil if ok otherwise the specific error
+//   - *api.GetBlbListResult: the list of lb
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetBlbList(lbType, order, orderBy, keyword, keywordType, status, region string,
 	pageNo, pageSize int) (*api.GetBlbListResult, error) {
 
@@ -129,10 +132,11 @@ func (c *Client) GetBlbList(lbType, order, orderBy, keyword, keywordType, status
 // GetBlbDetail - lb detail
 //
 // PARAMS:
-//     - blbId: lb id
+//   - blbId: lb id
+//
 // RETURNS:
-//     - *api.BlbInstanceVo: lb info
-//     - error: nil if ok otherwise the specific error
+//   - *api.BlbInstanceVo: lb info
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetBlbDetail(blbId string) (*api.BlbInstanceVo, error) {
 	if blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -151,11 +155,12 @@ func (c *Client) GetBlbDetail(blbId string) (*api.BlbInstanceVo, error) {
 // UpdateBlb - update lb
 //
 // PARAMS:
-//     - blbId: lb id
-//     - args: the vm image list args
+//   - blbId: lb id
+//   - args: the vm image list args
+//
 // RETURNS:
-//     - *api.UpdateBlbResult: update lb result
-//     - error: nil if ok otherwise the specific error
+//   - *api.UpdateBlbResult: update lb result
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateBlb(blbId string, args *api.UpdateBlbArgs) (*api.UpdateBlbResult, error) {
 	if blbId == "" || args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -171,11 +176,12 @@ func (c *Client) UpdateBlb(blbId string, args *api.UpdateBlbArgs) (*api.UpdateBl
 // CreateBlbMonitorPort - create lb monitor port
 //
 // PARAMS:
-//     - blbId: lb id
-//     - args: create lb monitor port args
+//   - blbId: lb id
+//   - args: create lb monitor port args
+//
 // RETURNS:
-//     - *api.BlbMonitorResult: create lb monitor port result
-//     - error: nil if ok otherwise the specific error
+//   - *api.BlbMonitorResult: create lb monitor port result
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateBlbMonitorPort(blbId string, args *api.BlbMonitorArgs) (*api.BlbMonitorResult, error) {
 	if blbId == "" || args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -191,11 +197,12 @@ func (c *Client) CreateBlbMonitorPort(blbId string, args *api.BlbMonitorArgs) (*
 // DeleteBlbMonitorPort - delete lb monitor port
 //
 // PARAMS:
-//     - blbId: lb id
-//     - args: delete lb monitor port args
+//   - blbId: lb id
+//   - args: delete lb monitor port args
+//
 // RETURNS:
-//     - *api.BlbMonitorResult: delete lb monitor result
-//     - error: nil if ok otherwise the specific error
+//   - *api.BlbMonitorResult: delete lb monitor result
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteBlbMonitorPort(blbId string, args *[]api.Port) (*api.BlbMonitorResult, error) {
 	if blbId == "" || args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -211,12 +218,13 @@ func (c *Client) DeleteBlbMonitorPort(blbId string, args *[]api.Port) (*api.BlbM
 // GetBlbMonitorPortList - get lb's monitor port list
 //
 // PARAMS:
-//     - blbId: lb id
-//     - pageNo: page no
-//     - pageSize: page size
+//   - blbId: lb id
+//   - pageNo: page no
+//   - pageSize: page size
+//
 // RETURNS:
-//     - *api.BlbMonitorListResult: the list of lb monitor ports
-//     - error: nil if ok otherwise the specific error
+//   - *api.BlbMonitorListResult: the list of lb monitor ports
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetBlbMonitorPortList(blbId string, pageNo, pageSize int) (*api.BlbMonitorListResult, error) {
 	if blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -242,11 +250,12 @@ func (c *Client) GetBlbMonitorPortList(blbId string, pageNo, pageSize int) (*api
 // UpdateBlbMonitorPort - update lb monitor port
 //
 // PARAMS:
-//     - blbId: lb id
-//     - args: monitor info args
+//   - blbId: lb id
+//   - args: monitor info args
+//
 // RETURNS:
-//     - *api.BlbMonitorResult: update lb monitor result
-//     - error: nil if ok otherwise the specific error
+//   - *api.BlbMonitorResult: update lb monitor result
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateBlbMonitorPort(blbId string, args *api.BlbMonitorArgs) (*api.BlbMonitorResult, error) {
 	if blbId == "" || args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -262,12 +271,13 @@ func (c *Client) UpdateBlbMonitorPort(blbId string, args *api.BlbMonitorArgs) (*
 // GetBlbMonitorPortDetails - get lb monitor port detail
 //
 // PARAMS:
-//     - blbId: lb id
-//     - protocol: protocol
-//     - port: port
+//   - blbId: lb id
+//   - protocol: protocol
+//   - port: port
+//
 // RETURNS:
-//     - *api.BlbMonitorArgs: lb monitor info result
-//     - error: nil if ok otherwise the specific error
+//   - *api.BlbMonitorArgs: lb monitor info result
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetBlbMonitorPortDetails(blbId string, protocol api.Protocol, port int) (*api.BlbMonitorArgs, error) {
 	if blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -294,10 +304,11 @@ func (c *Client) GetBlbMonitorPortDetails(blbId string, protocol api.Protocol, p
 // BatchCreateBlb - batch create lb
 //
 // PARAMS:
-//     - args: batch create lb args
+//   - args: batch create lb args
+//
 // RETURNS:
-//     - *api.BatchCreateBlbResult: the result of batch create lb
-//     - error: nil if ok otherwise the specific error
+//   - *api.BatchCreateBlbResult: the result of batch create lb
+//   - error: nil if ok otherwise the specific error
 func (c *Client) BatchCreateBlb(args *api.BatchCreateBlbArgs) (*api.BatchCreateBlbResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -313,10 +324,11 @@ func (c *Client) BatchCreateBlb(args *api.BatchCreateBlbArgs) (*api.BatchCreateB
 // BatchDeleteBlb - batch delete lb
 //
 // PARAMS:
-//     - blbIdList: the list of lb
+//   - blbIdList: the list of lb
+//
 // RETURNS:
-//     - *api.BatchDeleteBlbResult: the result of batch delete lb
-//     - error: nil if ok otherwise the specific error
+//   - *api.BatchDeleteBlbResult: the result of batch delete lb
+//   - error: nil if ok otherwise the specific error
 func (c *Client) BatchDeleteBlb(blbIdList []string) (*api.BatchDeleteBlbResult, error) {
 	if blbIdList == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -332,11 +344,12 @@ func (c *Client) BatchDeleteBlb(blbIdList []string) (*api.BatchDeleteBlbResult, 
 // BatchCreateBlbMonitor - batch create lb monitor
 //
 // PARAMS:
-//     - blbId: lb id
-//     - args: batch create lb monitor args
+//   - blbId: lb id
+//   - args: batch create lb monitor args
+//
 // RETURNS:
-//     - *api.BatchCreateBlbMonitorResult: the result of batch create lb nonitor
-//     - error: nil if ok otherwise the specific error
+//   - *api.BatchCreateBlbMonitorResult: the result of batch create lb nonitor
+//   - error: nil if ok otherwise the specific error
 func (c *Client) BatchCreateBlbMonitor(blbId string, args *api.BatchCreateBlbMonitorArg) (*api.BatchCreateBlbMonitorResult, error) {
 	if blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -352,12 +365,13 @@ func (c *Client) BatchCreateBlbMonitor(blbId string, args *api.BatchCreateBlbMon
 // GetBlbBackendPodList - get lb backend list
 //
 // PARAMS:
-//     - blbId: lb id
-//     - pageNo: page NO
-//     - pageSize: page size
+//   - blbId: lb id
+//   - pageNo: page NO
+//   - pageSize: page size
+//
 // RETURNS:
-//     - *api.GetBlbBackendPodListResult: the result of lb backend list
-//     - error: nil if ok otherwise the specific error
+//   - *api.GetBlbBackendPodListResult: the result of lb backend list
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetBlbBackendPodList(blbId string, pageNo, pageSize int) (*api.GetBlbBackendPodListResult, error) {
 	if blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -384,14 +398,15 @@ func (c *Client) GetBlbBackendPodList(blbId string, pageNo, pageSize int) (*api.
 // GetBlbBackendBindingStsList - get lb backend's statefulset list
 //
 // PARAMS:
-//     - blbId: lb id
-//     - keyword: the key word
-//     - keywordType: key word type
-//	   - pageNo: page NO
-//	   - pageSize: page size
+//   - blbId: lb id
+//   - keyword: the key word
+//   - keywordType: key word type
+//   - pageNo: page NO
+//   - pageSize: page size
+//
 // RETURNS:
-//     - *api.GetBlbBackendBindingStsListResult: the list of sts result
-//     - error: nil if ok otherwise the specific error
+//   - *api.GetBlbBackendBindingStsListResult: the list of sts result
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetBlbBackendBindingStsList(blbId string, pageNo, pageSize int, keywordType, keyword string) (*api.GetBlbBackendBindingStsListResult, error) {
 	if blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -426,11 +441,12 @@ func (c *Client) GetBlbBackendBindingStsList(blbId string, pageNo, pageSize int,
 // GetBlbBindingPodListWithSts - image list
 //
 // PARAMS:
-//     - blbId: lb id
-//     - stsName: sts name
+//   - blbId: lb id
+//   - stsName: sts name
+//
 // RETURNS:
-//     - *api.Backends: the list of backend
-//     - error: nil if ok otherwise the specific error
+//   - *api.Backends: the list of backend
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetBlbBindingPodListWithSts(blbId, stsName string) (*[]api.Backends, error) {
 	if blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -455,11 +471,12 @@ func (c *Client) GetBlbBindingPodListWithSts(blbId, stsName string) (*[]api.Back
 // CreateBlbBinding - create lb binding
 //
 // PARAMS:
-//     - blbId: lb id
-//     - args: create lb binding args
+//   - blbId: lb id
+//   - args: create lb binding args
+//
 // RETURNS:
-//     - *api.CreateBlbBindingResult: the result of lb binding
-//     - error: nil if ok otherwise the specific error
+//   - *api.CreateBlbBindingResult: the result of lb binding
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateBlbBinding(blbId string, args *api.CreateBlbBindingArgs) (*api.CreateBlbBindingResult, error) {
 	if blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -475,11 +492,12 @@ func (c *Client) CreateBlbBinding(blbId string, args *api.CreateBlbBindingArgs) 
 // DeleteBlbBindPod - delete lb bind pod
 //
 // PARAMS:
-//     - blbId: lb id
-//     - args: delete lb bind pod args
+//   - blbId: lb id
+//   - args: delete lb bind pod args
+//
 // RETURNS:
-//     - *api.DeleteBlbBindPodResult: the result of delete lb pod
-//     - error: nil if ok otherwise the specific error
+//   - *api.DeleteBlbBindPodResult: the result of delete lb pod
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteBlbBindPod(blbId string, args *api.DeleteBlbBindPodArgs) (*api.DeleteBlbBindPodResult, error) {
 	if blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -495,11 +513,12 @@ func (c *Client) DeleteBlbBindPod(blbId string, args *api.DeleteBlbBindPodArgs) 
 // UpdateBlbBindPodWeight - update bind pod weight
 //
 // PARAMS:
-//     - blbId: lb id
-//     - args: update bind pod weight args
+//   - blbId: lb id
+//   - args: update bind pod weight args
+//
 // RETURNS:
-//     - *api.UpdateBindPodWeightResult: the result of update bind pod weight
-//     - error: nil if ok otherwise the specific error
+//   - *api.UpdateBindPodWeightResult: the result of update bind pod weight
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateBlbBindPodWeight(blbId string, args *api.UpdateBindPodWeightArgs) (*api.UpdateBindPodWeightResult, error) {
 	if blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -515,15 +534,16 @@ func (c *Client) UpdateBlbBindPodWeight(blbId string, args *api.UpdateBindPodWei
 // GetBlbMetrics - get lb metrics
 //
 // PARAMS:
-//     - blbId: lb id
-//     - ipType: ip type
-//     - port: port
-//     - serviceProviderStr: service Provider
-//     - offsetInSeconds:  offset Seconds
-//     - metricsType: metrics Type
+//   - blbId: lb id
+//   - ipType: ip type
+//   - port: port
+//   - serviceProviderStr: service Provider
+//   - offsetInSeconds:  offset Seconds
+//   - metricsType: metrics Type
+//
 // RETURNS:
-//     - *api.ServiceMetricsResult: the list of vm images
-//     - error: nil if ok otherwise the specific error
+//   - *api.ServiceMetricsResult: the list of vm images
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetBlbMetrics(blbId, ipType, port, serviceProviderStr string, start, end, stepInMin int, metricsType api.MetricsType) (*api.ServiceMetricsResult, error) {
 	if blbId == "" {
 		return nil, fmt.Errorf("please set argments")

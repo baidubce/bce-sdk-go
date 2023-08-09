@@ -17,22 +17,29 @@
 // Package log implements the log facilities for BCE. It supports log to stderr, stdout as well as
 // log to file with rotating. It is safe to be called by multiple goroutines.
 // By using the package level function to use the default logger:
-//     log.SetLogHandler(log.STDOUT | log.FILE) // default is log to stdout
-//     log.SetLogDir("/tmp")                    // default is /tmp
-//     log.SetRotateType(log.ROTATE_DAY)        // default is log.HOUR
-//     log.SetRotateSize(1 << 30)               // default is 1GB
-//     log.SetLogLevel(log.INFO)                // default is log.DEBUG
-//     log.Debug(1, 1.2, "a")
-//     log.Debugln(1, 1.2, "a")
-//     log.Debugf(1, 1.2, "a")
+//
+//	log.SetLogHandler(log.STDOUT | log.FILE) // default is log to stdout
+//	log.SetLogDir("/tmp")                    // default is /tmp
+//	log.SetRotateType(log.ROTATE_DAY)        // default is log.HOUR
+//	log.SetRotateSize(1 << 30)               // default is 1GB
+//	log.SetLogLevel(log.INFO)                // default is log.DEBUG
+//	log.Debug(1, 1.2, "a")
+//	log.Debugln(1, 1.2, "a")
+//	log.Debugf(1, 1.2, "a")
+//
 // User can also create new logger without using the default logger:
-//     customLogger := log.NewLogger()
-//     customLogger.SetLogHandler(log.FILE)
-//     customLogger.Debug(1, 1.2, "a")
+//
+//	customLogger := log.NewLogger()
+//	customLogger.SetLogHandler(log.FILE)
+//	customLogger.Debug(1, 1.2, "a")
+//
 // The log format can also support custom setting by using the following interface:
-//     log.SetLogFormat([]string{log.FMT_LEVEL, log.FMT_TIME, log.FMT_MSG})
+//
+//	log.SetLogFormat([]string{log.FMT_LEVEL, log.FMT_TIME, log.FMT_MSG})
+//
 // Most of the cases just use the default format is enough:
-//     []string{FMT_LEVEL, FMT_LTIME, FMT_LOCATION, FMT_MSG}
+//
+//	[]string{FMT_LEVEL, FMT_LTIME, FMT_LOCATION, FMT_MSG}
 package log
 
 import (

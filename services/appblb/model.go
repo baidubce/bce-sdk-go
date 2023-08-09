@@ -256,7 +256,7 @@ type ListenerModel struct {
 }
 
 type PortTypeModel struct {
-	Port int `json:"port"`
+	Port int    `json:"port"`
 	Type string `json:"type"`
 }
 
@@ -277,7 +277,7 @@ type DescribeLoadBalancerDetailResult struct {
 	Layer7ClusterId string           `json:"layer7ClusterId"`
 	Listener        []ListenerModel  `json:"listener"`
 	Tags            []model.TagModel `json:"tags"`
-	EipRouteType	string			 `json:"eipRouteType"`
+	EipRouteType    string           `json:"eipRouteType"`
 }
 
 type CreateAppTCPListenerArgs struct {
@@ -288,10 +288,10 @@ type CreateAppTCPListenerArgs struct {
 }
 
 type CreateAppUDPListenerArgs struct {
-	UdpSessionTimeout   int    `json:"udpSessionTimeout,omitempty"`
-	ListenerPort        uint16 `json:"listenerPort"`
-	Scheduler    		string `json:"scheduler"`
-	ClientToken  		string `json:"-"`
+	UdpSessionTimeout int    `json:"udpSessionTimeout,omitempty"`
+	ListenerPort      uint16 `json:"listenerPort"`
+	Scheduler         string `json:"scheduler"`
+	ClientToken       string `json:"-"`
 }
 
 type CreateAppHTTPListenerArgs struct {
@@ -510,9 +510,9 @@ type DescribeAppAllListenersResult struct {
 }
 
 type DeleteAppListenersArgs struct {
-	ClientToken string   `json:"-"`
-	PortList    []uint16 `json:"portList"`
-	PortTypeList    []PortTypeModel `json:"portTypeList"`
+	ClientToken  string          `json:"-"`
+	PortList     []uint16        `json:"portList"`
+	PortTypeList []PortTypeModel `json:"portTypeList"`
 }
 
 type AppRule struct {
@@ -560,7 +560,7 @@ type DeletePolicysArgs struct {
 	ClientToken  string   `json:"-"`
 	Port         uint16   `json:"port"`
 	PolicyIdList []string `json:"policyIdList"`
-	Type         string      `json:"type"`
+	Type         string   `json:"type"`
 }
 
 type CreateAppIpGroupArgs struct {

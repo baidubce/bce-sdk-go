@@ -28,12 +28,13 @@ import (
 // CreateImageFromInstanceId - create image from specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - clientToken: idempotent token,  an ASCII string no longer than 64 bits
-//     - reqBody: http request body
+//   - cli: the client agent which can perform sending request
+//   - clientToken: idempotent token,  an ASCII string no longer than 64 bits
+//   - reqBody: http request body
+//
 // RETURNS:
-//     - *CreateImageResult: the result of create Image
-//     - error: nil if success otherwise the specific error
+//   - *CreateImageResult: the result of create Image
+//   - error: nil if success otherwise the specific error
 func CreateImageFromInstanceId(cli bce.Client, clientToken string, reqBody *bce.Body) (*CreateImageResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -62,14 +63,15 @@ func CreateImageFromInstanceId(cli bce.Client, clientToken string, reqBody *bce.
 	return jsonBody, nil
 }
 
-//ListImage - list all images
+// ListImage - list all images
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to list all images
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to list all images
+//
 // RETURNS:
-//     - *ListImageResult: the result of list all images
-//     - error: nil if success otherwise the specific error
+//   - *ListImageResult: the result of list all images
+//   - error: nil if success otherwise the specific error
 func ListImage(cli bce.Client, queryArgs *ListImageArgs) (*ListImageResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -111,11 +113,12 @@ func ListImage(cli bce.Client, queryArgs *ListImageArgs) (*ListImageResult, erro
 // GetImageDetail - get an image's detail info
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - imageId: the specific image ID
+//   - cli: the client agent which can perform sending request
+//   - imageId: the specific image ID
+//
 // RETURNS:
-//     - *GetImageDetailResult: the result of get image's detail
-//     - error: nil if success otherwise the specific error
+//   - *GetImageDetailResult: the result of get image's detail
+//   - error: nil if success otherwise the specific error
 func GetImageDetail(cli bce.Client, imageId string) (*GetImageDetailResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -141,10 +144,11 @@ func GetImageDetail(cli bce.Client, imageId string) (*GetImageDetailResult, erro
 // DeleteImage - delete an image
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - imageId: the specific image ID
+//   - cli: the client agent which can perform sending request
+//   - imageId: the specific image ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func DeleteImage(cli bce.Client, imageId string) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -167,11 +171,12 @@ func DeleteImage(cli bce.Client, imageId string) error {
 // GetCommonImage - get common flavor image list
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - flavorIds: the specific flavorIds, can be nil
+//   - cli: the client agent which can perform sending request
+//   - flavorIds: the specific flavorIds, can be nil
+//
 // RETURNS:
-//     - *GetImageDetailResult: the result of get image's detail
-//     - error: nil if success otherwise the specific error
+//   - *GetImageDetailResult: the result of get image's detail
+//   - error: nil if success otherwise the specific error
 func GetCommonImage(cli bce.Client, reqBody *bce.Body) (*GetImagesResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -198,11 +203,12 @@ func GetCommonImage(cli bce.Client, reqBody *bce.Body) (*GetImagesResult, error)
 // GetCustomImage - get user onwer flavor image list
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - flavorIds: the specific flavorIds, can be nil
+//   - cli: the client agent which can perform sending request
+//   - flavorIds: the specific flavorIds, can be nil
+//
 // RETURNS:
-//     - *GetImageDetailResult: the result of get image's detail
-//     - error: nil if success otherwise the specific error
+//   - *GetImageDetailResult: the result of get image's detail
+//   - error: nil if success otherwise the specific error
 func GetCustomImage(cli bce.Client, reqBody *bce.Body) (*GetImagesResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -229,11 +235,12 @@ func GetCustomImage(cli bce.Client, reqBody *bce.Body) (*GetImagesResult, error)
 // ShareImage - share a specified custom image
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - imageId: id of the image to be shared
-//     - args: the arguments to share image
+//   - cli: the client agent which can perform sending request
+//   - imageId: id of the image to be shared
+//   - args: the arguments to share image
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func ShareImage(cli bce.Client, imageId string, args *SharedUser) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -268,11 +275,12 @@ func ShareImage(cli bce.Client, imageId string, args *SharedUser) error {
 // UnShareImage - unshare a specified image
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - imageId: id of the image to be unshared
-//     - args: the arguments to unshare image
+//   - cli: the client agent which can perform sending request
+//   - imageId: id of the image to be unshared
+//   - args: the arguments to unshare image
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func UnShareImage(cli bce.Client, imageId string, args *SharedUser) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -307,11 +315,12 @@ func UnShareImage(cli bce.Client, imageId string, args *SharedUser) error {
 // GetImageSharedUser - get the list of users that the image has been shared with
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - imageId: id of the image
+//   - cli: the client agent which can perform sending request
+//   - imageId: id of the image
+//
 // RETURNS:
-//     - *GetImageSharedUserResult: result of the shared users
-//     - error: nil if success otherwise the specific error
+//   - *GetImageSharedUserResult: result of the shared users
+//   - error: nil if success otherwise the specific error
 func GetImageSharedUser(cli bce.Client, imageId string) (*GetImageSharedUserResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -338,11 +347,12 @@ func GetImageSharedUser(cli bce.Client, imageId string) (*GetImageSharedUserResu
 // and service integration images cannot be copied.
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - imageId: id of the image to be copied
-//     - args: the arguments to copy image
+//   - cli: the client agent which can perform sending request
+//   - imageId: id of the image to be copied
+//   - args: the arguments to copy image
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func RemoteCopyImage(cli bce.Client, imageId string, args *RemoteCopyImageArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -377,10 +387,11 @@ func RemoteCopyImage(cli bce.Client, imageId string, args *RemoteCopyImageArgs) 
 // CancelRemoteCopyImage - cancel the image copy across regions
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - imageId: id of the image
+//   - cli: the client agent which can perform sending request
+//   - imageId: id of the image
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func CancelRemoteCopyImage(cli bce.Client, imageId string) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -406,11 +417,12 @@ func CancelRemoteCopyImage(cli bce.Client, imageId string) error {
 // and service integration images cannot be copied.
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - imageId: id of the image to be copied
-//     - args: the arguments to copy image
+//   - cli: the client agent which can perform sending request
+//   - imageId: id of the image to be copied
+//   - args: the arguments to copy image
+//
 // RETURNS:
-//     - imageIds of destination region if success otherwise the specific error
+//   - imageIds of destination region if success otherwise the specific error
 func RemoteCopyImageReturnImageIds(cli bce.Client, imageId string, args *RemoteCopyImageArgs) (*RemoteCopyImageResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}

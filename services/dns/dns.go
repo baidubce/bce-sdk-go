@@ -24,11 +24,12 @@ import (
 // AddLineGroup -
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func AddLineGroup(cli bce.Client, body *AddLineGroupRequest, clientToken string) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.POST)
@@ -59,11 +60,12 @@ func AddLineGroup(cli bce.Client, body *AddLineGroupRequest, clientToken string)
 // CreatePaidZone -
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func CreatePaidZone(cli bce.Client, body *CreatePaidZoneRequest, clientToken string) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.POST)
@@ -94,12 +96,13 @@ func CreatePaidZone(cli bce.Client, body *CreatePaidZoneRequest, clientToken str
 // CreateRecord -
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - zoneName: 域名名称。
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - zoneName: 域名名称。
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func CreateRecord(cli bce.Client, zoneName string, body *CreateRecordRequest, clientToken string) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.POST)
@@ -131,11 +134,12 @@ func CreateRecord(cli bce.Client, zoneName string, body *CreateRecordRequest, cl
 // CreateZone -
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func CreateZone(cli bce.Client, body *CreateZoneRequest, clientToken string) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.POST)
@@ -166,11 +170,12 @@ func CreateZone(cli bce.Client, body *CreateZoneRequest, clientToken string) err
 // DeleteLineGroup -
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - lineId: 线路组id。
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
+//   - cli: the client agent which can perform sending request
+//   - lineId: 线路组id。
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func DeleteLineGroup(cli bce.Client, lineId string, clientToken string) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.DELETE)
@@ -192,13 +197,14 @@ func DeleteLineGroup(cli bce.Client, lineId string, clientToken string) error {
 // DeleteRecord -
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - zoneName: 域名名称。
-//     - recordId: 解析记录id。
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - zoneName: 域名名称。
+//   - recordId: 解析记录id。
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func DeleteRecord(cli bce.Client, zoneName string, recordId string, clientToken string) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.DELETE)
@@ -221,12 +227,13 @@ func DeleteRecord(cli bce.Client, zoneName string, recordId string, clientToken 
 // DeleteZone -
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - zoneName: 域名的名称。
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - zoneName: 域名的名称。
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func DeleteZone(cli bce.Client, zoneName string, clientToken string) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.DELETE)
@@ -247,13 +254,14 @@ func DeleteZone(cli bce.Client, zoneName string, clientToken string) error {
 // ListLineGroup -
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - marker: 批量获取列表的查询的起始位置，是一个由系统生成的字符串。
-//     - maxKeys: 每页包含的最大数量，最大数量通常不超过1000，缺省值为1000。
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - marker: 批量获取列表的查询的起始位置，是一个由系统生成的字符串。
+//   - maxKeys: 每页包含的最大数量，最大数量通常不超过1000，缺省值为1000。
+//   - body:
+//
 // RETURNS:
-//     - *api.ListLineGroupResponse:
-//     - error: the return error if any occurs
+//   - *api.ListLineGroupResponse:
+//   - error: the return error if any occurs
 func ListLineGroup(cli bce.Client, marker string, maxKeys int) (*ListLineGroupResponse, error) {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.GET)
@@ -283,16 +291,17 @@ func ListLineGroup(cli bce.Client, marker string, maxKeys int) (*ListLineGroupRe
 // ListRecord -
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - zoneName: 域名的名称。
-//     - rr: 主机记录，例如“www”。
-//     - id: 解析记录id。
-//     - marker: 批量获取列表的查询的起始位置，是一个由系统生成的字符串。
-//     - maxKeys: 每页包含的最大数量，最大数量通常不超过1000。缺省值为1000。
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - zoneName: 域名的名称。
+//   - rr: 主机记录，例如“www”。
+//   - id: 解析记录id。
+//   - marker: 批量获取列表的查询的起始位置，是一个由系统生成的字符串。
+//   - maxKeys: 每页包含的最大数量，最大数量通常不超过1000。缺省值为1000。
+//   - body:
+//
 // RETURNS:
-//     - *api.ListRecordResponse:
-//     - error: the return error if any occurs
+//   - *api.ListRecordResponse:
+//   - error: the return error if any occurs
 func ListRecord(cli bce.Client, zoneName string, rr string, id string,
 	marker string, maxKeys int) (*ListRecordResponse, error) {
 	req := &bce.BceRequest{}
@@ -330,14 +339,15 @@ func ListRecord(cli bce.Client, zoneName string, rr string, id string,
 // ListZone -
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - name: 域名的名称，支持模糊搜索。
-//     - marker: 批量获取列表的查询的起始位置，是一个由系统生成的字符串
-//     - maxKeys: 每页包含的最大数量，最大数量通常不超过1000。缺省值为1000
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - name: 域名的名称，支持模糊搜索。
+//   - marker: 批量获取列表的查询的起始位置，是一个由系统生成的字符串
+//   - maxKeys: 每页包含的最大数量，最大数量通常不超过1000。缺省值为1000
+//   - body:
+//
 // RETURNS:
-//     - *api.ListZoneResponse:
-//     - error: the return error if any occurs
+//   - *api.ListZoneResponse:
+//   - error: the return error if any occurs
 func ListZone(cli bce.Client, body *ListZoneRequest, name string, marker string, maxKeys int) (
 	*ListZoneResponse, error) {
 	req := &bce.BceRequest{}
@@ -381,11 +391,12 @@ func ListZone(cli bce.Client, body *ListZoneRequest, name string, marker string,
 // RenewZone -
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - name: 续费的域名。
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - name: 续费的域名。
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func RenewZone(cli bce.Client, name string, body *RenewZoneRequest, clientToken string) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.PUT)
@@ -418,12 +429,13 @@ func RenewZone(cli bce.Client, name string, body *RenewZoneRequest, clientToken 
 // UpdateLineGroup -
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - lineId: 线路组id。
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - lineId: 线路组id。
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func UpdateLineGroup(cli bce.Client, lineId string, body *UpdateLineGroupRequest,
 	clientToken string) error {
 	req := &bce.BceRequest{}
@@ -456,13 +468,14 @@ func UpdateLineGroup(cli bce.Client, lineId string, body *UpdateLineGroupRequest
 // UpdateRecord -
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - zoneName: 域名名称。
-//     - recordId: 解析记录id。
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - zoneName: 域名名称。
+//   - recordId: 解析记录id。
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func UpdateRecord(cli bce.Client, zoneName string, recordId string, body *UpdateRecordRequest,
 	clientToken string) error {
 	req := &bce.BceRequest{}
@@ -496,13 +509,14 @@ func UpdateRecord(cli bce.Client, zoneName string, recordId string, body *Update
 // UpdateRecordDisable -
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - zoneName: 域名名称。
-//     - recordId: 解析记录id。
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - zoneName: 域名名称。
+//   - recordId: 解析记录id。
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func UpdateRecordDisable(cli bce.Client, zoneName string, recordId string, clientToken string) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.PUT)
@@ -526,13 +540,14 @@ func UpdateRecordDisable(cli bce.Client, zoneName string, recordId string, clien
 // UpdateRecordEnable -
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - zoneName: 域名名称。
-//     - recordId: 解析记录id。
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - zoneName: 域名名称。
+//   - recordId: 解析记录id。
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func UpdateRecordEnable(cli bce.Client, zoneName string, recordId string, clientToken string) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.PUT)
@@ -556,11 +571,12 @@ func UpdateRecordEnable(cli bce.Client, zoneName string, recordId string, client
 // UpgradeZone -
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - clientToken: 幂等性Token，是一个长度不超过64位的ASCII字符串。
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func UpgradeZone(cli bce.Client, body *UpgradeZoneRequest, clientToken string) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.PUT)

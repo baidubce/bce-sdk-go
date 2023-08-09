@@ -31,11 +31,12 @@ const (
 // ListConfig - list all configs
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - coreid: id of the core
+//   - cli: the client agent which can perform sending request
+//   - coreid: id of the core
+//
 // RETURNS:
-//     - *ListConfigResult: the result config list
-//     - error: nil if ok otherwise the specific error
+//   - *ListConfigResult: the result config list
+//   - error: nil if ok otherwise the specific error
 func ListConfig(cli bce.Client, coreid string, lcr *ListConfigReq) (*ListConfigResult, error) {
 	params := map[string]string{}
 
@@ -59,12 +60,13 @@ func ListConfig(cli bce.Client, coreid string, lcr *ListConfigReq) (*ListConfigR
 // GetConfig - get a config
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - coreid: id of the core
-//     - ver: version, e.g:$LATEST
+//   - cli: the client agent which can perform sending request
+//   - coreid: id of the core
+//   - ver: version, e.g:$LATEST
+//
 // RETURNS:
-//     - *CfgResult: the result config
-//     - error: nil if ok otherwise the specific error
+//   - *CfgResult: the result config
+//   - error: nil if ok otherwise the specific error
 func GetConfig(cli bce.Client, coreid string, ver string) (*CfgResult, error) {
 	url := PREFIX_V3CORE + "/" + coreid + "/config/" + ver
 
@@ -81,11 +83,12 @@ func GetConfig(cli bce.Client, coreid string, ver string) (*CfgResult, error) {
 // PubConfig - pub a config
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - cpr: id of the core and version
+//   - cli: the client agent which can perform sending request
+//   - cpr: id of the core and version
+//
 // RETURNS:
-//     - *CfgResult: the pub result
-//     - error: nil if ok otherwise the specific error
+//   - *CfgResult: the pub result
+//   - error: nil if ok otherwise the specific error
 func PubConfig(cli bce.Client, cpr *CoreidVersion, cpb *CfgPubBody) (*CfgResult, error) {
 	url := PREFIX_V3CORE + "/" + cpr.Coreid + "/config/" + cpr.Version + "/publish"
 	result := &CfgResult{}
@@ -101,11 +104,12 @@ func PubConfig(cli bce.Client, cpr *CoreidVersion, cpb *CfgPubBody) (*CfgResult,
 // DeployConfig - deploy a config
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - coreid: id of the core
-//     - ver: version, e.g:$LATEST
+//   - cli: the client agent which can perform sending request
+//   - coreid: id of the core
+//   - ver: version, e.g:$LATEST
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func DeployConfig(cli bce.Client, coreid string, ver string) error {
 	url := PREFIX_V3CORE + "/" + coreid + "/config/" + ver + "/deploy"
 
@@ -121,11 +125,12 @@ func DeployConfig(cli bce.Client, coreid string, ver string) error {
 // DownloadConfig - download a config
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - *CfgDownloadReq: id, version, with bin or not
+//   - cli: the client agent which can perform sending request
+//   - *CfgDownloadReq: id, version, with bin or not
+//
 // RETURNS:
-//     - *CfgDownloadResult: the result
-//     - error: nil if ok otherwise the specific error
+//   - *CfgDownloadResult: the result
+//   - error: nil if ok otherwise the specific error
 func DownloadConfig(cli bce.Client, cdr *CfgDownloadReq) (*CfgDownloadResult, error) {
 	url := PREFIX_V3CORE + "/" + cdr.Coreid + "/config/" + cdr.Version + "/download"
 	params := map[string]string{"withBin": strconv.FormatBool(cdr.WithBin)}
@@ -142,12 +147,13 @@ func DownloadConfig(cli bce.Client, cdr *CfgDownloadReq) (*CfgDownloadResult, er
 // CreateService - create a service
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - *CoreidVersion: coreid, version
-//     - *CreateServiceReq: request parameters
+//   - cli: the client agent which can perform sending request
+//   - *CoreidVersion: coreid, version
+//   - *CreateServiceReq: request parameters
+//
 // RETURNS:
-//     - *ServiceResult: the result
-//     - error: nil if ok otherwise the specific error
+//   - *ServiceResult: the result
+//   - error: nil if ok otherwise the specific error
 func CreateService(cli bce.Client, cv *CoreidVersion,
 	sr *CreateServiceReq) (*ServiceResult, error) {
 	url := PREFIX_V3CORE + "/" + cv.Coreid + "/config/" + cv.Version + "/service"
@@ -165,11 +171,12 @@ func CreateService(cli bce.Client, cv *CoreidVersion,
 // GetService - get a service
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - *IdVerName: coreid, version and name
+//   - cli: the client agent which can perform sending request
+//   - *IdVerName: coreid, version and name
+//
 // RETURNS:
-//     - *ServiceResult: the result
-//     - error: nil if ok otherwise the specific error
+//   - *ServiceResult: the result
+//   - error: nil if ok otherwise the specific error
 func GetService(cli bce.Client, ivn *IdVerName) (*ServiceResult, error) {
 	url := PREFIX_V3CORE + "/" + ivn.Coreid + "/config/" + ivn.Version + "/service/" + ivn.Name
 
@@ -186,11 +193,12 @@ func GetService(cli bce.Client, ivn *IdVerName) (*ServiceResult, error) {
 // EditService - edit a service
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - *IdVerName: coreid, version, and name
+//   - cli: the client agent which can perform sending request
+//   - *IdVerName: coreid, version, and name
+//
 // RETURNS:
-//     - *ServiceResult: the result
-//     - error: nil if ok otherwise the specific error
+//   - *ServiceResult: the result
+//   - error: nil if ok otherwise the specific error
 func EditService(cli bce.Client, ivn *IdVerName,
 	esr *EditServiceReq) (*ServiceResult, error) {
 	url := PREFIX_V3CORE + "/" + ivn.Coreid + "/config/" + ivn.Version + "/service/" + ivn.Name
@@ -208,10 +216,11 @@ func EditService(cli bce.Client, ivn *IdVerName,
 // DeleteService - delete a service
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - *IdVerName: coreid, version, and name
+//   - cli: the client agent which can perform sending request
+//   - *IdVerName: coreid, version, and name
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func DeleteService(cli bce.Client, ivn *IdVerName) error {
 	url := PREFIX_V3CORE + "/" + ivn.Coreid + "/config/" + ivn.Version + "/service/" + ivn.Name
 
@@ -232,10 +241,11 @@ func DeleteService(cli bce.Client, ivn *IdVerName) error {
 // ReorderService - reorder service after an other service
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - *IdVerName: coreid, version, and name
+//   - cli: the client agent which can perform sending request
+//   - *IdVerName: coreid, version, and name
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func ReorderService(cli bce.Client, ivn *IdVerName, after string) error {
 	url := PREFIX_V3CORE + "/" + ivn.Coreid + "/config/" + ivn.Version + "/service/" + ivn.Name
 	url += "/after/" + after
@@ -252,11 +262,12 @@ func ReorderService(cli bce.Client, ivn *IdVerName, after string) error {
 // VolumeOp - attache of detach volumes
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - *CoreidVersion: coreid, version
-//     - *VolumeOpReq: request parameters
+//   - cli: the client agent which can perform sending request
+//   - *CoreidVersion: coreid, version
+//   - *VolumeOpReq: request parameters
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func VolumeOp(cli bce.Client, cv *CoreidVersion, vor *VolumeOpReq) error {
 	url := PREFIX_V3CORE + "/" + cv.Coreid + "/config/" + cv.Version + "/volume"
 

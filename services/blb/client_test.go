@@ -15,17 +15,17 @@ import (
 )
 
 var (
-	BLB_CLIENT             *Client
-	BLB_ID                 string
+	BLB_CLIENT *Client
+	BLB_ID     string
 
 	// set these values before start test
-	VPC_TEST_ID    = ""
-	SUBNET_TEST_ID = ""
-	INSTANCE_ID    = ""
-	CERT_ID        = ""
-	CLUSTER_ID     = ""
+	VPC_TEST_ID           = ""
+	SUBNET_TEST_ID        = ""
+	INSTANCE_ID           = ""
+	CERT_ID               = ""
+	CLUSTER_ID            = ""
 	CLUSTER_PROPERTY_TEST = ""
-	TEST_BLB_ID = "lb-36c64ec0"
+	TEST_BLB_ID           = "lb-36c64ec0"
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -80,11 +80,11 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 
 func TestClient_CreateLoadBalancer(t *testing.T) {
 	createArgs := &CreateLoadBalancerArgs{
-		ClientToken: 		getClientToken(),
-		Name:        		"sdkBlb",
-		VpcId:       		VPC_TEST_ID,
-		SubnetId:    		SUBNET_TEST_ID,
-		ClusterProperty:    CLUSTER_PROPERTY_TEST,
+		ClientToken:     getClientToken(),
+		Name:            "sdkBlb",
+		VpcId:           VPC_TEST_ID,
+		SubnetId:        SUBNET_TEST_ID,
+		ClusterProperty: CLUSTER_PROPERTY_TEST,
 	}
 
 	createResult, err := BLB_CLIENT.CreateLoadBalancer(createArgs)
@@ -146,10 +146,10 @@ func TestClient_DescribeTCPListeners(t *testing.T) {
 
 func TestClient_CreateUDPListener(t *testing.T) {
 	createArgs := &CreateUDPListenerArgs{
-		ClientToken:  getClientToken(),
-		ListenerPort: 91,
-		BackendPort:  91,
-		Scheduler:    "RoundRobin",
+		ClientToken:       getClientToken(),
+		ListenerPort:      91,
+		BackendPort:       91,
+		Scheduler:         "RoundRobin",
 		HealthCheckString: "a",
 	}
 	err := BLB_CLIENT.CreateUDPListener(BLB_ID, createArgs)
@@ -194,8 +194,6 @@ func TestClient_UpdateHTTPListener(t *testing.T) {
 	err := BLB_CLIENT.UpdateHTTPListener(BLB_ID, updateArgs)
 	ExpectEqual(t.Errorf, nil, err)
 }
-
-
 
 func TestClient_DescribeHTTPListeners(t *testing.T) {
 	describeArgs := &DescribeListenerArgs{
@@ -269,9 +267,7 @@ func TestClient_DescribeSSLListeners(t *testing.T) {
 }
 
 func TestClient_DescribeAllListeners(t *testing.T) {
-	describeArgs := &DescribeListenerArgs{
-
-	}
+	describeArgs := &DescribeListenerArgs{}
 	result, err := BLB_CLIENT.DescribeAllListeners(BLB_ID, describeArgs)
 	if err != nil {
 		fmt.Println("get all listener failed:", err)
@@ -279,7 +275,6 @@ func TestClient_DescribeAllListeners(t *testing.T) {
 		fmt.Println("get all listener success: ", result)
 	}
 }
-
 
 func TestClient_AddBackendServers(t *testing.T) {
 	createArgs := &AddBackendServersArgs{
@@ -304,8 +299,7 @@ func TestClient_UpdateBackendServers(t *testing.T) {
 }
 
 func TestClient_DescribeBackendServers(t *testing.T) {
-	describeArgs := &DescribeBackendServersArgs{
-	}
+	describeArgs := &DescribeBackendServersArgs{}
 	_, err := BLB_CLIENT.DescribeBackendServers(BLB_ID, describeArgs)
 	ExpectEqual(t.Errorf, nil, err)
 }
@@ -321,13 +315,12 @@ func TestClient_DescribeHealthStatus(t *testing.T) {
 func TestClient_RemoveBackendServers(t *testing.T) {
 	deleteArgs := &RemoveBackendServersArgs{
 		BackendServerList: []string{INSTANCE_ID},
-		ClientToken:         getClientToken(),
+		ClientToken:       getClientToken(),
 	}
 	err := BLB_CLIENT.RemoveBackendServers(BLB_ID, deleteArgs)
 
 	ExpectEqual(t.Errorf, nil, err)
 }
-
 
 func TestClient_DeleteListeners(t *testing.T) {
 	deleteArgs := &DeleteListenersArgs{
@@ -379,7 +372,7 @@ func TestClient_UpdateLoadBalancerAcl(t *testing.T) {
 	*supportAcl = true
 	updateArgs := &UpdateLoadBalancerAclArgs{
 		ClientToken: getClientToken(),
-		SupportAcl: supportAcl,
+		SupportAcl:  supportAcl,
 	}
 	err := BLB_CLIENT.UpdateLoadBalancerAcl(BLB_ID, updateArgs)
 	ExpectEqual(t.Errorf, nil, err)
@@ -387,8 +380,8 @@ func TestClient_UpdateLoadBalancerAcl(t *testing.T) {
 
 func TestClient_BindSecurityGroups(t *testing.T) {
 	updateArgs := &UpdateSecurityGroupsArgs{
-		ClientToken: getClientToken(),
-		SecurityGroupIds:    []string{"sg-id"},
+		ClientToken:      getClientToken(),
+		SecurityGroupIds: []string{"sg-id"},
 	}
 	err := BLB_CLIENT.BindSecurityGroups(BLB_ID, updateArgs)
 	ExpectEqual(t.Errorf, nil, err)
@@ -396,8 +389,8 @@ func TestClient_BindSecurityGroups(t *testing.T) {
 
 func TestClient_UnbindSecurityGroups(t *testing.T) {
 	updateArgs := &UpdateSecurityGroupsArgs{
-		ClientToken: getClientToken(),
-		SecurityGroupIds:    []string{"sg-id"},
+		ClientToken:      getClientToken(),
+		SecurityGroupIds: []string{"sg-id"},
 	}
 	err := BLB_CLIENT.UnbindSecurityGroups(BLB_ID, updateArgs)
 	ExpectEqual(t.Errorf, nil, err)

@@ -28,11 +28,12 @@ import (
 // CreateAutoSnapshotPolicy - create an automatic snapshot policy
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to create automatic snapshot policy
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to create automatic snapshot policy
+//
 // RETURNS:
-//     - *CreateASPResult: the ID of the automatic snapshot policy newly created
-//     - error: nil if success otherwise the specific error
+//   - *CreateASPResult: the ID of the automatic snapshot policy newly created
+//   - error: nil if success otherwise the specific error
 func CreateAutoSnapshotPolicy(cli bce.Client, args *CreateASPArgs) (*CreateASPResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -72,11 +73,12 @@ func CreateAutoSnapshotPolicy(cli bce.Client, args *CreateASPArgs) (*CreateASPRe
 // AttachAutoSnapshotPolicy - attach an automatic snapshot policy to specified volumes
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - aspId: the id of the automatic snapshot policy
-//     - args: the arguments to attach automatic snapshot policy
+//   - cli: the client agent which can perform sending request
+//   - aspId: the id of the automatic snapshot policy
+//   - args: the arguments to attach automatic snapshot policy
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func AttachAutoSnapshotPolicy(cli bce.Client, aspId string, args *AttachASPArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -111,11 +113,12 @@ func AttachAutoSnapshotPolicy(cli bce.Client, aspId string, args *AttachASPArgs)
 // DetachAutoSnapshotPolicy - detach an automatic snapshot policy for specified volumes
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - aspId: the id of the automatic snapshot policy
-//     - args: the arguments to detach automatic snapshot policy
+//   - cli: the client agent which can perform sending request
+//   - aspId: the id of the automatic snapshot policy
+//   - args: the arguments to detach automatic snapshot policy
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func DetachAutoSnapshotPolicy(cli bce.Client, aspId string, args *DetachASPArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -150,10 +153,11 @@ func DetachAutoSnapshotPolicy(cli bce.Client, aspId string, args *DetachASPArgs)
 // DeleteAutoSnapshotPolicy - delete an automatic snapshot policy
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - aspId: the id of the automatic snapshot policy
+//   - cli: the client agent which can perform sending request
+//   - aspId: the id of the automatic snapshot policy
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func DeleteAutoSnapshotPolicy(cli bce.Client, aspId string) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -176,12 +180,13 @@ func DeleteAutoSnapshotPolicy(cli bce.Client, aspId string) error {
 // ListAutoSnapshotPolicy - list all automatic snapshot policies with the specified parameters
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryArgs: the arguments to list automatic snapshot policies
-//     - :
+//   - cli: the client agent which can perform sending request
+//   - queryArgs: the arguments to list automatic snapshot policies
+//   - :
+//
 // RETURNS:
-//     - *ListASPResult: the result of the automatic snapshot policies
-//     - error: nil if success otherwise the specific error
+//   - *ListASPResult: the result of the automatic snapshot policies
+//   - error: nil if success otherwise the specific error
 func ListAutoSnapshotPolicy(cli bce.Client, queryArgs *ListASPArgs) (*ListASPResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -226,11 +231,12 @@ func ListAutoSnapshotPolicy(cli bce.Client, queryArgs *ListASPArgs) (*ListASPRes
 // GetAutoSnapshotPolicyDetail - get details of the specified automatic snapshot policy
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - aspId: the id of the automatic snapshot policy
+//   - cli: the client agent which can perform sending request
+//   - aspId: the id of the automatic snapshot policy
+//
 // RETURNS:
-//     - *GetASPDetailResult: the result of the given automatic snapshot policy
-//     - error: nil if success otherwise the specific error
+//   - *GetASPDetailResult: the result of the given automatic snapshot policy
+//   - error: nil if success otherwise the specific error
 func GetAutoSnapshotPolicyDetail(cli bce.Client, aspId string) (*GetASPDetailResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -257,10 +263,11 @@ func GetAutoSnapshotPolicyDetail(cli bce.Client, aspId string) (*GetASPDetailRes
 // UpdateAutoSnapshotPolicy - update an automatic snapshot policy
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to update automatic snapshot policy
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to update automatic snapshot policy
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func UpdateAutoSnapshotPolicy(cli bce.Client, args *UpdateASPArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}

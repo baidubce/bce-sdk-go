@@ -26,10 +26,11 @@ import (
 // ListSpec - get specification list information of the instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
+//   - cli: the client agent which can perform sending request
+//
 // RETURNS:
-//     - *ListSpecResult: result of the specifications
-//     - error: nil if success otherwise the specific error
+//   - *ListSpecResult: result of the specifications
+//   - error: nil if success otherwise the specific error
 func ListSpec(cli bce.Client) (*ListSpecResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -56,10 +57,11 @@ func ListSpec(cli bce.Client) (*ListSpecResult, error) {
 // ListZone - get the available zone list in the current region
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
+//   - cli: the client agent which can perform sending request
+//
 // RETURNS:
-//     - *ListZoneResult: result of the available zones
-//     - error: nil if success otherwise the specific error
+//   - *ListZoneResult: result of the available zones
+//   - error: nil if success otherwise the specific error
 func ListZone(cli bce.Client) (*ListZoneResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -86,11 +88,12 @@ func ListZone(cli bce.Client) (*ListZoneResult, error) {
 // ListFlavorSpec - get the specified flavor list
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//	   - args: the arguments to list the specified flavor
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to list the specified flavor
+//
 // RETURNS:
-//     - *ListFlavorSpecResult: result of the specified flavor list
-//     - error: nil if success otherwise the specific error
+//   - *ListFlavorSpecResult: result of the specified flavor list
+//   - error: nil if success otherwise the specific error
 func ListFlavorSpec(cli bce.Client, args *ListFlavorSpecArgs) (*ListFlavorSpecResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -123,11 +126,12 @@ func ListFlavorSpec(cli bce.Client, args *ListFlavorSpecArgs) (*ListFlavorSpecRe
 // GetPriceBySpec - get the price information of specified instance.
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//	   - args: the arguments to get the price information of specified instance.
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to get the price information of specified instance.
+//
 // RETURNS:
-//     - *GetPriceBySpecResult: result of the specified instance's price information
-//     - error: nil if success otherwise the specific error
+//   - *GetPriceBySpecResult: result of the specified instance's price information
+//   - error: nil if success otherwise the specific error
 func GetPriceBySpec(cli bce.Client, args *GetPriceBySpecArgs) (*GetPriceBySpecResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -164,10 +168,11 @@ func GetPriceBySpec(cli bce.Client, args *GetPriceBySpecArgs) (*GetPriceBySpecRe
 // ListTypeZones - get the available zone list in the current region
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
+//   - cli: the client agent which can perform sending request
+//
 // RETURNS:
-//     - *ListZoneResult: result of the available zones
-//     - error: nil if success otherwise the specific error
+//   - *ListZoneResult: result of the available zones
+//   - error: nil if success otherwise the specific error
 func ListTypeZones(cli bce.Client, args *ListTypeZonesArgs) (*ListTypeZonesResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -205,10 +210,11 @@ func ListTypeZones(cli bce.Client, args *ListTypeZonesArgs) (*ListTypeZonesResul
 // ListInstanceEni - get the eni list of the bcc instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: the bcc instance id
+//   - cli: the client agent which can perform sending request
+//   - instanceId: the bcc instance id
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func ListInstanceEnis(cli bce.Client, instanceId string) (*ListInstanceEniResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getInstanceEniUri(instanceId))

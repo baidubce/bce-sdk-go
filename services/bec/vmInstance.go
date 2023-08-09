@@ -30,11 +30,12 @@ import (
 // CreateVmServiceInstance - create service vm instance with the specific parameters
 //
 // PARAMS:
-//     - serviceId: service Id
-//     - args: the arguments to create service vm instance
+//   - serviceId: service Id
+//   - args: the arguments to create service vm instance
+//
 // RETURNS:
-//     - *CreateVmServiceResult: the result of create service instance
-//     - error: nil if ok otherwise the specific error
+//   - *CreateVmServiceResult: the result of create service instance
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateVmServiceInstance(serviceId string, args *api.CreateVmServiceArgs) (*api.CreateVmServiceResult, error) {
 	if serviceId == "" || args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -49,10 +50,11 @@ func (c *Client) CreateVmServiceInstance(serviceId string, args *api.CreateVmSer
 // GetVmInstanceList - get vm list with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to get vm list
+//   - args: the arguments to get vm list
+//
 // RETURNS:
-//     - *LogicPageVmInstanceResult: the result of get vm list
-//     - error: nil if ok otherwise the specific error
+//   - *LogicPageVmInstanceResult: the result of get vm list
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetVmInstanceList(args *api.ListRequest) (*api.LogicPageVmInstanceResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -104,10 +106,11 @@ func (c *Client) GetVmInstanceList(args *api.ListRequest) (*api.LogicPageVmInsta
 // GetVirtualMachine - get vm with the specific parameters
 //
 // PARAMS:
-//     - vmID: vm id
+//   - vmID: vm id
+//
 // RETURNS:
-//     - *VmInstanceDetailsVo: the result of get vm
-//     - error: nil if ok otherwise the specific error
+//   - *VmInstanceDetailsVo: the result of get vm
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetVirtualMachine(vmID string) (*api.VmInstanceDetailsVo, error) {
 	if vmID == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -126,10 +129,11 @@ func (c *Client) GetVirtualMachine(vmID string) (*api.VmInstanceDetailsVo, error
 // DeleteVmInstance - delete vm instance with the specific parameters
 //
 // PARAMS:
-//     - vmID: vm id
+//   - vmID: vm id
+//
 // RETURNS:
-//     - *ActionInfoVo: the result of delete vm instance
-//     - error: nil if ok otherwise the specific error
+//   - *ActionInfoVo: the result of delete vm instance
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteVmInstance(vmID string) (*api.ActionInfoVo, error) {
 	if vmID == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -148,11 +152,12 @@ func (c *Client) DeleteVmInstance(vmID string) (*api.ActionInfoVo, error) {
 // UpdateVmInstance - update vm with the specific parameters
 //
 // PARAMS:
-//     - vmID: vm id
-//     - args: the arguments to update vm
+//   - vmID: vm id
+//   - args: the arguments to update vm
+//
 // RETURNS:
-//     - *UpdateVmDeploymentResult: the result of update vm
-//     - error: nil if ok otherwise the specific error
+//   - *UpdateVmDeploymentResult: the result of update vm
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateVmInstance(vmID string, args *api.UpdateVmInstanceArgs) (*api.UpdateVmDeploymentResult, error) {
 	if vmID == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -168,11 +173,12 @@ func (c *Client) UpdateVmInstance(vmID string, args *api.UpdateVmInstanceArgs) (
 // BindSecurityGroup - bind vm instance to security group
 //
 // PARAMS:
-//     - action: bind
-//     - args: the arguments to update vm
+//   - action: bind
+//   - args: the arguments to update vm
+//
 // RETURNS:
-//     - *UpdateVmDeploymentResult: the result of update vm
-//     - error: nil if ok otherwise the specific error
+//   - *UpdateVmDeploymentResult: the result of update vm
+//   - error: nil if ok otherwise the specific error
 func (c *Client) BindSecurityGroup(action string, args *api.BindSecurityGroupInstances) (*api.BindSecurityGroupInstancesResponse, error) {
 
 	result := &api.BindSecurityGroupInstancesResponse{}
@@ -184,11 +190,12 @@ func (c *Client) BindSecurityGroup(action string, args *api.BindSecurityGroupIns
 // ReinstallVmInstance - reinstall vm instance with the specific parameters
 //
 // PARAMS:
-//     - vmID: vm id
-//     - args: the arguments to reinstall vm instance
+//   - vmID: vm id
+//   - args: the arguments to reinstall vm instance
+//
 // RETURNS:
-//     - *ReinstallVmInstanceResult: the result of reinstall vm instance
-//     - error: nil if ok otherwise the specific error
+//   - *ReinstallVmInstanceResult: the result of reinstall vm instance
+//   - error: nil if ok otherwise the specific error
 func (c *Client) ReinstallVmInstance(vmID string, args *api.ReinstallVmInstanceArg) (*api.ReinstallVmInstanceResult, error) {
 	if vmID == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -204,11 +211,12 @@ func (c *Client) ReinstallVmInstance(vmID string, args *api.ReinstallVmInstanceA
 // OperateVmDeployment - operate vm with the specific parameters
 //
 // PARAMS:
-//     - vmID: vm id
-//     - action: the arguments to operate vm
+//   - vmID: vm id
+//   - action: the arguments to operate vm
+//
 // RETURNS:
-//     - *OperateVmDeploymentResult: the result of operate vm
-//     - error: nil if ok otherwise the specific error
+//   - *OperateVmDeploymentResult: the result of operate vm
+//   - error: nil if ok otherwise the specific error
 func (c *Client) OperateVmDeployment(vmID string, action api.VmInstanceBatchOperateAction) (*api.OperateVmDeploymentResult, error) {
 	if vmID == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -264,10 +272,11 @@ func (c *Client) GetVmInstanceMetrics(vmId, serviceProviderStr string, start, en
 // GetVmConfig - get vm config with the specific parameters
 //
 // PARAMS:
-//     - vmID: vm id
+//   - vmID: vm id
+//
 // RETURNS:
-//     - *VmConfigResult: the result of get vm config
-//     - error: nil if ok otherwise the specific error
+//   - *VmConfigResult: the result of get vm config
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetVmConfig(vmID string) (*api.VmConfigResult, error) {
 	if vmID == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -286,11 +295,12 @@ func (c *Client) GetVmConfig(vmID string) (*api.VmConfigResult, error) {
 // CreateVmPrivateIp - create vm private ip with the specific parameters
 //
 // PARAMS:
-//     - vmID: vm id
-//     - args: the args to create vm private ip
+//   - vmID: vm id
+//   - args: the args to create vm private ip
+//
 // RETURNS:
-//     - *VmConfigResult: the result of create vm private ip
-//     - error: nil if ok otherwise the specific error
+//   - *VmConfigResult: the result of create vm private ip
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateVmPrivateIp(vmID string, args *api.CreateVmPrivateIpForm) (*api.VmPrivateIpResult, error) {
 	if vmID == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -306,11 +316,12 @@ func (c *Client) CreateVmPrivateIp(vmID string, args *api.CreateVmPrivateIpForm)
 // DeleteVmPrivateIp - delete vm private ip with the specific parameters
 //
 // PARAMS:
-//     - vmID: vm id
-//     - args: the args to delete vm private ip
+//   - vmID: vm id
+//   - args: the args to delete vm private ip
+//
 // RETURNS:
-//     - *VmPrivateIpResult: the result of delete vm private ip
-//     - error: nil if ok otherwise the specific error
+//   - *VmPrivateIpResult: the result of delete vm private ip
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteVmPrivateIp(vmID string, args *api.DeleteVmPrivateIpForm) (*api.VmPrivateIpResult, error) {
 	if vmID == "" {
 		return nil, fmt.Errorf("please set argments")

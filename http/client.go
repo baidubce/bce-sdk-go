@@ -101,10 +101,11 @@ func InitClient(config ClientConfig) {
 // Execute - do the http requset and get the response
 //
 // PARAMS:
-//     - request: the http request instance to be sent
+//   - request: the http request instance to be sent
+//
 // RETURNS:
-//     - response: the http response returned from the server
-//     - error: nil if ok otherwise the specific error
+//   - response: the http response returned from the server
+//   - error: nil if ok otherwise the specific error
 func Execute(request *Request) (*Response, error) {
 	// Build the request object for the current requesting
 	httpRequest := &http.Request{

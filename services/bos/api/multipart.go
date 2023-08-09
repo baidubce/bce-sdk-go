@@ -29,15 +29,16 @@ import (
 // InitiateMultipartUpload - initiate a multipart upload to get a upload ID
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - bucket: the bucket name
-//     - object: the object name
-//     - contentType: the content type of the object to be uploaded which should be specified,
-//       otherwise use the default(application/octet-stream)
-//     - args: the optional arguments
+//   - cli: the client agent which can perform sending request
+//   - bucket: the bucket name
+//   - object: the object name
+//   - contentType: the content type of the object to be uploaded which should be specified,
+//     otherwise use the default(application/octet-stream)
+//   - args: the optional arguments
+//
 // RETURNS:
-//     - *InitiateMultipartUploadResult: the result data structure
-//     - error: nil if ok otherwise the specific error
+//   - *InitiateMultipartUploadResult: the result data structure
+//   - error: nil if ok otherwise the specific error
 func InitiateMultipartUpload(cli bce.Client, bucket, object, contentType string,
 	args *InitiateMultipartUploadArgs) (*InitiateMultipartUploadResult, error) {
 	req := &bce.BceRequest{}
@@ -86,16 +87,17 @@ func InitiateMultipartUpload(cli bce.Client, bucket, object, contentType string,
 // UploadPart - upload the single part in the multipart upload process
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - bucket: the bucket name
-//     - object: the object name
-//     - uploadId: the multipart upload id
-//     - partNumber: the current part number
-//     - content: the uploaded part content
-//     - args: the optional arguments
+//   - cli: the client agent which can perform sending request
+//   - bucket: the bucket name
+//   - object: the object name
+//   - uploadId: the multipart upload id
+//   - partNumber: the current part number
+//   - content: the uploaded part content
+//   - args: the optional arguments
+//
 // RETURNS:
-//     - string: the etag of the uploaded part
-//     - error: nil if ok otherwise the specific error
+//   - string: the etag of the uploaded part
+//   - error: nil if ok otherwise the specific error
 func UploadPart(cli bce.Client, bucket, object, uploadId string, partNumber int,
 	content *bce.Body, args *UploadPartArgs) (string, error) {
 	req := &bce.BceRequest{}
@@ -143,16 +145,17 @@ func UploadPart(cli bce.Client, bucket, object, uploadId string, partNumber int,
 // UploadPartFromBytes - upload the single part in the multipart upload process
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - bucket: the bucket name
-//     - object: the object name
-//     - uploadId: the multipart upload id
-//     - partNumber: the current part number
-//     - content: the uploaded part content
-//     - args: the optional arguments
+//   - cli: the client agent which can perform sending request
+//   - bucket: the bucket name
+//   - object: the object name
+//   - uploadId: the multipart upload id
+//   - partNumber: the current part number
+//   - content: the uploaded part content
+//   - args: the optional arguments
+//
 // RETURNS:
-//     - string: the etag of the uploaded part
-//     - error: nil if ok otherwise the specific error
+//   - string: the etag of the uploaded part
+//   - error: nil if ok otherwise the specific error
 func UploadPartFromBytes(cli bce.Client, bucket, object, uploadId string, partNumber int,
 	content []byte, args *UploadPartArgs) (string, error) {
 	req := &bce.BceRequest{}
@@ -212,16 +215,17 @@ func UploadPartFromBytes(cli bce.Client, bucket, object, uploadId string, partNu
 // UploadPartCopy - copy the multipart data
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - bucket: the destination bucket name
-//     - object: the destination object name
-//     - source: the copy source uri
-//     - uploadId: the multipart upload id
-//     - partNumber: the current part number
-//     - args: the optional arguments
+//   - cli: the client agent which can perform sending request
+//   - bucket: the destination bucket name
+//   - object: the destination object name
+//   - source: the copy source uri
+//   - uploadId: the multipart upload id
+//   - partNumber: the current part number
+//   - args: the optional arguments
+//
 // RETURNS:
-//     - *CopyObjectResult: the lastModified and eTag of the part
-//     - error: nil if ok otherwise the specific error
+//   - *CopyObjectResult: the lastModified and eTag of the part
+//   - error: nil if ok otherwise the specific error
 func UploadPartCopy(cli bce.Client, bucket, object, source, uploadId string, partNumber int,
 	args *UploadPartCopyArgs) (*CopyObjectResult, error) {
 	req := &bce.BceRequest{}
@@ -270,15 +274,16 @@ func UploadPartCopy(cli bce.Client, bucket, object, source, uploadId string, par
 // CompleteMultipartUpload - finish a multipart upload operation
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - bucket: the destination bucket name
-//     - object: the destination object name
-//     - uploadId: the multipart upload id
-//     - parts: all parts info stream
-//     - meta: user defined meta data
+//   - cli: the client agent which can perform sending request
+//   - bucket: the destination bucket name
+//   - object: the destination object name
+//   - uploadId: the multipart upload id
+//   - parts: all parts info stream
+//   - meta: user defined meta data
+//
 // RETURNS:
-//     - *CompleteMultipartUploadResult: the result data
-//     - error: nil if ok otherwise the specific error
+//   - *CompleteMultipartUploadResult: the result data
+//   - error: nil if ok otherwise the specific error
 func CompleteMultipartUpload(cli bce.Client, bucket, object, uploadId string,
 	body *bce.Body, args *CompleteMultipartUploadArgs) (*CompleteMultipartUploadResult, error) {
 	req := &bce.BceRequest{}
@@ -328,12 +333,13 @@ func CompleteMultipartUpload(cli bce.Client, bucket, object, uploadId string,
 // AbortMultipartUpload - abort a multipart upload operation
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - bucket: the destination bucket name
-//     - object: the destination object name
-//     - uploadId: the multipart upload id
+//   - cli: the client agent which can perform sending request
+//   - bucket: the destination bucket name
+//   - object: the destination object name
+//   - uploadId: the multipart upload id
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func AbortMultipartUpload(cli bce.Client, bucket, object, uploadId string) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
@@ -354,16 +360,17 @@ func AbortMultipartUpload(cli bce.Client, bucket, object, uploadId string) error
 // ListParts - list the successfully uploaded parts info by upload id
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - bucket: the destination bucket name
-//     - object: the destination object name
-//     - uploadId: the multipart upload id
-//     - args: the optional arguments
-//             partNumberMarker: return parts after this marker
-//             maxParts: the max number of return parts, default and maximum is 1000
+//   - cli: the client agent which can perform sending request
+//   - bucket: the destination bucket name
+//   - object: the destination object name
+//   - uploadId: the multipart upload id
+//   - args: the optional arguments
+//     partNumberMarker: return parts after this marker
+//     maxParts: the max number of return parts, default and maximum is 1000
+//
 // RETURNS:
-//     - *ListPartsResult: the uploaded parts info result
-//     - error: nil if ok otherwise the specific error
+//   - *ListPartsResult: the uploaded parts info result
+//   - error: nil if ok otherwise the specific error
 func ListParts(cli bce.Client, bucket, object, uploadId string,
 	args *ListPartsArgs) (*ListPartsResult, error) {
 	req := &bce.BceRequest{}
@@ -399,12 +406,13 @@ func ListParts(cli bce.Client, bucket, object, uploadId string,
 // ListMultipartUploads - list the unfinished uploaded parts of the given bucket
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - bucket: the destination bucket name
-//     - args: the optional arguments
+//   - cli: the client agent which can perform sending request
+//   - bucket: the destination bucket name
+//   - args: the optional arguments
+//
 // RETURNS:
-//     - *ListMultipartUploadsResult: the unfinished uploaded parts info result
-//     - error: nil if ok otherwise the specific error
+//   - *ListMultipartUploadsResult: the unfinished uploaded parts info result
+//   - error: nil if ok otherwise the specific error
 func ListMultipartUploads(cli bce.Client, bucket string,
 	args *ListMultipartUploadsArgs) (*ListMultipartUploadsResult, error) {
 	req := &bce.BceRequest{}

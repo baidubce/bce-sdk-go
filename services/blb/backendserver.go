@@ -14,7 +14,6 @@
 
 // backendserver.go - the backendserver APIs definition supported by the BLB service
 
-
 package blb
 
 import (
@@ -25,14 +24,14 @@ import (
 	"github.com/baidubce/bce-sdk-go/http"
 )
 
-
 // AddBackendServers - add backend servers
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: parameters to add backend servers
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to add backend servers
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) AddBackendServers(blbId string, args *AddBackendServersArgs) error {
 
 	if args == nil {
@@ -54,10 +53,11 @@ func (c *Client) AddBackendServers(blbId string, args *AddBackendServersArgs) er
 // UpdateBackendServers - update backend servers
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: parameters to update backend servers
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to update backend servers
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateBackendServers(blbId string, args *UpdateBackendServersArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -76,15 +76,15 @@ func (c *Client) UpdateBackendServers(blbId string, args *UpdateBackendServersAr
 		Do()
 }
 
-
 // DescribeBackendServers - describe all backend servers
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: parameters to describe all backend servers
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to describe all backend servers
+//
 // RETURNS:
-//     - *DescribeBackendServersResult: the result of describe all backend servers
-//     - error: nil if ok otherwise the specific error
+//   - *DescribeBackendServersResult: the result of describe all backend servers
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DescribeBackendServers(blbId string, args *DescribeBackendServersArgs) (*DescribeBackendServersResult, error) {
 	if args == nil {
 		args = &DescribeBackendServersArgs{}
@@ -109,11 +109,12 @@ func (c *Client) DescribeBackendServers(blbId string, args *DescribeBackendServe
 // DescribeHealthStatus - describe all backend servers health status
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: parameters to describe all backend servers health status
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to describe all backend servers health status
+//
 // RETURNS:
-//     - *DescribeHealthStatusResult: the result of describe all backend servers health status
-//     - error: nil if ok otherwise the specific error
+//   - *DescribeHealthStatusResult: the result of describe all backend servers health status
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DescribeHealthStatus(blbId string, args *DescribeHealthStatusArgs) (*DescribeHealthStatusResult, error) {
 	if args == nil {
 		args = &DescribeHealthStatusArgs{}
@@ -142,10 +143,11 @@ func (c *Client) DescribeHealthStatus(blbId string, args *DescribeHealthStatusAr
 // RemoveBackendServers - remove backend servers
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: parameters to remove backend servers, a backend server list
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to remove backend servers, a backend server list
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) RemoveBackendServers(blbId string, args *RemoveBackendServersArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -162,10 +164,3 @@ func (c *Client) RemoveBackendServers(blbId string, args *RemoveBackendServersAr
 		WithBody(args).
 		Do()
 }
-
-
-
-
-
-
-

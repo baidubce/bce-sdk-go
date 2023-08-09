@@ -77,7 +77,7 @@ func TestClient_CreateDts(t *testing.T) {
 		SourceInstanceType: "public",
 		TargetInstanceType: "public",
 		CrossRegionTag:     0,
-		DirectionType: "single",
+		DirectionType:      "single",
 	}
 	result, err := DTS_CLIENT.CreateDts(args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -95,7 +95,7 @@ func TestClient_GetDetail(t *testing.T) {
 func TestClient_ListDts(t *testing.T) {
 	var count = 0
 	args := &ListDtsArgs{
-		Type: "migration",
+		Type:    "migration",
 		MaxKeys: 10,
 	}
 	for true {
@@ -119,14 +119,14 @@ func TestClient_ListDtsWithPage(t *testing.T) {
 		Types: []string{"bidirect"},
 		Filters: []ListFilter{
 			{
-				Keyword: "he",
+				Keyword:     "he",
 				KeywordType: "taskName",
 			},
 		},
-		PageNo: 1,
+		PageNo:   1,
 		PageSize: 10,
-		Order: "desc",
-		OrderBy: "createTime",
+		Order:    "desc",
+		OrderBy:  "createTime",
 	}
 	for true {
 		result, err := DTS_CLIENT.ListDtsWithPage(args)
@@ -148,36 +148,36 @@ func TestClient_DeleteDts(t *testing.T) {
 }
 
 func TestClient_ConfigDts(t *testing.T) {
-	args := &ConfigArgs {
-		Type: "migration",
+	args := &ConfigArgs{
+		Type:     "migration",
 		TaskName: "go-sdk-1",
 		DataType: []string{"increment"},
 		SrcConnection: Connection{
-			InstanceType: "bcerds",
-			DbType: "mysql",
-			InstanceId: "rdsm9744332",
-			Region: "bj",
+			InstanceType:   "bcerds",
+			DbType:         "mysql",
+			InstanceId:     "rdsm9744332",
+			Region:         "bj",
 			FieldWhitelist: "",
 			FieldBlacklist: "",
 		},
 		DstConnection: Connection{
 			InstanceType: "bcerds",
-			DbType: "mysql",
-			InstanceId: "rdsmiu336698",
-			Region: "bj",
-			SqlType: "I,U",
+			DbType:       "mysql",
+			InstanceId:   "rdsmiu336698",
+			Region:       "bj",
+			SqlType:      "I,U",
 		},
 		SchemaMapping: []Schema{
 			{
-				Type: "table",
-				Src: "hello.user",
-				Dst: "hello.user",
+				Type:  "table",
+				Src:   "hello.user",
+				Dst:   "hello.user",
 				Where: "",
 			},
 		},
 		Granularity: "dbtb",
 		InitPosition: InitPosition{
-			Type: "binlog",
+			Type:     "binlog",
 			Position: "",
 		},
 	}
@@ -226,7 +226,7 @@ func TestClient_ShutdownDts(t *testing.T) {
 }
 
 func TestClient_GetSchema(t *testing.T) {
-	args := &GetSchemaArgs {
+	args := &GetSchemaArgs{
 		Connection: Connection{
 			InstanceType:   "bcerds",
 			DbType:         "mysql",
@@ -243,7 +243,7 @@ func TestClient_GetSchema(t *testing.T) {
 }
 
 func TestClient_UpdateTaskName(t *testing.T) {
-	args := &UpdateTaskNameArgs {
+	args := &UpdateTaskNameArgs{
 		TaskName: "go-sdkkk",
 	}
 	err := DTS_CLIENT.UpdateTaskName("dtsbe35xxxx8xzw365", args)
@@ -251,7 +251,7 @@ func TestClient_UpdateTaskName(t *testing.T) {
 }
 
 func TestClient_ResizeTaskStandard(t *testing.T) {
-	args := &ResizeTaskStandardArgs {
+	args := &ResizeTaskStandardArgs{
 		Standard: "Xlarge",
 	}
 	response, err := DTS_CLIENT.ResizeTaskStandard("dtsbexxxxxzw365", args)

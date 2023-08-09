@@ -24,11 +24,12 @@ import (
 // ListCore - list all core of a group
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - groupUuid: id of the group
+//   - cli: the client agent which can perform sending request
+//   - groupUuid: id of the group
+//
 // RETURNS:
-//     - *ListCoreResult: the result core list
-//     - error: nil if ok otherwise the specific error
+//   - *ListCoreResult: the result core list
+//   - error: nil if ok otherwise the specific error
 func ListCore(cli bce.Client, groupUuid string) (*ListCoreResult, error) {
 	url := PREFIX + "/" + groupUuid + "/core"
 
@@ -45,12 +46,13 @@ func ListCore(cli bce.Client, groupUuid string) (*ListCoreResult, error) {
 // GetCore - get a core of a group
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - groupUuid: id of the group
-//     - coreid: id of the core
+//   - cli: the client agent which can perform sending request
+//   - groupUuid: id of the group
+//   - coreid: id of the core
+//
 // RETURNS:
-//     - *CoreResult: the result core
-//     - error: nil if ok otherwise the specific error
+//   - *CoreResult: the result core
+//   - error: nil if ok otherwise the specific error
 func GetCore(cli bce.Client, groupUuid string, coreid string) (*CoreResult, error) {
 	url := PREFIX + "/" + groupUuid + "/core/" + coreid
 
@@ -67,11 +69,12 @@ func GetCore(cli bce.Client, groupUuid string, coreid string) (*CoreResult, erro
 // RenewCoreAuth - renew the auth of a core
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - coreid: id of the core
+//   - cli: the client agent which can perform sending request
+//   - coreid: id of the core
+//
 // RETURNS:
-//     - *CoreInfo: the result core info
-//     - error: nil if ok otherwise the specific error
+//   - *CoreInfo: the result core info
+//   - error: nil if ok otherwise the specific error
 func RenewCoreAuth(cli bce.Client, coreid string) (*CoreInfo, error) {
 	url := "/v3/core/" + coreid + "/renew-auth"
 
@@ -88,11 +91,12 @@ func RenewCoreAuth(cli bce.Client, coreid string) (*CoreInfo, error) {
 // GetCoreStatus - get the status of a core
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - coreid: id of the core
+//   - cli: the client agent which can perform sending request
+//   - coreid: id of the core
+//
 // RETURNS:
-//     - *CoreStatus: the status of the core
-//     - error: nil if ok otherwise the specific error
+//   - *CoreStatus: the status of the core
+//   - error: nil if ok otherwise the specific error
 func GetCoreStatus(cli bce.Client, coreid string) (*CoreStatus, error) {
 	url := "/v3/core/" + coreid + "/online"
 

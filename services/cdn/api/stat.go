@@ -139,11 +139,12 @@ type ErrorDetail struct {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E6%9F%A5%E8%AF%A2%E5%B9%B3%E5%9D%87%E9%80%9F%E7%8E%87
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []AvgSpeedDetail: the detail list about the average speed
-//     - error: nil if success otherwise the specific error
+//   - []AvgSpeedDetail: the detail list about the average speed
+//   - error: nil if success otherwise the specific error
 func GetAvgSpeed(cli bce.Client, queryCondition *QueryCondition) ([]AvgSpeedDetail, error) {
 
 	respObj := &struct {
@@ -170,13 +171,14 @@ func GetAvgSpeed(cli bce.Client, queryCondition *QueryCondition) ([]AvgSpeedDeta
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BF%E9%97%AE%E5%88%86%E5%B8%83%E6%9F%A5%E8%AF%A2%E5%B9%B3%E5%9D%87%E9%80%9F%E7%8E%87
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
-//     - prov: the specified area, like "beijing"
-//     - isp: the specified ISP, like "ct"
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//   - prov: the specified area, like "beijing"
+//   - isp: the specified ISP, like "ct"
+//
 // RETURNS:
-//     - []AvgSpeedRegionDetail: the detail list about the average speed
-//     - error: nil if success otherwise the specific error
+//   - []AvgSpeedRegionDetail: the detail list about the average speed
+//   - error: nil if success otherwise the specific error
 func GetAvgSpeedByRegion(cli bce.Client, queryCondition *QueryCondition, prov string, isp string) ([]AvgSpeedRegionDetail, error) {
 
 	respObj := &struct {
@@ -207,12 +209,13 @@ func GetAvgSpeedByRegion(cli bce.Client, queryCondition *QueryCondition, prov st
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#pvqps%E6%9F%A5%E8%AF%A2
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
-//     - level: the node level, the available values are "edge", "internal" and "all"
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//   - level: the node level, the available values are "edge", "internal" and "all"
+//
 // RETURNS:
-//     - []PvDetail: the detail list about page view
-//     - error: nil if success otherwise the specific error
+//   - []PvDetail: the detail list about page view
+//   - error: nil if success otherwise the specific error
 func GetPv(cli bce.Client, queryCondition *QueryCondition, level string) ([]PvDetail, error) {
 
 	respObj := &struct {
@@ -241,11 +244,12 @@ func GetPv(cli bce.Client, queryCondition *QueryCondition, level string) ([]PvDe
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E5%9B%9E%E6%BA%90pvqps%E6%9F%A5%E8%AF%A2
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []PvDetail: the detail list about page view
-//     - error: nil if success otherwise the specific error
+//   - []PvDetail: the detail list about page view
+//   - error: nil if success otherwise the specific error
 func GetSrcPv(cli bce.Client, queryCondition *QueryCondition) ([]PvDetail, error) {
 
 	respObj := &struct {
@@ -272,13 +276,14 @@ func GetSrcPv(cli bce.Client, queryCondition *QueryCondition) ([]PvDetail, error
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E6%9F%A5%E8%AF%A2pvqps%E5%88%86%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BF%E9%97%AE%E5%88%86%E5%B8%83
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
-//     - prov: the specified area, like "beijing"
-//     - isp: the specified ISP, like "ct"
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//   - prov: the specified area, like "beijing"
+//   - isp: the specified ISP, like "ct"
+//
 // RETURNS:
-//     - []PvRegionDetail: the detail list about page view
-//     - error: nil if success otherwise the specific error
+//   - []PvRegionDetail: the detail list about page view
+//   - error: nil if success otherwise the specific error
 func GetPvByRegion(cli bce.Client, queryCondition *QueryCondition, prov string, isp string) ([]PvRegionDetail, error) {
 
 	respObj := &struct {
@@ -309,11 +314,12 @@ func GetPvByRegion(cli bce.Client, queryCondition *QueryCondition, prov string, 
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#uv%E6%9F%A5%E8%AF%A2
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []UvDetail: the detail list about unique visitor
-//     - error: nil if success otherwise the specific error
+//   - []UvDetail: the detail list about unique visitor
+//   - error: nil if success otherwise the specific error
 func GetUv(cli bce.Client, queryCondition *QueryCondition) ([]UvDetail, error) {
 
 	respObj := &struct {
@@ -341,11 +347,12 @@ func GetUv(cli bce.Client, queryCondition *QueryCondition) ([]UvDetail, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E6%9F%A5%E8%AF%A2%E6%B5%81%E9%87%8F%E3%80%81%E5%B8%A6%E5%AE%BD
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []FlowDetail: the detail list about flow
-//     - error: nil if success otherwise the specific error
+//   - []FlowDetail: the detail list about flow
+//   - error: nil if success otherwise the specific error
 func GetFlow(cli bce.Client, queryCondition *QueryCondition, level string) ([]FlowDetail, error) {
 
 	respObj := &struct {
@@ -374,12 +381,13 @@ func GetFlow(cli bce.Client, queryCondition *QueryCondition, level string) ([]Fl
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E6%9F%A5%E8%AF%A2%E6%B5%81%E9%87%8F%E3%80%81%E5%B8%A6%E5%AE%BD%E5%88%86%E5%8D%8F%E8%AE%AE
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
-//     - protocol: the specified HTTP protocol, like "http" or "https", "all" means both "http" and "https"
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//   - protocol: the specified HTTP protocol, like "http" or "https", "all" means both "http" and "https"
+//
 // RETURNS:
-//     - []FlowDetail: the detail list about flow
-//     - error: nil if success otherwise the specific error
+//   - []FlowDetail: the detail list about flow
+//   - error: nil if success otherwise the specific error
 func GetFlowByProtocol(cli bce.Client, queryCondition *QueryCondition, protocol string) ([]FlowDetail, error) {
 
 	respObj := &struct {
@@ -408,13 +416,14 @@ func GetFlowByProtocol(cli bce.Client, queryCondition *QueryCondition, protocol 
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E6%9F%A5%E8%AF%A2%E6%B5%81%E9%87%8F%E3%80%81%E5%B8%A6%E5%AE%BD%EF%BC%88%E5%88%86%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BF%E9%97%AE%E5%88%86%E5%B8%83%EF%BC%89
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
-//     - prov: the specified area, like "beijing"
-//     - isp: the specified ISP, like "ct"
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//   - prov: the specified area, like "beijing"
+//   - isp: the specified ISP, like "ct"
+//
 // RETURNS:
-//     - []FlowRegionDetail: the detail list about flow
-//     - error: nil if success otherwise the specific error
+//   - []FlowRegionDetail: the detail list about flow
+//   - error: nil if success otherwise the specific error
 func GetFlowByRegion(cli bce.Client, queryCondition *QueryCondition, prov string, isp string) ([]FlowRegionDetail, error) {
 
 	respObj := &struct {
@@ -445,11 +454,12 @@ func GetFlowByRegion(cli bce.Client, queryCondition *QueryCondition, prov string
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E6%9F%A5%E8%AF%A2%E5%9B%9E%E6%BA%90%E6%B5%81%E9%87%8F%E3%80%81%E5%9B%9E%E6%BA%90%E5%B8%A6%E5%AE%BD
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []FlowDetail: the detail list about flow
-//     - error: nil if success otherwise the specific error
+//   - []FlowDetail: the detail list about flow
+//   - error: nil if success otherwise the specific error
 func GetSrcFlow(cli bce.Client, queryCondition *QueryCondition) ([]FlowDetail, error) {
 
 	respObj := &struct {
@@ -499,11 +509,12 @@ func getHit(cli bce.Client, queryCondition *QueryCondition, metric string) ([]Hi
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E5%AD%97%E8%8A%82%E5%91%BD%E4%B8%AD%E7%8E%87%E6%9F%A5%E8%AF%A2
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []HitDetail: the detail list about byte rate
-//     - error: nil if success otherwise the specific error
+//   - []HitDetail: the detail list about byte rate
+//   - error: nil if success otherwise the specific error
 func GetRealHit(cli bce.Client, queryCondition *QueryCondition) ([]HitDetail, error) {
 	return getHit(cli, queryCondition, "real_hit")
 }
@@ -512,11 +523,12 @@ func GetRealHit(cli bce.Client, queryCondition *QueryCondition) ([]HitDetail, er
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E8%AF%B7%E6%B1%82%E5%91%BD%E4%B8%AD%E7%8E%87%E6%9F%A5%E8%AF%A2
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []HitDetail: the detail list about pv rate
-//     - error: nil if success otherwise the specific error
+//   - []HitDetail: the detail list about pv rate
+//   - error: nil if success otherwise the specific error
 func GetPvHit(cli bce.Client, queryCondition *QueryCondition) ([]HitDetail, error) {
 	return getHit(cli, queryCondition, "pv_hit")
 }
@@ -547,11 +559,12 @@ func getHttpCode(cli bce.Client, queryCondition *QueryCondition, metric string) 
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E7%8A%B6%E6%80%81%E7%A0%81%E7%BB%9F%E8%AE%A1%E6%9F%A5%E8%AF%A2
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []HttpCodeDetail: the detail list about http code
-//     - error: nil if success otherwise the specific error
+//   - []HttpCodeDetail: the detail list about http code
+//   - error: nil if success otherwise the specific error
 func GetHttpCode(cli bce.Client, queryCondition *QueryCondition) ([]HttpCodeDetail, error) {
 	return getHttpCode(cli, queryCondition, "httpcode")
 }
@@ -560,11 +573,12 @@ func GetHttpCode(cli bce.Client, queryCondition *QueryCondition) ([]HttpCodeDeta
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E5%9B%9E%E6%BA%90%E7%8A%B6%E6%80%81%E7%A0%81%E6%9F%A5%E8%AF%A2
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []HttpCodeDetail: the detail list about http code
-//     - error: nil if success otherwise the specific error
+//   - []HttpCodeDetail: the detail list about http code
+//   - error: nil if success otherwise the specific error
 func GetSrcHttpCode(cli bce.Client, queryCondition *QueryCondition) ([]HttpCodeDetail, error) {
 	return getHttpCode(cli, queryCondition, "src_httpcode")
 }
@@ -573,13 +587,14 @@ func GetSrcHttpCode(cli bce.Client, queryCondition *QueryCondition) ([]HttpCodeD
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E7%8A%B6%E6%80%81%E7%A0%81%E7%BB%9F%E8%AE%A1%E6%9F%A5%E8%AF%A2%EF%BC%88%E5%88%86%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BF%E9%97%AE%E5%88%86%E5%B8%83%EF%BC%89
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
-//     - prov: the specified area, like "beijing"
-//     - isp: the specified ISP, like "ct"
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//   - prov: the specified area, like "beijing"
+//   - isp: the specified ISP, like "ct"
+//
 // RETURNS:
-//     - []HttpCodeRegionDetail: the detail list about http code
-//     - error: nil if success otherwise the specific error
+//   - []HttpCodeRegionDetail: the detail list about http code
+//   - error: nil if success otherwise the specific error
 func GetHttpCodeByRegion(cli bce.Client, queryCondition *QueryCondition, prov string, isp string) ([]HttpCodeRegionDetail, error) {
 
 	respObj := &struct {
@@ -639,12 +654,13 @@ func getTopN(cli bce.Client, queryCondition *QueryCondition, httpCode string, me
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#topn-urls
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
-//     - httpCode: the specified HTTP code, like "200"
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//   - httpCode: the specified HTTP code, like "200"
+//
 // RETURNS:
-//     - []TopNDetail: the top N urls' detail
-//     - error: nil if success otherwise the specific error
+//   - []TopNDetail: the top N urls' detail
+//   - error: nil if success otherwise the specific error
 func GetTopNUrls(cli bce.Client, queryCondition *QueryCondition, httpCode string) ([]TopNDetail, error) {
 	return getTopN(cli, queryCondition, httpCode, "top_urls")
 }
@@ -653,12 +669,13 @@ func GetTopNUrls(cli bce.Client, queryCondition *QueryCondition, httpCode string
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#topn-referers
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
-//     - httpCode: the specified HTTP code, like "200"
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//   - httpCode: the specified HTTP code, like "200"
+//
 // RETURNS:
-//     - []TopNDetail: the top N referer urls' detail
-//     - error: nil if success otherwise the specific error
+//   - []TopNDetail: the top N referer urls' detail
+//   - error: nil if success otherwise the specific error
 func GetTopNReferers(cli bce.Client, queryCondition *QueryCondition, httpCode string) ([]TopNDetail, error) {
 	return getTopN(cli, queryCondition, httpCode, "top_referers")
 }
@@ -667,12 +684,13 @@ func GetTopNReferers(cli bce.Client, queryCondition *QueryCondition, httpCode st
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#topn-domains
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
-//     - httpCode: the specified HTTP code, like "200"
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//   - httpCode: the specified HTTP code, like "200"
+//
 // RETURNS:
-//     - []TopNDetail: the top N domains' detail
-//     - error: nil if success otherwise the specific error
+//   - []TopNDetail: the top N domains' detail
+//   - error: nil if success otherwise the specific error
 func GetTopNDomains(cli bce.Client, queryCondition *QueryCondition, httpCode string) ([]TopNDetail, error) {
 	return getTopN(cli, queryCondition, httpCode, "top_domains")
 }
@@ -681,11 +699,12 @@ func GetTopNDomains(cli bce.Client, queryCondition *QueryCondition, httpCode str
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#cdn%E9%94%99%E8%AF%AF%E7%A0%81%E5%88%86%E7%B1%BB%E7%BB%9F%E8%AE%A1%E6%9F%A5%E8%AF%A2
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryCondition: the querying conditions
+//   - cli: the client agent which can perform sending request
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []ErrorDetail: the top N error details
-//     - error: nil if success otherwise the specific error
+//   - []ErrorDetail: the top N error details
+//   - error: nil if success otherwise the specific error
 func GetError(cli bce.Client, queryCondition *QueryCondition) ([]ErrorDetail, error) {
 	respObj := &struct {
 		Status  string        `json:"status"`
@@ -711,15 +730,16 @@ func GetError(cli bce.Client, queryCondition *QueryCondition) ([]ErrorDetail, er
 // For details, pleader refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E6%9F%A5%E8%AF%A2%E6%9C%8895%E5%B3%B0%E5%80%BC%E5%B8%A6%E5%AE%BD
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - startTime: start time which in `YYYY-mm-ddTHH:ii:ssZ` style
-//     - endTime: end time which in `YYYY-mm-ddTHH:ii:ssZ` style
-//     - domains: a list of domains, only one of `tags` and `domains` can contains item
-//     - tags: a list of tag names, only one of `tags` and `domains` can contains item
+//   - cli: the client agent which can perform sending request
+//   - startTime: start time which in `YYYY-mm-ddTHH:ii:ssZ` style
+//   - endTime: end time which in `YYYY-mm-ddTHH:ii:ssZ` style
+//   - domains: a list of domains, only one of `tags` and `domains` can contains item
+//   - tags: a list of tag names, only one of `tags` and `domains` can contains item
+//
 // RETURNS:
-//     - string: the peak95 time which in `YYYY-mm-ddTHH:ii:ssZ` style
-//     - int64: peak95 bandwidth
-//     - error: nil if success otherwise the specific error
+//   - string: the peak95 time which in `YYYY-mm-ddTHH:ii:ssZ` style
+//   - int64: peak95 bandwidth
+//   - error: nil if success otherwise the specific error
 func GetPeak95Bandwidth(cli bce.Client, startTime, endTime string, domains, tags []string) (peak95Time string, peak95Band int64, err error) {
 	respObj := &struct {
 		Details struct {

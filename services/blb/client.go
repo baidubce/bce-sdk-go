@@ -22,7 +22,7 @@ import "github.com/baidubce/bce-sdk-go/bce"
 const (
 	DEFAULT_SERVICE_DOMAIN = "blb." + bce.DEFAULT_REGION + ".baidubce.com"
 	URI_PREFIX             = bce.URI_PREFIX + "v1"
-	REQUEST_BLB_URL     = "/blb"
+	REQUEST_BLB_URL        = "/blb"
 
 	LISTENER_URL      = "/listener"
 	TCPLISTENER_URL   = "/TCPlistener"
@@ -31,10 +31,10 @@ const (
 	HTTPSLISTENER_URL = "/HTTPSlistener"
 	SSLLISTENER_URL   = "/SSLlistener"
 
-	BACKENDSERVER_URL   = "/backendserver"
+	BACKENDSERVER_URL = "/backendserver"
 
-	REQUEST_BLB_CLUSTER_URL   = "/blbcluster"
-	SECURITY_GROUP_URL   = "/securitygroup"
+	REQUEST_BLB_CLUSTER_URL = "/blbcluster"
+	SECURITY_GROUP_URL      = "/securitygroup"
 )
 
 // Client of APPBLB service is a kind of BceClient, so derived from BceClient

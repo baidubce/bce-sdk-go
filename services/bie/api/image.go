@@ -32,11 +32,12 @@ const (
 // ListImageSys - list all system docker images
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - ListImageReq: list request parameters
+//   - cli: the client agent which can perform sending request
+//   - ListImageReq: list request parameters
+//
 // RETURNS:
-//     - *ListImageResult: the result iamge list
-//     - error: nil if ok otherwise the specific error
+//   - *ListImageResult: the result iamge list
+//   - error: nil if ok otherwise the specific error
 func ListImageSys(cli bce.Client, lir *ListImageReq) (*ListImageResult, error) {
 	url := PREFIX_V3MODSYS
 	result := &ListImageResult{}
@@ -57,11 +58,12 @@ func ListImageSys(cli bce.Client, lir *ListImageReq) (*ListImageResult, error) {
 // GetImageSys - get a system docker images
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - uuid: the image uuid
+//   - cli: the client agent which can perform sending request
+//   - uuid: the image uuid
+//
 // RETURNS:
-//     - *Image: the result iamge
-//     - error: nil if ok otherwise the specific error
+//   - *Image: the result iamge
+//   - error: nil if ok otherwise the specific error
 func GetImageSys(cli bce.Client, uuid string) (*Image, error) {
 	url := PREFIX_V3MODSYS + "/" + uuid
 	result := &Image{}
@@ -76,11 +78,12 @@ func GetImageSys(cli bce.Client, uuid string) (*Image, error) {
 // ListImageUser - list all user docker images
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - ListImageReq: list request parameters
+//   - cli: the client agent which can perform sending request
+//   - ListImageReq: list request parameters
+//
 // RETURNS:
-//     - *ListImageResult: the result iamge list
-//     - error: nil if ok otherwise the specific error
+//   - *ListImageResult: the result iamge list
+//   - error: nil if ok otherwise the specific error
 func ListImageUser(cli bce.Client, lir *ListImageReq) (*ListImageResult, error) {
 	url := PREFIX_V3MODUSR
 	result := &ListImageResult{}
@@ -101,11 +104,12 @@ func ListImageUser(cli bce.Client, lir *ListImageReq) (*ListImageResult, error) 
 // GetImageUser - get a user docker image
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - uuid: the image uuid
+//   - cli: the client agent which can perform sending request
+//   - uuid: the image uuid
+//
 // RETURNS:
-//     - *Image: the result iamge
-//     - error: nil if ok otherwise the specific error
+//   - *Image: the result iamge
+//   - error: nil if ok otherwise the specific error
 func GetImageUser(cli bce.Client, uuid string) (*Image, error) {
 	url := PREFIX_V3MODUSR + "/" + uuid
 	result := &Image{}
@@ -120,11 +124,12 @@ func GetImageUser(cli bce.Client, uuid string) (*Image, error) {
 // CreateImageUser - create a user docker image
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - CreateImageReq: request parameters, name, image url, description
+//   - cli: the client agent which can perform sending request
+//   - CreateImageReq: request parameters, name, image url, description
+//
 // RETURNS:
-//     - *Image: the result iamge
-//     - error: nil if ok otherwise the specific error
+//   - *Image: the result iamge
+//   - error: nil if ok otherwise the specific error
 func CreateImageUser(cli bce.Client, cir *CreateImageReq) (*Image, error) {
 	url := PREFIX_V3MODUSR
 	result := &Image{}
@@ -139,12 +144,13 @@ func CreateImageUser(cli bce.Client, cir *CreateImageReq) (*Image, error) {
 // EditImageUser - edit a user docker image information
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - uuid: the image uuid
-//     - EditImageReq: request parameter: description
+//   - cli: the client agent which can perform sending request
+//   - uuid: the image uuid
+//   - EditImageReq: request parameter: description
+//
 // RETURNS:
-//     - *Image: the result iamge
-//     - error: nil if ok otherwise the specific error
+//   - *Image: the result iamge
+//   - error: nil if ok otherwise the specific error
 func EditImageUser(cli bce.Client, uuid string, eir *EditImageReq) (*Image, error) {
 	url := PREFIX_V3MODUSR + "/" + uuid
 	result := &Image{}
@@ -159,10 +165,11 @@ func EditImageUser(cli bce.Client, uuid string, eir *EditImageReq) (*Image, erro
 // DeleteImageUser - delete a user docker image
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - uuid: the image uuid
+//   - cli: the client agent which can perform sending request
+//   - uuid: the image uuid
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func DeleteImageUser(cli bce.Client, uuid string) error {
 	url := PREFIX_V3MODUSR + "/" + uuid
 	req := &bce.BceRequest{}

@@ -30,21 +30,20 @@ const (
 	URI_PREFIX               = bce.URI_PREFIX + "v1" // sts service not support uri without prefix "v1"
 	REQUEST_URI              = "/sessionToken"
 
-	DEFAULT_ASSUMEROLE_DURATION_SECONDS = 7200       // default duration is 2 hours
-	REQUEST_ASSUMEROLE_URI   = "/credential"
+	DEFAULT_ASSUMEROLE_DURATION_SECONDS = 7200 // default duration is 2 hours
+	REQUEST_ASSUMEROLE_URI              = "/credential"
 )
-
 
 // GetSessionToken - get the session token from the STS service
 //
 // PARAMS:
-//     - cli: the client object which can perform sending request
-//     - durationSec: the duration seconds of the token
-//     - acl: the acl string
+//   - cli: the client object which can perform sending request
+//   - durationSec: the duration seconds of the token
+//   - acl: the acl string
 //
 // RETURNS:
-//     - *GetSessionTokenResult: result of this api
-//     - error: nil if ok otherwise the specific error
+//   - *GetSessionTokenResult: result of this api
+//   - error: nil if ok otherwise the specific error
 func GetSessionToken(cli bce.Client, durationSec int, acl string) (*GetSessionTokenResult, error) {
 	// If the duration seconds is not a positive, use the default value
 	if durationSec <= 0 {
@@ -83,11 +82,12 @@ func GetSessionToken(cli bce.Client, durationSec int, acl string) (*GetSessionTo
 // AssumeRole - get the credential for the assume role from the STS service
 //
 // PARAMS:
-//     - cli: the client object which can perform sending request
-//     - args: the args for assumeRole
+//   - cli: the client object which can perform sending request
+//   - args: the args for assumeRole
+//
 // RETURNS:
-//     - *Credential: result of this api
-//     - error: nil if ok otherwise the specific error
+//   - *Credential: result of this api
+//   - error: nil if ok otherwise the specific error
 func AssumeRole(cli bce.Client, args *AssumeRoleArgs) (*Credential, error) {
 	// If the duration seconds is not a positive, use the default value
 	if args.DurationSeconds <= 0 {

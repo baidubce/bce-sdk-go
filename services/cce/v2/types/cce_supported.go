@@ -51,7 +51,7 @@ var SupportedGPUType = map[GPUType]string{
 	GPUTypeP40:     "",
 	GPUTypeP4:      "",
 	GPUTypeK40:     "",
-	GPUTypeDLCard: "",
+	GPUTypeDLCard:  "",
 }
 
 // SupportedK8SVersions - CCE 支持的 K8s 版本
@@ -82,11 +82,11 @@ var SupportedImageType = map[bccapi.ImageType]string{
 	bccapi.ImageTypeGPUCustom:   "",
 	bccapi.ImageTypeSharing:     "",
 	bccapi.ImageTypeIntegration: "",
-	ImageTypeService:     "",
+	ImageTypeService:            "",
 	// ImageTypeBBCSystem BBC 公有
-	bccapi.ImageTypeBBCSystem:   "",
+	bccapi.ImageTypeBBCSystem: "",
 	// ImageTypeBBCCustom BBC 自定义
-	bccapi.ImageTypeBBCCustom:   "",
+	bccapi.ImageTypeBBCCustom: "",
 }
 
 // SupportedContainerNetworkMode - CCE 支持的容器网络类型
@@ -102,7 +102,7 @@ var SupportedContainerNetworkMode = map[ContainerNetworkMode]string{
 }
 
 var SupportedRuntimeType = map[RuntimeType]string{
-	RuntimeTypeDocker:     "",
+	RuntimeTypeDocker: "",
 }
 
 var SupportedKubeProxyMode = map[KubeProxyMode]string{

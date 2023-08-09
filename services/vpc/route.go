@@ -26,11 +26,12 @@ import (
 // GetRouteTableDetail - get details of the given routeTableId or vpcId
 //
 // PARAMS:
-//     - routeTableId: the id of the specific route table
-//     - vpcId: the id of the specific VPC
+//   - routeTableId: the id of the specific route table
+//   - vpcId: the id of the specific VPC
+//
 // RETURNS:
-//     - *GetRouteTableResult: the result of route table details
-//     - error: nil if success otherwise the specific error
+//   - *GetRouteTableResult: the result of route table details
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetRouteTableDetail(routeTableId, vpcId string) (*GetRouteTableResult, error) {
 	if routeTableId == "" && vpcId == "" {
 		return nil, fmt.Errorf("The routeTableId and vpcId cannot be blank at the same time.")
@@ -51,10 +52,11 @@ func (c *Client) GetRouteTableDetail(routeTableId, vpcId string) (*GetRouteTable
 // CreateRouteRule - create a new route rule with the given parameters
 //
 // PARAMS:
-//     - args: the arguments to create route rule
+//   - args: the arguments to create route rule
+//
 // RETURNS:
-//     - *CreateRouteRuleResult: the id of the route rule newly created
-//     - error: nil if success otherwise the specific error
+//   - *CreateRouteRuleResult: the id of the route rule newly created
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateRouteRule(args *CreateRouteRuleArgs) (*CreateRouteRuleResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("CreateRouteRuleArgs cannot be nil.")
@@ -75,10 +77,11 @@ func (c *Client) CreateRouteRule(args *CreateRouteRuleArgs) (*CreateRouteRuleRes
 // DeleteRouteRule - delete the given routing rule
 //
 // PARAMS:
-//     - routeRuleId: the id of the specific routing rule
-//     - clientToken: the idempotent token
+//   - routeRuleId: the id of the specific routing rule
+//   - clientToken: the idempotent token
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteRouteRule(routeRuleId, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForRouteRuleId(routeRuleId)).

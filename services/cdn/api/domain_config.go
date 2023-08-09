@@ -218,11 +218,12 @@ type Ipv6Dispatch struct {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/2jwvyf39o
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *DomainConfig: the configuration about the specified domain
-//     - error: nil if success otherwise the specific error
+//   - *DomainConfig: the configuration about the specified domain
+//   - error: nil if success otherwise the specific error
 func GetDomainConfig(cli bce.Client, domain string) (*DomainConfig, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 
@@ -240,12 +241,13 @@ func GetDomainConfig(cli bce.Client, domain string) (*DomainConfig, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/xjxzi7729
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - origins: the origin servers
-//     - defaultHost: the default host
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - origins: the origin servers
+//   - defaultHost: the default host
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetDomainOrigin(cli bce.Client, domain string, origins []OriginPeer, defaultHost string) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -271,11 +273,12 @@ func SetDomainOrigin(cli bce.Client, domain string, origins []OriginPeer, defaul
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/7k9jdhhlm
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - originProtocol: the protocol used for back to the backend server
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - originProtocol: the protocol used for back to the backend server
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetOriginProtocol(cli bce.Client, domain string, originProtocol string) error {
 	validOriginProtocols := map[string]bool{
 		"http":  true,
@@ -305,11 +308,12 @@ func SetOriginProtocol(cli bce.Client, domain string, originProtocol string) err
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/dk9jdoob4
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - string: the protocol used for back to the backend server, it's value must be "http", "https" or "*"
-//     - error: nil if success otherwise the specific error
+//   - string: the protocol used for back to the backend server, it's value must be "http", "https" or "*"
+//   - error: nil if success otherwise the specific error
 func GetOriginProtocol(cli bce.Client, domain string) (string, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -335,11 +339,12 @@ func GetOriginProtocol(cli bce.Client, domain string) (string, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Jjxziuq4y
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - seoSwitch: the setting about SEO
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - seoSwitch: the setting about SEO
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetDomainSeo(cli bce.Client, domain string, seoSwitch *SeoSwitch) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -371,11 +376,12 @@ func SetDomainSeo(cli bce.Client, domain string, seoSwitch *SeoSwitch) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Djxzjfz8f
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *SeoSwitch: the setting about SEO
-//     - error: nil if success otherwise the specific error
+//   - *SeoSwitch: the setting about SEO
+//   - error: nil if success otherwise the specific error
 func GetDomainSeo(cli bce.Client, domain string) (*SeoSwitch, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -410,11 +416,12 @@ func GetDomainSeo(cli bce.Client, domain string) (*SeoSwitch, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/ljxzhl9bu
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - []CacheTTL: the cache setting list
-//     - error: nil if success otherwise the specific error
+//   - []CacheTTL: the cache setting list
+//   - error: nil if success otherwise the specific error
 func GetCacheTTL(cli bce.Client, domain string) ([]CacheTTL, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -437,11 +444,12 @@ func GetCacheTTL(cli bce.Client, domain string) ([]CacheTTL, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/wjxzhgxnx
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - cacheTTLs: the cache setting list
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - cacheTTLs: the cache setting list
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetCacheTTL(cli bce.Client, domain string, cacheTTLs []CacheTTL) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -464,12 +472,13 @@ func SetCacheTTL(cli bce.Client, domain string, cacheTTLs []CacheTTL) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/yjxzhvf21
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - blackList: the forbidden host
-//     - whiteList: the available host
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - blackList: the forbidden host
+//   - whiteList: the available host
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetRefererACL(cli bce.Client, domain string, blackList []string, whiteList []string, isAllowEmpty bool) error {
 	if len(blackList) != 0 && len(whiteList) != 0 {
 		return errors.New("blackList and whiteList cannot exist at the same time")
@@ -507,11 +516,12 @@ func SetRefererACL(cli bce.Client, domain string, blackList []string, whiteList 
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Ujzkotvtb
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *api.RefererACL: referer ACL setting
-//     - error: nil if success otherwise the specific error
+//   - *api.RefererACL: referer ACL setting
+//   - error: nil if success otherwise the specific error
 func GetRefererACL(cli bce.Client, domain string) (*RefererACL, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -536,12 +546,13 @@ func GetRefererACL(cli bce.Client, domain string) (*RefererACL, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/8jxzhwc4d
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - blackList: the forbidden ip
-//     - whiteList: the available ip
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - blackList: the forbidden ip
+//   - whiteList: the available ip
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetIpACL(cli bce.Client, domain string, blackList []string, whiteList []string) error {
 	if len(blackList) != 0 && len(whiteList) != 0 {
 		return errors.New("blackList and whiteList cannot exist at the same time")
@@ -577,11 +588,12 @@ func SetIpACL(cli bce.Client, domain string, blackList []string, whiteList []str
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/jjzkp5ku7
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *api.IpACL: ip setting
-//     - error: nil if success otherwise the specific error
+//   - *api.IpACL: ip setting
+//   - error: nil if success otherwise the specific error
 func GetIpACL(cli bce.Client, domain string) (*IpACL, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -606,12 +618,13 @@ func GetIpACL(cli bce.Client, domain string) (*IpACL, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/uk88i2a86
 //
 // PARAMS:
-//     - cli: the client agent can execute sending request
-//     - domain: the specified domain
-//     - blackList: the forbidden UA
-//     - whiteList: the available UA
+//   - cli: the client agent can execute sending request
+//   - domain: the specified domain
+//   - blackList: the forbidden UA
+//   - whiteList: the available UA
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetUaACL(cli bce.Client, domain string, blackList []string, whiteList []string) error {
 	if len(blackList) != 0 && len(whiteList) != 0 {
 		return errors.New("blackList and whiteList cannot exist at the same time")
@@ -647,11 +660,12 @@ func SetUaACL(cli bce.Client, domain string, blackList []string, whiteList []str
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/ak88ix19h
 //
 // PARAMS:
-//     - cli: the client agent can execute sending request
-//     - domain: the specified domain
+//   - cli: the client agent can execute sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *api.UaACL: filter config for UA
-//     - error: nil if success otherwise the specific error
+//   - *api.UaACL: filter config for UA
+//   - error: nil if success otherwise the specific error
 func GetUaACL(cli bce.Client, domain string) (*UaACL, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -676,11 +690,12 @@ func GetUaACL(cli bce.Client, domain string) (*UaACL, error) {
 // SetLimitRate - set limited speed
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - limitRate: the limited rate, "1024" means the transmittal speed is less than 1024 Byte/s
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - limitRate: the limited rate, "1024" means the transmittal speed is less than 1024 Byte/s
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetLimitRate(cli bce.Client, domain string, limitRate int) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -703,11 +718,12 @@ func SetLimitRate(cli bce.Client, domain string, limitRate int) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/ujxzi418e
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - trafficLimit: config of traffic limitation
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - trafficLimit: config of traffic limitation
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetTrafficLimit(cli bce.Client, domain string, trafficLimit *TrafficLimit) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -730,11 +746,12 @@ func SetTrafficLimit(cli bce.Client, domain string, trafficLimit *TrafficLimit) 
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/7k4npdru0
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *TrafficLimit: config of traffic limitation
-//     - error: nil if success otherwise the specific error
+//   - *TrafficLimit: config of traffic limitation
+//   - error: nil if success otherwise the specific error
 func GetTrafficLimit(cli bce.Client, domain string) (*TrafficLimit, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -756,11 +773,12 @@ func GetTrafficLimit(cli bce.Client, domain string) (*TrafficLimit, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/rjy6v3tnr
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - httpsConfig: the rules about the HTTP configure
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - httpsConfig: the rules about the HTTP configure
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetDomainHttps(cli bce.Client, domain string, httpsConfig *HTTPSConfig) error {
 	if httpsConfig.HttpRedirect && httpsConfig.HttpsRedirect {
 		return errors.New("httpRedirect and httpsRedirect can not be true at the same time")
@@ -797,11 +815,12 @@ func SetDomainHttps(cli bce.Client, domain string, httpsConfig *HTTPSConfig) err
 // GetDomainHttps - get the setting about HTTPS
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *HTTPSConfig: the rules about the HTTP configure
-//     - error: nil if success otherwise the specific error
+//   - *HTTPSConfig: the rules about the HTTP configure
+//   - error: nil if success otherwise the specific error
 func GetDomainHttps(cli bce.Client, domain string) (*HTTPSConfig, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -824,11 +843,12 @@ func GetDomainHttps(cli bce.Client, domain string) (*HTTPSConfig, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Pkf2c0ugn
 //
 // PARAMS:
-//     - cli: the client agent can execute sending request
-//     - domain: the specified domain
-//     - enabled: true for "OCSP" opening otherwise closed
+//   - cli: the client agent can execute sending request
+//   - domain: the specified domain
+//   - enabled: true for "OCSP" opening otherwise closed
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetOCSP(cli bce.Client, domain string, enabled bool) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -850,11 +870,12 @@ func SetOCSP(cli bce.Client, domain string, enabled bool) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Xkhyjzcvd
 //
 // PARAMS:
-//     - cli: the client agent can execute sending request
-//     - domain: the specified domain
+//   - cli: the client agent can execute sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - bool: true for "OCSP" opening otherwise closed
-//     - error: nil if success otherwise the specific error
+//   - bool: true for "OCSP" opening otherwise closed
+//   - error: nil if success otherwise the specific error
 func GetOCSP(cli bce.Client, domain string) (bool, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -877,11 +898,12 @@ func GetOCSP(cli bce.Client, domain string) (bool, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/njxzi59g9
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - requestAuth: the rules about the auth
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - requestAuth: the rules about the auth
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetDomainRequestAuth(cli bce.Client, domain string, requestAuth *RequestAuth) error {
 	if requestAuth != nil && requestAuth.TimestampMetric != 0 {
 		return errors.New("TimestampMetric is deprecated, please use TimestampFormat as replacement")
@@ -911,11 +933,12 @@ func SetDomainRequestAuth(cli bce.Client, domain string, requestAuth *RequestAut
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/9jxzi89k2
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - isFollowProtocol: true in using the same protocol or not when back to the sourced server, false for other
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - isFollowProtocol: true in using the same protocol or not when back to the sourced server, false for other
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetFollowProtocol(cli bce.Client, domain string, isFollowProtocol bool) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -938,11 +961,12 @@ func SetFollowProtocol(cli bce.Client, domain string, isFollowProtocol bool) err
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Jjxzil1sd
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - httpHeaders: the HTTP headers' setting
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - httpHeaders: the HTTP headers' setting
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetHttpHeader(cli bce.Client, domain string, httpHeaders []HttpHeader) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -965,11 +989,12 @@ func SetHttpHeader(cli bce.Client, domain string, httpHeaders []HttpHeader) erro
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/6jxzip3wn
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
-//     - []HttpHeader: the HTTP headers in setting
+//   - error: nil if success otherwise the specific error
+//   - []HttpHeader: the HTTP headers in setting
 func GetHttpHeader(cli bce.Client, domain string) ([]HttpHeader, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -992,11 +1017,12 @@ func GetHttpHeader(cli bce.Client, domain string) ([]HttpHeader, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Ejy6vc4yb
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - errorPages: the custom pages' setting
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - errorPages: the custom pages' setting
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetErrorPage(cli bce.Client, domain string, errorPages []ErrorPage) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1019,11 +1045,12 @@ func SetErrorPage(cli bce.Client, domain string, errorPages []ErrorPage) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/qjy6vfk2u
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - []ErrorPage: the pages' setting
-//     - error: nil if success otherwise the specific error
+//   - []ErrorPage: the pages' setting
+//   - error: nil if success otherwise the specific error
 func GetErrorPage(cli bce.Client, domain string) ([]ErrorPage, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1050,11 +1077,12 @@ func GetErrorPage(cli bce.Client, domain string) ([]ErrorPage, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/0kf272ds7
 //
 // PARAMS:
-//     - cli: the client agent can execute sending request
-//     - domain: the specified domain
-//     - cacheSharedConfig: enabled sets true for shared with the specified domain, otherwise no shared.
+//   - cli: the client agent can execute sending request
+//   - domain: the specified domain
+//   - cacheSharedConfig: enabled sets true for shared with the specified domain, otherwise no shared.
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetCacheShared(cli bce.Client, domain string, cacheSharedConfig *CacheShared) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1075,11 +1103,12 @@ func SetCacheShared(cli bce.Client, domain string, cacheSharedConfig *CacheShare
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Mjy6vo9z2
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *CacheShared: shared cache setting
-//     - error: nil if success otherwise the specific error
+//   - *CacheShared: shared cache setting
+//   - error: nil if success otherwise the specific error
 func GetCacheShared(cli bce.Client, domain string) (*CacheShared, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1101,11 +1130,12 @@ func GetCacheShared(cli bce.Client, domain string) (*CacheShared, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/4jy6v6xk3
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - mediaDragConf: media setting about mp4 and flv
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - mediaDragConf: media setting about mp4 and flv
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetMediaDrag(cli bce.Client, domain string, mediaDragConf *MediaDragConf) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1128,11 +1158,12 @@ func SetMediaDrag(cli bce.Client, domain string, mediaDragConf *MediaDragConf) e
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Ojy6v9q8f
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *MediaDragConf: the media setting about mp4 and flv
-//     - error: nil if success otherwise the specific error
+//   - *MediaDragConf: the media setting about mp4 and flv
+//   - error: nil if success otherwise the specific error
 func GetMediaDrag(cli bce.Client, domain string) (*MediaDragConf, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1155,11 +1186,12 @@ func GetMediaDrag(cli bce.Client, domain string) (*MediaDragConf, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Xjy6vimct
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - fileTrim: true means trimming the text file, false means do nothing
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - fileTrim: true means trimming the text file, false means do nothing
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetFileTrim(cli bce.Client, domain string, fileTrim bool) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1182,11 +1214,12 @@ func SetFileTrim(cli bce.Client, domain string, fileTrim bool) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Ujy6vjxnl
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - bool: true means trimming the text file, false means do nothing
-//     - error: nil if success otherwise the specific error
+//   - bool: true means trimming the text file, false means do nothing
+//   - error: nil if success otherwise the specific error
 func GetFileTrim(cli bce.Client, domain string) (bool, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1209,11 +1242,12 @@ func GetFileTrim(cli bce.Client, domain string) (bool, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/qkggncsxp
 //
 // PARAMS:
-//     - cli: the client agent can execute sending request
-//     - domain: the specified domain
-//     - enabled: true for setting IPv6 switch on otherwise closed
+//   - cli: the client agent can execute sending request
+//   - domain: the specified domain
+//   - enabled: true for setting IPv6 switch on otherwise closed
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetIPv6(cli bce.Client, domain string, enabled bool) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1237,11 +1271,12 @@ func SetIPv6(cli bce.Client, domain string, enabled bool) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Ykggnobxd
 //
 // PARAMS:
-//     - cli: the client agent can execute sending request
-//     - domain: the specified domain
+//   - cli: the client agent can execute sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - bool: true for setting IPv6 switch on otherwise closed
-//     - error: nil if success otherwise the specific error
+//   - bool: true for setting IPv6 switch on otherwise closed
+//   - error: nil if success otherwise the specific error
 func GetIPv6(cli bce.Client, domain string) (bool, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1266,11 +1301,12 @@ func GetIPv6(cli bce.Client, domain string) (bool, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Qkggmoz7p
 //
 // PARAMS:
-//     - cli: the client agent can execute sending request
-//     - domain: the specified domain
-//     - enabled: true for QUIC opening otherwise closed
+//   - cli: the client agent can execute sending request
+//   - domain: the specified domain
+//   - enabled: true for QUIC opening otherwise closed
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetQUIC(cli bce.Client, domain string, enabled bool) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1292,11 +1328,12 @@ func SetQUIC(cli bce.Client, domain string, enabled bool) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/pkggn6l1f
 //
 // PARAMS:
-//     - cli: the client agent can execute sending request
-//     - domain: the specified domain
+//   - cli: the client agent can execute sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - bool: true for QUIC opening otherwise closed
-//     - error: nil if success otherwise the specific error
+//   - bool: true for QUIC opening otherwise closed
+//   - error: nil if success otherwise the specific error
 func GetQUIC(cli bce.Client, domain string) (bool, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1321,11 +1358,12 @@ func GetQUIC(cli bce.Client, domain string) (bool, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/xkhopuj48
 //
 // PARAMS:
-//     - cli: the client agent can execute sending request
-//     - domain: the specified domain
-//     - enabled: true for offlineMode opening otherwise closed
+//   - cli: the client agent can execute sending request
+//   - domain: the specified domain
+//   - enabled: true for offlineMode opening otherwise closed
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetOfflineMode(cli bce.Client, domain string, enabled bool) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1347,11 +1385,12 @@ func SetOfflineMode(cli bce.Client, domain string, enabled bool) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/tkhopvlkj
 //
 // PARAMS:
-//     - cli: the client agent can execute sending request
-//     - domain: the specified domain
+//   - cli: the client agent can execute sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - bool: true for offlineMode opening otherwise closed
-//     - error: nil if success otherwise the specific error
+//   - bool: true for offlineMode opening otherwise closed
+//   - error: nil if success otherwise the specific error
 func GetOfflineMode(cli bce.Client, domain string) (bool, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1374,11 +1413,12 @@ func GetOfflineMode(cli bce.Client, domain string) (bool, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Mjy6vmv6g
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - distinguishClient: true means distinguishing the client, false means not
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - distinguishClient: true means distinguishing the client, false means not
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetMobileAccess(cli bce.Client, domain string, distinguishClient bool) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1404,11 +1444,12 @@ func SetMobileAccess(cli bce.Client, domain string, distinguishClient bool) erro
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Mjy6vo9z2
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - bool: true means distinguishing the client, false means not
-//     - error: nil if success otherwise the specific error
+//   - bool: true means distinguishing the client, false means not
+//   - error: nil if success otherwise the specific error
 func GetMobileAccess(cli bce.Client, domain string) (bool, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1433,11 +1474,12 @@ func GetMobileAccess(cli bce.Client, domain string) (bool, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Kjy6umyrm
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - clientIp: header setting
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - clientIp: header setting
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetClientIp(cli bce.Client, domain string, clientIp *ClientIp) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1457,11 +1499,12 @@ func SetClientIp(cli bce.Client, domain string, clientIp *ClientIp) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/8jy6urcq5
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *ClientIp: the HTTP header setting for origin server to get client IP
-//     - error: nil if success otherwise the specific error
+//   - *ClientIp: the HTTP header setting for origin server to get client IP
+//   - error: nil if success otherwise the specific error
 func GetClientIp(cli bce.Client, domain string) (*ClientIp, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1484,11 +1527,12 @@ func GetClientIp(cli bce.Client, domain string) (*ClientIp, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/ukhopl3bq
 //
 // PARAMS:
-//     - cli: the client agent can execute sending request
-//     - domain: the specified domain
-//     - retryOrigin: retry policy
+//   - cli: the client agent can execute sending request
+//   - domain: the specified domain
+//   - retryOrigin: retry policy
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetRetryOrigin(cli bce.Client, domain string, retryOrigin *RetryOrigin) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1508,11 +1552,12 @@ func SetRetryOrigin(cli bce.Client, domain string, retryOrigin *RetryOrigin) err
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/bkhoppbhd
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *RetryOrigin: policy of retry origin servers
-//     - error: nil if success otherwise the specific error
+//   - *RetryOrigin: policy of retry origin servers
+//   - error: nil if success otherwise the specific error
 func GetRetryOrigin(cli bce.Client, domain string) (*RetryOrigin, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1535,11 +1580,12 @@ func GetRetryOrigin(cli bce.Client, domain string) (*RetryOrigin, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Kjy6v02wt
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - accessLimit: the access setting
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - accessLimit: the access setting
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetAccessLimit(cli bce.Client, domain string, accessLimit *AccessLimit) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1559,11 +1605,12 @@ func SetAccessLimit(cli bce.Client, domain string, accessLimit *AccessLimit) err
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/rjy6v3tnr
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *AccessLimit: the access setting
-//     - error: nil if success otherwise the specific error
+//   - *AccessLimit: the access setting
+//   - error: nil if success otherwise the specific error
 func GetAccessLimit(cli bce.Client, domain string) (*AccessLimit, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1586,11 +1633,12 @@ func GetAccessLimit(cli bce.Client, domain string) (*AccessLimit, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/vjxzho0kx
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - cacheFullUrl: whether cache the full url or not, full url means include params, also some extra params can be avoided
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - cacheFullUrl: whether cache the full url or not, full url means include params, also some extra params can be avoided
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetCacheUrlArgs(cli bce.Client, domain string, cacheFullUrl *CacheUrlArgs) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1606,11 +1654,12 @@ func SetCacheUrlArgs(cli bce.Client, domain string, cacheFullUrl *CacheUrlArgs) 
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/sjxzhsb6h
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *CacheUrlArgs: the details about cached rules
-//     - error: nil if success otherwise the specific error
+//   - *CacheUrlArgs: the details about cached rules
+//   - error: nil if success otherwise the specific error
 func GetCacheUrlArgs(cli bce.Client, domain string) (*CacheUrlArgs, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1630,11 +1679,12 @@ func GetCacheUrlArgs(cli bce.Client, domain string) (*CacheUrlArgs, error) {
 // SetTlsVersions - set some TLS versions that you want
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - tlsVersions: TLS version settings
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - tlsVersions: TLS version settings
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetTlsVersions(cli bce.Client, domain string, tlsVersions []string) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1660,12 +1710,13 @@ func SetTlsVersions(cli bce.Client, domain string, tlsVersions []string) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Rjxzi1cfs
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - isAllow: true means allow Cors, false means not allow
-//     - originList: the origin setting, it's invalid when isAllow is false
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - isAllow: true means allow Cors, false means not allow
+//   - originList: the origin setting, it's invalid when isAllow is false
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetCors(cli bce.Client, domain string, isAllow bool, originList []string) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1702,11 +1753,12 @@ func SetCors(cli bce.Client, domain string, isAllow bool, originList []string) e
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/tjxzi2d7t
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *CorsCfg: the Cors setting
-//     - error: nil if success otherwise the specific error
+//   - *CorsCfg: the Cors setting
+//   - error: nil if success otherwise the specific error
 func GetCors(cli bce.Client, domain string) (*CorsCfg, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1744,11 +1796,12 @@ func GetCors(cli bce.Client, domain string) (*CorsCfg, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Fjxziabst
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - enabled: true means enable range cached, false means disable range cached
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - enabled: true means enable range cached, false means disable range cached
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetRangeSwitch(cli bce.Client, domain string, enabled bool) error {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1768,11 +1821,12 @@ func SetRangeSwitch(cli bce.Client, domain string, enabled bool) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jxzid6o9
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - bool: true means enable range cached, false means disable range cached
-//     - error: nil if success otherwise the specific error
+//   - bool: true means enable range cached, false means disable range cached
+//   - error: nil if success otherwise the specific error
 func GetRangeSwitch(cli bce.Client, domain string) (bool, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{
@@ -1801,12 +1855,13 @@ func GetRangeSwitch(cli bce.Client, domain string) (bool, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/0jyqyahsb
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - enabled: true means using the specified encoding algorithm indicated by "encodingType" in transferring,
-//         false means disable encoding
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - enabled: true means using the specified encoding algorithm indicated by "encodingType" in transferring,
+//     false means disable encoding
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetContentEncoding(cli bce.Client, domain string, enabled bool, encodingType string) error {
 	if enabled && encodingType != "gzip" && encodingType != "br" && encodingType != "all" {
 		errMsg := fmt.Sprintf("invalid encoding type \"%s\" for setting Content-Encoding,"+
@@ -1844,11 +1899,12 @@ func SetContentEncoding(cli bce.Client, domain string, enabled bool, encodingTyp
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/bjyqycw8g
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - string: the encoding algorithm for transferring, empty means disable encoding in transferring
-//     - error: nil if success otherwise the specific error
+//   - string: the encoding algorithm for transferring, empty means disable encoding in transferring
+//   - error: nil if success otherwise the specific error
 func GetContentEncoding(cli bce.Client, domain string) (string, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
 	params := map[string]string{

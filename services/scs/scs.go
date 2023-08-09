@@ -150,11 +150,12 @@ func getQueryParams(val interface{}) (map[string]string, error) {
 // CreateInstance - create an instance with specified parameters
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - reqBody: the request body to create instance
+//   - cli: the client agent which can perform sending request
+//   - reqBody: the request body to create instance
+//
 // RETURNS:
-//     - *CreateInstanceResult: result of the instance ids newly created
-//     - error: nil if success otherwise the specific error
+//   - *CreateInstanceResult: result of the instance ids newly created
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateInstance(args *CreateInstanceArgs) (*CreateInstanceResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set create scs argments")
@@ -181,11 +182,12 @@ func (c *Client) CreateInstance(args *CreateInstanceArgs) (*CreateInstanceResult
 // ListInstances - list all instances with the specified parameters
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to list instances
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to list instances
+//
 // RETURNS:
-//     - *ListInstanceResult: result of the instance list
-//     - error: nil if success otherwise the specific error
+//   - *ListInstanceResult: result of the instance list
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListInstances(args *ListInstancesArgs) (*ListInstancesResult, error) {
 	if args == nil {
 		args = &ListInstancesArgs{}
@@ -210,11 +212,12 @@ func (c *Client) ListInstances(args *ListInstancesArgs) (*ListInstancesResult, e
 // GetInstanceDetail - get details of the specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *GetInstanceDetailResult: result of the instance details
-//     - error: nil if success otherwise the specific error
+//   - *GetInstanceDetailResult: result of the instance details
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetInstanceDetail(instanceId string) (*GetInstanceDetailResult, error) {
 	result := &GetInstanceDetailResult{}
 	err := bce.NewRequestBuilder(c).
@@ -229,11 +232,12 @@ func (c *Client) GetInstanceDetail(instanceId string) (*GetInstanceDetailResult,
 // ResizeInstance - resize a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance to be resized
-//     - reqBody: the request body to resize instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance to be resized
+//   - reqBody: the request body to resize instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ResizeInstance(instanceId string, args *ResizeInstanceArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -248,10 +252,11 @@ func (c *Client) ResizeInstance(instanceId string, args *ResizeInstanceArgs) err
 // AddReplication - add replications
 //
 // PARAMS:
-//     - instanceId: id of the instance to be resized
-//     - args: replicationInfo
+//   - instanceId: id of the instance to be resized
+//   - args: replicationInfo
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) AddReplication(instanceId string, args *ReplicationArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -266,10 +271,11 @@ func (c *Client) AddReplication(instanceId string, args *ReplicationArgs) error 
 // DeleteReplication - delete replications
 //
 // PARAMS:
-//     - instanceId: id of the instance to be resized
-//     - args: replicationInfo
+//   - instanceId: id of the instance to be resized
+//   - args: replicationInfo
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteReplication(instanceId string, args *ReplicationArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -284,10 +290,11 @@ func (c *Client) DeleteReplication(instanceId string, args *ReplicationArgs) err
 // RestartInstance - restart a specified instance
 //
 // PARAMS:
-//     - instanceId: id of the instance to be resized
-//     - args: specify restart immediately or postpone restart to time window
+//   - instanceId: id of the instance to be resized
+//   - args: specify restart immediately or postpone restart to time window
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RestartInstance(instanceId string, args *RestartInstanceArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -301,10 +308,11 @@ func (c *Client) RestartInstance(instanceId string, args *RestartInstanceArgs) e
 // DeleteInstance - delete a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance to be deleted
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance to be deleted
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteInstance(instanceId string, clientToken string) error {
 
 	return bce.NewRequestBuilder(c).
@@ -317,11 +325,12 @@ func (c *Client) DeleteInstance(instanceId string, clientToken string) error {
 // UpdateInstanceName - update name of a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance to be deleted
-//     - args: the arguments to Update instanceName
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance to be deleted
+//   - args: the arguments to Update instanceName
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateInstanceName(instanceId string, args *UpdateInstanceNameArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -335,11 +344,12 @@ func (c *Client) UpdateInstanceName(instanceId string, args *UpdateInstanceNameA
 // GetNodeTypeList - list all nodetype
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance to be deleted
-//     - args: the arguments to Update instanceName
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance to be deleted
+//   - args: the arguments to Update instanceName
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetNodeTypeList() (*GetNodeTypeListResult, error) {
 	getNodeTypeListResult := &GetNodeTypeListResult{}
 	err := bce.NewRequestBuilder(c).
@@ -354,11 +364,12 @@ func (c *Client) GetNodeTypeList() (*GetNodeTypeListResult, error) {
 // ListsSubnet - list all Subnets
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to list all subnets, not necessary
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to list all subnets, not necessary
+//
 // RETURNS:
-//     - *ListSubnetsResult: result of the subnet list
-//     - error: nil if success otherwise the specific error
+//   - *ListSubnetsResult: result of the subnet list
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListSubnets(args *ListSubnetsArgs) (*ListSubnetsResult, error) {
 	if args == nil {
 		args = &ListSubnetsArgs{}
@@ -379,11 +390,12 @@ func (c *Client) ListSubnets(args *ListSubnetsArgs) (*ListSubnetsResult, error) 
 // UpdateInstanceDomainName - update name of a specified instance domain
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to update domainName
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to update domainName
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateInstanceDomainName(instanceId string, args *UpdateInstanceDomainNameArgs) error {
 
 	if args == nil || args.Domain == "" {
@@ -400,10 +412,11 @@ func (c *Client) UpdateInstanceDomainName(instanceId string, args *UpdateInstanc
 // GetZoneList - list all zone
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
+//   - cli: the client agent which can perform sending request
+//
 // RETURNS:
-//     - *GetZoneListResult: result of the zone list
-//     - error: nil if success otherwise the specific error
+//   - *GetZoneListResult: result of the zone list
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetZoneList() (*GetZoneListResult, error) {
 	result := &GetZoneListResult{}
 	err := bce.NewRequestBuilder(c).
@@ -418,11 +431,12 @@ func (c *Client) GetZoneList() (*GetZoneListResult, error) {
 // FlushInstance - flush a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to flush instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to flush instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) FlushInstance(instanceId string, args *FlushInstanceArgs) error {
 
 	cryptedPass, err := Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.Password)
@@ -442,11 +456,12 @@ func (c *Client) FlushInstance(instanceId string, args *FlushInstanceArgs) error
 // BindingTags - bind tags to a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to bind tags to instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to bind tags to instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BindingTag(instanceId string, args *BindingTagArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -459,11 +474,12 @@ func (c *Client) BindingTag(instanceId string, args *BindingTagArgs) error {
 // UnBindingTags - unbind tags to a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to unbind tags to instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to unbind tags to instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UnBindingTag(instanceId string, args *BindingTagArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -476,11 +492,12 @@ func (c *Client) UnBindingTag(instanceId string, args *BindingTagArgs) error {
 // GetSecurityIp - list all securityIps
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *ListSecurityIp: result of the security IP list
-//     - error: nil if success otherwise the specific error
+//   - *ListSecurityIp: result of the security IP list
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetSecurityIp(instanceId string) (*GetSecurityIpResult, error) {
 
 	result := &GetSecurityIpResult{}
@@ -496,11 +513,12 @@ func (c *Client) GetSecurityIp(instanceId string) (*GetSecurityIpResult, error) 
 // AddSecurityIp - add securityIp to access a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to add securityIp
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to add securityIp
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) AddSecurityIp(instanceId string, args *SecurityIpArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -514,11 +532,12 @@ func (c *Client) AddSecurityIp(instanceId string, args *SecurityIpArgs) error {
 // DeleteSecurityIp - delete securityIp to access a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to delete securityIp
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to delete securityIp
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteSecurityIp(instanceId string, args *SecurityIpArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -532,11 +551,12 @@ func (c *Client) DeleteSecurityIp(instanceId string, args *SecurityIpArgs) error
 // ModifyPassword - modify the password of a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to Modify Password
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to Modify Password
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyPassword(instanceId string, args *ModifyPasswordArgs) error {
 
 	cryptedPass, err := Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.Password)
@@ -556,11 +576,12 @@ func (c *Client) ModifyPassword(instanceId string, args *ModifyPasswordArgs) err
 // GetParameters - query the configuration parameters and running parameters of redis instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *GetParameterResult: result of the parameters
-//     - error: nil if success otherwise the specific error
+//   - *GetParameterResult: result of the parameters
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetParameters(instanceId string) (*GetParametersResult, error) {
 
 	result := &GetParametersResult{}
@@ -576,11 +597,12 @@ func (c *Client) GetParameters(instanceId string) (*GetParametersResult, error) 
 // ModifyParameters - modify the parameters of a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to modify parameters
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to modify parameters
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyParameters(instanceId string, args *ModifyParametersArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -594,11 +616,12 @@ func (c *Client) ModifyParameters(instanceId string, args *ModifyParametersArgs)
 // GetBackupList - get backup list of the instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *GetBackupListResult: result of the backup list
-//     - error: nil if success otherwise the specific error
+//   - *GetBackupListResult: result of the backup list
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetBackupList(instanceId string) (*GetBackupListResult, error) {
 
 	result := &GetBackupListResult{}
@@ -614,11 +637,12 @@ func (c *Client) GetBackupList(instanceId string) (*GetBackupListResult, error) 
 // ModifyBackupPolicy - modify the BackupPolicy of a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to Modify BackupPolicy
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to Modify BackupPolicy
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyBackupPolicy(instanceId string, args *ModifyBackupPolicyArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -632,10 +656,11 @@ func (c *Client) ModifyBackupPolicy(instanceId string, args *ModifyBackupPolicyA
 // ListSecurityGroupByVpcId - list security groups by vpc id
 //
 // PARAMS:
-//     - vpcId: id of vpc
+//   - vpcId: id of vpc
+//
 // RETURNS:
-//     - *[]SecurityGroup:security groups of vpc
-//     - error: nil if success otherwise the specific error
+//   - *[]SecurityGroup:security groups of vpc
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListSecurityGroupByVpcId(vpcId string) (*ListVpcSecurityGroupsResult, error) {
 	if len(vpcId) < 1 {
 		return nil, fmt.Errorf("unset vpcId")
@@ -654,10 +679,11 @@ func (c *Client) ListSecurityGroupByVpcId(vpcId string) (*ListVpcSecurityGroupsR
 // ListSecurityGroupByInstanceId - list security groups by instance id
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *ListSecurityGroupResult: list secrity groups result of instance
-//     - error: nil if success otherwise the specific error
+//   - *ListSecurityGroupResult: list secrity groups result of instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListSecurityGroupByInstanceId(instanceId string) (*ListSecurityGroupResult, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -676,9 +702,10 @@ func (c *Client) ListSecurityGroupByInstanceId(instanceId string) (*ListSecurity
 // BindSecurityGroups - bind SecurityGroup to instances
 //
 // PARAMS:
-//     - args: http request body
+//   - args: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BindSecurityGroups(args *SecurityGroupArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -702,9 +729,10 @@ func (c *Client) BindSecurityGroups(args *SecurityGroupArgs) error {
 // UnBindSecurityGroups - unbind SecurityGroup to instances
 //
 // PARAMS:
-//     - args: http request body
+//   - args: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UnBindSecurityGroups(args *UnbindSecurityGroupArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -728,9 +756,10 @@ func (c *Client) UnBindSecurityGroups(args *UnbindSecurityGroupArgs) error {
 // ReplaceSecurityGroups - replace SecurityGroup to instances
 //
 // PARAMS:
-//     - args: http request body
+//   - args: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ReplaceSecurityGroups(args *SecurityGroupArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -754,10 +783,11 @@ func (c *Client) ReplaceSecurityGroups(args *SecurityGroupArgs) error {
 // ListRecycleInstances - list all instances in recycler with marker
 //
 // PARAMS:
-//     - marker: marker page
+//   - marker: marker page
+//
 // RETURNS:
-//     - *RecyclerInstanceList: the result of instances in recycler
-//     - error: nil if success otherwise the specific error
+//   - *RecyclerInstanceList: the result of instances in recycler
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListRecycleInstances(marker *Marker) (*RecyclerInstanceList, error) {
 	result := &RecyclerInstanceList{}
 	err := bce.NewRequestBuilder(c).
@@ -773,9 +803,10 @@ func (c *Client) ListRecycleInstances(marker *Marker) (*RecyclerInstanceList, er
 // RecoverRecyclerInstances - batch recover instances that in recycler
 //
 // PARAMS:
-//     - instanceIds: instanceId list to recover
+//   - instanceIds: instanceId list to recover
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RecoverRecyclerInstances(instanceIds []string) error {
 	if instanceIds == nil || len(instanceIds) < 1 {
 		return fmt.Errorf("unset instanceIds")
@@ -799,9 +830,10 @@ func (c *Client) RecoverRecyclerInstances(instanceIds []string) error {
 // DeleteRecyclerInstances - batch delete instances that in recycler
 //
 // PARAMS:
-//     - instanceIds: instanceId list to delete
+//   - instanceIds: instanceId list to delete
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteRecyclerInstances(instanceIds []string) error {
 	if instanceIds == nil || len(instanceIds) < 1 {
 		return fmt.Errorf("unset instanceIds")
@@ -825,9 +857,10 @@ func (c *Client) DeleteRecyclerInstances(instanceIds []string) error {
 // RenewInstances - batch renew instances
 //
 // PARAMS:
-//     - args: renew instanceIds and duration
+//   - args: renew instanceIds and duration
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RenewInstances(args *RenewInstanceArgs) (*OrderIdResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -852,10 +885,11 @@ func (c *Client) RenewInstances(args *RenewInstanceArgs) (*OrderIdResult, error)
 // ListLogByInstanceId - list error or slow logs of instance
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *[]Log:logs of instance
-//     - error: nil if success otherwise the specific error
+//   - *[]Log:logs of instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListLogByInstanceId(instanceId string, args *ListLogArgs) (*ListLogResult, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -881,10 +915,11 @@ func (c *Client) ListLogByInstanceId(instanceId string, args *ListLogArgs) (*Lis
 // GetLogById - get log's detail of instance
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *Log:log's detail of instance
-//     - error: nil if success otherwise the specific error
+//   - *Log:log's detail of instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetLogById(instanceId, logId string, args *GetLogArgs) (*LogItem, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -911,10 +946,11 @@ func (c *Client) GetLogById(instanceId, logId string, args *GetLogArgs) (*LogIte
 // GetMaintainTime - get maintainTime of instance
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *GetMaintainTimeResult:maintainTime of instance
-//     - error: nil if success otherwise the specific error
+//   - *GetMaintainTimeResult:maintainTime of instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetMaintainTime(instanceId string) (*GetMaintainTimeResult, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -933,9 +969,10 @@ func (c *Client) GetMaintainTime(instanceId string) (*GetMaintainTimeResult, err
 // ModifyMaintainTime - modify MaintainTime of instance
 //
 // PARAMS:
-//     - args: new maintainTime
+//   - args: new maintainTime
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyMaintainTime(instanceId string, args *MaintainTime) error {
 	if args == nil {
 		return fmt.Errorf("unset args")

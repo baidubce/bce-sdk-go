@@ -39,9 +39,9 @@ const (
 
 	POLICYS_URL = "/policys"
 
-	APP_IP_GROUP_URL      = "/ipgroup"
+	APP_IP_GROUP_URL                = "/ipgroup"
 	APP_IP_GROUP_BACKEND_POLICY_URL = "/ipgroup/backendpolicy"
-	APP_IP_GROUP_MEMBER_URL = "/ipgroup/member"
+	APP_IP_GROUP_MEMBER_URL         = "/ipgroup/member"
 )
 
 // Client of APPBLB service is a kind of BceClient, so derived from BceClient

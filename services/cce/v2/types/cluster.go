@@ -29,7 +29,7 @@ const (
 	DoNotHandle = "not-handler-by-cce"
 )
 
-//创建集群时使用的ClusterSpec
+// 创建集群时使用的ClusterSpec
 type ClusterSpec struct {
 
 	// 创建集群时无需传入ClusterID
@@ -101,7 +101,7 @@ const (
 	//支持在console创建集群
 	K8S_1_13_10 K8SVersion = "1.13.10"
 	//K8S_1_16_3  K8SVersion = "1.16.3"
-	K8S_1_16_8  K8SVersion = "1.16.8"
+	K8S_1_16_8 K8SVersion = "1.16.8"
 )
 
 // MasterConfig Master 配置
@@ -121,7 +121,7 @@ type MasterConfig struct {
 
 // ManagedClusterMasterOption 托管集群 Master 配置
 type ManagedClusterMasterOption struct {
-	MasterVPCSubnetZone     AvailableZone             `json:"masterVPCSubnetZone,omitempty"`
+	MasterVPCSubnetZone AvailableZone `json:"masterVPCSubnetZone,omitempty"`
 }
 
 // RuntimeType defines the runtime on each node

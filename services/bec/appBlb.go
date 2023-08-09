@@ -27,11 +27,12 @@ import (
 // CreateAppBlb - create app lb  with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to create  app lb
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to create  app lb
+//
 // RETURNS:
-//     - *CreateAppBlbResponse: the result of create app lb
-//     - error: nil if ok otherwise the specific error
+//   - *CreateAppBlbResponse: the result of create app lb
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateAppBlb(clientToken string, args *api.CreateAppBlbRequest) (*api.CreateAppBlbResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -51,11 +52,12 @@ func (c *Client) CreateAppBlb(clientToken string, args *api.CreateAppBlbRequest)
 // UpdateAppBlb - update app lb  with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to update app lb
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to update app lb
+//
 // RETURNS:
-//     - *CreateAppBlbResponse: the result of create app lb
-//     - error: nil if ok otherwise the specific error
+//   - *CreateAppBlbResponse: the result of create app lb
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateAppBlb(clientToken, blbId string, args *api.ModifyBecBlbRequest) error {
 	if args == nil || blbId == "" {
 		return fmt.Errorf("please set argments")
@@ -74,10 +76,11 @@ func (c *Client) UpdateAppBlb(clientToken, blbId string, args *api.ModifyBecBlbR
 // GetAppBlbList - get app lb list with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to get app lb list
+//   - args: the arguments to get app lb list
+//
 // RETURNS:
-//     - *AppBlbListResponse: the result of  app lb list
-//     - error: nil if ok otherwise the specific error
+//   - *AppBlbListResponse: the result of  app lb list
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetAppBlbList(args *api.MarkerRequest) (*api.AppBlbListResponse, error) {
 
 	params := make(map[string]string)
@@ -97,10 +100,11 @@ func (c *Client) GetAppBlbList(args *api.MarkerRequest) (*api.AppBlbListResponse
 // GetAppBlbDetails - get app lb detail with the specific parameters
 //
 // PARAMS:
-//     - blbId: the arguments to get app lb details
+//   - blbId: the arguments to get app lb details
+//
 // RETURNS:
-//     - *AppBlbListResponse: the result of  app lb detail
-//     - error: nil if ok otherwise the specific error
+//   - *AppBlbListResponse: the result of  app lb detail
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetAppBlbDetails(blbId string) (*api.AppBlbDetails, error) {
 
 	if blbId == "" {
@@ -115,10 +119,11 @@ func (c *Client) GetAppBlbDetails(blbId string) (*api.AppBlbDetails, error) {
 // DeleteAppBlbInstance - delete app lb  with the specific parameters
 //
 // PARAMS:
-//     - blbId: the arguments to delete app lb
+//   - blbId: the arguments to delete app lb
+//
 // RETURNS:
-//     - *AppBlbListResponse: the result of  app lb detail
-//     - error: nil if ok otherwise the specific error
+//   - *AppBlbListResponse: the result of  app lb detail
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteAppBlbInstance(blbId, clientToken string) error {
 
 	if blbId == "" {
@@ -136,11 +141,12 @@ func (c *Client) DeleteAppBlbInstance(blbId, clientToken string) error {
 // CreateTcpListener - create app lb tcp listener  with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to create  app lb tcp listener
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to create  app lb tcp listener
+//
 // RETURNS:
-//     - *CreateAppBlbResponse: the result of create app lb tcp listener
-//     - error: nil if ok otherwise the specific error
+//   - *CreateAppBlbResponse: the result of create app lb tcp listener
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateTcpListener(clientToken, blbId string, args *api.CreateBecAppBlbTcpListenerRequest) error {
 	if args == nil || blbId == "" {
 		return fmt.Errorf("please set argments")
@@ -159,11 +165,12 @@ func (c *Client) CreateTcpListener(clientToken, blbId string, args *api.CreateBe
 // UpdateTcpListener - update app lb tcp listener  with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to update  app lb tcp listener
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to update  app lb tcp listener
+//
 // RETURNS:
-//     - *CreateAppBlbResponse: the result of update app lb tcp listener
-//     - error: nil if ok otherwise the specific error
+//   - *CreateAppBlbResponse: the result of update app lb tcp listener
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateTcpListener(clientToken, blbId, listenerPort string, args *api.UpdateBecAppBlbTcpListenerRequest) error {
 	if args == nil || blbId == "" || listenerPort == "" {
 		return fmt.Errorf("please set argments")
@@ -182,11 +189,12 @@ func (c *Client) UpdateTcpListener(clientToken, blbId, listenerPort string, args
 // GetTcpListener - get app lb tcp listener  with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to get  app lb tcp listener
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to get  app lb tcp listener
+//
 // RETURNS:
-//     - *CreateAppBlbResponse: the result of get app lb tcp listener
-//     - error: nil if ok otherwise the specific error
+//   - *CreateAppBlbResponse: the result of get app lb tcp listener
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetTcpListener(blbId string, args *api.GetBecAppBlbListenerRequest) (*api.GetBecAppBlbTcpListenerResponse, error) {
 	if args == nil || blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -211,11 +219,12 @@ func (c *Client) GetTcpListener(blbId string, args *api.GetBecAppBlbListenerRequ
 // CreateUdpListener - create app lb tcp listener  with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to create  app lb udp listener
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to create  app lb udp listener
+//
 // RETURNS:
-//     - *CreateAppBlbResponse: the result of create app lb udp listener
-//     - error: nil if ok otherwise the specific error
+//   - *CreateAppBlbResponse: the result of create app lb udp listener
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateUdpListener(clientToken, blbId string, args *api.CreateBecAppBlbUdpListenerRequest) error {
 	if args == nil || blbId == "" {
 		return fmt.Errorf("please set argments")
@@ -234,11 +243,12 @@ func (c *Client) CreateUdpListener(clientToken, blbId string, args *api.CreateBe
 // UpdateUdpListener - update app lb udp listener  with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to update  app lb udp listener
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to update  app lb udp listener
+//
 // RETURNS:
-//     - *CreateAppBlbResponse: the result of update app lb udp listener
-//     - error: nil if ok otherwise the specific error
+//   - *CreateAppBlbResponse: the result of update app lb udp listener
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateUdpListener(clientToken, blbId, listenerPort string, args *api.UpdateBecAppBlbUdpListenerRequest) error {
 	if args == nil || blbId == "" || listenerPort == "" {
 		return fmt.Errorf("please set argments")
@@ -256,11 +266,12 @@ func (c *Client) UpdateUdpListener(clientToken, blbId, listenerPort string, args
 // GetUdpListener - get app lb udp listener  with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to get  app lb udp listener
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to get  app lb udp listener
+//
 // RETURNS:
-//     - *CreateAppBlbResponse: the result of get app lb udp listener
-//     - error: nil if ok otherwise the specific error
+//   - *CreateAppBlbResponse: the result of get app lb udp listener
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetUdpListener(blbId string, args *api.GetBecAppBlbListenerRequest) (*api.GetBecAppBlbUdpListenerResponse, error) {
 	if args == nil || blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -285,9 +296,10 @@ func (c *Client) GetUdpListener(blbId string, args *api.GetBecAppBlbListenerRequ
 // DeleteAppBlbListener - delete app lb listener with the specific parameters
 //
 // PARAMS:
-//     - blbId: the arguments to delete app lb listener
+//   - blbId: the arguments to delete app lb listener
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteAppBlbListener(blbId, clientToken string, args *api.DeleteBlbListenerRequest) error {
 
 	if blbId == "" || args == nil {
@@ -306,11 +318,12 @@ func (c *Client) DeleteAppBlbListener(blbId, clientToken string, args *api.Delet
 // CreateIpGroup - create app lb ip group with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to create  app lb ip group
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to create  app lb ip group
+//
 // RETURNS:
-//	   - *api.CreateBlbIpGroupResponse the result of app lb ip group
-//     - error: nil if ok otherwise the specific error
+//   - *api.CreateBlbIpGroupResponse the result of app lb ip group
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateIpGroup(clientToken, blbId string, args *api.CreateBlbIpGroupRequest) (*api.CreateBlbIpGroupResponse, error) {
 	if args == nil || blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -329,10 +342,11 @@ func (c *Client) CreateIpGroup(clientToken, blbId string, args *api.CreateBlbIpG
 // UpdateIpGroup - update app lb ip group with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to update  app lb ip group
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to update  app lb ip group
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateIpGroup(clientToken, blbId string, args *api.UpdateBlbIpGroupRequest) error {
 	if args == nil || blbId == "" {
 		return fmt.Errorf("please set argments")
@@ -350,11 +364,12 @@ func (c *Client) UpdateIpGroup(clientToken, blbId string, args *api.UpdateBlbIpG
 // GetIpGroup - get app lb ip group with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to get  app lb ip group
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to get  app lb ip group
+//
 // RETURNS:
-//	   - *api.GetBlbIpGroupListResponse the result of app lb ip group
-//     - error: nil if ok otherwise the specific error
+//   - *api.GetBlbIpGroupListResponse the result of app lb ip group
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetIpGroup(blbId string, args *api.GetBlbIpGroupListRequest) (*api.GetBlbIpGroupListResponse, error) {
 	if blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -384,10 +399,11 @@ func (c *Client) GetIpGroup(blbId string, args *api.GetBlbIpGroupListRequest) (*
 // DeleteIpGroup - delete app lb ip group with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to delete  app lb ip group
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to delete  app lb ip group
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteIpGroup(clientToken, blbId string, args *api.DeleteBlbIpGroupRequest) error {
 	if args == nil || blbId == "" {
 		return fmt.Errorf("please set argments")
@@ -406,11 +422,12 @@ func (c *Client) DeleteIpGroup(clientToken, blbId string, args *api.DeleteBlbIpG
 // CreateIpGroupPolicy - create app lb ip group Policy with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to create  app lb ip group Policy
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to create  app lb ip group Policy
+//
 // RETURNS:
-//	   - *api.CreateBlbIpGroupResponse the result of app lb ip group Policy
-//     - error: nil if ok otherwise the specific error
+//   - *api.CreateBlbIpGroupResponse the result of app lb ip group Policy
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateIpGroupPolicy(clientToken, blbId string, args *api.CreateBlbIpGroupBackendPolicyRequest) (*api.CreateBlbIpGroupBackendPolicyResponse, error) {
 	if args == nil || blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -429,10 +446,11 @@ func (c *Client) CreateIpGroupPolicy(clientToken, blbId string, args *api.Create
 // UpdateIpGroupPolicy - update app lb ip group Policy with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to update  app lb ip group Policy
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to update  app lb ip group Policy
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateIpGroupPolicy(clientToken, blbId string, args *api.UpdateBlbIpGroupBackendPolicyRequest) error {
 	if args == nil || blbId == "" {
 		return fmt.Errorf("please set argments")
@@ -450,10 +468,11 @@ func (c *Client) UpdateIpGroupPolicy(clientToken, blbId string, args *api.Update
 // GetIpGroupPolicyList - update app lb ip group Policy list with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to update  app lb ip group Policy
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to update  app lb ip group Policy
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetIpGroupPolicyList(blbId string, args *api.GetBlbIpGroupPolicyListRequest) (*api.GetBlbIpGroupPolicyListResponse, error) {
 	if args == nil || blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -479,10 +498,11 @@ func (c *Client) GetIpGroupPolicyList(blbId string, args *api.GetBlbIpGroupPolic
 // DeleteIpGroupPolicy - delete app lb ip group policy with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to delete  app lb ip group
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to delete  app lb ip group
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteIpGroupPolicy(clientToken, blbId string, args *api.DeleteBlbIpGroupBackendPolicyRequest) error {
 	if args == nil || blbId == "" {
 		return fmt.Errorf("please set argments")
@@ -499,11 +519,12 @@ func (c *Client) DeleteIpGroupPolicy(clientToken, blbId string, args *api.Delete
 // CreateIpGroupMember - create app lb ip group member with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to create  app lb ip group member
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to create  app lb ip group member
+//
 // RETURNS:
-//	   - *api.CreateBlbIpGroupResponse the result of app lb ip group member
-//     - error: nil if ok otherwise the specific error
+//   - *api.CreateBlbIpGroupResponse the result of app lb ip group member
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateIpGroupMember(clientToken, blbId string, args *api.CreateBlbIpGroupMemberRequest) (*api.CreateBlbIpGroupMemberResponse, error) {
 	if args == nil || blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -522,11 +543,12 @@ func (c *Client) CreateIpGroupMember(clientToken, blbId string, args *api.Create
 // UpdateIpGroupMember - update app lb ip group member with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to update  app lb ip group member
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to update  app lb ip group member
+//
 // RETURNS:
-//	   - *api.CreateBlbIpGroupResponse the result of app lb ip group member
-//     - error: nil if ok otherwise the specific error
+//   - *api.CreateBlbIpGroupResponse the result of app lb ip group member
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateIpGroupMember(clientToken, blbId string, args *api.UpdateBlbIpGroupMemberRequest) error {
 	if args == nil || blbId == "" {
 		return fmt.Errorf("please set argments")
@@ -544,11 +566,12 @@ func (c *Client) UpdateIpGroupMember(clientToken, blbId string, args *api.Update
 // GetIpGroupMemberList - get app lb ip group member list with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to update  app lb ip group member
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to update  app lb ip group member
+//
 // RETURNS:
-//	   - *api.CreateBlbIpGroupResponse the result of app lb ip group member
-//     - error: nil if ok otherwise the specific error
+//   - *api.CreateBlbIpGroupResponse the result of app lb ip group member
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetIpGroupMemberList(blbId string, args *api.GetBlbIpGroupMemberListRequest) (*api.GetBlbIpGroupMemberListResponse, error) {
 	if args == nil || blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -574,10 +597,11 @@ func (c *Client) GetIpGroupMemberList(blbId string, args *api.GetBlbIpGroupMembe
 // DeleteIpGroupMember - delete app lb ip group member with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to delete  app lb ip group member
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to delete  app lb ip group member
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteIpGroupMember(clientToken, blbId string, args *api.DeleteBlbIpGroupBackendMemberRequest) error {
 	if args == nil || blbId == "" {
 		return fmt.Errorf("please set argments")
@@ -596,11 +620,12 @@ func (c *Client) DeleteIpGroupMember(clientToken, blbId string, args *api.Delete
 // CreateListenerPolicy - create app lb listener policy with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to create  app lb ip listener policy
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to create  app lb ip listener policy
+//
 // RETURNS:
-//	   - *api.CreateBlbIpGroupResponse the result of app lb iplistener policy
-//     - error: nil if ok otherwise the specific error
+//   - *api.CreateBlbIpGroupResponse the result of app lb iplistener policy
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateListenerPolicy(clientToken, blbId string, args *api.CreateAppBlbPoliciesRequest) error {
 	if args == nil || blbId == "" {
 		return fmt.Errorf("please set argments")
@@ -618,11 +643,12 @@ func (c *Client) CreateListenerPolicy(clientToken, blbId string, args *api.Creat
 // GetListenerPolicy - get app lb listener policy with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to get  app lb ip listener policy
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to get  app lb ip listener policy
+//
 // RETURNS:
-//	   - *api.CreateBlbIpGroupResponse the result of app lb ip listener policy
-//     - error: nil if ok otherwise the specific error
+//   - *api.CreateBlbIpGroupResponse the result of app lb ip listener policy
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetListenerPolicy(blbId string, args *api.GetBlbListenerPolicyRequest) (*api.GetBlbListenerPolicyResponse, error) {
 	if args == nil || blbId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -651,10 +677,11 @@ func (c *Client) GetListenerPolicy(blbId string, args *api.GetBlbListenerPolicyR
 // DeleteListenerPolicy - delete app lb listener policy with the specific parameters
 //
 // PARAMS:
-//	   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
-//     - args: the arguments to delete  app lb listener policy
+//   - clientToken:idempotent token，an ASCII string no longer than 64 bits，unnecessary
+//   - args: the arguments to delete  app lb listener policy
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteListenerPolicy(clientToken, blbId string, args *api.DeleteAppBlbPoliciesRequest) error {
 	if args == nil || blbId == "" {
 		return fmt.Errorf("please set argments")

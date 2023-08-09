@@ -27,10 +27,11 @@ import (
 // CreateFS - create a FS Instance
 //
 // PARAMS:
-//     - args: parameters to create FS
+//   - args: parameters to create FS
+//
 // RETURNS:
-//     - *CreateFSResult: the result of create fs, contains new FS Instance's ID
-//     - error: nil if ok otherwise the specific error
+//   - *CreateFSResult: the result of create fs, contains new FS Instance's ID
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateFS(args *CreateFSArgs) (*CreateFSResult, error) {
 	if args == nil || len(args.Name) == 0 {
 		return nil, fmt.Errorf("unset fs name")
@@ -55,9 +56,10 @@ func (c *Client) CreateFS(args *CreateFSArgs) (*CreateFSResult, error) {
 // UpdateFS - update name of a FS Instance
 //
 // PARAMS:
-//     - args: parameters to create FS
+//   - args: parameters to create FS
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateFS(args *UpdateFSArgs) error {
 	if args == nil || len(args.FSName) == 0 {
 		return fmt.Errorf("unset fs name")
@@ -78,10 +80,11 @@ func (c *Client) UpdateFS(args *UpdateFSArgs) error {
 // DescribeFS - describe all FS Instances
 //
 // PARAMS:
-//     - args: parameters describe all FS Instances
+//   - args: parameters describe all FS Instances
+//
 // RETURNS:
-//     - *DescribeFSResult: the result FS Instances's detail
-//     - error: nil if ok otherwise the specific error
+//   - *DescribeFSResult: the result FS Instances's detail
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DescribeFS(args *DescribeFSArgs) (*DescribeFSResult, error) {
 	if args == nil {
 		args = &DescribeFSArgs{}
@@ -108,10 +111,11 @@ func (c *Client) DescribeFS(args *DescribeFSArgs) (*DescribeFSResult, error) {
 // CreateMountTarget - create a mount target for FS Instances
 //
 // PARAMS:
-//     - args: parameters to create mount target
+//   - args: parameters to create mount target
+//
 // RETURNS:
-//     - *CreateMountTargetResult: the result mount target's detail
-//     - error: nil if ok otherwise the specific error
+//   - *CreateMountTargetResult: the result mount target's detail
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateMountTarget(args *CreateMountTargetArgs) (*CreateMountTargetResult, error) {
 	if args == nil || len(args.FSID) == 0 {
 		return nil, fmt.Errorf("unset fs id")
@@ -135,10 +139,11 @@ func (c *Client) CreateMountTarget(args *CreateMountTargetArgs) (*CreateMountTar
 // DescribeMountTarget - describe all mount targets
 //
 // PARAMS:
-//     - args: parameters describe all mount targets
+//   - args: parameters describe all mount targets
+//
 // RETURNS:
-//     - *DescribeMountTargetResult: the result Mount target's detail
-//     - error: nil if ok otherwise the specific error
+//   - *DescribeMountTargetResult: the result Mount target's detail
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DescribeMountTarget(args *DescribeMountTargetArgs) (*DescribeMountTargetResult, error) {
 	if args == nil {
 		args = &DescribeMountTargetArgs{}
@@ -164,9 +169,10 @@ func (c *Client) DescribeMountTarget(args *DescribeMountTargetArgs) (*DescribeMo
 // DropMountTarget - drop a MountTarget
 //
 // PARAMS:
-//     - args: parameters to drop  mount target
+//   - args: parameters to drop  mount target
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DropMountTarget(args *DropMountTargetArgs) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
@@ -177,9 +183,10 @@ func (c *Client) DropMountTarget(args *DropMountTargetArgs) error {
 // DropFS - drop a fs instance
 //
 // PARAMS:
-//     - args: parameters to drop fs
+//   - args: parameters to drop fs
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DropFS(args *DropFSArgs) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).

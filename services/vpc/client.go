@@ -27,13 +27,13 @@ const (
 
 	DEFAULT_ENDPOINT = "bcc." + bce.DEFAULT_REGION + ".baidubce.com"
 
-	REQUEST_VPC_URL      = "/vpc"
-	REQUEST_SUBNET_URL   = "/subnet"
-	REQUEST_ROUTE_URL    = "/route"
-	REQUEST_RULE_URL     = "/rule"
-	REQUEST_ACL_URL      = "/acl"
-	REQUEST_NAT_URL      = "/nat"
-	REQUEST_PEERCONN_URL = "/peerconn"
+	REQUEST_VPC_URL              = "/vpc"
+	REQUEST_SUBNET_URL           = "/subnet"
+	REQUEST_ROUTE_URL            = "/route"
+	REQUEST_RULE_URL             = "/rule"
+	REQUEST_ACL_URL              = "/acl"
+	REQUEST_NAT_URL              = "/nat"
+	REQUEST_PEERCONN_URL         = "/peerconn"
 	REQUEST_NETWORK_TOPOLOGY_URL = "/topology"
 )
 

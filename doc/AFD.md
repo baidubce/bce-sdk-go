@@ -38,11 +38,11 @@ func main() {
 	SK := ""
 
 	// 初始化一个AFD Client
-	afdClient, err := bci.NewClient(AK, SK)
+	afdClient, err := afd.NewClient(AK, SK)
 
 	// 指定ENDPOINT
 	// ENDPOINT := "afd.baidubce.com"
-	// afdClient, err := bci.NewClient(AK, SK, ENDPOINT)
+	// afdClient, err := afd.NewClient(AK, SK, ENDPOINT)
 
 	if err != nil {
 		panic(err)

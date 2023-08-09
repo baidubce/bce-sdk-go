@@ -24,10 +24,11 @@ import (
 // CreateLbdc - create the LBDC instance with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create LBDC
+//   - args: the arguments to create LBDC
+//
 // RETURNS:
-//	   - *CreateLoadBalancerResult: the result of create LoadBalancer, contains new LoadBalancer's ID
-//     - error: nil if success otherwise the specific error
+//   - *CreateLoadBalancerResult: the result of create LoadBalancer, contains new LoadBalancer's ID
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateLbdc(args *CreateLbdcArgs) (*CreateLbdcResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("the CreateLbdcArgs cannot be nil")
@@ -46,9 +47,10 @@ func (c *Client) CreateLbdc(args *CreateLbdcArgs) (*CreateLbdcResult, error) {
 // UpgradeLbdc - upgrade LBDC with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to update LBDC
+//   - args: the arguments to update LBDC
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpgradeLbdc(args *UpgradeLbdcArgs) error {
 	if args == nil {
 		return fmt.Errorf("the UpgradeLbdcArgs cannot be nil")
@@ -69,9 +71,10 @@ func (c *Client) UpgradeLbdc(args *UpgradeLbdcArgs) error {
 // RenewLbdc - renew LBDC with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to renew LBDC
+//   - args: the arguments to renew LBDC
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RenewLbdc(args *RenewLbdcArgs) error {
 	if args == nil {
 		return fmt.Errorf("the RenewLbdcArgs cannot be nil")
@@ -92,10 +95,11 @@ func (c *Client) RenewLbdc(args *RenewLbdcArgs) error {
 // ListLbdc - list LBDC with the specific id and/or name
 //
 // PARAMS:
-//     - args: the arguments to list LBDC instances
+//   - args: the arguments to list LBDC instances
+//
 // RETURNS:
-//     - *ListSslVpnUserResult: the result of Cluster list contains page infos
-//     - error: nil if success otherwise the specific error
+//   - *ListSslVpnUserResult: the result of Cluster list contains page infos
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListLbdc(args *ListLbdcArgs) (*ListLbdcResult, error) {
 	if args == nil {
 		args = &ListLbdcArgs{}
@@ -118,10 +122,11 @@ func (c *Client) ListLbdc(args *ListLbdcArgs) (*ListLbdcResult, error) {
 // GetLbdcDetail - get details of the specific lbdc
 //
 // PARAMS:
-//     - lbdcId: the id of the specified lbdc
+//   - lbdcId: the id of the specified lbdc
+//
 // RETURNS:
-//     - *LbdcDetailResult: the result of the specific lbdc details
-//     - error: nil if success otherwise the specific error
+//   - *LbdcDetailResult: the result of the specific lbdc details
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetLbdcDetail(lbdcId string) (*GetLbdcDetailResult, error) {
 	if len(lbdcId) == 0 {
 		return nil, fmt.Errorf("the LbdcId cannot be empty")
@@ -139,9 +144,10 @@ func (c *Client) GetLbdcDetail(lbdcId string) (*GetLbdcDetailResult, error) {
 // UpdateLbdc - update lbdc with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to update lbdc
+//   - args: the arguments to update lbdc
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateLbdc(args *UpdateLbdcArgs) error {
 	if args == nil {
 		return fmt.Errorf("the UpdateLbdcArgs cannot be nil")
@@ -165,10 +171,11 @@ func (c *Client) UpdateLbdc(args *UpdateLbdcArgs) error {
 // GetBoundBlBListOfLbdc - get Bound blb list of lbdc
 //
 // PARAMS:
-//     - lbdcId: the id of the specified lbdc
+//   - lbdcId: the id of the specified lbdc
+//
 // RETURNS:
-//     - *GetBoundBlBListOfLbdcResult: the result of the bound blb list of lbdc
-//     - error: nil if success otherwise the specific error
+//   - *GetBoundBlBListOfLbdcResult: the result of the bound blb list of lbdc
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetBoundBlBListOfLbdc(lbdcId string) (*GetBoundBlBListOfLbdcResult, error) {
 	if len(lbdcId) == 0 {
 		return nil, fmt.Errorf("the LbdcId cannot be empty")

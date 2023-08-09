@@ -28,11 +28,12 @@ import (
 // CreateSnapshot - create a snapshot for specified volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to create snapshot
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to create snapshot
+//
 // RETURNS:
-//     - *CreateSnapshotResult: result of the snapshot id newly created
-//     - error: nil if success otherwise the specific error
+//   - *CreateSnapshotResult: result of the snapshot id newly created
+//   - error: nil if success otherwise the specific error
 func CreateSnapshot(cli bce.Client, args *CreateSnapshotArgs) (*CreateSnapshotResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -72,11 +73,12 @@ func CreateSnapshot(cli bce.Client, args *CreateSnapshotArgs) (*CreateSnapshotRe
 // ListSnapshot - list all snapshots with the specified parameters
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryArgs: arguments to list snapshots
+//   - cli: the client agent which can perform sending request
+//   - queryArgs: arguments to list snapshots
+//
 // RETURNS:
-//     - *ListSnapshotResult: result of the snapshot list
-//     - error: nil if success otherwise the specific error
+//   - *ListSnapshotResult: result of the snapshot list
+//   - error: nil if success otherwise the specific error
 func ListSnapshot(cli bce.Client, queryArgs *ListSnapshotArgs) (*ListSnapshotResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -115,11 +117,12 @@ func ListSnapshot(cli bce.Client, queryArgs *ListSnapshotArgs) (*ListSnapshotRes
 // ListSnapshotChain - list all snapshot chains with the specified parameters
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryArgs: arguments to list snapshot chains
+//   - cli: the client agent which can perform sending request
+//   - queryArgs: arguments to list snapshot chains
+//
 // RETURNS:
-//     - *ListSnapshotChainResult: result of the snapshot chain list
-//     - error: nil if success otherwise the specific error
+//   - *ListSnapshotChainResult: result of the snapshot chain list
+//   - error: nil if success otherwise the specific error
 func ListSnapshotChain(cli bce.Client, queryArgs *ListSnapshotChainArgs) (*ListSnapshotChainResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -163,11 +166,12 @@ func ListSnapshotChain(cli bce.Client, queryArgs *ListSnapshotChainArgs) (*ListS
 // GetSnapshotDetail - get details of the specified snapshot
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - snapshotId: id of the snapshot
+//   - cli: the client agent which can perform sending request
+//   - snapshotId: id of the snapshot
+//
 // RETURNS:
-//     - *GetSnapshotDetailResult: result of snapshot details
-//     - error: nil if success otherwise the specific error
+//   - *GetSnapshotDetailResult: result of snapshot details
+//   - error: nil if success otherwise the specific error
 func GetSnapshotDetail(cli bce.Client, snapshotId string) (*GetSnapshotDetailResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -194,10 +198,11 @@ func GetSnapshotDetail(cli bce.Client, snapshotId string) (*GetSnapshotDetailRes
 // DeleteSnapshot - delete a snapshot
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - snapshotId: id of the snapshot to be deleted
+//   - cli: the client agent which can perform sending request
+//   - snapshotId: id of the snapshot to be deleted
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func DeleteSnapshot(cli bce.Client, snapshotId string) error {
 	// Build the request
 	req := &bce.BceRequest{}

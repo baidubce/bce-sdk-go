@@ -27,10 +27,11 @@ import (
 // ListProducts - list quota center support products.
 //
 // PARAMS:
-//     - args: the arguments to list products.
+//   - args: the arguments to list products.
+//
 // RETURNS:
-//     - *ListProductResult: the result of list products.
-//     - error: nil if success otherwise the specific error
+//   - *ListProductResult: the result of list products.
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListProducts(args *ProductQueryArgs) (*ListProductResult, error) {
 	if args == nil {
 		args = &ProductQueryArgs{}
@@ -55,10 +56,11 @@ func (c *Client) ListProducts(args *ProductQueryArgs) (*ListProductResult, error
 // ListRegions - list quota center support regions with the specific parameters.
 //
 // PARAMS:
-//     - args: the arguments to list regions.
+//   - args: the arguments to list regions.
+//
 // RETURNS:
-//     - *ListRegionResult: the result of regions.
-//     - error: nil if success otherwise the specific error
+//   - *ListRegionResult: the result of regions.
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListRegions(args *RegionQueryArgs) (*ListRegionResult, error) {
 	if args == nil {
 		args = &RegionQueryArgs{}
@@ -85,10 +87,11 @@ func (c *Client) ListRegions(args *RegionQueryArgs) (*ListRegionResult, error) {
 // QuotaCenterQuery - query from quota_center with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to query quota_center
+//   - args: the arguments to query quota_center
+//
 // RETURNS:
-//     - *ListQuotaResult: the result of query from quota_center.
-//     - error: nil if success otherwise the specific error
+//   - *ListQuotaResult: the result of query from quota_center.
+//   - error: nil if success otherwise the specific error
 func (c *Client) QuotaCenterQuery(args *QuotaCenterQueryArgs) (*ListQuotaResult, error) {
 	if args == nil {
 		args = &QuotaCenterQueryArgs{}
@@ -122,10 +125,11 @@ func (c *Client) QuotaCenterQuery(args *QuotaCenterQueryArgs) (*ListQuotaResult,
 // InfoQuery - query basic infos from quota_center with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to query infos.
+//   - args: the arguments to query infos.
+//
 // RETURNS:
-//     - *ListInfoResult: the result of infos from quota_center.
-//     - error: nil if success otherwise the specific error
+//   - *ListInfoResult: the result of infos from quota_center.
+//   - error: nil if success otherwise the specific error
 func (c *Client) InfoQuery(args *InfoQueryArgs) (*ListInfoResult, error) {
 	if args == nil {
 		args = &InfoQueryArgs{}
@@ -177,10 +181,11 @@ func (c *Client) Apply(args *ApplicationCreateModel) (*IdModel, error) {
 // ApplicationQuery - query applications from quota_center with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to query application.
+//   - args: the arguments to query application.
+//
 // RETURNS:
-//     - *ListApplicationResult: the result of applications.
-//     - error: nil if success otherwise the specific error
+//   - *ListApplicationResult: the result of applications.
+//   - error: nil if success otherwise the specific error
 func (c *Client) ApplicationQuery(args *ApplicationQueryArgs) (*ListApplicationResult, error) {
 	if args == nil {
 		args = &ApplicationQueryArgs{}
@@ -211,10 +216,11 @@ func (c *Client) ApplicationQuery(args *ApplicationQueryArgs) (*ListApplicationR
 // ApplicationDetail - query application detail from quota_center with id.
 //
 // PARAMS:
-//     - id: the application's id.
+//   - id: the application's id.
+//
 // RETURNS:
-//     - *ApplicationModel: the result of application.
-//     - error: nil if success otherwise the specific error
+//   - *ApplicationModel: the result of application.
+//   - error: nil if success otherwise the specific error
 func (c *Client) ApplicationDetail(id string) (*ApplicationModel, error) {
 	if len(id) == 0 {
 		return nil, fmt.Errorf("please set id argment")

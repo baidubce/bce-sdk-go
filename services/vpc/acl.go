@@ -27,10 +27,11 @@ import (
 // ListAclEntrys - list all acl entrys of the given VPC
 //
 // PARAMS:
-//     - vpcId: the id of the specific VPC
+//   - vpcId: the id of the specific VPC
+//
 // RETURNS:
-//     - *ListAclEntrysResult: the result of all acl entrys
-//     - error: nil if success otherwise the specific error
+//   - *ListAclEntrysResult: the result of all acl entrys
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListAclEntrys(vpcId string) (*ListAclEntrysResult, error) {
 	result := &ListAclEntrysResult{}
 	err := bce.NewRequestBuilder(c).
@@ -46,9 +47,10 @@ func (c *Client) ListAclEntrys(vpcId string) (*ListAclEntrysResult, error) {
 // CreateAclRule - create a new acl rule with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create acl rule
+//   - args: the arguments to create acl rule
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateAclRule(args *CreateAclRuleArgs) error {
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForAclRule()).
@@ -61,10 +63,11 @@ func (c *Client) CreateAclRule(args *CreateAclRuleArgs) error {
 // ListAclRules - list all acl rules with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all acl rules
+//   - args: the arguments to list all acl rules
+//
 // RETURNS:
-//     - *ListAclRulesResult: the result of all acl rules
-//     - error: nil if success otherwise the specific error
+//   - *ListAclRulesResult: the result of all acl rules
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListAclRules(args *ListAclRulesArgs) (*ListAclRulesResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("The listAclRulesArgs cannot be nil.")
@@ -89,10 +92,11 @@ func (c *Client) ListAclRules(args *ListAclRulesArgs) (*ListAclRulesResult, erro
 // UpdateAclRule - udpate acl rule with the specific parameters
 //
 // PARAMS:
-//     - aclRuleId: the id of the specific acl rule
-//     - args: the arguments to update acl rule
+//   - aclRuleId: the id of the specific acl rule
+//   - args: the arguments to update acl rule
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateAclRule(aclRuleId string, args *UpdateAclRuleArgs) error {
 	if args == nil {
 		args = &UpdateAclRuleArgs{}
@@ -109,10 +113,11 @@ func (c *Client) UpdateAclRule(aclRuleId string, args *UpdateAclRuleArgs) error 
 // DeleteAclRule - delete the specific acl rule
 //
 // PARAMS:
-//     - aclRuleId: the id of the specific acl rule
-//     - clientToken: the idempotent token
+//   - aclRuleId: the id of the specific acl rule
+//   - clientToken: the idempotent token
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteAclRule(aclRuleId, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForAclRuleId(aclRuleId)).

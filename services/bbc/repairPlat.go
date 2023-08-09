@@ -243,11 +243,12 @@ func GetRepairTaskReocrd(cli bce.Client, reqBody *bce.Body) (*GetRepairRecords, 
 // ListRule - list the repair plat rules
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - reqBody: http request body
+//   - cli: the client agent which can perform sending request
+//   - reqBody: http request body
+//
 // RETURNS:
-//     - *ListRuleResult: results of listing the repair plat rules
-//     - error: nil if success otherwise the specific error
+//   - *ListRuleResult: results of listing the repair plat rules
+//   - error: nil if success otherwise the specific error
 func ListRule(cli bce.Client, reqBody *bce.Body) (*ListRuleResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -275,11 +276,12 @@ func ListRule(cli bce.Client, reqBody *bce.Body) (*ListRuleResult, error) {
 // GetRuleDetail - get the repair plat rule detail
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - ruleId: the specified rule id
+//   - cli: the client agent which can perform sending request
+//   - ruleId: the specified rule id
+//
 // RETURNS:
-//     - *Rule: results of listing the repair plat rules
-//     - error: nil if success otherwise the specific error
+//   - *Rule: results of listing the repair plat rules
+//   - error: nil if success otherwise the specific error
 func GetRuleDetail(cli bce.Client, ruleId string) (*Rule, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -306,11 +308,12 @@ func GetRuleDetail(cli bce.Client, ruleId string) (*Rule, error) {
 // CreateRule - create the repair plat rule
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - reqBody: http request body
+//   - cli: the client agent which can perform sending request
+//   - reqBody: http request body
+//
 // RETURNS:
-//     - *CreateRuleResult: results of the id of the repair plat rule which is created
-//     - error: nil if success otherwise the specific error
+//   - *CreateRuleResult: results of the id of the repair plat rule which is created
+//   - error: nil if success otherwise the specific error
 func CreateRule(cli bce.Client, reqBody *bce.Body) (*CreateRuleResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -339,10 +342,11 @@ func CreateRule(cli bce.Client, reqBody *bce.Body) (*CreateRuleResult, error) {
 // DeleteRule - delete the repair plat rule
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - reqBody: http request body
+//   - cli: the client agent which can perform sending request
+//   - reqBody: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func DeleteRule(cli bce.Client, reqBody *bce.Body) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -366,10 +370,11 @@ func DeleteRule(cli bce.Client, reqBody *bce.Body) error {
 // DisableRule - disable the repair plat rule
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - reqBody: http request body
+//   - cli: the client agent which can perform sending request
+//   - reqBody: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func DisableRule(cli bce.Client, reqBody *bce.Body) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -393,10 +398,11 @@ func DisableRule(cli bce.Client, reqBody *bce.Body) error {
 // EnableRule - enable the repair plat rule
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - reqBody: http request body
+//   - cli: the client agent which can perform sending request
+//   - reqBody: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func EnableRule(cli bce.Client, reqBody *bce.Body) error {
 	// Build the request
 	req := &bce.BceRequest{}

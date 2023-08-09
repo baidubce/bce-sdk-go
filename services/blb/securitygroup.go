@@ -14,7 +14,6 @@
 
 // securitygroup.go - the securitygroup APIs definition supported by the BLB service
 
-
 package blb
 
 import (
@@ -26,10 +25,11 @@ import (
 // BindSecurityGroups - bind the blb security groups (normal/application/ipv6 LoadBalancer)
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: the parameter to update security groups
+//   - blbId: LoadBalancer's ID
+//   - args: the parameter to update security groups
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) BindSecurityGroups(blbId string, args *UpdateSecurityGroupsArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -51,10 +51,11 @@ func (c *Client) BindSecurityGroups(blbId string, args *UpdateSecurityGroupsArgs
 // UnbindSecurityGroups - unbind the blb security groups (normal/application/ipv6 LoadBalancer)
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
-//     - args: the parameter to update security groups
+//   - blbId: LoadBalancer's ID
+//   - args: the parameter to update security groups
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UnbindSecurityGroups(blbId string, args *UpdateSecurityGroupsArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -76,10 +77,11 @@ func (c *Client) UnbindSecurityGroups(blbId string, args *UpdateSecurityGroupsAr
 // DescribeSecurityGroups - describe all security groups of the specified LoadBalancer (normal/application/ipv6 LoadBalancer)
 //
 // PARAMS:
-//     - blbId: LoadBalancer's ID
+//   - blbId: LoadBalancer's ID
+//
 // RETURNS:
-//     - *DescribeSecurityGroupsResult: the result of describe all security groups
-//     - error: nil if ok otherwise the specific error
+//   - *DescribeSecurityGroupsResult: the result of describe all security groups
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DescribeSecurityGroups(blbId string) (*DescribeSecurityGroupsResult, error) {
 
 	result := &DescribeSecurityGroupsResult{}

@@ -25,10 +25,11 @@ import (
 // CreateInstance - create a bci with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create a bci
+//   - args: the arguments to create a bci
+//
 // RETURNS:
-//     - *CreateInstanceResult: the result of create bci
-//     - error: nil if success otherwise the specific error
+//   - *CreateInstanceResult: the result of create bci
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateInstance(args *CreateInstanceArgs) (*CreateInstanceResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("The CreateInstanceArgs cannot be nil.")
@@ -49,10 +50,11 @@ func (c *Client) CreateInstance(args *CreateInstanceArgs) (*CreateInstanceResult
 // ListInstance - list all bcis with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all bcis
+//   - args: the arguments to list all bcis
+//
 // RETURNS:
-//     - *ListInstanceResult: the result of list all bcis
-//     - error: nil if success otherwise the specific error
+//   - *ListInstanceResult: the result of list all bcis
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListInstances(args *ListInstanceArgs) (*ListInstanceResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("The ListInstanceArgs cannot be nil.")
@@ -78,10 +80,11 @@ func (c *Client) ListInstances(args *ListInstanceArgs) (*ListInstanceResult, err
 // GetInstance - query bci detail with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all bci
+//   - args: the arguments to list all bci
+//
 // RETURNS:
-//     - *GetInstanceResult: the result of query bci detail
-//     - error: nil if success otherwise the specific error
+//   - *GetInstanceResult: the result of query bci detail
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetInstance(args *GetInstanceArgs) (*GetInstanceResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("The GetInstanceArgs cannot be nil.")
@@ -100,9 +103,10 @@ func (c *Client) GetInstance(args *GetInstanceArgs) (*GetInstanceResult, error) 
 // DeleteInstance - delete a bci
 //
 // PARAMS:
-//     - args: the arguments to delete a bci
+//   - args: the arguments to delete a bci
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteInstance(args *DeleteInstanceArgs) error {
 	if args == nil {
 		return fmt.Errorf("The DeleteInstanceArgs cannot be nil.")
@@ -118,9 +122,10 @@ func (c *Client) DeleteInstance(args *DeleteInstanceArgs) error {
 // BatchDeleteInstance - batch delete bcis
 //
 // PARAMS:
-//     - args: the arguments to batch delete bcis
+//   - args: the arguments to batch delete bcis
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchDeleteInstance(args *BatchDeleteInstanceArgs) error {
 	if args == nil {
 		return fmt.Errorf("The BatchDeleteInstanceArgs cannot be nil.")

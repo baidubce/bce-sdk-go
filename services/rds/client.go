@@ -22,7 +22,7 @@ import "github.com/baidubce/bce-sdk-go/bce"
 const (
 	URI_PREFIX       = bce.URI_PREFIX + "v1"
 	DEFAULT_ENDPOINT = "rds.bj.baidubce.com"
-	REQUEST_RDS_URL = "/instance"
+	REQUEST_RDS_URL  = "/instance"
 )
 
 // Client of RDS service is a kind of BceClient, so derived from BceClient

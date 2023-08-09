@@ -161,7 +161,7 @@ func Close() {
 // SetLogHandler - set the handler of the logger
 //
 // PARAMS:
-//     - Handler: the handler defined in this package, now just support STDOUT, STDERR, FILE
+//   - Handler: the handler defined in this package, now just support STDOUT, STDERR, FILE
 func SetLogHandler(h Handler) {
 	gDefaultLogger.handler = h
 }
@@ -170,7 +170,7 @@ func SetLogHandler(h Handler) {
 // value will be logged.
 //
 // PARAMS:
-//     - Level: the level defined in this package, now support 6 levels.
+//   - Level: the level defined in this package, now support 6 levels.
 func SetLogLevel(l Level) {
 	gDefaultLogger.levelThreshold = l
 }
@@ -179,7 +179,7 @@ func SetLogLevel(l Level) {
 // {FMT_LEVEL, FMT_LTIME, FMT_LOCATION, FMT_MSG}.
 //
 // PARAMS:
-//     - format: the format component array.
+//   - format: the format component array.
 func SetLogFormat(format []string) {
 	gDefaultLogger.logFormat = format
 }
@@ -187,9 +187,10 @@ func SetLogFormat(format []string) {
 // SetLogDir - set the logging directory if logging to file.
 //
 // PARAMS:
-//     - dir: the logging directory
+//   - dir: the logging directory
+//
 // RETURNS:
-//     - error: check the directory and try to make it, otherwise return the error.
+//   - error: check the directory and try to make it, otherwise return the error.
 func SetLogDir(dir string) error {
 	if _, err := os.Stat(dir); err != nil {
 		if os.IsNotExist(err) {
@@ -207,7 +208,7 @@ func SetLogDir(dir string) error {
 // SetRotateType - set the rotating strategy if logging to file.
 //
 // PARAMS:
-//     - RotateStrategy: the rotate strategy defined in this package, now support 5 strategy.
+//   - RotateStrategy: the rotate strategy defined in this package, now support 5 strategy.
 func SetRotateType(r RotateStrategy) {
 	gDefaultLogger.rotateType = r
 }
@@ -215,9 +216,10 @@ func SetRotateType(r RotateStrategy) {
 // SetRotateSize - set the rotating size if logging to file and set the strategy of size.
 //
 // PARAMS:
-//     - size: the rotating size
+//   - size: the rotating size
+//
 // RETURNS:
-//     - error: check the value and return any error if error occurs.
+//   - error: check the value and return any error if error occurs.
 func SetRotateSize(size int64) error {
 	if size <= 0 {
 		return fmt.Errorf("%s", "rotate size should not be negative")

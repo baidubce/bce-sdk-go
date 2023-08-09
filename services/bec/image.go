@@ -31,10 +31,11 @@ import (
 // CreateVmImage - create a vm image
 //
 // PARAMS:
-//     - args: the create vm image args
+//   - args: the create vm image args
+//
 // RETURNS:
-//     - *api.CreateVmImageResult: the result image
-//     - error: nil if ok otherwise the specific error
+//   - *api.CreateVmImageResult: the result image
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateVmImage(args *api.CreateVmImageArgs) (*api.CreateVmImageResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -50,10 +51,11 @@ func (c *Client) CreateVmImage(args *api.CreateVmImageArgs) (*api.CreateVmImageR
 // DeleteVmImage - delete a vm image
 //
 // PARAMS:
-//     - args: the delete vm image args, spec vmId list
+//   - args: the delete vm image args, spec vmId list
+//
 // RETURNS:
-//     - *api.VmImageOperateResult: the result image delete
-//     - error: nil if ok otherwise the specific error
+//   - *api.VmImageOperateResult: the result image delete
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteVmImage(args []string) (*api.VmImageOperateResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -71,11 +73,12 @@ func (c *Client) DeleteVmImage(args []string) (*api.VmImageOperateResult, error)
 // UpdateVmImage - update a vm image
 //
 // PARAMS:
-//     - imageId: image id
-//     - args: the update vm image args
+//   - imageId: image id
+//   - args: the update vm image args
+//
 // RETURNS:
-//     - *api.VmImageOperateResult: the result image update
-//     - error: nil if ok otherwise the specific error
+//   - *api.VmImageOperateResult: the result image update
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateVmImage(imageId string, args *api.UpdateVmImageArgs) (*api.VmImageOperateResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -91,10 +94,11 @@ func (c *Client) UpdateVmImage(imageId string, args *api.UpdateVmImageArgs) (*ap
 // ListVmImage - image list
 //
 // PARAMS:
-//     - args: the vm image list args
+//   - args: the vm image list args
+//
 // RETURNS:
-//     - *api.ListVmImageResult: the list of vm images
-//     - error: nil if ok otherwise the specific error
+//   - *api.ListVmImageResult: the list of vm images
+//   - error: nil if ok otherwise the specific error
 func (c *Client) ListVmImage(args *api.ListVmImageArgs) (*api.ListVmImageResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")

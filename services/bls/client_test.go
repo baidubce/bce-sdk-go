@@ -536,7 +536,7 @@ func TestClient_BulkDeleteLogShipper(t *testing.T) {
 		ids = append(ids, id)
 	}
 	time.Sleep(time.Second * 2)
-	args := &api.BulkDeleteShipperCondition{LogShipperIDs:ids}
+	args := &api.BulkDeleteShipperCondition{LogShipperIDs: ids}
 	err := BLS_CLIENT.BulkDeleteLogShipper(args)
 	ExpectEqual(t.Errorf, err, nil)
 	for _, id := range ids {

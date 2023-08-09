@@ -26,10 +26,11 @@ import (
 // CreateRds - create a RDS with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create a rds
+//   - args: the arguments to create a rds
+//
 // RETURNS:
-//     - *InstanceIds: the result of create RDS, contains new RDS's instanceIds
-//     - error: nil if success otherwise the specific error
+//   - *InstanceIds: the result of create RDS, contains new RDS's instanceIds
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateRds(args *CreateRdsArgs) (*CreateResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -63,10 +64,11 @@ func (c *Client) CreateRds(args *CreateRdsArgs) (*CreateResult, error) {
 // CreateReadReplica - create a readReplica RDS with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create a readReplica rds
+//   - args: the arguments to create a readReplica rds
+//
 // RETURNS:
-//     - *InstanceIds: the result of create a readReplica RDS, contains the readReplica RDS's instanceIds
-//     - error: nil if success otherwise the specific error
+//   - *InstanceIds: the result of create a readReplica RDS, contains the readReplica RDS's instanceIds
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -97,10 +99,11 @@ func (c *Client) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResult, 
 // CreateRdsProxy - create a proxy RDS with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create a readReplica rds
+//   - args: the arguments to create a readReplica rds
+//
 // RETURNS:
-//     - *InstanceIds: the result of create a readReplica RDS, contains the readReplica RDS's instanceIds
-//     - error: nil if success otherwise the specific error
+//   - *InstanceIds: the result of create a readReplica RDS, contains the readReplica RDS's instanceIds
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateRdsProxy(args *CreateRdsProxyArgs) (*CreateResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -131,10 +134,11 @@ func (c *Client) CreateRdsProxy(args *CreateRdsProxyArgs) (*CreateResult, error)
 // ListRds - list all RDS with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all RDS
+//   - args: the arguments to list all RDS
+//
 // RETURNS:
-//     - *ListRdsResult: the result of list all RDS, contains all rds' meta
-//     - error: nil if success otherwise the specific error
+//   - *ListRdsResult: the result of list all RDS, contains all rds' meta
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListRds(args *ListRdsArgs) (*ListRdsResult, error) {
 	if args == nil {
 		args = &ListRdsArgs{}
@@ -159,10 +163,11 @@ func (c *Client) ListRds(args *ListRdsArgs) (*ListRdsResult, error) {
 // GetDetail - get a specific rds Instance's detail
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
+//   - instanceId: the specific rds Instance's ID
+//
 // RETURNS:
-//     - *Instance: the specific rdsInstance's detail
-//     - error: nil if success otherwise the specific error
+//   - *Instance: the specific rdsInstance's detail
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetDetail(instanceId string) (*Instance, error) {
 	result := &Instance{}
 	err := bce.NewRequestBuilder(c).
@@ -177,9 +182,10 @@ func (c *Client) GetDetail(instanceId string) (*Instance, error) {
 // DeleteRds - delete a rds
 //
 // PARAMS:
-//     - instanceIds: the specific instanceIds
+//   - instanceIds: the specific instanceIds
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteRds(instanceIds string) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
@@ -191,10 +197,11 @@ func (c *Client) DeleteRds(instanceIds string) error {
 // ResizeRds - resize an RDS with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific instanceId
-//     - args: the arguments to resize an RDS
+//   - instanceId: the specific instanceId
+//   - args: the arguments to resize an RDS
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ResizeRds(instanceId string, args *ResizeRdsArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -212,10 +219,11 @@ func (c *Client) ResizeRds(instanceId string, args *ResizeRdsArgs) error {
 // CreateAccount - create a account with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific instanceId
-//     - args: the arguments to create a account
+//   - instanceId: the specific instanceId
+//   - args: the arguments to create a account
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateAccount(instanceId string, args *CreateAccountArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -247,10 +255,11 @@ func (c *Client) CreateAccount(instanceId string, args *CreateAccountArgs) error
 // ListAccount - list all account of a RDS instance with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
+//   - instanceId: the specific rds Instance's ID
+//
 // RETURNS:
-//     - *ListAccountResult: the result of list all account, contains all accounts' meta
-//     - error: nil if success otherwise the specific error
+//   - *ListAccountResult: the result of list all account, contains all accounts' meta
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListAccount(instanceId string) (*ListAccountResult, error) {
 	result := &ListAccountResult{}
 	err := bce.NewRequestBuilder(c).
@@ -265,11 +274,12 @@ func (c *Client) ListAccount(instanceId string) (*ListAccountResult, error) {
 // GetAccount - get an account of a RDS instance with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
-//     - accountName: the specific account's name
+//   - instanceId: the specific rds Instance's ID
+//   - accountName: the specific account's name
+//
 // RETURNS:
-//     - *Account: the account's meta
-//     - error: nil if success otherwise the specific error
+//   - *Account: the account's meta
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetAccount(instanceId, accountName string) (*Account, error) {
 	result := &Account{}
 	err := bce.NewRequestBuilder(c).
@@ -284,10 +294,11 @@ func (c *Client) GetAccount(instanceId, accountName string) (*Account, error) {
 // DeleteAccount - delete an account of a RDS instance
 //
 // PARAMS:
-//     - instanceIds: the specific instanceIds
-//     - accountName: the specific account's name
+//   - instanceIds: the specific instanceIds
+//   - accountName: the specific account's name
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteAccount(instanceId, accountName string) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
@@ -298,10 +309,11 @@ func (c *Client) DeleteAccount(instanceId, accountName string) error {
 // RebootInstance - reboot a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance to be rebooted
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance to be rebooted
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RebootInstance(instanceId string) error {
 
 	return bce.NewRequestBuilder(c).
@@ -314,11 +326,12 @@ func (c *Client) RebootInstance(instanceId string) error {
 // UpdateInstanceName - update name of a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to update instanceName
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to update instanceName
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateInstanceName(instanceId string, args *UpdateInstanceNameArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -333,11 +346,12 @@ func (c *Client) UpdateInstanceName(instanceId string, args *UpdateInstanceNameA
 // UpdateSyncMode - update sync mode of a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to update syncMode
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to update syncMode
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifySyncMode(instanceId string, args *ModifySyncModeArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -352,11 +366,12 @@ func (c *Client) ModifySyncMode(instanceId string, args *ModifySyncModeArgs) err
 // ModifyEndpoint - modify the prefix of endpoint
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to modify endpoint
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to modify endpoint
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyEndpoint(instanceId string, args *ModifyEndpointArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -371,11 +386,12 @@ func (c *Client) ModifyEndpoint(instanceId string, args *ModifyEndpointArgs) err
 // ModifyPublicAccess - modify public access
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to modify public access
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to modify public access
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyPublicAccess(instanceId string, args *ModifyPublicAccessArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -390,11 +406,12 @@ func (c *Client) ModifyPublicAccess(instanceId string, args *ModifyPublicAccessA
 // ModifyBackupPolicy - modify backup policy
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to modify public access
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to modify public access
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyBackupPolicy(instanceId string, args *ModifyBackupPolicyArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -409,11 +426,12 @@ func (c *Client) ModifyBackupPolicy(instanceId string, args *ModifyBackupPolicyA
 // GetBackupList - get backup list of the instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *GetBackupListResult: result of the backup list
-//     - error: nil if success otherwise the specific error
+//   - *GetBackupListResult: result of the backup list
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetBackupList(instanceId string, args *GetBackupListArgs) (*GetBackupListResult, error) {
 
 	if args == nil {
@@ -439,12 +457,13 @@ func (c *Client) GetBackupList(instanceId string, args *GetBackupListArgs) (*Get
 // GetBackupDetail - get backup detail of the instance's backup
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - backupId: id of the backup
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - backupId: id of the backup
+//
 // RETURNS:
-//     - *Snapshot: result of the backup detail
-//     - error: nil if success otherwise the specific error
+//   - *Snapshot: result of the backup detail
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetBackupDetail(instanceId string, backupId string) (*Snapshot, error) {
 	result := &Snapshot{}
 	err := bce.NewRequestBuilder(c).
@@ -459,10 +478,11 @@ func (c *Client) GetBackupDetail(instanceId string, backupId string) (*Snapshot,
 // GetZoneList - list all zone
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
+//   - cli: the client agent which can perform sending request
+//
 // RETURNS:
-//     - *GetZoneListResult: result of the zone list
-//     - error: nil if success otherwise the specific error
+//   - *GetZoneListResult: result of the zone list
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetZoneList() (*GetZoneListResult, error) {
 	result := &GetZoneListResult{}
 	err := bce.NewRequestBuilder(c).
@@ -477,11 +497,12 @@ func (c *Client) GetZoneList() (*GetZoneListResult, error) {
 // ListsSubnet - list all Subnets
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to list all subnets, not necessary
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to list all subnets, not necessary
+//
 // RETURNS:
-//     - *ListSubnetsResult: result of the subnet list
-//     - error: nil if success otherwise the specific error
+//   - *ListSubnetsResult: result of the subnet list
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListSubnets(args *ListSubnetsArgs) (*ListSubnetsResult, error) {
 	if args == nil {
 		args = &ListSubnetsArgs{}
@@ -502,10 +523,11 @@ func (c *Client) ListSubnets(args *ListSubnetsArgs) (*ListSubnetsResult, error) 
 // GetSecurityIps - get all SecurityIps
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
+//   - instanceId: the specific rds Instance's ID
+//
 // RETURNS:
-//     - *GetSecurityIpsResult: all security IP
-//     - error: nil if success otherwise the specific error
+//   - *GetSecurityIpsResult: all security IP
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetSecurityIps(instanceId string) (*GetSecurityIpsResult, error) {
 	result := &GetSecurityIpsResult{}
 	err := bce.NewRequestBuilder(c).
@@ -520,11 +542,12 @@ func (c *Client) GetSecurityIps(instanceId string) (*GetSecurityIpsResult, error
 // UpdateSecurityIps - update SecurityIps
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
-//     - Etag: get latest etag by GetSecurityIps
-//     - Args: all SecurityIps
+//   - instanceId: the specific rds Instance's ID
+//   - Etag: get latest etag by GetSecurityIps
+//   - Args: all SecurityIps
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateSecurityIps(instanceId, Etag string, args *UpdateSecurityIpsArgs) error {
 
 	headers := map[string]string{"x-bce-if-match": Etag}
@@ -541,10 +564,11 @@ func (c *Client) UpdateSecurityIps(instanceId, Etag string, args *UpdateSecurity
 // ListParameters - list all parameters of a RDS instance
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
+//   - instanceId: the specific rds Instance's ID
+//
 // RETURNS:
-//     - *ListParametersResult: the result of list all parameters
-//     - error: nil if success otherwise the specific error
+//   - *ListParametersResult: the result of list all parameters
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListParameters(instanceId string) (*ListParametersResult, error) {
 	result := &ListParametersResult{}
 	err := bce.NewRequestBuilder(c).
@@ -559,11 +583,12 @@ func (c *Client) ListParameters(instanceId string) (*ListParametersResult, error
 // UpdateParameter - update Parameter
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
-//     - Etag: get latest etag by ListParameters
-//     - Args: *UpdateParameterArgs
+//   - instanceId: the specific rds Instance's ID
+//   - Etag: get latest etag by ListParameters
+//   - Args: *UpdateParameterArgs
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateParameter(instanceId, Etag string, args *UpdateParameterArgs) error {
 
 	headers := map[string]string{"x-bce-if-match": Etag}
@@ -580,9 +605,10 @@ func (c *Client) UpdateParameter(instanceId, Etag string, args *UpdateParameterA
 // autoRenew - create autoRenew
 //
 // PARAMS:
-//     - Args: *autoRenewArgs
+//   - Args: *autoRenewArgs
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) AutoRenew(args *AutoRenewArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -597,10 +623,11 @@ func (c *Client) AutoRenew(args *AutoRenewArgs) error {
 // getSlowLogDownloadTaskList
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
-//     - datetime: the log time. range(datetime, datetime + 24 hours)
+//   - instanceId: the specific rds Instance's ID
+//   - datetime: the log time. range(datetime, datetime + 24 hours)
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetSlowLogDownloadTaskList(instanceId, datetime string) (*SlowLogDownloadTaskListResult, error) {
 	fmt.Println(getRdsUriWithInstanceId(instanceId) + "/slowlogs/logList/" + datetime)
 	result := &SlowLogDownloadTaskListResult{}
@@ -616,9 +643,10 @@ func (c *Client) GetSlowLogDownloadTaskList(instanceId, datetime string) (*SlowL
 // getSlowLogDownloadDetail
 //
 // PARAMS:
-//     - Args: *slowLogDownloadTaskListArgs
+//   - Args: *slowLogDownloadTaskListArgs
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetSlowLogDownloadDetail(instanceId, logId, downloadValidTimeInSec string) (*SlowLogDownloadDetail, error) {
 	result := &SlowLogDownloadDetail{}
 	err := bce.NewRequestBuilder(c).

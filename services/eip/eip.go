@@ -26,10 +26,11 @@ import (
 // CreateEip - create an EIP with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create an eip
+//   - args: the arguments to create an eip
+//
 // RETURNS:
-//     - *CreateEipResult: the result of create EIP, contains new EIP's address
-//     - error: nil if success otherwise the specific error
+//   - *CreateEipResult: the result of create EIP, contains new EIP's address
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateEip(args *CreateEipArgs) (*CreateEipResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set create eip argments")
@@ -54,10 +55,11 @@ func (c *Client) CreateEip(args *CreateEipArgs) (*CreateEipResult, error) {
 // BatchCreateEip - create EIPs with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create eips
+//   - args: the arguments to create eips
+//
 // RETURNS:
-//     - *BatchCreateEipResult: the result of create EIP, contains new EIP's address
-//     - error: nil if success otherwise the specific error
+//   - *BatchCreateEipResult: the result of create EIP, contains new EIP's address
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchCreateEip(args *BatchCreateEipArgs) (*BatchCreateEipResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set create eip argments")
@@ -83,10 +85,11 @@ func (c *Client) BatchCreateEip(args *BatchCreateEipArgs) (*BatchCreateEipResult
 // ResizeEip - resize an EIP with the specific parameters
 //
 // PARAMS:
-//     - eip: the specific EIP
-//     - args: the arguments to resize an EIP
+//   - eip: the specific EIP
+//   - args: the arguments to resize an EIP
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ResizeEip(eip string, args *ResizeEipArgs) error {
 	if args == nil {
 		return fmt.Errorf("please set resize eip argments")
@@ -104,10 +107,11 @@ func (c *Client) ResizeEip(eip string, args *ResizeEipArgs) error {
 // BindEip - bind an EIP to an instance with the specific parameters
 //
 // PARAMS:
-//     - eip: the specific EIP
-//     - args: the arguments to bind an EIP
+//   - eip: the specific EIP
+//   - args: the arguments to bind an EIP
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BindEip(eip string, args *BindEipArgs) error {
 	if args == nil {
 		return fmt.Errorf("please set bind eip argments")
@@ -125,10 +129,11 @@ func (c *Client) BindEip(eip string, args *BindEipArgs) error {
 // UnBindEip - unbind an EIP
 //
 // PARAMS:
-//     - eip: the specific EIP
-//     - clientToken: optional parameter, an Idempotent Token
+//   - eip: the specific EIP
+//   - clientToken: optional parameter, an Idempotent Token
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UnBindEip(eip, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
@@ -141,10 +146,11 @@ func (c *Client) UnBindEip(eip, clientToken string) error {
 // DeleteEip - delete an EIP
 //
 // PARAMS:
-//     - eip: the specific EIP
-//     - clientToken: optional parameter, an Idempotent Token
+//   - eip: the specific EIP
+//   - clientToken: optional parameter, an Idempotent Token
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteEip(eip, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
@@ -156,11 +162,12 @@ func (c *Client) DeleteEip(eip, clientToken string) error {
 // OptionalDeleteEip - optionally delete an EIP
 //
 // PARAMS:
-//     - eip: the specific EIP
-//     - clientToken: optional parameter, an Idempotent Token
-//     - releaseToRecycle: the parameter confirms whether to put the specific EIP in the recycle bin (true) or directly delete it (false)
+//   - eip: the specific EIP
+//   - clientToken: optional parameter, an Idempotent Token
+//   - releaseToRecycle: the parameter confirms whether to put the specific EIP in the recycle bin (true) or directly delete it (false)
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) OptionalDeleteEip(eip string, clientToken string, releaseToRecycle bool) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
@@ -173,10 +180,11 @@ func (c *Client) OptionalDeleteEip(eip string, clientToken string, releaseToRecy
 // ListEip - list all EIP with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all eip
+//   - args: the arguments to list all eip
+//
 // RETURNS:
-//     - *ListEipResult: the result of list all eip, contains new EIP's ID
-//     - error: nil if success otherwise the specific error
+//   - *ListEipResult: the result of list all eip, contains new EIP's ID
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListEip(args *ListEipArgs) (*ListEipResult, error) {
 	if args == nil {
 		args = &ListEipArgs{}
@@ -205,10 +213,11 @@ func (c *Client) ListEip(args *ListEipArgs) (*ListEipResult, error) {
 // ListRecycleEip - list all EIP in the recycle bin with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all eip in the recycle bin
+//   - args: the arguments to list all eip in the recycle bin
+//
 // RETURNS:
-//     - *ListRecycleEipResult: the result of list all eip in the recycle bin
-//     - error: nil if success otherwise the specific error
+//   - *ListRecycleEipResult: the result of list all eip in the recycle bin
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListRecycleEip(args *ListRecycleEipArgs) (*ListRecycleEipResult, error) {
 	if args == nil {
 		args = &ListRecycleEipArgs{}
@@ -235,10 +244,11 @@ func (c *Client) ListRecycleEip(args *ListRecycleEipArgs) (*ListRecycleEipResult
 // RestoreRecycleEip - restore the specific EIP in the recycle bin
 //
 // PARAMS:
-//     - eip: the specific EIP
-//     - clientToken: optional parameter, an Idempotent Token
+//   - eip: the specific EIP
+//   - clientToken: optional parameter, an Idempotent Token
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RestoreRecycleEip(eip string, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
@@ -251,10 +261,11 @@ func (c *Client) RestoreRecycleEip(eip string, clientToken string) error {
 // DeleteRecycleEip - delete the specific EIP in the recycle bin
 //
 // PARAMS:
-//     - eip: the specific EIP
-//     - clientToken: optional parameter, an Idempotent Token
+//   - eip: the specific EIP
+//   - clientToken: optional parameter, an Idempotent Token
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteRecycleEip(eip string, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
@@ -266,10 +277,11 @@ func (c *Client) DeleteRecycleEip(eip string, clientToken string) error {
 // PurchaseReservedEip - purchase reserve an eip with the specific parameters
 //
 // PARAMS:
-//     - eip: the specific EIP
-//     - args: the arguments to purchase reserve an eip
+//   - eip: the specific EIP
+//   - args: the arguments to purchase reserve an eip
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) PurchaseReservedEip(eip string, args *PurchaseReservedEipArgs) error {
 	if args == nil {
 		return fmt.Errorf("please set purchase reserved eip argments")
@@ -286,10 +298,11 @@ func (c *Client) PurchaseReservedEip(eip string, args *PurchaseReservedEipArgs) 
 // StartAutoRenew - start auto renew an eip
 //
 // PARAMS:
-//     - eip: the specific EIP
-//     - args: the arguments to start auto renew an eip
+//   - eip: the specific EIP
+//   - args: the arguments to start auto renew an eip
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) StartAutoRenew(eip string, args *StartAutoRenewArgs) error {
 	if args == nil {
 		return fmt.Errorf("please set eip auto renew argments")
@@ -307,10 +320,11 @@ func (c *Client) StartAutoRenew(eip string, args *StartAutoRenewArgs) error {
 // StopAutoRenew - stop eip auto renew
 //
 // PARAMS:
-//     - eip: the specific EIP
-//     - clientToken: optional parameter, an Idempotent Token
+//   - eip: the specific EIP
+//   - clientToken: optional parameter, an Idempotent Token
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) StopAutoRenew(eip string, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
@@ -375,9 +389,10 @@ func (c *Client) GetEipCluster(clusterId string) (*ClusterDetail, error) {
 // DirectEip - turn on EIP pass through with the specific parameters
 //
 // PARAMS:
-//     - eip: the specific EIP
+//   - eip: the specific EIP
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DirectEip(eip, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
@@ -390,9 +405,10 @@ func (c *Client) DirectEip(eip, clientToken string) error {
 // UnDirectEip - turn off EIP pass through with the specific parameters
 //
 // PARAMS:
-//     - eip: the specific EIP
+//   - eip: the specific EIP
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UnDirectEip(eip, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
@@ -405,10 +421,11 @@ func (c *Client) UnDirectEip(eip, clientToken string) error {
 // CreateEipTp - create an EIP TP with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create an eiptp
+//   - args: the arguments to create an eiptp
+//
 // RETURNS:
-//     - *CreateEipTpResult: the created eiptp id.
-//     - error: nil if success otherwise the specific error
+//   - *CreateEipTpResult: the created eiptp id.
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateEipTp(args *CreateEipTpArgs) (*CreateEipTpResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set create eip tp argments")
@@ -431,10 +448,11 @@ func (c *Client) CreateEipTp(args *CreateEipTpArgs) (*CreateEipTpResult, error) 
 // ListEipTp - list all EIP TPs with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all eiptps
+//   - args: the arguments to list all eiptps
+//
 // RETURNS:
-//     - *ListEipTpResult: the result of listing all eiptps
-//     - error: nil if success otherwise the specific error
+//   - *ListEipTpResult: the result of listing all eiptps
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListEipTp(args *ListEipTpArgs) (*ListEipTpResult, error) {
 	if args == nil {
 		args = &ListEipTpArgs{}

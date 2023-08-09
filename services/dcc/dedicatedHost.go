@@ -7,7 +7,7 @@ import (
 	"github.com/baidubce/bce-sdk-go/http"
 )
 
-//ListDedicatedHosts -- xx
+// ListDedicatedHosts -- xx
 func (c *Client) ListDedicatedHosts(args *ListDedicatedHostArgs) (list *ListDedicatedHostResult, err error) {
 	err = bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
@@ -21,7 +21,7 @@ func (c *Client) ListDedicatedHosts(args *ListDedicatedHostArgs) (list *ListDedi
 	return
 }
 
-//GetDedicatedHostDetail -- xx
+// GetDedicatedHostDetail -- xx
 func (c *Client) GetDedicatedHostDetail(hostID string) (ret *GetDedicatedHostDetailResult, err error) {
 	err = bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
@@ -33,7 +33,7 @@ func (c *Client) GetDedicatedHostDetail(hostID string) (ret *GetDedicatedHostDet
 
 }
 
-//PurchaseReserved -- xx
+// PurchaseReserved -- xx
 func (c *Client) PurchaseReserved(hostID string, args *PurchaseReservedArgs) (err error) {
 	err = bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
@@ -45,7 +45,7 @@ func (c *Client) PurchaseReserved(hostID string, args *PurchaseReservedArgs) (er
 	return
 }
 
-//Create -- xx
+// Create -- xx
 func (c *Client) Create(args *CreateArgs) (ret *CreateResult, err error) {
 	err = bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
@@ -123,7 +123,7 @@ func (c *Client) tagforInstance(action, instanceID string, args *BindTagArgs) (e
 	return
 }
 
-//BindTagforInstance -- xx
+// BindTagforInstance -- xx
 func (c *Client) BindTagforInstance(instanceID string, args *BindTagArgs) error {
 	return c.tagforInstance("bind", instanceID, args)
 }

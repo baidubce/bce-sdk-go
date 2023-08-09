@@ -26,11 +26,12 @@ import (
 // GetOperationLog - get operation log
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to get operation log
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to get operation log
+//
 // RETURNS:
-//     - *GetOperationLogResult: results of getting operation log
-//     - error: nil if success otherwise the specific error
+//   - *GetOperationLogResult: results of getting operation log
+//   - error: nil if success otherwise the specific error
 func GetOperationLog(cli bce.Client, args *GetOperationLogArgs) (*GetOperationLogResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}

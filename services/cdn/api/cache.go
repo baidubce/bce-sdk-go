@@ -109,11 +109,12 @@ type RecordDetails struct {
 // For more details, please refer https://cloud.baidu.com/doc/CDN/s/ijwvyeyyj
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - tasks: the tasks about purging the files from the CDN nodes
+//   - cli: the client agent which can perform sending request
+//   - tasks: the tasks about purging the files from the CDN nodes
+//
 // RETURNS:
-//     - PurgedId: an ID representing a purged task, using it to search the task progress
-//     - error: nil if success otherwise the specific error
+//   - PurgedId: an ID representing a purged task, using it to search the task progress
+//   - error: nil if success otherwise the specific error
 func Purge(cli bce.Client, tasks []PurgeTask) (PurgedId, error) {
 
 	respObj := &struct {
@@ -136,11 +137,12 @@ func Purge(cli bce.Client, tasks []PurgeTask) (PurgedId, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/ujwvyezqm
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryData: querying conditions, it contains the time interval, the task ID and the specified url
+//   - cli: the client agent which can perform sending request
+//   - queryData: querying conditions, it contains the time interval, the task ID and the specified url
+//
 // RETURNS:
-//     - *PurgedStatus: the details about the purged
-//     - error: nil if success otherwise the specific error
+//   - *PurgedStatus: the details about the purged
+//   - error: nil if success otherwise the specific error
 func GetPurgedStatus(cli bce.Client, queryData *CStatusQueryData) (*PurgedStatus, error) {
 	if queryData == nil {
 		queryData = &CStatusQueryData{}
@@ -174,9 +176,9 @@ func GetPurgedStatus(cli bce.Client, queryData *CStatusQueryData) (*PurgedStatus
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Rjwvyf0ff
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - tasks: the tasks about prefetch the files from the CDN nodes
-//     - error: nil if success otherwise the specific error
+//   - cli: the client agent which can perform sending request
+//   - tasks: the tasks about prefetch the files from the CDN nodes
+//   - error: nil if success otherwise the specific error
 func Prefetch(cli bce.Client, tasks []PrefetchTask) (PrefetchId, error) {
 	respObj := &struct {
 		Id string `json:"id"`
@@ -198,11 +200,12 @@ func Prefetch(cli bce.Client, tasks []PrefetchTask) (PrefetchId, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/4jwvyf01w
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryData: querying conditions, it contains the time interval, the task ID and the specified url
+//   - cli: the client agent which can perform sending request
+//   - queryData: querying conditions, it contains the time interval, the task ID and the specified url
+//
 // RETURNS:
-//     - *PrefetchStatus: the details about the prefetch
-//     - error: nil if success otherwise the specific error
+//   - *PrefetchStatus: the details about the prefetch
+//   - error: nil if success otherwise the specific error
 func GetPrefetchStatus(cli bce.Client, queryData *CStatusQueryData) (*PrefetchStatus, error) {
 	if queryData == nil {
 		queryData = &CStatusQueryData{}
@@ -236,9 +239,9 @@ func GetPrefetchStatus(cli bce.Client, queryData *CStatusQueryData) (*PrefetchSt
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/zjwvyeze3
 //
 // RETURNS:
-//     - cli: the client agent which can perform sending request
-//     - QuotaDetail: the quota details about a specified user
-//     - error: nil if success otherwise the specific error
+//   - cli: the client agent which can perform sending request
+//   - QuotaDetail: the quota details about a specified user
+//   - error: nil if success otherwise the specific error
 func GetQuota(cli bce.Client) (*QuotaDetail, error) {
 	respObj := &QuotaDetail{}
 	err := httpRequest(cli, "GET", "/v2/cache/quota", nil, nil, respObj)
@@ -293,11 +296,12 @@ func getTimeParams(params map[string]string, startTime, endTime string) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jypnzjqt
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryData: querying conditions, it contains the time interval, the task type and the specified url
+//   - cli: the client agent which can perform sending request
+//   - queryData: querying conditions, it contains the time interval, the task type and the specified url
+//
 // RETURNS:
-//     - *RecordDetails: the details about the records
-//     - error: nil if success otherwise the specific error
+//   - *RecordDetails: the details about the records
+//   - error: nil if success otherwise the specific error
 func GetCacheOpRecords(cli bce.Client, queryData *CRecordQueryData) (*RecordDetails, error) {
 	params := map[string]string{}
 	if queryData == nil {

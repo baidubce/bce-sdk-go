@@ -40,4 +40,3 @@ const (
 	// OSNameOpensuse opensuse
 	OSNameOpensuse OSName = "opensuse"
 )
-

@@ -32,13 +32,13 @@ func (c *Client) CreateEtGateway(args *CreateEtGatewayArgs) (*CreateEtGatewayRes
 	return result, err
 }
 
-//
 // ListEtGateway - list all Et gateways with the specific parameters
 // PARAMS:
-//    - args: the arguments to list et gateways
+//   - args: the arguments to list et gateways
+//
 // RETURNS:
-//    - *ListEtGatewayResult: the result of Et gateway list
-//    - error: nil if success otherwise the specific error
+//   - *ListEtGatewayResult: the result of Et gateway list
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListEtGateway(args *ListEtGatewayArgs) (*ListEtGatewayResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("The ListEtGatewayArgs cannot be nil.")
@@ -63,10 +63,11 @@ func (c *Client) ListEtGateway(args *ListEtGatewayArgs) (*ListEtGatewayResult, e
 
 // GetEtGatewayDetail - Get the Et gateways with the specific parameters
 // PARAMS:
-//    - etGatewayId: the id of  the EtGateway's
+//   - etGatewayId: the id of  the EtGateway's
+//
 // RETURNS:
-//    - *EtGatewayDetail: the result of EtGgateway detail
-//    - error: nil if success otherwise the specific error
+//   - *EtGatewayDetail: the result of EtGgateway detail
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetEtGatewayDetail(etGatewayId string) (*EtGatewayDetail, error) {
 	result := &EtGatewayDetail{}
 	err := bce.NewRequestBuilder(c).
@@ -79,9 +80,10 @@ func (c *Client) GetEtGatewayDetail(etGatewayId string) (*EtGatewayDetail, error
 
 // UpdateEtGateway - update the Et gateways with the specific parameters
 // PARAMS:
-//    - args: the arguments to update the EtGateway
+//   - args: the arguments to update the EtGateway
+//
 // RETURNS:
-//    - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateEtGateway(updateEtGatewayArgs *UpdateEtGatewayArgs) error {
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForEtGatewayId(updateEtGatewayArgs.EtGatewayId)).
@@ -93,10 +95,11 @@ func (c *Client) UpdateEtGateway(updateEtGatewayArgs *UpdateEtGatewayArgs) error
 
 // DeleteEtGateway - delete the Et gateways with the specific parameters
 // PARAMS:
-//    - etGatewayId: the id to delete the EtGateway
-//    - clientToken: the idempotent string
+//   - etGatewayId: the id to delete the EtGateway
+//   - clientToken: the idempotent string
+//
 // RETURNS:
-//    - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteEtGateway(etGatewayId, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForEtGatewayId(etGatewayId)).
@@ -107,9 +110,10 @@ func (c *Client) DeleteEtGateway(etGatewayId, clientToken string) error {
 
 // UnBindEt -  bind the Et
 // PARAMS:
-//    - args: the arguments to bind the Et
+//   - args: the arguments to bind the Et
+//
 // RETURNS:
-//    - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BindEt(args *BindEtArgs) error {
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForEtGatewayId(args.EtGatewayId)).
@@ -122,9 +126,10 @@ func (c *Client) BindEt(args *BindEtArgs) error {
 
 // UnBindEt -  unbind the Et
 // PARAMS:
-//    - args: the arguments to unbind the Et
+//   - args: the arguments to unbind the Et
+//
 // RETURNS:
-//    - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UnBindEt(EtGatewayId, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForEtGatewayId(EtGatewayId)).
@@ -136,9 +141,10 @@ func (c *Client) UnBindEt(EtGatewayId, clientToken string) error {
 
 // CreateHealthCheck - create the Et gateway's healthcheck with the specific parameters
 // PARAMS:
-//    - args: the arguments to create the EtGateway's healthcheck
+//   - args: the arguments to create the EtGateway's healthcheck
+//
 // RETURNS:
-//    - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateHealthCheck(args *CreateHealthCheckArgs) error {
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForEtGatewayId(args.EtGatewayId)+"/healthCheck").

@@ -26,10 +26,11 @@ import (
 // CreateLogStore - create logStore
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - body: logStore parameters body
+//   - cli: the client agent which can perform sending request
+//   - body: logStore parameters body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func CreateLogStore(cli bce.Client, body *bce.Body) error {
 	req := &bce.BceRequest{}
 	req.SetUri(LOGSTORE_PREFIX)
@@ -51,11 +52,12 @@ func CreateLogStore(cli bce.Client, body *bce.Body) error {
 // UpdateLogStore - update logStore retention
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - logStore: logStore to update
-//     - body: logStore parameters body
+//   - cli: the client agent which can perform sending request
+//   - logStore: logStore to update
+//   - body: logStore parameters body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func UpdateLogStore(cli bce.Client, logStore string, body *bce.Body) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getLogStoreUri(logStore))
@@ -75,11 +77,12 @@ func UpdateLogStore(cli bce.Client, logStore string, body *bce.Body) error {
 // DescribeLogStore - get logStore info
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - logStore: logStore to get
+//   - cli: the client agent which can perform sending request
+//   - logStore: logStore to get
+//
 // RETURNS:
-//     - *LogStore: logStore info
-//     - error: nil if success otherwise the specific error
+//   - *LogStore: logStore info
+//   - error: nil if success otherwise the specific error
 func DescribeLogStore(cli bce.Client, logStore string) (*LogStore, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getLogStoreUri(logStore))
@@ -101,10 +104,11 @@ func DescribeLogStore(cli bce.Client, logStore string) (*LogStore, error) {
 // DeleteLogStore - delete logStore
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - logStore: logStore to delete
+//   - cli: the client agent which can perform sending request
+//   - logStore: logStore to delete
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func DeleteLogStore(cli bce.Client, logStore string) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getLogStoreUri(logStore))
@@ -123,11 +127,12 @@ func DeleteLogStore(cli bce.Client, logStore string) error {
 // ListLogStore - get all pattern-match logStore info
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: conditions logStore should match
+//   - cli: the client agent which can perform sending request
+//   - args: conditions logStore should match
+//
 // RETURNS:
-//     - *ListLogStoreResult: logStore result set
-//     - error: nil if success otherwise the specific error
+//   - *ListLogStoreResult: logStore result set
+//   - error: nil if success otherwise the specific error
 func ListLogStore(cli bce.Client, args *QueryConditions) (*ListLogStoreResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(LOGSTORE_PREFIX)

@@ -24,11 +24,12 @@ import (
 // BindCfw - 批量实例绑定CFW策略。 - 没有规则的CFW不能绑定到实例
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - cfwId: CFW的id
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - cfwId: CFW的id
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func BindCfw(cli *Client, cfwId string, body *BindCfwRequest) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.PUT)
@@ -60,11 +61,12 @@ func BindCfw(cli *Client, cfwId string, body *BindCfwRequest) error {
 // CreateCfw - 创建CFW策略。
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - body:
+//
 // RETURNS:
-//     - *api.CreateCfwResponse:
-//     - error: the return error if any occurs
+//   - *api.CreateCfwResponse:
+//   - error: the return error if any occurs
 func CreateCfw(cli *Client, body *CreateCfwRequest) (*CreateCfwResponse, error) {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.POST)
@@ -98,11 +100,12 @@ func CreateCfw(cli *Client, body *CreateCfwRequest) (*CreateCfwResponse, error) 
 // CreateCfwRule - 批量创建CFW中防护规则。 - 五元组(protocol/sourceAddress/destAddress/sourcePort/destPort) + 方向(direction)不能全部相同。 - 一次最多创建100条规则。
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - cfwId: CFW的id
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - cfwId: CFW的id
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func CreateCfwRule(cli *Client, cfwId string, body *CreateCfwRuleRequest) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.POST)
@@ -133,10 +136,11 @@ func CreateCfwRule(cli *Client, cfwId string, body *CreateCfwRuleRequest) error 
 // DeleteCfw - 删除指定CFW策略。 - CFW存在绑定关系时不允许删除
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - cfwId: CFW的id
+//   - cli: the client agent which can perform sending request
+//   - cfwId: CFW的id
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func DeleteCfw(cli *Client, cfwId string) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.DELETE)
@@ -157,11 +161,12 @@ func DeleteCfw(cli *Client, cfwId string) error {
 // DeleteCfwRule - 批量删除指定CFW中某些规则。 - CFW已绑定到实例时，至少保留一条规则。
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - cfwId: CFW的id
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - cfwId: CFW的id
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func DeleteCfwRule(cli *Client, cfwId string, body *DeleteCfwRuleRequest) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.PUT)
@@ -192,11 +197,12 @@ func DeleteCfwRule(cli *Client, cfwId string, body *DeleteCfwRuleRequest) error 
 // DisableCfw - 已绑定CFW的实例，使用该接口临时关闭CFW的防护功能。
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - cfwId: CFW的id
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - cfwId: CFW的id
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func DisableCfw(cli *Client, cfwId string, body *DisableCfwRequest) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.PUT)
@@ -228,11 +234,12 @@ func DisableCfw(cli *Client, cfwId string, body *DisableCfwRequest) error {
 // EnableCfw - 已绑定CFW并且临时关闭了防护功能的实例，使用该接口恢复CFW的防护功能。
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - cfwId: CFW的id
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - cfwId: CFW的id
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func EnableCfw(cli *Client, cfwId string, body *EnableCfwRequest) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.PUT)
@@ -264,11 +271,12 @@ func EnableCfw(cli *Client, cfwId string, body *EnableCfwRequest) error {
 // GetCfw - 查询指定CFW策略的详情信息。
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - cfwId: CFW的id
+//   - cli: the client agent which can perform sending request
+//   - cfwId: CFW的id
+//
 // RETURNS:
-//     - *api.GetCfwResponse:
-//     - error: the return error if any occurs
+//   - *api.GetCfwResponse:
+//   - error: the return error if any occurs
 func GetCfw(cli *Client, cfwId string) (*GetCfwResponse, error) {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.GET)
@@ -293,11 +301,12 @@ func GetCfw(cli *Client, cfwId string) (*GetCfwResponse, error) {
 // ListCfw - 查询CFW策略列表信息。
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - listCfwArgs:
+//   - cli: the client agent which can perform sending request
+//   - listCfwArgs:
+//
 // RETURNS:
-//     - *api.ListCfwResponse:
-//     - error: the return error if any occurs
+//   - *api.ListCfwResponse:
+//   - error: the return error if any occurs
 func ListCfw(cli *Client, listCfwArgs *ListCfwArgs) (
 	*ListCfwResponse, error) {
 	req := &bce.BceRequest{}
@@ -328,11 +337,12 @@ func ListCfw(cli *Client, listCfwArgs *ListCfwArgs) (
 // ListInstance - 查询防护边界实例的列表。
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - listInstanceRequest:
+//   - cli: the client agent which can perform sending request
+//   - listInstanceRequest:
+//
 // RETURNS:
-//     - *api.ListInstanceResponse:
-//     - error: the return error if any occurs
+//   - *api.ListInstanceResponse:
+//   - error: the return error if any occurs
 func ListInstance(cli *Client, listInstanceRequest *ListInstanceRequest) (*ListInstanceResponse, error) {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.GET)
@@ -369,11 +379,12 @@ func ListInstance(cli *Client, listInstanceRequest *ListInstanceRequest) (*ListI
 // UnbindCfw - 实例批量解绑CFW。
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - cfwId: CFW的id
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - cfwId: CFW的id
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func UnbindCfw(cli *Client, cfwId string, body *UnbindCfwRequest) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.PUT)
@@ -405,11 +416,12 @@ func UnbindCfw(cli *Client, cfwId string, body *UnbindCfwRequest) error {
 // UpdateCfw - 更新CFW策略的基本信息。
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - cfwId: CFW的id
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - cfwId: CFW的id
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func UpdateCfw(cli *Client, cfwId string, body *UpdateCfwRequest) error {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.PUT)
@@ -440,12 +452,13 @@ func UpdateCfw(cli *Client, cfwId string, body *UpdateCfwRequest) error {
 // UpdateCfwRule - 修改指定CFW规则。 - 五元组(protocol/sourceAddress/destAddress/sourcePort/destPort) + 方向(direction)不能全部相同。
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - cfwId: CFW策略的id
-//     - cfwRuleId: CFW规则的id
-//     - body:
+//   - cli: the client agent which can perform sending request
+//   - cfwId: CFW策略的id
+//   - cfwRuleId: CFW规则的id
+//   - body:
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func UpdateCfwRule(cli *Client, cfwId string, cfwRuleId string,
 	body *UpdateCfwRuleRequest) error {
 	req := &bce.BceRequest{}

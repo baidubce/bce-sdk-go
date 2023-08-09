@@ -51,4 +51,3 @@ func PutImageSync(cli bce.Client, args *PutImageSyncArgs) (*PutImageSyncResult, 
 	}
 	return jsonBody, nil
 }
-

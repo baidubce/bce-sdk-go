@@ -30,10 +30,11 @@ import (
 // CreateVmService - create vm service with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create a vm service
+//   - args: the arguments to create a vm service
+//
 // RETURNS:
-//     - *CreateVmServiceResult: the result of create vm service
-//     - error: nil if ok otherwise the specific error
+//   - *CreateVmServiceResult: the result of create vm service
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateVmService(args *api.CreateVmServiceArgs) (*api.CreateVmServiceResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -49,10 +50,11 @@ func (c *Client) CreateVmService(args *api.CreateVmServiceArgs) (*api.CreateVmSe
 // UpdateVmService - update vm service with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to update a vm service
+//   - args: the arguments to update a vm service
+//
 // RETURNS:
-//     - *UpdateVmServiceResult: the result of update vm service
-//     - error: nil if ok otherwise the specific error
+//   - *UpdateVmServiceResult: the result of update vm service
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateVmService(serviceId string, args *api.UpdateVmServiceArgs) (*api.UpdateVmServiceResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -68,10 +70,11 @@ func (c *Client) UpdateVmService(serviceId string, args *api.UpdateVmServiceArgs
 // GetVmServiceList - get vm services with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to get vm services
+//   - args: the arguments to get vm services
+//
 // RETURNS:
-//     - *ListVmServiceResult: the result of get vm services
-//     - error: nil if ok otherwise the specific error
+//   - *ListVmServiceResult: the result of get vm services
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetVmServiceList(args *api.ListVmServiceArgs) (*api.ListVmServiceResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -119,10 +122,11 @@ func (c *Client) GetVmServiceList(args *api.ListVmServiceArgs) (*api.ListVmServi
 // GetVmServiceDetail - get vm service detail with the specific parameters
 //
 // PARAMS:
-//     - serviceId: vm service id
+//   - serviceId: vm service id
+//
 // RETURNS:
-//     - *VmServiceDetailsVo: the result of vm service detail
-//     - error: nil if ok otherwise the specific error
+//   - *VmServiceDetailsVo: the result of vm service detail
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetVmServiceDetail(serviceId string) (*api.VmServiceDetailsVo, error) {
 	if serviceId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -140,13 +144,14 @@ func (c *Client) GetVmServiceDetail(serviceId string) (*api.VmServiceDetailsVo, 
 // GetVmServiceMetrics - get vm service metrics with the specific parameters
 //
 // PARAMS:
-//     - serviceId: service id
-//     - serviceProviderStr: service Provider
-//     - offsetInSeconds:  offset Seconds
-//     - metricsType: metrics Type
+//   - serviceId: service id
+//   - serviceProviderStr: service Provider
+//   - offsetInSeconds:  offset Seconds
+//   - metricsType: metrics Type
+//
 // RETURNS:
-//     - *ServiceMetricsResult: the result of get vm service metrics
-//     - error: nil if ok otherwise the specific error
+//   - *ServiceMetricsResult: the result of get vm service metrics
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetVmServiceMetrics(serviceId, serviceProviderStr string, start, end, stepInMin int, metricsType api.MetricsType) (*api.ServiceMetricsResult, error) {
 
 	params := make(map[string]string)
@@ -180,11 +185,12 @@ func (c *Client) GetVmServiceMetrics(serviceId, serviceProviderStr string, start
 // VmServiceAction - operate vm service with the specific parameters
 //
 // PARAMS:
-//     - serviceId: service id
-//     - action: operation action
+//   - serviceId: service id
+//   - action: operation action
+//
 // RETURNS:
-//     - *VmServiceActionResult: the result of operate vm service
-//     - error: nil if ok otherwise the specific error
+//   - *VmServiceActionResult: the result of operate vm service
+//   - error: nil if ok otherwise the specific error
 func (c *Client) VmServiceAction(serviceId string, action api.VmServiceAction) (*api.VmServiceActionResult, error) {
 	if serviceId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -200,10 +206,11 @@ func (c *Client) VmServiceAction(serviceId string, action api.VmServiceAction) (
 // DeleteVmService - delete a vm service with the specific parameters
 //
 // PARAMS:
-//     - serviceId: service id
+//   - serviceId: service id
+//
 // RETURNS:
-//     - *VmServiceActionResult: the result of delete vm service
-//     - error: nil if ok otherwise the specific error
+//   - *VmServiceActionResult: the result of delete vm service
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteVmService(serviceId string) (*api.VmServiceActionResult, error) {
 	if serviceId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -222,10 +229,11 @@ func (c *Client) DeleteVmService(serviceId string) (*api.VmServiceActionResult, 
 // BatchDeleteVmService - batch delete vm service with the specific parameters
 //
 // PARAMS:
-//     - serviceIds: service id list
+//   - serviceIds: service id list
+//
 // RETURNS:
-//     - *VmServiceBatchActionResult: the result of batch delete service id list
-//     - error: nil if ok otherwise the specific error
+//   - *VmServiceBatchActionResult: the result of batch delete service id list
+//   - error: nil if ok otherwise the specific error
 func (c *Client) BatchDeleteVmService(serviceIds *[]string) (*api.VmServiceBatchActionResult, error) {
 	if serviceIds == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -241,10 +249,11 @@ func (c *Client) BatchDeleteVmService(serviceIds *[]string) (*api.VmServiceBatch
 // BatchOperateVmService - batch operate vm service with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to batch operate vm service
+//   - args: the arguments to batch operate vm service
+//
 // RETURNS:
-//     - *VmServiceBatchActionResult: the result of batch operate vm service
-//     - error: nil if ok otherwise the specific error
+//   - *VmServiceBatchActionResult: the result of batch operate vm service
+//   - error: nil if ok otherwise the specific error
 func (c *Client) BatchOperateVmService(args *api.VmServiceBatchActionArgs) (*api.VmServiceBatchActionResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")

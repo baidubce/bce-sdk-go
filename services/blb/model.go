@@ -105,7 +105,7 @@ type ListenerModel struct {
 }
 
 type PortTypeModel struct {
-	Port int `json:"port"`
+	Port int    `json:"port"`
 	Type string `json:"type"`
 }
 
@@ -386,7 +386,7 @@ type HTTPSListenerModel struct {
 	ClientCertIds              []string `json:"clientCertIds"`
 	EncryptionType             string   `json:"encryptionType"`
 	EncryptionProtocols        []string `json:"encryptionProtocols"`
-	AppliedCiphers    		   string   `json:"appliedCiphers"`
+	AppliedCiphers             string   `json:"appliedCiphers"`
 }
 
 type SSLListenerModel struct {
@@ -401,7 +401,7 @@ type SSLListenerModel struct {
 	CertIds                    []string `json:"certIds"`
 	EncryptionType             string   `json:"encryptionType"`
 	EncryptionProtocols        []string `json:"encryptionProtocols"`
-	AppliedCiphers    		   string   `json:"appliedCiphers"`
+	AppliedCiphers             string   `json:"appliedCiphers"`
 	DualAuth                   bool     `json:"dualAuth"`
 	ClientCertIds              []string `json:"clientCertIds"`
 	ServerTimeout              int      `json:"serverTimeout"`
@@ -429,15 +429,15 @@ type AllListenerModel struct {
 	UnhealthyThreshold         int      `json:"unhealthyThreshold"`
 	HealthyThreshold           int      `json:"healthyThreshold"`
 	HealthCheckNormalStatus    string   `json:"healthCheckNormalStatus"`
-	HealthCheckHost    		   string   `json:"healthCheckHost"`
+	HealthCheckHost            string   `json:"healthCheckHost"`
 	ServerTimeout              int      `json:"serverTimeout"`
 	RedirectPort               int      `json:"redirectPort"`
 	CertIds                    []string `json:"certIds"`
 	DualAuth                   bool     `json:"dualAuth"`
 	ClientCertIds              []string `json:"clientCertIds"`
-	EncryptionType    		   string   `json:"encryptionType"`
+	EncryptionType             string   `json:"encryptionType"`
 	EncryptionProtocols        []string `json:"encryptionProtocols"`
-	AppliedCiphers    		   string   `json:"appliedCiphers"`
+	AppliedCiphers             string   `json:"appliedCiphers"`
 }
 
 type DescribeListenerArgs struct {
@@ -477,9 +477,9 @@ type DescribeAllListenersResult struct {
 }
 
 type DeleteListenersArgs struct {
-	ClientToken string   `json:"-"`
-	PortList    []uint16 `json:"portList"`
-	PortTypeList    []PortTypeModel `json:"portTypeList"`
+	ClientToken  string          `json:"-"`
+	PortList     []uint16        `json:"portList"`
+	PortTypeList []PortTypeModel `json:"portTypeList"`
 }
 
 type AddBackendServersArgs struct {
@@ -583,10 +583,10 @@ type DescribeSecurityGroupsResult struct {
 }
 
 type BlbSecurityGroupModel struct {
-	SecurityGroupId    string                  `json:"securityGroupId"`
-	SecurityGroupName  string                  `json:"securityGroupName"`
-	SecurityGroupDesc  string                  `json:"securityGroupDesc"`
-	VpcName            string                  `json:"vpcName"`
+	SecurityGroupId    string                      `json:"securityGroupId"`
+	SecurityGroupName  string                      `json:"securityGroupName"`
+	SecurityGroupDesc  string                      `json:"securityGroupDesc"`
+	VpcName            string                      `json:"vpcName"`
 	SecurityGroupRules []BlbSecurityGroupRuleModel `json:"securityGroupRules"`
 }
 

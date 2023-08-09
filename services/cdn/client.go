@@ -51,15 +51,16 @@ func NewClient(ak, sk, endpoint string) (*Client, error) {
 // SendCustomRequest - send a HTTP request, and response data or error, it use the default times for retrying
 //
 // PARAMS:
-//     - method: the HTTP requested method, e.g. "GET", "POST", "PUT" ...
-//     - urlPath: a path component, consisting of a sequence of path segments separated by a slash ( / ).
-//     - params: the query params, which will be append to the query path, and separate by "&"
-//         e.g. http://www.baidu.com?query_param1=value1&query_param2=value2
-//     - reqHeaders: the request http headers
-//     - bodyObj: the HTTP requested body content transferred to a goland object
-//     - respObj: the HTTP response content transferred to a goland object
+//   - method: the HTTP requested method, e.g. "GET", "POST", "PUT" ...
+//   - urlPath: a path component, consisting of a sequence of path segments separated by a slash ( / ).
+//   - params: the query params, which will be append to the query path, and separate by "&"
+//     e.g. http://www.baidu.com?query_param1=value1&query_param2=value2
+//   - reqHeaders: the request http headers
+//   - bodyObj: the HTTP requested body content transferred to a goland object
+//   - respObj: the HTTP response content transferred to a goland object
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SendCustomRequest(method string, urlPath string, params, reqHeaders map[string]string, bodyObj interface{}, respObj interface{}) error {
 	return api.SendCustomRequest(cli, method, urlPath, params, reqHeaders, bodyObj, respObj)
 }
@@ -68,11 +69,12 @@ func (cli *Client) SendCustomRequest(method string, urlPath string, params, reqH
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/sjwvyewt1
 //
 // PARAMS:
-//     - marker: a marker is a start point of searching
+//   - marker: a marker is a start point of searching
+//
 // RETURNS:
-//     - []string: domains belongs to the user
-//     - string: a marker for next searching, empty if is in the end
-//     - error: nil if success otherwise the specific error
+//   - []string: domains belongs to the user
+//   - string: a marker for next searching, empty if is in the end
+//   - error: nil if success otherwise the specific error
 func (cli *Client) ListDomains(marker string) ([]string, string, error) {
 	return api.ListDomains(cli, marker)
 }
@@ -81,11 +83,12 @@ func (cli *Client) ListDomains(marker string) ([]string, string, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/8jwvyewf1
 //
 // PARAMS:
-//     - status: the specified running status, the available values are "RUNNING", "STOPPED", OPERATING or "ALL"
-//     - rule: the regex matching rule
+//   - status: the specified running status, the available values are "RUNNING", "STOPPED", OPERATING or "ALL"
+//   - rule: the regex matching rule
+//
 // RETURNS:
-//     - []DomainStatus: domain details list
-//     - error: nil if success otherwise the specific error
+//   - []DomainStatus: domain details list
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetDomainStatus(status string, rule string) ([]api.DomainStatus, error) {
 	return api.GetDomainStatus(cli, status, rule)
 }
@@ -94,10 +97,11 @@ func (cli *Client) GetDomainStatus(status string, rule string) ([]api.DomainStat
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/qjwvyexh6
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *DomainValidInfo: available information about the specified domain
-//     - error: nil if success otherwise the specific error
+//   - *DomainValidInfo: available information about the specified domain
+//   - error: nil if success otherwise the specific error
 func (cli *Client) IsValidDomain(domain string) (*api.DomainValidInfo, error) {
 	return api.IsValidDomain(cli, domain)
 }
@@ -106,11 +110,12 @@ func (cli *Client) IsValidDomain(domain string) (*api.DomainValidInfo, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/gjwvyex4o
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - originInit: initialized data for a CDN domain
+//   - domain: the specified domain
+//   - originInit: initialized data for a CDN domain
+//
 // RETURNS:
-//     - *DomainCreatedInfo: the details about created a CDN domain
-//     - error: nil if success otherwise the specific error
+//   - *DomainCreatedInfo: the details about created a CDN domain
+//   - error: nil if success otherwise the specific error
 func (cli *Client) CreateDomain(domain string, originInit *api.OriginInit) (*api.DomainCreatedInfo, error) {
 	return api.CreateDomain(cli, domain, originInit)
 }
@@ -119,9 +124,10 @@ func (cli *Client) CreateDomain(domain string, originInit *api.OriginInit) (*api
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Jjwvyexv8
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) EnableDomain(domain string) error {
 	return api.EnableDomain(cli, domain)
 }
@@ -130,9 +136,10 @@ func (cli *Client) EnableDomain(domain string) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/9jwvyew3e
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) DisableDomain(domain string) error {
 	return api.DisableDomain(cli, domain)
 }
@@ -141,9 +148,10 @@ func (cli *Client) DisableDomain(domain string) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Njwvyey7f
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) DeleteDomain(domain string) error {
 	return api.DeleteDomain(cli, domain)
 }
@@ -152,11 +160,12 @@ func (cli *Client) DeleteDomain(domain string) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/8jwvyeunq
 //
 // PARAMS:
-//     - ip: the specified ip addr
-//     - action: the action for operating the ip addr
+//   - ip: the specified ip addr
+//   - action: the action for operating the ip addr
+//
 // RETURNS:
-//     - *IpInfo: the information about the specified ip addr
-//     - error: nil if success otherwise the specific error
+//   - *IpInfo: the information about the specified ip addr
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetIpInfo(ip string, action string) (*api.IpInfo, error) {
 	return api.GetIpInfo(cli, ip, action)
 }
@@ -165,11 +174,12 @@ func (cli *Client) GetIpInfo(ip string, action string) (*api.IpInfo, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/8jwvyeunq#ip-list-%E6%9F%A5%E8%AF%A2%E6%8E%A5%E5%8F%A3
 //
 // PARAMS:
-//     - ips: IP list
-//     - action: the action for operating the ip addr
+//   - ips: IP list
+//   - action: the action for operating the ip addr
+//
 // RETURNS:
-//     - []IpInfo: IP list's information
-//     - error: nil if success otherwise the specific error
+//   - []IpInfo: IP list's information
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetIpListInfo(ips []string, action string) ([]api.IpInfo, error) {
 	return api.GetIpListInfo(cli, ips, action)
 }
@@ -177,8 +187,8 @@ func (cli *Client) GetIpListInfo(ips []string, action string) ([]api.IpInfo, err
 // GetBackOriginNodes - get CDN nodes that may request the origin server if cache missed
 //
 // RETURNS:
-//     - []BackOriginNode: list of CDN node
-//     - error: nil if success otherwise the specific error
+//   - []BackOriginNode: list of CDN node
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetBackOriginNodes() ([]api.BackOriginNode, error) {
 	return api.GetBackOriginNodes(cli)
 }
@@ -187,10 +197,11 @@ func (cli *Client) GetBackOriginNodes() ([]api.BackOriginNode, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/2jwvyf39o
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *DomainConfig: the configuration about the specified domain
-//     - error: nil if success otherwise the specific error
+//   - *DomainConfig: the configuration about the specified domain
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetDomainConfig(domain string) (*api.DomainConfig, error) {
 	return api.GetDomainConfig(cli, domain)
 }
@@ -199,11 +210,12 @@ func (cli *Client) GetDomainConfig(domain string) (*api.DomainConfig, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/xjxzi7729
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - origins: the origin servers
-//     - defaultHost: the default host
+//   - domain: the specified domain
+//   - origins: the origin servers
+//   - defaultHost: the default host
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetDomainOrigin(domain string, origins []api.OriginPeer, defaultHost string) error {
 	return api.SetDomainOrigin(cli, domain, origins, defaultHost)
 }
@@ -216,11 +228,12 @@ func (cli *Client) SetDomainOrigin(domain string, origins []api.OriginPeer, defa
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/7k9jdhhlm
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - originProtocol: the protocol used for back to the backend server
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - originProtocol: the protocol used for back to the backend server
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetOriginProtocol(domain string, originProtocol string) error {
 	return api.SetOriginProtocol(cli, domain, originProtocol)
 }
@@ -229,11 +242,12 @@ func (cli *Client) SetOriginProtocol(domain string, originProtocol string) error
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/dk9jdoob4
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - string: the protocol used for back to the backend server, it's value must be "http", "https" or "*"
-//     - error: nil if success otherwise the specific error
+//   - string: the protocol used for back to the backend server, it's value must be "http", "https" or "*"
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetOriginProtocol(domain string) (string, error) {
 	return api.GetOriginProtocol(cli, domain)
 }
@@ -242,10 +256,11 @@ func (cli *Client) GetOriginProtocol(domain string) (string, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Jjxziuq4y
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - seoSwitch: the setting about SEO
+//   - domain: the specified domain
+//   - seoSwitch: the setting about SEO
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetDomainSeo(domain string, seoSwitch *api.SeoSwitch) error {
 	return api.SetDomainSeo(cli, domain, seoSwitch)
 }
@@ -259,10 +274,11 @@ func (cli *Client) SetDomainSeo(domain string, seoSwitch *api.SeoSwitch) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Djxzjfz8f
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *SeoSwitch: the setting about SEO
-//     - error: nil if success otherwise the specific error
+//   - *SeoSwitch: the setting about SEO
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetDomainSeo(domain string) (*api.SeoSwitch, error) {
 	return api.GetDomainSeo(cli, domain)
 }
@@ -271,10 +287,11 @@ func (cli *Client) GetDomainSeo(domain string) (*api.SeoSwitch, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/ljxzhl9bu
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - []CacheTTL: the cache setting list
-//     - error: nil if success otherwise the specific error
+//   - []CacheTTL: the cache setting list
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetCacheTTL(domain string) ([]api.CacheTTL, error) {
 	return api.GetCacheTTL(cli, domain)
 }
@@ -283,10 +300,11 @@ func (cli *Client) GetCacheTTL(domain string) ([]api.CacheTTL, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/wjxzhgxnx
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - cacheTTLs: the cache setting list
+//   - domain: the specified domain
+//   - cacheTTLs: the cache setting list
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetCacheTTL(domain string, cacheTTLs []api.CacheTTL) error {
 	return api.SetCacheTTL(cli, domain, cacheTTLs)
 }
@@ -295,11 +313,12 @@ func (cli *Client) SetCacheTTL(domain string, cacheTTLs []api.CacheTTL) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/yjxzhvf21
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - blackList: the forbidden host
-//     - whiteList: the available host
+//   - domain: the specified domain
+//   - blackList: the forbidden host
+//   - whiteList: the available host
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetRefererACL(domain string, blackList []string, whiteList []string, isAllowEmpty bool) error {
 	return api.SetRefererACL(cli, domain, blackList, whiteList, isAllowEmpty)
 }
@@ -308,10 +327,11 @@ func (cli *Client) SetRefererACL(domain string, blackList []string, whiteList []
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Ujzkotvtb
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *api.RefererACL: referer ACL setting
-//     - error: nil if success otherwise the specific error
+//   - *api.RefererACL: referer ACL setting
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetRefererACL(domain string) (*api.RefererACL, error) {
 	return api.GetRefererACL(cli, domain)
 }
@@ -320,11 +340,12 @@ func (cli *Client) GetRefererACL(domain string) (*api.RefererACL, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/8jxzhwc4d
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - blackList: the forbidden ip
-//     - whiteList: the available ip
+//   - domain: the specified domain
+//   - blackList: the forbidden ip
+//   - whiteList: the available ip
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetIpACL(domain string, blackList []string, whiteList []string) error {
 	return api.SetIpACL(cli, domain, blackList, whiteList)
 }
@@ -333,10 +354,11 @@ func (cli *Client) SetIpACL(domain string, blackList []string, whiteList []strin
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/jjzkp5ku7
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *api.IpACL: ip setting
-//     - error: nil if success otherwise the specific error
+//   - *api.IpACL: ip setting
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetIpACL(domain string) (*api.IpACL, error) {
 	return api.GetIpACL(cli, domain)
 }
@@ -345,12 +367,13 @@ func (cli *Client) GetIpACL(domain string) (*api.IpACL, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/uk88i2a86
 //
 // PARAMS:
-//     - cli: the client agent can execute sending request
-//     - domain: the specified domain
-//     - blackList: the forbidden UA
-//     - whiteList: the available UA
+//   - cli: the client agent can execute sending request
+//   - domain: the specified domain
+//   - blackList: the forbidden UA
+//   - whiteList: the available UA
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetUaACL(domain string, blackList []string, whiteList []string) error {
 	return api.SetUaACL(cli, domain, blackList, whiteList)
 }
@@ -359,11 +382,12 @@ func (cli *Client) SetUaACL(domain string, blackList []string, whiteList []strin
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/ak88ix19h
 //
 // PARAMS:
-//     - cli: the client agent can execute sending request
-//     - domain: the specified domain
+//   - cli: the client agent can execute sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *api.UaACL: filter config for UA
-//     - error: nil if success otherwise the specific error
+//   - *api.UaACL: filter config for UA
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetUaACL(domain string) (*api.UaACL, error) {
 	return api.GetUaACL(cli, domain)
 }
@@ -372,10 +396,11 @@ func (cli *Client) GetUaACL(domain string) (*api.UaACL, error) {
 // SetLimitRate - set limited speed
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - limitRate: the limited rate, "1024" means the transmittal speed is less than 1024 Byte/s
+//   - domain: the specified domain
+//   - limitRate: the limited rate, "1024" means the transmittal speed is less than 1024 Byte/s
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetLimitRate(domain string, limitRate int) error {
 	return api.SetLimitRate(cli, domain, limitRate)
 }
@@ -384,10 +409,11 @@ func (cli *Client) SetLimitRate(domain string, limitRate int) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/ujxzi418e
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - trafficLimit: config of traffic limitation
+//   - domain: the specified domain
+//   - trafficLimit: config of traffic limitation
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetTrafficLimit(domain string, trafficLimit *api.TrafficLimit) error {
 	return api.SetTrafficLimit(cli, domain, trafficLimit)
 }
@@ -396,10 +422,11 @@ func (cli *Client) SetTrafficLimit(domain string, trafficLimit *api.TrafficLimit
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/7k4npdru0
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *TrafficLimit: config of traffic limitation
-//     - error: nil if success otherwise the specific error
+//   - *TrafficLimit: config of traffic limitation
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetTrafficLimit(domain string) (*api.TrafficLimit, error) {
 	return api.GetTrafficLimit(cli, domain)
 }
@@ -408,10 +435,11 @@ func (cli *Client) GetTrafficLimit(domain string) (*api.TrafficLimit, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/rjy6v3tnr
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - httpsConfig: the rules about the HTTP configure
+//   - domain: the specified domain
+//   - httpsConfig: the rules about the HTTP configure
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetDomainHttps(domain string, httpsConfig *api.HTTPSConfig) error {
 	return api.SetDomainHttps(cli, domain, httpsConfig)
 }
@@ -419,10 +447,11 @@ func (cli *Client) SetDomainHttps(domain string, httpsConfig *api.HTTPSConfig) e
 // GetDomainHttps - get the setting about HTTPS
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *HTTPSConfig: the rules about the HTTP configure
-//     - error: nil if success otherwise the specific error
+//   - *HTTPSConfig: the rules about the HTTP configure
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetDomainHttps(domain string) (*api.HTTPSConfig, error) {
 	return api.GetDomainHttps(cli, domain)
 }
@@ -431,12 +460,13 @@ func (cli *Client) GetDomainHttps(domain string) (*api.HTTPSConfig, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/qjzuz2hp8
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - userCert: certificate data
-//     - httpsEnabled: "ON" for enable HTTPS, "OFF" for disable HTTPS, otherwise invalid.
+//   - domain: the specified domain
+//   - userCert: certificate data
+//   - httpsEnabled: "ON" for enable HTTPS, "OFF" for disable HTTPS, otherwise invalid.
+//
 // RETURNS:
-//     - string: certId
-//     - error: nil if success otherwise the specific error
+//   - string: certId
+//   - error: nil if success otherwise the specific error
 func (cli *Client) PutCert(domain string, userCert *api.UserCertificate, httpsEnabled string) (certId string, err error) {
 	return api.PutCert(cli, domain, userCert, httpsEnabled)
 }
@@ -445,10 +475,11 @@ func (cli *Client) PutCert(domain string, userCert *api.UserCertificate, httpsEn
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/kjzuvz70t
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *CertificateDetail: certificate details
-//     - error: nil if success otherwise the specific error
+//   - *CertificateDetail: certificate details
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetCert(domain string) (certDetail *api.CertificateDetail, err error) {
 	return api.GetCert(cli, domain)
 }
@@ -457,10 +488,11 @@ func (cli *Client) GetCert(domain string) (certDetail *api.CertificateDetail, er
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Ljzuylmee
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *CertificateDetail: certificate details
-//     - error: nil if success otherwise the specific error
+//   - *CertificateDetail: certificate details
+//   - error: nil if success otherwise the specific error
 func (cli *Client) DeleteCert(domain string) error {
 	return api.DeleteCert(cli, domain)
 }
@@ -469,10 +501,11 @@ func (cli *Client) DeleteCert(domain string) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Pkf2c0ugn
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - enabled: true for "OCSP" opening otherwise closed
+//   - domain: the specified domain
+//   - enabled: true for "OCSP" opening otherwise closed
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetOCSP(domain string, enabled bool) error {
 	return api.SetOCSP(cli, domain, enabled)
 }
@@ -480,10 +513,11 @@ func (cli *Client) SetOCSP(domain string, enabled bool) error {
 // GetOCSP - get "OCSP" switch details for the specified domain
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - bool: true for "OCSP" opening otherwise closed
-//     - error: nil if success otherwise the specific error
+//   - bool: true for "OCSP" opening otherwise closed
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetOCSP(domain string) (bool, error) {
 	return api.GetOCSP(cli, domain)
 }
@@ -492,10 +526,11 @@ func (cli *Client) GetOCSP(domain string) (bool, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/njxzi59g9
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - requestAuth: the rules about the auth
+//   - domain: the specified domain
+//   - requestAuth: the rules about the auth
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetDomainRequestAuth(domain string, requestAuth *api.RequestAuth) error {
 	return api.SetDomainRequestAuth(cli, domain, requestAuth)
 }
@@ -505,10 +540,11 @@ func (cli *Client) SetDomainRequestAuth(domain string, requestAuth *api.RequestA
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/9jxzi89k2
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - isFollowProtocol: true in using the same protocol or not when back to the sourced server, false for other
+//   - domain: the specified domain
+//   - isFollowProtocol: true in using the same protocol or not when back to the sourced server, false for other
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetFollowProtocol(domain string, isFollowProtocol bool) error {
 	return api.SetFollowProtocol(cli, domain, isFollowProtocol)
 }
@@ -517,10 +553,11 @@ func (cli *Client) SetFollowProtocol(domain string, isFollowProtocol bool) error
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Jjxzil1sd
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - httpHeaders: the HTTP headers' setting
+//   - domain: the specified domain
+//   - httpHeaders: the HTTP headers' setting
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetHttpHeader(domain string, httpHeaders []api.HttpHeader) error {
 	return api.SetHttpHeader(cli, domain, httpHeaders)
 }
@@ -529,10 +566,11 @@ func (cli *Client) SetHttpHeader(domain string, httpHeaders []api.HttpHeader) er
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/6jxzip3wn
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
-//     - []HttpHeader: the HTTP headers in setting
+//   - error: nil if success otherwise the specific error
+//   - []HttpHeader: the HTTP headers in setting
 func (cli *Client) GetHttpHeader(domain string) ([]api.HttpHeader, error) {
 	return api.GetHttpHeader(cli, domain)
 }
@@ -541,10 +579,11 @@ func (cli *Client) GetHttpHeader(domain string) ([]api.HttpHeader, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Ejy6vc4yb
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - errorPages: the custom pages' setting
+//   - domain: the specified domain
+//   - errorPages: the custom pages' setting
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetErrorPage(domain string, errorPages []api.ErrorPage) error {
 	return api.SetErrorPage(cli, domain, errorPages)
 }
@@ -553,10 +592,11 @@ func (cli *Client) SetErrorPage(domain string, errorPages []api.ErrorPage) error
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/qjy6vfk2u
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - []ErrorPage: the pages' setting
-//     - error: nil if success otherwise the specific error
+//   - []ErrorPage: the pages' setting
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetErrorPage(domain string) ([]api.ErrorPage, error) {
 	return api.GetErrorPage(cli, domain)
 }
@@ -569,10 +609,11 @@ func (cli *Client) GetErrorPage(domain string) ([]api.ErrorPage, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/0kf272ds7
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - cacheSharedConfig: enabled sets true for shared with the specified domain, otherwise no shared.
+//   - domain: the specified domain
+//   - cacheSharedConfig: enabled sets true for shared with the specified domain, otherwise no shared.
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetCacheShared(domain string, config *api.CacheShared) error {
 	return api.SetCacheShared(cli, domain, config)
 }
@@ -581,10 +622,11 @@ func (cli *Client) SetCacheShared(domain string, config *api.CacheShared) error 
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Mjy6vo9z2
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *CacheShared: shared cache setting
-//     - error: nil if success otherwise the specific error
+//   - *CacheShared: shared cache setting
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetCacheShared(domain string) (*api.CacheShared, error) {
 	return api.GetCacheShared(cli, domain)
 }
@@ -593,10 +635,11 @@ func (cli *Client) GetCacheShared(domain string) (*api.CacheShared, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/4jy6v6xk3
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - mediaDragConf: media setting about mp4 and flv
+//   - domain: the specified domain
+//   - mediaDragConf: media setting about mp4 and flv
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetMediaDrag(domain string, mediaDragConf *api.MediaDragConf) error {
 	return api.SetMediaDrag(cli, domain, mediaDragConf)
 }
@@ -605,10 +648,11 @@ func (cli *Client) SetMediaDrag(domain string, mediaDragConf *api.MediaDragConf)
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Ojy6v9q8f
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *MediaDragConf: the media setting about mp4 and flv
-//     - error: nil if success otherwise the specific error
+//   - *MediaDragConf: the media setting about mp4 and flv
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetMediaDrag(domain string) (*api.MediaDragConf, error) {
 	return api.GetMediaDrag(cli, domain)
 }
@@ -617,10 +661,11 @@ func (cli *Client) GetMediaDrag(domain string) (*api.MediaDragConf, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Xjy6vimct
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - fileTrim: true means trimming the text file, false means do nothing
+//   - domain: the specified domain
+//   - fileTrim: true means trimming the text file, false means do nothing
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetFileTrim(domain string, fileTrim bool) error {
 	return api.SetFileTrim(cli, domain, fileTrim)
 }
@@ -629,10 +674,11 @@ func (cli *Client) SetFileTrim(domain string, fileTrim bool) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Ujy6vjxnl
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - bool: true means trimming the text file, false means do nothing
-//     - error: nil if success otherwise the specific error
+//   - bool: true means trimming the text file, false means do nothing
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetFileTrim(domain string) (bool, error) {
 	return api.GetFileTrim(cli, domain)
 }
@@ -641,10 +687,11 @@ func (cli *Client) GetFileTrim(domain string) (bool, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/qkggncsxp
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - enabled: true for setting IPv6 switch on otherwise closed
+//   - domain: the specified domain
+//   - enabled: true for setting IPv6 switch on otherwise closed
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetIPv6(domain string, enabled bool) error {
 	return api.SetIPv6(cli, domain, enabled)
 }
@@ -653,10 +700,11 @@ func (cli *Client) SetIPv6(domain string, enabled bool) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Ykggnobxd
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - bool: true for setting IPv6 switch on otherwise closed
-//     - error: nil if success otherwise the specific error
+//   - bool: true for setting IPv6 switch on otherwise closed
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetIPv6(domain string) (bool, error) {
 	return api.GetIPv6(cli, domain)
 }
@@ -665,10 +713,11 @@ func (cli *Client) GetIPv6(domain string) (bool, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Qkggmoz7p
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - enabled: true for QUIC opening otherwise closed
+//   - domain: the specified domain
+//   - enabled: true for QUIC opening otherwise closed
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetQUIC(domain string, enabled bool) error {
 	return api.SetQUIC(cli, domain, enabled)
 }
@@ -677,10 +726,11 @@ func (cli *Client) SetQUIC(domain string, enabled bool) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/pkggn6l1f
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - bool: true for QUIC opening otherwise closed
-//     - error: nil if success otherwise the specific error
+//   - bool: true for QUIC opening otherwise closed
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetQUIC(domain string) (bool, error) {
 	return api.GetQUIC(cli, domain)
 }
@@ -691,10 +741,11 @@ func (cli *Client) GetQUIC(domain string) (bool, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/xkhopuj48
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - enabled: true for offlineMode opening otherwise closed
+//   - domain: the specified domain
+//   - enabled: true for offlineMode opening otherwise closed
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetOfflineMode(domain string, enabled bool) error {
 	return api.SetOfflineMode(cli, domain, enabled)
 }
@@ -703,10 +754,11 @@ func (cli *Client) SetOfflineMode(domain string, enabled bool) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/tkhopvlkj
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - bool: true for offlineMode opening otherwise closed
-//     - error: nil if success otherwise the specific error
+//   - bool: true for offlineMode opening otherwise closed
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetOfflineMode(domain string) (bool, error) {
 	return api.GetOfflineMode(cli, domain)
 }
@@ -715,10 +767,11 @@ func (cli *Client) GetOfflineMode(domain string) (bool, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Mjy6vmv6g
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - distinguishClient: true means distinguishing the client, false means not
+//   - domain: the specified domain
+//   - distinguishClient: true means distinguishing the client, false means not
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetMobileAccess(domain string, distinguishClient bool) error {
 	return api.SetMobileAccess(cli, domain, distinguishClient)
 }
@@ -727,10 +780,11 @@ func (cli *Client) SetMobileAccess(domain string, distinguishClient bool) error 
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Mjy6vo9z2
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - bool: true means distinguishing the client, false means not
-//     - error: nil if success otherwise the specific error
+//   - bool: true means distinguishing the client, false means not
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetMobileAccess(domain string) (bool, error) {
 	return api.GetMobileAccess(cli, domain)
 }
@@ -739,10 +793,11 @@ func (cli *Client) GetMobileAccess(domain string) (bool, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Kjy6umyrm
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - clientIp: header setting
+//   - domain: the specified domain
+//   - clientIp: header setting
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetClientIp(domain string, clientIp *api.ClientIp) error {
 	return api.SetClientIp(cli, domain, clientIp)
 }
@@ -751,10 +806,11 @@ func (cli *Client) SetClientIp(domain string, clientIp *api.ClientIp) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/8jy6urcq5
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *ClientIp: the HTTP header setting for origin server to get client IP
-//     - error: nil if success otherwise the specific error
+//   - *ClientIp: the HTTP header setting for origin server to get client IP
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetClientIp(domain string) (*api.ClientIp, error) {
 	return api.GetClientIp(cli, domain)
 }
@@ -763,10 +819,11 @@ func (cli *Client) GetClientIp(domain string) (*api.ClientIp, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/ukhopl3bq
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - retryOrigin: retry policy
+//   - domain: the specified domain
+//   - retryOrigin: retry policy
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetRetryOrigin(domain string, retryOrigin *api.RetryOrigin) error {
 	return api.SetRetryOrigin(cli, domain, retryOrigin)
 }
@@ -775,10 +832,11 @@ func (cli *Client) SetRetryOrigin(domain string, retryOrigin *api.RetryOrigin) e
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/bkhoppbhd
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *RetryOrigin: policy of retry origin servers
-//     - error: nil if success otherwise the specific error
+//   - *RetryOrigin: policy of retry origin servers
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetRetryOrigin(domain string) (*api.RetryOrigin, error) {
 	return api.GetRetryOrigin(cli, domain)
 }
@@ -787,10 +845,11 @@ func (cli *Client) GetRetryOrigin(domain string) (*api.RetryOrigin, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Kjy6v02wt
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - accessLimit: the access setting
+//   - domain: the specified domain
+//   - accessLimit: the access setting
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetAccessLimit(domain string, accessLimit *api.AccessLimit) error {
 	return api.SetAccessLimit(cli, domain, accessLimit)
 }
@@ -799,10 +858,11 @@ func (cli *Client) SetAccessLimit(domain string, accessLimit *api.AccessLimit) e
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/rjy6v3tnr
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *AccessLimit: the access setting
-//     - error: nil if success otherwise the specific error
+//   - *AccessLimit: the access setting
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetAccessLimit(domain string) (*api.AccessLimit, error) {
 	return api.GetAccessLimit(cli, domain)
 }
@@ -811,10 +871,11 @@ func (cli *Client) GetAccessLimit(domain string) (*api.AccessLimit, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/vjxzho0kx
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - cacheFullUrl: whether cache the full url or not, full url means include params, also some extra params can be avoided
+//   - domain: the specified domain
+//   - cacheFullUrl: whether cache the full url or not, full url means include params, also some extra params can be avoided
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetCacheUrlArgs(domain string, cacheFullUrl *api.CacheUrlArgs) error {
 	return api.SetCacheUrlArgs(cli, domain, cacheFullUrl)
 }
@@ -823,10 +884,11 @@ func (cli *Client) SetCacheUrlArgs(domain string, cacheFullUrl *api.CacheUrlArgs
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/sjxzhsb6h
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *CacheUrlArgs: the details about cached rules
-//     - error: nil if success otherwise the specific error
+//   - *CacheUrlArgs: the details about cached rules
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetCacheUrlArgs(domain string) (*api.CacheUrlArgs, error) {
 	return api.GetCacheUrlArgs(cli, domain)
 }
@@ -834,11 +896,12 @@ func (cli *Client) GetCacheUrlArgs(domain string) (*api.CacheUrlArgs, error) {
 // SetCors - set about Cross-origin resource sharing
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Rjxzi1cfs
 // PARAMS:
-//     - domain: the specified domain
-//     - isAllow: true means allow Cors, false means not allow
-//     - originList: the origin setting, it's invalid when isAllow is false
+//   - domain: the specified domain
+//   - isAllow: true means allow Cors, false means not allow
+//   - originList: the origin setting, it's invalid when isAllow is false
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetCors(domain string, isAllow bool, originList []string) error {
 	return api.SetCors(cli, domain, isAllow, originList)
 }
@@ -847,10 +910,11 @@ func (cli *Client) SetCors(domain string, isAllow bool, originList []string) err
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/tjxzi2d7t
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *CorsCfg: the Cors setting
-//     - error: nil if success otherwise the specific error
+//   - *CorsCfg: the Cors setting
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetCors(domain string) (*api.CorsCfg, error) {
 	return api.GetCors(cli, domain)
 }
@@ -859,10 +923,11 @@ func (cli *Client) GetCors(domain string) (*api.CorsCfg, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Fjxziabst
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - enabled: true means enable range cached, false means disable range cached
+//   - domain: the specified domain
+//   - enabled: true means enable range cached, false means disable range cached
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetRangeSwitch(domain string, enabled bool) error {
 	return api.SetRangeSwitch(cli, domain, enabled)
 }
@@ -871,10 +936,11 @@ func (cli *Client) SetRangeSwitch(domain string, enabled bool) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jxzid6o9
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - bool: true means enable range cached, false means disable range cached
-//     - error: nil if success otherwise the specific error
+//   - bool: true means enable range cached, false means disable range cached
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetRangeSwitch(domain string) (bool, error) {
 	return api.GetRangeSwitch(cli, domain)
 }
@@ -883,11 +949,12 @@ func (cli *Client) GetRangeSwitch(domain string) (bool, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/0jyqyahsb
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - enabled: true means using the specified encoding algorithm indicated by "encodingType" in transferring,
-//         false means disable encoding
+//   - domain: the specified domain
+//   - enabled: true means using the specified encoding algorithm indicated by "encodingType" in transferring,
+//     false means disable encoding
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetContentEncoding(domain string, enabled bool, encodingType string) error {
 	return api.SetContentEncoding(cli, domain, enabled, encodingType)
 }
@@ -896,10 +963,11 @@ func (cli *Client) SetContentEncoding(domain string, enabled bool, encodingType 
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/bjyqycw8g
 //
 // PARAMS:
-//     - domain: the specified domain
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - string: the encoding algorithm for transferring, empty means disable encoding in transferring
-//     - error: nil if success otherwise the specific error
+//   - string: the encoding algorithm for transferring, empty means disable encoding in transferring
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetContentEncoding(domain string) (string, error) {
 	return api.GetContentEncoding(cli, domain)
 }
@@ -908,10 +976,11 @@ func (cli *Client) GetContentEncoding(domain string) (string, error) {
 // For more details, please refer https://cloud.baidu.com/doc/CDN/s/ijwvyeyyj
 //
 // PARAMS:
-//     - tasks: the tasks about purging the files from the CDN nodes
+//   - tasks: the tasks about purging the files from the CDN nodes
+//
 // RETURNS:
-//     - PurgedId: an ID representing a purged task, using it to search the task progress
-//     - error: nil if success otherwise the specific error.
+//   - PurgedId: an ID representing a purged task, using it to search the task progress
+//   - error: nil if success otherwise the specific error.
 func (cli *Client) Purge(tasks []api.PurgeTask) (api.PurgedId, error) {
 	return api.Purge(cli, tasks)
 }
@@ -920,10 +989,11 @@ func (cli *Client) Purge(tasks []api.PurgeTask) (api.PurgedId, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/ujwvyezqm
 //
 // PARAMS:
-//     - queryData: querying conditions, it contains the time interval, the task ID and the specified url
+//   - queryData: querying conditions, it contains the time interval, the task ID and the specified url
+//
 // RETURNS:
-//     - *PurgedStatus: the details about the purged
-//     - error: nil if success otherwise the specific error
+//   - *PurgedStatus: the details about the purged
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetPurgedStatus(queryData *api.CStatusQueryData) (*api.PurgedStatus, error) {
 	return api.GetPurgedStatus(cli, queryData)
 }
@@ -932,8 +1002,8 @@ func (cli *Client) GetPurgedStatus(queryData *api.CStatusQueryData) (*api.Purged
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/Rjwvyf0ff
 //
 // PARAMS:
-//     - tasks: the tasks about prefetch the files from the CDN nodes
-//     - error: nil if success otherwise the specific error
+//   - tasks: the tasks about prefetch the files from the CDN nodes
+//   - error: nil if success otherwise the specific error
 func (cli *Client) Prefetch(tasks []api.PrefetchTask) (api.PrefetchId, error) {
 	return api.Prefetch(cli, tasks)
 }
@@ -942,10 +1012,11 @@ func (cli *Client) Prefetch(tasks []api.PrefetchTask) (api.PrefetchId, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/4jwvyf01w
 //
 // PARAMS:
-//     - queryData: querying conditions, it contains the time interval, the task ID and the specified url.
+//   - queryData: querying conditions, it contains the time interval, the task ID and the specified url.
+//
 // RETURNS:
-//     - *PrefetchStatus: the details about the prefetch
-//     - error: nil if success otherwise the specific error
+//   - *PrefetchStatus: the details about the prefetch
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetPrefetchStatus(queryData *api.CStatusQueryData) (*api.PrefetchStatus, error) {
 	return api.GetPrefetchStatus(cli, queryData)
 }
@@ -954,8 +1025,8 @@ func (cli *Client) GetPrefetchStatus(queryData *api.CStatusQueryData) (*api.Pref
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/zjwvyeze3
 //
 // RETURNS:
-//     - QuotaDetail: the quota details about a specified user
-//     - error: nil if success otherwise the specific error
+//   - QuotaDetail: the quota details about a specified user
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetQuota() (*api.QuotaDetail, error) {
 	return api.GetQuota(cli)
 }
@@ -964,10 +1035,11 @@ func (cli *Client) GetQuota() (*api.QuotaDetail, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jypnzjqt
 //
 // PARAMS:
-//     - queryData: querying conditions, it contains the time interval, the task type and the specified url
+//   - queryData: querying conditions, it contains the time interval, the task type and the specified url
+//
 // RETURNS:
-//     - *RecordDetails: the details about the records
-//     - error: nil if success otherwise the specific error
+//   - *RecordDetails: the details about the records
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetCacheOpRecords(queryData *api.CRecordQueryData) (*api.RecordDetails, error) {
 	return api.GetCacheOpRecords(cli, queryData)
 }
@@ -976,7 +1048,7 @@ func (cli *Client) GetCacheOpRecords(queryData *api.CRecordQueryData) (*api.Reco
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/7jwvyf1h5
 //
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) EnableDsa() error {
 	return api.EnableDsa(cli)
 }
@@ -985,7 +1057,7 @@ func (cli *Client) EnableDsa() error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/7jwvyf1h5
 //
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) DisableDsa() error {
 	return api.DisableDsa(cli)
 }
@@ -994,8 +1066,8 @@ func (cli *Client) DisableDsa() error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf1sq
 //
 // RETURNS:
-//     - []DSADomain: the details about DSA domains
-//     - error: nil if success otherwise the specific error
+//   - []DSADomain: the details about DSA domains
+//   - error: nil if success otherwise the specific error
 func (cli *Client) ListDsaDomains() ([]api.DSADomain, error) {
 	return api.ListDsaDomains(cli)
 }
@@ -1004,10 +1076,11 @@ func (cli *Client) ListDsaDomains() ([]api.DSADomain, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/0jwvyf26d
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - dsaConfig: the specified configuration for the specified domain
+//   - domain: the specified domain
+//   - dsaConfig: the specified configuration for the specified domain
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (cli *Client) SetDsaConfig(domain string, dsaConfig *api.DSAConfig) error {
 	return api.SetDsaConfig(cli, domain, dsaConfig)
 }
@@ -1016,11 +1089,12 @@ func (cli *Client) SetDsaConfig(domain string, dsaConfig *api.DSAConfig) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/cjwvyf0r9
 //
 // PARAMS:
-//     - domain: the specified domain
-//     - timeInterval: the specified time interval
+//   - domain: the specified domain
+//   - timeInterval: the specified time interval
+//
 // RETURNS:
-//     - []LogEntry: the log detail list
-//     - error: nil if success otherwise the specific error
+//   - []LogEntry: the log detail list
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetDomainLog(domain string, timeInterval api.TimeInterval) ([]api.LogEntry, error) {
 	return api.GetDomainLog(cli, domain, timeInterval)
 }
@@ -1029,8 +1103,8 @@ func (cli *Client) GetDomainLog(domain string, timeInterval api.TimeInterval) ([
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/cjwvyf0r9
 //
 // PARAMS:
-//     - queryData: the querying conditions
-//     - error: nil if success otherwise the specific error
+//   - queryData: the querying conditions
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetMultiDomainLog(queryData *api.LogQueryData) ([]api.LogEntry, error) {
 	return api.GetMultiDomainLog(cli, queryData)
 }
@@ -1039,10 +1113,11 @@ func (cli *Client) GetMultiDomainLog(queryData *api.LogQueryData) ([]api.LogEntr
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E6%9F%A5%E8%AF%A2%E5%B9%B3%E5%9D%87%E9%80%9F%E7%8E%87
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []AvgSpeedDetail: the detail list about the average speed
-//     - error: nil if success otherwise the specific error
+//   - []AvgSpeedDetail: the detail list about the average speed
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetAvgSpeed(queryCondition *api.QueryCondition) ([]api.AvgSpeedDetail, error) {
 	return api.GetAvgSpeed(cli, queryCondition)
 }
@@ -1051,12 +1126,13 @@ func (cli *Client) GetAvgSpeed(queryCondition *api.QueryCondition) ([]api.AvgSpe
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BF%E9%97%AE%E5%88%86%E5%B8%83%E6%9F%A5%E8%AF%A2%E5%B9%B3%E5%9D%87%E9%80%9F%E7%8E%87
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
-//     - prov: the specified area, like "beijing"
-//     - isp: the specified ISP, like "ct"
+//   - queryCondition: the querying conditions
+//   - prov: the specified area, like "beijing"
+//   - isp: the specified ISP, like "ct"
+//
 // RETURNS:
-//     - []AvgSpeedRegionDetail: the detail list about the average speed
-//     - error: nil if success otherwise the specific error
+//   - []AvgSpeedRegionDetail: the detail list about the average speed
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetAvgSpeedByRegion(queryCondition *api.QueryCondition, prov string, isp string) ([]api.AvgSpeedRegionDetail, error) {
 	return api.GetAvgSpeedByRegion(cli, queryCondition, prov, isp)
 }
@@ -1065,11 +1141,12 @@ func (cli *Client) GetAvgSpeedByRegion(queryCondition *api.QueryCondition, prov 
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#pvqps%E6%9F%A5%E8%AF%A2
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
-//     - level: the node level, the available values are "edge", "internal" and "all"
+//   - queryCondition: the querying conditions
+//   - level: the node level, the available values are "edge", "internal" and "all"
+//
 // RETURNS:
-//     - []PvDetail: the detail list about page view
-//     - error: nil if success otherwise the specific error
+//   - []PvDetail: the detail list about page view
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetPv(queryCondition *api.QueryCondition, level string) ([]api.PvDetail, error) {
 	return api.GetPv(cli, queryCondition, level)
 }
@@ -1078,10 +1155,11 @@ func (cli *Client) GetPv(queryCondition *api.QueryCondition, level string) ([]ap
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E5%9B%9E%E6%BA%90pvqps%E6%9F%A5%E8%AF%A2
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []PvDetail: the detail list about page view
-//     - error: nil if success otherwise the specific error
+//   - []PvDetail: the detail list about page view
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetSrcPv(queryCondition *api.QueryCondition) ([]api.PvDetail, error) {
 	return api.GetSrcPv(cli, queryCondition)
 }
@@ -1090,12 +1168,13 @@ func (cli *Client) GetSrcPv(queryCondition *api.QueryCondition) ([]api.PvDetail,
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E6%9F%A5%E8%AF%A2pvqps%E5%88%86%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BF%E9%97%AE%E5%88%86%E5%B8%83
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
-//     - prov: the specified area, like "beijing"
-//     - isp: the specified ISP, like "ct"
+//   - queryCondition: the querying conditions
+//   - prov: the specified area, like "beijing"
+//   - isp: the specified ISP, like "ct"
+//
 // RETURNS:
-//     - []PvRegionDetail: the detail list about page view
-//     - error: nil if success otherwise the specific error
+//   - []PvRegionDetail: the detail list about page view
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetPvByRegion(queryCondition *api.QueryCondition, prov string, isp string) ([]api.PvRegionDetail, error) {
 	return api.GetPvByRegion(cli, queryCondition, prov, isp)
 }
@@ -1104,10 +1183,11 @@ func (cli *Client) GetPvByRegion(queryCondition *api.QueryCondition, prov string
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#uv%E6%9F%A5%E8%AF%A2
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []UvDetail: the detail list about unique visitor
-//     - error: nil if success otherwise the specific error
+//   - []UvDetail: the detail list about unique visitor
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetUv(queryCondition *api.QueryCondition) ([]api.UvDetail, error) {
 	return api.GetUv(cli, queryCondition)
 }
@@ -1116,10 +1196,11 @@ func (cli *Client) GetUv(queryCondition *api.QueryCondition) ([]api.UvDetail, er
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E6%9F%A5%E8%AF%A2%E6%B5%81%E9%87%8F%E3%80%81%E5%B8%A6%E5%AE%BD
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []FlowDetail: the detail list about flow
-//     - error: nil if success otherwise the specific error
+//   - []FlowDetail: the detail list about flow
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetFlow(queryCondition *api.QueryCondition, level string) ([]api.FlowDetail, error) {
 	return api.GetFlow(cli, queryCondition, level)
 }
@@ -1128,11 +1209,12 @@ func (cli *Client) GetFlow(queryCondition *api.QueryCondition, level string) ([]
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E6%9F%A5%E8%AF%A2%E6%B5%81%E9%87%8F%E3%80%81%E5%B8%A6%E5%AE%BD%E5%88%86%E5%8D%8F%E8%AE%AE
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
-//     - protocol: the specified HTTP protocol, like "http" or "https", "all" means both "http" and "https"
+//   - queryCondition: the querying conditions
+//   - protocol: the specified HTTP protocol, like "http" or "https", "all" means both "http" and "https"
+//
 // RETURNS:
-//     - []FlowDetail: the detail list about flow
-//     - error: nil if success otherwise the specific error
+//   - []FlowDetail: the detail list about flow
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetFlowByProtocol(queryCondition *api.QueryCondition, protocol string) ([]api.FlowDetail, error) {
 	return api.GetFlowByProtocol(cli, queryCondition, protocol)
 }
@@ -1141,12 +1223,13 @@ func (cli *Client) GetFlowByProtocol(queryCondition *api.QueryCondition, protoco
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E6%9F%A5%E8%AF%A2%E6%B5%81%E9%87%8F%E3%80%81%E5%B8%A6%E5%AE%BD%EF%BC%88%E5%88%86%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BF%E9%97%AE%E5%88%86%E5%B8%83%EF%BC%89
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
-//     - prov: the specified area, like "beijing"
-//     - isp: the specified ISP, like "ct"
+//   - queryCondition: the querying conditions
+//   - prov: the specified area, like "beijing"
+//   - isp: the specified ISP, like "ct"
+//
 // RETURNS:
-//     - []FlowRegionDetail: the detail list about flow
-//     - error: nil if success otherwise the specific error
+//   - []FlowRegionDetail: the detail list about flow
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetFlowByRegion(queryCondition *api.QueryCondition, prov string, isp string) ([]api.FlowRegionDetail, error) {
 	return api.GetFlowByRegion(cli, queryCondition, prov, isp)
 }
@@ -1155,10 +1238,11 @@ func (cli *Client) GetFlowByRegion(queryCondition *api.QueryCondition, prov stri
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E6%9F%A5%E8%AF%A2%E5%9B%9E%E6%BA%90%E6%B5%81%E9%87%8F%E3%80%81%E5%9B%9E%E6%BA%90%E5%B8%A6%E5%AE%BD
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []FlowDetail: the detail list about flow
-//     - error: nil if success otherwise the specific error
+//   - []FlowDetail: the detail list about flow
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetSrcFlow(queryCondition *api.QueryCondition) ([]api.FlowDetail, error) {
 	return api.GetSrcFlow(cli, queryCondition)
 }
@@ -1167,10 +1251,11 @@ func (cli *Client) GetSrcFlow(queryCondition *api.QueryCondition) ([]api.FlowDet
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E5%AD%97%E8%8A%82%E5%91%BD%E4%B8%AD%E7%8E%87%E6%9F%A5%E8%AF%A2
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []HitDetail: the detail list about byte rate
-//     - error: nil if success otherwise the specific error
+//   - []HitDetail: the detail list about byte rate
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetRealHit(queryCondition *api.QueryCondition) ([]api.HitDetail, error) {
 	return api.GetRealHit(cli, queryCondition)
 }
@@ -1179,10 +1264,11 @@ func (cli *Client) GetRealHit(queryCondition *api.QueryCondition) ([]api.HitDeta
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E8%AF%B7%E6%B1%82%E5%91%BD%E4%B8%AD%E7%8E%87%E6%9F%A5%E8%AF%A2
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []HitDetail: the detail list about pv rate
-//     - error: nil if success otherwise the specific error
+//   - []HitDetail: the detail list about pv rate
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetPvHit(queryCondition *api.QueryCondition) ([]api.HitDetail, error) {
 	return api.GetPvHit(cli, queryCondition)
 }
@@ -1191,10 +1277,11 @@ func (cli *Client) GetPvHit(queryCondition *api.QueryCondition) ([]api.HitDetail
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E7%8A%B6%E6%80%81%E7%A0%81%E7%BB%9F%E8%AE%A1%E6%9F%A5%E8%AF%A2
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []HttpCodeDetail: the detail list about http code
-//     - error: nil if success otherwise the specific error
+//   - []HttpCodeDetail: the detail list about http code
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetHttpCode(queryCondition *api.QueryCondition) ([]api.HttpCodeDetail, error) {
 	return api.GetHttpCode(cli, queryCondition)
 }
@@ -1203,10 +1290,11 @@ func (cli *Client) GetHttpCode(queryCondition *api.QueryCondition) ([]api.HttpCo
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E5%9B%9E%E6%BA%90%E7%8A%B6%E6%80%81%E7%A0%81%E6%9F%A5%E8%AF%A2
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []HttpCodeDetail: the detail list about http code
-//     - error: nil if success otherwise the specific error
+//   - []HttpCodeDetail: the detail list about http code
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetSrcHttpCode(queryCondition *api.QueryCondition) ([]api.HttpCodeDetail, error) {
 	return api.GetSrcHttpCode(cli, queryCondition)
 }
@@ -1215,12 +1303,13 @@ func (cli *Client) GetSrcHttpCode(queryCondition *api.QueryCondition) ([]api.Htt
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E7%8A%B6%E6%80%81%E7%A0%81%E7%BB%9F%E8%AE%A1%E6%9F%A5%E8%AF%A2%EF%BC%88%E5%88%86%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BF%E9%97%AE%E5%88%86%E5%B8%83%EF%BC%89
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
-//     - prov: the specified area, like "beijing"
-//     - isp: the specified ISP, like "ct"
+//   - queryCondition: the querying conditions
+//   - prov: the specified area, like "beijing"
+//   - isp: the specified ISP, like "ct"
+//
 // RETURNS:
-//     - []HttpCodeRegionDetail: the detail list about http code
-//     - error: nil if success otherwise the specific error
+//   - []HttpCodeRegionDetail: the detail list about http code
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetHttpCodeByRegion(queryCondition *api.QueryCondition, prov string, isp string) ([]api.HttpCodeRegionDetail, error) {
 	return api.GetHttpCodeByRegion(cli, queryCondition, prov, isp)
 }
@@ -1229,11 +1318,12 @@ func (cli *Client) GetHttpCodeByRegion(queryCondition *api.QueryCondition, prov 
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#topn-urls
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
-//     - httpCode: the specified HTTP code, like "200"
+//   - queryCondition: the querying conditions
+//   - httpCode: the specified HTTP code, like "200"
+//
 // RETURNS:
-//     - []TopNDetail: the top N urls' detail
-//     - error: nil if success otherwise the specific error
+//   - []TopNDetail: the top N urls' detail
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetTopNUrls(queryCondition *api.QueryCondition, httpCode string) ([]api.TopNDetail, error) {
 	return api.GetTopNUrls(cli, queryCondition, httpCode)
 }
@@ -1242,11 +1332,12 @@ func (cli *Client) GetTopNUrls(queryCondition *api.QueryCondition, httpCode stri
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#topn-referers
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
-//     - httpCode: the specified HTTP code, like "200"
+//   - queryCondition: the querying conditions
+//   - httpCode: the specified HTTP code, like "200"
+//
 // RETURNS:
-//     - []TopNDetail: the top N referer urls' detail
-//     - error: nil if success otherwise the specific error
+//   - []TopNDetail: the top N referer urls' detail
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetTopNReferers(queryCondition *api.QueryCondition, httpCode string) ([]api.TopNDetail, error) {
 	return api.GetTopNReferers(cli, queryCondition, httpCode)
 }
@@ -1255,11 +1346,12 @@ func (cli *Client) GetTopNReferers(queryCondition *api.QueryCondition, httpCode 
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#topn-domains
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
-//     - httpCode: the specified HTTP code, like "200"
+//   - queryCondition: the querying conditions
+//   - httpCode: the specified HTTP code, like "200"
+//
 // RETURNS:
-//     - []TopNDetail: the top N domains' detail
-//     - error: nil if success otherwise the specific error
+//   - []TopNDetail: the top N domains' detail
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetTopNDomains(queryCondition *api.QueryCondition, httpCode string) ([]api.TopNDetail, error) {
 	return api.GetTopNDomains(cli, queryCondition, httpCode)
 }
@@ -1268,10 +1360,11 @@ func (cli *Client) GetTopNDomains(queryCondition *api.QueryCondition, httpCode s
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#cdn%E9%94%99%E8%AF%AF%E7%A0%81%E5%88%86%E7%B1%BB%E7%BB%9F%E8%AE%A1%E6%9F%A5%E8%AF%A2
 //
 // PARAMS:
-//     - queryCondition: the querying conditions
+//   - queryCondition: the querying conditions
+//
 // RETURNS:
-//     - []ErrorDetail: the top N error details
-//     - error: nil if success otherwise the specific error
+//   - []ErrorDetail: the top N error details
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetError(queryCondition *api.QueryCondition) ([]api.ErrorDetail, error) {
 	return api.GetError(cli, queryCondition)
 }
@@ -1280,14 +1373,15 @@ func (cli *Client) GetError(queryCondition *api.QueryCondition) ([]api.ErrorDeta
 // For details, pleader refer https://cloud.baidu.com/doc/CDN/s/5jwvyf8zn#%E6%9F%A5%E8%AF%A2%E6%9C%8895%E5%B3%B0%E5%80%BC%E5%B8%A6%E5%AE%BD
 //
 // PARAMS:
-//     - startTime: start time which in `YYYY-mm-ddTHH:ii:ssZ` style
-//     - endTime: end time which in `YYYY-mm-ddTHH:ii:ssZ` style
-//     - domains: a list of domains, only one of `tags` and `domains` can contains item
-//     - tags: a list of tag names, only one of `tags` and `domains` can contains item
+//   - startTime: start time which in `YYYY-mm-ddTHH:ii:ssZ` style
+//   - endTime: end time which in `YYYY-mm-ddTHH:ii:ssZ` style
+//   - domains: a list of domains, only one of `tags` and `domains` can contains item
+//   - tags: a list of tag names, only one of `tags` and `domains` can contains item
+//
 // RETURNS:
-//     - string: the peak95 time which in `YYYY-mm-ddTHH:ii:ssZ` style
-//     - int64: peak95 bandwidth
-//     - error: nil if success otherwise the specific error
+//   - string: the peak95 time which in `YYYY-mm-ddTHH:ii:ssZ` style
+//   - int64: peak95 bandwidth
+//   - error: nil if success otherwise the specific error
 func (cli *Client) GetPeak95Bandwidth(startTime, endTime string, domains, tags []string) (string, int64, error) {
 	return api.GetPeak95Bandwidth(cli, startTime, endTime, domains, tags)
 }

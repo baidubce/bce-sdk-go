@@ -62,10 +62,11 @@ func getQueryParams(val interface{}) (map[string]string, error) {
 // CreateInstance - create a Instance with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create a instance
+//   - args: the arguments to create a instance
+//
 // RETURNS:
-//     - *InstanceIds: the result of create RDS, contains new RDS's instanceIds
-//     - error: nil if success otherwise the specific error
+//   - *InstanceIds: the result of create RDS, contains new RDS's instanceIds
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) CreateInstance(args *CreateInstanceArgs) (*CreateResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -86,10 +87,11 @@ func (c *DDCClient) CreateInstance(args *CreateInstanceArgs) (*CreateResult, err
 // CreateRds - create a DDC with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create a ddc
+//   - args: the arguments to create a ddc
+//
 // RETURNS:
-//     - *InstanceIds: the result of create DDC, contains new DDC's instanceIds
-//     - error: nil if success otherwise the specific error
+//   - *InstanceIds: the result of create DDC, contains new DDC's instanceIds
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) CreateRds(args *CreateRdsArgs) (*CreateResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -305,10 +307,11 @@ func (c *DDCClient) UnDefaultVpcInfo(newArgs *CreateInstanceArgs, args *CreateRd
 // CreateReadReplica - create a readReplica ddc with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create a readReplica ddc
+//   - args: the arguments to create a readReplica ddc
+//
 // RETURNS:
-//     - *InstanceIds: the result of create a readReplica ddc, contains the readReplica DDC's instanceIds
-//     - error: nil if success otherwise the specific error
+//   - *InstanceIds: the result of create a readReplica ddc, contains the readReplica DDC's instanceIds
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -374,9 +377,10 @@ func (c *DDCClient) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResul
 // UpdateRoGroup - update a roGroup
 //
 // PARAMS:
-//     - body: http request body
+//   - body: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) UpdateRoGroup(roGroupId string, args *UpdateRoGroupArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -403,9 +407,10 @@ func (c *DDCClient) UpdateRoGroup(roGroupId string, args *UpdateRoGroupArgs) err
 // UpdateRoGroupReplicaWeight- update repica weight in roGroup
 //
 // PARAMS:
-//     - body: http request body
+//   - body: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) UpdateRoGroupReplicaWeight(roGroupId string, args *UpdateRoGroupWeightArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -433,9 +438,10 @@ func (c *DDCClient) UpdateRoGroupReplicaWeight(roGroupId string, args *UpdateRoG
 // ReBalanceRoGroup- Initiate a rebalance for foGroup
 //
 // PARAMS:
-//     - body: http request body
+//   - body: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ReBalanceRoGroup(roGroupId string) error {
 
 	err := bce.NewRequestBuilder(c).
@@ -449,9 +455,10 @@ func (c *DDCClient) ReBalanceRoGroup(roGroupId string) error {
 // CreateDeploySet - create a deploy set
 //
 // PARAMS:
-//     - body: http request body
+//   - body: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) CreateDeploySet(poolId string, args *CreateDeployRequest) (*CreateDeployResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -477,9 +484,10 @@ func (c *DDCClient) CreateDeploySet(poolId string, args *CreateDeployRequest) (*
 // UpdateDeploySet - update a deploy set
 //
 // PARAMS:
-//     - body: http request body
+//   - body: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) UpdateDeploySet(poolId string, deployId string, args *UpdateDeployRequest) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -499,8 +507,8 @@ func (c *DDCClient) UpdateDeploySet(poolId string, deployId string, args *Update
 
 // ListRds - list all instances
 // RETURNS:
-//     - *ListRdsResult: the result of list instances with marker
-//     - error: nil if success otherwise the specific error
+//   - *ListRdsResult: the result of list instances with marker
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ListRds(marker *ListRdsArgs) (*ListRdsResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getDdcInstanceUri() + "/list")
@@ -527,8 +535,8 @@ func (c *DDCClient) ListRds(marker *ListRdsArgs) (*ListRdsResult, error) {
 
 // ListPage - list all instances with page
 // RETURNS:
-//     - *ListPageResult: the result of list instances with marker
-//     - error: nil if success otherwise the specific error
+//   - *ListPageResult: the result of list instances with marker
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ListPage(args *ListPageArgs) (*ListPageResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -548,10 +556,11 @@ func (c *DDCClient) ListPage(args *ListPageArgs) (*ListPageResult, error) {
 // GetDdcDetail - get details of the instance
 //
 // PARAMS:
-//     - instanceId: the id of the instance
+//   - instanceId: the id of the instance
+//
 // RETURNS:
-//     - *InstanceModelResult: the detail of the instance
-//     - error: nil if success otherwise the specific error
+//   - *InstanceModelResult: the detail of the instance
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetDdcDetail(instanceId string) (*InstanceModelResult, error) {
 	result := &InstanceModelResult{}
 	err := bce.NewRequestBuilder(c).
@@ -566,10 +575,11 @@ func (c *DDCClient) GetDdcDetail(instanceId string) (*InstanceModelResult, error
 // GetDetail - get a specific ddc Instance's detail
 //
 // PARAMS:
-//     - instanceId: the specific ddc Instance's ID
+//   - instanceId: the specific ddc Instance's ID
+//
 // RETURNS:
-//     - *Instance: the specific ddc Instance's detail
-//     - error: nil if success otherwise the specific error
+//   - *Instance: the specific ddc Instance's detail
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetDetail(instanceId string) (*Instance, error) {
 	detail, err := c.GetDdcDetail(instanceId)
 	result := &Instance{
@@ -613,9 +623,10 @@ func (c *DDCClient) GetDetail(instanceId string) (*Instance, error) {
 // DeleteRds - delete instances
 //
 // PARAMS:
-//    - instanceIds: id of the instance
+//   - instanceIds: id of the instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) DeleteRds(instanceIds string) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
@@ -627,11 +638,12 @@ func (c *DDCClient) DeleteRds(instanceIds string) error {
 // RebootInstance - reboot a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance to be rebooted
-//     - args: reboot args
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance to be rebooted
+//   - args: reboot args
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) RebootInstanceWithArgs(instanceId string, args *RebootArgs) (*MaintainTaskIdResult, error) {
 	result := &MaintainTaskIdResult{}
 	err := bce.NewRequestBuilder(c).
@@ -647,10 +659,11 @@ func (c *DDCClient) RebootInstanceWithArgs(instanceId string, args *RebootArgs) 
 // UpdateInstanceName - update name of a specified instance
 //
 // PARAMS:
-//     - instanceId: id of the instance
-//     - args: the arguments to update instanceName
+//   - instanceId: id of the instance
+//   - args: the arguments to update instanceName
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) UpdateInstanceName(instanceId string, args *UpdateInstanceNameArgs) error {
 
 	result := &bce.BceResponse{}
@@ -667,10 +680,11 @@ func (c *DDCClient) UpdateInstanceName(instanceId string, args *UpdateInstanceNa
 // GetBackupList - get backup list of the instance
 //
 // PARAMS:
-//     - instanceId: id of the instance
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *GetBackupListResult: result of the backup list
-//     - error: nil if success otherwise the specific error
+//   - *GetBackupListResult: result of the backup list
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetBackupList(instanceId string, args *GetBackupListArgs) (*GetBackupListResult, error) {
 	result := &GetBackupListResult{}
 	err := bce.NewRequestBuilder(c).
@@ -720,10 +734,11 @@ func (c *DDCClient) GetBackupList(instanceId string, args *GetBackupListArgs) (*
 // GetZoneList - list all zone
 //
 // PARAMS:
-//     - c: the client agent which can perform sending request
+//   - c: the client agent which can perform sending request
+//
 // RETURNS:
-//     - *GetZoneListResult: result of the zone list
-//     - error: nil if success otherwise the specific error
+//   - *GetZoneListResult: result of the zone list
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetZoneList() (*GetZoneListResult, error) {
 	result := &GetZoneListResult{}
 	err := bce.NewRequestBuilder(c).
@@ -738,11 +753,12 @@ func (c *DDCClient) GetZoneList() (*GetZoneListResult, error) {
 // ListsSubnet - list all Subnets
 //
 // PARAMS:
-//     - c: the client agent which can perform sending request
-//     - args: the arguments to list all subnets, not necessary
+//   - c: the client agent which can perform sending request
+//   - args: the arguments to list all subnets, not necessary
+//
 // RETURNS:
-//     - *ListSubnetsResult: result of the subnet list
-//     - error: nil if success otherwise the specific error
+//   - *ListSubnetsResult: result of the subnet list
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ListSubnets(args *ListSubnetsArgs) (*ListSubnetsResult, error) {
 	if args == nil {
 		args = &ListSubnetsArgs{}
@@ -775,8 +791,8 @@ func (c *DDCClient) ListSubnets(args *ListSubnetsArgs) (*ListSubnetsResult, erro
 
 // ListPool - list current pools
 // RETURNS:
-//     - *ListResultWithMarker: the result of list hosts with marker
-//     - error: nil if success otherwise the specific error
+//   - *ListResultWithMarker: the result of list hosts with marker
+//   - error: nil if success otherwise the specific error
 func (cli *DDCClient) ListPool(marker *Marker) (*ListPoolResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -804,8 +820,8 @@ func (cli *DDCClient) ListPool(marker *Marker) (*ListPoolResult, error) {
 
 // ListDeploySets - list all deploy sets
 // RETURNS:
-//     - *ListResultWithMarker: the result of list deploy sets with marker
-//     - error: nil if success otherwise the specific error
+//   - *ListResultWithMarker: the result of list deploy sets with marker
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ListDeploySets(poolId string, marker *Marker) (*ListDeploySetResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -834,11 +850,12 @@ func (c *DDCClient) ListDeploySets(poolId string, marker *Marker) (*ListDeploySe
 // DeleteDeploySet - delete a deploy set
 //
 // PARAMS:
-//     - poolId: the id of the pool
-//     - deploySetId: the id of the deploy set
-//     - clientToken: idempotent token,  an ASCII string no longer than 64 bits
+//   - poolId: the id of the pool
+//   - deploySetId: the id of the deploy set
+//   - clientToken: idempotent token,  an ASCII string no longer than 64 bits
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) DeleteDeploySet(poolId string, deploySetId string) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -862,12 +879,13 @@ func (c *DDCClient) DeleteDeploySet(poolId string, deploySetId string) error {
 // GetDeploySet - get details of the deploy set
 //
 // PARAMS:
-//     - poolId: the id of the pool
-//     - cli: the client agent which can perform sending request
-//     - deploySetId: the id of the deploy set
+//   - poolId: the id of the pool
+//   - cli: the client agent which can perform sending request
+//   - deploySetId: the id of the deploy set
+//
 // RETURNS:
-//     - *DeploySet: the detail of the deploy set
-//     - error: nil if success otherwise the specific error
+//   - *DeploySet: the detail of the deploy set
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetDeploySet(poolId string, deploySetId string) (*DeploySet, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -894,10 +912,11 @@ func (c *DDCClient) GetDeploySet(poolId string, deploySetId string) (*DeploySet,
 // GetSecurityIps - get all SecurityIps
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
+//   - instanceId: the specific rds Instance's ID
+//
 // RETURNS:
-//     - *GetSecurityIpsResult: all security IP
-//     - error: nil if success otherwise the specific error
+//   - *GetSecurityIpsResult: all security IP
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetSecurityIps(instanceId string) (*GetSecurityIpsResult, error) {
 	rowResult := &SecurityIpsRawResult{}
 	err := bce.NewRequestBuilder(c).
@@ -915,10 +934,11 @@ func (c *DDCClient) GetSecurityIps(instanceId string) (*GetSecurityIpsResult, er
 // UpdateSecurityIps - update SecurityIps
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
-//     - Args: all SecurityIps
+//   - instanceId: the specific rds Instance's ID
+//   - Args: all SecurityIps
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) UpdateSecurityIps(instacneId string, args *UpdateSecurityIpsArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -932,10 +952,11 @@ func (c *DDCClient) UpdateSecurityIps(instacneId string, args *UpdateSecurityIps
 // ListParameters - list all parameters of a RDS instance
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
+//   - instanceId: the specific rds Instance's ID
+//
 // RETURNS:
-//     - *ListParametersResult: the result of list all parameters
-//     - error: nil if success otherwise the specific error
+//   - *ListParametersResult: the result of list all parameters
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ListParameters(instanceId string) (*ListParametersResult, error) {
 	result := &ListParametersResult{}
 	err := bce.NewRequestBuilder(c).
@@ -950,10 +971,11 @@ func (c *DDCClient) ListParameters(instanceId string) (*ListParametersResult, er
 // UpdateParameter - update Parameter
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
-//     - Args: *UpdateParameterArgs
+//   - instanceId: the specific rds Instance's ID
+//   - Args: *UpdateParameterArgs
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) UpdateParameter(instanceId string, args *UpdateParameterArgs) (*ProducedMaintainTaskResult, error) {
 
 	result := &ProducedMaintainTaskResult{}
@@ -971,9 +993,10 @@ func (c *DDCClient) UpdateParameter(instanceId string, args *UpdateParameterArgs
 // CreateBackup - create backup of the instance
 //
 // PARAMS:
-//     - instanceId: the id of the instance
+//   - instanceId: the id of the instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) CreateBackup(instanceId string) error {
 
 	result := &bce.BceResponse{}
@@ -990,11 +1013,12 @@ func (c *DDCClient) CreateBackup(instanceId string) error {
 // GetBackupDetail - get details of the instance'Backup
 //
 // PARAMS:
-//     - instanceId: the id of the instance
-//     - snapshotId: the id of the backup
+//   - instanceId: the id of the instance
+//   - snapshotId: the id of the backup
+//
 // RETURNS:
-//     - *BackupDetailResult: the detail of the backup
-//     - error: nil if success otherwise the specific error
+//   - *BackupDetailResult: the detail of the backup
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetBackupDetail(instanceId string, snapshotId string) (*BackupDetailResult, error) {
 	result := &BackupDetailResult{}
 	err := bce.NewRequestBuilder(c).
@@ -1009,10 +1033,11 @@ func (c *DDCClient) GetBackupDetail(instanceId string, snapshotId string) (*Back
 // ModifyBackupPolicy - update backupPolicy
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
-//     - Args: the specific rds Instance's BackupPolicy
+//   - instanceId: the specific rds Instance's ID
+//   - Args: the specific rds Instance's BackupPolicy
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ModifyBackupPolicy(instanceId string, args *BackupPolicy) error {
 
 	result := &bce.BceResponse{}
@@ -1030,10 +1055,11 @@ func (c *DDCClient) ModifyBackupPolicy(instanceId string, args *BackupPolicy) er
 // GetBinlogList - get backup list of the instance
 //
 // PARAMS:
-//     - instanceId: id of the instance
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *BinlogListResult: result of the backup list
-//     - error: nil if success otherwise the specific error
+//   - *BinlogListResult: result of the backup list
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetBinlogList(instanceId string, datetime string) (*BinlogListResult, error) {
 
 	result := &BinlogListResult{}
@@ -1050,11 +1076,12 @@ func (c *DDCClient) GetBinlogList(instanceId string, datetime string) (*BinlogLi
 // GetBinlogDetail - get details of the instance'Binlog
 //
 // PARAMS:
-//     - instanceId: the id of the instance
-//     - binlog: the id of the binlog
+//   - instanceId: the id of the instance
+//   - binlog: the id of the binlog
+//
 // RETURNS:
-//     - *BinlogDetailResult: the detail of the binlog
-//     - error: nil if success otherwise the specific error
+//   - *BinlogDetailResult: the detail of the binlog
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetBinlogDetail(instanceId string, binlog string) (*BinlogDetailResult, error) {
 	result := &BinlogDetailResult{}
 	err := bce.NewRequestBuilder(c).
@@ -1069,10 +1096,11 @@ func (c *DDCClient) GetBinlogDetail(instanceId string, binlog string) (*BinlogDe
 // SwitchInstance - main standby switching of the instance
 //
 // PARAMS:
-//     - instanceId: the id of the instance
-//     - args: switch now or wait to the maintain time
+//   - instanceId: the id of the instance
+//   - args: switch now or wait to the maintain time
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) SwitchInstance(instanceId string, args *SwitchArgs) (*ProducedMaintainTaskResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -1092,10 +1120,11 @@ func (c *DDCClient) SwitchInstance(instanceId string, args *SwitchArgs) (*Produc
 // CreateDatabase - create a database with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific instanceId
-//     - args: the arguments to create a account
+//   - instanceId: the specific instanceId
+//   - args: the arguments to create a account
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) CreateDatabase(instanceId string, args *CreateDatabaseArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -1121,10 +1150,11 @@ func (c *DDCClient) CreateDatabase(instanceId string, args *CreateDatabaseArgs) 
 // DeleteDatabase - delete an database of a DDC instance
 //
 // PARAMS:
-//     - instanceIds: the specific instanceIds
-//     - dbName: the specific database's name
+//   - instanceIds: the specific instanceIds
+//   - dbName: the specific database's name
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) DeleteDatabase(instanceId, dbName string) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
@@ -1135,11 +1165,12 @@ func (c *DDCClient) DeleteDatabase(instanceId, dbName string) error {
 // UpdateDatabaseRemark - update a database remark with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific instanceId
-//	   - dbName: the specific accountName
-//     - args: the arguments to update a database remark
+//   - instanceId: the specific instanceId
+//   - dbName: the specific accountName
+//   - args: the arguments to update a database remark
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) UpdateDatabaseRemark(instanceId string, dbName string, args *UpdateDatabaseRemarkArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -1161,11 +1192,12 @@ func (c *DDCClient) UpdateDatabaseRemark(instanceId string, dbName string, args 
 // GetDatabase - get an database of a DDC instance with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
-//     - dbName: the specific database's name
+//   - instanceId: the specific rds Instance's ID
+//   - dbName: the specific database's name
+//
 // RETURNS:
-//     - *Database: the database's meta
-//     - error: nil if success otherwise the specific error
+//   - *Database: the database's meta
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetDatabase(instanceId, dbName string) (*Database, error) {
 	result := &DatabaseResult{}
 	err := bce.NewRequestBuilder(c).
@@ -1181,10 +1213,11 @@ func (c *DDCClient) GetDatabase(instanceId, dbName string) (*Database, error) {
 // ListDatabase - list all database of a DDC instance with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific ddc Instance's ID
+//   - instanceId: the specific ddc Instance's ID
+//
 // RETURNS:
-//     - *ListDatabaseResult: the result of list all database, contains all databases' meta
-//     - error: nil if success otherwise the specific error
+//   - *ListDatabaseResult: the result of list all database, contains all databases' meta
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ListDatabase(instanceId string) (*ListDatabaseResult, error) {
 	result := &ListDatabaseResult{}
 	err := bce.NewRequestBuilder(c).
@@ -1204,10 +1237,11 @@ func (c *DDCClient) ListDatabase(instanceId string) (*ListDatabaseResult, error)
 // GetTableAmount - query amount of tables
 //
 // PARAMS:
-//     - args: the specific ddc instanceId, dbName and search pattern
+//   - args: the specific ddc instanceId, dbName and search pattern
+//
 // RETURNS:
-//     - *TableAmountResult: the size of the table that meets the criteria
-//     - error: nil if success otherwise the specific error
+//   - *TableAmountResult: the size of the table that meets the criteria
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetTableAmount(args *GetTableAmountArgs) (*TableAmountResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -1232,10 +1266,11 @@ func (c *DDCClient) GetTableAmount(args *GetTableAmountArgs) (*TableAmountResult
 // GetDatabaseDiskUsage - get the disk footprint and the remaining space for database
 //
 // PARAMS:
-//     - instanceId: the specific ddc Instance's ID
+//   - instanceId: the specific ddc Instance's ID
+//
 // RETURNS:
-//     - *ListDatabaseResult: the disk footprint and the remaining space for database
-//     - error: nil if success otherwise the specific error
+//   - *ListDatabaseResult: the disk footprint and the remaining space for database
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetDatabaseDiskUsage(instanceId, dbName string) (*DatabaseDiskUsageResult, error) {
 	result := &DatabaseDiskUsageResult{}
 	req := bce.NewRequestBuilder(c)
@@ -1253,10 +1288,11 @@ func (c *DDCClient) GetDatabaseDiskUsage(instanceId, dbName string) (*DatabaseDi
 // GetRecoverableDateTime - get a list of recoverable times
 //
 // PARAMS:
-//     - instanceId: the specific ddc Instance's ID
+//   - instanceId: the specific ddc Instance's ID
+//
 // RETURNS:
-//     - *GetRecoverableDateTimeResult: the result of list all recoverable datetimes
-//     - error: nil if success otherwise the specific error
+//   - *GetRecoverableDateTimeResult: the result of list all recoverable datetimes
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetRecoverableDateTime(instanceId string) (*GetRecoverableDateTimeResult, error) {
 	result := &GetRecoverableDateTimeResult{}
 	err := bce.NewRequestBuilder(c).
@@ -1270,10 +1306,11 @@ func (c *DDCClient) GetRecoverableDateTime(instanceId string) (*GetRecoverableDa
 // RecoverToSourceInstanceByDatetime - recover database or tables for the specific instance by a datetime
 //
 // PARAMS:
-//     - instanceId: the specific ddc Instance's ID
+//   - instanceId: the specific ddc Instance's ID
+//
 // RETURNS:
-//     - *MaintainTaskIdResult: ID of generated maintain task
-//     - error: nil if success otherwise the specific error
+//   - *MaintainTaskIdResult: ID of generated maintain task
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) RecoverToSourceInstanceByDatetime(instanceId string, args *RecoverInstanceArgs) (*MaintainTaskIdResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -1298,10 +1335,11 @@ func (c *DDCClient) RecoverToSourceInstanceByDatetime(instanceId string, args *R
 // CreateAccount - create a account with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific instanceId
-//     - args: the arguments to create a account
+//   - instanceId: the specific instanceId
+//   - args: the arguments to create a account
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) CreateAccount(instanceId string, args *CreateAccountArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -1346,10 +1384,11 @@ func (c *DDCClient) CreateAccount(instanceId string, args *CreateAccountArgs) er
 // DeleteAccount - delete an account of a RDS instance
 //
 // PARAMS:
-//     - instanceIds: the specific instanceIds
-//     - accountName: the specific account's name
+//   - instanceIds: the specific instanceIds
+//   - accountName: the specific account's name
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) DeleteAccount(instanceId, accountName string) error {
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
@@ -1360,11 +1399,12 @@ func (c *DDCClient) DeleteAccount(instanceId, accountName string) error {
 // UpdateAccountPassword - update a account password with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific instanceId
-//	   - accountName: the specific accountName
-//     - args: the arguments to update a account password
+//   - instanceId: the specific instanceId
+//   - accountName: the specific accountName
+//   - args: the arguments to update a account password
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) UpdateAccountPassword(instanceId string, accountName string, args *UpdateAccountPasswordArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -1386,11 +1426,12 @@ func (c *DDCClient) UpdateAccountPassword(instanceId string, accountName string,
 // UpdateAccountDesc - update a account desc with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific instanceId
-//	   - accountName: the specific accountName
-//     - args: the arguments to update a account remark
+//   - instanceId: the specific instanceId
+//   - accountName: the specific accountName
+//   - args: the arguments to update a account remark
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) UpdateAccountDesc(instanceId string, accountName string, args *UpdateAccountDescArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -1412,11 +1453,12 @@ func (c *DDCClient) UpdateAccountDesc(instanceId string, accountName string, arg
 // UpdateAccountPrivileges - update a account privileges with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific instanceId
-//	   - accountName: the specific accountName
-//     - args: the arguments to update a account privileges
+//   - instanceId: the specific instanceId
+//   - accountName: the specific accountName
+//   - args: the arguments to update a account privileges
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) UpdateAccountPrivileges(instanceId string, accountName string, args *UpdateAccountPrivilegesArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -1442,11 +1484,12 @@ func (c *DDCClient) UpdateAccountPrivileges(instanceId string, accountName strin
 // GetAccount - get an account of a DDC instance with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
-//     - accountName: the specific account's name
+//   - instanceId: the specific rds Instance's ID
+//   - accountName: the specific account's name
+//
 // RETURNS:
-//     - *Account: the account's meta
-//     - error: nil if success otherwise the specific error
+//   - *Account: the account's meta
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetAccount(instanceId, accountName string) (*Account, error) {
 	result := &AccountResult{}
 	err := bce.NewRequestBuilder(c).
@@ -1475,10 +1518,11 @@ func (c *DDCClient) GetAccount(instanceId, accountName string) (*Account, error)
 // ListAccount - list all account of a DDC instance with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
+//   - instanceId: the specific rds Instance's ID
+//
 // RETURNS:
-//     - *ListAccountResult: the result of list all account, contains all accounts' meta
-//     - error: nil if success otherwise the specific error
+//   - *ListAccountResult: the result of list all account, contains all accounts' meta
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ListAccount(instanceId string) (*ListAccountResult, error) {
 	result := &ListAccountResult{}
 	err := bce.NewRequestBuilder(c).
@@ -1508,10 +1552,11 @@ func (c *DDCClient) ListAccount(instanceId string) (*ListAccountResult, error) {
 // ListRoGroup - list all roGroups of a DDC instance with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
+//   - instanceId: the specific rds Instance's ID
+//
 // RETURNS:
-//     - *ListRoGroupResult: All roGroups of the current instance
-//     - error: nil if success otherwise the specific error
+//   - *ListRoGroupResult: All roGroups of the current instance
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ListRoGroup(instanceId string) (*ListRoGroupResult, error) {
 	result := &ListRoGroupResult{}
 	err := bce.NewRequestBuilder(c).
@@ -1527,8 +1572,8 @@ func (c *DDCClient) ListRoGroup(instanceId string) (*ListRoGroupResult, error) {
 //
 // PARAMS:
 // RETURNS:
-//     - *ListVpc: All vpc of
-//     - error: nil if success otherwise the specific error
+//   - *ListVpc: All vpc of
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ListVpc() (*[]VpcVo, error) {
 	result := &[]VpcVo{}
 	err := bce.NewRequestBuilder(c).
@@ -1543,12 +1588,13 @@ func (c *DDCClient) ListVpc() (*[]VpcVo, error) {
 // GetMaintainTime - get details of the maintainTime
 //
 // PARAMS:
-//     - poolId: the id of the pool
-//     - cli: the client agent which can perform sending request
-//     - deploySetId: the id of the deploy set
+//   - poolId: the id of the pool
+//   - cli: the client agent which can perform sending request
+//   - deploySetId: the id of the deploy set
+//
 // RETURNS:
-//     - *MaintainTime: the maintainTime of the instance
-//     - error: nil if success otherwise the specific error
+//   - *MaintainTime: the maintainTime of the instance
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetMaintainTime(instanceId string) (*MaintainTime, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -1575,9 +1621,10 @@ func (c *DDCClient) GetMaintainTime(instanceId string) (*MaintainTime, error) {
 // UpdateMaintainTime - update UpdateMaintainTime of instance
 //
 // PARAMS:
-//     - body: http request body
+//   - body: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) UpdateMaintainTime(instanceId string, args *MaintainTime) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -1595,10 +1642,11 @@ func (c *DDCClient) UpdateMaintainTime(instanceId string, args *MaintainTime) er
 // ListRecycleInstances - list all instances in recycler with marker
 //
 // PARAMS:
-//     - marker: marker page
+//   - marker: marker page
+//
 // RETURNS:
-//     - *RecyclerInstanceList: the result of instances in recycler
-//     - error: nil if success otherwise the specific error
+//   - *RecyclerInstanceList: the result of instances in recycler
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ListRecycleInstances(marker *Marker) (*RecyclerInstanceList, error) {
 	result := &RecyclerInstanceList{}
 	err := bce.NewRequestBuilder(c).
@@ -1614,9 +1662,10 @@ func (c *DDCClient) ListRecycleInstances(marker *Marker) (*RecyclerInstanceList,
 // RecoverRecyclerInstances - batch recover instances that in recycler
 //
 // PARAMS:
-//     - instanceIds: instanceId list to recover
+//   - instanceIds: instanceId list to recover
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) RecoverRecyclerInstances(instanceIds []string) (*OrderIdResponse, error) {
 	if instanceIds == nil || len(instanceIds) < 1 {
 		return nil, fmt.Errorf("unset instanceIds")
@@ -1645,9 +1694,10 @@ func (c *DDCClient) RecoverRecyclerInstances(instanceIds []string) (*OrderIdResp
 // DeleteRecyclerInstances - batch delete instances that in recycler
 //
 // PARAMS:
-//     - instanceIds: instanceId list to delete
+//   - instanceIds: instanceId list to delete
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) DeleteRecyclerInstances(instanceIds []string) error {
 	if instanceIds == nil || len(instanceIds) < 1 {
 		return fmt.Errorf("unset instanceIds")
@@ -1670,10 +1720,11 @@ func (c *DDCClient) DeleteRecyclerInstances(instanceIds []string) error {
 // ListSecurityGroupByVpcId - list security groups by vpc id
 //
 // PARAMS:
-//     - vpcId: id of vpc
+//   - vpcId: id of vpc
+//
 // RETURNS:
-//     - *[]SecurityGroup:security groups of vpc
-//     - error: nil if success otherwise the specific error
+//   - *[]SecurityGroup:security groups of vpc
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ListSecurityGroupByVpcId(vpcId string) (*[]SecurityGroup, error) {
 	if len(vpcId) < 1 {
 		return nil, fmt.Errorf("unset vpcId")
@@ -1692,10 +1743,11 @@ func (c *DDCClient) ListSecurityGroupByVpcId(vpcId string) (*[]SecurityGroup, er
 // ListSecurityGroupByInstanceId - list security groups by instance id
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *ListSecurityGroupResult: list secrity groups result of instance
-//     - error: nil if success otherwise the specific error
+//   - *ListSecurityGroupResult: list secrity groups result of instance
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ListSecurityGroupByInstanceId(instanceId string) (*ListSecurityGroupResult, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -1714,9 +1766,10 @@ func (c *DDCClient) ListSecurityGroupByInstanceId(instanceId string) (*ListSecur
 // BindSecurityGroups - bind SecurityGroup to instances
 //
 // PARAMS:
-//     - args: http request body
+//   - args: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) BindSecurityGroups(args *SecurityGroupArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -1740,9 +1793,10 @@ func (c *DDCClient) BindSecurityGroups(args *SecurityGroupArgs) error {
 // UnBindSecurityGroups - unbind SecurityGroup to instances
 //
 // PARAMS:
-//     - args: http request body
+//   - args: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) UnBindSecurityGroups(args *SecurityGroupArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -1766,9 +1820,10 @@ func (c *DDCClient) UnBindSecurityGroups(args *SecurityGroupArgs) error {
 // ReplaceSecurityGroups - replace SecurityGroup to instances
 //
 // PARAMS:
-//     - args: http request body
+//   - args: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ReplaceSecurityGroups(args *SecurityGroupArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -1792,10 +1847,11 @@ func (c *DDCClient) ReplaceSecurityGroups(args *SecurityGroupArgs) error {
 // ListLogByInstanceId - list error or slow logs of instance
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *[]Log:logs of instance
-//     - error: nil if success otherwise the specific error
+//   - *[]Log:logs of instance
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ListLogByInstanceId(instanceId string, args *ListLogArgs) (*[]Log, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -1825,10 +1881,11 @@ func (c *DDCClient) ListLogByInstanceId(instanceId string, args *ListLogArgs) (*
 // GetLogById - get log's detail of instance
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *Log:log's detail of instance
-//     - error: nil if success otherwise the specific error
+//   - *Log:log's detail of instance
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetLogById(instanceId, logId string, args *GetLogArgs) (*LogDetail, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -1855,11 +1912,12 @@ func (c *DDCClient) GetLogById(instanceId, logId string, args *GetLogArgs) (*Log
 // LazyDropCreateHardLink - create a hard link for specified large table
 //
 // PARAMS:
-//     - instanceId: id of instance
-//     - dbName: name of database
-//     - tableName: name of table
+//   - instanceId: id of instance
+//   - dbName: name of database
+//   - tableName: name of table
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) LazyDropCreateHardLink(instanceId, dbName, tableName string) error {
 	if len(instanceId) < 1 {
 		return fmt.Errorf("unset instanceId")
@@ -1887,11 +1945,12 @@ func (c *DDCClient) LazyDropCreateHardLink(instanceId, dbName, tableName string)
 // LazyDropDeleteHardLink - delete the hard link for specified large table
 //
 // PARAMS:
-//     - instanceId: id of instance
-//     - dbName: name of database
-//     - tableName: name of table
+//   - instanceId: id of instance
+//   - dbName: name of database
+//   - tableName: name of table
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) LazyDropDeleteHardLink(instanceId, dbName, tableName string) (*MaintainTaskIdResult, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -1915,10 +1974,11 @@ func (c *DDCClient) LazyDropDeleteHardLink(instanceId, dbName, tableName string)
 // ResizeRds - resize an RDS with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific instanceId
-//     - args: the arguments to resize an RDS
+//   - instanceId: the specific instanceId
+//   - args: the arguments to resize an RDS
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ResizeRds(instanceId string, args *ResizeRdsArgs) (*OrderIdResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -1941,11 +2001,12 @@ func (c *DDCClient) ResizeRds(instanceId string, args *ResizeRdsArgs) (*OrderIdR
 // UpdateSyncMode - update sync mode of a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to update syncMode
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to update syncMode
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ModifySyncMode(instanceId string, args *ModifySyncModeArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -1959,10 +2020,11 @@ func (c *DDCClient) ModifySyncMode(instanceId string, args *ModifySyncModeArgs) 
 // GetDisk - get disk detail of instance
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *Disk:disk of instance
-//     - error: nil if success otherwise the specific error
+//   - *Disk:disk of instance
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetDisk(instanceId string) (*Disk, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -1982,10 +2044,11 @@ func (c *DDCClient) GetDisk(instanceId string) (*Disk, error) {
 // GetMachineInfo - get machine info of instance
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *MachineInfo:info of machine resource
-//     - error: nil if success otherwise the specific error
+//   - *MachineInfo:info of machine resource
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetMachineInfo(instanceId string) (*MachineInfo, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -2005,11 +2068,12 @@ func (c *DDCClient) GetMachineInfo(instanceId string) (*MachineInfo, error) {
 // GetResidual - get residual of pool
 //
 // PARAMS:
-//     - poolId: id of pool
-//     - zoneName: the zone name
+//   - poolId: id of pool
+//   - zoneName: the zone name
+//
 // RETURNS:
-//     - *GetResidualResult:residual of pool
-//     - error: nil if success otherwise the specific error
+//   - *GetResidualResult:residual of pool
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetResidual(poolId string) (*GetResidualResult, error) {
 	if len(poolId) < 1 {
 		return nil, fmt.Errorf("unset poolId")
@@ -2029,11 +2093,12 @@ func (c *DDCClient) GetResidual(poolId string) (*GetResidualResult, error) {
 // GetFlavorCapacity - get flavor capacity of pool
 //
 // PARAMS:
-//     - poolId: id of pool
-//     - args: request params
+//   - poolId: id of pool
+//   - args: request params
+//
 // RETURNS:
-//     - *GetResidualResult:get flavor capacity of pool
-//     - error: nil if success otherwise the specific error
+//   - *GetResidualResult:get flavor capacity of pool
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetFlavorCapacity(poolId string, args *GetFlavorCapacityArgs) (*GetFlavorCapacityResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -2060,11 +2125,12 @@ func (c *DDCClient) GetFlavorCapacity(poolId string, args *GetFlavorCapacityArgs
 // KillSession - start kill session tasks
 //
 // PARAMS:
-//     - instanceId: id of the instance
-//     - args: instance role and sessionIds
+//   - instanceId: id of the instance
+//   - args: instance role and sessionIds
+//
 // RETURNS:
-//     - *KillSessionResult: the response of kill session task id
-//     - error: nil if success otherwise the specific error
+//   - *KillSessionResult: the response of kill session task id
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) KillSession(instanceId string, args *KillSessionArgs) (*KillSessionResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -2087,11 +2153,12 @@ func (c *DDCClient) KillSession(instanceId string, args *KillSessionArgs) (*Kill
 // GetKillSessionTask - get kill session tasks by taskId
 //
 // PARAMS:
-//     - instanceId: the specific instanceId of ddc
-//     - taskId: kill session returned id
+//   - instanceId: the specific instanceId of ddc
+//   - taskId: kill session returned id
+//
 // RETURNS:
-//     - *GetKillSessionTaskResult: the response of kill session task
-//     - error: nil if success otherwise the specific error
+//   - *GetKillSessionTaskResult: the response of kill session task
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetKillSessionTask(instanceId string, taskId int) (*GetKillSessionTaskResult, error) {
 	result := &GetKillSessionTaskResult{}
 	err := bce.NewRequestBuilder(c).
@@ -2107,8 +2174,8 @@ func (c *DDCClient) GetKillSessionTask(instanceId string, taskId int) (*GetKillS
 //
 // PARAMS:
 // RETURNS:
-//     - *ListMaintainTaskResult: the response of maintain tasks
-//     - error: nil if success otherwise the specific error
+//   - *ListMaintainTaskResult: the response of maintain tasks
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetMaintainTaskList(args *GetMaintainTaskListArgs) (*ListMaintainTaskResult, error) {
 	if args == nil || len(args.StartTime) < 1 {
 		return nil, fmt.Errorf("unset startTime")
@@ -2131,8 +2198,8 @@ func (c *DDCClient) GetMaintainTaskList(args *GetMaintainTaskListArgs) (*ListMai
 //
 // PARAMS:
 // RETURNS:
-//     - *MaintainTaskDetailList: the response of maintain task detail
-//     - error: nil if success otherwise the specific error
+//   - *MaintainTaskDetailList: the response of maintain task detail
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetMaintainTaskDetail(taskIds string) (*MaintainTaskDetailList, error) {
 	if len(taskIds) < 1 {
 		return nil, fmt.Errorf("unset taskIds")
@@ -2150,9 +2217,10 @@ func (c *DDCClient) GetMaintainTaskDetail(taskIds string) (*MaintainTaskDetailLi
 // ExecuteMaintainTaskImmediately - execute maintain task immediately
 //
 // PARAMS:
-//     - taskId: id of the task
+//   - taskId: id of the task
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) ExecuteMaintainTaskImmediately(taskId string) error {
 
 	err := bce.NewRequestBuilder(c).
@@ -2169,9 +2237,10 @@ func (c *DDCClient) ExecuteMaintainTaskImmediately(taskId string) error {
 // CancelMaintainTask - cancel maintain task
 //
 // PARAMS:
-//     - taskId: id of the task
+//   - taskId: id of the task
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) CancelMaintainTask(taskId string) error {
 
 	err := bce.NewRequestBuilder(c).
@@ -2189,8 +2258,8 @@ func (c *DDCClient) CancelMaintainTask(taskId string) error {
 //
 // PARAMS:
 // RETURNS:
-//     - *AccessLog: the access logs's download info
-//     - error: nil if success otherwise the specific error
+//   - *AccessLog: the access logs's download info
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetAccessLog(date string) (*AccessLog, error) {
 	if len(date) < 1 {
 		return nil, fmt.Errorf("unset date")
@@ -2210,8 +2279,8 @@ func (c *DDCClient) GetAccessLog(date string) (*AccessLog, error) {
 //
 // PARAMS:
 // RETURNS:
-//     - *ErrorLogsResponse: the error logs
-//     - error: nil if success otherwise the specific error
+//   - *ErrorLogsResponse: the error logs
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetErrorLogs(args *GetErrorLogsArgs) (*ErrorLogsResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -2251,8 +2320,8 @@ func (c *DDCClient) GetErrorLogs(args *GetErrorLogsArgs) (*ErrorLogsResponse, er
 //
 // PARAMS:
 // RETURNS:
-//     - *SlowLogsResponse: the slow logs
-//     - error: nil if success otherwise the specific error
+//   - *SlowLogsResponse: the slow logs
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetSlowLogs(args *GetSlowLogsArgs) (*SlowLogsResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -2292,8 +2361,8 @@ func (c *DDCClient) GetSlowLogs(args *GetSlowLogsArgs) (*SlowLogsResponse, error
 //
 // PARAMS:
 // RETURNS:
-//     - *GetBackupStatusResponse: the response of backup status
-//     - error: nil if success otherwise the specific error
+//   - *GetBackupStatusResponse: the response of backup status
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetInstanceBackupStatus(instanceId string) (*GetBackupStatusResponse, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -2313,11 +2382,12 @@ func (c *DDCClient) GetInstanceBackupStatus(instanceId string) (*GetBackupStatus
 // InstanceVersionRollBack - rollback instance version from 5.7 to 5.6
 //
 // PARAMS:
-//     - instanceId: id of the instance
-//     - args: the arguments to set WaitSwitch
+//   - instanceId: id of the instance
+//   - args: the arguments to set WaitSwitch
+//
 // RETURNS:
-//     - *MaintainTaskIdResult: ID of generated maintain task
-//     - error: nil if success otherwise the specific error
+//   - *MaintainTaskIdResult: ID of generated maintain task
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) InstanceVersionRollBack(instanceId string, args *InstanceVersionRollBackArg) (*MaintainTaskIdResult, error) {
 
 	result := &MaintainTaskIdResult{}
@@ -2334,11 +2404,12 @@ func (c *DDCClient) InstanceVersionRollBack(instanceId string, args *InstanceVer
 // InstanceVersionUpgrade - upgrade instance version from 5.6 to 5.7
 //
 // PARAMS:
-//     - instanceId: id of the instance
-//     - args: the arguments to set IsUpgradeNow
+//   - instanceId: id of the instance
+//   - args: the arguments to set IsUpgradeNow
+//
 // RETURNS:
-//     - *MaintainTaskIdResult: ID of generated maintain task
-//     - error: nil if success otherwise the specific error
+//   - *MaintainTaskIdResult: ID of generated maintain task
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) InstanceVersionUpgrade(instanceId string, args *InstanceVersionUpgradeArg) (*MaintainTaskIdResult, error) {
 
 	result := &MaintainTaskIdResult{}
@@ -2355,10 +2426,11 @@ func (c *DDCClient) InstanceVersionUpgrade(instanceId string, args *InstanceVers
 // GetInstanceSyncDelay - get readonly instance syncDelay and syncStatus.
 //
 // PARAMS:
-//     - instanceId: id of the instance
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *InstanceSyncDelayResponse: the response of syncDelay
-//     - error: nil if success otherwise the specific error
+//   - *InstanceSyncDelayResponse: the response of syncDelay
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) GetInstanceSyncDelay(instanceId string) (*InstanceSyncDelayResponse, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -2378,10 +2450,11 @@ func (c *DDCClient) GetInstanceSyncDelay(instanceId string) (*InstanceSyncDelayR
 // InstanceSyncDelayReplication - start or stop readonly instance syncDelay.
 //
 // PARAMS:
-//     - instanceId: id of the instance
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *InstanceSyncDelayReplicationResponse: the response of success
-//     - error: nil if success otherwise the specific error
+//   - *InstanceSyncDelayReplicationResponse: the response of success
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) InstanceSyncDelayReplication(instanceId string, args *InstanceSyncDelayReplicationArg) (*InstanceSyncDelayReplicationResponse, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -2401,10 +2474,11 @@ func (c *DDCClient) InstanceSyncDelayReplication(instanceId string, args *Instan
 // SnapshotAccessDetail - get snapshot access detail
 //
 // PARAMS:
-//     - args: the arguments to get snapshot access detail
+//   - args: the arguments to get snapshot access detail
+//
 // RETURNS:
-//     - *AccessDetail
-//     - error: nil if success otherwise the specific error
+//   - *AccessDetail
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) SnapshotAccessDetail(args *AccessDetailArgs) (*BackupAccessDetail, error) {
 
 	result := &BackupAccessDetail{}
@@ -2426,10 +2500,11 @@ func (c *DDCClient) SnapshotAccessDetail(args *AccessDetailArgs) (*BackupAccessD
 // BinlogAccessDetail - get snapshot access detail
 //
 // PARAMS:
-//     - args: the arguments to get snapshot access detail
+//   - args: the arguments to get snapshot access detail
+//
 // RETURNS:
-//     - *AccessDetail
-//     - error: nil if success otherwise the specific error
+//   - *AccessDetail
+//   - error: nil if success otherwise the specific error
 func (c *DDCClient) BinlogAccessDetail(args *AccessDetailArgs) (*BackupAccessDetail, error) {
 
 	result := &BackupAccessDetail{}

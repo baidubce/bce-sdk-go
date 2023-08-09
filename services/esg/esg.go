@@ -25,10 +25,11 @@ import (
 // CreateEsg - create an esg with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create an esg
+//   - args: the arguments to create an esg
+//
 // RETURNS:
-//     - *CreateEsgResult: the result of create esg
-//     - error: nil if success otherwise the specific error
+//   - *CreateEsgResult: the result of create esg
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateEsg(args *CreateEsgArgs) (*CreateEsgResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("The createEsgArgs cannot be nil.")
@@ -49,10 +50,11 @@ func (c *Client) CreateEsg(args *CreateEsgArgs) (*CreateEsgResult, error) {
 // ListEsg - list all esg with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all esg
+//   - args: the arguments to list all esg
+//
 // RETURNS:
-//     - *ListEsgResult: the result of list all esg
-//     - error: nil if success otherwise the specific error
+//   - *ListEsgResult: the result of list all esg
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListEsg(args *ListEsgArgs) (*ListEsgResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("The ListEsgArgs cannot be nil.")
@@ -77,9 +79,10 @@ func (c *Client) ListEsg(args *ListEsgArgs) (*ListEsgResult, error) {
 // DeleteEsg - delete an esg
 //
 // PARAMS:
-//     - DeleteEsgArgs: the arguments to delete an esg
+//   - DeleteEsgArgs: the arguments to delete an esg
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteEsg(args *DeleteEsgArgs) error {
 	if args == nil {
 		return fmt.Errorf("The deleteEsgArgs cannot be nil.")
@@ -95,9 +98,10 @@ func (c *Client) DeleteEsg(args *DeleteEsgArgs) error {
 // CreateEsgRules - create esg rules
 //
 // PARAMS:
-//     - CreateEsgRuleArgs: the arguments to create esg rules
+//   - CreateEsgRuleArgs: the arguments to create esg rules
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateEsgRules(args *CreateEsgRuleArgs) error {
 	if args == nil {
 		return fmt.Errorf("The createEsgRuleArgs cannot be nil.")
@@ -115,9 +119,10 @@ func (c *Client) CreateEsgRules(args *CreateEsgRuleArgs) error {
 // DeleteEsgRule - delete an esg rule
 //
 // PARAMS:
-//     - DeleteEsgArgs: the arguments to delete an esg rule
+//   - DeleteEsgArgs: the arguments to delete an esg rule
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteEsgRule(args *DeleteEsgRuleArgs) error {
 	if args == nil {
 		return fmt.Errorf("The deleteEsgRuleArgs cannot be nil.")
@@ -132,9 +137,10 @@ func (c *Client) DeleteEsgRule(args *DeleteEsgRuleArgs) error {
 // UpdateEsgRule - update esg rule
 //
 // PARAMS:
-//     - CreateEsgRuleArgs: the arguments to update esg rule
+//   - CreateEsgRuleArgs: the arguments to update esg rule
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateEsgRule(args *UpdateEsgRuleArgs) error {
 	if args == nil {
 		return fmt.Errorf("The updateEsgRuleArgs cannot be nil.")

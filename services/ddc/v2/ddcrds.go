@@ -66,10 +66,11 @@ func getDDCAndRDSIds(instanceIds string) (string, string) {
 // CreateInstance - create a Instance with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create a instance
+//   - args: the arguments to create a instance
+//
 // RETURNS:
-//     - *InstanceIds: the result of create RDS, contains new RDS's instanceIds
-//     - error: nil if success otherwise the specific error
+//   - *InstanceIds: the result of create RDS, contains new RDS's instanceIds
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateRds(args *CreateRdsArgs, productType string) (*CreateResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -102,10 +103,11 @@ func (c *Client) CreateRds(args *CreateRdsArgs, productType string) (*CreateResu
 // CreateReadReplica - create a readReplica RDS with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create a readReplica rds
+//   - args: the arguments to create a readReplica rds
+//
 // RETURNS:
-//     - *InstanceIds: the result of create a readReplica RDS, contains the readReplica RDS's instanceIds
-//     - error: nil if success otherwise the specific error
+//   - *InstanceIds: the result of create a readReplica RDS, contains the readReplica RDS's instanceIds
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -141,9 +143,10 @@ func (c *Client) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResult, 
 // UpdateRoGroup - update a roGroup
 //
 // PARAMS:
-//     - body: http request body
+//   - body: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateRoGroup(roGroupId string, args *UpdateRoGroupArgs, productType string) error {
 	if isDDC(productType) {
 		return c.ddcClient.UpdateRoGroup(roGroupId, args)
@@ -154,9 +157,10 @@ func (c *Client) UpdateRoGroup(roGroupId string, args *UpdateRoGroupArgs, produc
 // UpdateRoGroupReplicaWeight- update repica weight in roGroup
 //
 // PARAMS:
-//     - body: http request body
+//   - body: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateRoGroupReplicaWeight(roGroupId string, args *UpdateRoGroupWeightArgs, productType string) error {
 	if isDDC(productType) {
 		return c.ddcClient.UpdateRoGroupReplicaWeight(roGroupId, args)
@@ -167,9 +171,10 @@ func (c *Client) UpdateRoGroupReplicaWeight(roGroupId string, args *UpdateRoGrou
 // ReBalanceRoGroup- Initiate a rebalance for foGroup
 //
 // PARAMS:
-//     - body: http request body
+//   - body: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ReBalanceRoGroup(roGroupId, productType string) error {
 	if len(roGroupId) < 1 {
 		return fmt.Errorf("unset roGroupId")
@@ -183,10 +188,11 @@ func (c *Client) ReBalanceRoGroup(roGroupId, productType string) error {
 // CreateRdsProxy - create a proxy RDS with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create a readReplica rds
+//   - args: the arguments to create a readReplica rds
+//
 // RETURNS:
-//     - *InstanceIds: the result of create a readReplica RDS, contains the readReplica RDS's instanceIds
-//     - error: nil if success otherwise the specific error
+//   - *InstanceIds: the result of create a readReplica RDS, contains the readReplica RDS's instanceIds
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateRdsProxy(args *CreateRdsProxyArgs) (*CreateResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -238,8 +244,8 @@ func (c *Client) listRdsInstance(marker *ListRdsArgs) (*ListRdsResult, error) {
 
 // ListPage - list all instances with page
 // RETURNS:
-//     - *ListRdsResult: the result of list instances with page
-//     - error: nil if success otherwise the specific error
+//   - *ListRdsResult: the result of list instances with page
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListPage(args *ListPageArgs) (*ListPageResult, error) {
 	result, err := c.ddcClient.ListPage(args)
 	return result, err
@@ -247,8 +253,8 @@ func (c *Client) ListPage(args *ListPageArgs) (*ListPageResult, error) {
 
 // ListRds - list all instances
 // RETURNS:
-//     - *ListRdsResult: the result of list instances with marker
-//     - error: nil if success otherwise the specific error
+//   - *ListRdsResult: the result of list instances with marker
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListRds(marker *ListRdsArgs) (*ListRdsResult, error) {
 	var result *ListRdsResult
 	var err error
@@ -295,10 +301,11 @@ func (c *Client) ListRds(marker *ListRdsArgs) (*ListRdsResult, error) {
 // GetDetail - get a specific ddc Instance's detail
 //
 // PARAMS:
-//     - instanceId: the specific ddc Instance's ID
+//   - instanceId: the specific ddc Instance's ID
+//
 // RETURNS:
-//     - *Instance: the specific ddc Instance's detail
-//     - error: nil if success otherwise the specific error
+//   - *Instance: the specific ddc Instance's detail
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetDetail(instanceId string) (*Instance, error) {
 	var result *Instance
 	var err error
@@ -341,9 +348,10 @@ func convertRdsInstance(result *Instance) error {
 // DeleteRds - delete instances
 //
 // PARAMS:
-//    - instanceIds: id of the instance
+//   - instanceIds: id of the instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteRds(instanceIds string) error {
 	var err error
 	ddcIds, rdsIds := getDDCAndRDSIds(instanceIds)
@@ -362,10 +370,11 @@ func (c *Client) DeleteRds(instanceIds string) error {
 // ResizeRds - resize an RDS with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific instanceId
-//     - args: the arguments to resize an RDS
+//   - instanceId: the specific instanceId
+//   - args: the arguments to resize an RDS
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ResizeRds(instanceId string, args *ResizeRdsArgs) (*OrderIdResponse, error) {
 	if isDDCId(instanceId) {
 		return c.ddcClient.ResizeRds(instanceId, args)
@@ -383,10 +392,11 @@ func (c *Client) ResizeRds(instanceId string, args *ResizeRdsArgs) (*OrderIdResp
 // CreateAccount - create a account with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific instanceId
-//     - args: the arguments to create a account
+//   - instanceId: the specific instanceId
+//   - args: the arguments to create a account
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateAccount(instanceId string, args *CreateAccountArgs) error {
 	var err error
 	if isDDCId(instanceId) {
@@ -407,10 +417,11 @@ func (c *Client) CreateAccount(instanceId string, args *CreateAccountArgs) error
 // ListAccount - list all account of a RDS instance with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
+//   - instanceId: the specific rds Instance's ID
+//
 // RETURNS:
-//     - *ListAccountResult: the result of list all account, contains all accounts' meta
-//     - error: nil if success otherwise the specific error
+//   - *ListAccountResult: the result of list all account, contains all accounts' meta
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListAccount(instanceId string) (*ListAccountResult, error) {
 	var result *ListAccountResult
 	var err error
@@ -432,11 +443,12 @@ func (c *Client) ListAccount(instanceId string) (*ListAccountResult, error) {
 // GetAccount - get an account of a RDS instance with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
-//     - accountName: the specific account's name
+//   - instanceId: the specific rds Instance's ID
+//   - accountName: the specific account's name
+//
 // RETURNS:
-//     - *Account: the account's meta
-//     - error: nil if success otherwise the specific error
+//   - *Account: the account's meta
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetAccount(instanceId, accountName string) (*Account, error) {
 	var result *Account
 	var err error
@@ -458,10 +470,11 @@ func (c *Client) GetAccount(instanceId, accountName string) (*Account, error) {
 // DeleteAccount - delete an account of a RDS instance
 //
 // PARAMS:
-//     - instanceIds: the specific instanceIds
-//     - accountName: the specific account's name
+//   - instanceIds: the specific instanceIds
+//   - accountName: the specific account's name
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteAccount(instanceId, accountName string) error {
 	var err error
 	if isDDCId(instanceId) {
@@ -475,10 +488,11 @@ func (c *Client) DeleteAccount(instanceId, accountName string) error {
 // RebootInstance - reboot a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance to be rebooted
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance to be rebooted
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RebootInstance(instanceId string) error {
 	if isDDCId(instanceId) {
 		args := &RebootArgs{IsRebootNow: true}
@@ -492,11 +506,12 @@ func (c *Client) RebootInstance(instanceId string) error {
 // RebootInstance - reboot a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance to be rebooted
-//     - args: reboot args
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance to be rebooted
+//   - args: reboot args
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RebootInstanceWithArgs(instanceId string, args *RebootArgs) (*MaintainTaskIdResult, error) {
 	if isDDCId(instanceId) {
 		return c.ddcClient.RebootInstanceWithArgs(instanceId, args)
@@ -507,11 +522,12 @@ func (c *Client) RebootInstanceWithArgs(instanceId string, args *RebootArgs) (*M
 // UpdateInstanceName - update name of a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to update instanceName
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to update instanceName
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateInstanceName(instanceId string, args *UpdateInstanceNameArgs) error {
 	var err error
 	if isDDCId(instanceId) {
@@ -528,11 +544,12 @@ func (c *Client) UpdateInstanceName(instanceId string, args *UpdateInstanceNameA
 // UpdateSyncMode - update sync mode of a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to update syncMode
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to update syncMode
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifySyncMode(instanceId string, args *ModifySyncModeArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -548,11 +565,12 @@ func (c *Client) ModifySyncMode(instanceId string, args *ModifySyncModeArgs) err
 // ModifyEndpoint - modify the prefix of endpoint
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to modify endpoint
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to modify endpoint
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyEndpoint(instanceId string, args *ModifyEndpointArgs) error {
 	if isDDCId(instanceId) {
 		return DDCNotSupportError()
@@ -565,11 +583,12 @@ func (c *Client) ModifyEndpoint(instanceId string, args *ModifyEndpointArgs) err
 // ModifyPublicAccess - modify public access
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to modify public access
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to modify public access
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyPublicAccess(instanceId string, args *ModifyPublicAccessArgs) error {
 	if isDDCId(instanceId) {
 		return DDCNotSupportError()
@@ -582,11 +601,12 @@ func (c *Client) ModifyPublicAccess(instanceId string, args *ModifyPublicAccessA
 // GetBackupList - get backup list of the instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *GetBackupListResult: result of the backup list
-//     - error: nil if success otherwise the specific error
+//   - *GetBackupListResult: result of the backup list
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetBackupList(instanceId string, args *GetBackupListArgs) (*GetBackupListResult, error) {
 
 	var result *GetBackupListResult
@@ -615,10 +635,11 @@ func (c *Client) GetBackupList(instanceId string, args *GetBackupListArgs) (*Get
 // GetZoneList - list all zone
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
+//   - cli: the client agent which can perform sending request
+//
 // RETURNS:
-//     - *GetZoneListResult: result of the zone list
-//     - error: nil if success otherwise the specific error
+//   - *GetZoneListResult: result of the zone list
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetZoneList(productType string) (*GetZoneListResult, error) {
 	if isDDC(productType) {
 		return c.ddcClient.GetZoneList()
@@ -638,11 +659,12 @@ func (c *Client) GetZoneList(productType string) (*GetZoneListResult, error) {
 // ListsSubnet - list all Subnets
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to list all subnets, not necessary
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to list all subnets, not necessary
+//
 // RETURNS:
-//     - *ListSubnetsResult: result of the subnet list
-//     - error: nil if success otherwise the specific error
+//   - *ListSubnetsResult: result of the subnet list
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListSubnets(args *ListSubnetsArgs, productType string) (*ListSubnetsResult, error) {
 	if isDDC(productType) {
 		return c.ddcClient.ListSubnets(args)
@@ -664,10 +686,11 @@ func (c *Client) ListSubnets(args *ListSubnetsArgs, productType string) (*ListSu
 // GetSecurityIps - get all SecurityIps
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
+//   - instanceId: the specific rds Instance's ID
+//
 // RETURNS:
-//     - *GetSecurityIpsResult: all security IP
-//     - error: nil if success otherwise the specific error
+//   - *GetSecurityIpsResult: all security IP
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetSecurityIps(instanceId string) (*GetSecurityIpsResult, error) {
 	if isDDCId(instanceId) {
 		return c.ddcClient.GetSecurityIps(instanceId)
@@ -684,11 +707,12 @@ func (c *Client) GetSecurityIps(instanceId string) (*GetSecurityIpsResult, error
 // UpdateSecurityIps - update SecurityIps
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
-//     - Etag: get latest etag by GetSecurityIps
-//     - Args: all SecurityIps
+//   - instanceId: the specific rds Instance's ID
+//   - Etag: get latest etag by GetSecurityIps
+//   - Args: all SecurityIps
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateSecurityIps(instanceId, Etag string, args *UpdateSecurityIpsArgs) error {
 	if isDDCId(instanceId) {
 		return c.ddcClient.UpdateSecurityIps(instanceId, args)
@@ -701,10 +725,11 @@ func (c *Client) UpdateSecurityIps(instanceId, Etag string, args *UpdateSecurity
 // ListParameters - list all parameters of a RDS instance
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
+//   - instanceId: the specific rds Instance's ID
+//
 // RETURNS:
-//     - *ListParametersResult: the result of list all parameters
-//     - error: nil if success otherwise the specific error
+//   - *ListParametersResult: the result of list all parameters
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListParameters(instanceId string) (*ListParametersResult, error) {
 	if isDDCId(instanceId) {
 		return c.ddcClient.ListParameters(instanceId)
@@ -728,11 +753,12 @@ func (c *Client) ListParameters(instanceId string) (*ListParametersResult, error
 // UpdateParameter - update Parameter
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
-//     - Etag: get latest etag by ListParameters
-//     - Args: *UpdateParameterArgs
+//   - instanceId: the specific rds Instance's ID
+//   - Etag: get latest etag by ListParameters
+//   - Args: *UpdateParameterArgs
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateParameter(instanceId, Etag string, args *UpdateParameterArgs) (*ProducedMaintainTaskResult, error) {
 	if isDDCId(instanceId) {
 		return c.ddcClient.UpdateParameter(instanceId, args)
@@ -749,9 +775,10 @@ func (c *Client) UpdateParameter(instanceId, Etag string, args *UpdateParameterA
 // CreateDeploySet - create a deploy set
 //
 // PARAMS:
-//     - body: http request body
+//   - body: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateDeploySet(poolId string, args *CreateDeployRequest) (*CreateDeployResult, error) {
 	return c.ddcClient.CreateDeploySet(poolId, args)
 }
@@ -759,25 +786,26 @@ func (c *Client) CreateDeploySet(poolId string, args *CreateDeployRequest) (*Cre
 // UpdateDeploySet - create a deploy set
 //
 // PARAMS:
-//     - body: http request body
+//   - body: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateDeploySet(poolId, deployId string, args *UpdateDeployRequest) error {
 	return c.ddcClient.UpdateDeploySet(poolId, deployId, args)
 }
 
 // ListDeploySets - list all deploy sets
 // RETURNS:
-//     - *ListResultWithMarker: the result of list deploy sets with marker
-//     - error: nil if success otherwise the specific error
+//   - *ListResultWithMarker: the result of list deploy sets with marker
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListDeploySets(poolId string, marker *Marker) (*ListDeploySetResult, error) {
 	return c.ddcClient.ListDeploySets(poolId, marker)
 }
 
 // ListPool - list current pools
 // RETURNS:
-//     - *ListResultWithMarker: the result of list hosts with marker
-//     - error: nil if success otherwise the specific error
+//   - *ListResultWithMarker: the result of list hosts with marker
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListPool(marker *Marker, productType string) (*ListPoolResult, error) {
 	if !isDDC(productType) {
 		return nil, RDSNotSupportError()
@@ -788,12 +816,13 @@ func (c *Client) ListPool(marker *Marker, productType string) (*ListPoolResult, 
 // GetDeploySet - get details of the deploy set
 //
 // PARAMS:
-//     - poolId: the id of the pool
-//     - cli: the client agent which can perform sending request
-//     - deploySetId: the id of the deploy set
+//   - poolId: the id of the pool
+//   - cli: the client agent which can perform sending request
+//   - deploySetId: the id of the deploy set
+//
 // RETURNS:
-//     - *DeploySet: the detail of the deploy set
-//     - error: nil if success otherwise the specific error
+//   - *DeploySet: the detail of the deploy set
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetDeploySet(poolId string, deploySetId string) (*DeploySet, error) {
 	return c.ddcClient.GetDeploySet(poolId, deploySetId)
 }
@@ -801,11 +830,12 @@ func (c *Client) GetDeploySet(poolId string, deploySetId string) (*DeploySet, er
 // DeleteDeploySet - delete a deploy set
 //
 // PARAMS:
-//     - poolId: the id of the pool
-//     - deploySetId: the id of the deploy set
-//     - clientToken: idempotent token,  an ASCII string no longer than 64 bits
+//   - poolId: the id of the pool
+//   - deploySetId: the id of the deploy set
+//   - clientToken: idempotent token,  an ASCII string no longer than 64 bits
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteDeploySet(poolId string, deploySetId string) error {
 	return c.ddcClient.DeleteDeploySet(poolId, deploySetId)
 }
@@ -813,9 +843,10 @@ func (c *Client) DeleteDeploySet(poolId string, deploySetId string) error {
 // CreateBackup - create backup of the instance
 //
 // PARAMS:
-//     - instanceId: the id of the instance
+//   - instanceId: the id of the instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateBackup(instanceId string) error {
 	if !isDDCId(instanceId) {
 		return RDSNotSupportError()
@@ -826,10 +857,11 @@ func (c *Client) CreateBackup(instanceId string) error {
 // ModifyBackupPolicy - update backupPolicy
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
-//     - Args: the specific rds Instance's BackupPolicy
+//   - instanceId: the specific rds Instance's ID
+//   - Args: the specific rds Instance's BackupPolicy
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyBackupPolicy(instanceId string, args *BackupPolicy) error {
 	if !isDDCId(instanceId) {
 		return RDSNotSupportError()
@@ -840,11 +872,12 @@ func (c *Client) ModifyBackupPolicy(instanceId string, args *BackupPolicy) error
 // GetBackupDetail - get details of the instance'Backup
 //
 // PARAMS:
-//     - instanceId: the id of the instance
-//     - snapshotId: the id of the backup
+//   - instanceId: the id of the instance
+//   - snapshotId: the id of the backup
+//
 // RETURNS:
-//     - *BackupDetailResult: the detail of the backup
-//     - error: nil if success otherwise the specific error
+//   - *BackupDetailResult: the detail of the backup
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetBackupDetail(instanceId string, snapshotId string) (*BackupDetailResult, error) {
 	if !isDDCId(instanceId) {
 		return nil, RDSNotSupportError()
@@ -855,10 +888,11 @@ func (c *Client) GetBackupDetail(instanceId string, snapshotId string) (*BackupD
 // GetBinlogList - get backup list of the instance
 //
 // PARAMS:
-//     - instanceId: id of the instance
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *BinlogListResult: result of the backup list
-//     - error: nil if success otherwise the specific error
+//   - *BinlogListResult: result of the backup list
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetBinlogList(instanceId string, datetime string) (*BinlogListResult, error) {
 	if !isDDCId(instanceId) {
 		return nil, RDSNotSupportError()
@@ -869,11 +903,12 @@ func (c *Client) GetBinlogList(instanceId string, datetime string) (*BinlogListR
 // GetBinlogDetail - get details of the instance'Binlog
 //
 // PARAMS:
-//     - instanceId: the id of the instance
-//     - binlog: the id of the binlog
+//   - instanceId: the id of the instance
+//   - binlog: the id of the binlog
+//
 // RETURNS:
-//     - *BinlogDetailResult: the detail of the binlog
-//     - error: nil if success otherwise the specific error
+//   - *BinlogDetailResult: the detail of the binlog
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetBinlogDetail(instanceId string, binlog string) (*BinlogDetailResult, error) {
 	if !isDDCId(instanceId) {
 		return nil, RDSNotSupportError()
@@ -884,9 +919,10 @@ func (c *Client) GetBinlogDetail(instanceId string, binlog string) (*BinlogDetai
 // SwitchInstance - main standby switching of the instance
 //
 // PARAMS:
-//     - instanceId: the id of the instance
+//   - instanceId: the id of the instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) SwitchInstance(instanceId string, args *SwitchArgs) (*ProducedMaintainTaskResult, error) {
 	if !isDDCId(instanceId) {
 		return nil, RDSNotSupportError()
@@ -897,10 +933,11 @@ func (c *Client) SwitchInstance(instanceId string, args *SwitchArgs) (*ProducedM
 // CreateDatabase - create a database with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific instanceId
-//     - args: the arguments to create a account
+//   - instanceId: the specific instanceId
+//   - args: the arguments to create a account
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateDatabase(instanceId string, args *CreateDatabaseArgs) error {
 	if !isDDCId(instanceId) {
 		return RDSNotSupportError()
@@ -911,10 +948,11 @@ func (c *Client) CreateDatabase(instanceId string, args *CreateDatabaseArgs) err
 // DeleteDatabase - delete an database of a DDC instance
 //
 // PARAMS:
-//     - instanceIds: the specific instanceIds
-//     - dbName: the specific database's name
+//   - instanceIds: the specific instanceIds
+//   - dbName: the specific database's name
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteDatabase(instanceId, dbName string) error {
 	if !isDDCId(instanceId) {
 		return RDSNotSupportError()
@@ -925,11 +963,12 @@ func (c *Client) DeleteDatabase(instanceId, dbName string) error {
 // UpdateDatabaseRemark - update a database remark with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific instanceId
-//	   - dbName: the specific accountName
-//     - args: the arguments to update a database remark
+//   - instanceId: the specific instanceId
+//   - dbName: the specific accountName
+//   - args: the arguments to update a database remark
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateDatabaseRemark(instanceId string, dbName string, args *UpdateDatabaseRemarkArgs) error {
 	if !isDDCId(instanceId) {
 		return RDSNotSupportError()
@@ -940,11 +979,12 @@ func (c *Client) UpdateDatabaseRemark(instanceId string, dbName string, args *Up
 // GetDatabase - get an database of a DDC instance with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
-//     - dbName: the specific database's name
+//   - instanceId: the specific rds Instance's ID
+//   - dbName: the specific database's name
+//
 // RETURNS:
-//     - *Database: the database's meta
-//     - error: nil if success otherwise the specific error
+//   - *Database: the database's meta
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetDatabase(instanceId, dbName string) (*Database, error) {
 	if !isDDCId(instanceId) {
 		return nil, RDSNotSupportError()
@@ -955,10 +995,11 @@ func (c *Client) GetDatabase(instanceId, dbName string) (*Database, error) {
 // ListDatabase - list all database of a DDC instance with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific ddc Instance's ID
+//   - instanceId: the specific ddc Instance's ID
+//
 // RETURNS:
-//     - *ListDatabaseResult: the result of list all database, contains all databases' meta
-//     - error: nil if success otherwise the specific error
+//   - *ListDatabaseResult: the result of list all database, contains all databases' meta
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListDatabase(instanceId string) (*ListDatabaseResult, error) {
 	if !isDDCId(instanceId) {
 		return nil, RDSNotSupportError()
@@ -969,10 +1010,11 @@ func (c *Client) ListDatabase(instanceId string) (*ListDatabaseResult, error) {
 // GetTableAmount - query amount of tables
 //
 // PARAMS:
-//     - args: the specific ddc instanceId, dbName and search pattern
+//   - args: the specific ddc instanceId, dbName and search pattern
+//
 // RETURNS:
-//     - *TableAmountResult: the size of the table that meets the criteria
-//     - error: nil if success otherwise the specific error
+//   - *TableAmountResult: the size of the table that meets the criteria
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetTableAmount(args *GetTableAmountArgs) (*TableAmountResult, error) {
 	return c.ddcClient.GetTableAmount(args)
 }
@@ -980,10 +1022,11 @@ func (c *Client) GetTableAmount(args *GetTableAmountArgs) (*TableAmountResult, e
 // GetDatabaseDiskUsage - get the disk footprint and the remaining space for database
 //
 // PARAMS:
-//     - instanceId: the specific ddc Instance's ID
+//   - instanceId: the specific ddc Instance's ID
+//
 // RETURNS:
-//     - *ListDatabaseResult: the disk footprint and the remaining space for database
-//     - error: nil if success otherwise the specific error
+//   - *ListDatabaseResult: the disk footprint and the remaining space for database
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetDatabaseDiskUsage(instanceId, dbName string) (*DatabaseDiskUsageResult, error) {
 	return c.ddcClient.GetDatabaseDiskUsage(instanceId, dbName)
 }
@@ -991,10 +1034,11 @@ func (c *Client) GetDatabaseDiskUsage(instanceId, dbName string) (*DatabaseDiskU
 // GetRecoverableDateTime - get a list of recoverable times
 //
 // PARAMS:
-//     - instanceId: the specific ddc Instance's ID
+//   - instanceId: the specific ddc Instance's ID
+//
 // RETURNS:
-//     - *GetRecoverableDateTimeResult: the result of list all recoverable datetimes
-//     - error: nil if success otherwise the specific error
+//   - *GetRecoverableDateTimeResult: the result of list all recoverable datetimes
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetRecoverableDateTime(instanceId string) (*GetRecoverableDateTimeResult, error) {
 	return c.ddcClient.GetRecoverableDateTime(instanceId)
 }
@@ -1002,10 +1046,11 @@ func (c *Client) GetRecoverableDateTime(instanceId string) (*GetRecoverableDateT
 // RecoverToSourceInstanceByDatetime - recover database or tables for the specific instance by a datetime
 //
 // PARAMS:
-//     - instanceId: the specific ddc Instance's ID
-//     - args: recover instance args
+//   - instanceId: the specific ddc Instance's ID
+//   - args: recover instance args
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RecoverToSourceInstanceByDatetime(instanceId string, args *RecoverInstanceArgs) (*MaintainTaskIdResult, error) {
 	return c.ddcClient.RecoverToSourceInstanceByDatetime(instanceId, args)
 }
@@ -1013,11 +1058,12 @@ func (c *Client) RecoverToSourceInstanceByDatetime(instanceId string, args *Reco
 // UpdateAccountPassword - update a account password with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific instanceId
-//	   - accountName: the specific accountName
-//     - args: the arguments to update a account password
+//   - instanceId: the specific instanceId
+//   - accountName: the specific accountName
+//   - args: the arguments to update a account password
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateAccountPassword(instanceId string, accountName string, args *UpdateAccountPasswordArgs) error {
 	if !isDDCId(instanceId) {
 		return RDSNotSupportError()
@@ -1028,11 +1074,12 @@ func (c *Client) UpdateAccountPassword(instanceId string, accountName string, ar
 // UpdateAccountDesc - update a account desc with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific instanceId
-//	   - accountName: the specific accountName
-//     - args: the arguments to update a account remark
+//   - instanceId: the specific instanceId
+//   - accountName: the specific accountName
+//   - args: the arguments to update a account remark
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateAccountDesc(instanceId string, accountName string, args *UpdateAccountDescArgs) error {
 	if !isDDCId(instanceId) {
 		return RDSNotSupportError()
@@ -1043,11 +1090,12 @@ func (c *Client) UpdateAccountDesc(instanceId string, accountName string, args *
 // UpdateAccountPrivileges - update a account privileges with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific instanceId
-//	   - accountName: the specific accountName
-//     - args: the arguments to update a account privileges
+//   - instanceId: the specific instanceId
+//   - accountName: the specific accountName
+//   - args: the arguments to update a account privileges
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateAccountPrivileges(instanceId string, accountName string, args *UpdateAccountPrivilegesArgs) error {
 	if !isDDCId(instanceId) {
 		return RDSNotSupportError()
@@ -1058,10 +1106,11 @@ func (c *Client) UpdateAccountPrivileges(instanceId string, accountName string, 
 // ListRoGroup - list all roGroups of a DDC instance with the specific parameters
 //
 // PARAMS:
-//     - instanceId: the specific rds Instance's ID
+//   - instanceId: the specific rds Instance's ID
+//
 // RETURNS:
-//     - *ListRoGroupResult: All roGroups of the current instance
-//     - error: nil if success otherwise the specific error
+//   - *ListRoGroupResult: All roGroups of the current instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListRoGroup(instanceId string) (*ListRoGroupResult, error) {
 	if !isDDCId(instanceId) {
 		return nil, RDSNotSupportError()
@@ -1073,8 +1122,8 @@ func (c *Client) ListRoGroup(instanceId string) (*ListRoGroupResult, error) {
 //
 // PARAMS:
 // RETURNS:
-//     - *ListVpc: All vpc of
-//     - error: nil if success otherwise the specific error
+//   - *ListVpc: All vpc of
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListVpc(productType string) (*[]VpcVo, error) {
 	if !isDDC(productType) {
 		return nil, RDSNotSupportError()
@@ -1085,9 +1134,10 @@ func (c *Client) ListVpc(productType string) (*[]VpcVo, error) {
 // autoRenew - create autoRenew
 //
 // PARAMS:
-//     - Args: *autoRenewArgs
+//   - Args: *autoRenewArgs
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) AutoRenew(args *AutoRenewArgs, productType string) error {
 	if isDDC(productType) {
 		return DDCNotSupportError()
@@ -1107,12 +1157,13 @@ func (c *Client) AutoRenew(args *AutoRenewArgs, productType string) error {
 // GetMaintenTime - get details of the maintenTime
 //
 // PARAMS:
-//     - poolId: the id of the pool
-//     - cli: the client agent which can perform sending request
-//     - deploySetId: the id of the deploy set
+//   - poolId: the id of the pool
+//   - cli: the client agent which can perform sending request
+//   - deploySetId: the id of the deploy set
+//
 // RETURNS:
-//     - *DeploySet: the detail of the deploy set
-//     - error: nil if success otherwise the specific error
+//   - *DeploySet: the detail of the deploy set
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetMaintainTime(instanceId string) (*MaintainTime, error) {
 	if !isDDCId(instanceId) {
 		return nil, RDSNotSupportError()
@@ -1123,9 +1174,10 @@ func (c *Client) GetMaintainTime(instanceId string) (*MaintainTime, error) {
 // UpdateMaintenTime - update UpdateMaintenTime of instance
 //
 // PARAMS:
-//     - body: http request body
+//   - body: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateMaintainTime(instanceId string, args *MaintainTime) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -1139,10 +1191,11 @@ func (c *Client) UpdateMaintainTime(instanceId string, args *MaintainTime) error
 // ListRecycleInstances - list all instances in recycler with marker
 //
 // PARAMS:
-//     - marker: marker page
+//   - marker: marker page
+//
 // RETURNS:
-//     - *RecyclerInstanceList: the result of instances in recycler
-//     - error: nil if success otherwise the specific error
+//   - *RecyclerInstanceList: the result of instances in recycler
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListRecycleInstances(marker *Marker, productType string) (*RecyclerInstanceList, error) {
 	if !isDDC(productType) {
 		return nil, RDSNotSupportError()
@@ -1153,9 +1206,10 @@ func (c *Client) ListRecycleInstances(marker *Marker, productType string) (*Recy
 // RecoverRecyclerInstances - batch recover instances that in recycler
 //
 // PARAMS:
-//     - instanceIds: instanceId list to recover
+//   - instanceIds: instanceId list to recover
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RecoverRecyclerInstances(instanceIds []string) (*OrderIdResponse, error) {
 	if instanceIds == nil || len(instanceIds) < 1 {
 		return nil, fmt.Errorf("unset instanceIds")
@@ -1175,9 +1229,10 @@ func (c *Client) RecoverRecyclerInstances(instanceIds []string) (*OrderIdRespons
 // DeleteRecyclerInstances - batch delete instances that in recycler
 //
 // PARAMS:
-//     - instanceIds: instanceId list to delete
+//   - instanceIds: instanceId list to delete
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteRecyclerInstances(instanceIds []string) error {
 	if instanceIds == nil || len(instanceIds) < 1 {
 		return fmt.Errorf("unset instanceIds")
@@ -1197,9 +1252,10 @@ func (c *Client) DeleteRecyclerInstances(instanceIds []string) error {
 // ListSecurityGroupByVpcId - list security groups by vpc id
 //
 // PARAMS:
-//     - vpcId: id of vpc
+//   - vpcId: id of vpc
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListSecurityGroupByVpcId(vpcId string) (*[]SecurityGroup, error) {
 	return c.ddcClient.ListSecurityGroupByVpcId(vpcId)
 }
@@ -1207,10 +1263,11 @@ func (c *Client) ListSecurityGroupByVpcId(vpcId string) (*[]SecurityGroup, error
 // ListSecurityGroupByInstanceId - list security groups by instance id
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *ListSecurityGroupResult: list secrity groups result of instance
-//     - error: nil if success otherwise the specific error
+//   - *ListSecurityGroupResult: list secrity groups result of instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListSecurityGroupByInstanceId(instanceId string) (*ListSecurityGroupResult, error) {
 	if !isDDCId(instanceId) {
 		return nil, RDSNotSupportError()
@@ -1221,9 +1278,10 @@ func (c *Client) ListSecurityGroupByInstanceId(instanceId string) (*ListSecurity
 // BindSecurityGroups - bind SecurityGroup to instances
 //
 // PARAMS:
-//     - args: http request body
+//   - args: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BindSecurityGroups(args *SecurityGroupArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -1240,9 +1298,10 @@ func (c *Client) BindSecurityGroups(args *SecurityGroupArgs) error {
 // UnBindSecurityGroups - unbind SecurityGroup to instances
 //
 // PARAMS:
-//     - args: http request body
+//   - args: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UnBindSecurityGroups(args *SecurityGroupArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -1259,9 +1318,10 @@ func (c *Client) UnBindSecurityGroups(args *SecurityGroupArgs) error {
 // ReplaceSecurityGroups - replace SecurityGroup to instances
 //
 // PARAMS:
-//     - args: http request body
+//   - args: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ReplaceSecurityGroups(args *SecurityGroupArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -1278,10 +1338,11 @@ func (c *Client) ReplaceSecurityGroups(args *SecurityGroupArgs) error {
 // ListLogByInstanceId - list error or slow logs of instance
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *[]Log:logs of instance
-//     - error: nil if success otherwise the specific error
+//   - *[]Log:logs of instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListLogByInstanceId(instanceId string, args *ListLogArgs) (*[]Log, error) {
 	if !isDDCId(instanceId) {
 		return nil, RDSNotSupportError()
@@ -1292,10 +1353,11 @@ func (c *Client) ListLogByInstanceId(instanceId string, args *ListLogArgs) (*[]L
 // GetLogById - list log's detail of instance
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *Log:log's detail of instance
-//     - error: nil if success otherwise the specific error
+//   - *Log:log's detail of instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetLogById(instanceId, logId string, args *GetLogArgs) (*LogDetail, error) {
 	if !isDDCId(instanceId) {
 		return nil, RDSNotSupportError()
@@ -1306,11 +1368,12 @@ func (c *Client) GetLogById(instanceId, logId string, args *GetLogArgs) (*LogDet
 // LazyDropCreateHardLink - create a hard link for specified large table
 //
 // PARAMS:
-//     - instanceId: id of instance
-//     - dbName: name of database
-//     - tableName: name of table
+//   - instanceId: id of instance
+//   - dbName: name of database
+//   - tableName: name of table
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) LazyDropCreateHardLink(instanceId, dbName, tableName string) error {
 	if !isDDCId(instanceId) {
 		return RDSNotSupportError()
@@ -1321,11 +1384,12 @@ func (c *Client) LazyDropCreateHardLink(instanceId, dbName, tableName string) er
 // LazyDropDeleteHardLink - delete the hard link for specified large table
 //
 // PARAMS:
-//     - instanceId: id of instance
-//     - dbName: name of database
-//     - tableName: name of table
+//   - instanceId: id of instance
+//   - dbName: name of database
+//   - tableName: name of table
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) LazyDropDeleteHardLink(instanceId, dbName, tableName string) (*MaintainTaskIdResult, error) {
 	if !isDDCId(instanceId) {
 		return nil, RDSNotSupportError()
@@ -1336,10 +1400,11 @@ func (c *Client) LazyDropDeleteHardLink(instanceId, dbName, tableName string) (*
 // GetMachineInfo - get machine detail of instance
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *MachineInfo:info of machine resource
-//     - error: nil if success otherwise the specific error
+//   - *MachineInfo:info of machine resource
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetMachineInfo(instanceId string) (*MachineInfo, error) {
 	if !isDDCId(instanceId) {
 		return nil, RDSNotSupportError()
@@ -1350,10 +1415,11 @@ func (c *Client) GetMachineInfo(instanceId string) (*MachineInfo, error) {
 // GetDisk - get disk detail of instance
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *Disk:disk of instance
-//     - error: nil if success otherwise the specific error
+//   - *Disk:disk of instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetDisk(instanceId string) (*Disk, error) {
 	if !isDDCId(instanceId) {
 		return nil, RDSNotSupportError()
@@ -1364,11 +1430,12 @@ func (c *Client) GetDisk(instanceId string) (*Disk, error) {
 // GetResidual - get residual of pool
 //
 // PARAMS:
-//     - poolId: id of pool
-//     - zoneName: the zone name
+//   - poolId: id of pool
+//   - zoneName: the zone name
+//
 // RETURNS:
-//     - *GetResidualResult:residual of pool
-//     - error: nil if success otherwise the specific error
+//   - *GetResidualResult:residual of pool
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetResidual(poolId string) (*GetResidualResult, error) {
 	return c.ddcClient.GetResidual(poolId)
 }
@@ -1376,11 +1443,12 @@ func (c *Client) GetResidual(poolId string) (*GetResidualResult, error) {
 // GetFlavorCapacity - get flavor capacity of pool
 //
 // PARAMS:
-//     - poolId: id of pool
-//     - args: request params
+//   - poolId: id of pool
+//   - args: request params
+//
 // RETURNS:
-//     - *GetResidualResult:get flavor capacity of pool
-//     - error: nil if success otherwise the specific error
+//   - *GetResidualResult:get flavor capacity of pool
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetFlavorCapacity(poolId string, args *GetFlavorCapacityArgs) (*GetFlavorCapacityResult, error) {
 	return c.ddcClient.GetFlavorCapacity(poolId, args)
 }
@@ -1388,11 +1456,12 @@ func (c *Client) GetFlavorCapacity(poolId string, args *GetFlavorCapacityArgs) (
 // KillSession - start kill session tasks
 //
 // PARAMS:
-//     - instanceId: id of the instance
-//     - args: instance role and sessionIds
+//   - instanceId: id of the instance
+//   - args: instance role and sessionIds
+//
 // RETURNS:
-//     - *KillSessionResult: the response of kill session task id
-//     - error: nil if success otherwise the specific error
+//   - *KillSessionResult: the response of kill session task id
+//   - error: nil if success otherwise the specific error
 func (c *Client) KillSession(instanceId string, args *KillSessionArgs) (*KillSessionResult, error) {
 	return c.ddcClient.KillSession(instanceId, args)
 }
@@ -1400,11 +1469,12 @@ func (c *Client) KillSession(instanceId string, args *KillSessionArgs) (*KillSes
 // GetKillSessionTask - get kill session tasks by taskId
 //
 // PARAMS:
-//     - instanceId: the specific instanceId of ddc
-//     - taskId: kill session returned id
+//   - instanceId: the specific instanceId of ddc
+//   - taskId: kill session returned id
+//
 // RETURNS:
-//     - *GetKillSessionTaskResult: the response of kill session task
-//     - error: nil if success otherwise the specific error
+//   - *GetKillSessionTaskResult: the response of kill session task
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetKillSessionTask(instanceId string, taskId int) (*GetKillSessionTaskResult, error) {
 	return c.ddcClient.GetKillSessionTask(instanceId, taskId)
 }
@@ -1413,8 +1483,8 @@ func (c *Client) GetKillSessionTask(instanceId string, taskId int) (*GetKillSess
 //
 // PARAMS:
 // RETURNS:
-//     - *ListMaintainTaskResult: the response of maintain tasks
-//     - error: nil if success otherwise the specific error
+//   - *ListMaintainTaskResult: the response of maintain tasks
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetMaintainTaskList(args *GetMaintainTaskListArgs) (*ListMaintainTaskResult, error) {
 	return c.ddcClient.GetMaintainTaskList(args)
 }
@@ -1423,8 +1493,8 @@ func (c *Client) GetMaintainTaskList(args *GetMaintainTaskListArgs) (*ListMainta
 //
 // PARAMS:
 // RETURNS:
-//     - *MaintainTaskDetailList: the response of maintain task detail
-//     - error: nil if success otherwise the specific error
+//   - *MaintainTaskDetailList: the response of maintain task detail
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetMaintainTaskDetail(taskIds string) (*MaintainTaskDetailList, error) {
 	return c.ddcClient.GetMaintainTaskDetail(taskIds)
 }
@@ -1432,9 +1502,10 @@ func (c *Client) GetMaintainTaskDetail(taskIds string) (*MaintainTaskDetailList,
 // ExecuteMaintainTaskImmediately - execute maintain task immediately
 //
 // PARAMS:
-//     - taskId: id of the task
+//   - taskId: id of the task
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ExecuteMaintainTaskImmediately(taskId string) error {
 	return c.ddcClient.ExecuteMaintainTaskImmediately(taskId)
 }
@@ -1442,9 +1513,10 @@ func (c *Client) ExecuteMaintainTaskImmediately(taskId string) error {
 // CancelMaintainTask - cancel maintain task
 //
 // PARAMS:
-//     - taskId: id of the task
+//   - taskId: id of the task
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) CancelMaintainTask(taskId string) error {
 	return c.ddcClient.CancelMaintainTask(taskId)
 }
@@ -1453,8 +1525,8 @@ func (c *Client) CancelMaintainTask(taskId string) error {
 //
 // PARAMS:
 // RETURNS:
-//     - *AccessLog: the access logs's download info
-//     - error: nil if success otherwise the specific error
+//   - *AccessLog: the access logs's download info
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetAccessLog(date string) (*AccessLog, error) {
 	return c.ddcClient.GetAccessLog(date)
 }
@@ -1463,8 +1535,8 @@ func (c *Client) GetAccessLog(date string) (*AccessLog, error) {
 //
 // PARAMS:
 // RETURNS:
-//     - *ErrorLogsResponse: the error logs
-//     - error: nil if success otherwise the specific error
+//   - *ErrorLogsResponse: the error logs
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetErrorLogs(args *GetErrorLogsArgs) (*ErrorLogsResponse, error) {
 	return c.ddcClient.GetErrorLogs(args)
 }
@@ -1473,8 +1545,8 @@ func (c *Client) GetErrorLogs(args *GetErrorLogsArgs) (*ErrorLogsResponse, error
 //
 // PARAMS:
 // RETURNS:
-//     - *SlowLogsResponse: the slow logs
-//     - error: nil if success otherwise the specific error
+//   - *SlowLogsResponse: the slow logs
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetSlowLogs(args *GetSlowLogsArgs) (*SlowLogsResponse, error) {
 	return c.ddcClient.GetSlowLogs(args)
 }
@@ -1483,8 +1555,8 @@ func (c *Client) GetSlowLogs(args *GetSlowLogsArgs) (*SlowLogsResponse, error) {
 //
 // PARAMS:
 // RETURNS:
-//     - *GetBackupStatusResponse: the response of backup status
-//     - error: nil if success otherwise the specific error
+//   - *GetBackupStatusResponse: the response of backup status
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetInstanceBackupStatus(instanceId string) (*GetBackupStatusResponse, error) {
 	return c.ddcClient.GetInstanceBackupStatus(instanceId)
 }
@@ -1492,10 +1564,11 @@ func (c *Client) GetInstanceBackupStatus(instanceId string) (*GetBackupStatusRes
 // InstanceVersionRollBack - rollback instance version from 5.7 to 5.6
 //
 // PARAMS:
-//     - instanceId: id of the instance
-//     - args: the arguments to set WaitSwitch
+//   - instanceId: id of the instance
+//   - args: the arguments to set WaitSwitch
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) InstanceVersionRollBack(instanceId string, args *InstanceVersionRollBackArg) (*MaintainTaskIdResult, error) {
 	return c.ddcClient.InstanceVersionRollBack(instanceId, args)
 }
@@ -1503,10 +1576,11 @@ func (c *Client) InstanceVersionRollBack(instanceId string, args *InstanceVersio
 // InstanceVersionUpgrade - upgrade instance version from 5.6 to 5.7
 //
 // PARAMS:
-//     - instanceId: id of the instance
-//     - args: the arguments to set IsUpgradeNow
+//   - instanceId: id of the instance
+//   - args: the arguments to set IsUpgradeNow
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) InstanceVersionUpgrade(instanceId string, args *InstanceVersionUpgradeArg) (*MaintainTaskIdResult, error) {
 	return c.ddcClient.InstanceVersionUpgrade(instanceId, args)
 }
@@ -1514,10 +1588,11 @@ func (c *Client) InstanceVersionUpgrade(instanceId string, args *InstanceVersion
 // GetInstanceSyncDelay - get readonly instance syncDelay and syncStatus.
 //
 // PARAMS:
-//     - instanceId: id of the instance
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *InstanceSyncDelayResponse: the response of syncDelay
-//     - error: nil if success otherwise the specific error
+//   - *InstanceSyncDelayResponse: the response of syncDelay
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetInstanceSyncDelay(instanceId string) (*InstanceSyncDelayResponse, error) {
 	return c.ddcClient.GetInstanceSyncDelay(instanceId)
 }
@@ -1525,10 +1600,11 @@ func (c *Client) GetInstanceSyncDelay(instanceId string) (*InstanceSyncDelayResp
 // InstanceSyncDelayReplication - start or stop readonly instance syncDelay.
 //
 // PARAMS:
-//     - instanceId: id of the instance
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *InstanceSyncDelayReplicationResponse: the response of success
-//     - error: nil if success otherwise the specific error
+//   - *InstanceSyncDelayReplicationResponse: the response of success
+//   - error: nil if success otherwise the specific error
 func (c *Client) InstanceSyncDelayReplication(instanceId string, args *InstanceSyncDelayReplicationArg) (*InstanceSyncDelayReplicationResponse, error) {
 	return c.ddcClient.InstanceSyncDelayReplication(instanceId, args)
 }
@@ -1536,10 +1612,11 @@ func (c *Client) InstanceSyncDelayReplication(instanceId string, args *InstanceS
 // SnapshotAccessDetail - get snapshot access detail
 //
 // PARAMS:
-//     - args: the arguments to get snapshot access detail
+//   - args: the arguments to get snapshot access detail
+//
 // RETURNS:
-//     - *AccessDetail
-//     - error: nil if success otherwise the specific error
+//   - *AccessDetail
+//   - error: nil if success otherwise the specific error
 func (c *Client) SnapshotAccessDetail(args *AccessDetailArgs) (*BackupAccessDetail, error) {
 
 	return c.ddcClient.SnapshotAccessDetail(args)
@@ -1548,10 +1625,11 @@ func (c *Client) SnapshotAccessDetail(args *AccessDetailArgs) (*BackupAccessDeta
 // BinlogAccessDetail - get snapshot access detail
 //
 // PARAMS:
-//     - args: the arguments to get snapshot access detail
+//   - args: the arguments to get snapshot access detail
+//
 // RETURNS:
-//     - *AccessDetail
-//     - error: nil if success otherwise the specific error
+//   - *AccessDetail
+//   - error: nil if success otherwise the specific error
 func (c *Client) BinlogAccessDetail(args *AccessDetailArgs) (*BackupAccessDetail, error) {
 
 	return c.ddcClient.BinlogAccessDetail(args)

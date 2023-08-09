@@ -26,10 +26,11 @@ import (
 // ListFlavors - list all available flavors
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
+//   - cli: the client agent which can perform sending request
+//
 // RETURNS:
-//     - *ListFlavorsResult: the result of list all flavors
-//     - error: nil if success otherwise the specific error
+//   - *ListFlavorsResult: the result of list all flavors
+//   - error: nil if success otherwise the specific error
 func ListFlavors(cli bce.Client) (*ListFlavorsResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -56,11 +57,12 @@ func ListFlavors(cli bce.Client) (*ListFlavorsResult, error) {
 // GetFlavorDetail - get details of the specified flavor
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - flavorId: the id of the flavor
+//   - cli: the client agent which can perform sending request
+//   - flavorId: the id of the flavor
+//
 // RETURNS:
-//     - *GetFlavorDetailResult: the detail of the specified flavor
-//     - error: nil if success otherwise the specific error
+//   - *GetFlavorDetailResult: the detail of the specified flavor
+//   - error: nil if success otherwise the specific error
 func GetFlavorDetail(cli bce.Client, flavorId string) (*GetFlavorDetailResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -87,11 +89,12 @@ func GetFlavorDetail(cli bce.Client, flavorId string) (*GetFlavorDetailResult, e
 // GetFlavorRaid - get the RAID detail and disk size of the specified flavor
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - flavorId: the id of the flavor
+//   - cli: the client agent which can perform sending request
+//   - flavorId: the id of the flavor
+//
 // RETURNS:
-//     - *GetFlavorRaidResult: the detail of the raid of the specified flavor
-//     - error: nil if success otherwise the specific error
+//   - *GetFlavorRaidResult: the detail of the raid of the specified flavor
+//   - error: nil if success otherwise the specific error
 func GetFlavorRaid(cli bce.Client, flavorId string) (*GetFlavorRaidResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -118,11 +121,12 @@ func GetFlavorRaid(cli bce.Client, flavorId string) (*GetFlavorRaidResult, error
 // ListFlavorZones - get the zone list of the specified flavor which can buy
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - flavorId: the id of the flavor
+//   - cli: the client agent which can perform sending request
+//   - flavorId: the id of the flavor
+//
 // RETURNS:
-//     - *ListZonesResult: the list of zone names
-//     - error: nil if success otherwise the specific error
+//   - *ListZonesResult: the list of zone names
+//   - error: nil if success otherwise the specific error
 func ListFlavorZones(cli bce.Client, reqBody *bce.Body) (*ListZonesResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -152,11 +156,12 @@ func ListFlavorZones(cli bce.Client, reqBody *bce.Body) (*ListZonesResult, error
 // ListZoneFlavors - get the flavor detail of the specific zone
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - zoneName: the zone name
+//   - cli: the client agent which can perform sending request
+//   - zoneName: the zone name
+//
 // RETURNS:
-//     - *ListZoneResult: flavor detail of the specific zone
-//     - error: nil if success otherwise the specific error
+//   - *ListZoneResult: flavor detail of the specific zone
+//   - error: nil if success otherwise the specific error
 func ListZoneFlavors(cli bce.Client, reqBody *bce.Body) (*ListFlavorInfosResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}

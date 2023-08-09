@@ -49,7 +49,7 @@ type Interface interface {
 	UpdateInstanceCRD(args *UpdateInstanceCRDRequest) (*CommonResponse, error)
 }
 
-//CreateCluterArgs为后续支持clientToken预留空间
+// CreateCluterArgs为后续支持clientToken预留空间
 type CreateClusterArgs struct {
 	CreateClusterRequest *CreateClusterRequest
 }

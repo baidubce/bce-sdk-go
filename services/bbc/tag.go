@@ -25,11 +25,12 @@ import (
 // bindTags - bind a bbc instance tags
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: the id of the instance
-//     - reqBody: http request body
+//   - cli: the client agent which can perform sending request
+//   - instanceId: the id of the instance
+//   - reqBody: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func BindTags(cli bce.Client, instanceId string, reqBody *bce.Body) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -53,11 +54,12 @@ func BindTags(cli bce.Client, instanceId string, reqBody *bce.Body) error {
 // UnbindTags - unbind a bbc instance tags
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: the id of the instance
-//     - reqBody: http request body
+//   - cli: the client agent which can perform sending request
+//   - instanceId: the id of the instance
+//   - reqBody: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func UnbindTags(cli bce.Client, instanceId string, reqBody *bce.Body) error {
 	// Build the request
 	req := &bce.BceRequest{}

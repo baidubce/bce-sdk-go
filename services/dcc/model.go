@@ -18,7 +18,7 @@ type ListDedicatedHostResult struct {
 	DedicatedHosts []*DedicatedHostModel
 }
 
-//DedicatedHostModel -- xx
+// DedicatedHostModel -- xx
 type DedicatedHostModel struct {
 	ID            string              //	专属服务器ID，符合BCE规范，是一个定长字符串，且只允许包含大小写字母、数字、连字号（-）和下划线（_)。
 	Name          string              //	专属服务器名称
@@ -33,7 +33,7 @@ type DedicatedHostModel struct {
 	Tags          []TagModel          //	实例当前配置的标签
 }
 
-//DedicatedHostStatus string
+// DedicatedHostStatus string
 type DedicatedHostStatus string
 
 const (
@@ -47,7 +47,7 @@ const (
 	DedicatedHostStatusError DedicatedHostStatus = "Error"
 )
 
-//ResourceUsage struct {
+// ResourceUsage struct {
 type ResourceUsage struct {
 	CPUCount               int `json:"cpuCount"`
 	FreeCPUCount           int `json:"FreeCpuCount"`
@@ -56,14 +56,14 @@ type ResourceUsage struct {
 	EphemeralDisks         []EphemeralDisk
 }
 
-//EphemeralDisk struct { for go-lint
+// EphemeralDisk struct { for go-lint
 type EphemeralDisk struct {
 	StorageType  StorageType `json:"storageType,omitempty"`
 	SizeInGB     int         `json:"sizeInGB,omitempty"`
 	FreeSizeInGB int         `json:"freesizeInGB,omitempty"`
 }
 
-//StorageType string for go-lint
+// StorageType string for go-lint
 type StorageType string
 
 const (
@@ -73,7 +73,7 @@ const (
 	StorageTypeSSD StorageType = "ssd"
 )
 
-//TagModel struct { for go-lint
+// TagModel struct { for go-lint
 type TagModel struct {
 	TagKey   string
 	TagValue string
@@ -102,7 +102,7 @@ type Reservation struct {
 	TimeUnit string `json:"reservationTimeUnit,omitempty"` //	时间单位，month，当前仅支持按月
 }
 
-//CreateArgs -- xx
+// CreateArgs -- xx
 type CreateArgs struct {
 	Version       string  //	是	URL参数	API版本号
 	ClientToken   string  //	是	Query参数	幂等性Token，是一个长度不超过64位的ASCII字符串)。

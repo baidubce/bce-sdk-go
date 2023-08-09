@@ -27,10 +27,11 @@ import (
 // CreateSubnet - create a new subnet with the specified parameters
 //
 // PARAMS:
-//     - args: the arguments to create subnet
+//   - args: the arguments to create subnet
+//
 // RETURNS:
-//     - *CreateSubnetResult: the ID of the subnet newly created
-//     - error: nil if success otherwise the specific error
+//   - *CreateSubnetResult: the ID of the subnet newly created
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateSubnet(args *CreateSubnetArgs) (*CreateSubnetResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("CreateSubnetArgs cannot be nil.")
@@ -51,11 +52,12 @@ func (c *Client) CreateSubnet(args *CreateSubnetArgs) (*CreateSubnetResult, erro
 // ListSubnets - list all subnets with the specified parameters
 //
 // PARAMS:
-//     - args: the arguments to list subnets
-//     - :
+//   - args: the arguments to list subnets
+//   - :
+//
 // RETURNS:
-//     - *ListSubnetResult: the result of all subnets
-//     - error: nil if success otherwise the specific error
+//   - *ListSubnetResult: the result of all subnets
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListSubnets(args *ListSubnetArgs) (*ListSubnetResult, error) {
 	if args == nil {
 		args = &ListSubnetArgs{}
@@ -84,10 +86,11 @@ func (c *Client) ListSubnets(args *ListSubnetArgs) (*ListSubnetResult, error) {
 // GetSubnetDetail - get details of the given subnet
 //
 // PARAMS:
-//     - subnetId: the id of the specified subnet
+//   - subnetId: the id of the specified subnet
+//
 // RETURNS:
-//     - *GetSubnetDetailResult: the result of the given subnet details
-//     - error: nil if success otherwise the specific error
+//   - *GetSubnetDetailResult: the result of the given subnet details
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetSubnetDetail(subnetId string) (*GetSubnetDetailResult, error) {
 	if subnetId == "" {
 		return nil, fmt.Errorf("The subnetId cannot be blank.")
@@ -106,10 +109,11 @@ func (c *Client) GetSubnetDetail(subnetId string) (*GetSubnetDetailResult, error
 // UpdateSubnet - update the given subnet
 //
 // PARAMS:
-//     - subnetId: the id of the given subnet
-//     - args: the arguments to update subnet
+//   - subnetId: the id of the given subnet
+//   - args: the arguments to update subnet
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateSubnet(subnetId string, args *UpdateSubnetArgs) error {
 	if subnetId == "" {
 		return fmt.Errorf("The subnetId cannot be blank.")
@@ -130,10 +134,11 @@ func (c *Client) UpdateSubnet(subnetId string, args *UpdateSubnetArgs) error {
 // DeleteSubnet - delete the given subnet
 //
 // PARAMS:
-//     - subnetId: the id of the specified subnet
-//     - clientToken: the idempotent token
+//   - subnetId: the id of the specified subnet
+//   - clientToken: the idempotent token
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteSubnet(subnetId string, clientToken string) error {
 	if subnetId == "" {
 		return fmt.Errorf("The subnetId cannot be blank.")

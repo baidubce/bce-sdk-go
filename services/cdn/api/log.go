@@ -41,12 +41,13 @@ type LogQueryData struct {
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/cjwvyf0r9
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - timeInterval: the specified time interval
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - timeInterval: the specified time interval
+//
 // RETURNS:
-//     - []LogEntry: the log detail list
-//     - error: nil if success otherwise the specific error
+//   - []LogEntry: the log detail list
+//   - error: nil if success otherwise the specific error
 func GetDomainLog(cli bce.Client, domain string, timeInterval TimeInterval) ([]LogEntry, error) {
 	if err := checkTimeInterval(timeInterval, 14*24*60*60); err != nil {
 		return nil, err
@@ -76,9 +77,9 @@ func GetDomainLog(cli bce.Client, domain string, timeInterval TimeInterval) ([]L
 // For details, please refer https://cloud.baidu.com/doc/CDN/API.html#.49.B0.4F.9D.D3.1A.FB.6F.59.A6.8A.B6.08.E9.BC.EF
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryData: the querying conditions
-//     - error: nil if success otherwise the specific error
+//   - cli: the client agent which can perform sending request
+//   - queryData: the querying conditions
+//   - error: nil if success otherwise the specific error
 func GetMultiDomainLog(cli bce.Client, queryData *LogQueryData) ([]LogEntry, error) {
 	if queryData == nil {
 		return nil, errors.New("queryData could not be nil")

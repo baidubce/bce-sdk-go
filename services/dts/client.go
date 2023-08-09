@@ -48,4 +48,3 @@ func getDtsUri() string {
 func getDtsUriWithTaskId(taskId string) string {
 	return URI_PREFIX + REQUEST_DTS_URL + "/" + taskId
 }
-

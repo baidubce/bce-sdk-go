@@ -29,12 +29,13 @@ import (
 // CreateSecurityGroup - create a security group and related rules
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to create security group
-//     - :
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to create security group
+//   - :
+//
 // RETURNS:
-//     - *CreateSecurityGroupResult: result of the security group id
-//     - error: nil if success otherwise the specific error
+//   - *CreateSecurityGroupResult: result of the security group id
+//   - error: nil if success otherwise the specific error
 func CreateSecurityGroup(cli bce.Client, args *CreateSecurityGroupArgs) (*CreateSecurityGroupResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -74,11 +75,12 @@ func CreateSecurityGroup(cli bce.Client, args *CreateSecurityGroupArgs) (*Create
 // ListSecurityGroup - list all security groups with the specified parameters
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryArgs: the arguments to list security groups
+//   - cli: the client agent which can perform sending request
+//   - queryArgs: the arguments to list security groups
+//
 // RETURNS:
-//     - *ListSecurityGroupResult: result of the security group list
-//     - error: nil if success otherwise the specific error
+//   - *ListSecurityGroupResult: result of the security group list
+//   - error: nil if success otherwise the specific error
 func ListSecurityGroup(cli bce.Client, queryArgs *ListSecurityGroupArgs) (*ListSecurityGroupResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -123,11 +125,12 @@ func ListSecurityGroup(cli bce.Client, queryArgs *ListSecurityGroupArgs) (*ListS
 // AuthorizeSecurityGroupRule - authorize a rule of security group
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - securityGroupId: id of the security group
-//     - args: arguments to authorize security group rule
+//   - cli: the client agent which can perform sending request
+//   - securityGroupId: id of the security group
+//   - args: arguments to authorize security group rule
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func AuthorizeSecurityGroupRule(cli bce.Client, securityGroupId string, args *AuthorizeSecurityGroupArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -165,11 +168,12 @@ func AuthorizeSecurityGroupRule(cli bce.Client, securityGroupId string, args *Au
 // RevokeSecurityGroupRule - revoke a rule of security group
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - securityGroupId: id of the security group
-//     - args: arguments to revoke security group rule
+//   - cli: the client agent which can perform sending request
+//   - securityGroupId: id of the security group
+//   - args: arguments to revoke security group rule
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func RevokeSecurityGroupRule(cli bce.Client, securityGroupId string, args *RevokeSecurityGroupArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -204,10 +208,11 @@ func RevokeSecurityGroupRule(cli bce.Client, securityGroupId string, args *Revok
 // DeleteSecurityGroup - delete a security group
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - securityGroupId: id of the security group to be deleted
+//   - cli: the client agent which can perform sending request
+//   - securityGroupId: id of the security group to be deleted
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func DeleteSecurityGroup(cli bce.Client, securityGroupId string) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -230,9 +235,10 @@ func DeleteSecurityGroup(cli bce.Client, securityGroupId string) error {
 // DeleteSecurityGroupRule - delete a security group rule
 //
 // PARAMS:
-//	   - securityGroupRuleId: the id of the specific security group rule
+//   - securityGroupRuleId: the id of the specific security group rule
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func DeleteSecurityGroupRule(cli bce.Client, args *DeleteSecurityGroupRuleArgs) error {
 	builder := bce.NewRequestBuilder(cli).
 		WithURL(getSecurityGroupRuleUri() + "/" + args.SecurityGroupRuleId).
@@ -246,9 +252,10 @@ func DeleteSecurityGroupRule(cli bce.Client, args *DeleteSecurityGroupRuleArgs) 
 // UpdateSecurityGroupRule - update security group rule with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to update the specific security group rule
+//   - args: the arguments to update the specific security group rule
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func UpdateSecurityGroupRule(cli bce.Client, args *UpdateSecurityGroupRuleArgs) error {
 	if args == nil {
 		return fmt.Errorf("the UpdateSecurityGroupRuleArgs cannot be nil")

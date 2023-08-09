@@ -26,12 +26,13 @@ import (
 // ListLogStream - get all pattern-match logStream in logStore
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - logStore: logStore to parse
-//     - args: conditions logStream should match
+//   - cli: the client agent which can perform sending request
+//   - logStore: logStore to parse
+//   - args: conditions logStream should match
+//
 // RETURNS:
-//     - *ListLogStreamResult: pattern-match logStream result set
-//     - error: nil if success otherwise the specific error
+//   - *ListLogStreamResult: pattern-match logStream result set
+//   - error: nil if success otherwise the specific error
 func ListLogStream(cli bce.Client, logStore string, args *QueryConditions) (*ListLogStreamResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getLogStreamName(logStore))

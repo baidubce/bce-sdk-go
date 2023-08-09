@@ -30,10 +30,11 @@ import (
 // CreateDeploySet - create deploy set  with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create a deploy set
+//   - args: the arguments to create a deploy set
+//
 // RETURNS:
-//     - *CreateDeploySetResponseArgs: the result of create deploy set
-//     - error: nil if ok otherwise the specific error
+//   - *CreateDeploySetResponseArgs: the result of create deploy set
+//   - error: nil if ok otherwise the specific error
 func (c *Client) CreateDeploySet(args *api.CreateDeploySetArgs) (*api.CreateDeploySetResponseArgs, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -49,9 +50,10 @@ func (c *Client) CreateDeploySet(args *api.CreateDeploySetArgs) (*api.CreateDepl
 // UpdateVmInstanceDeploySet - update vm instance deploy set with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to update a vm instance deploy set
+//   - args: the arguments to update a vm instance deploy set
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateVmInstanceDeploySet(args *api.UpdateVmDeploySetArgs) error {
 	if args == nil {
 		return fmt.Errorf("please set argments")
@@ -64,9 +66,10 @@ func (c *Client) UpdateVmInstanceDeploySet(args *api.UpdateVmDeploySetArgs) erro
 // DeleteVmInstanceFromDeploySet - remove vm instances from deploy set with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to remove  vm instances from  deploy set
+//   - args: the arguments to remove  vm instances from  deploy set
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteVmInstanceFromDeploySet(args *api.DeleteVmDeploySetArgs) error {
 	if args == nil {
 		return fmt.Errorf("please set argments")
@@ -79,10 +82,11 @@ func (c *Client) DeleteVmInstanceFromDeploySet(args *api.DeleteVmDeploySetArgs) 
 // UpdateDeploySet - update deploy set with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to update deploy set
+//   - args: the arguments to update deploy set
+//
 // RETURNS:
-//     - *ListVmServiceResult: the result of get vm services
-//     - error: nil if ok otherwise the specific error
+//   - *ListVmServiceResult: the result of get vm services
+//   - error: nil if ok otherwise the specific error
 func (c *Client) UpdateDeploySet(deploySetId string, args *api.CreateDeploySetArgs) error {
 	if args == nil || deploySetId == "" {
 		return fmt.Errorf("please set argments")
@@ -96,8 +100,8 @@ func (c *Client) UpdateDeploySet(deploySetId string, args *api.CreateDeploySetAr
 
 // GetDeploySetList - get deploy set list with the specific parameters
 // RETURNS:
-//     - *LogicPageDeploySetResult: the result of deploy set list
-//     - error: nil if ok otherwise the specific error
+//   - *LogicPageDeploySetResult: the result of deploy set list
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetDeploySetList(args *api.ListRequest) (*api.LogicPageDeploySetResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set argments")
@@ -131,10 +135,11 @@ func (c *Client) GetDeploySetList(args *api.ListRequest) (*api.LogicPageDeploySe
 // GetDeploySetDetail - get vm service detail with the specific parameters
 //
 // PARAMS:
-//     - deploySetId: deploy set id
+//   - deploySetId: deploy set id
+//
 // RETURNS:
-//     - *DeploySetDetails: the result of  deploy set detail
-//     - error: nil if ok otherwise the specific error
+//   - *DeploySetDetails: the result of  deploy set detail
+//   - error: nil if ok otherwise the specific error
 func (c *Client) GetDeploySetDetail(deploySetId string) (*api.DeploySetDetails, error) {
 	if deploySetId == "" {
 		return nil, fmt.Errorf("please set argments")
@@ -152,9 +157,10 @@ func (c *Client) GetDeploySetDetail(deploySetId string) (*api.DeploySetDetails, 
 // DeleteDeploySet - delete deploy set  with the specific parameters
 //
 // PARAMS:
-//     - deploySetId: deploy set id
+//   - deploySetId: deploy set id
+//
 // RETURNS:
-//     - error: nil if ok otherwise the specific error
+//   - error: nil if ok otherwise the specific error
 func (c *Client) DeleteDeploySet(deploySetId string) error {
 	if deploySetId == "" {
 		return fmt.Errorf("please set argments")
