@@ -28,6 +28,7 @@ bce-sdk-go
 |--bce                    //BCE公用基础组件
 |--http                   //BCE的http通信模块
 |--services               //BCE相关服务目录
+|  |--afd                 //昊天镜业务安全风控
 |  |--appblb              //应用型负载均衡服务目录
 |  |--bbc                 //物理服务器
 |  |--bcc                 //云服务器
@@ -242,6 +243,7 @@ myLogger.Info("this is my own logger from the sdk")
 
 产品名称   | 产品缩写      | 导入路径                                              | 说明文档
 -----------|-----------|---------------------------------------------------|----------
+昊天镜业务安全风控 | AFD | github.com/baidubce/bce-sdk-go/services/afd  | [AFD.md](./doc/AFD.md)
 应用型负载均衡 | APPBLB    | github.com/baidubce/bce-sdk-go/services/appblb    | [APPBLB.md](./doc/APPBLB.md)
 物理服务器 | BBC       | github.com/baidubce/bce-sdk-go/services/bbc       | [BBC.md](./doc/BBC.md)
 云服务器 | BCC       | github.com/baidubce/bce-sdk-go/services/bcc       | [BCC.md](./doc/BCC.md)
