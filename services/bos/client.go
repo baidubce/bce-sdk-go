@@ -2252,3 +2252,15 @@ func (c *Client) GetBucketMirror(bucket string) (*api.PutBucketMirrorArgs, error
 func (c *Client) DeleteBucketMirror(bucket string) error {
 	return api.DeleteBucketMirror(c, bucket)
 }
+
+func (c *Client) PutBucketTag(bucket string, putBucketTagArgs *api.PutBucketTagArgs) error {
+	return api.PutBucketTag(c, bucket, putBucketTagArgs)
+}
+
+func (c *Client) GetBucketTag(bucket string) (*api.PutBucketTagArgs, error) {
+	return api.GetBucketTag(c, bucket)
+}
+
+func (c *Client) DeleteBucketTag(bucket string) error {
+	return api.DeleteBucketTag(c, bucket)
+}

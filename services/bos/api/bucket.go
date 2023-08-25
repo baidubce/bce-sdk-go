@@ -1150,12 +1150,12 @@ func DeleteBucketMirror(cli bce.Client, bucket string) error {
 }
 
 
-func PutBucketTag(cli bce.Client, bucket string, putBucketTagReq PutBucketTagReq) error {
+func PutBucketTag(cli bce.Client, bucket string, putBucketTagArgs *PutBucketTagArgs) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getBucketUri(bucket))
 	req.SetMethod(http.PUT)
 	req.SetParam("tagging", "")
-	reqByte, _ := json.Marshal(putBucketTagReq)
+	reqByte, _ := json.Marshal(putBucketTagArgs)
 	body, err := bce.NewBodyFromString(string(reqByte))
 	if err != nil {
 		return err
@@ -1172,7 +1172,7 @@ func PutBucketTag(cli bce.Client, bucket string, putBucketTagReq PutBucketTagReq
 	return nil
 }
 
-func GetBucketTag(cli bce.Client, bucket string) (*PutBucketTagReq, error) {
+func GetBucketTag(cli bce.Client, bucket string) (*PutBucketTagArgs, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getBucketUri(bucket))
 	req.SetMethod(http.GET)
@@ -1184,7 +1184,7 @@ func GetBucketTag(cli bce.Client, bucket string) (*PutBucketTagReq, error) {
 	if resp.IsFail() {
 		return nil, resp.ServiceError()
 	}
-	result := &PutBucketTagReq{}
+	result := &PutBucketTagArgs{}
 	if err := resp.ParseJsonBody(result); err != nil {
 		return nil, err
 	}

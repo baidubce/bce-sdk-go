@@ -614,7 +614,7 @@ type PutBucketMirrorArgs struct {
 }
 
 
-type PutBucketTagReq struct {
+type PutBucketTagArgs struct {
 	Tags []Tag `json:"tags"`
 }
 

@@ -203,7 +203,7 @@ type Video struct {
 	BitRateInBps         int           `json:"bitRateInBps,omitempty"`
 	MaxFrameRate         float64       `json:"maxFrameRate,omitempty"`
 	MaxWidthInPixel      int           `json:"maxWidthInPixel,omitempty"`
-	MaxHeigtInPixel      int           `json:"maxHeigtInPixel,omitempty"`
+	MaxHeigtInPixel      int           `json:"maxHeightInPixel,omitempty"`
 	SizingPolicy         string        `json:"sizingPolicy,omitempty"`
 	PlaybackSpeed        float64       `json:"playbackSpeed,omitempty"`
 	Crf                  int           `json:"crf,omitempty"`

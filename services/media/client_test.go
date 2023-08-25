@@ -192,7 +192,7 @@ func TestListPresets(t *testing.T) {
 }
 
 func TestGetPreset(t *testing.T) {
-	getPresetResponse, err := MEDIA_CLIENT.GetPreset("videoworks_system_preprocess_360p")
+	getPresetResponse, err := MEDIA_CLIENT.GetPreset("lll_go_test_customize_audio_video")
 	ExpectEqual(t.Errorf, err, nil)
 	t.Logf("%+v", getPresetResponse)
 	video := getPresetResponse.Video
@@ -261,7 +261,7 @@ func TestCreatePrestCustomizeAudioEncryption(t *testing.T) {
 
 func TestCreatePrestCustomizeAudioVideo(t *testing.T) {
 	preset := &api.Preset{}
-	preset.PresetName = "go_test_customize_audio_video"
+	preset.PresetName = "lll_go_test_customize_audio_video"
 	preset.Description = "自定义创建模板"
 	preset.Container = "mp4"
 
@@ -271,6 +271,8 @@ func TestCreatePrestCustomizeAudioVideo(t *testing.T) {
 
 	video := &api.Video{}
 	video.BitRateInBps = 1024000
+	video.MaxHeigtInPixel = 1920
+	video.MaxWidthInPixel = 1280
 	preset.Video = video
 
 	err := MEDIA_CLIENT.CreatePrestCustomize(preset)
