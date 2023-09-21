@@ -71,8 +71,8 @@ type InstanceModel struct {
 	InstanceName       string           `json:"instanceName"`
 	InstanceStatus     string           `json:"instanceStatus"`
 	InstanceExpireTime string           `json:"instanceExpireTime"`
-	ShardNum 		   int           	`json:"shardNum"`
-	ReplicationNum 	   int           	`json:"replicationNum"`
+	ShardNum           int              `json:"shardNum"`
+	ReplicationNum     int              `json:"replicationNum"`
 	ClusterType        string           `json:"clusterType"`
 	Engine             string           `json:"engine"`
 	EngineVersion      string           `json:"engineVersion"`
@@ -437,4 +437,350 @@ type MaintainTime struct {
 	StartTime string `json:"startTime"`
 	Duration  int    `json:"duration"`
 	Period    []int  `json:"period"`
+}
+
+type CreatePriceArgs struct {
+	Engine         int    `json:"engine,omitempty"`
+	ClusterType    string `json:"clusterType,omitempty"`
+	NodeType       string `json:"nodeType,omitempty"`
+	ShardNum       int    `json:"shardNum,omitempty"`
+	ReplicationNum int    `json:"replicationNum,omitempty"`
+	InstanceNum    int    `json:"instanceNum,omitempty"`
+	DiskType       int    `json:"diskType,omitempty"`
+	DiskFlavor     int    `json:"diskFlavor,omitempty"`
+	ChargeType     string `json:"chargeType,omitempty"`
+	Period         int    `json:"period,omitempty"`
+}
+type CreatePriceResult struct {
+	Price float64 `json:"price,omitempty"`
+}
+
+type ResizePriceArgs struct {
+	NodeType       string `json:"nodeType"`
+	ShardNum       int    `json:"shardNum,omitempty"`
+	ReplicationNum int    `json:"replicationNum,omitempty"`
+	DiskFlavor     int    `json:"diskFlavor,omitempty"`
+	ChargeType     string `json:"chargeType,omitempty"`
+	Period         int    `json:"period,omitempty"`
+	ChangeType     string `json:"changeType,omitempty"`
+}
+type ResizePriceResult struct {
+	Price float64 `json:"price,omitempty"`
+}
+
+type SetAsSlaveArgs struct {
+	MasterDomain string `json:"masterDomain"`
+	MasterPort   int    `json:"masterPort"`
+}
+
+type RenameDomainArgs struct {
+	Domain      string `json:"domain"`
+	ClientToken string `json:"clientToken,omitempty"`
+}
+
+type SwapDomainArgs struct {
+	SourceInstanceId string `json:"sourceInstanceId"`
+	TargetInstanceId string `json:"targetInstanceId"`
+	ClientToken      string `json:"clientToken,omitempty"`
+}
+
+type GetBackupDetailResult struct {
+	Url           string `json:"url"`
+	UrlExpiration string `json:"urlExpiration"`
+}
+
+type GroupPreCheckArgs struct {
+	Leader    GroupLeader     `json:"leader"`
+	Followers []GroupFollower `json:"followers"`
+}
+type GroupLeader struct {
+	LeaderRegion string `json:"leaderRegion"`
+	LeaderId     string `json:"leaderId"`
+}
+type GroupFollower struct {
+	FollowerId     string `json:"followerId"`
+	FollowerRegion string `json:"followerRegion"`
+}
+type GroupPreCheckResult struct {
+	LeaderResult      GroupLeaderResult       `json:"leaderResult"`
+	FollowerResult    []GroupFollowerResult   `json:"followerResult"`
+	ConnectionResults []GroupConnectionResult `json:"connectionResults"`
+}
+type GroupLeaderResult struct {
+	Version         bool `json:"version"`
+	ClusterStatus   bool `json:"clusterStatus"`
+	ReplicationNum  bool `json:"replicationNum"`
+	Flavor          bool `json:"flavor"`
+	Joined          bool `json:"joined"`
+	NoPasswd        bool `json:"noPasswd"`
+	NoSecurityGroup bool `json:"noSecurityGroup"`
+	IsHitX1         bool `json:"isHitX1"`
+}
+type GroupFollowerResult struct {
+	FollowerId      string `json:"followerId"`
+	NoData          bool   `json:"noData"`
+	Version         bool   `json:"version"`
+	EngineVersion   bool   `json:"engineVersion"`
+	ClusterStatus   bool   `json:"clusterStatus"`
+	ShardNum        bool   `json:"shardNum"`
+	ReplicationNum  bool   `json:"replicationNum"`
+	Flavor          bool   `json:"flavor"`
+	Joined          bool   `json:"joined"`
+	NoPasswd        bool   `json:"noPasswd"`
+	NoSecurityGroup bool   `json:"noSecurityGroup"`
+	IsHitX1         bool   `json:"isHitX1"`
+}
+type GroupConnectionResult struct {
+	SourceId    string `json:"sourceId"`
+	SourceRole  string `json:"sourceRole"`
+	TargetId    string `json:"targetId"`
+	TargetRole  string `json:"targetRole"`
+	Connectable bool   `json:"connectable"`
+}
+
+type CreateGroupArgs struct {
+	Leader CreateGroupLeader `json:"leader"`
+}
+type CreateGroupLeader struct {
+	GroupName    string `json:"groupName"`
+	LeaderRegion string `json:"leaderRegion"`
+	LeaderId     string `json:"leaderId"`
+}
+type CreateGroupResult struct {
+	GroupId string `json:"groupId"`
+}
+type GroupListResult struct {
+	TotalCount int           `json:"totalCount"`
+	PageNo     int           `json:"pageNo"`
+	PageSize   int           `json:"pageSize"`
+	Result     []GroupResult `json:"result"`
+}
+type GroupResult struct {
+	GroupId         string `json:"groupId"`
+	GroupName       string `json:"groupName"`
+	GroupStatus     string `json:"groupStatus"`
+	ClusterNum      int    `json:"clusterNum"`
+	GroupCreateTime string `json:"groupCreateTime"`
+	ForbidWrite     int    `json:"forbidWrite"`
+	GroupType       string `json:"groupType"`
+	LeaderName      string `json:"leaderName"`
+	LeaderShowId    string `json:"leaderShowId"`
+	LeaderRegion    string `json:"leaderRegion"`
+}
+type GetGroupListArgs struct {
+	PageNo   int `json:"pageNo"`
+	PageSize int `json:"pageSize"`
+}
+
+type GroupDetailResult struct {
+	GroupId         string              `json:"groupId"`
+	GroupName       string              `json:"groupName"`
+	GroupStatus     string              `json:"groupStatus"`
+	ClusterNum      int                 `json:"clusterNum"`
+	GroupCreateTime string              `json:"groupCreateTime"`
+	ForbidWrite     int                 `json:"forbidWrite"`
+	GroupType       string              `json:"groupType"`
+	Leader          GroupLeaderInfo     `json:"leader"`
+	Followers       []GroupFollowerInfo `json:"followers"`
+}
+type GroupLeaderInfo struct {
+	ClusterName       string `json:"clusterName"`
+	ClusterShowId     string `json:"clusterShowId"`
+	Region            string `json:"region"`
+	Status            string `json:"status"`
+	TotalCapacityInGB int    `json:"totalCapacityInGB"`
+	UsedCapacityInGB  int    `json:"usedCapacityInGB"`
+	ShardNum          int    `json:"shardNum"`
+	Flavor            int    `json:"flavor"`
+	QpsWrite          int64  `json:"qpsWrite"`
+	QpsRead           int64  `json:"qpsRead"`
+	StableReadable    bool   `json:"stableReadable"`
+	ForbidWrite       int    `json:"forbidWrite"`
+	AvailabilityZone  string `json:"availabilityZone"`
+	ExpiredTime       string `json:"expiredTime"`
+}
+type GroupFollowerInfo struct {
+	ClusterName       string `json:"clusterName"`
+	ClusterShowId     string `json:"clusterShowId"`
+	Region            string `json:"region"`
+	Status            string `json:"status"`
+	TotalCapacityInGB int    `json:"totalCapacityInGB"`
+	UsedCapacityInGB  int    `json:"usedCapacityInGB"`
+	ShardNum          int    `json:"shardNum"`
+	Flavor            int    `json:"flavor"`
+	QpsWrite          int64  `json:"qpsWrite"`
+	QpsRead           int64  `json:"qpsRead"`
+	StableReadable    bool   `json:"stableReadable"`
+	ForbidWrite       int    `json:"forbidWrite"`
+	AvailabilityZone  string `json:"availabilityZone"`
+	ExpiredTime       string `json:"expiredTime"`
+}
+
+type FollowerInfo struct {
+	FollowerId     string `json:"followerId"`
+	FollowerRegion string `json:"followerRegion"`
+	SyncMaster     string `json:"syncMaster"`
+}
+
+type GroupNameArgs struct {
+	GroupName string `json:"groupName"`
+}
+
+type ForbidWriteArgs struct {
+	ForbidWriteFlag bool `json:"forbidWriteFlag"`
+}
+
+type GroupSetQpsArgs struct {
+	ClusterShowId string `json:"clusterShowId"`
+	QpsWrite      int    `json:"qpsWrite"`
+	QpsRead       int    `json:"qpsRead"`
+}
+
+type GroupSyncStatusResult struct {
+	Followers []FollowerSyncInfo `json:"followers"`
+}
+
+type FollowerSyncInfo struct {
+	ClusterShowId string `json:"clusterShowId"`
+	SyncStatus    string `json:"syncStatus"`
+	MaxOffset     int    `json:"maxOffset"`
+	Lag           int    `json:"lag"`
+}
+
+type GroupWhiteList struct {
+	WhiteLists []string `json:"whiteLists"`
+}
+
+type StaleReadableArgs struct {
+	FollowerId    string `json:"followerId"`
+	StaleReadable bool   `json:"staleReadable"`
+}
+
+type CreateTemplateArgs struct {
+	EngineVersion string          `json:"engineVersion"`
+	TemplateType  int             `json:"templateType"`
+	ClusterType   string          `json:"clusterType"`
+	Engine        string          `json:"engine"`
+	Name          string          `json:"name"`
+	Comment       string          `json:"comment"`
+	Parameters    []ParameterItem `json:"parameters"`
+}
+type ParameterItem struct {
+	ConfName   string `json:"confName"`
+	ConfModule int    `json:"confModule"`
+	ConfValue  string `json:"confValue"`
+	ConfType   int    `json:"confType"`
+}
+type CreateParamsTemplateResult struct {
+	TemplateId     int    `json:"templateId"`
+	TemplateShowId string `json:"templateShowId"`
+}
+
+type ParamsTemplateListResult struct {
+	Marker      string       `json:"marker"`
+	MaxKeys     int          `json:"maxKeys"`
+	NextMarker  string       `json:"nextMarker"`
+	IsTruncated bool         `json:"isTruncated"`
+	Result      []ResultItem `json:"result"`
+}
+type ResultItem struct {
+	EngineVersion  string      `json:"engineVersion"`
+	TemplateType   int         `json:"templateType"`
+	ClusterType    string      `json:"clusterType"`
+	NeedReboot     int         `json:"needReboot"`
+	TemplateShowId string      `json:"templateShowId"`
+	UpdateTime     string      `json:"updateTime"`
+	TemplateId     int         `json:"templateId"`
+	ParameterNum   int         `json:"parameterNum"`
+	TemplateName   string      `json:"templateName"`
+	Engine         string      `json:"engine"`
+	CreateTime     string      `json:"createTime"`
+	Comment        string      `json:"comment"`
+	Parameters     []ParamItem `json:"parameters"`
+}
+
+type ParamItem struct {
+	ConfName         string `json:"confName"`
+	ConfModule       int    `json:"confModule"`
+	ConfCacheVersion int    `json:"confCacheVersion"`
+	ConfValue        string `json:"confValue"`
+	NeedReboot       int    `json:"needReboot"`
+	ConfRedisVersion string `json:"confRedisVersion"`
+	ConfDefault      string `json:"confDefault"`
+	ConfType         int    `json:"confType"`
+	ConfRange        string `json:"confRange"`
+	ConfDesc         string `json:"confDesc"`
+	ConfUserVisible  int    `json:"confUserVisible"`
+}
+
+type RenameTemplateArgs struct {
+	Name string `json:"name"`
+}
+
+type ApplyTemplateArgs struct {
+	RebootType             int                  `json:"rebootType"`
+	Extra                  string               `json:"extra"`
+	CacheClusterShowIdItem []CacheClusterShowId `json:"cacheClusterShowId"`
+	Parameters             []ParameterItem      `json:"parameters"`
+}
+type CacheClusterShowId struct {
+	CacheClusterShowId string `json:"cacheClusterShowId"`
+	Region             string `json:"region"`
+}
+
+type AddParamsArgs struct {
+	Parameters []ParameterItem `json:"parameters"`
+}
+
+type ModifyParamsArgs struct {
+	Parameters []ParameterItem `json:"parameters"`
+}
+
+type DeleteParamsArgs struct {
+	Parameters []string `json:"parameters"`
+}
+
+type GetSystemTemplateArgs struct {
+	Engine        string `json:"engine"`
+	EngineVersion string `json:"engineVersion"`
+	ClusterType   string `json:"clusterType"`
+}
+
+type SystemTemplateResult struct {
+	Success bool             `json:"success"`
+	Result  []SystemTemplate `json:"result"`
+}
+
+type SystemTemplate struct {
+	ConfName         string `json:"confName"`
+	ConfDefault      string `json:"confDefault"`
+	ConfValue        string `json:"confValue"`
+	ConfType         int    `json:"confType"`
+	ConfRange        string `json:"confRange"`
+	ConfModule       int    `json:"confModule"`
+	ConfDesc         string `json:"confDesc"`
+	NeedReboot       int    `json:"needReboot"`
+	ConfRedisVersion string `json:"confRedisVersion"`
+	ConfCacheVersion int    `json:"confCacheVersion"`
+}
+
+type GetApplyRecordsResult struct {
+	Marker      string        `json:"marker"`
+	MaxKeys     int           `json:"maxKeys"`
+	NextMarker  string        `json:"nextMarker"`
+	IsTruncated bool          `json:"isTruncated"`
+	Result      []ApplyRecord `json:"result"`
+}
+
+type ApplyRecord struct {
+	CacheClusterShowId string `json:"cacheClusterShowId"`
+	CacheClusterName   string `json:"cacheClusterName"`
+	AvailabilityZone   string `json:"availabilityZone"`
+	Version            int    `json:"version"`
+	Status             string `json:"status"`
+	Engine             string `json:"engine"`
+	EngineVersion      string `json:"engineVersion"`
+	ClusterType        string `json:"clusterType"`
+	CreateTime         string `json:"createTime"`
+	ApplyTime          string `json:"applyTime"`
 }

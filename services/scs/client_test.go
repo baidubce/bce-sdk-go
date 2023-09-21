@@ -55,7 +55,7 @@ func init() {
 	SCS_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
 	client = SCS_CLIENT
-	SCS_TEST_ID = "scs-bj-xeezxbguylsw"
+	SCS_TEST_ID = "scs-bj-rlmhqtbehihj"
 	instanceId = SCS_TEST_ID
 }
 
@@ -176,6 +176,35 @@ func TestClient_ResizeInstance(t *testing.T) {
 	}
 }
 
+func TestClient_GetCreatePrice(t *testing.T) {
+	args := &CreatePriceArgs{
+		Engine:         2,
+		Period:         1,
+		ChargeType:     "prepay",
+		NodeType:       "cache.n1.small",
+		ReplicationNum: 2,
+		ClusterType:    "cluster",
+	}
+	result, err := SCS_CLIENT.GetCreatePrice(args)
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
+	ExpectEqual(t.Errorf, nil, err)
+}
+func TestClient_GetResizePrice(t *testing.T) {
+	args := &ResizePriceArgs{
+		ChangeType:     "nodeModify",
+		ShardNum:       2,
+		ReplicationNum: 1,
+		NodeType:       "cache.n1.small",
+		Period:         1,
+	}
+	result, err := SCS_CLIENT.GetResizePrice(instanceId, args)
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
+	ExpectEqual(t.Errorf, nil, err)
+
+}
+
 func TestClient_AddReplication(t *testing.T) {
 	isAvailable(SCS_TEST_ID)
 	args := &ReplicationArgs{
@@ -279,6 +308,26 @@ func TestClient_ModifyPassword(t *testing.T) {
 	}
 }
 
+func TestClient_RenameDomain(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	args := &RenameDomainArgs{
+		Domain:      "newDomain",
+		ClientToken: getClientToken(),
+	}
+	err := SCS_CLIENT.RenameDomain(SCS_TEST_ID, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_SwapDomain(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	args := &SwapDomainArgs{
+		SourceInstanceId: SCS_TEST_ID,
+		TargetInstanceId: "scs-bj-xeelkkdsx",
+		ClientToken:      getClientToken(),
+	}
+	err := SCS_CLIENT.SwapDomain(SCS_TEST_ID, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
 func TestClient_FlushInstance(t *testing.T) {
 	isAvailable(SCS_TEST_ID)
 	time.Sleep(30 * time.Second)
@@ -340,6 +389,21 @@ func TestClient_UnBindingTag(t *testing.T) {
 	}
 }
 
+func TestClient_SetAsMaster(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	err := SCS_CLIENT.SetAsMaster(SCS_TEST_ID)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_SetAsSlave(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	args := &SetAsSlaveArgs{
+		MasterDomain: "masterDomain",
+		MasterPort:   6379,
+	}
+	err := SCS_CLIENT.SetAsSlave(SCS_TEST_ID, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
 func TestClient_GetSecurityIp(t *testing.T) {
 	isAvailable(SCS_TEST_ID)
 	listInstancesArgs := &ListInstancesArgs{}
@@ -438,6 +502,13 @@ func TestClient_GetBackupList(t *testing.T) {
 	}
 }
 
+func TestClient_GetBackupDetail(t *testing.T) {
+	isAvailable(SCS_TEST_ID)
+	result, err := SCS_CLIENT.GetBackupDetail(SCS_TEST_ID, "2587532")
+	ExpectEqual(t.Errorf, nil, err)
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
+}
 func TestClient_ModifyBackupPolicy(t *testing.T) {
 	isAvailable(SCS_TEST_ID)
 	listInstancesArgs := &ListInstancesArgs{}
@@ -729,4 +800,392 @@ func TestClient_ModifyMaintainTime(t *testing.T) {
 		return
 	}
 	fmt.Println("modify maintainTime success.")
+}
+
+func TestClient_GroupPreCheck(t *testing.T) {
+	args := &GroupPreCheckArgs{
+		Leader: GroupLeader{
+			LeaderRegion: "bj",
+			LeaderId:     SCS_TEST_ID,
+		},
+		Followers: []GroupFollower{
+			{
+				FollowerId:     "scs-bdbl-dzkqigawuhzy",
+				FollowerRegion: "bd",
+			},
+		},
+	}
+	result, err := client.GroupPreCheck(args)
+	if err != nil {
+		fmt.Printf("group pre check error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
+}
+
+func TestClient_CreateGroup(t *testing.T) {
+	args := &CreateGroupArgs{
+		Leader: CreateGroupLeader{
+			GroupName:    "test_create",
+			LeaderRegion: "bj",
+			LeaderId:     SCS_TEST_ID,
+		},
+	}
+	result, err := client.CreateGroup(args)
+	if err != nil {
+		fmt.Printf("group create error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
+}
+
+func TestClient_GetGroupList(t *testing.T) {
+	args := &GetGroupListArgs{
+		PageNo:   1,
+		PageSize: 10,
+	}
+	result, err := client.GetGroupList(args)
+	if err != nil {
+		fmt.Printf("get group list error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
+}
+
+func TestClient_GetGroupDetail(t *testing.T) {
+	result, err := client.GetGroupDetail("scs-group-vobpzinoqadm")
+	if err != nil {
+		fmt.Printf("get group detail error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
+}
+
+func TestClient_DeleteGroup(t *testing.T) {
+	err := client.DeleteGroup("scs-group-ekeveqhmekvd")
+	if err != nil {
+		fmt.Printf("delete group error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GroupAddFollower(t *testing.T) {
+	args := &FollowerInfo{
+		FollowerId:     "scs-bdbl-dzkqigawuhzy",
+		FollowerRegion: "bd",
+		SyncMaster:     "sync",
+	}
+	err := client.GroupAddFollower("scs-group-ekeveqhmekvd", args)
+	if err != nil {
+		fmt.Printf("join group error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GroupRemoveFollower(t *testing.T) {
+	err := client.GroupRemoveFollower("scs-group-ekeveqhmekvd", SCS_TEST_ID)
+	if err != nil {
+		fmt.Printf("quit group error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UpdateGroupName(t *testing.T) {
+	args := &GroupNameArgs{
+		GroupName: "test_group",
+	}
+	err := client.UpdateGroupName("scs-group-nqkkmbdjlacx", args)
+	if err != nil {
+		fmt.Printf("update group name error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_SetAsLeader(t *testing.T) {
+	err := client.SetAsLeader("scs-group-nqkkmbdjlacx", SCS_TEST_ID)
+	if err != nil {
+		fmt.Printf("set as leader error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GroupForbidWrite(t *testing.T) {
+	args := &ForbidWriteArgs{
+		ForbidWriteFlag: true,
+	}
+	err := client.GroupForbidWrite("scs-group-nqkkmbdjlacx", args)
+	if err != nil {
+		fmt.Printf("forbid write error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GroupSetQps(t *testing.T) {
+	args := &GroupSetQpsArgs{
+		ClusterShowId: "scs-bj-bftgjzjxbmex",
+		QpsWrite:      10,
+		QpsRead:       20,
+	}
+	err := client.GroupSetQps("scs-group-nqkkmbdjlacx", args)
+	if err != nil {
+		fmt.Printf("group set qps error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GroupSyncStatus(t *testing.T) {
+	result, err := client.GroupSyncStatus("scs-group-szqbjupjjhpl")
+	if err != nil {
+		fmt.Printf("group sync status error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
+}
+
+func TestClient_GroupWhiteList(t *testing.T) {
+	result, err := client.GroupWhiteList("scs-group-szqbjupjjhpl")
+	if err != nil {
+		fmt.Printf("get group white list error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
+}
+
+func TestClient_GroupWhiteListAdd(t *testing.T) {
+	args := &GroupWhiteList{
+		WhiteLists: []string{"127.0.0.1"},
+	}
+	err := client.GroupWhiteListAdd("scs-group-szqbjupjjhpl", args)
+	if err != nil {
+		fmt.Printf("group white list add error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GroupWhiteListDelete(t *testing.T) {
+	args := &GroupWhiteList{
+		WhiteLists: []string{"127.0.0.1"},
+	}
+	err := client.GroupWhiteListDelete("scs-group-szqbjupjjhpl", args)
+	if err != nil {
+		fmt.Printf("group white list delete error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GroupStaleReadable(t *testing.T) {
+	args := &StaleReadableArgs{
+		FollowerId:    SCS_TEST_ID,
+		StaleReadable: true,
+	}
+	err := client.GroupStaleReadable("scs-group-szqbjupjjhpl", args)
+	if err != nil {
+		fmt.Printf("group stale readable error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_CreateParamsTemplate(t *testing.T) {
+	args := &CreateTemplateArgs{
+		EngineVersion: "5.0",
+		TemplateType:  1,
+		ClusterType:   "master_slave",
+		Engine:        "redis",
+		Name:          "test_template",
+		Comment:       "test template",
+		Parameters: []ParameterItem{
+			{
+				ConfName:   "disable_commands",
+				ConfModule: 1,
+				ConfValue:  "flushall,flushdb",
+				ConfType:   3,
+			},
+		},
+	}
+	result, err := client.CreateParamsTemplate(args)
+	if err != nil {
+		fmt.Printf("create params template error: %+v\n", err)
+		return
+	}
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GetParamsTemplateList(t *testing.T) {
+	args := &Marker{
+		Marker:  "-1",
+		MaxKeys: 1000,
+	}
+	result, err := client.GetParamsTemplateList(args)
+	if err != nil {
+		fmt.Printf("get params template error: %+v\n", err)
+		return
+	}
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GetParamsTemplateDetail(t *testing.T) {
+
+	result, err := client.GetParamsTemplateDetail("scs-tmpl-kctbndsfdhya")
+	if err != nil {
+		fmt.Printf("get params template detail error: %+v\n", err)
+		return
+	}
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DeleteParamsTemplate(t *testing.T) {
+	err := client.DeleteParamsTemplate("scs-tmpl-vxslemqppzuz")
+	if err != nil {
+		fmt.Printf("delete params template error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_RenameParamsTemplate(t *testing.T) {
+	args := &RenameTemplateArgs{
+		Name: "scs-test-template",
+	}
+	err := client.RenameParamsTemplate("scs-tmpl-kctbndsfdhya", args)
+	if err != nil {
+		fmt.Printf("rename params template error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_ApplyParamsTemplate(t *testing.T) {
+	args := &ApplyTemplateArgs{
+		RebootType: 0,
+		Extra:      "0",
+		CacheClusterShowIdItem: []CacheClusterShowId{
+			{
+				CacheClusterShowId: SCS_TEST_ID,
+				Region:             "bj",
+			},
+		},
+		Parameters: []ParameterItem{
+			{
+				ConfName:   "disable_commands",
+				ConfModule: 1,
+				ConfValue:  "flushall,flushdb",
+				ConfType:   3,
+			},
+		},
+	}
+	err := client.ApplyParamsTemplate("scs-tmpl-kctbndsfdhya", args)
+	if err != nil {
+		fmt.Printf("apply params template error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_TemplateAddParams(t *testing.T) {
+	args := &AddParamsArgs{
+		Parameters: []ParameterItem{
+			{
+				ConfName:   "disable_commands",
+				ConfModule: 1,
+				ConfValue:  "flushall,flushdb",
+				ConfType:   3,
+			},
+		},
+	}
+	err := client.TemplateAddParams("scs-tmpl-kctbndsfdhya", args)
+	if err != nil {
+		fmt.Printf("add params template error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_TemplateModifyParams(t *testing.T) {
+	args := &ModifyParamsArgs{
+		Parameters: []ParameterItem{
+			{
+				ConfName:   "disable_commands",
+				ConfModule: 1,
+				ConfValue:  "flushall,flushdb",
+				ConfType:   3,
+			},
+		},
+	}
+	err := client.TemplateModifyParams("scs-tmpl-kctbndsfdhya", args)
+	if err != nil {
+		fmt.Printf("modify params template error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_TemplateDeleteParams(t *testing.T) {
+	args := &DeleteParamsArgs{
+		Parameters: []string{"appendonly"},
+	}
+	err := client.TemplateDeleteParams("scs-tmpl-kctbndsfdhya", args)
+	if err != nil {
+		fmt.Printf("delete params template error: %+v\n", err)
+		return
+	}
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GetapplyTemplate(t *testing.T) {
+	args := &GetSystemTemplateArgs{
+		Engine:        "redis",
+		EngineVersion: "5.0",
+		ClusterType:   "master_slave",
+	}
+	result, err := client.GetSystemTemplate(args)
+	if err != nil {
+		fmt.Printf("get system template error: %+v\n", err)
+		return
+	}
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GetApplyRecords(t *testing.T) {
+	args := &Marker{
+		Marker:  "-1",
+		MaxKeys: 100,
+	}
+	result, err := client.GetApplyRecords("scs-tmpl-kctbndsfdhya", args)
+	if err != nil {
+		fmt.Printf("get apply record error: %+v\n", err)
+		return
+	}
+	data, _ := json.Marshal(result)
+	fmt.Println(string(data))
+	ExpectEqual(t.Errorf, nil, err)
 }

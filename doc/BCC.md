@@ -1762,33 +1762,43 @@ if err := bccClient.UnBindInstanceToTags(instanceId, unBindTagsRequest); err != 
 ```
 
 ### 批量转预付费
-使用以下代码可以将实例批量转预付费
+使用以下代码可以将实例批量转预付费，若需要对实例关联的cds变更，则必须在CdsList中传入所有需要转为预付费的cdsId。
 ```go
  batchChangeInstanceToPrepayArgs := &api.BatchChangeInstanceToPrepayArgs{
      Config: []api.PrepayConfig{
          {
-             InstanceId:  BCC_TestBccId,
+             InstanceId:  "i-fYumyWOx",
              Duration:    1,
-             RelationCds: false,
+             RelationCds: true,
+             CdsList: []string{
+                 "v-tP2MJ3YI",
+                 "v-9eLRwv8n",
+             }
          },
      },
  }
- result, _ := BCC_CLIENT.BatchChangeInstanceToPrepay(batchChangeInstanceToPrepayArgs)
+ result, err := BCC_CLIENT.BatchChangeInstanceToPrepay(batchChangeInstanceToPrepayArgs)
+ ExpectEqual(t.Errorf, err, nil)
  fmt.Println(result)
 ```
 
 ### 批量转后付费
-使用以下代码可以将实例批量转后付费
+使用以下代码可以将实例批量转后付费， 若需要对实例关联的cds变更，则必须在CdsList中传入所有需要转为后付费的cdsId。
 ```go
  batchChangeInstanceToPostArgs := &api.BatchChangeInstanceToPostpayArgs{
      Config: []api.PostpayConfig{
          {
-             InstanceId:  "i-43TqYnnq",
-             RelationCds: false,
+             InstanceId:  "i-IWxCA6HH",
+             RelationCds: true,
+             CdsList: []string{
+                 "v-buE5Cm3m",
+                 "v-rEcWwELY",
+             }
          },
      },
  }
- result, _ := BCC_CLIENT.BatchChangeInstanceToPostpay(batchChangeInstanceToPostArgs)
+ result, err := BCC_CLIENT.BatchChangeInstanceToPostpay(batchChangeInstanceToPostArgs)
+ ExpectEqual(t.Errorf, err, nil)
  fmt.Println(result)
 ```
 

@@ -4,6 +4,8 @@
 
 本文档主要介绍RDS GO SDK的使用。在使用本文档前，您需要先了解RDS的一些基本知识，并已开通了RDS服务。若您还不了解RDS，可以参考[产品描述](https://cloud.baidu.com/doc/RDS/s/ujwvyzdzg)和[操作指南](https://cloud.baidu.com/doc/RDS/s/Qjwvz0ikk)。
 
+本SDK基于官方开放API进行封装，详细参数解释可参考相关API说明文档[API参考](https://cloud.baidu.com/doc/RDS/s/ajwvz0x1m)。
+
 # 初始化
 
 ## 确认Endpoint
@@ -687,10 +689,106 @@ if err != nil {
 fmt.Printf("modify public access success\n")
 ```
 
+
 > 注意:
 >
 > - true：开启公网访问； false：关闭公网访问。
+## 修改时间窗口
 
+使用以下代码可以修改操作时间窗口
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+
+args := &rds.MaintainTimeArgs{
+    MaintainStartTime: "14:00:00",
+    MaintainDuration:  2,
+}
+err = client.UpdateMaintainTime(instanceId, args)
+if err != nil {
+    fmt.Printf("update maintain time error: %+v\n", err)
+    return
+}
+fmt.Printf("update maintain time success\n")
+```
+## 实例开启关闭修改存储自动扩容配置
+
+使用以下代码可以开启关闭修改存储自动扩容配置
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+
+args := &rds.DiskAutoResizeArgs{
+    FreeSpaceThreshold: 10,
+    DiskMaxLimit:       2000,
+}
+err = client.ConfigDiskAutoResize(instanceId,"open", args)
+if err != nil {
+    fmt.Printf("config disk auto resize error: %+v\n", err)
+    return
+}
+fmt.Printf("config disk auto resize success\n")
+```
+
+## 获取指定实例的自动扩容配置信息
+
+使用以下代码可以获取指定实例的自动扩容配置信息
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+
+result, err = client.GetAutoResizeConfig(instanceId)
+if err != nil {
+    fmt.Printf("get config error: %+v\n", err)
+    return
+}
+fmt.Printf("get config success\n")
+```
+
+## 实例是否支持启用自动扩容
+
+使用以下代码可以实例是否支持启用自动扩容
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+
+result, err = client.EnableAutoExpansion(instanceId)
+if err != nil {
+    fmt.Printf("get enable auto expansion error: %+v\n", err)
+    return
+}
+fmt.Printf("get enable auto expansion success\n")
+```
+
+## 可用区迁移
+
+使用以下代码可以操作实例可用区迁移
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.AzoneMigration{
+    MasterAzone: "cn-bj-d",
+    BackupAzone: "cn-bj-e",
+    ZoneNames:   []string{"cn-bj-d", "cn-bj-e"},
+    Subnets: []SubnetMap{
+        {
+            ZoneName: "cn-bj-d",
+            SubnetId: "sbn-nedt51qre6r2",
+        },
+        {
+            ZoneName: "cn-bj-e",
+            SubnetId: "sbn-hc20wss3idai",
+        },
+    },
+    EffectiveTime: "timewindow",
+}
+result, err = client.AzoneMigration(instanceId, args)
+if err != nil {
+    fmt.Printf("azone migration error: %+v\n", err)
+    return
+}
+fmt.Printf("azone migration success\n")
+```
 # 账号管理
 
 ## 创建账号
@@ -777,6 +875,21 @@ fmt.Println("rds status: ", result.Status)
 fmt.Println("rds type: ", result.Type)
 fmt.Println("rds accountType: ", result.AccountType)
 ```
+## 更新账号描述信息
+
+使用以下代码可以更新账号描述信息
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &ModifyAccountDesc{
+    Remark: "test",
+}
+err := client.ModifyAccountDesc(instanceId,accountName,args)
+if err != nil {
+    fmt.Printf("modify account desc error: %+v\n", err)
+    return
+}
+fmt.Printf("modify account desc success\n")
+```
 
 ## 删除特定账号信息
 
@@ -791,7 +904,38 @@ if err != nil {
 }
 fmt.Printf("delete account success\n")
 ```
+## 更新账号密码
 
+使用以下代码可以更新账号密码
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &UpdatePasswordArgs{
+    Password: "test",
+}
+err := client.UpdateAccountPassword(instanceId,accountName,args)
+if err != nil {
+    fmt.Printf("update account password error: %+v\n", err)
+    return
+}
+fmt.Printf("update account password success\n")
+```
+## 更新账号权限
+使用以下代码可以更新账号密码
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &UpdateAccountPrivileges{
+    DatabasePrivileges: []DatabasePrivilege{{
+        DbName:   "test_db",
+        AuthType: "ReadOnly",
+    }},
+}
+err := client.UpdateAccountPrivileges(instanceId,accountName,args)
+if err != nil {
+    fmt.Printf("update account privilege error: %+v\n", err)
+    return
+}
+fmt.Printf("update account privilege success\n")
+```
 # 参数管理
 
 ## 获取参数列表
@@ -849,7 +993,1097 @@ fmt.Printf("update parameter success\n")
 >
 > - 在修改配置参数时需要通过获取参数列表接口获取最新的Etag。
 
+## 参数修改历史
 
+使用以下代码可以云数据库 RDS for MySQL 的参数配置。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.ParameterHistory(instanceId)
+if err != nil {
+    fmt.Printf("get parameter history error: %+v\n", err)
+    return
+}
+fmt.Printf("get parameter history success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+
+# 数据库管理
+
+## 修改数据库端口
+
+使用以下代码可以修改数据库端口
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.UpdateDatabasePortArgs{
+    EntryPort: 3309,
+})
+err := client.UpdateDatabasePort(instanceId, args)
+if err != nil {
+    fmt.Printf("update database port error: %+v\n", err)
+    return
+}
+fmt.Printf("update database port success\n")
+
+```
+
+## 获取数据库列表
+
+使用以下代码可以获取数据库列表
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.ListDatabases(instanceId)
+if err != nil {
+    fmt.Printf("get database list error: %+v\n", err)
+    return
+}
+fmt.Printf("get database list success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+
+```
+
+## 修改数据库描述
+
+使用以下代码可以修改数据库描述
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.ModifyDatabaseDesc{
+    Remark: "test",
+}
+err := client.ModifyDatabaseDesc(instanceId, "test_db", args)
+if err != nil {
+    fmt.Printf("modify database discription error: %+v\n", err)
+    return
+}
+fmt.Printf("modify database discriptio success\n")
+
+```
+
+## 删除数据库
+
+使用以下代码可以删除数据库
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+
+err := client.DeleteDatabase(instanceId, "test_db")
+if err != nil {
+    fmt.Printf("delete database error: %+v\n", err)
+    return
+}
+fmt.Printf("delete database success\n")
+
+```
+## 创建数据库
+
+使用以下代码可以创建数据库
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.CreateDatabaseArgs{
+    CharacterSetName: "utf8",
+    DbName:           "test_db",
+    Remark:           "test_db",
+    AccountPrivileges: []AccountPrivilege{
+        {
+            AccountName: "baidu",
+            AuthType:    "ReadOnly",
+        },
+    },
+}
+err := client.CreateDatabase(instanceId, args)
+if err != nil {
+    fmt.Printf("create database error: %+v\n", err)
+    return
+}
+fmt.Printf("create database success\n")
+
+```
+
+# 任务管理
+
+## 获取任务列表
+
+使用以下代码可以获取任务列表
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.TaskListArgs{
+    InstanceId: instanceId,
+}
+result, err := client.TaskList(args)
+if err != nil {
+    fmt.Printf("get task list error: %+v\n", err)
+    return
+}
+fmt.Printf("get task list success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+
+# 回收站管理
+
+## 查询回收站实例列表
+
+使用以下代码可以获取回收站实例列表。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.ListRdsArgs{}
+result, err := client.ListRecyclerInstance(args)
+if err != nil {
+    fmt.Printf("get recycle list error: %+v\n", err)
+    return
+}
+fmt.Printf("get recycle list success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 实例开机
+
+使用以下代码可以开机。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.RecyclerRecoverArgs{
+    InstanceIds: []string{instanceId},
+}
+err := client.RecyclerRecover(args)
+if err != nil {
+    fmt.Printf("recycler recover error: %+v\n", err)
+    return
+}
+fmt.Printf("recycler recover success\n")
+```
+## 删除单个回收站实例
+
+使用以下代码可以删除单个回收站实例
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+
+err := client.DeleteRecyclerInstance(instanceId)
+if err != nil {
+    fmt.Printf("delete error: %+v\n", err)
+    return
+}
+fmt.Printf("delete success\n")
+```
+
+# 实例组管理
+
+## 创建实例组
+使用以下代码可以创建实例组。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.InstanceGroupArgs{
+    Name:     "test_group",
+    LeaderId: instanceId,
+}
+err := client.CreateInstanceGroup(args)
+if err != nil {
+    fmt.Printf("create instance group error: %+v\n", err)
+    return
+}
+fmt.Printf("create instance group success\n")
+```
+
+## 实例组列表
+使用以下代码可以获取实例组列表。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.ListInstanceGroupArgs{
+    Manner: "page",
+}
+result, err := client.ListInstanceGroup(args)
+if err != nil {
+    fmt.Printf("get instance group list error: %+v\n", err)
+    return
+}
+fmt.Printf("get instance group list success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+
+## 实例组详情
+使用以下代码可以获取实例组详情
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.InstanceGroupDetail(groupId)
+if err != nil {
+    fmt.Printf("get instance group detail error: %+v\n", err)
+    return
+}
+fmt.Printf("get instance group detail success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 实例组前置检查-GTID检查
+使用以下代码可以进行GTID检查
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.CheckGtidArgs{
+    InstanceId: instanceId,
+}
+result, err := client.InstanceGroupCheckGtid(args)
+if err != nil {
+    fmt.Printf("GTID check error: %+v\n", err)
+    return
+}
+fmt.Printf("GTID check success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+
+## 实例组前置检查-连通性检查
+使用以下代码可以进行连通性检查
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.CheckPingArgs{
+    SourceId: instanceId,
+    TargetId: instanceId,
+}
+result, err := client.InstanceGroupCheckPing(args)
+if err != nil {
+    fmt.Printf("check ping error: %+v\n", err)
+    return
+}
+fmt.Printf("check ping success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+
+## 实例组前置检查-数据检查
+使用以下代码可以进行数据检查
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.CheckDataArgs{
+    InstanceId: instanceId,
+}
+result, err := client.InstanceGroupCheckData(args)
+if err != nil {
+    fmt.Printf("check data error: %+v\n", err)
+    return
+}
+fmt.Printf("check data success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+
+## 小版本前置检查
+使用以下代码可以进行小版本前置检查
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.CheckVersionArgs{
+    LeaderId:   instanceId,
+    FollowerId: instanceId,
+}
+result, err := client.InstanceGroupCheckVersion(args)
+if err != nil {
+    fmt.Printf("check data error: %+v\n", err)
+    return
+}
+fmt.Printf("check data success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+
+## 修改热活实例组的名称
+使用以下代码可以修改热活实例组的名称
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.InstanceGroupNameArgs{
+    Name: "test_group_name",
+}
+err := client.UpdateInstanceGroupName(groupId, args)
+if err != nil {
+    fmt.Printf("update instance group name error: %+v\n", err)
+    return
+}
+fmt.Printf("update instance group name success\n")
+```
+
+## 加入热活实例组
+使用以下代码可以加入热活实例组
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.InstanceGroupAddArgs{
+    FollowerId: instanceId,
+}
+err := client.InstanceGroupAdd(groupId, args)
+if err != nil {
+    fmt.Printf("add instance group error: %+v\n", err)
+    return
+}
+fmt.Printf("add instance group success\n")
+```
+
+## 批量加入热活实例组
+使用以下代码可以批量加入热活实例组
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.InstanceGroupBatchAddArgs{
+    FollowerIds: []string{instanceId},
+    Name:        "test_group_name",
+    LeaderId:    instanceId,
+}
+err := client.InstanceGroupBatchAdd(args)
+if err != nil {
+    fmt.Printf("batch add instance group error: %+v\n", err)
+    return
+}
+fmt.Printf("batch add instance group success\n")
+```
+## 强制切换热活实例组
+使用以下代码可以强制切换热活实例组
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.ForceChangeArgs{
+    LeaderId: instanceId,
+    Force:    0,
+}
+err := client.InstanceGroupForceChange(groupId, args)
+if err != nil {
+    fmt.Printf("instance group force change error: %+v\n", err)
+    return
+}
+fmt.Printf("instance group force change success\n")
+```
+## 主角色变更
+使用以下代码可以主角色变更
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.GroupLeaderChangeArgs{
+    LeaderId: instanceId,
+}
+err := client.InstanceGroupLeaderChange(groupId, args)
+if err != nil {
+    fmt.Printf("instance group leader change error: %+v\n", err)
+    return
+}
+fmt.Printf("instance group leader change success\n")
+```
+
+## 退出热活实例组
+使用以下代码可以退出热活实例组
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+err := client.InstanceGroupRemove(groupId, instanceId)
+if err != nil {
+    fmt.Printf("instance group remove error: %+v\n", err)
+    return
+}
+fmt.Printf("instance group remove success\n")
+```
+
+## 删除热活实例组
+使用以下代码可以删除热活实例组
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+err := client.DeleteInstanceGroup(groupId)
+if err != nil {
+    fmt.Printf("delete instance group error: %+v\n", err)
+    return
+}
+fmt.Printf("delete instance group success\n")
+```
+
+# 版本管理
+## 查看实例允许升级的小版本列表
+
+使用以下代码可以查看实例允许升级的小版本列表
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.InstanceMinorVersionList(instanceId)
+if err != nil {
+    fmt.Printf("get instance minor version list error: %+v\n", err)
+    return
+}
+fmt.Printf("get instance minor version list success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+
+```
+## 实例升级小版本
+
+使用以下代码可以升级小版本
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.UpgradeMinorVersionArgs{
+    TargetMinorVersion: "5.7.38",
+    EffectiveTime:      "immediate",
+}
+err := client.InstanceUpgradeMinorVersion(instanceId, args)
+if err != nil {
+    fmt.Printf("update instance minor version list error: %+v\n", err)
+    return
+}
+fmt.Printf("update instance minor version list success\n")
+
+```
+# SmartDBA
+## 查询慢SQL诊断开通状态
+使用以下代码可以查询慢SQL诊断开通状态
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+
+result, err := client.SlowSqlFlowStatus(instanceId)
+if err != nil {
+    fmt.Printf("get slow sql flow status error: %+v\n", err)
+    return
+}
+fmt.Printf("get slow sql flow status success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 开通慢SQL诊断
+
+使用以下代码可以开通慢SQL诊断
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+err := client.EnableSlowSqlFlow(instanceId)
+if err != nil {
+    fmt.Printf("enable slow sql flow error: %+v\n", err)
+    return
+}
+fmt.Printf("enable slow sql flow success\n")
+
+```
+## 关闭慢SQL诊断
+
+使用以下代码可以关闭慢SQL诊断
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+err := client.DisableSlowSqlFlow(instanceId)
+if err != nil {
+    fmt.Printf("disable slow sql flow error: %+v\n", err)
+    return
+}
+fmt.Printf("disable slow sql flow success\n")
+
+```
+
+## 获取慢SQL诊断列表
+
+使用以下代码可以获取慢SQL诊断列表
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &GetSlowSqlArgs{}
+result, err := client.GetSlowSqlList(instanceId, args)
+if err != nil {
+    fmt.Printf("get slow sql flow list error: %+v\n", err)
+    return
+}
+fmt.Printf("get slow sql flow list success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+
+## 根据SQLID获取慢SQL
+
+使用以下代码可以根据SQLID获取慢SQL
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetSlowSqlBySqlId(instanceId, sqlId)
+if err != nil {
+    fmt.Printf("get slow sql detail by sqlid error: %+v\n", err)
+    return
+}
+fmt.Printf("get slow sql detail by sqlid success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 获取慢SQL说明
+
+使用以下代码可以获取慢SQL说明
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetSlowSqlExplain(instanceId, sqlId, db)
+if err != nil {
+    fmt.Printf("get slow sql explain error: %+v\n", err)
+    return
+}
+fmt.Printf("get slow sql explain success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+
+## 获取SQL模板维度的统计信息
+
+使用以下代码可以获取SQL模板维度的统计信息
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.GetSlowSqlArgs{}
+result, err := client.GetSlowSqlStatsDigest(instanceId, args)
+if err != nil {
+    fmt.Printf("get slow sql stats digest error: %+v\n", err)
+    return
+}
+fmt.Printf("get slow sql stats digest success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+
+## 获取慢SQL耗时分布
+
+使用以下代码可以获取慢SQL耗时分布
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.GetSlowSqlDurationArgs{}
+result, err := client.GetSlowSqlDuration(instanceId, args)
+if err != nil {
+    fmt.Printf("get slow sql duration error: %+v\n", err)
+    return
+}
+fmt.Printf("get slow sql duration success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 获取慢SQL来源IP分布
+
+使用以下代码可以获取慢SQL来源IP分布
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.GetSlowSqlSourceArgs{}
+result, err := client.GetSlowSqlSource(instanceId, args)
+if err != nil {
+    fmt.Printf("get slow sql source error: %+v\n", err)
+    return
+}
+fmt.Printf("get slow sql source success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 获取慢SQL中的表
+
+使用以下代码可以获取慢SQL中的表
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetSlowSqlSchema(instanceId, sqlId, db)
+if err != nil {
+    fmt.Printf("get slow sql schema error: %+v\n", err)
+    return
+}
+fmt.Printf("get slow sql schema success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 获取慢SQL中的列
+
+使用以下代码可以获取慢SQL中的列
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetSlowSqlTable(instanceId, sqlId, db, table)
+if err != nil {
+    fmt.Printf("get slow sql table error: %+v\n", err)
+    return
+}
+fmt.Printf("get slow sql table success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+
+## 获取慢SQL表中的索引
+
+使用以下代码可以获取慢SQL表中的索引
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.GetSlowSqlIndexArgs{
+    SqlId:  "e9fa9802-0d0e-41b4-b3ba-6496466b6cad",
+    Schema: "db1",
+    Table:  "table1",
+}
+result, err := client.GetSlowSqlIndex(instanceId, args)
+if err != nil {
+    fmt.Printf("get slow sql index error: %+v\n", err)
+    return
+}
+fmt.Printf("get slow sql index success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 获取慢SQL趋势
+
+使用以下代码可以获取慢SQL趋势
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.GetSlowSqlTrendArgs{
+    Start: "2023-05-05T05:30:13.000Z",
+    End:   "2023-05-06T05:30:13.000Z",
+}
+result, err := client.GetSlowSqlTrend(instanceId, args)
+if err != nil {
+    fmt.Printf("get slow sql trend error: %+v\n", err)
+    return
+}
+fmt.Printf("get slow sql trend success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 获取慢SQL调优建议
+
+使用以下代码可以获取慢SQL调优建议
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetSlowSqlAdvice(instanceId, sqlId, db)
+if err != nil {
+    fmt.Printf("get slow sql advice error: %+v\n", err)
+    return
+}
+fmt.Printf("get slow sql advice success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 获取库表空间概况
+
+使用以下代码可以获取库表空间概况
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetDiskInfo(instanceId)
+if err != nil {
+    fmt.Printf("get disk info error: %+v\n", err)
+    return
+}
+fmt.Printf("get disk info success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 获取数据空间的数据库列表
+
+使用以下代码可以获取数据空间的数据库列表
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetDbListSize(instanceId)
+if err != nil {
+    fmt.Printf("get db list size info error: %+v\n", err)
+    return
+}
+fmt.Printf("get db list size info success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 获取数据空间表的详情
+
+使用以下代码可以获取数据空间表的详情
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.GetTableListArgs{
+    DbName: "db1",
+}
+result, err := client.GetTableListInfo(instanceId, args)
+if err != nil {
+    fmt.Printf("get table list error: %+v\n", err)
+    return
+}
+fmt.Printf("get table list success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 获取指定会话kill类型的相关参数
+
+使用以下代码可以获取指定会话kill类型的相关参数
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetKillSessionTypes(instanceId)
+if err != nil {
+    fmt.Printf("get kill session types error: %+v\n", err)
+    return
+}
+fmt.Printf("get kill session types success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 获取指定实例的会话概览
+
+使用以下代码可以获取指定实例的会话概览
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetSessionSummary(instanceId)
+if err != nil {
+    fmt.Printf("get kill session summary error: %+v\n", err)
+    return
+}
+fmt.Printf("get kill session summary success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 获取指定实例的实时会话
+
+使用以下代码可以获取指定实例的实时会话
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.SessionDetailArgs{}
+result, err := client.GetSessionDetail(instanceId, args)
+if err != nil {
+    fmt.Printf("get session detail error: %+v\n", err)
+    return
+}
+fmt.Printf("get session detail success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 校验执行kill操作的数据库用户及密码是否正确
+
+使用以下代码可以校验执行kill操作的数据库用户及密码是否正确
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.KillSessionAuthArgs{}
+result, err := client.CheckKillSessionAuth(instanceId, args)
+if err != nil {
+    fmt.Printf("check kill session auth error: %+v\n", err)
+    return
+}
+fmt.Printf("check kill session auth success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 获取指定实例的会话kill记录
+
+使用以下代码可以获取指定实例的会话kill记录
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.KillSessionHistory{}
+result, err := client.GetKillSessionHistory(instanceId, args)
+if err != nil {
+    fmt.Printf("get kill session history error: %+v\n", err)
+    return
+}
+fmt.Printf("get kill session history success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 根据传入的kill类型及类型所对应的值执行kill会话的操作
+
+使用以下代码可以根据传入的kill类型及类型所对应的值执行kill会话的操作
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.KillSessionArgs{}
+result, err := client.KillSession(instanceId, args)
+if err != nil {
+    fmt.Printf("kill session error: %+v\n", err)
+    return
+}
+fmt.Printf("kill session success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 获取指定实例的会话统计
+
+使用以下代码可以获取指定实例的会话统计
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetSessionStatistics(instanceId)
+if err != nil {
+    fmt.Printf("get session statistics error: %+v\n", err)
+    return
+}
+fmt.Printf("get session statistics success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 查询错误日志服务是否开启
+
+使用以下代码可以查询错误日志服务是否开启
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetErrorLogStatus(instanceId)
+if err != nil {
+    fmt.Printf("get error log status error: %+v\n", err)
+    return
+}
+fmt.Printf("get error log status success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 开启错误日志服务
+
+使用以下代码可以开启错误日志服务
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.EnableErrorLog(instanceId)
+if err != nil {
+    fmt.Printf("enable error log status error: %+v\n", err)
+    return
+}
+fmt.Printf("enable error log status success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 关闭错误日志服务
+
+使用以下代码可以关闭错误日志服务
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.DisableErrorLog(instanceId)
+if err != nil {
+    fmt.Printf("disable error log status error: %+v\n", err)
+    return
+}
+fmt.Printf("disable error log status success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 获取错误日志列表
+
+使用以下代码可以获取错误日志列表
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.ErrorLogListArgs{}
+result, err := client.GetErrorLogList(instanceId, args)
+if err != nil {
+    fmt.Printf("get error log list error: %+v\n", err)
+    return
+}
+fmt.Printf("get error log list success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+
+## 获取实例限流规则列表
+
+使用以下代码可以获取实例限流规则列表
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetSqlFilterList(instanceId)
+if err != nil {
+    fmt.Printf("get sql filter list error: %+v\n", err)
+    return
+}
+fmt.Printf("get sql filter list success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 获取某个限流规则详情
+
+使用以下代码可以获取某个限流规则详情
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetSqlFilterDetail(instanceId, filterId)
+if err != nil {
+    fmt.Printf("get sql filter detail error: %+v\n", err)
+    return
+}
+fmt.Printf("get sql filter detail success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 添加一条限流规则
+
+使用以下代码可以添加一条限流规则
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.SqlFilterArgs{
+    FilterType:  "SELECT",
+    FilterKey:   "123",
+    FilterLimit: 0,
+}
+result, err := client.AddSqlFilter(instanceId, args)
+if err != nil {
+    fmt.Printf("add sql filter error: %+v\n", err)
+    return
+}
+fmt.Printf("add sql filter success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+
+## 更新一条限流规则
+
+使用以下代码可以更新一条限流规则
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.SqlFilterArgs{
+    FilterType:  "SELECT",
+    FilterKey:   "123",
+    FilterLimit: 0,
+}
+result, err := client.UpdateSqlFilter(instanceId, args)
+if err != nil {
+    fmt.Printf("update sql filter error: %+v\n", err)
+    return
+}
+fmt.Printf("update sql filter success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 开启关闭某个限流规则
+
+使用以下代码可以开启关闭某个限流规则
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.StartOrStopSqlFilterArgs{
+    Action: "OFF",
+}
+result, err := client.StartOrStopSqlFilter(instanceId, filterId, args)
+if err != nil {
+    fmt.Printf("start or stop sql filter error: %+v\n", err)
+    return
+}
+fmt.Printf("start or stop sql filter success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 删除某个限流规则
+
+使用以下代码可以删除某个限流规则
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+
+result, err := client.DeleteSqlFilter(instanceId, filterId)
+if err != nil {
+    fmt.Printf("delete sql filter error: %+v\n", err)
+    return
+}
+fmt.Printf("delete sql filter success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 实例是否支持限流
+
+使用以下代码可以实例是否支持限流
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+
+result, err := client.IsAllowedSqlFilter(instanceId)
+if err != nil {
+    fmt.Printf("is allowed sql filter error: %+v\n", err)
+    return
+}
+fmt.Printf("is allowed sql filter success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+
+# Performance
+## Kill会话
+
+使用以下代码可以Kill会话
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &ProcessArgs{
+    Ids: []int64{123},
+}
+
+err := client.ProcessKill(instanceId, args)
+if err != nil {
+    fmt.Printf("process kill error: %+v\n", err)
+    return
+}
+fmt.Printf("process kill success\n")
+```
+## 查询innodbstatus快照数据
+
+使用以下代码可以查询innodbstatus快照数据
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.InnodbStatus(instanceId)
+if err != nil {
+    fmt.Printf("get innodb status error: %+v\n", err)
+    return
+}
+fmt.Printf("get innodb status success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+
+## 查询processlist快照数据
+
+使用以下代码可以查询processlist快照数据
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.ProcessList(instanceId)
+if err != nil {
+    fmt.Printf("get process list error: %+v\n", err)
+    return
+}
+fmt.Printf("get process list success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 查询事务列表
+
+使用以下代码可以查询事务列表
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.TransactionList(instanceId)
+if err != nil {
+    fmt.Printf("get transaction list error: %+v\n", err)
+    return
+}
+fmt.Printf("get transaction list success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
+## 查询连接列表
+
+使用以下代码可以查询连接列表
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.ConnectionList(instanceId)
+if err != nil {
+    fmt.Printf("get ConnectionList list error: %+v\n", err)
+    return
+}
+fmt.Printf("get ConnectionList list success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+```
 # 备份管理
 
 ## 获取备份列表
@@ -876,7 +2110,7 @@ fmt.Printf("get backup list success\n")
 使用以下代码可以获取一个实例备份的详情信息。
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/rds"
-_, err := client.GetBackupDetail(instanceId, backupId)
+result, err := client.GetBackupDetail(instanceId, backupId)
 if err != nil {
     fmt.Printf("get backup detail error: %+v\n", err)
     return
@@ -884,6 +2118,18 @@ if err != nil {
 fmt.Printf("get backup detail success\n")
 ```
 
+## 删除备份
+
+使用以下代码可以删除手动备份
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+_, err := client.DeleteBackup(instanceId, backupId)
+if err != nil {
+    fmt.Printf("delete backup detail error: %+v\n", err)
+    return
+}
+fmt.Printf("delete backup detail success\n")
+```
 ## 更新备份策略
 
 使用以下代码可以更新一个实例的备份策略。
@@ -902,7 +2148,88 @@ if err != nil {
 }
 fmt.Printf("modify backup policy success\n")
 ```
+## 获取binlog列表
 
+使用以下代码可以获取binlog列表
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetBinlogList(instanceId, detaTime)
+if err != nil {
+    fmt.Printf("get binlog list error: %+v\n", err)
+    return
+}
+fmt.Printf("get binlog list success\n")
+```
+
+## 获取binlog信息
+
+使用以下代码可以获取binlog信息
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.GetBinlogInfo(instanceId, binlogId, downloadValidTimeInSec)
+if err != nil {
+    fmt.Printf("get binlog detail error: %+v\n", err)
+    return
+}
+fmt.Printf("get binlog detail success\n")
+```
+
+## 按时间点进行库表恢复
+
+使用以下代码可以按时间点进行库表恢复
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+recoveryByDatetimeArgs := &RecoveryByDatetimeArgs{
+    Datetime: "2022-01-11T16:05:52Z",
+    Data: []RecoveryData{
+        {
+            DbName:      "test_db",
+            NewDbname:   "new_test_db",
+            RestoreMode: "database",
+            Tables: []TableData{
+                {
+                    TableName:    "table_name",
+                    NewTablename: "new_table_name",
+                },
+            },
+        },
+    },
+}
+err := client.RecoveryToSourceInstanceByDatetime(instanceId, recoveryByDatetimeArgs)
+if err != nil {
+    fmt.Printf("recovery by datetime error: %+v\n", err)
+    return
+}
+fmt.Printf("recovery by datetime success\n")
+```
+## 按备份集进行库表恢复
+
+使用以下代码可以按备份集进行库表恢复
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+recoveryBySnapshotArgs := &RecoveryBySnapshotArgs{
+    SnapshotId: "1691734023130272802",
+    Data: []RecoveryData{
+        {
+            DbName:      "test_db",
+            NewDbname:   "new_test_db",
+            RestoreMode: "database",
+            Tables: []TableData{
+                {
+                    TableName:    "table_name",
+                    NewTablename: "new_table_name",
+                },
+            },
+        },
+    },
+}
+err := client.RecoveryToSourceInstanceBySnapshot(instanceId, recoveryBySnapshotArgs)
+if err != nil {
+    fmt.Printf("recovery by snapshot error: %+v\n", err)
+    return
+}
+fmt.Printf("recovery by snapshot success\n")
+```
 # 慢日志下载任务
 
 ## 慢日志下载任务列表

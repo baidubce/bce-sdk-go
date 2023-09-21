@@ -114,6 +114,13 @@ func getLogsUrlWithLogId(instanceId, logId string) string {
 	return INSTANCE_URL_V1 + "/" + instanceId + "/log/" + logId
 }
 
+func getGroupUrl() string {
+	return "/v2/group"
+}
+func getTemplateUrl() string {
+	return "/v2/template"
+}
+
 func Json(v interface{}) string {
 	jsonStr, err := json.Marshal(v)
 	if err != nil {
@@ -150,11 +157,12 @@ func getQueryParams(val interface{}) (map[string]string, error) {
 // CreateInstance - create an instance with specified parameters
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - reqBody: the request body to create instance
+//   - cli: the client agent which can perform sending request
+//   - reqBody: the request body to create instance
+//
 // RETURNS:
-//     - *CreateInstanceResult: result of the instance ids newly created
-//     - error: nil if success otherwise the specific error
+//   - *CreateInstanceResult: result of the instance ids newly created
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateInstance(args *CreateInstanceArgs) (*CreateInstanceResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set create scs argments")
@@ -181,11 +189,12 @@ func (c *Client) CreateInstance(args *CreateInstanceArgs) (*CreateInstanceResult
 // ListInstances - list all instances with the specified parameters
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to list instances
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to list instances
+//
 // RETURNS:
-//     - *ListInstanceResult: result of the instance list
-//     - error: nil if success otherwise the specific error
+//   - *ListInstanceResult: result of the instance list
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListInstances(args *ListInstancesArgs) (*ListInstancesResult, error) {
 	if args == nil {
 		args = &ListInstancesArgs{}
@@ -210,11 +219,12 @@ func (c *Client) ListInstances(args *ListInstancesArgs) (*ListInstancesResult, e
 // GetInstanceDetail - get details of the specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *GetInstanceDetailResult: result of the instance details
-//     - error: nil if success otherwise the specific error
+//   - *GetInstanceDetailResult: result of the instance details
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetInstanceDetail(instanceId string) (*GetInstanceDetailResult, error) {
 	result := &GetInstanceDetailResult{}
 	err := bce.NewRequestBuilder(c).
@@ -229,11 +239,12 @@ func (c *Client) GetInstanceDetail(instanceId string) (*GetInstanceDetailResult,
 // ResizeInstance - resize a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance to be resized
-//     - reqBody: the request body to resize instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance to be resized
+//   - reqBody: the request body to resize instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ResizeInstance(instanceId string, args *ResizeInstanceArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -245,13 +256,57 @@ func (c *Client) ResizeInstance(instanceId string, args *ResizeInstanceArgs) err
 		Do()
 }
 
+// GetCreatePrice - get create price
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - reqBody: the request body to get price
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - *GetCreatePriceResult: result of the create price
+func (c *Client) GetCreatePrice(args *CreatePriceArgs) (*CreatePriceResult, error) {
+	result := &CreatePriceResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL("/v2/price").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GetResizePrice - get resize price
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance to be resized
+//   - reqBody: the request body to get resize price
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - *GetResizePriceResult: result of the resize price
+func (c *Client) GetResizePrice(instanceId string, args *ResizePriceArgs) (*ResizePriceResult, error) {
+	result := &ResizePriceResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(INSTANCE_URL_V2+"/"+instanceId+"/price").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
 // AddReplication - add replications
 //
 // PARAMS:
-//     - instanceId: id of the instance to be resized
-//     - args: replicationInfo
+//   - instanceId: id of the instance to be resized
+//   - args: replicationInfo
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) AddReplication(instanceId string, args *ReplicationArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -266,10 +321,11 @@ func (c *Client) AddReplication(instanceId string, args *ReplicationArgs) error 
 // DeleteReplication - delete replications
 //
 // PARAMS:
-//     - instanceId: id of the instance to be resized
-//     - args: replicationInfo
+//   - instanceId: id of the instance to be resized
+//   - args: replicationInfo
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteReplication(instanceId string, args *ReplicationArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -284,10 +340,11 @@ func (c *Client) DeleteReplication(instanceId string, args *ReplicationArgs) err
 // RestartInstance - restart a specified instance
 //
 // PARAMS:
-//     - instanceId: id of the instance to be resized
-//     - args: specify restart immediately or postpone restart to time window
+//   - instanceId: id of the instance to be resized
+//   - args: specify restart immediately or postpone restart to time window
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RestartInstance(instanceId string, args *RestartInstanceArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -301,10 +358,11 @@ func (c *Client) RestartInstance(instanceId string, args *RestartInstanceArgs) e
 // DeleteInstance - delete a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance to be deleted
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance to be deleted
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteInstance(instanceId string, clientToken string) error {
 
 	return bce.NewRequestBuilder(c).
@@ -317,11 +375,12 @@ func (c *Client) DeleteInstance(instanceId string, clientToken string) error {
 // UpdateInstanceName - update name of a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance to be deleted
-//     - args: the arguments to Update instanceName
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance to be deleted
+//   - args: the arguments to Update instanceName
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateInstanceName(instanceId string, args *UpdateInstanceNameArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -335,11 +394,12 @@ func (c *Client) UpdateInstanceName(instanceId string, args *UpdateInstanceNameA
 // GetNodeTypeList - list all nodetype
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance to be deleted
-//     - args: the arguments to Update instanceName
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance to be deleted
+//   - args: the arguments to Update instanceName
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetNodeTypeList() (*GetNodeTypeListResult, error) {
 	getNodeTypeListResult := &GetNodeTypeListResult{}
 	err := bce.NewRequestBuilder(c).
@@ -354,11 +414,12 @@ func (c *Client) GetNodeTypeList() (*GetNodeTypeListResult, error) {
 // ListsSubnet - list all Subnets
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to list all subnets, not necessary
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to list all subnets, not necessary
+//
 // RETURNS:
-//     - *ListSubnetsResult: result of the subnet list
-//     - error: nil if success otherwise the specific error
+//   - *ListSubnetsResult: result of the subnet list
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListSubnets(args *ListSubnetsArgs) (*ListSubnetsResult, error) {
 	if args == nil {
 		args = &ListSubnetsArgs{}
@@ -379,11 +440,12 @@ func (c *Client) ListSubnets(args *ListSubnetsArgs) (*ListSubnetsResult, error) 
 // UpdateInstanceDomainName - update name of a specified instance domain
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to update domainName
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to update domainName
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateInstanceDomainName(instanceId string, args *UpdateInstanceDomainNameArgs) error {
 
 	if args == nil || args.Domain == "" {
@@ -400,10 +462,11 @@ func (c *Client) UpdateInstanceDomainName(instanceId string, args *UpdateInstanc
 // GetZoneList - list all zone
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
+//   - cli: the client agent which can perform sending request
+//
 // RETURNS:
-//     - *GetZoneListResult: result of the zone list
-//     - error: nil if success otherwise the specific error
+//   - *GetZoneListResult: result of the zone list
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetZoneList() (*GetZoneListResult, error) {
 	result := &GetZoneListResult{}
 	err := bce.NewRequestBuilder(c).
@@ -418,11 +481,12 @@ func (c *Client) GetZoneList() (*GetZoneListResult, error) {
 // FlushInstance - flush a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to flush instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to flush instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) FlushInstance(instanceId string, args *FlushInstanceArgs) error {
 
 	cryptedPass, err := Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.Password)
@@ -442,11 +506,12 @@ func (c *Client) FlushInstance(instanceId string, args *FlushInstanceArgs) error
 // BindingTags - bind tags to a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to bind tags to instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to bind tags to instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BindingTag(instanceId string, args *BindingTagArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -459,11 +524,12 @@ func (c *Client) BindingTag(instanceId string, args *BindingTagArgs) error {
 // UnBindingTags - unbind tags to a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to unbind tags to instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to unbind tags to instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UnBindingTag(instanceId string, args *BindingTagArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -473,14 +539,49 @@ func (c *Client) UnBindingTag(instanceId string, args *BindingTagArgs) error {
 		Do()
 }
 
+// SetAsMaster - set instance as master
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) SetAsMaster(instanceId string) error {
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(INSTANCE_URL_V2 + "/" + instanceId + "/setAsMaster").
+		Do()
+}
+
+// SetAsSlave - set instance as master
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to set instance as slave
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) SetAsSlave(instanceId string, args *SetAsSlaveArgs) error {
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithBody(args).
+		WithURL(INSTANCE_URL_V2 + "/" + instanceId + "/setAsSlave").
+		Do()
+}
+
 // GetSecurityIp - list all securityIps
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *ListSecurityIp: result of the security IP list
-//     - error: nil if success otherwise the specific error
+//   - *ListSecurityIp: result of the security IP list
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetSecurityIp(instanceId string) (*GetSecurityIpResult, error) {
 
 	result := &GetSecurityIpResult{}
@@ -496,11 +597,12 @@ func (c *Client) GetSecurityIp(instanceId string) (*GetSecurityIpResult, error) 
 // AddSecurityIp - add securityIp to access a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to add securityIp
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to add securityIp
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) AddSecurityIp(instanceId string, args *SecurityIpArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -514,11 +616,12 @@ func (c *Client) AddSecurityIp(instanceId string, args *SecurityIpArgs) error {
 // DeleteSecurityIp - delete securityIp to access a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to delete securityIp
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to delete securityIp
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteSecurityIp(instanceId string, args *SecurityIpArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -532,11 +635,12 @@ func (c *Client) DeleteSecurityIp(instanceId string, args *SecurityIpArgs) error
 // ModifyPassword - modify the password of a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to Modify Password
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to Modify Password
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyPassword(instanceId string, args *ModifyPasswordArgs) error {
 
 	cryptedPass, err := Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.Password)
@@ -553,14 +657,51 @@ func (c *Client) ModifyPassword(instanceId string, args *ModifyPasswordArgs) err
 		Do()
 }
 
+// RenameDomain - rename domain
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to rename domain
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) RenameDomain(instanceId string, args *RenameDomainArgs) error {
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(INSTANCE_URL_V2+"/"+instanceId+"/renameDomain").
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithBody(args).
+		Do()
+}
+
+// SwapDomain - swap domain
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to swap domain
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) SwapDomain(instanceId string, args *SwapDomainArgs) error {
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(INSTANCE_URL_V2+"/"+instanceId+"/swapDomain").
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithBody(args).
+		Do()
+}
+
 // GetParameters - query the configuration parameters and running parameters of redis instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *GetParameterResult: result of the parameters
-//     - error: nil if success otherwise the specific error
+//   - *GetParameterResult: result of the parameters
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetParameters(instanceId string) (*GetParametersResult, error) {
 
 	result := &GetParametersResult{}
@@ -576,11 +717,12 @@ func (c *Client) GetParameters(instanceId string) (*GetParametersResult, error) 
 // ModifyParameters - modify the parameters of a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to modify parameters
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to modify parameters
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyParameters(instanceId string, args *ModifyParametersArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -594,11 +736,12 @@ func (c *Client) ModifyParameters(instanceId string, args *ModifyParametersArgs)
 // GetBackupList - get backup list of the instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//
 // RETURNS:
-//     - *GetBackupListResult: result of the backup list
-//     - error: nil if success otherwise the specific error
+//   - *GetBackupListResult: result of the backup list
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetBackupList(instanceId string) (*GetBackupListResult, error) {
 
 	result := &GetBackupListResult{}
@@ -611,14 +754,37 @@ func (c *Client) GetBackupList(instanceId string) (*GetBackupListResult, error) 
 	return result, err
 }
 
+// GetBackupDetail - get backup detail of the instance
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - backupRecordId: the backup record id
+//
+// RETURNS:
+//   - *GetBackupDetailResult: result of the backup detail
+//   - error: nil if success otherwise the specific error
+func (c *Client) GetBackupDetail(instanceId, backupRecordId string) (*GetBackupDetailResult, error) {
+
+	result := &GetBackupDetailResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(INSTANCE_URL_V1 + "/" + instanceId + "/backup/" + backupRecordId).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
 // ModifyBackupPolicy - modify the BackupPolicy of a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: id of the instance
-//     - args: the arguments to Modify BackupPolicy
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//   - args: the arguments to Modify BackupPolicy
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyBackupPolicy(instanceId string, args *ModifyBackupPolicyArgs) error {
 
 	return bce.NewRequestBuilder(c).
@@ -632,10 +798,11 @@ func (c *Client) ModifyBackupPolicy(instanceId string, args *ModifyBackupPolicyA
 // ListSecurityGroupByVpcId - list security groups by vpc id
 //
 // PARAMS:
-//     - vpcId: id of vpc
+//   - vpcId: id of vpc
+//
 // RETURNS:
-//     - *[]SecurityGroup:security groups of vpc
-//     - error: nil if success otherwise the specific error
+//   - *[]SecurityGroup:security groups of vpc
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListSecurityGroupByVpcId(vpcId string) (*ListVpcSecurityGroupsResult, error) {
 	if len(vpcId) < 1 {
 		return nil, fmt.Errorf("unset vpcId")
@@ -654,10 +821,11 @@ func (c *Client) ListSecurityGroupByVpcId(vpcId string) (*ListVpcSecurityGroupsR
 // ListSecurityGroupByInstanceId - list security groups by instance id
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *ListSecurityGroupResult: list secrity groups result of instance
-//     - error: nil if success otherwise the specific error
+//   - *ListSecurityGroupResult: list secrity groups result of instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListSecurityGroupByInstanceId(instanceId string) (*ListSecurityGroupResult, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -676,9 +844,10 @@ func (c *Client) ListSecurityGroupByInstanceId(instanceId string) (*ListSecurity
 // BindSecurityGroups - bind SecurityGroup to instances
 //
 // PARAMS:
-//     - args: http request body
+//   - args: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BindSecurityGroups(args *SecurityGroupArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -702,9 +871,10 @@ func (c *Client) BindSecurityGroups(args *SecurityGroupArgs) error {
 // UnBindSecurityGroups - unbind SecurityGroup to instances
 //
 // PARAMS:
-//     - args: http request body
+//   - args: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UnBindSecurityGroups(args *UnbindSecurityGroupArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -728,9 +898,10 @@ func (c *Client) UnBindSecurityGroups(args *UnbindSecurityGroupArgs) error {
 // ReplaceSecurityGroups - replace SecurityGroup to instances
 //
 // PARAMS:
-//     - args: http request body
+//   - args: http request body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ReplaceSecurityGroups(args *SecurityGroupArgs) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -754,10 +925,11 @@ func (c *Client) ReplaceSecurityGroups(args *SecurityGroupArgs) error {
 // ListRecycleInstances - list all instances in recycler with marker
 //
 // PARAMS:
-//     - marker: marker page
+//   - marker: marker page
+//
 // RETURNS:
-//     - *RecyclerInstanceList: the result of instances in recycler
-//     - error: nil if success otherwise the specific error
+//   - *RecyclerInstanceList: the result of instances in recycler
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListRecycleInstances(marker *Marker) (*RecyclerInstanceList, error) {
 	result := &RecyclerInstanceList{}
 	err := bce.NewRequestBuilder(c).
@@ -773,9 +945,10 @@ func (c *Client) ListRecycleInstances(marker *Marker) (*RecyclerInstanceList, er
 // RecoverRecyclerInstances - batch recover instances that in recycler
 //
 // PARAMS:
-//     - instanceIds: instanceId list to recover
+//   - instanceIds: instanceId list to recover
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RecoverRecyclerInstances(instanceIds []string) error {
 	if instanceIds == nil || len(instanceIds) < 1 {
 		return fmt.Errorf("unset instanceIds")
@@ -799,9 +972,10 @@ func (c *Client) RecoverRecyclerInstances(instanceIds []string) error {
 // DeleteRecyclerInstances - batch delete instances that in recycler
 //
 // PARAMS:
-//     - instanceIds: instanceId list to delete
+//   - instanceIds: instanceId list to delete
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteRecyclerInstances(instanceIds []string) error {
 	if instanceIds == nil || len(instanceIds) < 1 {
 		return fmt.Errorf("unset instanceIds")
@@ -825,9 +999,10 @@ func (c *Client) DeleteRecyclerInstances(instanceIds []string) error {
 // RenewInstances - batch renew instances
 //
 // PARAMS:
-//     - args: renew instanceIds and duration
+//   - args: renew instanceIds and duration
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RenewInstances(args *RenewInstanceArgs) (*OrderIdResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -852,10 +1027,11 @@ func (c *Client) RenewInstances(args *RenewInstanceArgs) (*OrderIdResult, error)
 // ListLogByInstanceId - list error or slow logs of instance
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *[]Log:logs of instance
-//     - error: nil if success otherwise the specific error
+//   - *[]Log:logs of instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListLogByInstanceId(instanceId string, args *ListLogArgs) (*ListLogResult, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -881,10 +1057,11 @@ func (c *Client) ListLogByInstanceId(instanceId string, args *ListLogArgs) (*Lis
 // GetLogById - get log's detail of instance
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *Log:log's detail of instance
-//     - error: nil if success otherwise the specific error
+//   - *Log:log's detail of instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetLogById(instanceId, logId string, args *GetLogArgs) (*LogItem, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -911,10 +1088,11 @@ func (c *Client) GetLogById(instanceId, logId string, args *GetLogArgs) (*LogIte
 // GetMaintainTime - get maintainTime of instance
 //
 // PARAMS:
-//     - instanceId: id of instance
+//   - instanceId: id of instance
+//
 // RETURNS:
-//     - *GetMaintainTimeResult:maintainTime of instance
-//     - error: nil if success otherwise the specific error
+//   - *GetMaintainTimeResult:maintainTime of instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetMaintainTime(instanceId string) (*GetMaintainTimeResult, error) {
 	if len(instanceId) < 1 {
 		return nil, fmt.Errorf("unset instanceId")
@@ -933,9 +1111,10 @@ func (c *Client) GetMaintainTime(instanceId string) (*GetMaintainTimeResult, err
 // ModifyMaintainTime - modify MaintainTime of instance
 //
 // PARAMS:
-//     - args: new maintainTime
+//   - args: new maintainTime
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyMaintainTime(instanceId string, args *MaintainTime) error {
 	if args == nil {
 		return fmt.Errorf("unset args")
@@ -953,4 +1132,501 @@ func (c *Client) ModifyMaintainTime(instanceId string, args *MaintainTime) error
 		return err
 	}
 	return nil
+}
+
+// GroupPreCheck - group preCheck
+//
+// PARAMS:
+//   - args: the argumetns to group preCheck
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - *GroupPreCheckResult: the result of group preCheck
+func (c *Client) GroupPreCheck(args *GroupPreCheckArgs) (*GroupPreCheckResult, error) {
+	result := &GroupPreCheckResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getGroupUrl()+"/check").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// CreateGroup - create group
+//
+// PARAMS:
+//   - args: the argumetns to create group
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - *CreateGroupResult: the result of create group
+func (c *Client) CreateGroup(args *CreateGroupArgs) (*CreateGroupResult, error) {
+	result := &CreateGroupResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getGroupUrl()+"/create").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GetGroupList - get group list
+//
+// PARAMS:
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - *GroupListResult: the result of group list
+func (c *Client) GetGroupList(args *GetGroupListArgs) (*GroupListResult, error) {
+	result := &GroupListResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getGroupUrl()+"/list").
+		WithBody(args).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GetGroupDetail - get group detail
+//
+// PARAMS:
+//   - groupId: the group id
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - *GroupDetailResult: the result of group detail
+func (c *Client) GetGroupDetail(groupId string) (*GroupDetailResult, error) {
+	result := &GroupDetailResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getGroupUrl()+"/"+groupId).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// DeleteGroup - delete group
+//
+// PARAMS:
+//   - groupId: the group id
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) DeleteGroup(groupId string) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(getGroupUrl()+"/"+groupId+"/release").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		Do()
+	return err
+}
+
+// GroupAddFollower - add follower to a group
+//
+// PARAMS:
+//   - groupId: the group id
+//   - args: the arguments to add follower
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) GroupAddFollower(groupId string, args *FollowerInfo) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getGroupUrl()+"/"+groupId+"/join").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// GroupRemoveFollower - remove follower to a group
+//
+// PARAMS:
+//   - groupId: the group id
+//   - instanceId: the instance id which to remove
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) GroupRemoveFollower(groupId, instanceId string) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getGroupUrl()+"/"+groupId+"/quit/"+instanceId).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		Do()
+	return err
+}
+
+// SetAsLeader - set instance as leader
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) SetAsLeader(groupId, instanceId string) error {
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getGroupUrl() + "/" + groupId + "/setAsLeader/" + instanceId).
+		Do()
+}
+
+// UpdateGroupName - update group name
+//
+// PARAMS:
+//   - groupId: the group id
+//   - args: the arguments to update group name
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) UpdateGroupName(groupId string, args *GroupNameArgs) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getGroupUrl()+"/"+groupId).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// GroupForbidWrite - forbid write permission
+//
+// PARAMS:
+//   - groupId: the group id
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) GroupForbidWrite(groupId string, args *ForbidWriteArgs) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getGroupUrl()+"/"+groupId+"/forbidWrite").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// GroupSetQps - set group qps
+// PARAMS:
+//   - groupId: the group id
+//   - args: the arguments to set group qps
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) GroupSetQps(groupId string, args *GroupSetQpsArgs) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getGroupUrl()+"/"+groupId+"/qps").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// GroupSyncStatus - get group sync status
+//
+// PARAMS:
+//   - groupId: the group id
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - *GroupSyncStatusResult: the result of  group sync status
+func (c *Client) GroupSyncStatus(groupId string) (*GroupSyncStatusResult, error) {
+	result := &GroupSyncStatusResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getGroupUrl()+"/"+groupId+"/syncStatus").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GroupWhiteList - get group white list
+//
+// PARAMS:
+//   - groupId: the group id
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - *GroupWhiteListResult: the result of  group sync status
+func (c *Client) GroupWhiteList(groupId string) (*GroupWhiteList, error) {
+	result := &GroupWhiteList{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getGroupUrl()+"/"+groupId+"/white_list").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GroupWhiteListAdd - add group white list
+//
+// PARAMS:
+//   - groupId: the group id
+//   - args: the arguments to add  group white list
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) GroupWhiteListAdd(groupId string, args *GroupWhiteList) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getGroupUrl()+"/"+groupId+"/white_list/add").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// GroupWhiteListDelete - delete group white list
+//
+// PARAMS:
+//   - groupId: the group id
+//   - args: the arguments to delete  group white list
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) GroupWhiteListDelete(groupId string, args *GroupWhiteList) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getGroupUrl()+"/"+groupId+"/white_list/delete").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// GroupStaleReadable - set group follower stale readable
+//
+// PARAMS:
+//   - groupId: the group id
+//   - args: the arguments to set group follower stale readable
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) GroupStaleReadable(groupId string, args *StaleReadableArgs) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getGroupUrl()+"/"+groupId+"/stale_readable").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// CreateParamsTemplate - create params template
+//
+// PARAMS:
+//   - args: the arguments to create params template
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - *CreateParamsTemplateResult: the result of  create params template
+func (c *Client) CreateParamsTemplate(args *CreateTemplateArgs) (*CreateParamsTemplateResult, error) {
+	result := &CreateParamsTemplateResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getTemplateUrl()+"/create").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GetParamsTemplateList - get params template list
+//
+// PARAMS:
+//   - marker: pagination marker
+//   - maxkeys  : max keys
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - *ParamsTemplateListResult: the result of get params template list
+func (c *Client) GetParamsTemplateList(marker *Marker) (*ParamsTemplateListResult, error) {
+	result := &ParamsTemplateListResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getTemplateUrl()+"/list").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithQueryParams(getMarkerParams(marker)).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GetParamsTemplateDetail - get params template detail
+//
+// PARAMS:
+//   - templateId: the template id
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - *ParamsTemplateDetailResult: the result of get params template detail
+func (c *Client) GetParamsTemplateDetail(templateId string) (*ResultItem, error) {
+	result := &ResultItem{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getTemplateUrl()+"/"+templateId).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// DeleteParamsTemplate - delete params template
+//
+// PARAMS:
+//   - templateId: the template id
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) DeleteParamsTemplate(templateId string) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(getTemplateUrl()+"/delete/"+templateId).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		Do()
+	return err
+}
+
+// RenameParamsTemplate - rename params template
+//
+// PARAMS:
+//   - templateId: the template id
+//   - args : new template name args
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) RenameParamsTemplate(templateId string, args *RenameTemplateArgs) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getTemplateUrl()+"/rename/"+templateId).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// ApplyParamsTemplate - apply params template
+//
+// PARAMS:
+//   - templateId: the template id
+//   - args : the args to apply params template
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) ApplyParamsTemplate(templateId string, args *ApplyTemplateArgs) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getTemplateUrl()+"/apply/"+templateId).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// TemplateAddParams - add params to template
+//
+// PARAMS:
+//   - templateId: the template id
+//   - args : the args to add params template
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) TemplateAddParams(templateId string, args *AddParamsArgs) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getTemplateUrl()+"/addParams/"+templateId).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// TemplateModifyParams - modify params to template
+//
+// PARAMS:
+//   - templateId: the template id
+//   - args : the args to modify params template
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) TemplateModifyParams(templateId string, args *ModifyParamsArgs) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getTemplateUrl()+"/modifyParams/"+templateId).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// TemplateDeleteParams - delete params to template
+//
+// PARAMS:
+//   - templateId: the template id
+//   - args : the args to delete params template
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) TemplateDeleteParams(templateId string, args *DeleteParamsArgs) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getTemplateUrl()+"/deleteParams/"+templateId).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+	return err
+}
+
+// GetSystemTemplate - get system template
+//
+// PARAMS:
+//   - args : the args to get system params template
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - *SystemTemptaleResult: the result of get system template
+func (c *Client) GetSystemTemplate(args *GetSystemTemplateArgs) (*SystemTemplateResult, error) {
+	result := &SystemTemplateResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getTemplateUrl()+"/system").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithQueryParamFilter("engine", args.Engine).
+		WithQueryParamFilter("engineVersion", args.EngineVersion).
+		WithQueryParamFilter("clusterType", args.ClusterType).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GetApplyRecords - get template apply records
+//
+// PARAMS:
+//   - args : the args to get  template apply records
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - *GetApplyRecordsResult: the result of get template apply records
+func (c *Client) GetApplyRecords(templateId string, marker *Marker) (*GetApplyRecordsResult, error) {
+	result := &GetApplyRecordsResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getTemplateUrl()+"/record/"+templateId).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithQueryParams(getMarkerParams(marker)).
+		WithResult(result).
+		Do()
+	return result, err
 }

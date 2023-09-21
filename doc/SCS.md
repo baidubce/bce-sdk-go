@@ -319,7 +319,43 @@ if err != nil {
     fmt.Println("get instance detail success ", result)
 }
 ```
+### 创建实例价格查询
 
+使用以下代码可以查询指定SCS虚机的详细信息
+```go
+args := &scs.CreatePriceArgs{
+    Engine:         2,
+    Period:         1,
+    ChargeType:     "prepay",
+    NodeType:       "cache.n1.small",
+    ReplicationNum: 2,
+    ClusterType:    "cluster",
+}
+result, err := client.GetCreatePrice(args)
+if err != nil {
+    fmt.Println("get instance price failed:", err)
+} else 
+    fmt.Println("get instance price success ", result)
+}
+```
+### 变配实例价格查询
+
+使用以下代码可以查询指定SCS虚机的详细信息
+```go
+args := &scs.ResizePriceArgs{
+    ChangeType:     "nodeModify",
+    ShardNum:       2,
+    ReplicationNum: 1,
+    NodeType:       "cache.n1.small",
+    Period:         1,
+}
+result, err := client.GetResizePrice(args)
+if err != nil {
+    fmt.Println("get instance price failed:", err)
+} else 
+    fmt.Println("get instance price success ", result)
+}
+```
 ### 修改实例名称
 
 如下代码可以修改实例名称
@@ -604,6 +640,35 @@ if err != nil {
 >
 > - 密码长度8～16位，至少包含字母、数字和特殊字符中两种。允许的特殊字符包括 $^*()_+-=
 
+### 变更域名
+
+如下代码可以变更域名
+
+```go
+args := &scs.RenameDomainArgs{
+    Domain:      "newDomain",
+    ClientToken: getClientToken(),
+}
+err := client.RenameDomain(instanceId, args)
+if err != nil {
+    fmt.Println("rename domain failed:", err)
+}
+```
+### 域名交换
+
+如下代码可以域名交换
+
+```go
+args := &scs.SwapDomainArgs{
+    SourceInstanceId: SCS_TEST_ID,
+    TargetInstanceId: "scs-bj-xeelkkdsx",
+    ClientToken:      getClientToken(),
+}
+err := client.SwapDomain(instanceId, args)
+if err != nil {
+    fmt.Println("swap domain failed:", err)
+}
+```
 ### 清空实例
 
 如下代码可以清空实例
@@ -672,6 +737,34 @@ if err != nil {
 > - 解绑实例上定义的标签
 > - 可以同时解绑多个标签
 
+### 设置集群为热活主地域
+
+如下代码可以设置集群为热活主地域
+
+```go
+err := client.SetAsMaster(instanceId)
+if err != nil {
+    fmt.Println("set as master failed:", err)
+} else 
+    fmt.Println("set as master success ", result)
+}
+```
+### 设置集群为热活从地域
+
+如下代码可以设置集群为热活从地域
+
+```go
+args := &scs.SetAsSlaveArgs{
+    MasterDomain: "masterDomain",
+    MasterPort:   6379,
+}
+err := client.SetAsSlave(instanceId, args)
+if err != nil {
+    fmt.Println("set as slave failed:", err)
+} else 
+    fmt.Println("set as slave success ", result)
+}
+```
 ### 查询IP白名单
 
 如下代码可以查询允许访问实例的IP白名单
@@ -867,7 +960,18 @@ if err != nil {
     fmt.Println("get backup list success ", result)
 }
 ```
+### 获取备份信息
 
+使用以下代码可以获取某个实例备份信息
+
+```go
+result, err := client.GetBackupDetail(instanceId, backupId)
+if err != nil {
+    fmt.Println("get backup detail failed:", err)
+} else 
+    fmt.Println("get backup detail success ", result)
+}
+```
 ### 修改备份策略
 
 如下代码可以修改redis实例自动备份策略
@@ -988,6 +1092,413 @@ if err != nil {
 fmt.Println("modify maintainTime success.")
 ```
 
+# 热活实例组
+
+## 前置检查
+热活实例组前置检查，检查数据配置及网络联通性，不通过检查不能创建。
+```go
+args := &scs.GroupPreCheckArgs{
+    Leader: GroupLeader{
+        LeaderRegion: "bj",
+        LeaderId:     SCS_TEST_ID,
+    },
+    Followers: []GroupFollower{
+        {
+            FollowerId:     "scs-bdbl-dzkqigawuhzy",
+            FollowerRegion: "bd",
+        },
+    },
+}
+result, err := client.GroupPreCheck(args)
+if err != nil {
+    fmt.Printf("group pre check error: %+v\n", err)
+    return
+}
+fmt.Println("group pre check success.")
+data, _ := json.Marshal(result)
+fmt.Println(string(data))
+```
+## 创建热活实例组
+创建热活实例组
+```go
+args := &scs.CreateGroupArgs{
+    Leader: CreateGroupLeader{
+        GroupName:    "test_create",
+        LeaderRegion: "bj",
+        LeaderId:     SCS_TEST_ID,
+    },
+}
+result, err := client.CreateGroup(args)
+if err != nil {
+    fmt.Printf("create group error: %+v\n", err)
+    return
+}
+fmt.Println("create group success.")
+data, _ := json.Marshal(result)
+fmt.Println(string(data))
+```
+## 获取热活实例组列表
+获取热活实例组列表
+```go
+args := &scs.GetGroupListArgs{
+    PageNo: 1,
+    PageSize: 10
+}
+result, err := client.GetGroupList(args)
+if err != nil {
+    fmt.Printf("get group list error: %+v\n", err)
+    return
+}
+fmt.Println("get group list success.")
+data, _ := json.Marshal(result)
+fmt.Println(string(data))
+```
+## 获取热活实例组详情
+获取热活实例组详情
+```go
+result, err := client.GetGroupDetail(groupId)
+if err != nil {
+    fmt.Printf("get group detail error: %+v\n", err)
+    return
+}
+fmt.Println("get group detail success.")
+data, _ := json.Marshal(result)
+fmt.Println(string(data))
+```
+
+## 释放热活实例组
+释放热活实例组
+```go
+err := client.DeleteGroup(groupId)
+if err != nil {
+    fmt.Printf("delete group error: %+v\n", err)
+    return
+}
+fmt.Println("delete group success.")
+```
+
+## 热活实例组添加从集群
+```go
+args := &scs.FollowerInfo{
+    FollowerId:     "scs-bdbl-dzkqigawuhzy",
+    FollowerRegion: "bd",
+    SyncMaster:     "sync",
+}
+err := client.GroupAddFollower(groupId, args)
+if err != nil {
+    fmt.Printf("group add follower error: %+v\n", err)
+    return
+}
+fmt.Println("group add follower success.")
+```
+## 热活实例组移除从集群
+```go
+
+err := client.GroupRemoveFollower(groupId, instanceId)
+if err != nil {
+    fmt.Printf("group remove follower error: %+v\n", err)
+    return
+}
+fmt.Println("group remove follower success.")
+```
+## 修改热活实例组名称
+```go
+args := &scs.roupNameArgs{
+    GroupName: "test_group",
+}
+err := client.UpdateGroupName(groupId, args)
+if err != nil {
+    fmt.Printf("update group name error: %+v\n", err)
+    return
+}
+fmt.Println("update group name success.")
+```
+## 变更主角色
+```go
+err := client.SetAsLeader(groupId, instanceId)
+if err != nil {
+    fmt.Printf("set as leader error: %+v\n", err)
+    return
+}
+fmt.Println("set as leader success.")
+```
+## 实例组禁写修改
+```go
+args := &scs.ForbidWriteArgs{
+    ForbidWriteFlag: true,
+}
+err := client.GroupForbidWrite(groupId, args)
+if err != nil {
+    fmt.Printf("update forbid write error: %+v\n", err)
+    return
+}
+fmt.Println("update forbid write success.")
+```
+## 设置流控规则
+```go
+args := &scs.GroupSetQpsArgs{
+    ClusterShowId: "scs-bj-bftgjzjxbmex",
+    QpsWrite:      10,
+    QpsRead:       20,
+}
+err := client.GroupSetQps(groupId, args)
+if err != nil {
+    fmt.Printf("group set qps error: %+v\n", err)
+    return
+}
+fmt.Println("group set qps success.")
+```
+## 获取从角色同步状态
+```go
+result, err := client.GroupSyncStatus(groupId)
+if err != nil {
+    fmt.Printf("group sync status error: %+v\n", err)
+    return
+}
+fmt.Println("group sync status success.")
+data, _ := json.Marshal(result)
+fmt.Println(string(data))
+```
+## 获取IP白名单列表
+```go
+result, err := client.GroupWhiteList(groupId)
+if err != nil {
+    fmt.Printf("group white list error: %+v\n", err)
+    return
+}
+fmt.Println("group white list success.")
+data, _ := json.Marshal(result)
+fmt.Println(string(data))
+```
+## 添加IP白名单
+```go
+args := &scs.GroupWhiteList{
+    WhiteLists: []string{"127.0.0.1"},
+}
+err := client.GroupWhiteListAdd(groupId, args)
+if err != nil {
+    fmt.Printf("group white add error: %+v\n", err)
+    return
+}
+fmt.Println("group white add success.")
+```
+## 删除IP白名单
+```go
+args := &scs.GroupWhiteList{
+    WhiteLists: []string{"127.0.0.1"},
+}
+err := client.GroupWhiteListDelete(groupId, args)
+if err != nil {
+    fmt.Printf("group white delete error: %+v\n", err)
+    return
+}
+fmt.Println("group white delete success.")
+```
+
+## 设置从角色脏读
+```go
+args := &scs.taleReadableArgs{
+    FollowerId:    SCS_TEST_ID,
+    StaleReadable: true,
+}
+err := client.GroupStaleReadable(groupId, args)
+if err != nil {
+    fmt.Printf("groupstale readable error: %+v\n", err)
+    return
+}
+fmt.Println("groupstale readable success.")
+```
+
+# 参数模板管理
+## 创建参数模板
+```go
+
+args := &scs.CreateTemplateArgs{
+    EngineVersion: "5.0",
+    TemplateType:  1,
+    ClusterType:   "master_slave",
+    Engine:        "redis",
+    Name:          "test_template",
+    Comment:       "test template",
+    Parameters: []ParameterItem{
+        {
+            ConfName:   "disable_commands",
+            ConfModule: 1,
+            ConfValue:  "flushall,flushdb",
+            ConfType:   3,
+        },
+    },
+}
+result, err := client.CreateParamsTemplate(args)
+if err != nil {
+    fmt.Printf("create params template error: %+v\n", err)
+    return
+}
+data, _ := json.Marshal(result)
+fmt.Println(string(data))
+fmt.Println("create params template success.")
+```
+
+## 获取参数模版列表
+```go
+
+args := &Marker{
+    Marder: "-1",
+    MaxKeys: 1000
+}
+result, err := client.GetParamsTemplateList(args)
+if err != nil {
+    fmt.Printf("get params template error: %+v\n", err)
+    return
+}
+data, _ := json.Marshal(result)
+fmt.Println(string(data))
+fmt.Println("get params template success.")
+```
+## 获取参数模版详情
+```go
+result, err := client.GetParamsTemplateDetail("scs-tmpl-vxslemqppzuz")
+if err != nil {
+    fmt.Printf("get params template detail error: %+v\n", err)
+    return
+}
+data, _ := json.Marshal(result)
+fmt.Println(string(data))
+fmt.Println("get params template detail success.")
+```
+## 删除参数模板
+```go
+err := client.DeleteParamsTemplate("scs-tmpl-vxslemqppzuz")
+if err != nil {
+    fmt.Printf("delete params template error: %+v\n", err)
+    return
+}
+fmt.Println("delete params template success.")
+```
+
+
+## 修改参数模板名称
+```go
+args := &scs.RenameTemplateArgs{
+    Name: "scs-test-template",
+}
+err := client.RenameParamsTemplate("scs-tmpl-kctbndsfdhya", args)
+if err != nil {
+    fmt.Printf("rename params template error: %+v\n", err)
+    return
+}
+fmt.Println("rename params template success.")
+```
+
+## 应用参数模板
+```go
+args := &ApplyTemplateArgs{
+    RebootType: 0,
+    Extra:      "0",
+    CacheClusterShowIdItem: []CacheClusterShowId{
+        {
+            CacheClusterShowId: SCS_TEST_ID,
+            Region:             "bj",
+        },
+    },
+    Parameters: []ParameterItem{
+        {
+            ConfName:   "disable_commands",
+            ConfModule: 1,
+            ConfValue:  "flushall,flushdb",
+            ConfType:   3,
+        },
+    },
+}
+err := client.ApplyParamsTemplate("scs-tmpl-kctbndsfdhya", args)
+if err != nil {
+    fmt.Printf("apply params template error: %+v\n", err)
+    return
+}
+fmt.Println("apply params template success.")
+```
+## 参数模版添加参数
+```go
+args := &scs.AddParamsArgs{
+    Parameters: []ParameterItem{
+        {
+            ConfName:   "disable_commands",
+            ConfModule: 1,
+            ConfValue:  "flushall,flushdb",
+            ConfType:   3,
+        },
+    },
+}
+err := client.TemplateAddParams("scs-tmpl-kctbndsfdhya", args)
+if err != nil {
+    fmt.Printf("add params template error: %+v\n", err)
+    return
+}
+fmt.Println("add params template success.")
+```
+## 参数模版修改参数
+```go
+args := &scs.ModifyParamsArgs{
+    Parameters: []ParameterItem{
+        {
+            ConfName:   "disable_commands",
+            ConfModule: 1,
+            ConfValue:  "flushall,flushdb",
+            ConfType:   3,
+        },
+    },
+}
+err := client.TemplateModifyParams("scs-tmpl-kctbndsfdhya", args)
+if err != nil {
+    fmt.Printf("modify params template error: %+v\n", err)
+    return
+}
+fmt.Println("modify params template success.")
+```
+## 参数模版删除参数
+```go
+args := &scs.DeleteParamsArgs{
+    Parameters: []string{"appendonly"},
+}
+err := client.TemplateDeleteParams("scs-tmpl-kctbndsfdhya", args)
+if err != nil {
+    fmt.Printf("template delete params  error: %+v\n", err)
+    return
+}
+fmt.Println("template delete params success.")
+```
+
+## 获取系统参数模板
+```go
+args := &scs.GetSystemTemplateArgs{
+    Engine:        "redis",
+    EngineVersion: "5.0",
+    ClusterType:   "master_slave",
+}
+result, err := client.GetSystemTemplate(args)
+if err != nil {
+    fmt.Printf("get system template error: %+v\n", err)
+    return
+}
+data, _ := json.Marshal(result)
+fmt.Println(string(data))
+fmt.Println("get system template success.")
+```
+## 获取应用参数模版记录
+```go
+args := &scs.Marker{
+    Marker:  "-1",
+    MaxKeys: 100,
+}
+result, err := client.GetApplyRecords("scs-tmpl-kctbndsfdhya", args)
+if err != nil {
+    fmt.Printf("get apply record error: %+v\n", err)
+    return
+}
+data, _ := json.Marshal(result)
+fmt.Println(string(data))
+fmt.Println("get apply record success.")
+```
 # 错误处理
 
 GO语言以error类型标识错误，SCS支持两种错误见下表：

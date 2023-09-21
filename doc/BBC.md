@@ -641,6 +641,8 @@ batchAddIpArgs := &BatchAddIpArgs{
 	PrivateIps []string "privateIps"
     // 自动分配IP数量，和PrivateIps不可同时使用
     SecondaryPrivateIpAddressCount int 1
+    // 启用后主网卡新增ip地址为ipv6，请确认子网已分配IPv6网段，默认false
+    AllocateMultiIpv6Addr false
     // 幂等性Token，使用 uuid 生成一个长度不超过64位的ASCII字符串，可选参数
     ClietnToken string "clientToken"
 }

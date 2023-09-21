@@ -375,6 +375,7 @@ type BatchAddIpArgs struct {
 	InstanceId                     string   `json:"instanceId"`
 	PrivateIps                     []string `json:"privateIps"`
 	SecondaryPrivateIpAddressCount int      `json:"secondaryPrivateIpAddressCount"`
+	AllocateMultiIpv6Addr          bool     `json:"allocateMultiIpv6Addr"`
 	ClientToken                    string   `json:"-"`
 }
 
