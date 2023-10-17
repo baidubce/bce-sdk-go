@@ -24,6 +24,7 @@ import (
 	_ "github.com/baidubce/bce-sdk-go/http"
 	_ "github.com/baidubce/bce-sdk-go/model"
 	_ "github.com/baidubce/bce-sdk-go/services/appblb"
+	_ "github.com/baidubce/bce-sdk-go/services/as"
 	_ "github.com/baidubce/bce-sdk-go/services/bbc"
 	_ "github.com/baidubce/bce-sdk-go/services/bcc"
 	_ "github.com/baidubce/bce-sdk-go/services/bcm"

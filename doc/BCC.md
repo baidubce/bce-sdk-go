@@ -1762,18 +1762,24 @@ if err := bccClient.UnBindInstanceToTags(instanceId, unBindTagsRequest); err != 
 ```
 
 ### 批量转预付费
-使用以下代码可以将实例批量转预付费，若需要对实例关联的cds变更，则必须在CdsList中传入所有需要转为预付费的cdsId。
+使用以下代码可以将实例批量转预付费，若需要对实例关联的cds变更，则必须在CdsList中传入所有需要转为预付费的cdsId，若所有cds均变更计费传入all。
 ```go
  batchChangeInstanceToPrepayArgs := &api.BatchChangeInstanceToPrepayArgs{
      Config: []api.PrepayConfig{
          {
              InstanceId:  "i-fYumyWOx",
              Duration:    1,
-             RelationCds: true,
              CdsList: []string{
                  "v-tP2MJ3YI",
                  "v-9eLRwv8n",
              }
+         },
+         {
+             InstanceId:  "i-Q2pAyWOx",
+             Duration:    1,
+             CdsList: []string{
+                 "all",
+            }
          },
      },
  }
@@ -1783,18 +1789,23 @@ if err := bccClient.UnBindInstanceToTags(instanceId, unBindTagsRequest); err != 
 ```
 
 ### 批量转后付费
-使用以下代码可以将实例批量转后付费， 若需要对实例关联的cds变更，则必须在CdsList中传入所有需要转为后付费的cdsId。
+使用以下代码可以将实例批量转后付费， 若需要对实例关联的cds变更，则必须在CdsList中传入所有需要转为后付费的cdsId，若所有cds均变更计费传入all。
 ```go
  batchChangeInstanceToPostArgs := &api.BatchChangeInstanceToPostpayArgs{
      Config: []api.PostpayConfig{
          {
              InstanceId:  "i-IWxCA6HH",
-             RelationCds: true,
              CdsList: []string{
                  "v-buE5Cm3m",
                  "v-rEcWwELY",
              }
          },
+         {
+             InstanceId:  "i-Q2pAyWOx",
+             CdsList: []string{
+                 "all",
+            }
+         },		 
      },
  }
  result, err := BCC_CLIENT.BatchChangeInstanceToPostpay(batchChangeInstanceToPostArgs)

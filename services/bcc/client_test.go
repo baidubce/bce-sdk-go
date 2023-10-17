@@ -1497,9 +1497,8 @@ func TestBatchChangeInstanceToPrepay(t *testing.T) {
 	batchChangeInstanceToPrepayArgs := &api.BatchChangeInstanceToPrepayArgs{
 		Config: []api.PrepayConfig{
 			{
-				InstanceId:  BCC_TestBccId,
-				Duration:    1,
-				RelationCds: false,
+				InstanceId: BCC_TestBccId,
+				Duration:   1,
 			},
 		},
 	}
