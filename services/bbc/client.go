@@ -130,6 +130,56 @@ func (c *Client) CreateInstanceByLabel(args *CreateSpecialInstanceArgs) (*Create
 	return CreateInstanceByLabel(c, args, body)
 }
 
+// CreateInstanceByLabelV2 - create an instance with specific parameters and support the passing in of label
+//
+// PARAMS:
+//     - args: the arguments to create instance
+// RETURNS:
+//     - *CreateInstanceResult: the result of create Instance, contains new Instance ID
+//     - error: nil if success otherwise the specific erro
+func (c *Client) CreateInstanceByLabelV2(argsV2 *CreateSpecialInstanceArgsV2) (*CreateInstanceResult, error) {
+	if len(argsV2.AdminPass) > 0 {
+		cryptedPass, err := Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, argsV2.AdminPass)
+		if err != nil {
+			return nil, err
+		}
+		argsV2.AdminPass = cryptedPass
+	}
+
+	if argsV2.RootDiskSizeInGb <= 0 {
+		argsV2.RootDiskSizeInGb = 20
+	}
+
+	if argsV2.PurchaseCount < 1 {
+		argsV2.PurchaseCount = 1
+	}
+
+	defaultTrue := true
+	defaultFalse := false
+	if argsV2.EnableNuma == nil {
+		argsV2.EnableNuma = &defaultFalse
+	}
+	if argsV2.EnableHt == nil {
+		argsV2.EnableHt = &defaultTrue
+	}
+	jsonBytes, err := json.Marshal(argsV2)
+	if err != nil {
+		return nil, err
+	}
+	args := &CreateSpecialInstanceArgs{}
+	err = json.Unmarshal(jsonBytes, args)
+	if err != nil {
+		return nil, err
+	}
+	args.ClientToken = argsV2.ClientToken
+
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return CreateInstanceByLabel(c, args, body)
+}
+
 // ListInstances - list all instance with the specific parameters
 //
 // PARAMS:
@@ -312,13 +362,46 @@ func (c *Client) GetInstanceVNC(instanceId string) (*GetInstanceVNCResult, error
 //     - *BatchRebuildResponse: the result of batch rebuild the instances
 //     - error: nil if success otherwise the specific error
 func (c *Client) BatchRebuildInstances(args *RebuildBatchInstanceArgs) (*BatchRebuildResponse, error) {
-	encryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
+	if len(args.AdminPass) > 0 {
+		encryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
+		if err != nil {
+			return nil, err
+		}
+		args.AdminPass = encryptedPass
+	}
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
 	if err != nil {
 		return nil, err
 	}
-	args.AdminPass = encryptedPass
 
-	jsonBytes, jsonErr := json.Marshal(args)
+	return BatchRebuildInstances(c, body)
+}
+
+// BatchRebuildInstancesV2 - batch rebuild instances
+//
+// PARAMS:
+//     - args: the arguments to batch rebuild instances
+// RETURNS:
+//     - *BatchRebuildResponse: the result of batch rebuild the instances
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchRebuildInstancesV2(argsV2 *RebuildBatchInstanceArgsV2) (*BatchRebuildResponse, error) {
+	if len(argsV2.AdminPass) > 0 {
+		encryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, argsV2.AdminPass)
+		if err != nil {
+			return nil, err
+		}
+		argsV2.AdminPass = encryptedPass
+	}
+	defaultTrue := true
+	if argsV2.IsPreserveData == nil {
+		argsV2.IsPreserveData = &defaultTrue
+	}
+	jsonBytes, jsonErr := json.Marshal(argsV2)
 	if jsonErr != nil {
 		return nil, jsonErr
 	}
@@ -907,7 +990,6 @@ func (c *Client) GetImageSharedUser(imageId string) (*GetImageSharedUserResult, 
 func (c *Client) RemoteCopyImage(imageId string, args *RemoteCopyImageArgs) error {
 	return RemoteCopyImage(c, imageId, args)
 }
-
 
 // RemoteCopyImageReturnImageIds - copy an image from other region
 //

@@ -1124,6 +1124,7 @@ if err != nil {
 instanceId := "your-choose-instance-id"
 args := &api.ModifyInstanceAttributeArgs{
     Name: "newInstanceName",
+    NetEthQueueCount: "new eth queue count",
 }
 err := client.ModifyInstanceAttribute(instanceId, args)
 if err != nil {

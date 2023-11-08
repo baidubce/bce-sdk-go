@@ -431,3 +431,7 @@ func getRemoteCopySnapshotUri(id string) string {
 func getImportCustomImageUri() string {
 	return URI_PREFIXV2 + "/image/import"
 }
+
+func getAvailableImagesBySpecUri() string {
+	return URI_PREFIXV2 +"/image/getAvailableImagesBySpec"
+}

@@ -128,6 +128,33 @@ type CreateInstanceArgs struct {
 	DataPartitionType         string           `json:"dataPartitionType,omitempty"`
 }
 
+type CreateInstanceArgsV2 struct {
+	FlavorId                  string           `json:"flavorId"`
+	ImageId                   string           `json:"imageId"`
+	RaidId                    string           `json:"raidId"`
+	RootDiskSizeInGb          int              `json:"rootDiskSizeInGb"`
+	PurchaseCount             int              `json:"purchaseCount"`
+	ZoneName                  string           `json:"zoneName"`
+	SubnetId                  string           `json:"subnetId"`
+	AutoRenewTimeUnit         string           `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime             int              `json:"autoRenewTime,omitempty"`
+	Billing                   Billing          `json:"billing"`
+	Name                      string           `json:"name,omitempty"`
+	Hostname                  string           `json:"hostname,omitempty"`
+	AdminPass                 string           `json:"adminPass,omitempty"`
+	DeploySetId               string           `json:"deploySetId,omitempty"`
+	ClientToken               string           `json:"-"`
+	SecurityGroupId           string           `json:"securityGroupId,omitempty"`
+	EnterpriseSecurityGroupId string           `json:"enterpriseSecurityGroupId,omitempty"`
+	Tags                      []model.TagModel `json:"tags,omitempty"`
+	InternalIps               []string         `json:"internalIps,omitempty"`
+	RequestToken              string           `json:"requestToken"`
+	EnableNuma                *bool            `json:"enableNuma"`
+	EnableHt                  *bool            `json:"enableHt"`
+	RootPartitionType         string           `json:"rootPartitionType,omitempty"`
+	DataPartitionType         string           `json:"dataPartitionType,omitempty"`
+}
+
 const (
 	LabelOperatorEqual    LabelOperator = "equal"
 	LabelOperatorNotEqual LabelOperator = "not_equal"
@@ -166,6 +193,35 @@ type CreateSpecialInstanceArgs struct {
 	RequestToken              string           `json:"requestToken"`
 	EnableNuma                bool             `json:"enableNuma"`
 	EnableHt                  bool             `json:"enableHt"`
+	RootPartitionType         string           `json:"rootPartitionType,omitempty"`
+	DataPartitionType         string           `json:"dataPartitionType,omitempty"`
+	// CreateInstanceArgs 的基础上增加的参数
+	LabelConstraints []LabelConstraint `json:"labelConstraints,omitempty"`
+}
+
+type CreateSpecialInstanceArgsV2 struct {
+	FlavorId                  string           `json:"flavorId"`
+	ImageId                   string           `json:"imageId"`
+	RaidId                    string           `json:"raidId"`
+	RootDiskSizeInGb          int              `json:"rootDiskSizeInGb"`
+	PurchaseCount             int              `json:"purchaseCount"`
+	ZoneName                  string           `json:"zoneName"`
+	SubnetId                  string           `json:"subnetId"`
+	AutoRenewTimeUnit         string           `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime             int              `json:"autoRenewTime,omitempty"`
+	Billing                   Billing          `json:"billing"`
+	Name                      string           `json:"name,omitempty"`
+	Hostname                  string           `json:"hostname,omitempty"`
+	AdminPass                 string           `json:"adminPass,omitempty"`
+	DeploySetId               string           `json:"deploySetId,omitempty"`
+	ClientToken               string           `json:"-"`
+	SecurityGroupId           string           `json:"securityGroupId,omitempty"`
+	EnterpriseSecurityGroupId string           `json:"enterpriseSecurityGroupId,omitempty"`
+	Tags                      []model.TagModel `json:"tags,omitempty"`
+	InternalIps               []string         `json:"internalIps,omitempty"`
+	RequestToken              string           `json:"requestToken"`
+	EnableNuma                *bool            `json:"enableNuma"`
+	EnableHt                  *bool            `json:"enableHt"`
 	RootPartitionType         string           `json:"rootPartitionType,omitempty"`
 	DataPartitionType         string           `json:"dataPartitionType,omitempty"`
 	// CreateInstanceArgs 的基础上增加的参数
@@ -320,6 +376,17 @@ type RebuildBatchInstanceArgs struct {
 	ImageId           string   `json:"imageId"`
 	AdminPass         string   `json:"adminPass"`
 	IsPreserveData    bool     `json:"isPreserveData"`
+	RaidId            string   `json:"raidId,omitempty"`
+	SysRootSize       int      `json:"sysRootSize,omitempty"`
+	RootPartitionType string   `json:"rootPartitionType,omitempty"`
+	DataPartitionType string   `json:"dataPartitionType,omitempty"`
+}
+
+type RebuildBatchInstanceArgsV2 struct {
+	InstanceIds       []string `json:"instanceIds"`
+	ImageId           string   `json:"imageId"`
+	AdminPass         string   `json:"adminPass"`
+	IsPreserveData    *bool    `json:"isPreserveData"`
 	RaidId            string   `json:"raidId,omitempty"`
 	SysRootSize       int      `json:"sysRootSize,omitempty"`
 	RootPartitionType string   `json:"rootPartitionType,omitempty"`

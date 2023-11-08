@@ -147,6 +147,7 @@ type InstanceModel struct {
 	EniNum                string                 `json:"eniNum"`
 	DeploySetList         []DeploySetSimpleModel `json:"deploysetList"`
 	DeletionProtection    int                    `json:"deletionProtection"`
+	NetEthQueueCount      string                 `json:"netEthQueueCount"`
 }
 
 type DeploySetSimpleModel struct {
@@ -310,6 +311,60 @@ type CreateInstanceArgs struct {
 	ResGroupId                 string            `json:"resGroupId,omitempty"`
 }
 
+type CreateInstanceArgsV2 struct {
+	ImageId                    string            `json:"imageId"`
+	Billing                    Billing           `json:"billing"`
+	InstanceType               InstanceType      `json:"instanceType,omitempty"`
+	CpuCount                   int               `json:"cpuCount"`
+	MemoryCapacityInGB         int               `json:"memoryCapacityInGB"`
+	RootDiskSizeInGb           int               `json:"rootDiskSizeInGb,omitempty"`
+	RootDiskStorageType        StorageType       `json:"rootDiskStorageType,omitempty"`
+	LocalDiskSizeInGB          int               `json:"localDiskSizeInGB,omitempty"`
+	EphemeralDisks             []EphemeralDisk   `json:"ephemeralDisks,omitempty"`
+	CreateCdsList              []CreateCdsModel  `json:"createCdsList,omitempty"`
+	NetWorkCapacityInMbps      int               `json:"networkCapacityInMbps,omitempty"`
+	EipName                    string            `json:"eipName,omitempty"`
+	DedicateHostId             string            `json:"dedicatedHostId,omitempty"`
+	PurchaseCount              int               `json:"purchaseCount,omitempty"`
+	Name                       string            `json:"name,omitempty"`
+	Hostname                   string            `json:"hostname,omitempty"`
+	IsOpenHostnameDomain       *bool             `json:"isOpenHostnameDomain"`
+	AutoSeqSuffix              *bool             `json:"autoSeqSuffix"`
+	AdminPass                  string            `json:"adminPass,omitempty"`
+	ZoneName                   string            `json:"zoneName,omitempty"`
+	SubnetId                   string            `json:"subnetId,omitempty"`
+	SecurityGroupId            string            `json:"securityGroupId,omitempty"`
+	EnterpriseSecurityGroupId  string            `json:"enterpriseSecurityGroupId,omitempty"`
+	SecurityGroupIds           []string          `json:"securityGroupIds,omitempty"`
+	EnterpriseSecurityGroupIds []string          `json:"enterpriseSecurityGroupIds,omitempty"`
+	GpuCard                    string            `json:"gpuCard,omitempty"`
+	FpgaCard                   string            `json:"fpgaCard,omitempty"`
+	KunlunCard                 string            `json:"kunlunCard,omitempty"`
+	IsomerismCard              string            `json:"isomerismCard,omitempty"`
+	CardCount                  string            `json:"cardCount,omitempty"`
+	AutoRenewTimeUnit          string            `json:"autoRenewTimeUnit"`
+	AutoRenewTime              int               `json:"autoRenewTime"`
+	CdsAutoRenew               *bool             `json:"cdsAutoRenew"`
+	RelationTag                *bool             `json:"relationTag"`
+	IsOpenIpv6                 *bool             `json:"isOpenIpv6"`
+	Tags                       []model.TagModel  `json:"tags,omitempty"`
+	DeployId                   string            `json:"deployId,omitempty"`
+	BidModel                   string            `json:"bidModel,omitempty"`
+	BidPrice                   string            `json:"bidPrice,omitempty"`
+	KeypairId                  string            `json:"keypairId,omitempty"`
+	AspId                      string            `json:"aspId,omitempty"`
+	InternetChargeType         string            `json:"internetChargeType,omitempty"`
+	UserData                   string            `json:"userData,omitempty"`
+	InternalIps                []string          `json:"internalIps,omitempty"`
+	ClientToken                string            `json:"-"`
+	RequestToken               string            `json:"requestToken"`
+	DeployIdList               []string          `json:"deployIdList"`
+	DetetionProtection         int               `json:"deletionProtection"`
+	FileSystems                []FileSystemModel `json:"fileSystems,omitempty"`
+	IsOpenHostEye              *bool             `json:"isOpenHostEye"`
+	ResGroupId                 string            `json:"resGroupId,omitempty"`
+}
+
 type FileSystemModel struct {
 	FsID     string `json:"fsId"`
 	MountAds string `json:"mountAds"`
@@ -434,6 +489,57 @@ type CreateInstanceBySpecArgs struct {
 	BidModel                   string           `json:"bidModel,omitempty"`
 	BidPrice                   string           `json:"bidPrice,omitempty"`
 	ResGroupId                 string           `json:"resGroupId,omitempty"`
+}
+
+type CreateInstanceBySpecArgsV2 struct {
+	ImageId                    string           `json:"imageId"`
+	Spec                       string           `json:"spec"`
+	RootDiskSizeInGb           int              `json:"rootDiskSizeInGb,omitempty"`
+	RootDiskStorageType        StorageType      `json:"rootDiskStorageType,omitempty"`
+	EphemeralDisks             []EphemeralDisk  `json:"ephemeralDisks,omitempty"`
+	CreateCdsList              []CreateCdsModel `json:"createCdsList,omitempty"`
+	NetWorkCapacityInMbps      int              `json:"networkCapacityInMbps,omitempty"`
+	EipName                    string           `json:"eipName,omitempty"`
+	InternetChargeType         string           `json:"internetChargeType,omitempty"`
+	PurchaseCount              int              `json:"purchaseCount,omitempty"`
+	PurchaseMinCount           int              `json:"purchaseMinCount,omitempty"`
+	Name                       string           `json:"name,omitempty"`
+	Hostname                   string           `json:"hostname,omitempty"`
+	IsOpenHostnameDomain       *bool            `json:"isOpenHostnameDomain"`
+	AutoSeqSuffix              *bool            `json:"autoSeqSuffix"`
+	AdminPass                  string           `json:"adminPass,omitempty"`
+	Billing                    Billing          `json:"billing"`
+	ZoneName                   string           `json:"zoneName,omitempty"`
+	SubnetId                   string           `json:"subnetId,omitempty"`
+	SecurityGroupId            string           `json:"securityGroupId,omitempty"`
+	EnterpriseSecurityGroupId  string           `json:"enterpriseSecurityGroupId,omitempty"`
+	SecurityGroupIds           []string         `json:"securityGroupIds,omitempty"`
+	EnterpriseSecurityGroupIds []string         `json:"enterpriseSecurityGroupIds,omitempty"`
+	RelationTag                *bool            `json:"relationTag"`
+	Tags                       []model.TagModel `json:"tags,omitempty"`
+	KeypairId                  string           `json:"keypairId"`
+	AutoRenewTimeUnit          string           `json:"autoRenewTimeUnit"`
+	AutoRenewTime              int              `json:"autoRenewTime"`
+	RaidId                     string           `json:"raidId,omitempty"`
+	EnableNuma                 *bool            `json:"enableNuma"`
+	DataPartitionType          string           `json:"dataPartitionType,omitempty"`
+	RootPartitionType          string           `json:"rootPartitionType,omitempty"`
+	CdsAutoRenew               *bool            `json:"cdsAutoRenew"`
+	AspId                      string           `json:"aspId"`
+	InternalIps                []string         `json:"internalIps,omitempty"`
+	DeployId                   string           `json:"deployId,omitempty"`
+	UserData                   string           `json:"userData,omitempty"`
+	ClientToken                string           `json:"-"`
+	RequestToken               string           `json:"requestToken"`
+	DeployIdList               []string         `json:"deployIdList"`
+	DetetionProtection         int              `json:"deletionProtection"`
+	IsOpenIpv6                 *bool            `json:"isOpenIpv6"`
+	SpecId                     string           `json:"specId,omitempty"`
+	IsOpenHostEye              *bool            `json:"isOpenHostEye"`
+	BidModel                   string           `json:"bidModel,omitempty"`
+	BidPrice                   string           `json:"bidPrice,omitempty"`
+	ResGroupId                 string           `json:"resGroupId,omitempty"`
+	EnableHt                   *bool            `json:"enableHt"`
 }
 
 const (
@@ -767,6 +873,18 @@ type RebuildInstanceArgs struct {
 	DataPartitionType string `json:"dataPartitionType,omitempty"`
 }
 
+type RebuildInstanceArgsV2 struct {
+	ImageId           string `json:"imageId"`
+	AdminPass         string `json:"adminPass"`
+	KeypairId         string `json:"keypairId"`
+	IsOpenHostEye     *bool  `json:"isOpenHostEye"`
+	IsPreserveData    *bool  `json:"isPreserveData"`
+	RaidId            string `json:"raidId,omitempty"`
+	SysRootSize       int    `json:"sysRootSize,omitempty"`
+	RootPartitionType string `json:"rootPartitionType,omitempty"`
+	DataPartitionType string `json:"dataPartitionType,omitempty"`
+}
+
 type StopInstanceArgs struct {
 	ForceStop        bool `json:"forceStop"`
 	StopWithNoCharge bool `json:"stopWithNoCharge"`
@@ -777,7 +895,8 @@ type ChangeInstancePassArgs struct {
 }
 
 type ModifyInstanceAttributeArgs struct {
-	Name string `json:"name"`
+	Name             string `json:"name"`
+	NetEthQueueCount string `json:"netEthQueueCount"`
 }
 
 type ModifyInstanceDescArgs struct {
@@ -1590,6 +1709,19 @@ type RebuildBatchInstanceArgs struct {
 	DataPartitionType string   `json:"dataPartitionType,omitempty"`
 }
 
+type RebuildBatchInstanceArgsV2 struct {
+	ImageId           string   `json:"imageId"`
+	AdminPass         string   `json:"adminPass"`
+	KeypairId         string   `json:"keypairId"`
+	InstanceIds       []string `json:"instanceIds"`
+	IsOpenHostEye     *bool    `json:"isOpenHostEye"`
+	IsPreserveData    *bool    `json:"isPreserveData"`
+	RaidId            string   `json:"raidId,omitempty"`
+	SysRootSize       int      `json:"sysRootSize,omitempty"`
+	RootPartitionType string   `json:"rootPartitionType,omitempty"`
+	DataPartitionType string   `json:"dataPartitionType,omitempty"`
+}
+
 type ChangeToPrepaidRequest struct {
 	Duration    int  `json:"duration"`
 	RelationCds bool `json:"relationCds"`
@@ -1640,22 +1772,24 @@ type FlavorGroup struct {
 }
 
 type BccFlavor struct {
-	CpuCount           int    `json:"cpuCount"`
-	MemoryCapacityInGB int    `json:"memoryCapacityInGB"`
-	EphemeralDiskInGb  int    `json:"ephemeralDiskInGb"`
-	EphemeralDiskCount int    `json:"ephemeralDiskCount"`
-	EphemeralDiskType  string `json:"ephemeralDiskType"`
-	GpuCardType        string `json:"gpuCardType"`
-	GpuCardCount       int    `json:"gpuCardCount"`
-	FpgaCardType       string `json:"fpgaCardType"`
-	FpgaCardCount      int    `json:"fpgaCardCount"`
-	ProductType        string `json:"productType"`
-	Spec               string `json:"spec"`
-	SpecId             string `json:"specId"`
-	CpuModel           string `json:"cpuModel"`
-	CpuGHz             string `json:"cpuGHz"`
-	NetworkBandwidth   string `json:"networkBandwidth"`
-	NetworkPackage     string `json:"networkPackage"`
+	CpuCount            int    `json:"cpuCount"`
+	MemoryCapacityInGB  int    `json:"memoryCapacityInGB"`
+	EphemeralDiskInGb   int    `json:"ephemeralDiskInGb"`
+	EphemeralDiskCount  int    `json:"ephemeralDiskCount"`
+	EphemeralDiskType   string `json:"ephemeralDiskType"`
+	GpuCardType         string `json:"gpuCardType"`
+	GpuCardCount        int    `json:"gpuCardCount"`
+	FpgaCardType        string `json:"fpgaCardType"`
+	FpgaCardCount       int    `json:"fpgaCardCount"`
+	ProductType         string `json:"productType"`
+	Spec                string `json:"spec"`
+	SpecId              string `json:"specId"`
+	CpuModel            string `json:"cpuModel"`
+	CpuGHz              string `json:"cpuGHz"`
+	NetworkBandwidth    string `json:"networkBandwidth"`
+	NetworkPackage      string `json:"networkPackage"`
+	NetEthQueueCount    string `json:"netEthQueueCount"`
+	NetEthMaxQueueCount string `json:"netEthMaxQueueCount"`
 }
 
 type EbcResources struct {
@@ -2096,4 +2230,30 @@ type ImportCustomImageArgs struct {
 
 type ImportCustomImageResult struct {
 	Id string `json:"id"`
+}
+
+type GetAvailableImagesBySpecArg struct {
+	Marker  string `json:"marker"`
+	MaxKeys int    `json:"maxKeys"`
+	Spec    string `json:"spec"`
+	OsName  string `json:"osName"`
+}
+
+type GetAvailableImagesBySpecResult struct {
+	IsTruncated bool     `json:"isTruncated"`
+	Marker      string   `json:"marker"`
+	MaxKeys     int      `json:"maxKeys"`
+	NextMarker  string   `json:"nextMarker"`
+	Images      ImageArg `json:"images"`
+}
+
+type ImageArg []struct {
+	ImageID      string `json:"imageId"`
+	ImageName    string `json:"imageName"`
+	OsType       string `json:"osType"`
+	OsVersion    string `json:"osVersion"`
+	OsArch       string `json:"osArch"`
+	OsName       string `json:"osName"`
+	OsLang       string `json:"osLang"`
+	MinSizeInGiB int    `json:"minSizeInGiB"`
 }

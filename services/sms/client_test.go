@@ -190,3 +190,47 @@ func TestDeleteMobileBlack(t *testing.T) {
 	})
 	ExpectEqual(t.Errorf, err, nil)
 }
+
+func TestListStatistics(t *testing.T) {
+	// normal case: necessary parameters, domestic
+	res, err := SMS_CLIENT.ListStatistics(&api.ListStatisticsArgs{
+		StartTime:   "2023-09-30",
+		EndTime:     "2023-09-30",
+		CountryType: "domestic",
+	})
+	ExpectEqual(t.Errorf, 2, len(res.StatisticsResults))
+	t.Logf("test1: %#v", res)
+
+	// normal case: necessary parameters, international
+	res, err = SMS_CLIENT.ListStatistics(&api.ListStatisticsArgs{
+		StartTime:   "2023-09-30",
+		EndTime:     "2023-09-30",
+		CountryType: "international",
+	})
+	ExpectEqual(t.Errorf, 6, len(res.StatisticsResults))
+	t.Logf("test2: %#v", res)
+
+	// normal case: select signature
+	res, err = SMS_CLIENT.ListStatistics(&api.ListStatisticsArgs{
+		StartTime:   "2023-09-30",
+		EndTime:     "2023-09-30",
+		SignatureId: "114514",
+	})
+	ExpectEqual(t.Errorf, 2, len(res.StatisticsResults))
+	t.Logf("test2: %#v", res)
+
+	// error case1: nil query end time
+	res, err = SMS_CLIENT.ListStatistics(&api.ListStatisticsArgs{
+		StartTime: "2023-10-08",
+	})
+	ExpectEqual(t.Errorf, nil, res)
+	t.Logf("test3: %v", err)
+
+	// error case2: wrong format of time
+	res, err = SMS_CLIENT.ListStatistics(&api.ListStatisticsArgs{
+		StartTime: "2023-10-08 00",
+		EndTime:   "2023-10-09",
+	})
+	ExpectEqual(t.Errorf, nil, res)
+	t.Logf("test4: %v", err)
+}

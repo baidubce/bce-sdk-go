@@ -205,3 +205,49 @@ type MobileBlackDetail struct {
 	SignatureIdStr string `json:"signatureIdStr"`
 	UpdateDate     string `json:"updateDate"`
 }
+
+// ListStatisticsArgs defines the request data structure of ListStatistics
+type ListStatisticsArgs struct {
+	SmsType      string `json:"smsType"`
+	SignatureId  string `json:"signatureId"`
+	TemplateCode string `json:"TemplateCode"`
+	CountryType  string `json:"countryType"` // available values: "domestic", "international"
+	StartTime    string `json:"startTime"`   // format: "yyyy-MM-dd"
+	EndTime      string `json:"endTime"`     // format: "yyyy-MM-dd"
+}
+
+// ListStatisticsResponse defines the response data structure of ListStatistics
+type ListStatisticsResponse struct {
+	StatisticsResults []StatisticsResult `json:"statisticsResults"`
+}
+
+// StatisticsResult defines the detail of ListStatisticsResponse
+type StatisticsResult struct {
+	Datetime                  string `json:"datetime"`
+	CountryAlpha2Code         string `json:"countryAlpha2Code"`
+	SubmitCount               string `json:"submitCount"`
+	SubmitLongCount           string `json:"submitLongCount"`
+	ResponseSuccessCount      string `json:"responseSuccessCount"`
+	ResponseSuccessProportion string `json:"responseSuccessProportion"`
+	DeliverSuccessCount       string `json:"deliverSuccessCount"`
+	DeliverSuccessLongCount   string `json:"deliverSuccessLongCount"`
+	DeliverSuccessProportion  string `json:"deliverSuccessProportion"`
+	DeliverFailureCount       string `json:"deliverFailureCount"`
+	DeliverFailureProportion  string `json:"deliverFailureProportion"`
+	ReceiptProportion         string `json:"receiptProportion"`
+	UnknownCount              string `json:"unknownCount"`
+	UnknownProportion         string `json:"unknownProportion"`
+	ResponseTimeoutCount      string `json:"responseTimeoutCount"`
+	UnknownErrorCount         string `json:"unknownErrorCount"`
+	NotExistCount             string `json:"notExistCount"`
+	SignatureOrTemplateCount  string `json:"signatureOrTemplateCount"`
+	AbnormalCount             string `json:"abnormalCount"`
+	OverclockingCount         string `json:"overclockingCount"`
+	OtherErrorCount           string `json:"otherErrorCount"`
+	BlacklistCount            string `json:"blacklistCount"`
+	RouteErrorCount           string `json:"routeErrorCount"`
+	IssueFailureCount         string `json:"issueFailureCount"`
+	ParameterErrorCount       string `json:"parameterErrorCount"`
+	IllegalWordCount          string `json:"illegalWordCount"`
+	AnomalyCount              string `json:"anomalyCount"`
+}

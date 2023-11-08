@@ -88,6 +88,59 @@ func (c *Client) CreateInstance(args *api.CreateInstanceArgs) (*api.CreateInstan
 	return api.CreateInstance(c, args, body)
 }
 
+// CreateInstanceV2 - create an instance with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to create instance
+// RETURNS:
+//     - *api.CreateInstanceResult: the result of create Instance, contains new Instance ID
+//     - error: nil if success otherwise the specific error
+func (c *Client) CreateInstanceV2(argsV2 *api.CreateInstanceArgsV2) (*api.CreateInstanceResult, error) {
+	if len(argsV2.AdminPass) > 0 {
+		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, argsV2.AdminPass)
+		if err != nil {
+			return nil, err
+		}
+		argsV2.AdminPass = cryptedPass
+	}
+	defaultTrue := true
+	defaultFalse := false
+	if argsV2.IsOpenHostnameDomain == nil {
+		argsV2.IsOpenHostnameDomain = &defaultFalse
+	}
+	if argsV2.AutoSeqSuffix == nil {
+		argsV2.AutoSeqSuffix = &defaultFalse
+	}
+	if argsV2.IsOpenHostEye == nil {
+		argsV2.IsOpenHostEye = &defaultTrue
+	}
+	if argsV2.RelationTag == nil {
+		argsV2.RelationTag = &defaultFalse
+	}
+	if argsV2.CdsAutoRenew == nil {
+		argsV2.CdsAutoRenew = &defaultFalse
+	}
+	if argsV2.IsOpenIpv6 == nil {
+		argsV2.IsOpenIpv6 = &defaultFalse
+	}
+	jsonBytes, err := json.Marshal(argsV2)
+	if err != nil {
+		return nil, err
+	}
+	args := &api.CreateInstanceArgs{}
+	err = json.Unmarshal(jsonBytes, args)
+	if err != nil {
+		return nil, err
+	}
+	args.ClientToken = argsV2.ClientToken
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.CreateInstance(c, args, body)
+}
+
 // CreateInstance - create an instance with the specific parameters and support the passing in of label
 //
 // PARAMS:
@@ -138,6 +191,63 @@ func (c *Client) CreateInstanceBySpec(args *api.CreateInstanceBySpecArgs) (*api.
 	if jsonErr != nil {
 		return nil, jsonErr
 	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.CreateInstanceBySpec(c, args, body)
+}
+
+// CreateInstanceBySpecV2 - create an instance with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to create instance
+// RETURNS:
+//     - *api.CreateInstanceBySpecResult: the result of create Instance, contains new Instance ID
+//     - error: nil if success otherwise the specific error
+func (c *Client) CreateInstanceBySpecV2(argsV2 *api.CreateInstanceBySpecArgsV2) (*api.CreateInstanceBySpecResult, error) {
+	if len(argsV2.AdminPass) > 0 {
+		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, argsV2.AdminPass)
+		if err != nil {
+			return nil, err
+		}
+
+		argsV2.AdminPass = cryptedPass
+	}
+	defaultTrue := true
+	defaultFalse := false
+	if argsV2.IsOpenHostnameDomain == nil {
+		argsV2.IsOpenHostnameDomain = &defaultFalse
+	}
+	if argsV2.AutoSeqSuffix == nil {
+		argsV2.AutoSeqSuffix = &defaultFalse
+	}
+	if argsV2.IsOpenHostEye == nil {
+		argsV2.IsOpenHostEye = &defaultTrue
+	}
+	if argsV2.RelationTag == nil {
+		argsV2.RelationTag = &defaultFalse
+	}
+	if argsV2.CdsAutoRenew == nil {
+		argsV2.CdsAutoRenew = &defaultFalse
+	}
+	if argsV2.IsOpenIpv6 == nil {
+		argsV2.IsOpenIpv6 = &defaultFalse
+	}
+
+	jsonBytes, jsonErr := json.Marshal(argsV2)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+
+	args := &api.CreateInstanceBySpecArgs{}
+	err := json.Unmarshal(jsonBytes, args)
+	if err != nil {
+		return nil, err
+	}
+	args.ClientToken = argsV2.ClientToken
+
 	body, err := bce.NewBodyFromBytes(jsonBytes)
 	if err != nil {
 		return nil, err
@@ -282,17 +392,47 @@ func (c *Client) ResizeInstance(instanceId string, args *api.ResizeInstanceArgs)
 // RETURNS:
 //     - error: nil if success otherwise the specific error
 func (c *Client) RebuildInstance(instanceId string, args *api.RebuildInstanceArgs) error {
-	cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
-	if err != nil {
-		return err
+	if len(args.AdminPass) > 0 {
+		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
+		if err != nil {
+			return err
+		}
+		args.AdminPass = cryptedPass
 	}
-	args.AdminPass = cryptedPass
-
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
 		return jsonErr
 	}
 	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.RebuildInstance(c, instanceId, body)
+}
+
+func (c *Client) RebuildInstanceV2(instanceId string, argsV2 *api.RebuildInstanceArgsV2) error {
+	if len(argsV2.AdminPass) > 0 {
+		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, argsV2.AdminPass)
+		if err != nil {
+			return err
+		}
+		argsV2.AdminPass = cryptedPass
+	}
+
+	defaultTrue := true
+	if argsV2.IsPreserveData == nil {
+		argsV2.IsPreserveData = &defaultTrue
+	}
+	if argsV2.IsOpenHostEye == nil {
+		argsV2.IsOpenHostEye = &defaultTrue
+	}
+
+	argsV2JsonBytes, err := json.Marshal(argsV2)
+	if err != nil {
+		return err
+	}
+	body, err := bce.NewBodyFromBytes(argsV2JsonBytes)
 	if err != nil {
 		return err
 	}
@@ -1379,13 +1519,50 @@ func (c *Client) ResizeInstanceBySpec(instanceId string, args *api.ResizeInstanc
 // RETURNS:
 //     - error: nil if success otherwise the specific error
 func (c *Client) BatchRebuildInstances(args *api.RebuildBatchInstanceArgs) error {
-	cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
+	if len(args.AdminPass) > 0 {
+		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
+		if err != nil {
+			return err
+		}
+		args.AdminPass = cryptedPass
+	}
+
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
 	if err != nil {
 		return err
 	}
-	args.AdminPass = cryptedPass
 
-	jsonBytes, jsonErr := json.Marshal(args)
+	return api.BatchRebuildInstances(c, body)
+}
+
+// RebuildBatchInstancesV2 - batch rebuild instances
+//
+// PARAMS:
+//     - args: the arguments to batch rebuild instances
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) BatchRebuildInstancesV2(argsV2 *api.RebuildBatchInstanceArgsV2) error {
+	if len(argsV2.AdminPass) > 0 {
+		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, argsV2.AdminPass)
+		if err != nil {
+			return err
+		}
+		argsV2.AdminPass = cryptedPass
+	}
+
+	defaultTrue := true
+	if argsV2.IsOpenHostEye == nil {
+		argsV2.IsOpenHostEye = &defaultTrue
+	}
+	if argsV2.IsPreserveData == nil {
+		argsV2.IsPreserveData = &defaultTrue
+	}
+
+	jsonBytes, jsonErr := json.Marshal(argsV2)
 	if jsonErr != nil {
 		return jsonErr
 	}
@@ -1834,7 +2011,6 @@ func (c *Client) UntagSnapshotChain(chainId string, args *api.TagVolumeArgs) err
 	return api.UntagSnapshotChain(c, chainId, args)
 }
 
-
 func (c *Client) ListAvailableResizeSpecs(args *api.ListAvailableResizeSpecsArgs) (
 	*api.ListAvailableResizeSpecResults, error) {
 
@@ -1974,4 +2150,9 @@ func (c *Client) ImportCustomImage(args *api.ImportCustomImageArgs) (*api.Import
 	error) {
 
 	return api.ImportCustomImage(c, args)
+}
+
+func (c *Client) GetAvailableImagesBySpec(args *api.GetAvailableImagesBySpecArg) (*api.GetAvailableImagesBySpecResult, error) {
+
+	return api.GetAvailableImagesBySpec(c, args)
 }

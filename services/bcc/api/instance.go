@@ -1985,7 +1985,6 @@ func GetInstanceDeleteProgress(cli bce.Client, reqBody *bce.Body) (map[string]in
 	return jsonBody, nil
 }
 
-
 func ListAvailableResizeSpecs(cli bce.Client, reqBody *bce.Body) (
 	*ListAvailableResizeSpecResults, error) {
 	// Build the request

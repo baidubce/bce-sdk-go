@@ -20,6 +20,7 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
 	"strconv"
@@ -504,6 +505,41 @@ func ImportCustomImage(cli bce.Client, args *ImportCustomImageArgs) (*ImportCust
 	}
 
 	jsonBody := &ImportCustomImageResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
+func GetAvailableImagesBySpec(cli bce.Client, args *GetAvailableImagesBySpecArg) (*GetAvailableImagesBySpecResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getAvailableImagesBySpecUri())
+	req.SetMethod(http.GET)
+
+	if len(args.Spec) > 0 {
+		req.SetParam("spec", args.Spec)
+	}
+	if len(args.OsName) > 0 {
+		req.SetParam("osName", args.OsName)
+	}
+	if len(args.Marker) > 0 {
+		req.SetParam("marker", args.Marker)
+	}
+	if args.MaxKeys > 0{
+		req.SetParam("maxKeys", fmt.Sprint(args.MaxKeys))
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &GetAvailableImagesBySpecResult{}
 	if err := resp.ParseJsonBody(jsonBody); err != nil {
 		return nil, err
 	}

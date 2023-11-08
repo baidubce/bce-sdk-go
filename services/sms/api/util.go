@@ -21,12 +21,13 @@ import (
 )
 
 const (
-	REQUEST_URI_SEND_SMS  = "/api/v3/sendsms"
-	REQUEST_URI_SIGNATURE = "/sms/v3/signatureApply"
-	REQUEST_URI_TEMPLATE  = "/sms/v3/template"
-	REQUEST_URI_QUOTA     = "/sms/v3/quota"
-	REQUEST_URI_BLACK     = "/sms/v3/blacklist"
-	CLIENT_TOKEN          = "clientToken"
+	REQUEST_URI_SEND_SMS   = "/api/v3/sendsms"
+	REQUEST_URI_SIGNATURE  = "/sms/v3/signatureApply"
+	REQUEST_URI_TEMPLATE   = "/sms/v3/template"
+	REQUEST_URI_QUOTA      = "/sms/v3/quota"
+	REQUEST_URI_BLACK      = "/sms/v3/blacklist"
+	REQUEST_URI_STATISTICS = "/sms/v3/summary"
+	CLIENT_TOKEN           = "clientToken"
 )
 
 func CheckError(condition bool, errMessage string) error {

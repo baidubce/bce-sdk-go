@@ -69,10 +69,11 @@ func NewClient(ak, sk, endpoint string) (*Client, error) {
 // SendSms - send an sms message
 //
 // PARAMS:
-//     - args: the arguments to send an sms message
+//   - args: the arguments to send an sms message
+//
 // RETURNS:
-//     - *api.SendSmsResult: the result of sending an sms message
-//     - error: the return error if any occurs
+//   - *api.SendSmsResult: the result of sending an sms message
+//   - error: the return error if any occurs
 func (c *Client) SendSms(args *api.SendSmsArgs) (*api.SendSmsResult, error) {
 	return api.SendSms(c, args)
 }
@@ -80,10 +81,11 @@ func (c *Client) SendSms(args *api.SendSmsArgs) (*api.SendSmsResult, error) {
 // CreateSignature - create an sms signature
 //
 // PARAMS:
-//     - args: the arguments to create an sms signature
+//   - args: the arguments to create an sms signature
+//
 // RETURNS:
-//     - *api.CreateSignatureResult: the result of creating an sms signature
-//     - error: the return error if any occurs
+//   - *api.CreateSignatureResult: the result of creating an sms signature
+//   - error: the return error if any occurs
 func (c *Client) CreateSignature(args *api.CreateSignatureArgs) (*api.CreateSignatureResult, error) {
 	return api.CreateSignature(c, args)
 }
@@ -91,9 +93,10 @@ func (c *Client) CreateSignature(args *api.CreateSignatureArgs) (*api.CreateSign
 // DeleteSignature - delete an sms signature
 //
 // PARAMS:
-//     - args: the arguments to delete an sms signature
+//   - args: the arguments to delete an sms signature
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) DeleteSignature(args *api.DeleteSignatureArgs) error {
 	return api.DeleteSignature(c, args)
 }
@@ -101,9 +104,10 @@ func (c *Client) DeleteSignature(args *api.DeleteSignatureArgs) error {
 // ModifySignature - modify an sms signature
 //
 // PARAMS:
-//     - args: the arguments to modify an sms signature
+//   - args: the arguments to modify an sms signature
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) ModifySignature(args *api.ModifySignatureArgs) error {
 	return api.ModifySignature(c, args)
 }
@@ -111,10 +115,11 @@ func (c *Client) ModifySignature(args *api.ModifySignatureArgs) error {
 // GetSignature - get the detail of an sms signature
 //
 // PARAMS:
-//     - args: the arguments to get the detail of an sms signature
+//   - args: the arguments to get the detail of an sms signature
+//
 // RETURNS:
-// 	   - *api.GetSignatureResult: the detail of an sms signature
-//     - error: the return error if any occurs
+//   - *api.GetSignatureResult: the detail of an sms signature
+//   - error: the return error if any occurs
 func (c *Client) GetSignature(args *api.GetSignatureArgs) (*api.GetSignatureResult, error) {
 	return api.GetSignature(c, args)
 }
@@ -122,10 +127,11 @@ func (c *Client) GetSignature(args *api.GetSignatureArgs) (*api.GetSignatureResu
 // CreateTemplate - create an sms template
 //
 // PARAMS:
-//     - args: the arguments to create an sms template
+//   - args: the arguments to create an sms template
+//
 // RETURNS:
-//     - *api.CreateTemplateResult: the result of creating an sms template
-//     - error: the return error if any occurs
+//   - *api.CreateTemplateResult: the result of creating an sms template
+//   - error: the return error if any occurs
 func (c *Client) CreateTemplate(args *api.CreateTemplateArgs) (*api.CreateTemplateResult, error) {
 	return api.CreateTemplate(c, args)
 }
@@ -133,9 +139,10 @@ func (c *Client) CreateTemplate(args *api.CreateTemplateArgs) (*api.CreateTempla
 // DeleteTemplate - delete an sms template
 //
 // PARAMS:
-//     - args: the arguments to delete an sms template
+//   - args: the arguments to delete an sms template
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) DeleteTemplate(args *api.DeleteTemplateArgs) error {
 	return api.DeleteTemplate(c, args)
 }
@@ -143,9 +150,10 @@ func (c *Client) DeleteTemplate(args *api.DeleteTemplateArgs) error {
 // ModifyTemplate - modify an sms template
 //
 // PARAMS:
-//     - args: the arguments to modify an sms template
+//   - args: the arguments to modify an sms template
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) ModifyTemplate(args *api.ModifyTemplateArgs) error {
 	return api.ModifyTemplate(c, args)
 }
@@ -153,9 +161,10 @@ func (c *Client) ModifyTemplate(args *api.ModifyTemplateArgs) error {
 // GetTemplate - modify an sms template
 //
 // PARAMS:
-//     - args: the arguments to modify an sms template
+//   - args: the arguments to modify an sms template
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) GetTemplate(args *api.GetTemplateArgs) (*api.GetTemplateResult, error) {
 	return api.GetTemplate(c, args)
 }
@@ -163,17 +172,18 @@ func (c *Client) GetTemplate(args *api.GetTemplateArgs) (*api.GetTemplateResult,
 // QueryQuotaAndRateLimit - query the quota and rate limit
 //
 // RETURNS:
-//     - QueryQuotaRateResult: the result of querying the quota and rate limit
-//     - error: the return error if any occurs
+//   - QueryQuotaRateResult: the result of querying the quota and rate limit
+//   - error: the return error if any occurs
 func (c *Client) QueryQuotaAndRateLimit() (*api.QueryQuotaRateResult, error) {
 	return api.QueryQuotaRate(c)
 }
 
 // UpdateQuotaAndRateLimit - update the quota or rate limit
 // PARAMS:
-//     - args: the arguments to update the quota or rate limit
+//   - args: the arguments to update the quota or rate limit
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) UpdateQuotaAndRateLimit(args *api.UpdateQuotaRateArgs) error {
 	return api.UpdateQuotaRate(c, args)
 }
@@ -181,9 +191,10 @@ func (c *Client) UpdateQuotaAndRateLimit(args *api.UpdateQuotaRateArgs) error {
 // CreateMobileBlack - create an sms mobileBlack
 //
 // PARAMS:
-//     - args: the arguments to create an sms mobileBlack
+//   - args: the arguments to create an sms mobileBlack
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) CreateMobileBlack(args *api.CreateMobileBlackArgs) error {
 	return api.CreateMobileBlack(c, args)
 }
@@ -191,20 +202,34 @@ func (c *Client) CreateMobileBlack(args *api.CreateMobileBlackArgs) error {
 // DeleteMobileBlack - delete sms mobileBlack by phones
 //
 // PARAMS:
-//     - args: the arguments to delete an sms mobileBlack
+//   - args: the arguments to delete an sms mobileBlack
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) DeleteMobileBlack(args *api.DeleteMobileBlackArgs) error {
 	return api.DeleteMobileBlack(c, args)
 }
 
-// GetMobileBlack - get an sms mobileBlack
+// GetMobileBlack - get a sms mobileBlack
 //
 // PARAMS:
-//     - args: the arguments to get sms mobileBlack
+//   - args: the arguments to get sms mobileBlack
+//
 // RETURNS:
-//     - error: the return error if any occurs
-//     - *api.GetMobileBlackResult: the result of creating an sms mobileBlack
+//   - error: the return error if any occurs
+//   - *api.GetMobileBlackResult: the result of creating an sms mobileBlack
 func (c *Client) GetMobileBlack(args *api.GetMobileBlackArgs) (*api.GetMobileBlackResult, error) {
 	return api.GetMobileBlack(c, args)
+}
+
+// ListStatistics - get a list of sms statistics data
+//
+// PARAMS:
+//   - args: the arguments to get sms statistics list data
+//
+// RETURNS:
+//   - error: the return error if any occurs
+//   - *api.ListStatisticsResponse: the result of getting statistics list data
+func (c *Client) ListStatistics(args *api.ListStatisticsArgs) (*api.ListStatisticsResponse, error) {
+	return api.ListStatistics(c, args)
 }

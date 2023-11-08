@@ -107,6 +107,40 @@ func TestCreateInstance(t *testing.T) {
 	BCC_TestBccId = createResult.InstanceIds[0]
 }
 
+func TestCreateInstanceV2(t *testing.T) {
+	InternalIps := []string{"ip"}
+	DeploySetIds := []string{"DeploySetId1", "DeploySetId2"}
+	RelationTag := true
+	IsOpenHostEye := true
+	argsV2 := &api.CreateInstanceArgsV2{
+		ClientToken:  "clientToken",
+		RequestToken: "requestToken",
+		ImageId:      "m-aCVG7Jxt",
+		Billing: api.Billing{
+			PaymentTiming: api.PaymentTimingPostPaid,
+		},
+		InstanceType:        api.InstanceTypeN5,
+		CpuCount:            1,
+		MemoryCapacityInGB:  1,
+		RootDiskSizeInGb:    40,
+		RootDiskStorageType: api.StorageTypeEnhancedPl1,
+		ZoneName:            "ZoneName",
+		SubnetId:            "SubnetId",
+		SecurityGroupId:     "SecurityGroupId",
+		RelationTag:         &RelationTag,
+		PurchaseCount:       1,
+		Name:                "sdkTest",
+		KeypairId:           "KeypairId",
+		InternalIps:         InternalIps,
+		DeployIdList:        DeploySetIds,
+		IsOpenHostEye:       &IsOpenHostEye,
+	}
+
+	createResult, err := BCC_CLIENT.CreateInstanceV2(argsV2)
+	ExpectEqual(t.Errorf, err, nil)
+	BCC_TestBccId = createResult.InstanceIds[0]
+}
+
 func TestCreateSpecialInstanceBySpec(t *testing.T) {
 	createInstanceBySpecArgs := &api.CreateSpecialInstanceBySpecArgs{
 		ImageId:  "ImageId",
@@ -146,6 +180,27 @@ func TestCreateInstanceBySpec(t *testing.T) {
 		DeployIdList: DeploySetIds,
 	}
 	createResult, err := BCC_CLIENT.CreateInstanceBySpec(createInstanceBySpecArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(createResult)
+	BCC_TestBccId = createResult.InstanceIds[0]
+}
+
+func TestCreateInstanceBySpecV2(t *testing.T) {
+	DeploySetIds := []string{"DeploySetId"}
+	EnableHt := true
+	createInstanceBySpecArgs := &api.CreateInstanceBySpecArgsV2{
+		ImageId:   "ImageId",
+		Spec:      "bcc.l3.c16m64",
+		Name:      "sdkTest2",
+		AdminPass: "123qaz!@#",
+		ZoneName:  "cn-bj-a",
+		Billing: api.Billing{
+			PaymentTiming: api.PaymentTimingPostPaid,
+		},
+		DeployIdList: DeploySetIds,
+		EnableHt:     &EnableHt,
+	}
+	createResult, err := BCC_CLIENT.CreateInstanceBySpecV2(createInstanceBySpecArgs)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(createResult)
 	BCC_TestBccId = createResult.InstanceIds[0]
@@ -249,6 +304,7 @@ func TestListInstances(t *testing.T) {
 	}
 	res, err := BCC_CLIENT.ListInstances(listArgs)
 	ExpectEqual(t.Errorf, err, nil)
+	// fmt.Println(res.Instances[0].NetEthQueueCount)
 	fmt.Println(res)
 }
 
@@ -260,9 +316,9 @@ func TestListRecycleInstances(t *testing.T) {
 }
 
 func TestGetInstanceDetail(t *testing.T) {
-	res, err := BCC_CLIENT.GetInstanceDetail(BCC_TestBccId)
+	res, err := BCC_CLIENT.GetInstanceDetail("i-aFW4mJkZ")
 	ExpectEqual(t.Errorf, err, nil)
-	fmt.Println(res.Instance.DeploysetId)
+	fmt.Println(res.Instance.NetEthQueueCount)
 	fmt.Println(res)
 }
 
@@ -320,6 +376,15 @@ func TestRebuildInstance(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestRebuildInstanceV2(t *testing.T) {
+	rebuildArgs := &api.RebuildInstanceArgsV2{
+		ImageId:   "ImageId",
+		AdminPass: "123qaz!@#",
+	}
+	err := BCC_CLIENT.RebuildInstanceV2(BCC_TestBccId, rebuildArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestChangeInstancePass(t *testing.T) {
 	changeArgs := &api.ChangeInstancePassArgs{
 		AdminPass: "321zaq#@!",
@@ -330,7 +395,8 @@ func TestChangeInstancePass(t *testing.T) {
 
 func TestModifyInstanceAttribute(t *testing.T) {
 	modifyArgs := &api.ModifyInstanceAttributeArgs{
-		Name: "test-modify",
+		Name:             "test-modify",
+		NetEthQueueCount: "3",
 	}
 	err := BCC_CLIENT.ModifyInstanceAttribute(BCC_TestBccId, modifyArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -867,6 +933,8 @@ func TestListFlavorSpec(t *testing.T) {
 	args := &api.ListFlavorSpecArgs{}
 	res, err := BCC_CLIENT.ListFlavorSpec(args)
 	ExpectEqual(t.Errorf, err, nil)
+	//fmt.Println(res.ZoneResources[0].BccResources.FlavorGroups[0].Flavors[0].NetEthQueueCount)
+	//fmt.Println(res.ZoneResources[0].BccResources.FlavorGroups[0].Flavors[0].NetEthMaxQueueCount)
 	fmt.Println(res)
 }
 
@@ -967,6 +1035,16 @@ func TestBatchRebuildInstances(t *testing.T) {
 		InstanceIds: []string{BCC_TestBccId},
 	}
 	err := BCC_CLIENT.BatchRebuildInstances(rebuildArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBatchRebuildInstancesV2(t *testing.T) {
+	rebuildArgs := &api.RebuildBatchInstanceArgsV2{
+		ImageId:     "ImageId",
+		AdminPass:   "123qaz!@#",
+		InstanceIds: []string{BCC_TestBccId},
+	}
+	err := BCC_CLIENT.BatchRebuildInstancesV2(rebuildArgs)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -1499,6 +1577,9 @@ func TestBatchChangeInstanceToPrepay(t *testing.T) {
 			{
 				InstanceId: BCC_TestBccId,
 				Duration:   1,
+				CdsList: []string{
+					BCC_TestCdsId,
+				},
 			},
 		},
 	}
@@ -1511,8 +1592,10 @@ func TestBatchChangeInstanceToPostpay(t *testing.T) {
 	batchChangeInstanceToPostArgs := &api.BatchChangeInstanceToPostpayArgs{
 		Config: []api.PostpayConfig{
 			{
-				InstanceId:  "i-43TqYnnq",
-				RelationCds: false,
+				InstanceId: BCC_TestBccId,
+				CdsList: []string{
+					BCC_TestCdsId,
+				},
 			},
 		},
 	}
@@ -1631,6 +1714,20 @@ func TestImportCustomImage(t *testing.T) {
 	}
 
 	result, err := BCC_CLIENT.ImportCustomImage(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}
+
+func TestGetAvailableImagesBySpec(t *testing.T) {
+
+	args := &api.GetAvailableImagesBySpecArg{
+		OsName:  "Centos",
+		Spec:    "bcc.ic4.c1m1",
+		MaxKeys: 1,
+		Marker:  "m-21bmeYvH",
+	}
+
+	result, err := BCC_CLIENT.GetAvailableImagesBySpec(args)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(result)
 }

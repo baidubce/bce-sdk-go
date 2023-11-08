@@ -173,6 +173,46 @@ func TestCreateSpecialInstance(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestCreateSpecialInstanceV2(t *testing.T) {
+	InternalIps := []string{"ip"}
+	createSpecialInstanceArgs := &CreateSpecialInstanceArgsV2{
+		FlavorId:         BBC_TestFlavorId,
+		ImageId:          BBC_TestImageId,
+		RaidId:           BBC_TestRaidId,
+		RootDiskSizeInGb: 40,
+		PurchaseCount:    1,
+		AdminPass:        "AdminPass",
+		ZoneName:         BBC_TestZoneName,
+		SubnetId:         BBC_TestSubnetId,
+		SecurityGroupId:  BBC_TestSecurityGroupId,
+		ClientToken:      BBC_TestClientToken,
+		Billing: Billing{
+			PaymentTiming: PaymentTimingPostPaid,
+		},
+		DeploySetId: BBC_TestDeploySetId,
+		Name:        BBC_TestName,
+		InternalIps: InternalIps,
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tag1",
+				TagValue: "var1",
+			},
+		},
+		LabelConstraints: []LabelConstraint{{
+			Key:      "feaA",
+			Operator: LabelOperatorExist,
+		}, {
+			Key:      "feaB",
+			Value:    "typeB",
+			Operator: LabelOperatorNotEqual,
+		}},
+	}
+	// 将使用『没有 feaC 这个 label』且『feaD 这个 label 的值为 typeD』的测试机创建实例
+	res, err := BBC_CLIENT.CreateInstanceByLabelV2(createSpecialInstanceArgs)
+	fmt.Println(res)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestListInstances(t *testing.T) {
 	listArgs := &ListInstancesArgs{
 		MaxKeys: 500,
@@ -252,6 +292,21 @@ func TestBatchRebuildInstances(t *testing.T) {
 		DataPartitionType: "xfs",
 	}
 	result, err := BBC_CLIENT.BatchRebuildInstances(rebuildArgs)
+	fmt.Println(result)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBatchRebuildInstancesV2(t *testing.T) {
+	argsV2 := &RebuildBatchInstanceArgsV2{
+		ImageId:           "ImageId",
+		AdminPass:         "123qaz!@#",
+		InstanceIds:       []string{"BBC_TestBbcId"},
+		RaidId:            BBC_TestRaidId,
+		SysRootSize:       20,
+		RootPartitionType: "xfs",
+		DataPartitionType: "xfs",
+	}
+	result, err := BBC_CLIENT.BatchRebuildInstancesV2(argsV2)
 	fmt.Println(result)
 	ExpectEqual(t.Errorf, err, nil)
 }
