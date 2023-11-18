@@ -50,6 +50,14 @@ import (
 	"github.com/baidubce/bce-sdk-go/util/log"
 )
 
+const (
+	defaultMaxIdleConnsPerHost   = 500
+	defaultResponseHeaderTimeout = 60 * time.Second
+	defaultDialTimeout           = 30 * time.Second
+	defaultSmallInterval         = 600 * time.Second
+	defaultLargeInterval         = 1200 * time.Second
+)
+
 // Client is the general interface which can perform sending request. Different service
 // will define its own client in case of specific extension.
 type Client interface {
@@ -60,8 +68,9 @@ type Client interface {
 
 // BceClient defines the general client to access the BCE services.
 type BceClient struct {
-	Config *BceClientConfiguration
-	Signer auth.Signer // the sign algorithm
+	Config     *BceClientConfiguration
+	Signer     auth.Signer // the sign algorithm
+	httpClient *http.Client
 }
 
 // BuildHttpRequest - the helper method for the client to build http request
@@ -131,7 +140,7 @@ func (c *BceClient) SendRequest(req *BceRequest, resp *BceResponse) error {
 			teeReader = io.TeeReader(req.Body(), &retryBuf)
 			req.Request.SetBody(ioutil.NopCloser(teeReader))
 		}
-		httpResp, err := http.Execute(&req.Request)
+		httpResp, err := c.httpClient.Execute(&req.Request)
 
 		if err != nil {
 			if c.Config.Retry.ShouldRetry(err, retries) {
@@ -207,7 +216,7 @@ func (c *BceClient) SendRequestFromBytes(req *BceRequest, resp *BceResponse, con
 		buf := bytes.NewBuffer(content)
 		req.Request.SetBody(ioutil.NopCloser(buf))
 		defer req.Request.Body().Close() // Manually close the ReadCloser body for retry
-		httpResp, err := http.Execute(&req.Request)
+		httpResp, err := c.httpClient.Execute(&req.Request)
 		if err != nil {
 			if c.Config.Retry.ShouldRetry(err, retries) {
 				delay_in_mills := c.Config.Retry.GetDelayBeforeNextRetryInMillis(err, retries)
@@ -250,8 +259,9 @@ func (c *BceClient) GetBceClientConfig() *BceClientConfiguration {
 
 func NewBceClient(conf *BceClientConfiguration, sign auth.Signer) *BceClient {
 	clientConfig := http.ClientConfig{RedirectDisabled: conf.RedirectDisabled}
-	http.InitClient(clientConfig)
-	return &BceClient{conf, sign}
+	httpClient := http.NewClient(clientConfig)
+
+	return &BceClient{conf, sign, &httpClient}
 }
 
 func NewBceClientWithAkSk(ak, sk, endPoint string) (*BceClient, error) {
@@ -263,12 +273,12 @@ func NewBceClientWithAkSk(ak, sk, endPoint string) (*BceClient, error) {
 		HeadersToSign: auth.DEFAULT_HEADERS_TO_SIGN,
 		ExpireSeconds: auth.DEFAULT_EXPIRE_SECONDS}
 	defaultConf := &BceClientConfiguration{
-		Endpoint:    endPoint,
-		Region:      DEFAULT_REGION,
-		UserAgent:   DEFAULT_USER_AGENT,
-		Credentials: credentials,
-		SignOption:  defaultSignOptions,
-		Retry:       DEFAULT_RETRY_POLICY,
+		Endpoint:                  endPoint,
+		Region:                    DEFAULT_REGION,
+		UserAgent:                 DEFAULT_USER_AGENT,
+		Credentials:               credentials,
+		SignOption:                defaultSignOptions,
+		Retry:                     DEFAULT_RETRY_POLICY,
 		ConnectionTimeoutInMillis: DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS,
 		RedirectDisabled:          false}
 	v1Signer := &auth.BceV1Signer{}
