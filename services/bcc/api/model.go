@@ -1238,11 +1238,14 @@ type RollbackCSDVolumeArgs struct {
 }
 
 type ListCDSVolumeArgs struct {
-	MaxKeys    int
-	InstanceId string
-	ZoneName   string
-	Marker     string
-	ClusterId  string
+	MaxKeys      int    `json:"maxKeys"`
+	InstanceId   string `json:"instanceId"`
+	ZoneName     string `json:"zoneName"`
+	Marker       string `json:"marker"`
+	ClusterId    string `json:"clusterId"`
+	ChargeFilter string `json:"chargeFilter"`
+	UsageFilter  string `json:"usageFilter"`
+	Name         string `json:"name"`
 }
 
 type AutoRenewCDSVolumeArgs struct {

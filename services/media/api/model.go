@@ -188,7 +188,7 @@ type Audio struct {
 	Channels       int           `json:"channels,omitempty"`
 	PcmFormat      string        `json:"pcmFormat,omitempty"`
 	VolumeAdjust   *VolumeAdjust `json:"volumeAdjust,omitempty"`
-	Codec          string        `json:"code,omitemptyc"`
+	Codec          string        `json:"codec,omitemptyc"`
 }
 
 type VolumeAdjust struct {
@@ -200,6 +200,8 @@ type VolumeAdjust struct {
 type Video struct {
 	Codec                string        `json:"codec,omitempty"`
 	CodecOptions         *CodecOptions `json:"codecOptions,omitempty"`
+	RateControl          string        `json:"rateControl,omitempty"`
+	CodecEnhance         bool          `json:"codecEnhance,omitempty"`
 	BitRateInBps         int           `json:"bitRateInBps,omitempty"`
 	MaxFrameRate         float64       `json:"maxFrameRate,omitempty"`
 	MaxWidthInPixel      int           `json:"maxWidthInPixel,omitempty"`

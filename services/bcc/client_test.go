@@ -1731,3 +1731,16 @@ func TestGetAvailableImagesBySpec(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(result)
 }
+
+func TestListCDSVolumeV3New(t *testing.T) {
+
+	args := &api.ListCDSVolumeArgs{
+		ChargeFilter: "postpay",
+		Name:         "cdsTest",
+		UsageFilter:  "data",
+	}
+
+	result, err := BCC_CLIENT.ListCDSVolumeV3(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}

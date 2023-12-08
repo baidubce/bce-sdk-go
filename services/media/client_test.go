@@ -192,11 +192,13 @@ func TestListPresets(t *testing.T) {
 }
 
 func TestGetPreset(t *testing.T) {
-	getPresetResponse, err := MEDIA_CLIENT.GetPreset("lll_go_test_customize_audio_video")
+	getPresetResponse, err := MEDIA_CLIENT.GetPreset("q_go_test_customize_audio_video")
 	ExpectEqual(t.Errorf, err, nil)
 	t.Logf("%+v", getPresetResponse)
 	video := getPresetResponse.Video
 	t.Logf("%+v", video)
+	audio := getPresetResponse.Audio
+	t.Logf("%+v", audio)
 }
 
 func TestCreatePreset(t *testing.T) {
@@ -261,18 +263,22 @@ func TestCreatePrestCustomizeAudioEncryption(t *testing.T) {
 
 func TestCreatePrestCustomizeAudioVideo(t *testing.T) {
 	preset := &api.Preset{}
-	preset.PresetName = "lll_go_test_customize_audio_video"
+	preset.PresetName = "q_go_test_customize_audio_video"
 	preset.Description = "自定义创建模板"
 	preset.Container = "mp4"
 
 	audio := &api.Audio{}
 	audio.BitRateInBps = 256000
+	audio.Codec = "opus"
 	preset.Audio = audio
 
 	video := &api.Video{}
-	video.BitRateInBps = 1024000
+	//video.BitRateInBps = 1024000
 	video.MaxHeigtInPixel = 1920
 	video.MaxWidthInPixel = 1280
+	video.CodecEnhance = true
+	video.Crf = 23
+	video.RateControl = "crf"
 	preset.Video = video
 
 	err := MEDIA_CLIENT.CreatePrestCustomize(preset)

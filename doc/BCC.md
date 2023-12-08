@@ -227,7 +227,12 @@ BCC实例是一个虚拟的计算环境，包含CPU、内存等最基础的计�
 
 使用以下代码可以创建BCC实例，包括专属实例、普通型Ⅰ 型实例、普通型Ⅱ型实例、存储优化型BCC、计算优化型BCC
 ```go
-args := &api.CreateInstanceArgs{
+
+IsOpenHostnameDomain := true
+AutoSeqSuffix := true
+RelationTag := false
+CdsAutoRenew := true
+args := &api.CreateInstanceArgsV2{
     // 选择实例创建镜像ID 
     ImageId: "m-DpgNg8lO",
 	// 选择付款方式，可以选择预付费或后付费 
@@ -261,9 +266,9 @@ args := &api.CreateInstanceArgs{
     // 仅支持小写字母、数字以及- . 特殊字符，不可连续使用特殊符号，不支持特殊符号开头或结尾，长度2-64
     Hostname:        "your-choose-instance-hostname",
     // 设置是否自动生成hostname和name有序后缀 是:true 否:false
-    AutoSeqSuffix:        false,
+    AutoSeqSuffix:        &AutoSeqSuffix,
     // 设置是否开启hostname domain 是：true 否：false
-    IsOpenHostnameDomain:   false,
+    IsOpenHostnameDomain:   &IsOpenHostnameDomain,
 	// 设置创建BCC使用的网络带宽大小
     NetWorkCapacityInMbps int              networkCapacityInMbps
     // 设置需要创建BCC使用的DCC服务器id
@@ -295,9 +300,9 @@ args := &api.CreateInstanceArgs{
     // 设置自动续费的时间 按月是1-9 按年是 1-3
     AutoRenewTime         int              autoRenewTime
     // cds是否自动续费 是:true 否:false
-    CdsAutoRenew          bool             cdsAutoRenew
+    CdsAutoRenew          bool             &CdsAutoRenew
     // 待创建实例指定的标签是否需要和已有标签键进行关联，默认为false。注意值为true时要保证该标签键已存在
-    RelationTag           bool             relationTag
+    RelationTag           bool             &RelationTag
     // 待创建的标签列表
     Tags                  []model.TagModel tags
     // 指定实例所在的部署集id
@@ -341,7 +346,7 @@ args.networkCapacityInMbps = 1
 // 若要一次创建多个相同配置的实例，可以设置以下参数
 args.PurchaseCount = 2
 
-result, err := client.CreateInstance(args)
+result, err := client.CreateInstanceV2(args)
 if err != nil {
     fmt.Println("create instance failed:", err)
 } else {
@@ -376,7 +381,12 @@ if err != nil {
 使用以下代码可以创建BCC实例，包括普通型BCC、存储优化型BCC、计算优化型BCC、大数据机型BCC、GPU机型BCC、FPGA机型BCC：
 
 ```go
-createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
+
+IsOpenHostnameDomain := true
+AutoSeqSuffix := true
+RelationTag := false
+CdsAutoRenew := true
+createInstanceBySpecArgs := &api.CreateInstanceBySpecArgsV2{
     // 选择实例创建镜像ID 
 	ImageId:               "m-1PyVLtic",
     // 选择创建BCC的套餐规格
@@ -401,9 +411,9 @@ createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
     // 仅支持小写字母、数字以及- . 特殊字符，不可连续使用特殊符号，不支持特殊符号开头或结尾，长度2-64
     Hostname:        "your-choose-instance-hostname",
     // 设置是否自动生成hostname和name有序后缀 是:true 否:false
-    AutoSeqSuffix:        false,
+    AutoSeqSuffix:        &AutoSeqSuffix,
     // 设置是否开启hostname domain 是：true 否：false
-    IsOpenHostnameDomain:   false,
+    IsOpenHostnameDomain:   &IsOpenHostnameDomain,
     AdminPass:             "123qaz!@#",
     // 临时盘数据盘大小
     EphemeralDisks        []EphemeralDisk  "ephemeralDisks"
@@ -432,13 +442,13 @@ createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
     // 设置自动续费的时间 按月是1-9 按年是 1-3
     AutoRenewTime         int              autoRenewTime
     // cds是否自动续费 是:true 否:false
-    CdsAutoRenew          bool             cdsAutoRenew
+    CdsAutoRenew          bool             &CdsAutoRenew
     // 指定实例所在的部署集id 列表
     DeployIdList          []string         "deployIdList"
     // 设置释放保护 默认0不启用，1启用
     DetetionProtection    int              "deletionProtection"
     // 待创建实例指定的标签是否需要和已有标签键进行关联，默认为false。注意值为true时要保证该标签键已存在
-    RelationTag           bool             relationTag
+    RelationTag           bool             &RelationTag
     // 待创建的标签列表
     Tags                  []model.TagModel tags
     // 设置要绑定的密钥对ID
@@ -456,7 +466,7 @@ createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
     // 设置要绑定的资源组id
     ResGroupId            string           "resGroupId"
 }
-result, err := client.CreateInstanceBySpec(args)
+result, err := client.CreateInstanceBySpecV2(args)
 if err != nil {
     fmt.Println("create instance failed:", err)
 } else {
