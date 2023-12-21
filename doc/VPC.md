@@ -1194,10 +1194,15 @@ fmt.Println(string(r))
 ```go
 //import "github.com/baidubce/bce-sdk-go/services/vpc"
 
-args := &ListNatGatewaySnatRuleArgs{
-NatId: "nat-b1jb3b5e34tc",
+args := &CreateNatGatewayDnatRuleArgs{
+    RuleName:         "dnat_go",
+    PublicIpAddress:  "100.88.14.90",
+    PrivateIpAddress: "192.168.1.1",
+    Protocol:         "TCP",
+    PublicPort:       "1212",
+    PrivatePort:      "1212",
 }
-result, err := VPC_CLIENT.ListNatGatewaySnatRules(args)
+result, err := VPC_CLIENT.CreateNatGatewayDnatRule("nat-b1jb3b5e34tc", args)
 ExpectEqual(t.Errorf, nil, err)
 r, err := json.Marshal(result)
 fmt.Println(string(r))

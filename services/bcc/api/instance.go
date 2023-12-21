@@ -226,7 +226,7 @@ func ListInstances(cli bce.Client, args *ListInstanceArgs) (*ListInstanceResult,
 			req.SetParam("instanceNames", args.InstanceNames)
 		}
 		if len(args.CdsIds) != 0 {
-			req.SetParam("volumeIds", args.CdsIds)
+			req.SetParam("cdsIds", args.CdsIds)
 		}
 		if len(args.DeploySetIds) != 0 {
 			req.SetParam("deploySetIds", args.DeploySetIds)
@@ -975,8 +975,9 @@ func GetInstanceVNC(cli bce.Client, instanceId string) (*GetInstanceVNCResult, e
 //     - instanceId: id of the instance to be renewed
 //     - reqBody: the request body to renew instance
 // RETURNS:
+// 	   - *api.InstancePurchaseReservedResult: the result of renew a specified instance
 //     - error: nil if success otherwise the specific error
-func InstancePurchaseReserved(cli bce.Client, instanceId, relatedRenewFlag, clientToken string, reqBody *bce.Body) error {
+func InstancePurchaseReserved(cli bce.Client, instanceId, relatedRenewFlag, clientToken string, reqBody *bce.Body) (*InstancePurchaseReservedResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getInstanceUriWithId(instanceId))
@@ -992,14 +993,17 @@ func InstancePurchaseReserved(cli bce.Client, instanceId, relatedRenewFlag, clie
 	// Send request and get response
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
-		return err
+		return nil, err
 	}
 	if resp.IsFail() {
-		return resp.ServiceError()
+		return nil, resp.ServiceError()
 	}
 
-	defer func() { resp.Body().Close() }()
-	return nil
+	jsonBody := &InstancePurchaseReservedResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
 }
 
 // DeleteInstanceWithRelatedResource - delete an instance with related resources

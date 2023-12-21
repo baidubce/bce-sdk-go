@@ -239,3 +239,24 @@ func (c *Client) EipGroupMoveIn(id string, args *EipGroupMoveInArgs) error {
 		WithBody(args).
 		Do()
 }
+
+// EipGroupPurchaseReserved - purchase reserved EIP_GROUP with the specific parameters
+//
+// PARAMS:
+//     - id: the eipGroup's id
+//     - args: the arguments to purchase reserved EIP_GROUP
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) EipGroupPurchaseReserved(id string, args *EipGroupPurchaseReservedArgs) error {
+	if args == nil {
+		return fmt.Errorf("please set argments")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getEipGroupUriWithId(id)).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithQueryParam("purchaseReserved", "").
+		WithBody(args).
+		Do()
+}

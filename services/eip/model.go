@@ -313,3 +313,81 @@ type EipGroupMoveInArgs struct {
 	Eips        []string `json:"eips"`
 	ClientToken string   `json:"-"`
 }
+
+type EipGroupPurchaseReservedArgs struct {
+	Billing     *Billing `json:"billing"`
+	ClientToken string   `json:"-"`
+}
+
+type CreateEipBpArgs struct {
+	Name            string `json:"name"`
+	Eip             string `json:"eip"`
+	EipGroupId      string `json:"eipGroupId"`
+	BandwidthInMbps int    `json:"bandwidthInMbps"`
+	Type            string `json:"type"`
+	AutoReleaseTime string `json:"autoReleaseTime"`
+	ClientToken     string `json:"-"`
+}
+
+type CreateEipBpResult struct {
+	Id string `json:"id"`
+}
+
+type ResizeEipBpArgs struct {
+	BandwidthInMbps int    `json:"bandwidthInMbps"`
+	ClientToken     string `json:"-"`
+}
+
+type EipBpDetail struct {
+	Name                    string   `json:"name"`
+	Id                      string   `json:"id"`
+	BindType                string   `json:"bindType"`
+	BandwidthInMbps         int      `json:"bandwidthInMbps"`
+	InstanceId              string   `json:"instanceId"`
+	Eips                    []string `json:"eips"`
+	InstanceBandwidthInMbps int      `json:"instanceBandwidthInMbps"`
+	CreateTime              string   `json:"createTime"`
+	AutoReleaseTime         string   `json:"autoReleaseTime"`
+	Type                    string   `json:"type"`
+	Region                  string   `json:"region"`
+}
+
+type ListEipBpArgs struct {
+	Id       string `json:"id"`
+	Name     string `json:"name"`
+	Marker   string `json:"marker"`
+	MaxKeys  int    `json:"maxKeys"`
+	BindType string `json:"bindType"`
+	Type     string `json:"type"`
+}
+
+type ListEipBpResult struct {
+	Marker      string      `json:"marker"`
+	MaxKeys     int         `json:"maxKeys"`
+	NextMarker  string      `json:"nextMarker"`
+	IsTruncated bool        `json:"isTruncated"`
+	EipGroup    []EipBpList `json:"bpList"`
+}
+
+type EipBpList struct {
+	Name            string   `json:"name"`
+	Id              string   `json:"id"`
+	BindType        string   `json:"bindType"`
+	BandwidthInMbps int      `json:"bandwidthInMbps"`
+	InstanceId      string   `json:"instanceId"`
+	Eips            []string `json:"eips"`
+	CreateTime      string   `json:"createTime"`
+	AutoReleaseTime string   `json:"autoReleaseTime"`
+	Type            string   `json:"type"`
+	Region          string   `json:"region"`
+}
+
+type UpdateEipBpAutoReleaseTimeArgs struct {
+	AutoReleaseTime string `json:"autoReleaseTime"`
+	ClientToken     string `json:"-"`
+}
+
+type UpdateEipBpNameArgs struct {
+	Name        string `json:"name"`
+	ClientToken string `json:"-"`
+}

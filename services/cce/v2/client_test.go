@@ -443,6 +443,7 @@ func TestClient_DeleteInstanceGroup(t *testing.T) {
 		ClusterID:       CCE_CLUSTER_ID,
 		InstanceGroupID: CCE_INSTANCE_GROUP_ID,
 		DeleteInstances: true,
+		ReleaseAllResources: true,
 	}
 
 	resp, err := CCE_CLIENT.DeleteInstanceGroup(args)

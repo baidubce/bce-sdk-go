@@ -279,6 +279,7 @@ func (c *Client) PurchaseReservedEip(eip string, args *PurchaseReservedEipArgs) 
 		WithMethod(http.PUT).
 		WithURL(getEipUriWithEip(eip)).
 		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithQueryParam("purchaseReserved", "").
 		WithBody(args).
 		Do()
 }

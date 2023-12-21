@@ -180,3 +180,51 @@ func (c *Client) GetNetworkTopologyInfo(args *GetNetworkTopologyArgs) (*NetworkT
 	err := builder.WithResult(result).Do()
 	return result, err
 }
+
+// CreateVPCDhcp - create vpc's dhcp info with the specified parameters
+//
+// PARAMS:
+//     - args: the arguments to create vpc's dhcp info
+func (c *Client) CreateVPCDhcp(vpcId string, createVpcDhcpArgs *CreateVpcDhcpArgs) error {
+	if createVpcDhcpArgs == nil {
+		return fmt.Errorf("The CreateVPCDhcp cannot be nil.")
+	}
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForVPCId(vpcId)+"/dhcp").
+		WithMethod(http.POST).
+		WithBody(createVpcDhcpArgs).
+		WithQueryParamFilter("clientToken", createVpcDhcpArgs.ClientToken).
+		Do()
+}
+
+// UpdateVPCDhcp - update vpc's dhcp info with the specified parameters
+//	if domainNameServers is nil, will delete vpc's dhcp.
+// PARAMS:
+//     - args: the arguments to create vpc's dhcp info
+func (c *Client) UpdateVPCDhcp(vpcId string, updateVpcDhcpArgs *UpdateVpcDhcpArgs) error {
+	if updateVpcDhcpArgs == nil {
+		return fmt.Errorf("The UpdateVPCDhcp cannot be nil.")
+	}
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForVPCId(vpcId)+"/dhcp").
+		WithMethod(http.PUT).
+		WithBody(updateVpcDhcpArgs).
+		WithQueryParamFilter("clientToken", updateVpcDhcpArgs.ClientToken).
+		Do()
+}
+
+// GetVPCDhcpInfo - get the dhcp info of specified vpc
+// PARAMS:
+//     - args: the vpc id to get vpc's dhcp info
+// RETURNS:
+//     - *VpcDhcpInfo: the info of the VPC dhcp
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetVPCDhcpInfo(vpcId string) (*VpcDhcpInfo, error) {
+	result := &VpcDhcpInfo{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForVPCId(vpcId) + "/dhcp").
+		WithMethod(http.GET).
+		WithResult(result).
+		Do()
+	return result, err
+}

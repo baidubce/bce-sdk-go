@@ -911,6 +911,10 @@ type GetInstanceVNCResult struct {
 	VNCUrl string `json:"vncUrl"`
 }
 
+type InstancePurchaseReservedResult struct {
+	OrderId string `json:"orderId"`
+}
+
 type GetBidInstancePriceResult struct {
 	Money    string `json:"money"`
 	Count    string `json:"count"`
@@ -1072,6 +1076,7 @@ type PurchaseReservedCSDVolumeArgs struct {
 type DeleteCDSVolumeArgs struct {
 	ManualSnapshot string `json:"manualSnapshot,omitempty"`
 	AutoSnapshot   string `json:"autoSnapshot,omitempty"`
+	Recycle        string `json:"recycle,omitempty"`
 }
 
 type ModifyChargeTypeCSDVolumeArgs struct {
@@ -1228,8 +1233,8 @@ type AttachVolumeArgs struct {
 }
 
 type ResizeCSDVolumeArgs struct {
-	NewCdsSizeInGB int         `json:"newCdsSizeInGB"`
-	NewVolumeType  StorageType `json:"newVolumeType"`
+	NewCdsSizeInGB int         `json:"newCdsSizeInGB,omitempty"`
+	NewVolumeType  StorageType `json:"newVolumeType,omitempty"`
 	ClientToken    string      `json:"-"`
 }
 
@@ -1398,6 +1403,7 @@ type ListImageResult struct {
 type ImageModel struct {
 	OsVersion      string          `json:"osVersion"`
 	OsArch         string          `json:"osArch"`
+	OsLang         string          `json:"osLang"`
 	Status         ImageStatus     `json:"status"`
 	Desc           string          `json:"desc"`
 	Id             string          `json:"id"`
@@ -1409,6 +1415,9 @@ type ImageModel struct {
 	OsType         string          `json:"osType"`
 	SpecialVersion string          `json:"specialVersion"`
 	Package        bool            `json:"package"`
+	Encrypted      bool            `json:"encrypted"`
+	MinDiskGb      int             `json:"minDiskGb"`
+	DiskSize       int             `json:"diskSize"`
 	Snapshots      []SnapshotModel `json:"snapshots"`
 }
 
@@ -2151,8 +2160,12 @@ type BatchChangeInstanceBillingMethodResult struct {
 	OrderId string `json:"orderId"`
 }
 
+type Role struct {
+	RoleName string `json:"roleName"`
+}
+
 type ListInstanceRolesResult struct {
-	Roles []string `json:"Roles"`
+	Roles []Role `json:"roles"`
 }
 
 type BindInstanceRoleResult struct {

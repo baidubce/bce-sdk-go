@@ -1190,15 +1190,17 @@ if err != nil {
 
 如下代码可以重装实例
 ```go
+IsOpenHostEye := true
+IsPreserveData := true
 args := &api.RebuildInstanceArgs{
-	ImageId:   "m-DpgNg8lO",
-	AdminPass: "123qaz!@#",
-	// 设置要绑定的密钥对ID
-    KeypairId string "keypairId",
+    ImageId:   "m-***",
+    AdminPass: "***",
+    // 设置要绑定的密钥对ID
+    KeypairId: "keypairId",
     // 是否开启hosteye服务，选填
-	IsOpenHostEye bool `json:"isOpenHostEye"`,
+    IsOpenHostEye: &IsOpenHostEye,
     // 以下参数机型相关，使用部分ebc套餐时选填
-    IsPreserveData: false,
+    IsPreserveData: &IsPreserveData,
     // 此参数在isPreserveData为false时为必填，在isPreserveData为true时不生效
     RaidId:         "your_raid_id",
     // 系统盘根分区大小，默认为20G，取值范围为20-100。此参数在isPreserveData为true时不生效
@@ -1220,19 +1222,21 @@ if err != nil {
 使用以下代码重装实例:
 
 ```go
-rebuildBatchInstanceArgs := &RebuildBatchInstanceArgs{
+IsOpenHostEye := true
+IsPreserveData := true
+rebuildBatchInstanceArgs := &api.RebuildBatchInstanceArgs{
     // 输入你要重装instance使用的镜像ID
-    ImageId   string "imageId",
-	// 设置BCC虚机密码
-    AdminPass string "adminPass",
-	// 设置要绑定的密钥对ID
-    KeypairId string "keypairId",
+    ImageId: "imageId",
+    // 设置BCC虚机密码
+    AdminPass: "***",
+    // 设置要绑定的密钥对ID
+    KeypairId: "keypairId",
     // 实例ID集合
-    InstanceIds []string "instanceIds",
+    InstanceIds: []string{"instanceIds"},
     // 是否开启hosteye服务，选填
-	IsOpenHostEye bool `json:"isOpenHostEye"`,
+    IsOpenHostEye: &IsOpenHostEye,
     // 以下参数机型相关，使用部分ebc套餐时选填
-    IsPreserveData: false,
+    IsPreserveData: &IsPreserveData,
     // 此参数在isPreserveData为false时为必填，在isPreserveData为true时不生效
     RaidId:         "your_raid_id",
     // 系统盘根分区大小，默认为20G，取值范围为20-100。此参数在isPreserveData为true时不生效
@@ -1244,9 +1248,9 @@ rebuildBatchInstanceArgs := &RebuildBatchInstanceArgs{
 }
 
 if err := bccClient.BatchRebuildInstances(rebuildBatchInstanceArgs); err != nil {
-    fmt.Println("rebuild instance failed: ", err)
+    fmt.Println("rebuild batch instance failed: ", err)
 } else {
-    fmt.Println("rebuild instance success.")
+    fmt.Println("rebuild batch instance success.")
 }
 ```
 
@@ -1268,16 +1272,16 @@ if err != nil {
 ### 释放实例（POST）
 使用以下代码释放实例:
 ```go
-deleteInstanceWithRelateResourceArgs := &DeleteInstanceWithRelateResourceArgs{
+deleteInstanceWithRelateResourceArgs := &api.DeleteInstanceWithRelateResourceArgs{
     // 设置释放的时候是否关联释放当前时刻，实例挂载的eip+数据盘 false代表否 true代表是
     // (只有该字段为true时 deleteCdsSnapshotFlag字段才会有效，若该字段为false,deleteCdsSnapshotFlag字段的值无效）
-    RelatedReleaseFlag    bool "relatedReleaseFlag"
+    RelatedReleaseFlag: true,
     //设置是否释放弹性网卡 false代表否 true代表是，默认false
-    DeleteRelatedEnisFlag bool "deleteRelatedEnisFlag"
+    DeleteRelatedEnisFlag: true,
 	// 设置是否释放云磁盘快照 false代表否 true代表是
-    DeleteCdsSnapshotFlag bool "deleteCdsSnapshotFlag"
+    DeleteCdsSnapshotFlag: true,
     // 设置是否进入回收站 true表示进入回收站， false和null表示不进入回收站
-    BccRecycleFlag        bool "bccRecycleFlag"
+    BccRecycleFlag: true,
 }
 // 设置你要操作的instanceId
 instanceId := "your-choose-instance-id"
@@ -1291,18 +1295,18 @@ if err := bccClient.DeleteInstanceWithRelateResource(instanceId, deleteInstanceW
 ### 批量释放实例（POST）
 使用以下代码批量释放实例:
 ```go
-deleteInstanceWithRelateResourceArgs := &BatchDeleteInstanceWithRelateResourceArgs{
+deleteInstanceWithRelateResourceArgs := &api.BatchDeleteInstanceWithRelateResourceArgs{
     // 设置释放的时候是否关联释放当前时刻，实例挂载的eip+数据盘 false代表否 true代表是
     // (只有该字段为true时 deleteCdsSnapshotFlag字段才会有效，若该字段为false,deleteCdsSnapshotFlag字段的值无效）
-    RelatedReleaseFlag    bool "relatedReleaseFlag"
+    RelatedReleaseFlag: true,
     //设置是否释放弹性网卡 false代表否 true代表是，默认false
-    DeleteRelatedEnisFlag bool "deleteRelatedEnisFlag"
+    DeleteRelatedEnisFlag: true,
 	// 设置是否释放云磁盘快照 false代表否 true代表是
-    DeleteCdsSnapshotFlag bool "deleteCdsSnapshotFlag"
+    DeleteCdsSnapshotFlag: true,
     // 设置是否进入回收站 true表示进入回收站， false和null表示不进入回收站
-    BccRecycleFlag        bool "bccRecycleFlag"
+    BccRecycleFlag: true,
     // 批量释放的实例id
-    InstanceIds           []string "instanceIds"
+    InstanceIds: []string{"i-tzKEY***"},
 }
 if err := bccClient.BatchDeleteInstanceWithRelateResource(deleteInstanceWithRelateResourceArgs); err != nil {
     fmt.Println("release instance failed: ", err)
@@ -1514,23 +1518,24 @@ if err != nil {
 对BCC虚机的续费操作，可以延长过期时长，以下代码可以对实例及关联产品进行续费
 ```go
 args := &api.PurchaseReservedArgs{
-    Billing: &api.Billing{
+    Billing: api.Billing{
         PaymentTiming: api.PaymentTimingPrePaid,
         Reservation: &api.Reservation{
             ReservationLength:   1,
             ReservationTimeUnit: "month",
-        }
-    }
+        },
+    },
+    // 设置实例关联续费标识，默认为空字符串。
+    RelatedRenewFlag: "CDS",
 }
 // 设置你要操作的instanceId
 instanceId := "your-choose-instance-id"
-// 设置实例关联续费标识，默认为空字符串。
-relatedRenewFlag := "CDS"
 
-if err := bccClient.InstancePurchaseReserved(instanceId, ModifyInstanceDescArgs); err != nil {
-    fmt.Println("Modify Instance Attribute failed: ", err)
+result, err := bccClient.InstancePurchaseReserved(instanceId, args)
+if err != nil {
+    fmt.Println("Purchase Reserved Instance failed: ", err)
 } else {
-    fmt.Println("Modify Instance Attribute success.")
+    fmt.Println("Purchase Reserved Instance success: ", result)
 }
 ```
 > **注意：** 
@@ -1601,17 +1606,17 @@ if err != nil {
 ### 向指定实例批量添加指定ip
 
 ```go
-batchAddIpArgs := &BatchAddIpArgs{
+batchAddIpArgs := &api.BatchAddIpArgs{
     // 实例ID
-    InstanceId string "instanceId"
+    InstanceId: "instanceId",
     // 辅助IP，和SecondaryPrivateIpAddressCount不可同时使用
-    PrivateIps []string "privateIps"
+    PrivateIps: []string{"privateIps"},
     // 自动分配IP数量，和PrivateIps不可同时使用
-    SecondaryPrivateIpAddressCount int 1
+    SecondaryPrivateIpAddressCount: 1,
     // 是否是创建ipv6,ipv6必须是true,默认为false,创建ipv4
-    AllocateMultiIpv6Addr bool "allocateMultiIpv6Addr"
+    AllocateMultiIpv6Addr: true,
     // 幂等性Token，使用 uuid 生成一个长度不超过64位的ASCII字符串，可选参数
-    ClietnToken string "clientToken"
+    ClientToken: "clientToken",
 }
 
 if res, err := bccClient.BatchAddIP(batchAddIpArgs); err != nil {
@@ -1719,7 +1724,7 @@ if err := bccClient.ChangeToPrepaid(instanceId, changeToPrepaidRequest); err != 
 使用以下代码对实例绑定标签:
 
 ```go
-bindTagsRequest := &BindTagsRequest{
+bindTagsRequest := &api.BindTagsRequest{
     // 设置想要绑定的标签
     ChangeTags: []model.TagModel{
         {
@@ -1742,7 +1747,7 @@ if err := bccClient.BindInstanceToTags(instanceId, bindTagsRequest); err != nil 
 使用以下代码对实例解绑标签:
 
 ```go
-unBindTagsRequest := &UnBindTagsRequest{
+unBindTagsRequest := &api.UnBindTagsRequest{
     // 设置想要解绑的标签
     ChangeTags: []model.TagModel{
         {
@@ -1894,7 +1899,13 @@ deleteIpv6Args := &api.DeleteIpv6Args{
 ### 根据实例ID批量查询实例列表
 以下代码可以根据实例ID批量查询实例列表
 ```go
-args := &api.ListInstanceByInstanceIdArgs{}
+args := &api.ListInstanceByInstanceIdArgs{
+    // 待查询的实例id列表
+    InstanceIds: []string{
+        "i-c2sXa***",
+        "i-kcLZB***",
+    },
+}
 result, err := BCC_CLIENT.ListInstanceByInstanceIds(args)
 if err != nil {
     fmt.Println("list instance failed:", err)
@@ -2178,10 +2189,9 @@ if err != nil {
 使用以下代码可以释放磁盘：
 ```go
 deleteCDSVolumeArgs := &DeleteCDSVolumeArgs{
-	// 设置关联释放手动快照，取值为"on"时，会删除磁盘关联的手动快照
-    ManualSnapshot string "on"
-	// 设置关联释放自动快照，取值为"on"时，会删除磁盘关联的自动快照
-    AutoSnapshot   string "on"
+	AutoSnapshot:   "on",                // 是否删除磁盘关联的自动快照，取值为"on"时，会删除磁盘关联的手动快照
+	ManualSnapshot: "on",                // 是否删除磁盘关联的手动快照，取值为"on"时，会删除磁盘关联的自动快照
+	Recycle:        "off",               // 是否将磁盘回收至回收站，为off时直接释放，不进入回收站
 }
 // 设置你要操作的volumeId
 volumeId := "your-choose-volume-id"
@@ -2292,12 +2302,11 @@ if err := bccClient.CancelAutoRenewCDSVolume(args); err != nil {
 使用以下代码可以对磁盘进行扩大容量操作：
 
 ```go
-args := &api.ResizeCSDVolumeArgs{
-	// 磁盘容量GB
-    NewCdsSizeInGB int         `json:"newCdsSizeInGB"`
-    // 磁盘类型
-    NewVolumeType  StorageType `json:"newVolumeType"`
+args := &api.ResizeCSDVolumeArgs{                 // 请求扩容参数
+	NewCdsSizeInGB: 60,                           // 扩容大小，单位为GB
+	NewVolumeType:  api.StorageTypeEnhancedPl1,   // 扩容类型
 }
+
 err := client.ResizeCDSVolume(volumeId, args)
 if err != nil {
     fmt.Println("resize CDS volume failed:", err)
@@ -2364,6 +2373,8 @@ args := &api.DeleteCDSVolumeArgs{
     ManualSnapshot: "on",
     // 删除与磁盘关联的自动快照
     AutoSnapshot:   "on",
+    // 是否将磁盘回收至回收站，为off时直接释放，不进入回收站
+    Recycle:        "off",
 }
 err := client.DeleteCDSVolumeNew(volumeId, args)
 if err != nil {
@@ -2380,7 +2391,7 @@ if err != nil {
 ### 查询可用区的磁盘信息
 使用以下代码可以查询指定可用区的磁盘信息
 ```GO
-// 设置你要操作的zoneName
+// 可用区名称；当传入zoneName为空串或为非法zone时，会返回全部可用区的可购买磁盘信息。
 zoneName := "cn-bj-a"
 if res, err := bccClient.GetAvailableDiskInfo(zoneName); err != nil {
     fmt.Println("Get the specific zone flavor failed: ", err)
@@ -2392,29 +2403,31 @@ if res, err := bccClient.GetAvailableDiskInfo(zoneName); err != nil {
 ### 磁盘绑定标签
 使用以下代码可以给指定磁盘绑定标签
 ```go
- tagArgs := &api.TagVolumeArgs{
-     ChangeTags: []api.Tag{
-         {
-             TagKey:   "go-SDK-Tag-Key3",
-             TagValue: "go_SDK-Tag-Value2",
-         },
-     },
- }
+tagArgs := &api.TagVolumeArgs{
+    RelationTag: false,             // 是否为关联资源绑定标签
+    ChangeTags: []api.Tag{
+        {
+            TagKey:   "go-SDK-Tag-Key3",
+            TagValue: "go_SDK-Tag-Value2",
+        },
+    },
+}
  
- BCC_CLIENT.TagVolume("v-SKy***", tagArgs)
+BCC_CLIENT.TagVolume("v-SKy***", tagArgs)
 ```
 
 ### 磁盘解绑标签
 使用以下代码可以给指定磁盘绑定标签
 ```go
- tagArgs := &api.TagVolumeArgs{
-     ChangeTags: []api.Tag{
-         {
-             TagKey:   "go-SDK-Tag-Key3",
-             TagValue: "go_SDK-Tag-Value2",
-         },
-     },
- }
+tagArgs := &api.TagVolumeArgs{
+    RelationTag: false,             // 是否为关联资源解绑标签
+    ChangeTags: []api.Tag{
+        {
+            TagKey:   "go-SDK-Tag-Key3",
+            TagValue: "go_SDK-Tag-Value2",
+        },
+    },
+}
  
  BCC_CLIENT.UntagVolume("v-Crt***", tagArgs)
 ```
@@ -2803,18 +2816,22 @@ if res, err := bccClient.ListSnapshotChain(args); err != nil {
 ```
 
 ### 跨区域复制快照
-使用以下代码可以将一份磁盘快照从一个地域复制到另一个地域
+使用以下代码可以将一份磁盘快照从一个地域复制到其他地域
 ```go
- args := &api.RemoteCopySnapshotArgs{
-     ClientToken: "ClientTokenForTest",
-     DestRegionInfos: []api.DestRegionInfo{
-         {
-             Name:       "Test",
-             DestRegion: "bj",
-         },
+args := &api.RemoteCopySnapshotArgs{
+    ClientToken: "ClientTokenForTest",
+    DestRegionInfos: []api.DestRegionInfo{
+        {
+            Name:       "NewSnapshotNameInBj",       // 快照名称
+            DestRegion: "bj",                        // 目标地域
+        },
+        {
+            Name:       "NewSnapshotNameInFwh",      // 快照名称
+			DestRegion: "fwh",                       // 目标地域
+		},
      },
  }
- result, _ := BCC_CLIENT.CreateRemoteCopySnapshot("s-S9HdTie0", args)
+ result, _ := BCC_CLIENT.CreateRemoteCopySnapshot("s-S9Hd*****", args)
  fmt.Println(result)
 ```
 
@@ -2839,7 +2856,7 @@ result, err := client.CreateAutoSnapshotPolicy(args)
 if err != nil {
     fmt.Println("create auto snapshot policy failed:", err)
 } else {
-    fmt.Println("ceate auto snapshot policy success: ", result)
+    fmt.Println("create auto snapshot policy success: ", result)
 }
 ```
 

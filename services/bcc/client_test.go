@@ -736,6 +736,7 @@ func TestModifyChargeTypeCDSVolume(t *testing.T) {
 func TestDeleteCDSVolumeNew(t *testing.T) {
 	args := &api.DeleteCDSVolumeArgs{
 		AutoSnapshot: "on",
+		Recycle:      "on",
 	}
 
 	err := BCC_CLIENT.DeleteCDSVolumeNew(BCC_TestCdsId, args)
@@ -1133,7 +1134,7 @@ func TestInstancePurchaseReserved(t *testing.T) {
 		},
 		RelatedRenewFlag: "",
 	}
-	err := BCC_CLIENT.InstancePurchaseReserved(BCC_TestBccId, purchaseReservedArgs)
+	_, err := BCC_CLIENT.InstancePurchaseReserved(BCC_TestBccId, purchaseReservedArgs)
 	// fmt.Print(err)
 	ExpectEqual(t.Errorf, err, nil)
 }

@@ -235,11 +235,13 @@ func TestClient_ListEipTp(t *testing.T) {
 		DeductPolicy: "FullTimeDurationPackage",
 		Status:       "RUNNING",
 	}
-	fmt.Println(EIP_CLIENT.ListEipTp(args))
+	_, err := EIP_CLIENT.ListEipTp(args)
+	ExpectEqual(t.Errorf, nil, err)
 }
 
 func TestClient_GetEipTp(t *testing.T) {
-	fmt.Println(EIP_CLIENT.GetEipTp("tp-hfI9pKIL58"))
+	_, err := EIP_CLIENT.GetEipTp(EIP_TP_ID)
+	ExpectEqual(t.Errorf, nil, err)
 }
 
 func TestClient_CreateEipGroup(t *testing.T) {
@@ -323,7 +325,8 @@ func TestClient_EipGroupMoveIn(t *testing.T) {
 		Eips:        Ips,
 		ClientToken: getClientToken(),
 	}
-	EIP_CLIENT.EipGroupMoveIn("eg-2b1ef0db", args)
+	err := EIP_CLIENT.EipGroupMoveIn("eg-2b1ef0db", args)
+	ExpectEqual(t.Errorf, nil, err)
 }
 
 func TestClient_EipGroupMoveOut(t *testing.T) {
@@ -340,7 +343,90 @@ func TestClient_EipGroupMoveOut(t *testing.T) {
 		},
 		ClientToken: getClientToken(),
 	}
-	EIP_CLIENT.EipGroupMoveOut("eg-2b1ef0db", args)
+	err := EIP_CLIENT.EipGroupMoveOut("eg-2b1ef0db", args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_EipGroupPurchaseReserved(t *testing.T) {
+	args := &EipGroupPurchaseReservedArgs{
+		Billing: &Billing{
+			PaymentTiming: "Postpaid",
+			BillingMethod: "ByBandwidth",
+		},
+		ClientToken: getClientToken(),
+	}
+	err := EIP_CLIENT.EipGroupPurchaseReserved("eg-2b1ef0db", args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_CreateEipBp(t *testing.T) {
+	args := &CreateEipBpArgs{
+		Name:            "sdk-eipBp",
+		Eip:             "100.88.3.216",
+		BandwidthInMbps: 10,
+		Type:            "BandwidthPackage",
+		AutoReleaseTime: "2023-12-13T20:38:43Z",
+		ClientToken:     getClientToken(),
+	}
+	_, err := EIP_CLIENT.CreateEipBp(args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DeleteEipBp(t *testing.T) {
+	id := "bw-7fP4jhXO"
+	clientToken := getClientToken()
+	err := EIP_CLIENT.DeleteEipBp(id, clientToken)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_GetEipBp(t *testing.T) {
+	id := "bw-7fP4jhXO"
+	clientToken := getClientToken()
+	_, err := EIP_CLIENT.GetEipBp(id, clientToken)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_ListEipBp(t *testing.T) {
+	args := &ListEipBpArgs{
+		Id:       "bw-7fP4jhXO",
+		Name:     "sdk-eipBp",
+		Type:     "BandwidthPackage",
+		Marker:   "",
+		MaxKeys:  1000,
+		BindType: "eip",
+	}
+	_, err := EIP_CLIENT.ListEipBp(args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_ResizeEipBp(t *testing.T) {
+	args := &ResizeEipBpArgs{
+		BandwidthInMbps: 10,
+		ClientToken:     getClientToken(),
+	}
+	id := "bw-7fP4jhXO"
+	err := EIP_CLIENT.ResizeEipBp(id, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UpdateEipBp(t *testing.T) {
+	args := &UpdateEipBpNameArgs{
+		Name:        "sdk-eipBp",
+		ClientToken: getClientToken(),
+	}
+	id := "bw-7fP4jhXO"
+	err := EIP_CLIENT.UpdateEipBpName(id, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UpdateEipBpAutoReleaseTime(t *testing.T) {
+	args := &UpdateEipBpAutoReleaseTimeArgs{
+		AutoReleaseTime: "2023-12-13T20:38:43Z",
+		ClientToken:     getClientToken(),
+	}
+	id := "bw-7fP4jhXO"
+	err := EIP_CLIENT.UpdateEipBpAutoReleaseTime(id, args)
+	ExpectEqual(t.Errorf, nil, err)
 }
 
 func getClientToken() string {

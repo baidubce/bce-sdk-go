@@ -21,18 +21,29 @@ import (
 )
 
 type (
-	SubnetType           string
-	NexthopType          string
-	AclRuleProtocolType  string
+	SubnetType string
+
+	NexthopType string
+
+	AclRuleProtocolType string
+
 	AclRuleDirectionType string
-	AclRuleActionType    string
-	AclRulePortType      string
-	NatGatewaySpecType   string
-	PaymentTimingType    string
-	PeerConnRoleType     string
-	NatStatusType        string
-	PeerConnStatusType   string
-	DnsStatusType        string
+
+	AclRuleActionType string
+
+	AclRulePortType string
+
+	NatGatewaySpecType string
+
+	PaymentTimingType string
+
+	PeerConnRoleType string
+
+	NatStatusType string
+
+	PeerConnStatusType string
+
+	DnsStatusType string
 )
 
 const (
@@ -362,6 +373,7 @@ type CreateNatGatewayArgs struct {
 	Spec        NatGatewaySpecType `json:"spec"`
 	CuNum       string             `json:"cuNum,omitempty"`
 	Eips        []string           `json:"eips,omitempty"`
+	DnatEips    []string           `json:"dnatEips,omitempty"`
 	Billing     *Billing           `json:"billing"`
 	Tags        []model.TagModel   `json:"tags,omitempty"`
 }
@@ -414,6 +426,7 @@ type NAT struct {
 	CuNum         int              `json:"cuNum,omitempty"`
 	Status        NatStatusType    `json:"status"`
 	Eips          []string         `json:"eips"`
+	DnatEips      []string         `json:"dnatEips"`
 	PaymentTiming string           `json:"paymentTiming"`
 	ExpiredTime   string           `json:"expiredTime"`
 	Tags          []model.TagModel `json:"tags"`
@@ -526,6 +539,7 @@ type ListNatGatewaySnatRulesResult struct {
 type CreateNatGatewaySnatRuleResult struct {
 	RuleId string `json:"ruleId"`
 }
+
 type BatchCreateNatGatewaySnatRuleResult struct {
 	SnatRuleIds []string `json:"snatRuleIds"`
 }
@@ -707,4 +721,146 @@ type NetworkTopology struct {
 // NetworkTopologyResult defines the structure of the output parameters for the GetNetworkTopologyInfo api
 type NetworkTopologyResult struct {
 	NetworkTopologies []NetworkTopology `json:"networkTopologies"`
+}
+
+// CreateIPv6GatewayArgs defines the structure of the input parameters for the CreateIPv6Gateway api
+type CreateIPv6GatewayArgs struct {
+	ClientToken     string   `json:"-"`
+	Name            string   `json:"name"`
+	VpcId           string   `json:"vpcId"`
+	BandwidthInMbps int      `json:"bandwidthInMbps"`
+	Billing         *Billing `json:"billing"`
+}
+
+// CreateIPv6GatewayResult defines the structure of the output parameters for the CreateIPv6Gateway api
+type CreateIPv6GatewayResult struct {
+	GatewayId string `json:"gatewayId"`
+}
+
+// ListIPv6GatewayArgs defines the structure of the input parameters for the ListIPv6Gateway api
+type ListIPv6GatewayArgs struct {
+	VpcId string `json:"vpcId"`
+}
+
+// DeleteIPv6GatewayArgs defines the structure of the input parameters for the DeleteIPv6Gateway api
+type DeleteIPv6GatewayArgs struct {
+	ClientToken string `json:"-"`
+}
+
+// ListIPv6GatewayResult defines the structure of the output parameters for the ListIPv6Gateway api
+type ListIPv6GatewayResult struct {
+	GatewayId       string           `json:"gatewayId"`
+	Name            string           `json:"name"`
+	BandwidthInMbps int              `json:"bandwidthInMbps"`
+	VpcId           string           `json:"vpcId"`
+	EgressOnlyRules []EgressOnlyRule `json:"egressOnlyRules"`
+	RateLimitRules  []RateLimitRule  `json:"rateLimitRules"`
+}
+
+type EgressOnlyRule struct {
+	EgressOnlyRuleId string `json:"egressOnlyRuleId"`
+	Cidr             string `json:"cidr"`
+}
+
+type RateLimitRule struct {
+	RateLimitRuleId        string `json:"rateLimitRuleId"`
+	IPv6Address            string `json:"ipv6Address"`
+	IngressBandwidthInMbps int    `json:"ingressBandwidthInMbps"`
+	EgressBandwidthInMbps  int    `json:"egressBandwidthInMbps"`
+}
+
+// ResizeIPv6GatewayArgs defines the structure of the input parameters for the ResizeIPv6Gateway api
+type ResizeIPv6GatewayArgs struct {
+	ClientToken     string `json:"-"`
+	BandwidthInMbps int    `json:"bandwidthInMbps"`
+}
+
+// CreateIPv6GatewayEgressOnlyRuleArgs defines the structure of the input parameters for the CreateIPv6GatewayEgressOnlyRule api
+type CreateIPv6GatewayEgressOnlyRuleArgs struct {
+	ClientToken string `json:"-"`
+	Cidr        string `json:"cidr"`
+}
+
+// CreateIPv6GatewayEgressOnlyRuleResult defines the structure of the output parameters for the CreateIPv6GatewayEgressOnlyRule api
+type CreateIPv6GatewayEgressOnlyRuleResult struct {
+	EgressOnlyRuleId string `json:"egressOnlyRuleId"`
+}
+
+// ListIPv6GatewayEgressOnlyRuleArgs defines the structure of the input parameters for the ListIPv6GatewayEgressOnlyRule api
+type ListIPv6GatewayEgressOnlyRuleArgs struct {
+	Marker  string
+	MaxKeys int
+}
+
+// DeleteIPv6GatewayEgressOnlyRuleArgs defines the structure of the input parameters for the DeleteIPv6GatewayEgressOnlyRule api
+type DeleteIPv6GatewayEgressOnlyRuleArgs struct {
+	ClientToken string `json:"-"`
+}
+
+// ListIPv6GatewayEgressOnlyRuleResult defines the structure of the output parameters for the ListIPv6GatewayEgressOnlyRule api
+type ListIPv6GatewayEgressOnlyRuleResult struct {
+	Marker          string           `json:"marker"`
+	IsTruncated     bool             `json:"isTruncated"`
+	NextMarker      string           `json:"nextMarker"`
+	MaxKeys         int              `json:"maxKeys"`
+	EgressOnlyRules []EgressOnlyRule `json:"egressOnlyRules"`
+}
+
+// CreateIPv6GatewayRateLimitRuleArgs defines the structure of the input parameters for the CreateIPv6GatewayRateLimitRule api
+type CreateIPv6GatewayRateLimitRuleArgs struct {
+	ClientToken            string `json:"-"`
+	IPv6Address            string `json:"ipv6Address"`
+	IngressBandwidthInMbps int    `json:"ingressBandwidthInMbps"`
+	EgressBandwidthInMbps  int    `json:"egressBandwidthInMbps"`
+}
+
+// CreateIPv6GatewayRateLimitRuleResult defines the structure of the output parameters for the CreateIPv6GatewayRateLimitRule api
+type CreateIPv6GatewayRateLimitRuleResult struct {
+	RateLimitRuleId string `json:"rateLimitRuleId"`
+}
+
+// ListIPv6GatewayRateLimitRuleArgs defines the structure of the input parameters for the ListIPv6GatewayRateLimitRule api
+type ListIPv6GatewayRateLimitRuleArgs struct {
+	Marker  string
+	MaxKeys int
+}
+
+// DeleteIPv6GatewayRateLimitRuleArgs defines the structure of the input parameters for the DeleteIPv6GatewayRateLimitRule api
+type DeleteIPv6GatewayRateLimitRuleArgs struct {
+	ClientToken string `json:"-"`
+}
+
+// ListIPv6GatewayRateLimitRuleResult defines the structure of the output parameters for the ListIPv6GatewayRateLimitRule api
+type ListIPv6GatewayRateLimitRuleResult struct {
+	Marker         string          `json:"marker"`
+	IsTruncated    bool            `json:"isTruncated"`
+	NextMarker     string          `json:"nextMarker"`
+	MaxKeys        int             `json:"maxKeys"`
+	RateLimitRules []RateLimitRule `json:"rateLimitRules"`
+}
+
+// UpdateIPv6GatewayRateLimitRuleArgs defines the structure of the input parameters for the UpdateIPv6GatewayRateLimitRule api
+type UpdateIPv6GatewayRateLimitRuleArgs struct {
+	ClientToken            string `json:"-"`
+	IngressBandwidthInMbps int    `json:"ingressBandwidthInMbps"`
+	EgressBandwidthInMbps  int    `json:"egressBandwidthInMbps"`
+}
+
+type CreateVpcDhcpArgs struct {
+	ClientToken       string `json:"-"`
+	DomainNameServers string `json:"domainNameServers"`
+}
+
+type UpdateVpcDhcpArgs struct {
+	ClientToken       string `json:"-"`
+	DomainNameServers string `json:"domainNameServers"`
+}
+
+type VpcDhcpInfo struct {
+	VPCID       string      `json:"vpcId"`
+	DhcpOptions DhcpOptions `json:"dhcpOptions"`
+}
+
+type DhcpOptions struct {
+	DomainNameServers string `json:"domainNameServers"`
 }

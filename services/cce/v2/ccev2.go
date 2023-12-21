@@ -414,6 +414,8 @@ func (c *Client) DeleteInstanceGroup(args *DeleteInstanceGroupArgs) (*DeleteInst
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.DELETE).
 		WithURL(getInstanceGroupWithIDURI(args.ClusterID, args.InstanceGroupID)).
+		WithQueryParamFilter("deleteInstances", strconv.FormatBool(args.DeleteInstances)).
+		WithQueryParamFilter("releaseAllResources", strconv.FormatBool(args.ReleaseAllResources)).
 		WithResult(result).
 		Do()
 

@@ -94,6 +94,34 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 	return true
 }
 
+func TestCreateVPCDhcp(t *testing.T) {
+	VPCID = ""
+	args := &CreateVpcDhcpArgs{
+		DomainNameServers: "3.3.3.5",
+		ClientToken:       getClientToken(),
+	}
+	err := VPC_CLIENT.CreateVPCDhcp(VPCID, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestUpdateVPCDhcp(t *testing.T) {
+	VPCID = ""
+	args := &UpdateVpcDhcpArgs{
+		DomainNameServers: "",
+		ClientToken:       getClientToken(),
+	}
+	err := VPC_CLIENT.UpdateVPCDhcp(VPCID, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestGetVPCDhcp(t *testing.T) {
+	VPCID = ""
+	result, err := VPC_CLIENT.GetVPCDhcpInfo(VPCID)
+	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
 func TestCreateVPC(t *testing.T) {
 	args := &CreateVPCArgs{
 		Name:        "TestSDK-VPC",

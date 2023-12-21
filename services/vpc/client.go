@@ -27,14 +27,15 @@ const (
 
 	DEFAULT_ENDPOINT = "bcc." + bce.DEFAULT_REGION + ".baidubce.com"
 
-	REQUEST_VPC_URL      = "/vpc"
-	REQUEST_SUBNET_URL   = "/subnet"
-	REQUEST_ROUTE_URL    = "/route"
-	REQUEST_RULE_URL     = "/rule"
-	REQUEST_ACL_URL      = "/acl"
-	REQUEST_NAT_URL      = "/nat"
-	REQUEST_PEERCONN_URL = "/peerconn"
-	REQUEST_NETWORK_TOPOLOGY_URL = "/topology"
+	REQUEST_VPC_URL                 = "/vpc"
+	REQUEST_SUBNET_URL              = "/subnet"
+	REQUEST_ROUTE_URL               = "/route"
+	REQUEST_RULE_URL                = "/rule"
+	REQUEST_ACL_URL                 = "/acl"
+	REQUEST_NAT_URL                 = "/nat"
+	REQUEST_PEERCONN_URL            = "/peerconn"
+	REQUEST_NETWORK_TOPOLOGY_URL    = "/topology"
+	REQUEST_NETWORK_IPV6GATEWAY_URL = "/IPv6Gateway"
 )
 
 // Client of VPC service is a kind of BceClient, so derived from BceClient
@@ -50,7 +51,7 @@ func NewClient(ak, sk, endPoint string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Client{client}, nil
+	return &Client{BceClient: client}, nil
 }
 
 func getURLForVPC() string {
@@ -111,4 +112,12 @@ func getURLForPeerConnId(peerConnId string) string {
 
 func getURLForNetworkTopology() string {
 	return getURLForVPC() + REQUEST_NETWORK_TOPOLOGY_URL
+}
+
+func getURLForIpv6Gateway() string {
+	return URI_PREFIX + REQUEST_NETWORK_IPV6GATEWAY_URL
+}
+
+func getURLForIpv6GatewayId(ipv6GatewayId string) string {
+	return getURLForIpv6Gateway() + "/" + ipv6GatewayId
 }

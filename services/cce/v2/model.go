@@ -766,9 +766,10 @@ type UpdateInstanceGroupReplicasArgs struct {
 }
 
 type DeleteInstanceGroupArgs struct {
-	ClusterID       string
-	InstanceGroupID string
-	DeleteInstances bool
+	ClusterID           string
+	InstanceGroupID     string
+	DeleteInstances     bool
+	ReleaseAllResources bool
 }
 
 // KubeConfigType - kube config 类型

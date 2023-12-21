@@ -705,19 +705,20 @@ func (c *Client) GetInstanceVNC(instanceId string) (*api.GetInstanceVNCResult, e
 //     - instanceId: the specific instance ID
 //     - args: the arguments to purchase reserved an instance
 // RETURNS:
+// 	   - *api.InstancePurchaseReservedResult: the result of purchase reserve an instance
 //     - error: nil if success otherwise the specific error
-func (c *Client) InstancePurchaseReserved(instanceId string, args *api.PurchaseReservedArgs) error {
+func (c *Client) InstancePurchaseReserved(instanceId string, args *api.PurchaseReservedArgs)  (*api.InstancePurchaseReservedResult, error)  {
 	// this api only support Prepaid instance
 	args.Billing.PaymentTiming = api.PaymentTimingPrePaid
 	relatedRenewFlag := args.RelatedRenewFlag
 
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
-		return jsonErr
+		return nil, jsonErr
 	}
 	body, err := bce.NewBodyFromBytes(jsonBytes)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	return api.InstancePurchaseReserved(c, instanceId, relatedRenewFlag, args.ClientToken, body)
