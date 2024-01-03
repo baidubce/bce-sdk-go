@@ -820,7 +820,8 @@ type GetRepairTaskResult struct {
 }
 
 type TaskIdArgs struct {
-	TaskId string `json:"taskId"`
+	TaskId         string `json:"taskId"`
+	RetainDataDisk int    `json:"retainDataDisk,omitempty"`
 }
 
 type DisconfirmTaskArgs struct {

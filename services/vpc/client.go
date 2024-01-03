@@ -27,14 +27,15 @@ const (
 
 	DEFAULT_ENDPOINT = "bcc." + bce.DEFAULT_REGION + ".baidubce.com"
 
-	REQUEST_VPC_URL                 = "/vpc"
-	REQUEST_SUBNET_URL              = "/subnet"
-	REQUEST_ROUTE_URL               = "/route"
-	REQUEST_RULE_URL                = "/rule"
-	REQUEST_ACL_URL                 = "/acl"
-	REQUEST_NAT_URL                 = "/nat"
-	REQUEST_PEERCONN_URL            = "/peerconn"
-	REQUEST_NETWORK_TOPOLOGY_URL    = "/topology"
+	REQUEST_VPC_URL              = "/vpc"
+	REQUEST_SUBNET_URL           = "/subnet"
+	REQUEST_ROUTE_URL            = "/route"
+	REQUEST_RULE_URL             = "/rule"
+	REQUEST_ACL_URL              = "/acl"
+	REQUEST_NAT_URL              = "/nat"
+	REQUEST_PEERCONN_URL         = "/peerconn"
+	REQUEST_NETWORK_TOPOLOGY_URL = "/topology"
+	REQUEST_PROBE_URL            = "/probe"
 	REQUEST_NETWORK_IPV6GATEWAY_URL = "/IPv6Gateway"
 )
 
@@ -68,6 +69,18 @@ func getURLForSubnet() string {
 
 func getURLForSubnetId(subnetId string) string {
 	return getURLForSubnet() + "/" + subnetId
+}
+
+// getURLForIpreserve 返回一个包含 /ipreserve 的请求 URL
+func getURLForIpreserve() string {
+	// URI_PREFIX + REQUEST_SUBNET_URL + "/ipreserve"
+	return getURLForSubnet() + "/ipreserve"
+}
+
+// getURLForDeleteIpreserve returns the url for deleting an IP preserve.
+func getURLForDeleteIpreserve(ipReserveId string) string {
+	// URI_PREFIX + REQUEST_SUBNET_URL + "/ipreserve/" + ipReserveId
+	return getURLForSubnet() + "/ipreserve/" + ipReserveId
 }
 
 func getURLForRouteTable() string {
@@ -110,9 +123,17 @@ func getURLForPeerConnId(peerConnId string) string {
 	return getURLForPeerConn() + "/" + peerConnId
 }
 
+// getURLForNetworkTopology 获取网络拓扑信息的URL
 func getURLForNetworkTopology() string {
 	return getURLForVPC() + REQUEST_NETWORK_TOPOLOGY_URL
 }
+
+func getURLForProbe() string {
+	return URI_PREFIX + REQUEST_PROBE_URL
+}
+
+func getURLForProbeId(probeId string) string {
+	return getURLForProbe() + "/" + probeId
 
 func getURLForIpv6Gateway() string {
 	return URI_PREFIX + REQUEST_NETWORK_IPV6GATEWAY_URL
@@ -120,4 +141,5 @@ func getURLForIpv6Gateway() string {
 
 func getURLForIpv6GatewayId(ipv6GatewayId string) string {
 	return getURLForIpv6Gateway() + "/" + ipv6GatewayId
+
 }

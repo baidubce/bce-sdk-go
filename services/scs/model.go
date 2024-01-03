@@ -80,7 +80,7 @@ type InstanceModel struct {
 	Domain             string           `json:"domain"`
 	Port               int              `json:"port"`
 	InstanceCreateTime string           `json:"instanceCreateTime"`
-	Capacity           int              `json:"capacity"`
+	Capacity           float64          `json:"capacity"`
 	UsedCapacity       float64          `json:"usedCapacity"`
 	PaymentTiming      string           `json:"paymentTiming"`
 	ZoneNames          []string         `json:"zoneNames"`
@@ -136,7 +136,7 @@ type GetInstanceDetailResult struct {
 	Port               int              `json:"port"`
 	InstanceCreateTime string           `json:"instanceCreateTime"`
 	InstanceExpireTime string           `json:"instanceExpireTime"`
-	Capacity           int              `json:"capacity"`
+	Capacity           float64          `json:"capacity"`
 	UsedCapacity       float64          `json:"usedCapacity"`
 	PaymentTiming      string           `json:"paymentTiming"`
 	VpcID              string           `json:"vpcId"`
@@ -377,7 +377,7 @@ type RecycleInstance struct {
 	Domain             string           `json:"domain"`
 	Port               string           `json:"port"`
 	InstanceCreateTime string           `json:"instanceCreateTime"`
-	Capacity           int              `json:"capacity"`
+	Capacity           float64          `json:"capacity"`
 	UsedCapacity       float64          `json:"usedCapacity"`
 	PaymentTiming      string           `json:"paymentTiming"`
 	ZoneNames          []string         `json:"zoneNames"`
@@ -584,36 +584,36 @@ type GroupDetailResult struct {
 	Followers       []GroupFollowerInfo `json:"followers"`
 }
 type GroupLeaderInfo struct {
-	ClusterName       string `json:"clusterName"`
-	ClusterShowId     string `json:"clusterShowId"`
-	Region            string `json:"region"`
-	Status            string `json:"status"`
-	TotalCapacityInGB int    `json:"totalCapacityInGB"`
-	UsedCapacityInGB  int    `json:"usedCapacityInGB"`
-	ShardNum          int    `json:"shardNum"`
-	Flavor            int    `json:"flavor"`
-	QpsWrite          int64  `json:"qpsWrite"`
-	QpsRead           int64  `json:"qpsRead"`
-	StableReadable    bool   `json:"stableReadable"`
-	ForbidWrite       int    `json:"forbidWrite"`
-	AvailabilityZone  string `json:"availabilityZone"`
-	ExpiredTime       string `json:"expiredTime"`
+	ClusterName       string 	`json:"clusterName"`
+	ClusterShowId     string 	`json:"clusterShowId"`
+	Region            string 	`json:"region"`
+	Status            string 	`json:"status"`
+	TotalCapacityInGB float64	`json:"totalCapacityInGB"`
+	UsedCapacityInGB  int    	`json:"usedCapacityInGB"`
+	ShardNum          int    	`json:"shardNum"`
+	Flavor            int    	`json:"flavor"`
+	QpsWrite          int64  	`json:"qpsWrite"`
+	QpsRead           int64  	`json:"qpsRead"`
+	StableReadable    bool   	`json:"stableReadable"`
+	ForbidWrite       int    	`json:"forbidWrite"`
+	AvailabilityZone  string 	`json:"availabilityZone"`
+	ExpiredTime       string 	`json:"expiredTime"`
 }
 type GroupFollowerInfo struct {
-	ClusterName       string `json:"clusterName"`
-	ClusterShowId     string `json:"clusterShowId"`
-	Region            string `json:"region"`
-	Status            string `json:"status"`
-	TotalCapacityInGB int    `json:"totalCapacityInGB"`
-	UsedCapacityInGB  int    `json:"usedCapacityInGB"`
-	ShardNum          int    `json:"shardNum"`
-	Flavor            int    `json:"flavor"`
-	QpsWrite          int64  `json:"qpsWrite"`
-	QpsRead           int64  `json:"qpsRead"`
-	StableReadable    bool   `json:"stableReadable"`
-	ForbidWrite       int    `json:"forbidWrite"`
-	AvailabilityZone  string `json:"availabilityZone"`
-	ExpiredTime       string `json:"expiredTime"`
+	ClusterName       string 	`json:"clusterName"`
+	ClusterShowId     string 	`json:"clusterShowId"`
+	Region            string 	`json:"region"`
+	Status            string 	`json:"status"`
+	TotalCapacityInGB float64	`json:"totalCapacityInGB"`
+	UsedCapacityInGB  int    	`json:"usedCapacityInGB"`
+	ShardNum          int    	`json:"shardNum"`
+	Flavor            int    	`json:"flavor"`
+	QpsWrite          int64  	`json:"qpsWrite"`
+	QpsRead           int64  	`json:"qpsRead"`
+	StableReadable    bool   	`json:"stableReadable"`
+	ForbidWrite       int    	`json:"forbidWrite"`
+	AvailabilityZone  string 	`json:"availabilityZone"`
+	ExpiredTime       string 	`json:"expiredTime"`
 }
 
 type FollowerInfo struct {

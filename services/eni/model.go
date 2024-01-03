@@ -159,3 +159,7 @@ type EniQuoteInfo struct {
 	TotalQuantity     int `json:"totalQuantity"`
 	AvailableQuantity int `json:"availableQuantity"`
 }
+
+type EniStatusInfo struct {
+	Status string `json:"status"`
+}

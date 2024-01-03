@@ -1745,3 +1745,16 @@ func TestListCDSVolumeV3New(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(result)
 }
+
+func TestListCDSVolumeNew(t *testing.T) {
+
+	args := &api.ListCDSVolumeArgs{
+		ChargeFilter: "postpay",
+		Name:         "test-ebcc-api-gc_datadiskvCSM",
+		UsageFilter:  "data",
+	}
+
+	result, err := BCC_CLIENT.ListCDSVolume(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}

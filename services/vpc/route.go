@@ -17,7 +17,8 @@
 package vpc
 
 import (
-	"fmt"
+	"errors"
+	"strconv"
 
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
@@ -26,14 +27,15 @@ import (
 // GetRouteTableDetail - get details of the given routeTableId or vpcId
 //
 // PARAMS:
-//     - routeTableId: the id of the specific route table
-//     - vpcId: the id of the specific VPC
+//   - routeTableId: the id of the specific route table
+//   - vpcId: the id of the specific VPC
+//
 // RETURNS:
-//     - *GetRouteTableResult: the result of route table details
-//     - error: nil if success otherwise the specific error
+//   - *GetRouteTableResult: the result of route table details
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetRouteTableDetail(routeTableId, vpcId string) (*GetRouteTableResult, error) {
 	if routeTableId == "" && vpcId == "" {
-		return nil, fmt.Errorf("The routeTableId and vpcId cannot be blank at the same time.")
+		return nil, errors.New("The routeTableId and vpcId cannot be blank at the same time.")
 	}
 
 	result := &GetRouteTableResult{}
@@ -51,13 +53,14 @@ func (c *Client) GetRouteTableDetail(routeTableId, vpcId string) (*GetRouteTable
 // CreateRouteRule - create a new route rule with the given parameters
 //
 // PARAMS:
-//     - args: the arguments to create route rule
+//   - args: the arguments to create route rule
+//
 // RETURNS:
-//     - *CreateRouteRuleResult: the id of the route rule newly created
-//     - error: nil if success otherwise the specific error
+//   - *CreateRouteRuleResult: the id of the route rule newly created
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateRouteRule(args *CreateRouteRuleArgs) (*CreateRouteRuleResult, error) {
 	if args == nil {
-		return nil, fmt.Errorf("CreateRouteRuleArgs cannot be nil.")
+		return nil, errors.New("CreateRouteRuleArgs cannot be nil.")
 	}
 
 	result := &CreateRouteRuleResult{}
@@ -75,14 +78,88 @@ func (c *Client) CreateRouteRule(args *CreateRouteRuleArgs) (*CreateRouteRuleRes
 // DeleteRouteRule - delete the given routing rule
 //
 // PARAMS:
-//     - routeRuleId: the id of the specific routing rule
-//     - clientToken: the idempotent token
+//   - routeRuleId: the id of the specific routing rule
+//   - clientToken: the idempotent token
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteRouteRule(routeRuleId, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForRouteRuleId(routeRuleId)).
 		WithMethod(http.DELETE).
 		WithQueryParamFilter("clientToken", clientToken).
+		Do()
+}
+
+// switchRoute
+//
+// PARAMS:
+//   - routeRuleId: 主路由规则ID
+//   - clientToken: the idempotent token, 可选
+//   - action: 切换路由规则的动作，可选值：switchRouteHA
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) SwitchRoute(routeRuleId, clientToken string) error {
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForRouteRuleId(routeRuleId)).
+		WithMethod(http.PUT).
+		WithQueryParamFilter("clientToken", clientToken).
+		WithQueryParamFilter("action", "switchRouteHA").
+		Do()
+}
+
+// GetRouteTableDetail - get details of the given routeTableId or vpcId
+//
+// PARAMS:
+//   - routeTableId: the id of the specific route table
+//   - vpcId: the id of the specific VPC
+//
+// RETURNS:
+//   - *GetRouteTableResult: the result of route table details
+//   - error: nil if success otherwise the specific error
+func (c *Client) GetRouteRuleDetail(args *GetRouteRuleArgs) (*GetRouteRuleResult, error) {
+	if args.RouteTableId == "" && args.VpcId == "" {
+		return nil, errors.New("The RouteTableId and VpcId cannot be blank at the same time.")
+	}
+
+	if args.MaxKeys == 0 {
+		args.MaxKeys = 1000
+	}
+
+	result := &GetRouteRuleResult{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForRouteRule()).
+		WithMethod(http.GET).
+		WithQueryParamFilter("routeTableId", args.RouteTableId).
+		WithQueryParamFilter("vpcId", args.VpcId).
+		WithQueryParamFilter("marker", args.Marker).
+		WithQueryParam("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// UpdateRouteRule - update the given route rule
+//
+// PARAMS:
+//     - routeRuleId: the id of the specific route rule
+//     - args: the arguments to update route rule
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) UpdateRouteRule(args *UpdateRouteRuleArgs) error {
+	if args.RouteRuleId == "" {
+		return errors.New("The RouteRuleId cannot be blank.")
+	}
+	if args == nil {
+		return errors.New("The UpdateRouteRuleArgs cannot be nil.")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForRouteRuleId(args.RouteRuleId)).
+		WithMethod(http.PUT).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithBody(args).
 		Do()
 }

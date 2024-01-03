@@ -245,6 +245,46 @@ type UpdateSubnetArgs struct {
 	EnableIpv6  bool   `json:"enableIpv6"`
 }
 
+// CreateIpreserveArgs - arguments for creating a reserved CIDR
+type CreateIpreserveArgs struct {
+    SubnetId    string `json:"subnetId"`
+    IpCidr      string `json:"ipCidr"`
+    IpVersion   int32  `json:"ipVersion"`
+    Description string `json:"description"`
+    ClientToken string `json:"-"`
+}
+
+// CreateIpreserveResult - result of creating a reserved CIDR
+type CreateIpreserveResult struct {
+    IpReserveId string `json:"ipReserveId"`
+}
+
+// ListIpeserveArgs - arguments for listing reserved CIDRs
+type ListIpeserveArgs struct {
+    SubnetId string `json:"subnetId,omitempty"`
+    Marker   string `json:"marker,omitempty"`
+    MaxKeys  int    `json:"maxKeys,omitempty"`
+}
+
+type ipReserve struct {
+	IpReserveId  string `json:"ipReserveId"`
+	SubnetId     string `json:"subnetId"`
+	IpCidr       string `json:"ipCidr"`
+	IpVersion    int32  `json:"ipVersion"`
+	Description  string `json:"description"`
+	CreatedTime  string `json:"createdTime"`
+	UpdatedTime  string `json:"updatedTime"`
+}
+
+// ListIpeserveResult - result of listing reserved CIDRs
+type ListIpeserveResult struct {
+    IpReserves   []ipReserve `json:"ipReserves"`
+    Marker       string      `json:"marker,omitempty"`
+    IsTruncated  bool        `json:"isTruncated"`
+    NextMarker   string      `json:"nextMarker,omitempty"`
+    MaxKeys      int         `json:"maxKeys,omitempty"`
+}
+
 type RouteRule struct {
 	RouteRuleId        string      `json:"routeRuleId"`
 	RouteTableId       string      `json:"routeTableId"`
@@ -261,6 +301,30 @@ type GetRouteTableResult struct {
 	RouteTableId string      `json:"routeTableId"`
 	VpcId        string      `json:"vpcId"`
 	RouteRules   []RouteRule `json:"routeRules"`
+}
+
+type GetRouteRuleArgs struct {
+	RouteTableId string      `json:"routeTableId"`
+	VpcId        string      `json:"vpcId"`
+	Marker		 string		 `json:"marker"`
+	MaxKeys      int         `json:"maxKeys"`
+}
+
+type GetRouteRuleResult struct {
+	Marker		 string		 `json:"marker"`
+	IsTruncated  bool        `json:"isTruncated"`
+	NextMarker   string      `json:"nextMarker"`
+	MaxKeys      int         `json:"maxKeys"`
+	RouteRules   []RouteRule `json:"routeRules"`
+}
+
+type UpdateRouteRuleArgs struct {
+	RouteRuleId        string      `json:"routeRuleId"`
+	ClientToken        string      `json:"-"`	
+	SourceAddress      string      `json:"sourceAddress"`
+	DestinationAddress string      `json:"destinationAddress"`
+	NexthopId          string      `json:"nexthopId,omitempty"`
+	Description        string      `json:"description,omitempty"`
 }
 
 // CreateRouteRuleArgs defines the structure of the input parameters for the CreateRouteRule api
@@ -721,6 +785,71 @@ type NetworkTopology struct {
 // NetworkTopologyResult defines the structure of the output parameters for the GetNetworkTopologyInfo api
 type NetworkTopologyResult struct {
 	NetworkTopologies []NetworkTopology `json:"networkTopologies"`
+}
+
+type CreateProbeArgs struct {
+	ClientToken string   `json:"-"`
+	Name        string   `json:"name"`
+	VpcId       string   `json:"vpcId"`
+	SubnetId    string   `json:"subnetId"`
+	Protocol    string   `json:"protocol"`
+	Frequency   int      `json:"frequency"`
+	DestIp      string   `json:"destIp"`
+	DestPort    string   `json:"destPort"`
+	SourceIps   []string `json:"sourceIps"`
+	SourceIpNum int      `json:"sourceIpNum,omitempty"`
+	Description string   `json:"description,omitempty"`
+	Payload     string   `json:"payload,omitempty"`
+}
+
+type CreateProbeResult struct {
+	ProbeId string `json:"probeId"`
+}
+
+type UpdateProbeArgs struct {
+	ClientToken string `json:"-"`
+	Name        string `json:"name,omitempty"`
+	Frequency   int    `json:"frequency,omitempty"`
+	DestIp      string `json:"destIp,omitempty"`
+	DestPort    string `json:"destPort,omitempty"`
+	Description string `json:"description,omitempty"`
+	Payload     string `json:"payload,omitempty"`
+}
+
+type UpdateProbeResult struct {
+	ProbeId string `json:"probeId"`
+}
+
+type ListProbesArgs struct {
+	Marker  string
+	MaxKeys int
+}
+
+type Probe struct {
+	ProbeId     string   `json:"probeId"`
+	Name        string   `json:"name"`
+	VpcId       string   `json:"vpcId"`
+	SubnetId    string   `json:"subnetId"`
+	Protocol    string   `json:"protocol"`
+	Frequency   int      `json:"frequency"`
+	DestIp      string   `json:"destIp"`
+	DestPort    string   `json:"destPort"`
+	SourceIps   []string `json:"sourceIps"`
+	SourceIpNum int      `json:"sourceIpNum,omitempty"`
+	Description string   `json:"description,omitempty"`
+	Payload     string   `json:"payload,omitempty"`
+}
+
+type ListProbesResult struct {
+	Probes      []Probe `json:"probes"`
+	Marker      string  `json:"marker"`
+	IsTruncated bool    `json:"isTruncated"`
+	NextMarker  string  `json:"nextMarker"`
+	MaxKeys     int     `json:"maxKeys"`
+}
+
+type GetProbeDetailResult struct {
+	Probe Probe `json:"probes"`
 }
 
 // CreateIPv6GatewayArgs defines the structure of the input parameters for the CreateIPv6Gateway api

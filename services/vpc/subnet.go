@@ -145,3 +145,84 @@ func (c *Client) DeleteSubnet(subnetId string, clientToken string) error {
 		WithQueryParamFilter("clientToken", clientToken).
 		Do()
 }
+
+// CreateReservedCIDR - delete the given ReservedCIDR
+//
+// PARAMS:
+//     - ipReserveId: the id of the reserved subnet
+//     - clientToken: the idempotent token
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) CreateIpreserve(args *CreateIpreserveArgs) (*CreateIpreserveResult, error) {
+    if args.SubnetId == "" {
+        return nil, fmt.Errorf("SubnetId cannot be nil.")
+    }
+
+	if args.IpCidr == "" {
+		return nil, fmt.Errorf("ipCidr cannot be blank.")
+	}
+
+	if args.IpVersion != 4 && args.IpVersion != 6 {
+		return nil, fmt.Errorf("wrong ipVersion.")
+	}
+
+    result := &CreateIpreserveResult{}
+    err := bce.NewRequestBuilder(c).
+        WithURL(getURLForIpreserve()).
+        WithMethod(http.POST).
+        WithBody(args).
+        WithQueryParamFilter("clientToken", args.ClientToken).
+        WithResult(result).
+        Do()
+
+    return result, err
+}
+
+// DeleteIpreserve - delete the given ReservedCIDR
+//
+// PARAMS:
+//     - ipReserveId: the id of the reserved subnet
+//     - clientToken: the idempotent token
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) DeleteIpreserve(ipReserveId, clientToken string) error {
+    if ipReserveId == "" {
+        return fmt.Errorf("The ipReserveId cannot be blank.")
+    }
+
+    return bce.NewRequestBuilder(c).
+        WithURL(getURLForDeleteIpreserve(ipReserveId)).
+        WithMethod(http.DELETE).
+        WithQueryParamFilter("clientToken", clientToken).
+        Do()
+}
+
+// ListIpreserve - list all reserved CIDRs with the specified parameters
+//
+// PARAMS:
+//     - args: the arguments to list reserved CIDRs
+// RETURNS:
+//     - *ListReservedCIDRResult: the result of all reserved CIDRs
+//     - error: nil if success otherwise the specific error
+func (c *Client) ListIpreserve(args *ListIpeserveArgs) (*ListIpeserveResult, error) {
+    if args == nil {
+        args = &ListIpeserveArgs{}
+    }
+    if args.MaxKeys < 0 || args.MaxKeys > 1000 {
+        return nil, fmt.Errorf("The field maxKeys is out of range [0, 1000]")
+    } else if args.MaxKeys == 0 {
+        args.MaxKeys = 1000
+    }
+
+    result := &ListIpeserveResult{}
+    err := bce.NewRequestBuilder(c).
+        WithURL(getURLForIpreserve()).
+        WithMethod(http.GET).
+        WithQueryParamFilter("marker", args.Marker).
+        WithQueryParamFilter("subnetId", args.SubnetId).
+        WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
+        WithResult(result).
+        Do()
+
+    return result, err
+}

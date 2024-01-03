@@ -404,3 +404,20 @@ func (c *Client) GetEniQuota(args *EniQuoteArgs) (*EniQuoteInfo, error) {
 
 	return result, err
 }
+
+// GetEniStatus - get an eni status
+//
+// PARAMS:
+//     - eniId: the arguments to get an eni status
+// RETURNS:
+//     - *EniStatusInfo: the result of get an eni status
+//     - error: nil if success otherwise the specific error
+func (c *Client) GetEniStatus(eniId string) (*EniStatusInfo, error) {
+	result := &EniStatusInfo{}
+	request := bce.NewRequestBuilder(c).
+		WithURL(getURLForEniId(eniId) + "/status").
+		WithMethod(http.GET)
+	err := request.WithResult(result).Do()
+
+	return result, err
+}

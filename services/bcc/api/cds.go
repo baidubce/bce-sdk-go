@@ -143,6 +143,15 @@ func ListCDSVolume(cli bce.Client, queryArgs *ListCDSVolumeArgs) (*ListCDSVolume
 		if queryArgs.MaxKeys != 0 {
 			req.SetParam("maxKeys", strconv.Itoa(queryArgs.MaxKeys))
 		}
+		if len(queryArgs.ChargeFilter) != 0 {
+			req.SetParam("chargeFilter", queryArgs.ChargeFilter)
+		}
+		if len(queryArgs.UsageFilter) != 0 {
+			req.SetParam("usageFilter", queryArgs.UsageFilter)
+		}
+		if len(queryArgs.Name) != 0 {
+			req.SetParam("name", queryArgs.Name)
+		}
 	}
 
 	if queryArgs == nil || queryArgs.MaxKeys == 0 {
@@ -191,9 +200,6 @@ func ListCDSVolumeV3(cli bce.Client, queryArgs *ListCDSVolumeArgs) (*ListCDSVolu
 		}
 		if queryArgs.MaxKeys != 0 {
 			req.SetParam("maxKeys", strconv.Itoa(queryArgs.MaxKeys))
-		}
-		if len(queryArgs.ClusterId) != 0 {
-			req.SetParam("clusterId", queryArgs.ClusterId)
 		}
 		if len(queryArgs.ChargeFilter) != 0 {
 			req.SetParam("chargeFilter", queryArgs.ChargeFilter)

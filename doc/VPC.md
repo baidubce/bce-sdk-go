@@ -574,6 +574,86 @@ fmt.Printf("update subnet %s success.", subnetId)
 
 使用该接口可以实现对子网名称和描述信息的更新操作。
 
+## 创建预留网段
+
+使用以下代码可以创建预留网段。
+```go
+//import "github.com/baidubce/bce-sdk-go/services/vpc"
+	ak, sk, endpoint := "Your Ak", "Your Sk", "Your endpoint" // Initialize ak, sk, and endpoint
+	VPC_CLIENT, _ := vpc.NewClient(ak, sk, endpoint)          // Initialize VPC client
+
+	args := &vpc.CreateIpreserveArgs{
+		SubnetId:    "sbn-4fa15xxxxxxx", // ID of the subnet to create the reserved ip segment
+		IpCidr:      "192.168.0.0/31", // Reserved CIDR
+		IpVersion:   4,                  // IP version (4 for IPv4, 6 for IPv6)
+		// Description: "test",          // Description of the reserved CIDR, optional
+		// ClientToken: "",              // Client token, optional
+	}
+
+	result, err := VPC_CLIENT.CreateIpreserve(args)
+
+	if err != nil {
+		fmt.Println("create reserved ip error: ", err)
+		return
+	}
+
+	fmt.Println("create reserved ip success, reserved CIDR id: ", result.IpReserveId)
+
+```
+## 查询预留网段列表
+
+使用以下代码可以查询符合条件的预留网段列表。
+```go
+//import "github.com/baidubce/bce-sdk-go/services/vpc"
+
+	ak, sk, endpoint := "Your Ak", "Your Sk", "Your endpoint" // Initialize ak, sk, and endpoint
+	VPC_CLIENT, _ := vpc.NewClient(ak, sk, endpoint)          // Initialize VPC client
+
+	ipReserveId := "ipr-nc4xxxxx" // ID of the reserved CIDR to be deleted
+	clientToken := "" // optional yourclientToken
+
+	err := VPC_CLIENT.DeleteIpreserve(ipReserveId, clientToken)
+
+	if err != nil {
+		fmt.Println("DeleteIpreserve error: ", err)
+		return
+	}
+
+	fmt.Printf("delete reserved CIDR %s success.", ipReserveId)
+
+```
+## 删除预留网段
+
+使用以下代码可以删除指定预留网段。
+```go
+//import "github.com/baidubce/bce-sdk-go/services/vpc"
+
+    // 设置AK、SK和Endpoint
+    ak, sk, endpoint := "Your Ak", "Your Sk", "Your endpoint" // Initialize ak, sk, and endpoint
+
+    // 创建VPC客户端
+    VPC_CLIENT, _ := vpc.NewClient(ak, sk, endpoint)
+
+    args := &vpc.ListIpeserveArgs{
+        SubnetId: "sbn-4fxx51yxxxx",
+        Marker:   "", // 查询的起始位置，为空则从第一条开始查询
+        MaxKeys:  10,
+    }
+
+    // 添加查询保留IP范围的代码
+    result, err := VPC_CLIENT.ListIpreserve(args)
+    if err != nil {
+        fmt.Printf("List reserved IP ranges failed with %s\n", err)
+    }
+
+    // 输出子网ID和保留IP范围信息
+    for _, IpReserve := range result.IpReserves {
+        fmt.Printf("IP Range: %s, Description: %s\n", IpReserve.IpCidr, IpReserve.SubnetId)
+        fmt.Println("isTruncated %d", result.IsTruncated)
+    }
+    
+```
+
 # 路由表管理
 
 路由表是指路由器上管理路由条目的列表。
@@ -683,6 +763,64 @@ fmt.Printf("delete route rule %s success.", routeRuleId)
 
 > 注意: 参数中的clientToken表示幂等性Token，是一个长度不超过64位的ASCII字符串，详见[ClientToken幂等性](https://cloud.baidu.com/doc/VPC/s/gjwvyu77i/#%E5%B9%82%E7%AD%89%E6%80%A7)
 
+
+## 更新路由规则
+
+使用以下代码可以更新路由规则。
+```go
+//import "github.com/baidubce/bce-sdk-go/services/vpc"
+
+    ak, sk, endpoint := "Your Ak", "Your Sk", "Your endpoint"
+    VPC_CLIENT, _ := vpc.NewClient(ak, sk, endpoint)
+
+    args := &vpc.UpdateRouteRuleArgs{
+        RouteRuleId:       "rr-1zcxxxxxxyyy",
+        // SourceAddress:      "Your SourceAddress", // optional
+        // DestinationAddress: "Your DestinationAddress", // optional
+        // NexthopId:           "your NewNexthopId", // optional
+        // Description:         "Your New Description", // optional
+    }
+
+    err := VPC_CLIENT.UpdateRouteRule(args)
+    if err != nil {
+        fmt.Println("Route rule updated fail")
+    }
+
+    fmt.Println("Route rule %s updated successfully", args.RouteRuleId)
+```
+
+## 查询路由规则
+
+使用以下代码可以查询路由规则。
+```go
+//import "github.com/baidubce/bce-sdk-go/services/vpc"
+
+ak, sk, endpoint := "Your Ak", "Your Sk", "Your endpoint"
+    VPC_CLIENT, _ := vpc.NewClient(ak, sk, endpoint)
+
+    routeTableId := "rt-hf1ezardxxxx"
+    vpcId := "vpc-nx6bs5xxxxxx"
+
+    // routeTableId and vpcId should not be empty at the same time
+    result, err := VPC_CLIENT.GetRouteTableDetail(routeTableId, vpcId)
+    if err != nil {
+        fmt.Println("get route table error: ", err)
+    }
+
+    // print result
+    fmt.Println("result of route table id: ", result.RouteTableId)
+	fmt.Println("result of vpc id: ", result.VpcId)
+
+	for _, route := range result.RouteRules {
+    	fmt.Println("route rule id: ", route.RouteRuleId)
+    	fmt.Println("route rule routeTableId: ", route.RouteTableId)
+    	fmt.Println("route rule sourceAddress: ", route.SourceAddress)
+    	fmt.Println("route rule destinationAddress: ", route.DestinationAddress)
+    	fmt.Println("route rule nexthopId: ", route.NexthopId)
+    	fmt.Println("route rule nexthopType: ", route.NexthopType)
+    	fmt.Println("route rule description: ", route.Description)
+	}
+```
 
 # ACL管理
 
