@@ -134,6 +134,7 @@ func getURLForProbe() string {
 
 func getURLForProbeId(probeId string) string {
 	return getURLForProbe() + "/" + probeId
+}
 
 func getURLForIpv6Gateway() string {
 	return URI_PREFIX + REQUEST_NETWORK_IPV6GATEWAY_URL
@@ -141,5 +142,4 @@ func getURLForIpv6Gateway() string {
 
 func getURLForIpv6GatewayId(ipv6GatewayId string) string {
 	return getURLForIpv6Gateway() + "/" + ipv6GatewayId
-
 }

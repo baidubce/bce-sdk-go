@@ -139,6 +139,9 @@ type InstanceModel struct {
 	DedicatedHostId       string                 `json:"dedicatedHostId"`
 	Tags                  []model.TagModel       `json:"tags"`
 	Ipv6                  string                 `json:"ipv6"`
+	EniQuota              int                    `json:"eniQuota"`
+	EriQuota              int                    `json:"eriQuota"`
+	RdmaTypeApi           string                 `json:"rdmaTypeApi"`
 	SwitchId              string                 `json:"switchId"`
 	HostId                string                 `json:"hostId"`
 	DeploysetId           string                 `json:"deploysetId"`
