@@ -409,6 +409,30 @@ func TestClient_DescribeSecurityGroups(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
+func TestClient_BindEnterpriseSecurityGroups(t *testing.T) {
+	updateArgs := &UpdateEnterpriseSecurityGroupsArgs{
+		ClientToken:                getClientToken(),
+		EnterpriseSecurityGroupIds: []string{"esg-id"},
+	}
+	err := BLB_CLIENT.BindEnterpriseSecurityGroups(BLB_ID, updateArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UnbindEnterpriseSecurityGroups(t *testing.T) {
+	updateArgs := &UpdateEnterpriseSecurityGroupsArgs{
+		ClientToken:                getClientToken(),
+		EnterpriseSecurityGroupIds: []string{"esg-id"},
+	}
+	err := BLB_CLIENT.UnbindEnterpriseSecurityGroups(BLB_ID, updateArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DescribeEnterpriseSecurityGroups(t *testing.T) {
+	res, err := BLB_CLIENT.DescribeEnterpriseSecurityGroups(BLB_ID)
+	fmt.Println(res)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
 func getClientToken() string {
 	return util.NewUUID()
 }

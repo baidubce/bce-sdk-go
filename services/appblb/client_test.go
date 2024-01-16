@@ -588,6 +588,54 @@ func TestClient_DescribeAppAllListeners(t *testing.T) {
 	}
 }
 
+func TestClient_BindSecurityGroups(t *testing.T) {
+	updateArgs := &UpdateSecurityGroupsArgs{
+		ClientToken:      getClientToken(),
+		SecurityGroupIds: []string{"sg-id"},
+	}
+	err := APPBLB_CLIENT.BindSecurityGroups(APPBLB_ID, updateArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UnbindSecurityGroups(t *testing.T) {
+	updateArgs := &UpdateSecurityGroupsArgs{
+		ClientToken:      getClientToken(),
+		SecurityGroupIds: []string{"sg-id"},
+	}
+	err := APPBLB_CLIENT.UnbindSecurityGroups(APPBLB_ID, updateArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DescribeSecurityGroups(t *testing.T) {
+	res, err := APPBLB_CLIENT.DescribeSecurityGroups(APPBLB_ID)
+	fmt.Println(res)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_BindEnterpriseSecurityGroups(t *testing.T) {
+	updateArgs := &UpdateEnterpriseSecurityGroupsArgs{
+		ClientToken:                getClientToken(),
+		EnterpriseSecurityGroupIds: []string{"esg-id"},
+	}
+	err := APPBLB_CLIENT.BindEnterpriseSecurityGroups(APPBLB_ID, updateArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UnbindEnterpriseSecurityGroups(t *testing.T) {
+	updateArgs := &UpdateEnterpriseSecurityGroupsArgs{
+		ClientToken:                getClientToken(),
+		EnterpriseSecurityGroupIds: []string{"esg-id"},
+	}
+	err := APPBLB_CLIENT.UnbindEnterpriseSecurityGroups(APPBLB_ID, updateArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_DescribeEnterpriseSecurityGroups(t *testing.T) {
+	res, err := APPBLB_CLIENT.DescribeEnterpriseSecurityGroups(APPBLB_ID)
+	fmt.Println(res)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
 func TestClient_DeleteAppListeners(t *testing.T) {
 	deleteArgs := &DeleteAppListenersArgs{
 		PortList:    []uint16{90, 91, 92, 93, 94},

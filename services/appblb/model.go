@@ -698,3 +698,61 @@ type DeleteAppIpGroupMemberArgs struct {
 	MemberIdList []string `json:"memberIdList"`
 	ClientToken  string   `json:"-"`
 }
+
+type UpdateSecurityGroupsArgs struct {
+	ClientToken      string   `json:"-"`
+	SecurityGroupIds []string `json:"securityGroupIds"`
+}
+
+type UpdateEnterpriseSecurityGroupsArgs struct {
+	ClientToken      string   `json:"-"`
+	EnterpriseSecurityGroupIds []string `json:"enterpriseSecurityGroupIds"`
+}
+
+type DescribeSecurityGroupsResult struct {
+	BlbSecurityGroups []BlbSecurityGroupModel `json:"blbSecurityGroups"`
+}
+
+type DescribeEnterpriseSecurityGroupsResult struct {
+	BlbEnterpriseSecurityGroups []BlbEnterpriseSecurityGroupModel `json:"enterpriseSecurityGroups"`
+}
+
+type BlbSecurityGroupModel struct {
+	SecurityGroupId    string                  `json:"securityGroupId"`
+	SecurityGroupName  string                  `json:"securityGroupName"`
+	SecurityGroupDesc  string                  `json:"securityGroupDesc"`
+	VpcName            string                  `json:"vpcName"`
+	SecurityGroupRules []BlbSecurityGroupRuleModel `json:"securityGroupRules"`
+}
+
+type BlbEnterpriseSecurityGroupModel struct {
+	EnterpriseSecurityGroupId    string                  `json:"enterpriseSecurityGroupId"`
+	EnterpriseSecurityGroupName  string                  `json:"enterpriseSecurityGroupName"`
+	EnterpriseSecurityGroupDesc  string                  `json:"enterpriseSecurityGroupDesc"`
+	EnterpriseSecurityGroupRules []BlbEnterpriseSecurityGroupRuleModel `json:"enterpriseSecurityGroupRules"`
+}
+
+type BlbSecurityGroupRuleModel struct {
+	SecurityGroupRuleId string `json:"securityGroupRuleId"`
+	Direction           string `json:"direction"`
+	Ethertype           string `json:"ethertype,omitempty"`
+	PortRange           string `json:"portRange,omitempty"`
+	Protocol            string `json:"protocol,omitempty"`
+	SourceGroupId       string `json:"sourceGroupId,omitempty"`
+	SourceIp            string `json:"sourceIp,omitempty"`
+	DestGroupId         string `json:"destGroupId,omitempty"`
+	DestIp              string `json:"destIp,omitempty"`
+}
+
+type BlbEnterpriseSecurityGroupRuleModel struct {
+	EnterpriseSecurityGroupRuleId string `json:"enterpriseSecurityGroupRuleId"`
+	Direction           string `json:"direction"`
+	Action           string `json:"action"`
+	Priority           string `json:"priority"`
+	Remark           string `json:"remark"`
+	Ethertype           string `json:"ethertype,omitempty"`
+	PortRange           string `json:"portRange,omitempty"`
+	Protocol            string `json:"protocol,omitempty"`
+	SourceIp            string `json:"sourceIp,omitempty"`
+	DestIp              string `json:"destIp,omitempty"`
+}

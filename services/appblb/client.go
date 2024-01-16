@@ -42,6 +42,9 @@ const (
 	APP_IP_GROUP_URL      = "/ipgroup"
 	APP_IP_GROUP_BACKEND_POLICY_URL = "/ipgroup/backendpolicy"
 	APP_IP_GROUP_MEMBER_URL = "/ipgroup/member"
+
+	SECURITY_GROUP_URL   = "/securitygroup"
+	ENTERPRISE_SECURITY_GROUP_URL   = "/enterprise/securitygroup"
 )
 
 // Client of APPBLB service is a kind of BceClient, so derived from BceClient
@@ -126,4 +129,12 @@ func getAppIpGroupBackendPolicyUri(id string) string {
 
 func getAppIpGroupMemberUri(id string) string {
 	return URI_PREFIX + REQUEST_APPBLB_URL + "/" + id + APP_IP_GROUP_MEMBER_URL
+}
+
+func getSecurityGroupUri(id string) string {
+	return URI_PREFIX + "/blb" + "/" + id + SECURITY_GROUP_URL
+}
+
+func getEnterpriseSecurityGroupUri(id string) string {
+	return URI_PREFIX + "/blb" + "/" + id + ENTERPRISE_SECURITY_GROUP_URL
 }

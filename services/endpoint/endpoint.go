@@ -25,8 +25,8 @@ import (
 
 // GetServices - get the public services
 // RETURNS:
-//     - *ListServiceResult: the result of public service
-//     - error: nil if success otherwise the specific error
+//   - *ListServiceResult: the result of public service
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetServices() (*ListServiceResult, error) {
 	result := &ListServiceResult{}
 	err := bce.NewRequestBuilder(c).
@@ -41,10 +41,11 @@ func (c *Client) GetServices() (*ListServiceResult, error) {
 // CreateEndpoint - create an endpoint with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create an endpoint
+//   - args: the arguments to create an endpoint
+//
 // RETURNS:
-//     - *CreateEndpointResult: the result of create endpoint
-//     - error: nil if success otherwise the specific error
+//   - *CreateEndpointResult: the result of create endpoint
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateEndpoint(args *CreateEndpointArgs) (*CreateEndpointResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("The createEndpointArgs cannot be nil.")
@@ -65,10 +66,11 @@ func (c *Client) CreateEndpoint(args *CreateEndpointArgs) (*CreateEndpointResult
 // DeleteEndpoint - delete an endpoint
 //
 // PARAMS:
-//     - endpointId: the specific endpointId
-//     - clientToken: optional parameter, an Idempotent Token
+//   - endpointId: the specific endpointId
+//   - clientToken: optional parameter, an Idempotent Token
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteEndpoint(endpointId string, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForEndpointId(endpointId)).
@@ -80,10 +82,11 @@ func (c *Client) DeleteEndpoint(endpointId string, clientToken string) error {
 // UpdateEndpoint - update an endpoint
 //
 // PARAMS:
-//     - endpointId: the specific endpointId
-//     - UpdateEndpointArgs: the arguments to update an endpoint
+//   - endpointId: the specific endpointId
+//   - UpdateEndpointArgs: the arguments to update an endpoint
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateEndpoint(endpointId string, args *UpdateEndpointArgs) error {
 	if args == nil {
 		return fmt.Errorf("The updateEndpointArgs cannot be nil.")
@@ -100,10 +103,11 @@ func (c *Client) UpdateEndpoint(endpointId string, args *UpdateEndpointArgs) err
 // ListEndpoints - list all endpoint with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all endpoint
+//   - args: the arguments to list all endpoint
+//
 // RETURNS:
-//     - *ListEndpointResult: the result of list all endpoint
-//     - error: nil if success otherwise the specific error
+//   - *ListEndpointResult: the result of list all endpoint
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListEndpoints(args *ListEndpointArgs) (*ListEndpointResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("The ListEndpointArgs cannot be nil.")
@@ -133,10 +137,11 @@ func (c *Client) ListEndpoints(args *ListEndpointArgs) (*ListEndpointResult, err
 // GetEndpointDetail - get the endpoint detail
 //
 // PARAMS:
-//     - endpointId: the specific endpointId
+//   - endpointId: the specific endpointId
+//
 // RETURNS:
-//     - *Endpoint: the endpoint
-//     - error: nil if success otherwise the specific error
+//   - *Endpoint: the endpoint
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetEndpointDetail(endpointId string) (*Endpoint, error) {
 	result := &Endpoint{}
 	err := bce.NewRequestBuilder(c).
@@ -146,4 +151,48 @@ func (c *Client) GetEndpointDetail(endpointId string) (*Endpoint, error) {
 		Do()
 
 	return result, err
+}
+
+// UpdateEndpointNormalSecurityGroup - update normal security group bound to the endpoint
+//
+// PARAMS:
+//   - endpointId: the specific endpointId
+//   - args: the arguments to update a normal security group
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) UpdateEndpointNormalSecurityGroup(endpointId string, args *UpdateEndpointNSGArgs) error {
+	if args == nil {
+		return fmt.Errorf("The UpdateEndpointNSGArgs cannot be nil.")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForEndpointId(endpointId)).
+		WithMethod(http.PUT).
+		WithQueryParam("bindSg", "").
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithBody(args).
+		Do()
+}
+
+// UpdateEndpointEnterpriseSecurityGroup - update enterprise security group bound to the endpoint
+//
+// PARAMS:
+//   - endpointId: the specific endpointId
+//   - args: the arguments to update an enterprise security group
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) UpdateEndpointEnterpriseSecurityGroup(endpointId string, args *UpdateEndpointESGArgs) error {
+	if args == nil {
+		return fmt.Errorf("The UpdateEndpointESGArgs cannot be nil.")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForEndpointId(endpointId)).
+		WithMethod(http.PUT).
+		WithQueryParam("bindEsg", "").
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithBody(args).
+		Do()
 }

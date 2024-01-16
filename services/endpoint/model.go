@@ -56,6 +56,15 @@ type UpdateEndpointArgs struct {
 	Description string `json:"description"`
 }
 
+type UpdateEndpointNSGArgs struct {
+	SecurityGroupIds []string `json:"securityGroupIds"`
+	ClientToken      string   `json:"-"`
+}
+type UpdateEndpointESGArgs struct {
+	EnterpriseSecurityGroupIds []string `json:"enterpriseSecurityGroupIds"`
+	ClientToken                string   `json:"-"`
+}
+
 type CreateEndpointArgs struct {
 	ClientToken string   `json:"-"`
 	VpcId       string   `json:"vpcId"`

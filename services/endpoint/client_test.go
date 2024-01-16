@@ -159,3 +159,17 @@ func TestClient_GetEndpointDetail(t *testing.T) {
 	r, err := json.Marshal(result)
 	fmt.Println(string(r))
 }
+func TestClient_UpdateEndpointNSG(t *testing.T) {
+	args := &UpdateEndpointNSGArgs{
+		SecurityGroupIds: []string{"g-wmxijt06y5um"},
+	}
+	err := ENDPOINT_CLIENT.UpdateEndpointNormalSecurityGroup("endpoint-3c7e02cb", args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+func TestClient_UpdateEndpointESG(t *testing.T) {
+	args := &UpdateEndpointESGArgs{
+		EnterpriseSecurityGroupIds: []string{"esg-nhwrebdqi4q2"},
+	}
+	err := ENDPOINT_CLIENT.UpdateEndpointEnterpriseSecurityGroup("endpoint-3c7e02cb", args)
+	ExpectEqual(t.Errorf, nil, err)
+}
