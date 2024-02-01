@@ -1341,6 +1341,30 @@ if err := bccClient.BatchDeleteInstanceWithRelateResource(deleteInstanceWithRela
 
 ```
 
+### 释放预付费实例（POST）
+使用以下代码释放实例:
+```go
+deletePrepaidInstanceWithRelateResourceArgs := &api.DeletePrepaidInstanceWithRelateResourceArgs{
+    // 设置释放的时候是否关联释放当前时刻，实例挂载的eip+数据盘 false代表否 true代表是
+    // (只有该字段为true时 deleteCdsSnapshotFlag字段才会有效，若该字段为false,deleteCdsSnapshotFlag字段的值无效）
+    RelatedReleaseFlag: true,
+    //设置是否释放弹性网卡 false代表否 true代表是，默认false
+    DeleteRelatedEnisFlag: true,
+	// 设置是否释放云磁盘快照 false代表否 true代表是
+    DeleteCdsSnapshotFlag: true,
+    // 设置你要操作的instanceId
+    instanceId := "your-choose-instance-id"
+}
+
+
+result, err := bccClient.DeletePrepaidInstanceWithRelateResource(DeletePrepaidInstanceWithRelateResourceArgs);
+if  err != nil {
+    fmt.Println("release instance failed: ", err)
+} else {
+    fmt.Println("release instance success.")
+}
+```
+
 ### 释放回收站实例
 回收站实例7天后自动释放，清理回收站资源，可以使用以下代码将其释放:
 ```go

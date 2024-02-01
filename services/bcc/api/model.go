@@ -970,6 +970,27 @@ type DeleteInstanceWithRelateResourceArgs struct {
 	DeleteImmediate       bool `json:"deleteImmediate"`
 }
 
+type DeletePrepaidInstanceWithRelateResourceArgs struct {
+	InstanceId             string                     `json:"instanceId"`
+	RelatedReleaseFlag    bool `json:"relatedReleaseFlag"`
+	DeleteCdsSnapshotFlag bool `json:"deleteCdsSnapshotFlag"`
+	DeleteRelatedEnisFlag bool `json:"deleteRelatedEnisFlag"`
+}
+
+type ReleasePrepaidInstanceResponse struct {
+	SuccessResources   InstanceDeleteResultModel `json:"successResources"`
+	FailResources      InstanceDeleteResultModel `json:"failResources"`
+	InstanceRefundFlag bool                        `json:"instanceRefundFlag"`
+}
+
+type InstanceDeleteResultModel struct {
+	InstanceId  string   `json:"instanceId"`
+	Eip         string   `json:"eip"`
+	InsnapIds   []string `json:"insnapIds"`
+	SnapshotIds []string `json:"snapshotIds"`
+	VolumeIds   []string `json:"volumeIds"`
+}
+
 type InstanceChangeVpcArgs struct {
 	InstanceId                 string   `json:"instanceId"`
 	SubnetId                   string   `json:"subnetId"`

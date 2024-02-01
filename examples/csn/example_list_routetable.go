@@ -1,10 +1,9 @@
-package csnexample
+package csnexamples
 
 import (
 	"fmt"
 
 	"github.com/baidubce/bce-sdk-go/services/csn"
-	"github.com/baidubce/bce-sdk-go/util"
 )
 
 func ListRouteTable() {

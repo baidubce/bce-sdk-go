@@ -109,6 +109,7 @@ func TestClient_CreateInstance(t *testing.T) {
 		DiskFlavor:     60,
 		DiskType:       "essd",
 		BgwGroupId:     "",
+		ResourceGroupId: "",
 		StoreType:      3,
 		EnableReadOnly: 1,
 		ClientAuth:     "ABlockIs16Bytes!",

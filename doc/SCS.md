@@ -259,6 +259,8 @@ args := &scs.CreateInstanceArgs{
     StoreType: 0,
     // 副本只读 1打开 2关闭 （PegaDB专用）
     // EnableReadOnly: 1,
+    // 资源分组ID，可不传
+    ResourceGroupId: "",
 }
 
 // 若要生成预付费实例，可以按以下配置生成一个月的预付费实例

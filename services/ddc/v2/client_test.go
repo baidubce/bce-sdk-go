@@ -938,6 +938,53 @@ func TestClient_CreateReadReplica(t *testing.T) {
 	}
 }
 
+func TestClient_CreateHotBackup(t *testing.T) {
+	client := DDCRDS_CLIENT
+	instanceId := "ddc-m1b5gjr5"
+	args := &CreateHotBackupArgs{
+		ClientToken: "320cfd8dceaf98529bd9f7c1d43a52c5",
+		// 计费相关参数，DDC 只读实例只支持预付费，RDS 只读实例只支持后付费Postpaid，必选
+		Billing: Billing{
+			PaymentTiming: "Prepaid",
+			Reservation:   Reservation{ReservationLength: 5, ReservationTimeUnit: "Month"},
+		},
+		PurchaseCount: 3,
+		//主实例ID，必选
+		SourceInstanceId: instanceId,
+		InstanceName:     "go_tester_read",
+		//套餐磁盘大小，单位GB，每5G递增，必选
+		VolumeCapacity: 20,
+		//批量创建云数据库 ddc 只读实例个数, 目前只支持一次创建一个,可选
+		//PurchaseCount: 2,
+		//实例名称，允许小写字母、数字，长度限制为1~32，默认命名规则:{engine} + {engineVersion}，可选
+		//指定zone信息，默认为空，由系统自动选择，可选
+		//zoneName命名规范是小写的“国家-region-可用区序列"，例如北京可用区A为"cn-bj-a"。
+		//ZoneNames: []string{"cn-su-c"},
+		//与主实例 vpcId 相同，可选
+		//VpcId: "vpc-IyrqYIQ7",
+		//是否进行直接支付，默认false，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑，可选
+		IsDirectPay: false,
+		//vpc内，每个可用区的subnetId；如果不是默认vpc则必须指定 subnetId，可选
+		//Subnets: []SubnetMap{
+		//	{
+		//		ZoneName: "cn-su-c",
+		//		SubnetId: "sbn-8v3p33vhyhq5",
+		//	},
+		//},
+		// 资源池id 必选与主实例保持一致
+		//PoolId:"xdb_5cf97afb-ee06-4b80-9146-4a840e5d0288_pool",
+	}
+	result, err := client.CreateHotBackup(args)
+	if err != nil {
+		fmt.Printf("create ddc readReplica error: %+v\n", err)
+		return
+	}
+
+	for _, e := range result.InstanceIds {
+		fmt.Println("create ddc readReplica success, instanceId: ", e)
+	}
+}
+
 func TestClient_ListRds(t *testing.T) {
 	args := &ListRdsArgs{
 		// 批量获取列表的查询的起始位置，实例列表中Marker需要指定实例Id，可选

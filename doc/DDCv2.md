@@ -598,6 +598,67 @@ for _, e := range result.InstanceIds {
 }
 ```
 
+## 创建热备实例
+使用以下代码可以创建只读实例。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+// DDC
+args := &ddcrds.CreateHotBackupArgs{
+    //主实例ID，必选
+    SourceInstanceId: "sourceInstanceId",
+    // 计费相关参数，只支持预付费Prepaid，必选
+    Billing: ddcrds.Billing{
+        PaymentTiming: "Prepaid",
+        Reservation: ddcrds.Reservation{ReservationLength: 1, ReservationTimeUnit: "Month"},
+    },
+    // 预付费时可指定自动续费参数 AutoRenewTime 和 AutoRenewTimeUnit
+    // 自动续费时长（续费单位为year 不大于3，续费单位为mouth 不大于9）
+    AutoRenewTime: 1,
+    // 自动续费单位（"year";"month"）
+    AutoRenewTimeUnit: "month",
+    //套餐磁盘大小，单位GB，每5G递增，必选
+    VolumeCapacity: 5,
+    //批量创建云数据库 热备实例个数, 必选
+    PurchaseCount: 1,
+    //实例名称，允许小写字母、数字，长度限制为1~32，默认命名规则:{engine} + {engineVersion}，可选
+    InstanceName: "instanceName",
+    //指定zone信息，默认为空，由系统自动选择，可选
+    //zoneName命名规范是小写的“国家-region-可用区序列"，例如北京可用区A为"cn-bj-a"。
+    ZoneNames: []string{"cn-bj-a"},
+    //与主实例 vpcId 相同，可选
+    VpcId: "vpc-IyrqYIQ7",
+    //是否进行直接支付，默认true，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑，可选
+    IsDirectPay: true,
+    //vpc内，每个可用区的subnetId；如果不是默认vpc则必须指定 subnetId，可选
+    Subnets: []ddcrds.SubnetMap{
+    {
+        ZoneName: "cn-bj-a",
+        SubnetId: "sbn-IyWRnII7",
+    },
+    },
+    // 实例绑定的标签信息，可选
+    Tags: []ddcrds.TagModel{
+    {
+        TagKey:   "tagK",
+        TagValue: "tagV",
+    },
+    },
+    // 部署集id，必选
+    DeployId:"xxxyyy-123",
+    // 资源池id，与主实例保持一致，必选
+    PoolId:"xxxyzzzyy-123",
+}
+result, err := client.CreateHotBackup(args)
+if err != nil {
+    fmt.Printf("create ddc readReplica error: %+v\n", err)
+    return
+}
+
+for _, e := range result.InstanceIds {
+    fmt.Println("create ddc hotBackup success, instanceId: ", e)
+}
+```
+
 ## 实例详情
 
 使用以下代码可以查询指定实例的详情。
@@ -646,6 +707,10 @@ fmt.Println("ddc vnetIp: ", result.Endpoint.VnetIp)
 fmt.Println("ddc vnetIpBackup: ", result.Endpoint.VnetIpBackup)
 // 拓扑信息
 fmt.Println("ddc topo: ", result.InstanceTopoForReadonly)
+// 是否是热备
+fmt.Println("ddc isHotBackup: ", result.IsHotBackup)
+// 主实例时返回热备实例列表
+fmt.Println("ddc HotBackupList: ", result.HotBackupList)
 
 // RDS
 result, err := client.GetDetail(instanceId)
@@ -739,6 +804,8 @@ for _, e := range resp.Instances {
     // 物理机信息
     fmt.Println("long BBC Id: ", e.LongBBCId)
     fmt.Println("BBC hostname: ", e.HostName)
+    // 是否是热备实例
+    fmt.Println("BBC isHotBackup: ", e.IsHotBackup)
     // 自动续费规则
     if e.AutoRenewRule != nil {
         fmt.Println("renewTime: ", e.AutoRenewRule.RenewTime)

@@ -1,4 +1,4 @@
-package main
+package csnexamples
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"github.com/baidubce/bce-sdk-go/services/csn"
 )
 
-func main() {
+func ListCsn() {
 	client, err := csn.NewClient("Your AK", "Your SK", "csn.baidubce.com")
 	if err != nil {
 		fmt.Printf("Failed to new csn client, err: %v.\n", err)

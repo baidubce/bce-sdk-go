@@ -32,6 +32,7 @@ const (
 	REQUEST_BATCHADDIP_URI       = "/batchAddIp"
 	REQUEST_BATCHDELIP_URI       = "/batchDelIp"
 	REQUEST_CREATE_URI           = "/create"
+	REQUEST_DELETE_URI           = "/delete"
 	REQUEST_UPDATE_URI           = "/updateRelation"
 	REQUEST_DEL_URI              = "/delRelation"
 	REQUEST_DEPLOYSET_URI        = "/deployset"
@@ -106,6 +107,10 @@ func getInstanceBySpecUri() string {
 
 func getInstanceUriWithId(id string) string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/" + id
+}
+
+func getPrepaidInstanceDeleteUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_DELETE_URI
 }
 
 func getRecoveryInstanceUri() string {

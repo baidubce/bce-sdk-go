@@ -1,4 +1,4 @@
-package csnexample
+package csnexamples
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ func UnbindCsnBp() {
 		return
 	}
 	request := &csn.UnbindCsnBpRequest{
-		CsnId:  "csnId",
+		CsnId: "csnId",
 	}
 	if err = client.UnbindCsnBp("csnBpId", request, util.NewUUID()); err != nil {
 		fmt.Printf("Failed to unbind csn bp, err: %v.\n", err)

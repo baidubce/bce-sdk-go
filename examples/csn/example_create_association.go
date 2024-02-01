@@ -1,4 +1,4 @@
-package csnexample
+package csnexamples
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ func CreateAssociation() {
 	}
 	description := "csn_test description"
 	request := &csn.CreateAssociationRequest{
-		Name:        "attachId",
+		AttachId:    "attachId",
 		Description: &description,
 	}
 	if err = client.CreateAssociation("csnRtId", request, util.NewUUID()); err != nil {

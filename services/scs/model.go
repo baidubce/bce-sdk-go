@@ -57,6 +57,7 @@ type CreateInstanceArgs struct {
 	BgwGroupId        string           `json:"bgwGroupId,omitempty"`
 	ClientToken       string           `json:"-"`
 	ClientAuth        string           `json:"clientAuth"`
+	ResourceGroupId   string           `json:"resourceGroupId"`
 	StoreType         int              `json:"storeType"`
 	EnableReadOnly    int              `json:"enableReadOnly,omitempty"`
 	Tags              []model.TagModel `json:"tags"`

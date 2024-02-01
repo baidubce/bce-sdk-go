@@ -1034,6 +1034,40 @@ func DeleteInstanceWithRelatedResource(cli bce.Client, instanceId string, reqBod
 	return nil
 }
 
+// DeletePrepaidInstanceWithRelatedResource - delete an prepaid instance with related resources
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - instanceId: id of the instance to be deleted
+//   - reqBody: request body to delete instance
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func DeletePrepaidInstanceWithRelatedResource(cli bce.Client, reqBody *bce.Body) (*ReleasePrepaidInstanceResponse, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getPrepaidInstanceDeleteUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ReleasePrepaidInstanceResponse{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+
 // InstanceChangeSubnet - change the subnet to which the instance belongs
 //
 // PARAMS:

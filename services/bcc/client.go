@@ -791,6 +791,27 @@ func (c *Client) InstanceChangeSubnet(args *api.InstanceChangeSubnetArgs) error 
 	return api.InstanceChangeSubnet(c, body)
 }
 
+// DeletePrepaidInstanceWithRelateResource - delete an prepaid instance and all eip/cds relate it
+//
+// PARAMS:
+//   - instanceId: the specific instance ID
+//   - args: the arguments to delete instance and its relate resource
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) DeletePrepaidInstanceWithRelateResource(args *api.DeletePrepaidInstanceWithRelateResourceArgs) (*api.ReleasePrepaidInstanceResponse, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.DeletePrepaidInstanceWithRelatedResource(c, body)
+}
+
 // InstanceChangeVpc - change an instance's vpc
 //
 // PARAMS:

@@ -1,4 +1,4 @@
-package csnexample
+package csnexamples
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ func BindCsnBp() {
 		return
 	}
 	request := &csn.BindCsnBpRequest{
-		CsnId:  "csnId",
+		CsnId: "csnId",
 	}
 	if err = client.BindCsnBp("csnBpId", request, util.NewUUID()); err != nil {
 		fmt.Printf("Failed to bind Csn Bp, err: %v.\n", err)

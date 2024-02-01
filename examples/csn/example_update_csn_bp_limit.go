@@ -1,4 +1,4 @@
-package csnexample
+package csnexamples
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ func UpdateCsnBpLimit() {
 		fmt.Printf("Failed to new csn client, err: %v.\n", err)
 		return
 	}
-	request := &csn.CreateCsnBpLimitRequest{
+	request := &csn.UpdateCsnBpLimitRequest{
 		LocalRegion: "bj",
 		PeerRegion:  "cn-hangzhou-cm",
 		Bandwidth:   10,

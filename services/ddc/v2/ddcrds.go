@@ -138,6 +138,34 @@ func (c *Client) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResult, 
 	return result, err
 }
 
+// CreateHotBackup - create a hotBackup ddc with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to create a hotBackup ddc
+// RETURNS:
+//     - *InstanceIds: the result of create a hotBackup ddc, contains the hotBackup DDC's instanceIds
+//     - error: nil if success otherwise the specific error
+func (c *Client) CreateHotBackup(args *CreateHotBackupArgs) (*CreateResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("unset args")
+	}
+	if len(args.SourceInstanceId) < 1 {
+		return nil, fmt.Errorf("unset SourceInstanceId")
+	}
+
+	// 默认创建1个热备实例
+	if args.PurchaseCount < 1 {
+		args.PurchaseCount = 1
+	}
+	var result *CreateResult
+	var err error
+	if isDDCId(args.SourceInstanceId) {
+		result, err = c.ddcClient.CreateHotBackup(args)
+	}
+	return result, err
+}
+
+
 // UpdateRoGroup - update a roGroup
 //
 // PARAMS:

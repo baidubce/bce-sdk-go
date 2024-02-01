@@ -1,4 +1,4 @@
-package csnexample
+package csnexamples
 
 import (
 	"fmt"

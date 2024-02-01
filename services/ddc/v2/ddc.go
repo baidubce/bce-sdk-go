@@ -371,6 +371,71 @@ func (c *DDCClient) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResul
 	return result, err
 }
 
+// CreateHotBackup - create a hotBackup ddc with the specific parameters
+//
+// PARAMS:
+//     - args: the arguments to create a hotBackup ddc
+// RETURNS:
+//     - *InstanceIds: the result of create a hotBackup ddc, contains the hotBackup DDC's instanceIds
+//     - error: nil if success otherwise the specific error
+func (c *DDCClient) CreateHotBackup(args *CreateHotBackupArgs) (*CreateResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("unset args")
+	}
+
+	if args.SourceInstanceId == "" {
+		return nil, fmt.Errorf("unset SourceInstanceId")
+	}
+
+	if args.Billing.PaymentTiming == "" {
+		return nil, fmt.Errorf("unset PaymentTiming")
+	}
+	detail, err2 := c.GetDdcDetail(args.SourceInstanceId)
+	if err2 != nil {
+		return nil, err2
+	}
+	newArgs := &CreateInstanceArgs{
+		InstanceType: "RDS",
+		Number:       args.PurchaseCount,
+		ClientToken:  args.ClientToken,
+		Instance: CreateInstance{
+			SourceInstanceId:     args.SourceInstanceId,
+			InstanceName:         args.InstanceName,
+			Engine:               strings.ToLower(detail.Instance.Engine),
+			EngineVersion:        detail.Instance.EngineVersion,
+			CpuCount:             detail.Instance.CpuCount,
+			AllocatedMemoryInGB:  int(detail.Instance.AllocatedMemoryInGB),
+			AllocatedStorageInGB: args.VolumeCapacity,
+			DiskIoType:           "ssd",
+			DeployId:             args.DeployId,
+			PoolId:               args.PoolId,
+			Billing:              args.Billing,
+			IsDirectPay:          args.IsDirectPay,
+			AutoRenewTime:        args.AutoRenewTime,
+			AutoRenewTimeUnit:    args.AutoRenewTimeUnit,
+			Tags:                 args.Tags,
+			Remark:               "hotBackup",
+		},
+	}
+
+	createRdsArgs := &CreateRdsArgs{
+		VpcId:     args.VpcId,
+		Subnets:   args.Subnets,
+		ZoneNames: args.ZoneNames,
+	}
+
+	info, err := c.SupplyVpcInfo(newArgs, createRdsArgs)
+	if err != nil {
+		return nil, err
+	}
+	result, err2 := c.CreateInstance(info)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	return result, err
+}
+
 // UpdateRoGroup - update a roGroup
 //
 // PARAMS:
@@ -604,6 +669,8 @@ func (c *DDCClient) GetDetail(instanceId string) (*Instance, error) {
 		LongBBCId:               detail.Instance.LongBBCId,
 		InstanceTopoForReadonly: detail.Instance.InstanceTopoForReadonly,
 		AutoRenewRule:           detail.Instance.AutoRenewRule,
+		IsHotBackup:           	 detail.Instance.IsHotBackup,
+		HotBackupList:           detail.Instance.HotBackupList,
 	}
 	// 兼容RDS字段
 	result.PublicAccessStatus = strconv.FormatBool(result.PubliclyAccessible)

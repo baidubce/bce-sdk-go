@@ -81,6 +81,26 @@ type CreateReadReplicaArgs struct {
 	AutoRenewTime       int         `json:"autoRenewTime,omitempty"`
 }
 
+type CreateHotBackupArgs struct {
+	ClientToken         string      `json:"-"`
+	Billing             Billing     `json:"billing,omitempty"`
+	PurchaseCount       int         `json:"purchaseCount,omitempty"`
+	SourceInstanceId    string      `json:"sourceInstanceId"`
+	InstanceName        string      `json:"instanceName,omitempty"`
+	CpuCount            int         `json:"cpuCount,omitempty"`
+	MemoryCapacity      float64     `json:"memoryCapacity,omitempty"`
+	VolumeCapacity      int         `json:"volumeCapacity,omitempty"`
+	ZoneNames           []string    `json:"zoneNames,omitempty"`
+	VpcId               string      `json:"vpcId,omitempty"`
+	IsDirectPay         bool        `json:"isDirectPay,omitempty"`
+	Subnets             []SubnetMap `json:"subnets,omitempty"`
+	Tags                []TagModel  `json:"tags,omitempty"`
+	DeployId            string      `json:"deployId,omitempty"`
+	PoolId              string      `json:"poolId,omitempty"`
+	AutoRenewTimeUnit   string      `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime       int         `json:"autoRenewTime,omitempty"`
+}
+
 type Instance struct {
 	InstanceId         string       `json:"instanceId"`
 	InstanceName       string       `json:"instanceName"`
@@ -119,6 +139,8 @@ type Instance struct {
 	HostName                string                  `json:"hostname,omitempty"`
 	InstanceTopoForReadonly InstanceTopoForReadonly `json:"instanceTopoForReadonly,omitempty"`
 	AutoRenewRule           *AutoRenewRule          `json:"autoRenewRule,omitempty"`
+	IsHotBackup           	bool          			`json:"isHotBackup"`
+	HotBackupList           []HotBackup          	`json:"hotBackupList"`
 }
 
 type AutoRenewRule struct {
@@ -185,6 +207,7 @@ type CreateInstance struct {
 	Category             string     `json:"category,omitempty"`
 	Tags                 []TagModel `json:"tags,omitempty"`
 	SyncMode             string     `json:"syncMode,omitempty"`
+	Remark               string     `json:"remark,omitempty"`
 }
 
 type Pool struct {
@@ -342,6 +365,8 @@ type InstanceModel struct {
 	LongBBCId               string                  `json:"longBBCId"`
 	InstanceTopoForReadonly InstanceTopoForReadonly `json:"instanceTopoForReadonly,omitempty"`
 	AutoRenewRule           *AutoRenewRule          `json:"autoRenewRule,omitempty"`
+	IsHotBackup           	bool          			`json:"isHotBackup"`
+	HotBackupList           []HotBackup          	`json:"hotBackupList"`
 }
 type TopoInstance struct {
 	InstanceID       string `json:"instanceId,omitempty"`
@@ -375,6 +400,12 @@ type RoGroup struct {
 	DelayThreshold      int       `json:"delayThreshold"`
 	LeastInstanceAmount int       `json:"leastInstanceAmount"`
 	ReplicaList         []Replica `json:"replicaList"`
+}
+
+type HotBackup struct {
+	InstanceId           string `json:"instanceId"`
+	Status           	 string `json:"status"`
+	InstanceName         string `json:"instanceName"`
 }
 
 type UpdateRoGroupArgs struct {

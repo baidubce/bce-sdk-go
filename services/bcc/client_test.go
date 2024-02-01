@@ -47,7 +47,7 @@ func init() {
 	BCC_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
 	// log.SetLogLevel(log.DEBUG)
-	BCC_TestBccId = "i-7pxLG046"
+	BCC_TestBccId = "i-nOKDVvyq"
 	BCC_TestCdsId = "cds_id"
 	BCC_TestImageId = "m-Q0ezqMIa"
 }
@@ -951,6 +951,18 @@ func TestGetPriceBySpec(t *testing.T) {
 	res, err := BCC_CLIENT.GetPriceBySpec(args)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(res)
+}
+
+func TestDeletePrepaidInstanceWithRelateResource (t *testing.T) {
+	args := &api.DeletePrepaidInstanceWithRelateResourceArgs{
+		InstanceId: BCC_TestBccId,
+		RelatedReleaseFlag: true,
+		DeleteCdsSnapshotFlag: true,
+		DeleteRelatedEnisFlag: true,
+	}
+	result, err := BCC_CLIENT.DeletePrepaidInstanceWithRelateResource(args)
+	fmt.Println(result)
+	fmt.Println(err)
 }
 
 func TestCreateDeploySet(t *testing.T) {
