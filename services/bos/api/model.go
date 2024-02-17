@@ -250,6 +250,7 @@ type GetObjectAclResult ObjectAclType
 type PutObjectArgs struct {
 	CacheControl       string
 	ContentDisposition string
+	ContentEncoding    string
 	ContentMD5         string
 	ContentType        string
 	ContentLength      int64
