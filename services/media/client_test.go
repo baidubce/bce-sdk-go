@@ -662,3 +662,318 @@ func TestDeleteNotification(t *testing.T) {
 	err := MEDIA_CLIENT.DeleteNotification("test")
 	ExpectEqual(t.Errorf, err, nil)
 }
+
+func TestCreateDigitalWmPresetImage(t *testing.T) {
+	preset := &api.DigitalWmPreset{}
+	preset.Description = "test"
+	preset.Bucket = "go-test"
+	preset.Key = "logo.png"
+	preset.DigitalWmType = "image"
+	response, err := MEDIA_CLIENT.CreateDigitalWmPreset(preset)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", response)
+}
+
+func TestCreateDigitalWmPresetText(t *testing.T) {
+	preset := &api.DigitalWmPreset{}
+	preset.Description = "文字水印模板1"
+	//preset.Bucket = "go-test"
+	//preset.Key = "logo.png"
+	//preset.DigitalWmId = ""
+	preset.DigitalWmType = "text"
+	preset.TextContent = "文字水印模板1"
+	response, err := MEDIA_CLIENT.CreateDigitalWmPreset(preset)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", response)
+}
+
+func TestCreateDigitalWmImagePreset(t *testing.T) {
+	response, err := MEDIA_CLIENT.CreateDigitalWmImagePreset("", "图片水印模板", "go-test", "logo.png")
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", response)
+}
+
+func TestCreateDigitalWmTextPreset(t *testing.T) {
+	response, err := MEDIA_CLIENT.CreateDigitalWmTextPreset("", "文字水印模板", "这是文字水印")
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", response)
+}
+
+func TestGetDigitalWmPreset(t *testing.T) {
+	response, err := MEDIA_CLIENT.GetDigitalWmPreset("dwm-qbkfswta3hy3f9ta")
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", response)
+}
+
+func TestListDigitalWatermarks(t *testing.T) {
+	response, err := MEDIA_CLIENT.ListDigitalWmPreset()
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", response)
+}
+
+func TestDeleteDigitalWmPreset(t *testing.T) {
+	err := MEDIA_CLIENT.DeleteDigitalWmPreset("dwm-qbkfv5s5k1mnkiww")
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestCreateDwmSecretkeyPreset(t *testing.T) {
+	preset := &api.DwmSecretkeyPreset{}
+	preset.Description = "数字水印密钥2"
+	preset.SecretKey = "password2"
+	response, err := MEDIA_CLIENT.CreateDwmSecretkeyPreset(preset)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", response)
+}
+
+func TestGetDwmSecretkeyPreset(t *testing.T) {
+	response, err := MEDIA_CLIENT.GetDwmSecretkeyPreset("key-qbktvt6xbb6a716w")
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", response)
+}
+
+func TestListDwmSecretkeyPresets(t *testing.T) {
+	response, err := MEDIA_CLIENT.ListDwmSecretkeyPresets()
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", response)
+}
+
+func TestDeleteDwmSecretkeyPreset(t *testing.T) {
+	err := MEDIA_CLIENT.DeleteDwmSecretkeyPreset("key-qbknpihxg9ds23v9")
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestCreatePrestWithDigitalArgsImage(t *testing.T) {
+	preset := &api.Preset{}
+	preset.PresetName = "go_test_digital_preset"
+	preset.Description = "全参数"
+	preset.Container = "mp4"
+
+	clip := &api.Clip{}
+	clip.StartTimeInSecond = 0
+	preset.Clip = clip
+
+	audio := &api.Audio{}
+	audio.BitRateInBps = 256000
+	audio.Codec = "opus"
+	preset.Audio = audio
+
+	video := &api.Video{}
+	video.Codec = "h264"
+	codecOptions := &api.CodecOptions{}
+	codecOptions.Profile = "baseline"
+	video.CodecOptions = codecOptions
+	video.BitRateInBps = 1024000
+	video.MaxFrameRate = 30
+	video.MaxWidthInPixel = 4096
+	video.MaxHeigtInPixel = 3072
+	video.SizingPolicy = "keep"
+	preset.Video = video
+
+	preset.DigitalWmId = "dwm-qbkfs0uq6shgmbp9"
+	preset.DigitalWmSecretKey = "key-qbktvt6xbb6a716w"
+	err := MEDIA_CLIENT.CreatePrestCustomize(preset)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestCreatePrestWithDigitalArgsText(t *testing.T) {
+	preset := &api.Preset{}
+	preset.PresetName = "go_test_digital_preset_text"
+	preset.Description = "全参数"
+	preset.Container = "mp4"
+
+	clip := &api.Clip{}
+	clip.StartTimeInSecond = 0
+	preset.Clip = clip
+
+	audio := &api.Audio{}
+	audio.BitRateInBps = 256000
+	audio.Codec = "opus"
+	preset.Audio = audio
+
+	video := &api.Video{}
+	video.Codec = "h264"
+	codecOptions := &api.CodecOptions{}
+	codecOptions.Profile = "baseline"
+	video.CodecOptions = codecOptions
+	video.BitRateInBps = 1024000
+	video.MaxFrameRate = 30
+	video.MaxWidthInPixel = 4096
+	video.MaxHeigtInPixel = 3072
+	video.SizingPolicy = "keep"
+	preset.Video = video
+
+	preset.DigitalWmId = "dwm-qbkfswta3hy3f9ta"
+	preset.DigitalWmSecretKey = "key-qbktvt6xbb6a716w"
+	err := MEDIA_CLIENT.CreatePrestCustomize(preset)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestCreateJobCustomizeWithDigitalImage(t *testing.T) {
+	args := &api.CreateJobArgs{}
+	args.PipelineName = "go_sdk_test"
+	source := &api.Source{Clips: &[]api.SourceClip{{
+		SourceKey: "dog.mp4",
+		Bucket:    "go-test",
+	}}}
+	args.Source = source
+	target := &api.Target{}
+	targetKey := "dog-result.mp4"
+
+	target.TargetKey = targetKey
+	presetName := "go_test_digital_preset"
+	target.PresetName = presetName
+	target.DigitalWmSecretKeyId = "key-qbktvt6xbb6a716w"
+
+	args.Target = target
+
+	jobResponse, err := MEDIA_CLIENT.CreateJobCustomize(args)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", jobResponse)
+}
+
+func TestCreateJobCustomizeWithDigitalText(t *testing.T) {
+	args := &api.CreateJobArgs{}
+	args.PipelineName = "go_sdk_test"
+	source := &api.Source{Clips: &[]api.SourceClip{{
+		SourceKey: "dog.mp4",
+		Bucket:    "go-test",
+	}}}
+	args.Source = source
+	target := &api.Target{}
+	targetKey := "dog-text-result.mp4"
+
+	target.TargetKey = targetKey
+	presetName := "go_test_digital_preset_text"
+	target.PresetName = presetName
+	target.DigitalWmSecretKeyId = "key-qbktvt6xbb6a716w"
+	target.DigitalWmTextContent = "this is a demo"
+	args.Target = target
+
+	jobResponse, err := MEDIA_CLIENT.CreateJobCustomize(args)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", jobResponse)
+}
+
+func TestCreateDwmDetectJobImage(t *testing.T) {
+	dwmDetect := &api.Dwmdetect{}
+	dwmDetect.PipelineName = "go_sdk_test"
+	dwmDetect.DigitalWmType = "image"
+	dwmDetect.DigitalWmSecretKeyId = "key-qbktvt6xbb6a716w"
+	dwmDetect.DigitalWmId = "dwm-qbkfs0uq6shgmbp9"
+	source := &api.DwmSource{}
+	source.Bucket = "go-test"
+	source.Key = "dog-result.mp4"
+	dwmDetect.Source = source
+	target := &api.DwmTarget{}
+	target.Bucket = "go-test"
+	dwmDetect.Target = target
+	ref := []api.RefResolutions{
+		{OriginalVideoWidth: 1920, OriginalVideoHeight: 1080},
+	}
+	dwmDetect.RefResolutions = ref
+	response, err := MEDIA_CLIENT.CreateDwmDetectJob(dwmDetect)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", response)
+}
+
+func TestCreateDwmDetectJobText(t *testing.T) {
+	dwmDetect := &api.Dwmdetect{}
+	dwmDetect.PipelineName = "go_sdk_test"
+	dwmDetect.DigitalWmType = "text"
+	dwmDetect.DigitalWmSecretKeyId = "key-qbktvt6xbb6a716w"
+	dwmDetect.DigitalWmId = "dwm-qbkfswta3hy3f9ta"
+	source := &api.DwmSource{}
+	source.Bucket = "go-test"
+	source.Key = "dog-text-result.mp4"
+	dwmDetect.Source = source
+
+	ref := []api.RefResolutions{
+		{OriginalVideoWidth: 1920, OriginalVideoHeight: 1080},
+	}
+	dwmDetect.RefResolutions = ref
+	dwmDetect.TextWmContent = "this"
+	response, err := MEDIA_CLIENT.CreateDwmDetectJob(dwmDetect)
+
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", response)
+}
+
+func TestGetDwmdetectResult(t *testing.T) {
+	response, err := MEDIA_CLIENT.GetDwmdetectResult("job-qbmvxg64e292aauv")
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", response)
+	t.Logf("%+v", response.Source)
+	t.Logf("%+v", response.Target)
+}
+
+func TestCreateImagedwmJobT(t *testing.T) {
+	imagedwm := &api.Imagedwm{}
+	imagedwm.PipelineName = "go_sdk_test"
+	source := &api.DwmSource{}
+	source.Bucket = "go-test"
+	source.Key = "jbs.jpeg"
+	imagedwm.Source = source
+	target := &api.DwmTarget{}
+	target.Bucket = "go-test"
+	target.Key = "jbs-dwm.jpeg"
+	imagedwm.Target = target
+	imagedwm.TaskType = "embed"
+	imagedwm.Strength = 0.7
+	digitalWm := &api.DigitalWm{}
+	digitalWm.TextContent = "baidu"
+	imagedwm.DigitalWm = digitalWm
+
+	response, err := MEDIA_CLIENT.CreateImagedwmJob(imagedwm)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", response)
+}
+
+func TestCreateImagedwmJobI(t *testing.T) {
+	imagedwm := &api.Imagedwm{}
+	imagedwm.PipelineName = "go_sdk_test"
+	source := &api.DwmSource{}
+	source.Bucket = "go-test"
+	source.Key = "demo.png"
+	imagedwm.Source = source
+	target := &api.DwmTarget{}
+	target.Bucket = "go-test"
+	target.Key = "demo-dwm-i.png"
+	imagedwm.Target = target
+	imagedwm.TaskType = "embed"
+	imagedwm.Strength = 0.7
+	digitalWm := &api.DigitalWm{}
+	digitalWm.ImageBucket = "go-test"
+	digitalWm.ImageKey = "logo.png"
+
+	imagedwm.DigitalWm = digitalWm
+
+	response, err := MEDIA_CLIENT.CreateImagedwmJob(imagedwm)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", response)
+}
+
+func TestGetImagedwmResult(t *testing.T) {
+	response, err := MEDIA_CLIENT.GetImagedwmResult("job-qbnrkj2fhczyh1gc")
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", response)
+	t.Logf("%+v", response.Source)
+	t.Logf("%+v", response.Target)
+}
+
+func TestCreateImagedwmDetectJob(t *testing.T) {
+	imagedwm := &api.Imagedwm{}
+	imagedwm.PipelineName = "go_sdk_test"
+	source := &api.DwmSource{}
+	source.Bucket = "go-test"
+	source.Key = "demo-dwm-i.png"
+	imagedwm.Source = source
+	target := &api.DwmTarget{}
+	target.Bucket = "go-test"
+	target.Key = "demo-dwm-i-di.png"
+	imagedwm.Target = target
+	imagedwm.TaskType = "extract"
+
+	response, err := MEDIA_CLIENT.CreateImagedwmJob(imagedwm)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", response)
+}

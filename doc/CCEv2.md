@@ -512,7 +512,7 @@ fmt.Println("Response:"+ string(s))
 ## 检查集群网络网段
 使用以下代码可以检查集群网络网段是否冲突
 ```go
-args := &ccev2.CheckClusterIPCIDArgs{
+args := &ccev2.CheckClusterIPCIDRArgs{
     VPCID: "vpc-id",
     VPCCIDR: "192.168.0.0/16",
     ClusterIPCIDR: "172.31.0.0/16",
@@ -554,7 +554,7 @@ fmt.Println("Response:"+ string(s))
 使用以下代码可以推荐可使用的集群网络网段
 ```go
 args := &ccev2.RecommendClusterIPCIDRArgs{
-    ClusterMaxServiceNum: 2,
+    ClusterMaxServiceNum: 8,
     ContainerCIDR: "172.28.0.0/16",
     IPVersion: "ipv4",
     PrivateNetCIDRs: []ccev2.PrivateNetString{ccev2.PrivateIPv4Net172},

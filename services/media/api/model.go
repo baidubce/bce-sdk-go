@@ -75,16 +75,18 @@ type SourceClip struct {
 }
 
 type Target struct {
-	TargetKey    string    `json:"targetKey,omitempty"`
-	PresetName   string    `json:"presetName,omitempty"`
-	AutoDelogo   bool      `json:"autoDelogo,omitempty"`
-	DelogoMode   string    `json:"delogoMode,omitempty"`
-	DelogoArea   *Area     `json:"delogoArea,omitempty"`
-	DelogoAreas  *[]Area   `json:"delogoAreas,omitempty"`
-	AutoCrop     bool      `json:"autoCrop,omitempty"`
-	Crop         *Area     `json:"crop,omitempty"`
-	WatermarkIds []string  `json:"watermarkIds,omitempty"`
-	Inserts      *[]Insert `json:"inserts,omitempty"`
+	TargetKey            string    `json:"targetKey,omitempty"`
+	PresetName           string    `json:"presetName,omitempty"`
+	AutoDelogo           bool      `json:"autoDelogo,omitempty"`
+	DelogoMode           string    `json:"delogoMode,omitempty"`
+	DelogoArea           *Area     `json:"delogoArea,omitempty"`
+	DelogoAreas          *[]Area   `json:"delogoAreas,omitempty"`
+	AutoCrop             bool      `json:"autoCrop,omitempty"`
+	Crop                 *Area     `json:"crop,omitempty"`
+	WatermarkIds         []string  `json:"watermarkIds,omitempty"`
+	Inserts              *[]Insert `json:"inserts,omitempty"`
+	DigitalWmSecretKeyId string    `json:"digitalWmSecretKeyId,omitempty"`
+	DigitalWmTextContent string    `json:"digitalWmTextContent,omitempty"`
 }
 
 type Area struct {
@@ -161,20 +163,22 @@ type ListPresetsResponse struct {
 }
 
 type Preset struct {
-	PresetName  string      `json:"presetName,omitempty"`
-	Description string      `json:"description,omitempty"`
-	Container   string      `json:"container,omitempty"`
-	Transmux    bool        `json:"transmux,omitempty"`
-	Clip        *Clip       `json:"clip,omitempty"`
-	Audio       *Audio      `json:"audio,omitempty"`
-	Video       *Video      `json:"video,omitempty"`
-	Encryption  *Encryption `json:"encryption,omitempty"`
-	WatermarkID string      `json:"watermarkId,omitempty"`
-	Watermarks  *Watermarks `json:"watermarks,omitempty"`
-	TransCfg    *TransCfg   `json:"transCfg,omitempty"`
-	ExtraCfg    *ExtraCfg   `json:"extraCfg,omitempty"`
-	State       string      `json:"state,omitempty"`
-	CreatedTime string      `json:"createdTime,omitempty"`
+	PresetName         string      `json:"presetName,omitempty"`
+	Description        string      `json:"description,omitempty"`
+	Container          string      `json:"container,omitempty"`
+	Transmux           bool        `json:"transmux,omitempty"`
+	Clip               *Clip       `json:"clip,omitempty"`
+	Audio              *Audio      `json:"audio,omitempty"`
+	Video              *Video      `json:"video,omitempty"`
+	Encryption         *Encryption `json:"encryption,omitempty"`
+	WatermarkID        string      `json:"watermarkId,omitempty"`
+	Watermarks         *Watermarks `json:"watermarks,omitempty"`
+	TransCfg           *TransCfg   `json:"transCfg,omitempty"`
+	ExtraCfg           *ExtraCfg   `json:"extraCfg,omitempty"`
+	State              string      `json:"state,omitempty"`
+	CreatedTime        string      `json:"createdTime,omitempty"`
+	DigitalWmId        string      `json:"digitalWmId,omitempty"`
+	DigitalWmSecretKey string      `json:"digitalWmSecretKey,omitempty"`
 }
 
 type Clip struct {
@@ -450,4 +454,127 @@ type CreateNotificationArgs struct {
 
 type ListNotificationsResponse struct {
 	Notifications []CreateNotificationArgs `json:"notifications"`
+}
+
+type DigitalWmPreset struct {
+	DigitalWmId   string `json:"digitalWmId,omitempty"`
+	Description   string `json:"description,omitempty"`
+	DigitalWmType string `json:"digitalWmType,omitempty"`
+	Bucket        string `json:"bucket,omitempty"`
+	Key           string `json:"key,omitempty"`
+	TextContent   string `json:"textContent,omitempty"`
+}
+
+type CreateDigitalWmPresetResponse struct {
+	WatermarkId string `json:"watermarkId,omitempty"`
+}
+
+type GetDigitalWmPresetResponse struct {
+	DigitalWmId   string `json:"digitalWmId,omitempty"`
+	Description   string `json:"description,omitempty"`
+	CreateTime    string `json:"createTime,omitempty"`
+	State         string `json:"state,omitempty"`
+	DigitalWmType string `json:"digitalWmType,omitempty"`
+	Bucket        string `json:"bucket,omitempty"`
+	Key           string `json:"key,omitempty"`
+	TextContent   string `json:"textContent,omitempty"`
+}
+
+type ListDigitalWmPresetResponse struct {
+	DigitalWatermarks []GetDigitalWmPresetResponse `json:"digitalWatermarks,omitempty"`
+}
+
+type DwmSecretkeyPreset struct {
+	DigitalWmSecretKeyId string `json:"digitalWmSecretKeyId,omitempty"`
+	Description          string `json:"description,omitempty"`
+	SecretKey            string `json:"secretKey,omitempty"`
+}
+
+type CreateDwmSecretkeyPresetResponse struct {
+	DigitalWmSecretKeyId string `json:"digitalWmSecretKeyId,omitempty"`
+}
+
+type GetDwmSecretkeyPresetResponse struct {
+	DigitalWmSecretKeyId string `json:"digitalWmSecretKeyId,omitempty"`
+	Description          string `json:"description,omitempty"`
+	CreateTime           string `json:"createTime,omitempty"`
+	State                string `json:"state,omitempty"`
+	SecretKey            string `json:"secretKey,omitempty"`
+}
+
+type ListDwmPresetSecretkeyResponse struct {
+	DwmPresetSecretkeys []GetDwmSecretkeyPresetResponse `json:"secretKeys,omitempty"`
+}
+
+type Dwmdetect struct {
+	PipelineName         string           `json:"pipelineName,omitempty"`
+	Source               *DwmSource       `json:"source,omitempty"`
+	Target               *DwmTarget       `json:"target,omitempty"`
+	DigitalWmType        string           `json:"digitalWmType,omitempty"`
+	DigitalWmSecretKeyId string           `json:"digitalWmSecretKeyId,omitempty"`
+	DigitalWmId          string           `json:"digitalWmId,omitempty"`
+	TextWmContent        string           `json:"textWmContent,omitempty"`
+	RefResolutions       []RefResolutions `json:"refResolutions,omitempty"`
+}
+
+type DwmSource struct {
+	Bucket string `json:"bucket,omitempty"`
+	Key    string `json:"key,omitempty"`
+	Url    string `json:"url,omitempty"`
+}
+
+type DwmTarget struct {
+	Bucket    string   `json:"bucket,omitempty"`
+	Key       string   `json:"key,omitempty"`
+	Keys      []string `json:"keys,omitempty"`
+	KeyPrefix string   `json:"keyPrefix,omitempty"`
+}
+
+type RefResolutions struct {
+	OriginalVideoWidth  int `json:"originalVideoWidth,omitempty"`
+	OriginalVideoHeight int `json:"originalVideoHeight,omitempty"`
+}
+
+type GetDwmdetectResponse struct {
+	Dwmdetect
+	JobId            string   `json:"jobId,omitempty"`
+	JobStatus        string   `json:"jobStatus,omitempty"`
+	CreateTime       string   `json:"createTime,omitempty"`
+	StartTime        string   `json:"startTime,omitempty"`
+	EndTime          string   `json:"endTime,omitempty"`
+	DetectFramesNum  int      `json:"detectFramesNum,omitempty"`
+	DetectedTexts    []string `json:"detectedTexts,omitempty"`
+	DetectSuccessNum int      `json:"detectSuccessNum,omitempty"`
+}
+
+type Imagedwm struct {
+	PipelineName     string     `json:"pipelineName,omitempty"`
+	Source           *DwmSource `json:"source,omitempty"`
+	Target           *DwmTarget `json:"target,omitempty"`
+	TaskType         string     `json:"taskType,omitempty"`
+	Strength         float64    `json:"strength,omitempty"`
+	DigitalWm        *DigitalWm `json:"digitalWm,omitempty"`
+	AlgorithmVersion int        `json:"algorithmVersion,omitempty"`
+}
+
+type DigitalWm struct {
+	ImageBucket string `json:"imageBucket,omitempty"`
+	ImageKey    string `json:"imageKey,omitempty"`
+	ImageUrl    string `json:"imageUrl,omitempty"`
+	TextContent string `json:"textContent,omitempty"`
+}
+
+type GetImagedwmResponse struct {
+	JobId string `json:"jobId,omitempty"`
+	Imagedwm
+	JobStatus  string   `json:"jobStatus,omitempty"`
+	CreateTime string   `json:"createTime,omitempty"`
+	StartTime  string   `json:"startTime,omitempty"`
+	EndTime    string   `json:"endTime,omitempty"`
+	Error      JobError `json:"error,omitempty"`
+}
+
+type JobError struct {
+	Code    string `json:"code,omitempty"`
+	Message string `json:"message,omitempty"`
 }

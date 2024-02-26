@@ -302,7 +302,7 @@ ExpireSeconds | int   | 签名字符串的有效期
 ```go
 	name := "test-user-sdk-go-login-profile"
 	args := &api.UpdateUserLoginProfileArgs{
-		Password:        "1@3Qwe4f",
+		Password:        "xxxx",
 		EnabledLoginMfa: false,
 		LoginMfaType:    "PHONE",
 	}
@@ -891,7 +891,7 @@ if err != nil {
 通过以下代码修改子用户密码
 ```go
     userName := "test-user-name-sdk-go-sub-update"
-    Password := "Baidu@123"
+    Password := "xxxxx"
     args := &api.UpdateSubUserArgs{
         Password: Password,
     }

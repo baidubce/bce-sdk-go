@@ -22,7 +22,7 @@ var (
 	ORDERID    string
 	// set this value before start test
 	ACCOUNT_NAME = "baidu"
-	PASSWORD     = "baidu@123"
+	PASSWORD     = "xxxxxx"
 )
 
 // For security reason, ak/sk should not hard write here.

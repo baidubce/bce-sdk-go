@@ -124,7 +124,7 @@ func TestUpdateGetDeleteUserLoginProfile(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 
 	updateArgs := &api.UpdateUserLoginProfileArgs{
-		Password:        "1@3Qwe4f",
+		Password:        "xxxxxx",
 		EnabledLoginMfa: true,
 		LoginMfaType:    "PHONE",
 	}
@@ -579,7 +579,7 @@ func TestUserOperationMfaSwitch(t *testing.T) {
 
 func TestSubUserUpdate(t *testing.T) {
 	userName := "test-user-name-sdk-go-sub-update"
-	Password := "Baidu@123"
+	Password := "xxxxx"
 	args := &api.UpdateSubUserArgs{
 		Password: Password,
 	}

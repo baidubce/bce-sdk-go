@@ -230,3 +230,76 @@ func (cli *Client) ListNotification() (*api.ListNotificationsResponse, error) {
 func (cli *Client) DeleteNotification(name string) error {
 	return api.DeleteNotification(cli, name)
 }
+
+// create DigitalWaterMarke Preset with customize params
+func (cli *Client) CreateDigitalWmPreset(preset *api.DigitalWmPreset) (*api.CreateDigitalWmPresetResponse, error) {
+	return api.CreateDigitalWmPreset(cli, preset)
+}
+
+// create DigitalWaterMarke image Preset
+func (cli *Client) CreateDigitalWmImagePreset(digitalWmId string, description string, bucket string, key string,
+) (*api.CreateDigitalWmPresetResponse, error) {
+	return api.CreateDigitalWmImagePreset(cli, digitalWmId, description, bucket, key)
+}
+
+// create DigitalWaterMarke text Preset
+func (cli *Client) CreateDigitalWmTextPreset(digitalWmId string, description string,
+	textContent string) (*api.CreateDigitalWmPresetResponse, error) {
+	return api.CreateDigitalWmTextPreset(cli, digitalWmId, description, textContent)
+}
+
+// get DigitalWmPreset by digitalWmId
+func (cli *Client) GetDigitalWmPreset(digitalWmId string) (*api.GetDigitalWmPresetResponse, error) {
+	return api.GetDigitalWmPreset(cli, digitalWmId)
+}
+
+// list all DigitalWmPreset
+func (cli *Client) ListDigitalWmPreset() (*api.ListDigitalWmPresetResponse, error) {
+	return api.ListDigitalWmPreset(cli)
+}
+
+// delete DigitalWmPreset by digitalWmId
+func (cli *Client) DeleteDigitalWmPreset(digitalWmId string) error {
+	return api.DeleteDigitalWmPreset(cli, digitalWmId)
+}
+
+// create digitalwatermark secretkey preset
+func (cli *Client) CreateDwmSecretkeyPreset(preset *api.DwmSecretkeyPreset) (*api.CreateDwmSecretkeyPresetResponse,
+	error) {
+	return api.CreateDwmSecretkeyPreset(cli, preset)
+}
+
+// get digitalwatermark preset
+func (cli *Client) GetDwmSecretkeyPreset(digitalWmSecretKeyId string) (*api.GetDwmSecretkeyPresetResponse, error) {
+	return api.GetDwmSecretkeyPreset(cli, digitalWmSecretKeyId)
+}
+
+// list digitalwatermark secretkey presets
+func (cli *Client) ListDwmSecretkeyPresets() (*api.ListDwmPresetSecretkeyResponse, error) {
+	return api.ListDwmSecretkeyPresets(cli)
+}
+
+// delete digitalwatermark secretkey presets
+func (cli *Client) DeleteDwmSecretkeyPreset(digitalWmSecretKeyId string) error {
+	return api.DeleteDwmSecretkeyPreset(cli, digitalWmSecretKeyId)
+}
+
+// create digital detect job
+func (cli *Client) CreateDwmDetectJob(dwmdetect *api.Dwmdetect) (*api.CreateJobResponse, error) {
+	return api.CreateDwmDetectJob(cli, dwmdetect)
+}
+
+// get digital detect job result
+func (cli *Client) GetDwmdetectResult(jobId string) (*api.GetDwmdetectResponse, error) {
+	return api.GetDwmdetectResult(cli, jobId)
+}
+
+// create image digitalwatermark job or image digitalwatermark detect job
+func (cli *Client) CreateImagedwmJob(digitalWm *api.Imagedwm) (*api.CreateJobResponse, error) {
+	return api.CreateImagedwmJob(cli, digitalWm)
+}
+
+// get digitalwatermark job result or image digitalwatermark detect job result
+func (cli *Client) GetImagedwmResult(jobId string) (*api.GetImagedwmResponse, error) {
+	return api.GetImagedwmResult(cli, jobId)
+}

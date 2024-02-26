@@ -151,6 +151,7 @@ type InstanceModel struct {
 	DeploySetList         []DeploySetSimpleModel `json:"deploysetList"`
 	DeletionProtection    int                    `json:"deletionProtection"`
 	NetEthQueueCount      string                 `json:"netEthQueueCount"`
+	Volumes               []VolumeModel          `json:"volumes"`
 }
 
 type DeploySetSimpleModel struct {
@@ -971,16 +972,16 @@ type DeleteInstanceWithRelateResourceArgs struct {
 }
 
 type DeletePrepaidInstanceWithRelateResourceArgs struct {
-	InstanceId             string                     `json:"instanceId"`
-	RelatedReleaseFlag    bool `json:"relatedReleaseFlag"`
-	DeleteCdsSnapshotFlag bool `json:"deleteCdsSnapshotFlag"`
-	DeleteRelatedEnisFlag bool `json:"deleteRelatedEnisFlag"`
+	InstanceId            string `json:"instanceId"`
+	RelatedReleaseFlag    bool   `json:"relatedReleaseFlag"`
+	DeleteCdsSnapshotFlag bool   `json:"deleteCdsSnapshotFlag"`
+	DeleteRelatedEnisFlag bool   `json:"deleteRelatedEnisFlag"`
 }
 
 type ReleasePrepaidInstanceResponse struct {
 	SuccessResources   InstanceDeleteResultModel `json:"successResources"`
 	FailResources      InstanceDeleteResultModel `json:"failResources"`
-	InstanceRefundFlag bool                        `json:"instanceRefundFlag"`
+	InstanceRefundFlag bool                      `json:"instanceRefundFlag"`
 }
 
 type InstanceDeleteResultModel struct {
@@ -1132,6 +1133,7 @@ type VolumeModel struct {
 	PaymentTiming      string                   `json:"paymentTiming"`
 	ExpireTime         string                   `json:"expireTime"`
 	Status             VolumeStatus             `json:"status"`
+	EbcDiskSize        int                      `json:"ebcDiskSize"`
 	Desc               string                   `json:"desc"`
 	Attachments        []VolumeAttachmentModel  `json:"attachments"`
 	ZoneName           string                   `json:"zoneName"`
@@ -1149,6 +1151,7 @@ type VolumeModel struct {
 	RoleName           string                   `json:"roleName"`
 	CreatedFrom        string                   `json:"createdFrom"`
 	ReleaseTime        string                   `json:"releaseTime"`
+	VolumeId           string                   `json:"volumeId"`
 }
 
 type VolumeModelV3 struct {

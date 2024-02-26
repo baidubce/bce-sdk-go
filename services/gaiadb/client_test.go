@@ -19,7 +19,7 @@ var (
 	ORDERID       string
 	// set this value before start test
 	ACCOUNT_NAME = "baidu"
-	PASSWORD     = "baidu@123"
+	PASSWORD     = "xxxxxx"
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -276,7 +276,7 @@ func TestClient_NewInstanceAutoJoin(t *testing.T) {
 func TestClient_CreateAccount(t *testing.T) {
 	args := &CreateAccountArgs{
 		AccountName: "testaccount",
-		Password:    "baidu@123",
+		Password:    "xxxxxx",
 		AccountType: "common",
 		Remark:      "testRemark",
 	}

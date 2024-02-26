@@ -1,4 +1,4 @@
-package as
+package oos
 
 import (
 	"strings"
@@ -9,22 +9,16 @@ import (
 )
 
 const (
-	ProductName        = "as"
+	ProductName        = "oos"
 	DefaultBcmEndpoint = ProductName + "." + bce.DEFAULT_REGION + "." + bce.DEFAULT_DOMAIN
-	VERSION_1_URL      = "v1"
-	VERSION_2_URL      = "v2"
-	AS_GROUP_URL       = "group"
-	AS_NODE_URL        = "node"
-	AS_DETAIL_URL      = "detail"
-	AS_DELETE_URL      = "delete"
 )
 
-// Client of BCM service is a kind of BceClient, so derived from BceClient
+// Client of OOS service is a kind of BceClient, so derived from BceClient
 type Client struct {
 	*bce.BceClient
 }
 
-// NewClient make the as service client with default configuration.
+// NewClient make the oos service client with default configuration.
 // Use `cli.Config.xxx` to access the config or change it to non-default value.
 func NewClient(ak, sk, endpoint string) (*Client, error) {
 	credentials, err := auth.NewBceCredentials(ak, sk)
@@ -52,24 +46,4 @@ func NewClient(ak, sk, endpoint string) (*Client, error) {
 	v1Signer := &auth.BceV1Signer{}
 	client := &Client{bce.NewBceClient(defaultConf, v1Signer)}
 	return client, nil
-}
-
-func getAsGroupListUri() string {
-	return "/" + VERSION_1_URL + "/" + AS_GROUP_URL
-}
-
-func getAsGroupDetailUri(groupId string) string {
-	return "/" + VERSION_1_URL + "/" + AS_GROUP_URL + "/" + AS_DETAIL_URL + "/" + groupId
-}
-
-func getAsGroupUri(groupId string) string {
-	return "/" + VERSION_1_URL + "/" + AS_GROUP_URL + "/" + groupId
-}
-
-func getAsNodeUri() string {
-	return "/" + VERSION_1_URL + "/" + AS_NODE_URL
-}
-
-func getAsGroupDeleteUri() string {
-	return "/" + VERSION_1_URL + "/" + AS_GROUP_URL + "/" + AS_DELETE_URL
 }
