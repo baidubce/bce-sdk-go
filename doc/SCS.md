@@ -227,7 +227,7 @@ ExpireSeconds | int   | 签名字符串的有效期
 ```go
 args := &scs.CreateInstanceArgs{
     // 选择付款方式，可以选择预付费或后付费 
-    Billing: api.Billing{
+    Billing: scs.Billing{
         PaymentTiming: api.PaymentTimingPostPaid,
     },
     // 购买个数，最大不超过10，默认1
@@ -239,8 +239,8 @@ args := &scs.CreateInstanceArgs{
 	Port:          6379,
     // 引擎
     Engine: 2, // redis: 2   PegaDB: 3
-    // 引擎版本，集群：3.2、4.0、5.0 主从：2.8、3.2、4.0、5.0  当Engine为3时，可不传
-	EngineVersion: "3.2",
+    // 引擎版本，集群：4.0、5.0、6.0 主从：4.0、5.0、6.0、7.0  当Engine为3时，可不传
+	EngineVersion: "5.0",
     // 存储空间 当Engine为3时添加
     // DiskFlavor:     60,
     // 磁盘类型 当Engine为3时添加目前支持cds  essd两个类型
@@ -249,7 +249,33 @@ args := &scs.CreateInstanceArgs{
 	NodeType:      "cache.n1.micro",
     // 集群类型，集群版："cluster"，主从版："master_slave"
 	ClusterType:   "master_slave",
-    // 副本个数，单副本为1，双副本为2，多副本依此类推
+	// 私有网络VPCID，可不传。不传时自动指定为默认vpcId，子网为默认子网；若指定了vpcId，则需要指定Subnets字段
+    VpcID:          "vpc-3mrcjz05yjkr",
+	// 子网信息。ZoneName：可用区，SubnetID：子网ID。
+	// 如果指定了VpcID，则该字段必传；如果不指定VpcID，该字段不传
+    Subnets: []scs.Subnet{
+        {
+			ZoneName: "cn-bj-d",
+            SubnetID: "sbn-050kcmvn09vr",
+        },
+    },
+	// 副本信息。AvailabilityZone：可用区，SubnetId：子网ID，IsMaster：主节点（1）从节点（0），有且仅有一个主节点
+	// 该值可不传，不传时创建实例的副本数和ReplicationNum保持一致
+	// 如果不传该字段，指定了Subnets字段，则副本信息以Subnets为准，并取第一个数据指定为主节点
+	// 如果指定该字段，则该字段副本数量需和ReplicationNum保持一致
+    ReplicationInfo: []scs.Replication{
+        {
+            AvailabilityZone: "cn-bj-d",
+            SubnetId:         "sbn-050kcmvn09vr",
+            IsMaster:         1,
+        },
+        {
+            AvailabilityZone: "cn-bj-e",
+            SubnetId:         "sbn-vj8syi4zqviw",
+            IsMaster:         0,
+        },
+    },
+    // 副本个数，单副本为1，双副本为2，多副本依此类推，副本数不能超过10
 	ReplicationNum:  1,
     // 分片个数
 	ShardNum:      1,
@@ -261,12 +287,20 @@ args := &scs.CreateInstanceArgs{
     // EnableReadOnly: 1,
     // 资源分组ID，可不传
     ResourceGroupId: "",
+	// 标签，该值可不传。
+	// 如果传该值，则指定需要绑定的标签，如果该标签不存在，则自动生成新标签
+    Tags: []model.TagModel{
+        {
+            TagValue: "scs-test",
+            TagKey:   "sdk",
+        },
+    },
 }
 
 // 若要生成预付费实例，可以按以下配置生成一个月的预付费实例
-args.Billing = api.Billing{
+args.Billing = scs.Billing{
 		PaymentTiming: api.PaymentTimingPrePaid,
-		Reservation: &api.Reservation{
+		Reservation: &scs.Reservation{
             ReservationLength:   1,
             ReservationTimeUnit: "month",
         }
@@ -869,7 +903,7 @@ fmt.Println("list security group by instanceId success.")
 ```
 
 ## 绑定安全组
-使用以下代码可以批量将指定的安全组绑定到实例上。
+使用以下代码可以批量将指定的安全组绑定到实例上。实例已经绑定过的安全组不能重复绑定。
 ```go
 
 // instanceIds := []string{

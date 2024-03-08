@@ -289,6 +289,8 @@ args := &rds.CreateRdsArgs{
             TagValue: "tagV",
         },
     },
+    // 实例绑定的资源分组，可选
+    ResourceGroupId: "RESG-gNjxxxxxx",
 }
 result, err := client.CreateRds(args)
 if err != nil {
@@ -344,13 +346,8 @@ args := &rds.CreateReadReplicaArgs{
             SubnetId: "sbn-IyWRnII7",
         },   
     },
-    // 实例绑定的标签信息，可选
-    Tags: []model.TagModel{
-        {
-            TagKey:   "tagK",
-            TagValue: "tagV",
-        },
-    },
+    // 实例绑定的资源分组，可选
+    ResourceGroupId: "RESG-gNjxxxxxx",
 }
 result, err := client.CreateReadReplica(args)
 if err != nil {
@@ -404,13 +401,8 @@ args := &rds.CreateRdsProxyArgs{
             SubnetId: "sbn-IyWRnII7",
         },   
     },
-    // 实例绑定的标签信息，可选
-    Tags: []model.TagModel{
-        {
-            TagKey:   "tagK",
-            TagValue: "tagV",
-        },
-    },
+    // 实例绑定的资源分组，可选
+    ResourceGroupId: "RESG-gNjxxxxxx",
 }
 result, err := client.CreateRdsProxy(args)
 if err != nil {

@@ -49,7 +49,7 @@ type Interface interface {
 	UpdateInstanceCRD(args *UpdateInstanceCRDRequest) (*CommonResponse, error)
 }
 
-//CreateCluterArgs为后续支持clientToken预留空间
+// CreateClusterArgs 为后续支持clientToken预留空间
 type CreateClusterArgs struct {
 	CreateClusterRequest *CreateClusterRequest
 }
@@ -58,6 +58,7 @@ type DeleteClusterArgs struct {
 	ClusterID         string
 	DeleteResource    bool
 	DeleteCDSSnapshot bool
+	MoveOut           bool
 }
 
 type ListClustersArgs struct {
@@ -97,14 +98,51 @@ type ListInstancesByPageArgs struct {
 
 // CreateClusterRequest - 创建 Cluster 参数
 type CreateClusterRequest struct {
-	ClusterSpec *types.ClusterSpec `json:"cluster"`
-	MasterSpecs []*InstanceSet     `json:"masters,omitempty"`
-	NodeSpecs   []*InstanceSet     `json:"nodes,omitempty"`
+	ClusterSpec *types.ClusterSpec   `json:"cluster"`
+	MasterSpecs []*InstanceSet       `json:"masters,omitempty"`
+	NodeSpecs   []*InstanceSet       `json:"nodes,omitempty"`
+	Options     CreateClusterOptions `json:"options"`
 }
-
+type CreateClusterOptions struct {
+	SkipNetworkCheck *bool `json:"skipNetworkCheck"`
+}
 type InstanceSet struct {
 	InstanceSpec types.InstanceSpec `json:"instanceSpec"`
 	Count        int                `json:"count"`
+}
+
+// GetEventStepsResponse 查询 Cluster/Instance 创建/删除 返回
+type GetEventStepsResponse struct {
+	Status    string  `json:"status"`
+	Steps     []*Step `json:"steps"`
+	RequestID string  `json:"requestID"`
+}
+
+// Step - 集群操作步骤
+type Step struct {
+	StepName   string `json:"stepName"`
+	StepStatus string `json:"stepStatus"`
+	StepInfo
+}
+
+// StepInfo - 步骤信息
+type StepInfo struct {
+	Ready        bool              `json:"ready,omitempty"`
+	StartTime    time.Time         `json:"startTime,omitempty"`    // 第一次开始时间
+	FinishedTime time.Time         `json:"finishedTime,omitempty"` // 最后一次成功时间
+	CostSeconds  int               `json:"costSeconds,omitempty"`  // 花费时间
+	RetryCount   int               `json:"retryCount,omitempty"`   // 重试次数
+	TraceID      string            `json:"traceID,omitempty"`      // cce 侧 requestID, errorInfo 暴露后，去除该字段
+	ErrMsg       string            `json:"errMsg,omitempty"`       // 失败信息
+	ErrorInfo    ReconcileResponse `json:"errInfo,omitempty"`      // 失败信息
+}
+
+// ReconcileResponse controller reconcile 流程中暴露出去的信息
+type ReconcileResponse struct {
+	Code       string `json:"code,omitempty"`
+	Message    string `json:"message,omitempty"`
+	TraceID    string `json:"traceID,omitempty"` // message里可能有底层返回的requestID，这里用TraceID作区分
+	Suggestion string `json:"suggestion,omitempty"`
 }
 
 // ListInstancesByPageParams - 分页查询集群实例列表参数
@@ -717,6 +755,9 @@ type ClusterAutoscalerConfig struct {
 	SkipNodesWithSystemPods *bool `json:"skipNodesWithSystemPods,omitempty"`
 	// supported: random, most-pods, least-waste, priority; default: random
 	Expander string `json:"expander"`
+
+	// 可选，支持保留用户自定义配置
+	CustomConfigs map[string]string `json:"customConfigs,omitempty"`
 }
 
 type ClusterAutoscalerInstanceGroup struct {

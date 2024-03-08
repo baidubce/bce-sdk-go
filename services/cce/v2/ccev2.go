@@ -36,7 +36,22 @@ func (c *Client) CreateCluster(args *CreateClusterArgs) (*CreateClusterResponse,
 	return result, err
 }
 
-//删除集群
+// GetClusterEventSteps 获取集群事件详情
+func (c *Client) GetClusterEventSteps(clusterID string) (*GetEventStepsResponse, error) {
+	if clusterID == "" {
+		return nil, fmt.Errorf("cluster is empty")
+	}
+	result := &GetEventStepsResponse{}
+	bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getClusterEventStepsURI(clusterID)).WithResult(result).
+		Do()
+
+	return result, nil
+
+}
+
+// DeleteCluster 删除集群
 func (c *Client) DeleteCluster(args *DeleteClusterArgs) (*DeleteClusterResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -48,13 +63,14 @@ func (c *Client) DeleteCluster(args *DeleteClusterArgs) (*DeleteClusterResponse,
 		WithURL(getClusterUriWithIDURI(args.ClusterID)).
 		WithQueryParamFilter("deleteResource", strconv.FormatBool(args.DeleteResource)).
 		WithQueryParamFilter("deleteCDSSnapshot", strconv.FormatBool(args.DeleteCDSSnapshot)).
+		WithQueryParamFilter("moveOut", strconv.FormatBool(args.MoveOut)).
 		WithResult(result).
 		Do()
 
 	return result, err
 }
 
-//获得集群详情
+// 获得集群详情
 func (c *Client) GetCluster(clusterID string) (*GetClusterResponse, error) {
 	if clusterID == "" {
 		return nil, fmt.Errorf("clusterID is empty")
@@ -70,7 +86,7 @@ func (c *Client) GetCluster(clusterID string) (*GetClusterResponse, error) {
 	return result, err
 }
 
-//集群列表
+// 集群列表
 func (c *Client) ListClusters(args *ListClustersArgs) (*ListClustersResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -95,7 +111,7 @@ func (c *Client) ListClusters(args *ListClustersArgs) (*ListClustersResponse, er
 	return result, err
 }
 
-//创建节点（扩容）
+// 创建节点（扩容）
 func (c *Client) CreateInstances(args *CreateInstancesArgs) (*CreateInstancesResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -120,7 +136,7 @@ func (c *Client) CreateInstances(args *CreateInstancesArgs) (*CreateInstancesRes
 	return result, err
 }
 
-//查询节点
+// 查询节点
 func (c *Client) GetInstance(args *GetInstanceArgs) (*GetInstanceResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -136,7 +152,7 @@ func (c *Client) GetInstance(args *GetInstanceArgs) (*GetInstanceResponse, error
 	return result, err
 }
 
-//更新节点配置
+// 更新节点配置
 func (c *Client) UpdateInstance(args *UpdateInstanceArgs) (*UpdateInstancesResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -153,7 +169,7 @@ func (c *Client) UpdateInstance(args *UpdateInstanceArgs) (*UpdateInstancesRespo
 	return result, err
 }
 
-//删除节点（缩容）
+// 删除节点（缩容）
 func (c *Client) DeleteInstances(args *DeleteInstancesArgs) (*DeleteInstancesResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -170,7 +186,7 @@ func (c *Client) DeleteInstances(args *DeleteInstancesArgs) (*DeleteInstancesRes
 	return result, err
 }
 
-//集群内节点列表
+// 集群内节点列表
 func (c *Client) ListInstancesByPage(args *ListInstancesByPageArgs) (*ListInstancesResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -192,7 +208,7 @@ func (c *Client) ListInstancesByPage(args *ListInstancesByPageArgs) (*ListInstan
 	return result, err
 }
 
-//检查容器网络网段
+// 检查容器网络网段
 func (c *Client) CheckContainerNetworkCIDR(args *CheckContainerNetworkCIDRArgs) (*CheckContainerNetworkCIDRResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("CheckContainerNetworkCIDRRequest is nil")
@@ -209,7 +225,7 @@ func (c *Client) CheckContainerNetworkCIDR(args *CheckContainerNetworkCIDRArgs) 
 	return result, err
 }
 
-//检查集群网络网段
+// 检查集群网络网段
 func (c *Client) CheckClusterIPCIDR(args *CheckClusterIPCIDRArgs) (*CheckClusterIPCIDRResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -226,7 +242,7 @@ func (c *Client) CheckClusterIPCIDR(args *CheckClusterIPCIDRArgs) (*CheckCluster
 	return result, err
 }
 
-//推荐容器CIDR
+// 推荐容器CIDR
 func (c *Client) RecommendContainerCIDR(args *RecommendContainerCIDRArgs) (*RecommendContainerCIDRResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -243,7 +259,7 @@ func (c *Client) RecommendContainerCIDR(args *RecommendContainerCIDRArgs) (*Reco
 	return result, err
 }
 
-//推荐集群CIDR
+// 推荐集群CIDR
 func (c *Client) RecommendClusterIPCIDR(args *RecommendClusterIPCIDRArgs) (*RecommendClusterIPCIDRResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -260,7 +276,7 @@ func (c *Client) RecommendClusterIPCIDR(args *RecommendClusterIPCIDRArgs) (*Reco
 	return result, err
 }
 
-//用户集群 Quota
+// 用户集群 Quota
 func (c *Client) GetClusterQuota() (*GetQuotaResponse, error) {
 	result := &GetQuotaResponse{}
 	err := bce.NewRequestBuilder(c).
@@ -272,7 +288,7 @@ func (c *Client) GetClusterQuota() (*GetQuotaResponse, error) {
 	return result, err
 }
 
-//用户集群 Node Quota
+// 用户集群 Node Quota
 func (c *Client) GetClusterNodeQuota(clusterID string) (*GetQuotaResponse, error) {
 	if clusterID == "" {
 		return nil, fmt.Errorf("clusterID is empty")
@@ -288,7 +304,7 @@ func (c *Client) GetClusterNodeQuota(clusterID string) (*GetQuotaResponse, error
 	return result, err
 }
 
-//创建节点组
+// 创建节点组
 func (c *Client) CreateInstanceGroup(args *CreateInstanceGroupArgs) (*CreateInstanceGroupResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -307,7 +323,7 @@ func (c *Client) CreateInstanceGroup(args *CreateInstanceGroupArgs) (*CreateInst
 	return result, err
 }
 
-//获取节点组列表
+// 获取节点组列表
 func (c *Client) ListInstanceGroups(args *ListInstanceGroupsArgs) (*ListInstanceGroupResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -325,7 +341,7 @@ func (c *Client) ListInstanceGroups(args *ListInstanceGroupsArgs) (*ListInstance
 	return result, err
 }
 
-//获取节点组的节点列表
+// 获取节点组的节点列表
 func (c *Client) ListInstancesByInstanceGroupID(args *ListInstanceByInstanceGroupIDArgs) (*ListInstancesByInstanceGroupIDResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -343,7 +359,7 @@ func (c *Client) ListInstancesByInstanceGroupID(args *ListInstanceByInstanceGrou
 	return result, err
 }
 
-//获取节点组详情
+// 获取节点组详情
 func (c *Client) GetInstanceGroup(args *GetInstanceGroupArgs) (*GetInstanceGroupResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -359,7 +375,7 @@ func (c *Client) GetInstanceGroup(args *GetInstanceGroupArgs) (*GetInstanceGroup
 	return result, err
 }
 
-//更新节点组副本数
+// 更新节点组副本数
 func (c *Client) UpdateInstanceGroupReplicas(args *UpdateInstanceGroupReplicasArgs) (*UpdateInstanceGroupReplicasResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -376,7 +392,7 @@ func (c *Client) UpdateInstanceGroupReplicas(args *UpdateInstanceGroupReplicasAr
 	return result, err
 }
 
-//修改节点组节点Autoscaler配置
+// 修改节点组节点Autoscaler配置
 func (c *Client) UpdateInstanceGroupClusterAutoscalerSpec(args *UpdateInstanceGroupClusterAutoscalerSpecArgs) (*UpdateInstanceGroupClusterAutoscalerSpecResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -404,7 +420,7 @@ func (c *Client) UpdateInstanceGroupClusterAutoscalerSpec(args *UpdateInstanceGr
 	return result, err
 }
 
-//删除节点组
+// 删除节点组
 func (c *Client) DeleteInstanceGroup(args *DeleteInstanceGroupArgs) (*DeleteInstanceGroupResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -422,7 +438,7 @@ func (c *Client) DeleteInstanceGroup(args *DeleteInstanceGroupArgs) (*DeleteInst
 	return result, err
 }
 
-//创建autoscaler配置
+// 创建autoscaler配置
 func (c *Client) CreateAutoscaler(args *CreateAutoscalerArgs) (*CreateAutoscalerResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -438,7 +454,7 @@ func (c *Client) CreateAutoscaler(args *CreateAutoscalerArgs) (*CreateAutoscaler
 	return result, err
 }
 
-//查询autoscaler配置
+// GetAutoscaler 查询autoscaler配置
 func (c *Client) GetAutoscaler(args *GetAutoscalerArgs) (*GetAutoscalerResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -454,7 +470,7 @@ func (c *Client) GetAutoscaler(args *GetAutoscalerArgs) (*GetAutoscalerResponse,
 	return result, err
 }
 
-//更新autoscaler配置
+// 更新autoscaler配置
 func (c *Client) UpdateAutoscaler(args *UpdateAutoscalerArgs) (*UpdateAutoscalerResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
@@ -471,7 +487,7 @@ func (c *Client) UpdateAutoscaler(args *UpdateAutoscalerArgs) (*UpdateAutoscaler
 	return result, err
 }
 
-//获取kubeconfig
+// 获取kubeconfig
 func (c *Client) GetKubeConfig(args *GetKubeConfigArgs) (*GetKubeConfigResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")

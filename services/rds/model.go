@@ -187,7 +187,9 @@ type Instance struct {
 	MaintainDuration     int              `json:"maintainDuration"`
 	HaStrategy           int              `json:"haStrategy"`
 	VpcName              string           `json:"vpcName"`
-	Tag                  []model.TagModel `json:"tag"`
+	Tags                 []model.TagModel `json:"tags"`
+	ResourceGroupId      string           `json:"resourceGroupId"`
+	ResourceGroupName    string           `json:"resourceGroupName"`
 }
 
 type ListRdsResult struct {

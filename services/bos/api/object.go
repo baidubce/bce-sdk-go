@@ -41,10 +41,11 @@ import (
 //     - string: the etag of the object
 //     - error: nil if ok otherwise the specific error
 func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
-	args *PutObjectArgs) (string, error) {
+	args *PutObjectArgs, ctx *BosContext) (string, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetMethod(http.PUT)
+	ctx.Bucket = bucket
 	if body == nil {
 		return "", bce.NewBceClientError("PutObject body should not be emtpy")
 	}
@@ -107,6 +108,11 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 		if len(args.Process) != 0 {
 			req.SetHeader(http.BCE_PROCESS, args.Process)
 		}
+		if len(args.CannedAcl) != 0 {
+			if validCannedAcl(args.CannedAcl) {
+				req.SetHeader(http.BCE_ACL, args.CannedAcl)
+			}
+		}
 	}
 	// add content-type if not assigned by user
 	if req.Header(http.CONTENT_TYPE) == "" {
@@ -114,7 +120,7 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 	}
 
 	resp := &bce.BceResponse{}
-	if err := SendRequest(cli, req, resp); err != nil {
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
 		return "", err
 	}
 	if resp.IsFail() {
@@ -137,10 +143,11 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 //     - *CopyObjectResult: the result object which contains etag and lastmodified
 //     - error: nil if ok otherwise the specific error
 func CopyObject(cli bce.Client, bucket, object, source string,
-	args *CopyObjectArgs) (*CopyObjectResult, error) {
+	args *CopyObjectArgs, ctx *BosContext) (*CopyObjectResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetMethod(http.PUT)
+	ctx.Bucket = bucket
 	if len(source) == 0 {
 		return nil, bce.NewBceClientError("copy source should not be null")
 	}
@@ -205,7 +212,7 @@ func CopyObject(cli bce.Client, bucket, object, source string,
 
 	// Send request and get the result
 	resp := &bce.BceResponse{}
-	if err := SendRequest(cli, req, resp); err != nil {
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -229,7 +236,7 @@ func CopyObject(cli bce.Client, bucket, object, source string,
 // RETURNS:
 //     - *GetObjectResult: the output content result of the object
 //     - error: nil if ok otherwise the specific error
-func GetObject(cli bce.Client, bucket, object string, args map[string]string, // nolint:gocyclo
+func GetObject(cli bce.Client, bucket, object string, ctx *BosContext, args map[string]string, // nolint:gocyclo
 	ranges ...int64) (*GetObjectResult, error) {
 
 	if object == "" {
@@ -239,7 +246,7 @@ func GetObject(cli bce.Client, bucket, object string, args map[string]string, //
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetMethod(http.GET)
-
+	ctx.Bucket = bucket
 	// Optional arguments settings
 	if args != nil {
 		for k, v := range args {
@@ -263,7 +270,7 @@ func GetObject(cli bce.Client, bucket, object string, args map[string]string, //
 
 	// Send request and get the result
 	resp := &bce.BceResponse{}
-	if err := SendRequest(cli, req, resp); err != nil {
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -343,14 +350,14 @@ func GetObject(cli bce.Client, bucket, object string, args map[string]string, //
 // RETURNS:
 //     - *GetObjectMetaResult: the result of this api
 //     - error: nil if ok otherwise the specific error
-func GetObjectMeta(cli bce.Client, bucket, object string) (*GetObjectMetaResult, error) {
+func GetObjectMeta(cli bce.Client, bucket, object string, ctx *BosContext) (*GetObjectMetaResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetMethod(http.HEAD)
-
+	ctx.Bucket = bucket
 	// Send request and get the result
 	resp := &bce.BceResponse{}
-	if err := SendRequest(cli, req, resp); err != nil {
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -434,13 +441,13 @@ func GetObjectMeta(cli bce.Client, bucket, object string) (*GetObjectMetaResult,
 // RETURNS:
 //     - *SelectObjectResult: the output select content result of the object
 //     - error: nil if ok otherwise the specific error
-func SelectObject(cli bce.Client, bucket, object string, args *SelectObjectArgs) (*SelectObjectResult, error) {
+func SelectObject(cli bce.Client, bucket, object string, args *SelectObjectArgs, ctx *BosContext) (*SelectObjectResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetMethod(http.POST)
 	req.SetParam("select", "")
 	req.SetParam("type", args.SelectType)
-
+	ctx.Bucket = bucket
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
 		return nil, jsonErr
@@ -453,7 +460,7 @@ func SelectObject(cli bce.Client, bucket, object string, args *SelectObjectArgs)
 
 	// Send request and get the result
 	resp := &bce.BceResponse{}
-	if err := SendRequest(cli, req, resp); err != nil {
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -478,11 +485,12 @@ func SelectObject(cli bce.Client, bucket, object string, args *SelectObjectArgs)
 //     - *FetchObjectArgs: the result of this api
 //     - error: nil if ok otherwise the specific error
 func FetchObject(cli bce.Client, bucket, object, source string,
-	args *FetchObjectArgs) (*FetchObjectResult, error) {
+	args *FetchObjectArgs, ctx *BosContext) (*FetchObjectResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetMethod(http.POST)
 	req.SetParam("fetch", "")
+	ctx.Bucket = bucket
 	if len(source) == 0 {
 		return nil, bce.NewBceClientError("invalid fetch source value: " + source)
 	}
@@ -509,7 +517,7 @@ func FetchObject(cli bce.Client, bucket, object, source string,
 
 	// Send request and get the result
 	resp := &bce.BceResponse{}
-	if err := SendRequest(cli, req, resp); err != nil {
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -534,11 +542,12 @@ func FetchObject(cli bce.Client, bucket, object, source string,
 //     - *AppendObjectResult: the result status for this api
 //     - error: nil if ok otherwise the specific error
 func AppendObject(cli bce.Client, bucket, object string, content *bce.Body,
-	args *AppendObjectArgs) (*AppendObjectResult, error) {
+	args *AppendObjectArgs, ctx *BosContext) (*AppendObjectResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetMethod(http.POST)
 	req.SetParam("append", "")
+	ctx.Bucket = bucket
 	if content == nil {
 		return nil, bce.NewBceClientError("AppendObject body should not be emtpy")
 	}
@@ -588,7 +597,7 @@ func AppendObject(cli bce.Client, bucket, object string, content *bce.Body,
 
 	// Send request and get the result
 	resp := &bce.BceResponse{}
-	if err := SendRequest(cli, req, resp); err != nil {
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -626,13 +635,13 @@ func AppendObject(cli bce.Client, bucket, object string, content *bce.Body,
 //     - object: the name of the object
 // RETURNS:
 //     - error: nil if ok otherwise the specific error
-func DeleteObject(cli bce.Client, bucket, object string) error {
+func DeleteObject(cli bce.Client, bucket, object string, ctx *BosContext) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetMethod(http.DELETE)
-
+	ctx.Bucket = bucket
 	resp := &bce.BceResponse{}
-	if err := SendRequest(cli, req, resp); err != nil {
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -652,12 +661,13 @@ func DeleteObject(cli bce.Client, bucket, object string) error {
 //     - *DeleteMultipleObjectsResult: the objects failed to delete
 //     - error: nil if ok otherwise the specific error
 func DeleteMultipleObjects(cli bce.Client, bucket string,
-	objectListStream *bce.Body) (*DeleteMultipleObjectsResult, error) {
+	objectListStream *bce.Body, ctx *BosContext) (*DeleteMultipleObjectsResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getBucketUri(bucket))
 	req.SetMethod(http.POST)
 	req.SetParam("delete", "")
 	req.SetHeader(http.CONTENT_TYPE, "application/json; charset=utf-8")
+	ctx.Bucket = bucket
 	if objectListStream == nil {
 		return nil, bce.NewBceClientError("DeleteMultipleObjects body should not be emtpy")
 	}
@@ -667,7 +677,7 @@ func DeleteMultipleObjects(cli bce.Client, bucket string,
 	req.SetBody(objectListStream)
 
 	resp := &bce.BceResponse{}
-	if err := SendRequest(cli, req, resp); err != nil {
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -784,12 +794,12 @@ func GeneratePresignedUrlInternal(conf *bce.BceClientConfiguration, signer auth.
 // RETURNS:
 //     - error: nil if success otherwise the specific error
 func PutObjectAcl(cli bce.Client, bucket, object, cannedAcl string,
-	grantRead, grantFullControl []string, aclBody *bce.Body) error {
+	grantRead, grantFullControl []string, aclBody *bce.Body, ctx *BosContext) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetMethod(http.PUT)
 	req.SetParam("acl", "")
-
+	ctx.Bucket = bucket
 	// Joiner for generate the user id list string for grant acl header
 	joiner := func(ids []string) string {
 		for i := range ids {
@@ -825,7 +835,7 @@ func PutObjectAcl(cli bce.Client, bucket, object, cannedAcl string,
 
 	// Do sending request
 	resp := &bce.BceResponse{}
-	if err := SendRequest(cli, req, resp); err != nil {
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -844,14 +854,14 @@ func PutObjectAcl(cli bce.Client, bucket, object, cannedAcl string,
 // RETURNS:
 //     - result: the object acl result object
 //     - error: nil if success otherwise the specific error
-func GetObjectAcl(cli bce.Client, bucket, object string) (*GetObjectAclResult, error) {
+func GetObjectAcl(cli bce.Client, bucket, object string, ctx *BosContext) (*GetObjectAclResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetMethod(http.GET)
 	req.SetParam("acl", "")
-
+	ctx.Bucket = bucket
 	resp := &bce.BceResponse{}
-	if err := SendRequest(cli, req, resp); err != nil {
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
 		return nil, err
 	}
 	if resp.IsFail() {
@@ -872,13 +882,14 @@ func GetObjectAcl(cli bce.Client, bucket, object string) (*GetObjectAclResult, e
 //     - object: the object name
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func DeleteObjectAcl(cli bce.Client, bucket, object string) error {
+func DeleteObjectAcl(cli bce.Client, bucket, object string, ctx *BosContext) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetMethod(http.DELETE)
 	req.SetParam("acl", "")
+	ctx.Bucket = bucket
 	resp := &bce.BceResponse{}
-	if err := SendRequest(cli, req, resp); err != nil {
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -897,16 +908,16 @@ func DeleteObjectAcl(cli bce.Client, bucket, object string) error {
 //	   - args: the restore args
 // RETURNS:
 //     - error: nil if success otherwise the specific error
-func RestoreObject(cli bce.Client, bucket string, object string, args ArchiveRestoreArgs) error {
+func RestoreObject(cli bce.Client, bucket string, object string, args ArchiveRestoreArgs, ctx *BosContext) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetParam("restore", "")
 	req.SetMethod(http.POST)
 	req.SetHeader(http.BCE_RESTORE_DAYS, strconv.Itoa(args.RestoreDays))
 	req.SetHeader(http.BCE_RESTORE_TIER, args.RestoreTier)
-
+	ctx.Bucket = bucket
 	resp := &bce.BceResponse{}
-	if err := SendRequest(cli, req, resp); err != nil {
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -926,11 +937,12 @@ func RestoreObject(cli bce.Client, bucket string, object string, args ArchiveRes
 //     - symlinkArgs: the optional arguments of this api
 // RETURNS:
 //     - error: nil if ok otherwise the specific error
-func PutObjectSymlink(cli bce.Client, bucket string, object string, symlinkKey string, symlinkArgs *PutSymlinkArgs) error {
+func PutObjectSymlink(cli bce.Client, bucket string, object string, symlinkKey string, symlinkArgs *PutSymlinkArgs, ctx *BosContext) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, symlinkKey))
 	req.SetParam("symlink", "")
 	req.SetMethod(http.PUT)
+	ctx.Bucket = bucket
 	if symlinkArgs != nil {
 		if len(symlinkArgs.ForbidOverwrite) != 0 {
 			if !validForbidOverwrite(symlinkArgs.ForbidOverwrite) {
@@ -961,7 +973,7 @@ func PutObjectSymlink(cli bce.Client, bucket string, object string, symlinkKey s
 	req.SetHeader(http.BCE_SYMLINK_TARGET, object)
 
 	resp := &bce.BceResponse{}
-	if err := SendRequest(cli, req, resp); err != nil {
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
 		return err
 	}
 	if resp.IsFail() {
@@ -980,13 +992,14 @@ func PutObjectSymlink(cli bce.Client, bucket string, object string, symlinkKey s
 // RETURNS:
 //	   - string: the name of the target object
 //     - error: nil if ok otherwise the specific error
-func GetObjectSymlink(cli bce.Client, bucket string, symlinkKey string) (string, error) {
+func GetObjectSymlink(cli bce.Client, bucket string, symlinkKey string, ctx *BosContext) (string, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, symlinkKey))
 	req.SetParam("symlink", "")
 	req.SetMethod(http.GET)
+	ctx.Bucket = bucket
 	resp := &bce.BceResponse{}
-	if err := SendRequest(cli, req, resp); err != nil {
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
 		return "", err
 	}
 	if resp.IsFail() {

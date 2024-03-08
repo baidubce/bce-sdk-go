@@ -179,6 +179,7 @@ type BucketReplicationType struct {
 	Id               string                       `json:"id"`
 	Status           string                       `json:"status"`
 	Resource         []string                     `json:"resource"`
+	NotIncludeResource []string                   `json:"notIncludeResource,omitempty"`
 	ReplicateDeletes string                       `json:"replicateDeletes"`
 	Destination      *BucketReplicationDescriptor `json:"destination,omitempty"`
 	ReplicateHistory *BucketReplicationDescriptor `json:"replicateHistory,omitempty"`
@@ -259,6 +260,7 @@ type PutObjectArgs struct {
 	ContentCrc32       string
 	StorageClass       string
 	Process            string
+	CannedAcl          string
 	TrafficLimit       int64
 }
 
@@ -621,4 +623,9 @@ type PutBucketTagArgs struct {
 type Tag struct {
 	TagKey string `json:"tagKey"`
 	TagValue string `json:"tagValue"`
+}
+
+type BosContext struct {
+	Bucket string 
+	PathStyleEnable bool
 }

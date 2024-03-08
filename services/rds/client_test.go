@@ -145,7 +145,7 @@ func TestClient_ListRds(t *testing.T) {
 }
 
 func TestClient_GetDetail(t *testing.T) {
-	result, err := RDS_CLIENT.GetDetail("rds-W3NYp4m9")
+	result, err := RDS_CLIENT.GetDetail("rds-yZ4qXER9")
 	re, error := json.Marshal(result)
 	fmt.Print(error)
 	fmt.Println(string(re))

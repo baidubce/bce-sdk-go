@@ -10,16 +10,19 @@
 
 在确认您使用SDK时配置的Endpoint时，可先阅读开发人员指南中关于[CCE服务域名](https://cloud.baidu.com/doc/CCE/s/Fjwvy1fl4)的部分，理解Endpoint相关的概念。百度云目前开放了多区域支持，请参考[区域选择说明](https://cloud.baidu.com/doc/CCE/s/Fjwvy1fl4)。
 
-目前支持“华北-北京”、“华南-广州”、“华东-苏州”、“香港”、“金融华中-武汉”和“华北-保定”六个区域。对应信息为：
+目前支持以下区域：
 
 访问区域 | 对应Endpoint | 协议
 ---|---|---
-BJ | cce.bj.baidubce.com | HTTP and HTTPS
-GZ | cce.gz.baidubce.com | HTTP and HTTPS
-SU | cce.su.baidubce.com | HTTP and HTTPS
-HKG| cce.hkg.baidubce.com| HTTP and HTTPS
-FWH| cce.fwh.baidubce.com| HTTP and HTTPS
-BD | cce.bd.baidubce.com | HTTP and HTTPS
+北京 | cce.bj.baidubce.com | HTTP and HTTPS
+保定 | cce.bd.baidubce.com | HTTP and HTTPS
+阳泉 | cce.yq.baidubce.com | HTTP and HTTPS
+成都 | cce.cd.baidubce.com | HTTP and HTTPS
+广州 | cce.gz.baidubce.com | HTTP and HTTPS
+苏州 | cce.su.baidubce.com | HTTP and HTTPS
+南京 | cce.nj.baidubce.com | HTTP and HTTPS
+武汉 | cce.fwh.baidubce.com| HTTP and HTTPS
+香港 | cce.hkg.baidubce.com| HTTP and HTTPS
 
 ## 获取密钥
 
@@ -319,6 +322,18 @@ if err != nil {
 
 s, _ := json.MarshalIndent(resp, "", "\t")
 fmt.Println("Response:"+ string(s))
+```
+
+## 获取CCE Cluster Event详情
+```go
+clusterID := "cluster-id"
+resp, err := ccev2Client.GetClusterEventSteps(clusterID)
+if err != nil {
+	fmt.Printf("get cce cluster event error: %+v\n", err)
+	return
+}
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
 ```
 
 ## 获取集群列表

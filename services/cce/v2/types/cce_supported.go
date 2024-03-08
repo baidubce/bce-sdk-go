@@ -51,13 +51,20 @@ var SupportedGPUType = map[GPUType]string{
 	GPUTypeP40:     "",
 	GPUTypeP4:      "",
 	GPUTypeK40:     "",
-	GPUTypeDLCard: "",
+	GPUTypeDLCard:  "",
 }
 
 // SupportedK8SVersions - CCE 支持的 K8s 版本
 var SupportedK8SVersions = map[K8SVersion]string{
-	K8S_1_13_10: "",
-	K8S_1_16_8:  "",
+	// K8S_1_13_10: "",
+	// K8S_1_16_8:  "",
+	// K8S_1_17_17: "",
+	K8S_1_18_9:  "",
+	K8S_1_20_8:  "",
+	K8S_1_21_14: "",
+	K8S_1_22_5:  "",
+	K8S_1_24_4:  "",
+	K8S_1_26_9:  "",
 }
 
 // SupportedClusterHA - CCE 支持的 ClusterHA 类型
@@ -82,11 +89,11 @@ var SupportedImageType = map[bccapi.ImageType]string{
 	bccapi.ImageTypeGPUCustom:   "",
 	bccapi.ImageTypeSharing:     "",
 	bccapi.ImageTypeIntegration: "",
-	ImageTypeService:     "",
+	ImageTypeService:            "",
 	// ImageTypeBBCSystem BBC 公有
-	bccapi.ImageTypeBBCSystem:   "",
+	bccapi.ImageTypeBBCSystem: "",
 	// ImageTypeBBCCustom BBC 自定义
-	bccapi.ImageTypeBBCCustom:   "",
+	bccapi.ImageTypeBBCCustom: "",
 }
 
 // SupportedContainerNetworkMode - CCE 支持的容器网络类型
@@ -102,7 +109,7 @@ var SupportedContainerNetworkMode = map[ContainerNetworkMode]string{
 }
 
 var SupportedRuntimeType = map[RuntimeType]string{
-	RuntimeTypeDocker:     "",
+	RuntimeTypeDocker: "",
 }
 
 var SupportedKubeProxyMode = map[KubeProxyMode]string{

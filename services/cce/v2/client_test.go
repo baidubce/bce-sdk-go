@@ -143,7 +143,7 @@ func TestClient_RecommendContainerCIDR(t *testing.T) {
 	args := &RecommendContainerCIDRArgs{
 		ClusterMaxNodeNum: 2,
 		IPVersion:         "ipv4",
-		K8SVersion:        types.K8S_1_16_8,
+		K8SVersion:        types.K8S_1_22_5,
 		MaxPodsPerNode:    32,
 		PrivateNetCIDRs:   []PrivateNetString{PrivateIPv4Net172},
 		VPCCIDR:           "192.168.0.0/16",
@@ -165,7 +165,7 @@ func TestClient_CreateCluster(t *testing.T) {
 		CreateClusterRequest: &CreateClusterRequest{
 			ClusterSpec: &types.ClusterSpec{
 				ClusterName: "sdk-ccev2-test",
-				K8SVersion:  types.K8S_1_16_8,
+				K8SVersion:  types.K8S_1_22_5,
 				RuntimeType: types.RuntimeTypeDocker,
 				VPCID:       VPC_TEST_ID,
 				MasterConfig: types.MasterConfig{
@@ -440,9 +440,9 @@ func TestClient_GetKubeConfig(t *testing.T) {
 
 func TestClient_DeleteInstanceGroup(t *testing.T) {
 	args := &DeleteInstanceGroupArgs{
-		ClusterID:       CCE_CLUSTER_ID,
-		InstanceGroupID: CCE_INSTANCE_GROUP_ID,
-		DeleteInstances: true,
+		ClusterID:           CCE_CLUSTER_ID,
+		InstanceGroupID:     CCE_INSTANCE_GROUP_ID,
+		DeleteInstances:     true,
 		ReleaseAllResources: true,
 	}
 

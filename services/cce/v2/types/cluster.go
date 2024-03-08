@@ -29,39 +29,86 @@ const (
 	DoNotHandle = "not-handler-by-cce"
 )
 
-//创建集群时使用的ClusterSpec
+// 创建集群时使用的ClusterSpec
 type ClusterSpec struct {
-
 	// 创建集群时无需传入ClusterID
-	ClusterID string `json:"clusterID,omitempty" `
+	ClusterID string `json:"clusterID,omitempty" validate:"readonly"`
 
 	// ClusterName 由用户指定
-	ClusterName string `json:"clusterName" valid:"Required"`
+	ClusterName string `json:"clusterName" valid:"Required" validate:"modifiable"`
 
-	ClusterType ClusterType `json:"clusterType,omitempty" valid:"Required"`
+	ClusterType ClusterType `json:"clusterType,omitempty" valid:"Required" validate:"readonly"`
 
-	Description string `json:"description,omitempty"`
+	Description string `json:"description,omitempty" validate:"modifiable"`
 
 	K8SVersion K8SVersion `json:"k8sVersion,omitempty"`
 
 	RuntimeType    RuntimeType `json:"runtimeType,omitempty"`
 	RuntimeVersion string      `json:"runtimeVersion,omitempty"`
 
-	// VPCCIDR 无需用户设置
-	VPCID       string `json:"vpcID,omitempty" valid:"Required"`
-	VPCCIDR     string `json:"vpcCIDR,omitempty"`
-	VPCCIDRIPv6 string `json:"vpcCIDRIPv6,omitempty"`
+	// VPCUUID && VPCCIDR 无需用户设置
+	VPCID string `json:"vpcID,omitempty" valid:"Required" validate:"readonly"`
+
+	VPCUUID     string `json:"vpcUUID,omitempty" validate:"readonly"`
+	VPCCIDR     string `json:"vpcCIDR,omitempty" validate:"readonly"`
+	VPCCIDRIPv6 string `json:"vpcCIDRIPv6,omitempty" validate:"readonly"`
 
 	// PluginListType CCE 插件类型
 	Plugins []string `json:"plugins,omitempty"`
 
-	MasterConfig           MasterConfig           `json:"masterConfig,omitempty" valid:"Required"`
-	ContainerNetworkConfig ContainerNetworkConfig `json:"containerNetworkConfig,omitempty" valid:"Required"`
+	// PluginsConfig 插件 Helm 安装配置
+	PluginsConfig map[string]PluginHelmConfig `json:"pluginsConfig,omitempty"`
 
-	AuthenticateMode AuthenticateMode `json:"authenticateMode,omitempty"` // APIServer 认证方式
+	MasterConfig           MasterConfig           `json:"masterConfig,omitempty" valid:"Required" validate:"inline"`
+	ContainerNetworkConfig ContainerNetworkConfig `json:"containerNetworkConfig,omitempty" valid:"Required" validate:"inline"`
+
+	// 集群删除保护标识，true 表示开启删除保护不允许删除集群；false 表示关闭删除保护允许删除集群
+	ForbidDelete bool `json:"forbidDelete"`
+
+	// IaaS资源付费选项
+	ResourceChargingOption ResourceChargingOption `json:"resourceChargingOption,omitempty" validate:"inline"`
 
 	// K8S 自定义配置
 	K8SCustomConfig K8SCustomConfig `json:"k8sCustomConfig,omitempty"`
+
+	// APIServer 认证模式
+	AuthenticateMode AuthenticateMode `json:"authenticateMode,omitempty" validate:"readonly"`
+
+	Tags []Tag `json:"tags,omitempty" validate:"readonly"`
+}
+
+// ResourceChargingOption 定义IaaS资源付费配置
+type ResourceChargingOption struct {
+	ChargingType      PaymentTiming `json:"chargingType,omitempty"`      // 后付费或预付费
+	PurchaseTime      int           `json:"purchaseTime,omitempty"`      // 预付费才生效：单位月，12 = 12 月
+	PurchaseTimeUnit  string        `json:"purchaseTimeUnit,omitempty"`  // 预付费时间单位
+	AutoRenew         bool          `json:"autoRenew,omitempty"`         // 是否自动续费
+	AutoRenewTime     int           `json:"autoRenewTime,omitempty"`     // 12 = 12 个月
+	AutoRenewTimeUnit string        `json:"autoRenewTimeUnit,omitempty"` // 续费单位：月
+}
+
+// PluginHelmConfig 使用 Helm 部署插件的插件的参数
+type PluginHelmConfig struct {
+	// 插件类型(插件名称) 非必要 用户要部署的是哪个插件,传空时和PluginName保持一致
+	PluginType string `json:"pluginType,omitempty"`
+
+	// 插件别名 非必要 有时用户是可以自定义部署的插件名称的 (如多个 NGINX Ingress Controller 场景) 所以不能用PluginName来判断用户部署的是什么插件
+	PluginName string `json:"pluginName,omitempty"`
+
+	// 插件在云端的ChartName是什么 用户无需传递这个值
+	ChartName string `json:"chartName,omitempty"`
+
+	// 使用的Chart版本 除非用户要指定版本否则无需传递此值
+	ChartVersion string `json:"chartVersion,omitempty"`
+
+	// 插件部署到哪个命名空间  非必要
+	Namespaces string `json:"namespaces,omitempty"`
+
+	// 非必要
+	Description string `json:"description,omitempty"`
+
+	// 取决于插件 系统插件传空值即可
+	Values string `json:"values,omitempty"`
 }
 
 // K8SCustomConfig - K8S 自定义配置
@@ -90,18 +137,25 @@ const (
 type K8SVersion string
 
 const (
-	//1.6和1.8不再支持，扩缩容需要联系CCE人员手动操作
-	//K8S_1_6_2   K8SVersion = "1.6.2"
-	//K8S_1_8_6   K8SVersion = "1.8.6"
-	//K8S_1_8_12  K8SVersion = "1.8.12"
-	//1.11.1 1.11.5 1.13.4仅支持已有集群扩容节点，不支持新创建集群
-	//K8S_1_11_1  K8SVersion = "1.11.1"
-	//K8S_1_11_5  K8SVersion = "1.11.5"
-	//K8S_1_13_4  K8SVersion = "1.13.4"
-	//支持在console创建集群
-	K8S_1_13_10 K8SVersion = "1.13.10"
-	//K8S_1_16_3  K8SVersion = "1.16.3"
-	K8S_1_16_8  K8SVersion = "1.16.8"
+	// 1.6和1.8不再支持，扩缩容需要联系CCE人员手动操作
+	// K8S_1_6_2   K8SVersion = "1.6.2"
+	// K8S_1_8_6   K8SVersion = "1.8.6"
+	// K8S_1_8_12  K8SVersion = "1.8.12"
+	// 1.11.1 1.11.5 1.13.4仅支持已有集群扩容节点，不支持新创建集群
+	// K8S_1_11_1  K8SVersion = "1.11.1"
+	// K8S_1_11_5  K8SVersion = "1.11.5"
+	// K8S_1_13_4  K8SVersion = "1.13.4"
+	// 支持在console创建集群
+	// K8S_1_13_10 K8SVersion = "1.13.10"
+	// K8S_1_16_3  K8SVersion = "1.16.3"
+	// K8S_1_16_8  K8SVersion = "1.16.8"
+	// K8S_1_17_17 K8SVersion = "1.17.17"
+	K8S_1_18_9  K8SVersion = "1.18.9"
+	K8S_1_20_8  K8SVersion = "1.20.8"
+	K8S_1_21_14 K8SVersion = "1.21.14"
+	K8S_1_22_5  K8SVersion = "1.22.5"
+	K8S_1_24_4  K8SVersion = "1.24.4"
+	K8S_1_26_9  K8SVersion = "1.26.9"
 )
 
 // MasterConfig Master 配置
@@ -121,7 +175,7 @@ type MasterConfig struct {
 
 // ManagedClusterMasterOption 托管集群 Master 配置
 type ManagedClusterMasterOption struct {
-	MasterVPCSubnetZone     AvailableZone             `json:"masterVPCSubnetZone,omitempty"`
+	MasterVPCSubnetZone AvailableZone `json:"masterVPCSubnetZone,omitempty"`
 }
 
 // RuntimeType defines the runtime on each node

@@ -63,6 +63,8 @@ const (
 	REQUEST_TASK_URL = "/task"
 
 	REQUEST_TASK_LIST_URL = "/tasks"
+
+	REQUEST_EVENT_URL = "/event"
 )
 
 var _ Interface = &Client{}
@@ -91,6 +93,9 @@ func getClusterUriWithIDURI(clusterID string) string {
 	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID
 }
 
+func getClusterEventStepsURI(clusterID string) string {
+	return URI_PREFIX + REQUEST_EVENT_URL + REQUEST_CLUSTER_URL + "/" + clusterID
+}
 func getClusterListURI() string {
 	return URI_PREFIX + REQUEST_CLUSTER_LIST_URL
 }

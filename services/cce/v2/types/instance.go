@@ -14,7 +14,7 @@ import (
 	"github.com/baidubce/bce-sdk-go/services/vpc"
 )
 
-// 已有节点需要用户提供：ClusterRole 、短ID，密码，镜像ID,镜像类型, docker storage(可选); BBC要额外加preservedData、raidId、sysRootSize
+// InstanceSpec 已有节点需要用户提供：ClusterRole 、短ID，密码，镜像ID,镜像类型, docker storage(可选); BBC要额外加preservedData、raidId、sysRootSize
 type InstanceSpec struct {
 
 	// 用于 CCE 唯一标识 Instance
