@@ -27,6 +27,8 @@ const (
 	InvocationTypeEvent           InvocationType = "Event"
 	InvocationTypeRequestResponse InvocationType = "RequestResponse"
 	InvocationTypeDryRun          InvocationType = "DryRun"
+	// 同步调用函数最大超时时间
+	DefaultMaxFunctionTimeout = 300
 
 	LogTypeTail LogType = "Tail"
 	LogTypeNone LogType = "None"

@@ -168,7 +168,7 @@ type UpdateInstanceNameArgs struct {
 }
 
 type NodeType struct {
-	InstanceFlavor          int     `json:"instanceFlavor"`
+	InstanceFlavor          float64 `json:"instanceFlavor"`
 	NodeType                string  `json:"nodeType"`
 	CPUNum                  int     `json:"cpuNum"`
 	NetworkThroughputInGbps float64 `json:"networkThroughputInGbps"`
@@ -596,7 +596,7 @@ type GroupLeaderInfo struct {
 	TotalCapacityInGB float64 `json:"totalCapacityInGB"`
 	UsedCapacityInGB  int     `json:"usedCapacityInGB"`
 	ShardNum          int     `json:"shardNum"`
-	Flavor            int     `json:"flavor"`
+	Flavor            float64 `json:"flavor"`
 	QpsWrite          int64   `json:"qpsWrite"`
 	QpsRead           int64   `json:"qpsRead"`
 	StableReadable    bool    `json:"stableReadable"`
@@ -612,7 +612,7 @@ type GroupFollowerInfo struct {
 	TotalCapacityInGB float64 `json:"totalCapacityInGB"`
 	UsedCapacityInGB  int     `json:"usedCapacityInGB"`
 	ShardNum          int     `json:"shardNum"`
-	Flavor            int     `json:"flavor"`
+	Flavor            float64 `json:"flavor"`
 	QpsWrite          int64   `json:"qpsWrite"`
 	QpsRead           int64   `json:"qpsRead"`
 	StableReadable    bool    `json:"stableReadable"`

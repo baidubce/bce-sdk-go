@@ -260,6 +260,7 @@ func Invocations(cli bce.Client, args *InvocationsArgs) (*InvocationsResult, err
 	}
 
 	req := &bce.BceRequest{}
+	http.SetResponseHeaderTimeout(DefaultMaxFunctionTimeout)
 	req.SetRequestId(args.RequestId)
 	req.SetUri(getInvocationsUri(args.FunctionName))
 	req.SetMethod(http.POST)
