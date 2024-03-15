@@ -110,7 +110,7 @@ func main() {
 	ENDPOINT := "<domain-name>"
 
 	// 创建BOS服务的Client
-	bosClient, err := bos.NewClient(AK, SK, ENDPOINT)
+	bosClient, err := bos.NewClient(ACCESS_KEY_ID, SECRET_ACCESS_KEY, ENDPOINT)
 
 	// 创建Bucket
 	location, err := bosClient.PutBucket("<your-bucket-name>"); err != nil {
