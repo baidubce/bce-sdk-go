@@ -437,6 +437,10 @@ func getImportCustomImageUri() string {
 	return URI_PREFIXV2 + "/image/import"
 }
 
+func getBatchRefundResourceUri() string {
+	return URI_PREFIXV2 + "/instance/batchRefundResource"
+}
+
 func getAvailableImagesBySpecUri() string {
 	return URI_PREFIXV2 +"/image/getAvailableImagesBySpec"
 }

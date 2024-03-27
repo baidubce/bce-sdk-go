@@ -19,6 +19,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net"
 	"strconv"
 	"strings"
@@ -1011,4 +1012,76 @@ func GetObjectSymlink(cli bce.Client, bucket string, symlinkKey string, ctx *Bos
 		return result, nil
 	}
 	return resp.Header(http.BCE_SYMLINK_TARGET), nil
+}
+
+// PutObjectTag - set tag for given object
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - bucket: the bucket name of the object
+//     - object: the name of the object
+//     - putObjectTagArgs: the arguments of object tag
+// RETURNS:
+//     - error: nil if ok otherwise the specific error
+
+func PutObjectTag(cli bce.Client, bucket, object string, putObjectTagArgs *PutObjectTagArgs, ctx *BosContext) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getObjectUri(bucket, object))
+	req.SetMethod(http.PUT)
+	req.SetParam("tagging", "")
+	ctx.Bucket = bucket
+	reqByte, _ := json.Marshal(putObjectTagArgs)
+	body, err := bce.NewBodyFromString(string(reqByte))
+	if err != nil {
+		return err
+	}
+	req.SetBody(body)
+	resp := &bce.BceResponse{}
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+func GetObjectTag(cli bce.Client, bucket, object string, ctx *BosContext) (string, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getObjectUri(bucket, object))
+	req.SetMethod(http.GET)
+	req.SetParam("tagging", "")
+	ctx.Bucket = bucket
+	resp := &bce.BceResponse{}
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
+		return "", err
+	}
+	if resp.IsFail() {
+		return "", resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	bodyBytes, err := ioutil.ReadAll(resp.Body())
+	if err != nil {
+		return "", err
+	}
+	result := string(bodyBytes)
+	return result, nil
+}
+
+func DeleteObjectTag(cli bce.Client, bucket, object string, ctx *BosContext) error {
+	req := &bce.BceRequest{}
+	req.SetUri(getObjectUri(bucket, object))
+	req.SetMethod(http.DELETE)
+	req.SetParam("tagging", "")
+	ctx.Bucket = bucket
+	resp := &bce.BceResponse{}
+	if err := SendRequest(cli, req, resp, ctx); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
 }

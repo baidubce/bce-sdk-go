@@ -352,3 +352,100 @@ type IGInstanceItem struct {
 	ItemIdentitable bool   `json:"itemIdentitable,omitempty"`
 	ItemDimension   string `json:"itemDimension,omitempty"`
 }
+
+type MultiDimensionalLatestMetricsRequest struct {
+	UserID       string      `json:"userId,omitempty"`
+	Region       string      `json:"region,omitempty"`
+	Scope        string      `json:"scope,omitempty"`
+	ResourceType string      `json:"resourceType,omitempty"`
+	Dimensions   []Dimension `json:"dimensions,omitempty"`
+	MetricNames  []string    `json:"metricNames,omitempty"`
+	Timestamp    string      `json:"timestamp,omitempty"`
+	Statistics   []string    `json:"statistics,omitempty"`
+	Cycle        int         `json:"cycle,omitempty"`
+}
+
+type MetricsByPartialDimensionsRequest struct {
+	UserID       string      `json:"userId,omitempty"`
+	Scope        string      `json:"scope,omitempty"`
+	StartTime    string      `json:"startTime,omitempty"`
+	EndTime      string      `json:"endTime,omitempty"`
+	Statistics   []string    `json:"statistics,omitempty"`
+	Cycle        int         `json:"cycle,omitempty"`
+	Dimensions   []Dimension `json:"dimensions,omitempty"`
+	ResourceType string      `json:"resourceType,omitempty"`
+	MetricName   string      `json:"metricName,omitempty"`
+	Region       string      `json:"region,omitempty"`
+	PageNo       int         `json:"pageNo,omitempty"`
+	PageSize     int         `json:"pageSize,omitempty"`
+}
+
+type DataPoint struct {
+	Average     float64 `json:"average,omitempty"`
+	Sum         float64 `json:"sum,omitempty"`
+	Minimum     float64 `json:"minimum,omitempty"`
+	Maximum     float64 `json:"maximum,omitempty"`
+	SampleCount int     `json:"sampleCount,omitempty"`
+	Value       string  `json:"value,omitempty"`
+	Timestamp   string  `json:"timestamp,omitempty"`
+}
+
+type MultiDimensionalMetric struct {
+	Region     string       `json:"region,omitempty"`
+	Scope      string       `json:"scope,omitempty"`
+	UserID     string       `json:"userId,omitempty"`
+	ResourceID string       `json:"resourceId,omitempty"`
+	MetricName string       `json:"metricName,omitempty"`
+	Dimensions []Dimension  `json:"dimensions,omitempty"`
+	DataPoints []*DataPoint `json:"dataPoints,omitempty"`
+}
+
+type MultiDimensionalMetricsResponse struct {
+	RequestID string                    `json:"requestId,omitempty"`
+	Code      string                    `json:"code,omitempty"`
+	Message   interface{}               `json:"message,omitempty"`
+	Metrics   []*MultiDimensionalMetric `json:"metrics,omitempty"`
+}
+
+type MetricsByPartialDimensionsPageResponse struct {
+	RequestID string `json:"requestId,omitempty"`
+	Code      string `json:"code,omitempty"`
+	Message   string `json:"message,omitempty"`
+	Result    struct {
+		OrderBy    string `json:"orderBy,omitempty"`
+		Order      string `json:"order,omitempty"`
+		PageNo     int    `json:"pageNo,omitempty"`
+		PageSize   int    `json:"pageSize,omitempty"`
+		TotalCount int    `json:"totalCount,omitempty"`
+		Result     []struct {
+			Region     string      `json:"region,omitempty"`
+			Scope      string      `json:"scope,omitempty"`
+			UserID     string      `json:"userId,omitempty"`
+			ResourceID string      `json:"resourceId,omitempty"`
+			MetricName string      `json:"metricName,omitempty"`
+			Dimensions []Dimension `json:"dimensions,omitempty"`
+			DataPoints []struct {
+				Average     *float64 `json:"average,omitempty"`
+				Sum         *float64 `json:"sum,omitempty"`
+				Minimum     *float64 `json:"minimum,omitempty"`
+				Maximum     *float64 `json:"maximum,omitempty"`
+				SampleCount int      `json:"sampleCount,omitempty"`
+				Value       string   `json:"value,omitempty"`
+				Timestamp   string   `json:"timestamp,omitempty"`
+			} `json:"dataPoints,omitempty"`
+		} `json:"result,omitempty"`
+	} `json:"result,omitempty"`
+}
+
+type TsdbMetricAllDataQueryRequest struct {
+	UserID      string        `json:"userId,omitempty"`
+	Region      string        `json:"region,omitempty"`
+	Scope       string        `json:"scope,omitempty"`
+	Type        string        `json:"type,omitempty"`
+	Dimensions  [][]Dimension `json:"dimensions,omitempty"`
+	MetricNames []string      `json:"metricNames,omitempty"`
+	Statistics  []string      `json:"statistics,omitempty"`
+	Cycle       int           `json:"cycle,omitempty"`
+	StartTime   string        `json:"startTime,omitempty"`
+	EndTime     string        `json:"endTime,omitempty"`
+}

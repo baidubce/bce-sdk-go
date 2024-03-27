@@ -61,16 +61,22 @@ const (
 	IG_QUERY_INSTANCE_LIST_PATH        = "/csm/api/v1/userId/%s/instance/list"
 	IG_QUERY_INSTANCE_LIST_FILTER_PATH = "/csm/api/v1/userId/%s/instance/filteredList"
 
+	MultiDimensionLatestMetricsPath = "/csm/api/v2/userId/%s/services/%s/data/metricData/latest/batch"
+	MetricsByPartialDimensionsPath  = "/csm/api/v2/userId/%s/services/%s/data/metricData/PartialDimension"
+	MultiMetricAllDataPath          = "/csm/api/v2/data/metricAllData"
+	MultiMetricAllDataBatchPath     = "/csm/api/v2/data/metricAllData/batch"
+
 	Average     = "average"
 	Maximum     = "maximum"
 	Minimum     = "minimum"
 	Sum         = "sum"
 	SampleCount = "sampleCount"
 
-	NoticeEventLevel   = "NOTICE"
-	WarningEventLevel  = "WARNING"
-	MajorEventLevel    = "MAJOR"
-	CriticalEventLevel = "CRITICAL"
+	NoticeEventLevel     = "NOTICE"
+	WarningEventLevel    = "WARNING"
+	MajorEventLevel      = "MAJOR"
+	CriticalEventLevel   = "CRITICAL"
+	DimensionNumberLimit = 100
 
 	// CreateDashboardPath userId
 	CreateDashboardPath = "/csm/api/v1/dashboard/products/%s/dashboards"
@@ -4043,6 +4049,150 @@ func (c *Client) GetFilterInstanceForInstanceGroup(req *model.IGInstanceQuery) (
 		WithQueryParam("id", req.ID).
 		WithQueryParam("uuid", req.UUID).
 		WithMethod(http.GET).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GetMultiDimensionLatestMetrics Get Multi-Dimension latest metrics
+func (c *Client) GetMultiDimensionLatestMetrics(req *model.MultiDimensionalLatestMetricsRequest) (*model.MultiDimensionalMetricsResponse, error) {
+	if req == nil {
+		return nil, errors.New("req should not be empty")
+	}
+	if len(req.UserID) <= 0 {
+		return nil, errors.New("userId should not be empty")
+	}
+	if len(req.Scope) <= 0 {
+		return nil, errors.New("scope should not be empty")
+	}
+	if len(req.MetricNames) <= 0 {
+		return nil, errors.New("metricNames should not be empty")
+	}
+	if len(req.Dimensions) > DimensionNumberLimit {
+		return nil, errors.New("dimensions should not be more than 100")
+	}
+	url := fmt.Sprintf(MultiDimensionLatestMetricsPath, req.UserID, req.Scope)
+	result := &model.MultiDimensionalMetricsResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(url).
+		WithBody(req).
+		WithMethod(http.POST).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GetMetricsByPartialDimensions Get metrics according to partial dimensions
+func (c *Client) GetMetricsByPartialDimensions(req *model.MetricsByPartialDimensionsRequest) (*model.MetricsByPartialDimensionsPageResponse, error) {
+	if req == nil {
+		return nil, errors.New("req should not be empty")
+	}
+	if len(req.UserID) <= 0 {
+		return nil, errors.New("userId should not be empty")
+	}
+	if len(req.Scope) <= 0 {
+		return nil, errors.New("scope should not be empty")
+	}
+	if len(req.MetricName) <= 0 {
+		return nil, errors.New("metricName should not be empty")
+	}
+	if len(req.StartTime) <= 0 {
+		return nil, errors.New("startTime should not be empty")
+	}
+	if len(req.EndTime) <= 0 {
+		return nil, errors.New("endTime should not be empty")
+	}
+	if len(req.Statistics) <= 0 {
+		return nil, errors.New("statistics should not be empty")
+	}
+	if len(req.Dimensions) > DimensionNumberLimit {
+		return nil, errors.New("dimensions should not be more than 100")
+	}
+	url := fmt.Sprintf(MetricsByPartialDimensionsPath, req.UserID, req.Scope)
+
+	result := &model.MetricsByPartialDimensionsPageResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(url).
+		WithBody(req).
+		WithMethod(http.POST).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// GetMetricsAllDataV2 metric all data
+func (c *Client) GetMetricsAllDataV2(req *model.TsdbMetricAllDataQueryRequest) (*model.MultiDimensionalMetricsResponse, error) {
+	if req == nil {
+		return nil, errors.New("req should not be empty")
+	}
+	if len(req.UserID) <= 0 {
+		return nil, errors.New("userId should not be empty")
+	}
+	if len(req.Scope) <= 0 {
+		return nil, errors.New("scope should not be empty")
+	}
+	if len(req.MetricNames) <= 0 {
+		return nil, errors.New("metricNames should not be empty")
+	}
+	if len(req.Dimensions) <= 0 {
+		return nil, errors.New("dimensions should not be empty")
+	}
+	if len(req.StartTime) <= 0 {
+		return nil, errors.New("startTime should not be empty")
+	}
+	if len(req.EndTime) <= 0 {
+		return nil, errors.New("endTime should not be empty")
+	}
+	if len(req.Dimensions) > DimensionNumberLimit {
+		return nil, errors.New("dimensions should not be more than 100")
+	}
+	result := &model.MultiDimensionalMetricsResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(MultiMetricAllDataPath).
+		WithBody(req).
+		WithMethod(http.POST).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// BatchGetMetricsAllDataV2 metric all data
+func (c *Client) BatchGetMetricsAllDataV2(req *model.TsdbMetricAllDataQueryRequest) (*model.MultiDimensionalMetricsResponse, error) {
+	if req == nil {
+		return nil, errors.New("req should not be empty")
+	}
+	if len(req.UserID) <= 0 {
+		return nil, errors.New("userId should not be empty")
+	}
+	if len(req.Scope) <= 0 {
+		return nil, errors.New("scope should not be empty")
+	}
+	if len(req.MetricNames) <= 0 {
+		return nil, errors.New("metricNames should not be empty")
+	}
+	if len(req.Dimensions) <= 0 {
+		return nil, errors.New("dimensions should not be empty")
+	}
+	if len(req.Dimensions) > DimensionNumberLimit {
+		return nil, errors.New("dimensions should not be more than 100")
+	}
+	if len(req.StartTime) <= 0 {
+		return nil, errors.New("startTime should not be empty")
+	}
+	if len(req.EndTime) <= 0 {
+		return nil, errors.New("endTime should not be empty")
+	}
+	if len(req.Type) == 0 {
+		req.Type = "Instance"
+	}
+	if req.Cycle <= 0 {
+		req.Cycle = 60
+	}
+	result := &model.MultiDimensionalMetricsResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(MultiMetricAllDataBatchPath).
+		WithBody(req).
+		WithMethod(http.POST).
 		WithResult(result).
 		Do()
 	return result, err

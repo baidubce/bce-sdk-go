@@ -14,7 +14,6 @@
 
 // blb.go - the Normal BLB APIs definition supported by the BLB service
 
-
 package blb
 
 import (
@@ -24,7 +23,6 @@ import (
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
 )
-
 
 // CreateLoadBalancer - create a LoadBalancer
 //
@@ -53,7 +51,6 @@ func (c *Client) CreateLoadBalancer(args *CreateLoadBalancerArgs) (*CreateLoadBa
 
 	return result, err
 }
-
 
 // UpdateLoadBalancer - update a LoadBalancer
 //
@@ -130,7 +127,6 @@ func (c *Client) DescribeLoadBalancerDetail(blbId string) (*DescribeLoadBalancer
 	return result, err
 }
 
-
 // DeleteLoadBalancer - delete a LoadBalancer
 //
 // PARAMS:
@@ -143,7 +139,6 @@ func (c *Client) DeleteLoadBalancer(blbId string) error {
 		WithURL(getBlbUriWithId(blbId)).
 		Do()
 }
-
 
 // DescribeLbClusterDetail - describe a LoadBalancer cluster
 //
@@ -162,7 +157,6 @@ func (c *Client) DescribeLbClusterDetail(clusterId string) (*DescribeLbClusterDe
 
 	return result, err
 }
-
 
 // DescribeLbClusters - describe all LoadBalancerClusters
 //
@@ -208,8 +202,7 @@ func (c *Client) DescribeLbClusters(args *DescribeLbClustersArgs) (*DescribeLbCl
 //     - error: nil if ok otherwise the specific error
 func (c *Client) UpdateLoadBalancerAcl(blbId string, args *UpdateLoadBalancerAclArgs) error {
 	if args == nil || args.SupportAcl == nil {
-		args = &UpdateLoadBalancerAclArgs{
-		}
+		args = &UpdateLoadBalancerAclArgs{}
 	}
 
 	return bce.NewRequestBuilder(c).
@@ -220,3 +213,22 @@ func (c *Client) UpdateLoadBalancerAcl(blbId string, args *UpdateLoadBalancerAcl
 		Do()
 }
 
+// StartLoadBalancerAutoRenew - start the specified LoadBalancer to support autoRenew
+//
+// PARAMS:
+//     - blbId: LoadBalancer's ID
+//     - args: parameters to start LoadBalancer autoRenew
+// RETURNS:
+//     - error: nil if ok otherwise the specific error
+func (c *Client) StartLoadBalancerAutoRenew(blbId string, args *StartLoadBalancerAutoRenewArgs) error {
+	if args == nil {
+		return fmt.Errorf("please set blb auto renew argments")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getBlbAutoRenewUriWithId(blbId)).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithBody(args).
+		Do()
+}

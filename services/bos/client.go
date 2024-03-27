@@ -2268,3 +2268,15 @@ func (c *Client) GetBucketTag(bucket string) (*api.PutBucketTagArgs, error) {
 func (c *Client) DeleteBucketTag(bucket string) error {
 	return api.DeleteBucketTag(c, bucket, c.BosContext)
 }
+
+func (c *Client) PutObjectTag(bucket string, object string, putBucketTagArgs *api.PutObjectTagArgs) error {
+	return api.PutObjectTag(c, bucket, object, putBucketTagArgs, c.BosContext)
+}
+
+func (c *Client) GetObjectTag(bucket string, object string) (string, error) {
+	return api.GetObjectTag(c, bucket, object, c.BosContext)
+}
+
+func (c *Client) DeleteObjectTag(bucket string, object string) error {
+	return api.DeleteObjectTag(c, bucket, object, c.BosContext)
+}

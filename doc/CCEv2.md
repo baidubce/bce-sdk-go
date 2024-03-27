@@ -485,6 +485,26 @@ s, _ := json.MarshalIndent(resp, "", "\t")
 fmt.Println("Response:" + string(s))
 ```
 
+## 获取节点事件步骤
+使用以下代码可以获取获取节点事件步骤
+```go
+instanceID := "instance-id"
+resp, err := ccev2Client.GetInstanceEventSteps(instanceID)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
+## 同步节点元信息
+使用以下代码可以同步节点元信息
+```go
+clusterID := "cluster-id"
+resp, err := ccev2Client.SyncInstances(clusterID)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
 ## 更新节点配置
 使用以下代码可以更新节点的配置信息。需要注意不是所有配置信息都是可更改的。
 ```go
@@ -829,7 +849,84 @@ args := &GetKubeConfigArgs{
 	KubeConfigType: "kubeconfig-type-you-need",
 }
 
-resp, err := ccev2Client.GetAdminKubeConfig(args)
+resp, err := ccev2Client.GetKubeConfig(args)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+## 获取组件状态
+使用以下代码可以获取组件状态
+```go	
+args := &ListAddonArgs{
+	ClusterID: "your-cluster-id",
+	Addons: "addon-name-you-need",
+}
+
+resp, err := ccev2Client.ListAddons(args)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
+## 安装组件
+使用以下代码可以安装组件
+```go	
+args := &InstallAddonArgs{
+	ClusterID: "your-cluster-id",
+	Name: "addon-name-you-want-install",
+	Version: "addon-version",
+	Params: "EnableHook: true\nEnableSGPU: true\n\n",
+}
+
+resp, err := ccev2Client.InstallAddon(args)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
+## 卸载组件
+使用以下代码可以卸载组件
+```go	
+args := &UninstallAddonArgs{
+	ClusterID: "your-cluster-id",
+	Name: "addon-name-you-want-install",
+	InstanceName: "addon-instance-name",
+}
+
+resp, err := ccev2Client.UnInstallAddon(args)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
+## 升级组件
+使用以下代码可以升级组件
+```go	
+args := &UpgradeAddon{
+	ClusterID: "your-cluster-id",
+	Name: "addon-name-you-want-install",
+	TargetVersion: "addon-version",
+	AddOnInstanceName: "addon-instance-name",
+	Params: "EnableHook: true\nEnableSGPU: true\n\n",
+}
+
+resp, err := ccev2Client.UpgradeAddon(args)
+
+s, _ := json.MarshalIndent(resp, "", "\t")
+fmt.Println("Response:" + string(s))
+```
+
+## 更新组件参数
+使用以下代码可以更新组件参数
+```go	
+args := &UpdateAddonArgs{
+	ClusterID: "your-cluster-id",
+	Name: "addon-name-you-want-install",
+	AddOnInstanceName: "addon-instance-name",
+	Params: "EnableHook: true\nEnableSGPU: true\n\n",
+}
+
+resp, err := ccev2Client.UpdateAddonArgs(args)
 
 s, _ := json.MarshalIndent(resp, "", "\t")
 fmt.Println("Response:" + string(s))
@@ -962,3 +1059,11 @@ Instance 增加字段:
 增加Task相关接口：
   - 支持查询指定Task执行详情
   - 支持查询Task列表
+## v1.4.1 [2024-03-08]
+
+增加Addon组件相关接口：
+- 支持批量查询组件状态
+- 支持安装组件
+- 支持卸载组件
+- 支持更新组件参数
+- 支持升级组件

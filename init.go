@@ -30,6 +30,7 @@ import (
 	_ "github.com/baidubce/bce-sdk-go/services/bcm"
 	_ "github.com/baidubce/bce-sdk-go/services/bec"
 	_ "github.com/baidubce/bce-sdk-go/services/bie"
+	_ "github.com/baidubce/bce-sdk-go/services/billing"
 	_ "github.com/baidubce/bce-sdk-go/services/blb"
 	_ "github.com/baidubce/bce-sdk-go/services/bos"
 	_ "github.com/baidubce/bce-sdk-go/services/cdn"

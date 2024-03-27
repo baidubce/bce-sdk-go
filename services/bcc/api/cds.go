@@ -28,11 +28,12 @@ import (
 // CreateCDSVolume - create a specified count of cds volumes
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to create cds volumes
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to create cds volumes
+//
 // RETURNS:
-//     - *CreateCDSVolumeResult: the result of volume ids newly created
-//     - error: nil if success otherwise the specific error
+//   - *CreateCDSVolumeResult: the result of volume ids newly created
+//   - error: nil if success otherwise the specific error
 func CreateCDSVolume(cli bce.Client, args *CreateCDSVolumeArgs) (*CreateCDSVolumeResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -72,11 +73,12 @@ func CreateCDSVolume(cli bce.Client, args *CreateCDSVolumeArgs) (*CreateCDSVolum
 // CreateCDSVolumeV3 - create a specified count of cds volumes
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to create cds volumes
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to create cds volumes
+//
 // RETURNS:
-//     - *CreateCDSVolumeResult: the result of volume ids newly created
-//     - error: nil if success otherwise the specific error
+//   - *CreateCDSVolumeResult: the result of volume ids newly created
+//   - error: nil if success otherwise the specific error
 func CreateCDSVolumeV3(cli bce.Client, args *CreateCDSVolumeV3Args) (*CreateCDSVolumeResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -116,11 +118,12 @@ func CreateCDSVolumeV3(cli bce.Client, args *CreateCDSVolumeV3Args) (*CreateCDSV
 // ListCDSVolume - list all cds volumes with the given parameters
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryArgs: the optional arguments to list cds volumes
+//   - cli: the client agent which can perform sending request
+//   - queryArgs: the optional arguments to list cds volumes
+//
 // RETURNS:
-//     - *ListCDSVolumeResult: the result of cds volume list
-//     - error: nil if success otherwise the specific error
+//   - *ListCDSVolumeResult: the result of cds volume list
+//   - error: nil if success otherwise the specific error
 func ListCDSVolume(cli bce.Client, queryArgs *ListCDSVolumeArgs) (*ListCDSVolumeResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -177,11 +180,12 @@ func ListCDSVolume(cli bce.Client, queryArgs *ListCDSVolumeArgs) (*ListCDSVolume
 // ListCDSVolumeV3 - list all cds volumes with the given parameters
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - queryArgs: the optional arguments to list cds volumes
+//   - cli: the client agent which can perform sending request
+//   - queryArgs: the optional arguments to list cds volumes
+//
 // RETURNS:
-//     - *ListCDSVolumeResultV3: the result of cds volume list
-//     - error: nil if success otherwise the specific error
+//   - *ListCDSVolumeResultV3: the result of cds volume list
+//   - error: nil if success otherwise the specific error
 func ListCDSVolumeV3(cli bce.Client, queryArgs *ListCDSVolumeArgs) (*ListCDSVolumeResultV3, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -235,11 +239,12 @@ func ListCDSVolumeV3(cli bce.Client, queryArgs *ListCDSVolumeArgs) (*ListCDSVolu
 // GetCDSVolumeDetail - get details of the specified cds volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - volumeId: id of the cds volume
+//   - cli: the client agent which can perform sending request
+//   - volumeId: id of the cds volume
+//
 // RETURNS:
-//     - *GetVolumeDetailResult: the result of the specified cds volume details
-//     - error: nil if success otherwise the specific error
+//   - *GetVolumeDetailResult: the result of the specified cds volume details
+//   - error: nil if success otherwise the specific error
 func GetCDSVolumeDetail(cli bce.Client, volumeId string) (*GetVolumeDetailResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -265,11 +270,12 @@ func GetCDSVolumeDetail(cli bce.Client, volumeId string) (*GetVolumeDetailResult
 // GetCDSVolumeDetail - get details of the specified cds volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - volumeId: id of the cds volume
+//   - cli: the client agent which can perform sending request
+//   - volumeId: id of the cds volume
+//
 // RETURNS:
-//     - *GetVolumeDetailResultV3: the result of the specified cds volume details
-//     - error: nil if success otherwise the specific error
+//   - *GetVolumeDetailResultV3: the result of the specified cds volume details
+//   - error: nil if success otherwise the specific error
 func GetCDSVolumeDetailV3(cli bce.Client, volumeId string) (*GetVolumeDetailResultV3, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -295,12 +301,13 @@ func GetCDSVolumeDetailV3(cli bce.Client, volumeId string) (*GetVolumeDetailResu
 // AttachCDSVolume - attach an cds volume to a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - volumeId: id of the cds volume
-//     - args: the arguments of instance id
+//   - cli: the client agent which can perform sending request
+//   - volumeId: id of the cds volume
+//   - args: the arguments of instance id
+//
 // RETURNS:
-//     - *AttachVolumeResult: the result of the attachment
-//     - error: nil if success otherwise the specific error
+//   - *AttachVolumeResult: the result of the attachment
+//   - error: nil if success otherwise the specific error
 func AttachCDSVolume(cli bce.Client, volumeId string, args *AttachVolumeArgs) (*AttachVolumeResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -338,11 +345,12 @@ func AttachCDSVolume(cli bce.Client, volumeId string, args *AttachVolumeArgs) (*
 // DetachCDSVolume - detach an cds volume for a specified instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - volumeId: id of the cds volume
-//     - args: the arguments of instance id detached from
+//   - cli: the client agent which can perform sending request
+//   - volumeId: id of the cds volume
+//   - args: the arguments of instance id detached from
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func DetachCDSVolume(cli bce.Client, volumeId string, args *DetachVolumeArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -377,11 +385,12 @@ func DetachCDSVolume(cli bce.Client, volumeId string, args *DetachVolumeArgs) er
 // DeleteCDSVolume - delete a specified cds volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - volumeId: id of the cds volume to be deleted
-//     - :
+//   - cli: the client agent which can perform sending request
+//   - volumeId: id of the cds volume to be deleted
+//   - :
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func DeleteCDSVolume(cli bce.Client, volumeId string) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -405,11 +414,12 @@ func DeleteCDSVolume(cli bce.Client, volumeId string) error {
 // can control whether to delete the snapshot associated with the volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - volumeId: id of the cds volume to be deleted
-//     - args: the arguments to delete cds volume
+//   - cli: the client agent which can perform sending request
+//   - volumeId: id of the cds volume to be deleted
+//   - args: the arguments to delete cds volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func DeleteCDSVolumeNew(cli bce.Client, volumeId string, args *DeleteCDSVolumeArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -442,12 +452,13 @@ func DeleteCDSVolumeNew(cli bce.Client, volumeId string, args *DeleteCDSVolumeAr
 // ResizeCDSVolume - resize a specified cds volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - volumeId: id of the cds volume to be resized
-//     - args: the arguments to resize cds volume
+//   - cli: the client agent which can perform sending request
+//   - volumeId: id of the cds volume to be resized
+//   - args: the arguments to resize cds volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
-func ResizeCDSVolume(cli bce.Client, volumeId string, args *ResizeCSDVolumeArgs) error {
+//   - error: nil if success otherwise the specific error
+func ResizeCDSVolume(cli bce.Client, volumeId string, args *ResizeCSDVolumeArgs) (*ResizeCDSVolumeResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getVolumeUriWithId(volumeId))
@@ -460,35 +471,40 @@ func ResizeCDSVolume(cli bce.Client, volumeId string, args *ResizeCSDVolumeArgs)
 
 	jsonBytes, err := json.Marshal(args)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	body, err := bce.NewBodyFromBytes(jsonBytes)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	req.SetBody(body)
 
 	// Send request and get response
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
-		return err
+		return nil, err
 	}
 	if resp.IsFail() {
-		return resp.ServiceError()
+		return nil, resp.ServiceError()
 	}
 
+	jsonBody := &ResizeCDSVolumeResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
 	defer func() { resp.Body().Close() }()
-	return nil
+	return jsonBody, nil
 }
 
 // RollbackCDSVolume - roll back a specified cds volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - volumeId: id of the cds volume to be rolled back
-//     - args: the arguments to roll back the cds volume
+//   - cli: the client agent which can perform sending request
+//   - volumeId: id of the cds volume to be rolled back
+//   - args: the arguments to roll back the cds volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func RollbackCDSVolume(cli bce.Client, volumeId string, args *RollbackCSDVolumeArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -523,11 +539,12 @@ func RollbackCDSVolume(cli bce.Client, volumeId string, args *RollbackCSDVolumeA
 // PurchaseReservedCDSVolume - renew a specified volume to extend expiration time.
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - volumeId: id of the volume to be renewed
-//     - args: the arguments to renew cds volume
+//   - cli: the client agent which can perform sending request
+//   - volumeId: id of the volume to be renewed
+//   - args: the arguments to renew cds volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func PurchaseReservedCDSVolume(cli bce.Client, volumeId string, args *PurchaseReservedCSDVolumeArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -565,11 +582,12 @@ func PurchaseReservedCDSVolume(cli bce.Client, volumeId string, args *PurchaseRe
 // RenameCDSVolume - rename a specified cds volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - volumeId: id of the volume to be renamed
-//     - args: the arguments to rename volume
+//   - cli: the client agent which can perform sending request
+//   - volumeId: id of the volume to be renamed
+//   - args: the arguments to rename volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func RenameCDSVolume(cli bce.Client, volumeId string, args *RenameCSDVolumeArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -604,11 +622,12 @@ func RenameCDSVolume(cli bce.Client, volumeId string, args *RenameCSDVolumeArgs)
 // ModifyCDSVolume - modify attributes of the specified cds volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - volumeId: id of the volume to be modified
-//     - args: arguments to modify volume
+//   - cli: the client agent which can perform sending request
+//   - volumeId: id of the volume to be modified
+//   - args: arguments to modify volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func ModifyCDSVolume(cli bce.Client, volumeId string, args *ModifyCSDVolumeArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -643,11 +662,12 @@ func ModifyCDSVolume(cli bce.Client, volumeId string, args *ModifyCSDVolumeArgs)
 // ModifyChargeTypeCDSVolume - modify the volume billing method, only support Postpaid to Prepaid and Prepaid to Postpaid
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - volumeId: id of the volume to be modified
-//     - args: the arguments to modify volume billing method
+//   - cli: the client agent which can perform sending request
+//   - volumeId: id of the volume to be modified
+//   - args: the arguments to modify volume billing method
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func ModifyChargeTypeCDSVolume(cli bce.Client, volumeId string, args *ModifyChargeTypeCSDVolumeArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -682,10 +702,11 @@ func ModifyChargeTypeCDSVolume(cli bce.Client, volumeId string, args *ModifyChar
 // AutoRenewCDSVolume - auto renew the specified cds volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to auto renew the cds volume
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to auto renew the cds volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func AutoRenewCDSVolume(cli bce.Client, args *AutoRenewCDSVolumeArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -721,10 +742,11 @@ func AutoRenewCDSVolume(cli bce.Client, args *AutoRenewCDSVolumeArgs) error {
 // CancelAutoRenewCDSVolume - cancel auto renew the specified cds volume
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to cancel auto renew the cds volume
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to cancel auto renew the cds volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func CancelAutoRenewCDSVolume(cli bce.Client, args *CancelAutoRenewCDSVolumeArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -760,11 +782,12 @@ func CancelAutoRenewCDSVolume(cli bce.Client, args *CancelAutoRenewCDSVolumeArgs
 // GetAvailableDiskInfo - get available diskInfos of the specified zone
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - zoneName: the zone name eg:cn-bj-a
+//   - cli: the client agent which can perform sending request
+//   - zoneName: the zone name eg:cn-bj-a
+//
 // RETURNS:
-//     - *GetAvailableDiskInfoResult: the result of the specified zone diskInfos
-//     - error: nil if success otherwise the specific error
+//   - *GetAvailableDiskInfoResult: the result of the specified zone diskInfos
+//   - error: nil if success otherwise the specific error
 func GetAvailableDiskInfo(cli bce.Client, zoneName string) (*GetAvailableDiskInfoResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -789,11 +812,12 @@ func GetAvailableDiskInfo(cli bce.Client, zoneName string) (*GetAvailableDiskInf
 // DeletePrepayVolume - delete the volumes for prepay
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments of method
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments of method
+//
 // RETURNS:
-//     - *VolumeDeleteResultResponse: the result of deleting volumes
-//     - error: nil if success otherwise the specific error
+//   - *VolumeDeleteResultResponse: the result of deleting volumes
+//   - error: nil if success otherwise the specific error
 func DeletePrepayVolume(cli bce.Client, args *VolumePrepayDeleteRequestArgs) (*VolumeDeleteResultResponse, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -825,13 +849,12 @@ func DeletePrepayVolume(cli bce.Client, args *VolumePrepayDeleteRequestArgs) (*V
 	return jsonBody, nil
 }
 
-
 func TagVolume(cli bce.Client, volumeId string, args *TagVolumeArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getTagVolumeUri(volumeId))
 	req.SetMethod(http.PUT)
-	req.SetParam("bind","")
+	req.SetParam("bind", "")
 	jsonBytes, err := json.Marshal(args)
 	if err != nil {
 		return err
@@ -853,13 +876,12 @@ func TagVolume(cli bce.Client, volumeId string, args *TagVolumeArgs) error {
 	return nil
 }
 
-
 func UntagVolume(cli bce.Client, volumeId string, args *TagVolumeArgs) error {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getUntagVolumeUri(volumeId))
 	req.SetMethod(http.PUT)
-	req.SetParam("unbind","")
+	req.SetParam("unbind", "")
 	jsonBytes, err := json.Marshal(args)
 	if err != nil {
 		return err

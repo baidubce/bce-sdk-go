@@ -58,6 +58,9 @@ type InstanceSpec struct {
 	ImageID    string     `json:"imageID,omitempty"`
 	InstanceOS InstanceOS `json:"instanceOS,omitempty"`
 
+	// 实例自定义数据, 支持安装驱动
+	UserData string `json:"userData,omitempty"`
+
 	// EIP
 	NeedEIP   bool       `json:"needEIP,omitempty"`
 	EIPOption *EIPOption `json:"eipOption,omitempty"`
@@ -69,6 +72,9 @@ type InstanceSpec struct {
 	// Charging Type, 通常只支持后付费
 	InstanceChargingType      bccapi.PaymentTimingType  `json:"instanceChargingType,omitempty"` // 后付费或预付费
 	InstancePreChargingOption InstancePreChargingOption `json:"instancePreChargingOption,omitempty"`
+
+	// 创建虚机的时候，是否需要绑定虚机的tag到虚机的附加的资源上
+	RelationTag bool `json:"relationTag,omitempty"`
 
 	// 删除节点选项
 	DeleteOption *DeleteOption `json:"deleteOption,omitempty"`
@@ -84,6 +90,8 @@ type InstanceSpec struct {
 	CCEInstancePriority int `json:"cceInstancePriority,omitempty"`
 
 	AutoSnapshotID string `json:"autoSnapshotID,omitempty"` // 自动快照策略   ID
+
+	IsOpenHostnameDomain bool `json:"isOpenHostnameDomain,omitempty"`
 }
 
 // VPCConfig 定义 Instance VPC
@@ -99,6 +107,8 @@ type VPCConfig struct {
 	AvailableZone AvailableZone `json:"availableZone,omitempty"`
 
 	SecurityGroup SecurityGroup `json:"securityGroup,omitempty"`
+
+	SecurityGroupType string `json:"securityGroupType"`
 }
 
 // SecurityGroup 定义 Instance 安全组配置
@@ -125,6 +135,8 @@ type InstanceResource struct {
 	RootDiskType bccapi.StorageType `json:"rootDiskType,omitempty"`
 	RootDiskSize int                `json:"rootDiskSize,omitempty"` // unit: GB
 
+	EphemeralDiskList []EphemeralDisk `json:"ephemeralDiskList,omitempty"`
+
 	// GPU 机器必须指定, 其他机器不用
 	LocalDiskSize int `json:"localDiskSize,omitempty"` // unit: GB
 
@@ -136,16 +148,56 @@ type InstanceResource struct {
 	GPUCount int     `json:"gpuCount,omitempty"`
 }
 
+type EphemeralDisk struct {
+	StorageType StorageType `json:"storageType,omitempty"`
+	SizeInGB    int         `json:"sizeInGB,omitempty"`
+}
+
+// StorageType 存储类型
+type StorageType string
+
+const (
+	// StorageTypeSTD1 上一代云磁盘
+	StorageTypeSTD1 StorageType = "sata"
+
+	// StorageTypeHP1 高性能型
+	StorageTypeHP1 StorageType = "ssd"
+
+	// StorageTypeCloudHP1 SSD 型
+	StorageTypeCloudHP1 StorageType = "premium_ssd"
+
+	StorageTypeNNME StorageType = "nvme"
+
+	// TODO: 下面的值待确定，目前 CCE 不支持
+
+	// StorageTypeHDD 普通型
+	StorageTypeHDD StorageType = "hdd"
+
+	// StorageTypeLocal 本地盘
+	StorageTypeLocal StorageType = "local"
+
+	// StorageTypeDCCSATA Sata 盘, 创建 DCC 实例专用
+	StorageTypeDCCSATA StorageType = "SATA"
+
+	// StorageTypeDCCSSD SSD 盘, 创建 DCC 实例专用
+	StorageTypeDCCSSD StorageType = "SSD"
+
+	// StorageTypeEnhancedSSD 增强型SSD
+	StorageTypeEnhancedSSD = "enhanced_ssd_pl1"
+)
+
 // EIPOption 定义 Instance EIP 相关配置
 type EIPOption struct {
 	EIPName         string        `json:"eipName,omitempty"`
 	EIPChargingType BillingMethod `json:"eipChargeType,omitempty"`
+	EIPPurchaseType PurchaseType  `json:"eipPurchaseType,omitempty" gorm:"column:eip_purchase_type"`
 	EIPBandwidth    int           `json:"eipBandwidth,omitempty"`
 }
 
 // InstancePreChargingOption 定义付费相关配置
 type InstancePreChargingOption struct {
-	PurchaseTime      int    `json:"purchaseTime,omitempty"`      //  预付费才生效：单位月，12 = 12 月
+	PurchaseTime      int    `json:"purchaseTime,omitempty"` //  预付费才生效：单位月，12 = 12 月
+	PurchaseTimeUnit  string `json:"purchaseTimeUnit,omitempty"`
 	AutoRenew         bool   `json:"autoRenew,omitempty"`         // 是否自动续费
 	AutoRenewTimeUnit string `json:"autoRenewTimeUnit,omitempty"` // 续费单位：月
 	AutoRenewTime     int    `json:"autoRenewTime,omitempty"`     // 12 = 12 个月
@@ -195,6 +247,18 @@ type DeployCustomConfig struct {
 	// PodPidsLimit, default: -1
 	PodPidsLimit int `json:"podPidsLimit,omitempty"`
 
+	EventRecordQPS *int32 `json:"eventRecordQPS,omitempty"`
+	EventBurst     *int32 `json:"eventBurst,omitempty"`
+	KubeAPIQPS     *int32 `json:"kubeAPIQPS,omitempty"`   // 自定义 KubeAPIQPS
+	KubeAPIBurst   *int32 `json:"kubeAPIBurst,omitempty"` // 自定义 KubeAPIBurst
+	MaxPods        *int32 `json:"maxPods,omitempty"`      // 自定义 MaxPods
+
+	// https://kubernetes.io/zh/docs/tasks/administer-cluster/topology-manager/
+	CPUManagerPolicy      K8SCPUManagerPolicy      `json:"cpuManagerPolicy,omitempty"`
+	TopologyManagerScope  K8STopologyManagerScope  `json:"topologyManagerScope,omitempty"`
+	TopologyManagerPolicy K8STopologyManagerPolicy `json:"topologyManagerPolicy,omitempty"`
+	CPUCFSQuota           *bool                    `json:"cpuCFSQuota,omitempty"`
+
 	// 是否封锁节点
 	EnableCordon bool `json:"enableCordon,omitempty"`
 
@@ -205,6 +269,8 @@ type DeployCustomConfig struct {
 
 	// KubeletBindAddressType, kubelet bind address
 	KubeletBindAddressType KubeletBindAddressType `json:"kubeletBindAddressType,omitempty"`
+
+	PostUserScriptFailedAutoCordon bool `json:"postUserScriptFailedAutoCordon,omitempty"`
 }
 
 // DockerConfig docker相关配置
@@ -242,8 +308,8 @@ const (
 	// MachineTypeBBC 机器类型 BBC
 	MachineTypeBBC MachineType = "BBC"
 
-	// MachineTypeMetal 机器类型 裸金属
-	MachineTypeMetal MachineType = "Metal"
+	// MachineTypeEBC 机器类型 EBC
+	MachineTypeEBC MachineType = "EBC"
 )
 
 // CDSConfig clone from BCC
@@ -272,6 +338,60 @@ const (
 
 	// ClusterRoleNode K8S node
 	ClusterRoleNode ClusterRole = "node"
+)
+
+// K8SCPUManagerPolicy - K8S CPUManagerPolicy
+type K8SCPUManagerPolicy string
+
+const (
+	// K8SCPUManagerPolicyNone - none
+	K8SCPUManagerPolicyNone K8SCPUManagerPolicy = "none"
+
+	// K8SCPUManagerPolicyStatic - static
+	K8SCPUManagerPolicyStatic K8SCPUManagerPolicy = "static"
+)
+
+// K8STopologyManagerScope - K8S topologyManagerScope
+type K8STopologyManagerScope string
+
+const (
+	// K8STopologyManagerScopePod - pod
+	K8STopologyManagerScopePod K8STopologyManagerScope = "pod"
+
+	// K8STopologyManagerScopeContainer - container
+	K8STopologyManagerScopeContainer K8STopologyManagerScope = "container"
+)
+
+// K8STopologyManagerPolicy - K8S topologyManagerPolicy
+type K8STopologyManagerPolicy string
+
+const (
+	// K8STopologyManagerPolicyNone - none
+	K8STopologyManagerPolicyNone K8STopologyManagerPolicy = "none"
+
+	// K8STopologyManagerPolicyBestEffort - best-effort
+	K8STopologyManagerPolicyBestEffort K8STopologyManagerPolicy = "best-effort"
+
+	// K8STopologyManagerPolicyRestricted - restricted
+	K8STopologyManagerPolicyRestricted K8STopologyManagerPolicy = "restricted"
+
+	// K8STopologyManagerPolicySingleNumaNode - single-numa-node
+	K8STopologyManagerPolicySingleNumaNode K8STopologyManagerPolicy = "single-numa-node"
+)
+
+type PurchaseType string
+
+const (
+	// EIPPurchaseTypeBGP 标准型BGP
+	EIPPurchaseTypeBGP PurchaseType = "BGP"
+	// EIPPurchaseTypeBGP_S 增强型BGP
+	EIPPurchaseTypeBGP_S PurchaseType = "BGP_S"
+	// EIPPurchaseTypeChinaTelcom  电信单线
+	EIPPurchaseTypeChinaTelcom PurchaseType = "ChinaTelcom"
+	// EIPPurchaseTypeChinaUnicom  联通单线
+	EIPPurchaseTypeChinaUnicom PurchaseType = "ChinaUnicom"
+	// EIPPurchaseTypeChinaMobile  移动单线
+	EIPPurchaseTypeChinaMobile PurchaseType = "ChinaMobile"
 )
 
 // InstanceOS defines the OS of BCC

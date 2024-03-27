@@ -35,6 +35,7 @@ bce-sdk-go
 |  |--bcm                 //云监控
 |  |--bec                 //百度边缘计算
 |  |--bie                 //百度智能边缘
+|  |--billing             //百度云财务
 |  |--bls                 //日志服务
 |  |--bos                 //BOS服务目录
 |  |  |--bos_client.go    //BOS客户端入口
@@ -249,6 +250,7 @@ myLogger.Info("this is my own logger from the sdk")
 云监控 | BCM       | github.com/baidubce/bce-sdk-go/services/bcm       | [BCM.md](./doc/BCM.md)
 边缘计算节点 | BEC       | github.com/baidubce/bce-sdk-go/services/bec       |[BEC.md](./doc/BEC.md)
 百度智能边缘 | BIE       | github.com/baidubce/bce-sdk-go/services/bie       |
+百度云财务 | BILLING | github.com/baidubce/bce-sdk-go/services/billing   | [BILLING.md](./doc/BILLING.md)
 负载均衡 | BLB       | github.com/baidubce/bce-sdk-go/services/blb       | [BLB.md](./doc/BLB.md)
 日志服务 | BLS       | github.com/baidubce/bce-sdk-go/services/bls       | [BLS.md](./doc/BLS.md)
 百度对象存储 | BOS       | github.com/baidubce/bce-sdk-go/services/bos       | [BOS.md](./doc/BOS.md)

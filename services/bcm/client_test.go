@@ -3110,3 +3110,136 @@ func Test_GetFilterInstanceForInstanceGroup(t *testing.T) {
 	content, _ := json.Marshal(response)
 	fmt.Println(string(content))
 }
+
+func TestClient_GetMultiDimensionLatestMetrics(t *testing.T) {
+	req := &model.MultiDimensionalLatestMetricsRequest{
+		UserID: bcmConf.UserId,
+		Scope:  "BCE_BLB",
+		Region: "bj",
+		Dimensions: []model.Dimension{
+			{
+				Name:  "BlbId",
+				Value: "lb-****e1a0",
+			},
+		},
+		Statistics:  []string{"average", "sum"},
+		Timestamp:   "2024-03-18T06:01:00Z",
+		MetricNames: []string{"ActiveConnCount"},
+	}
+	response, err := bcmClient.GetMultiDimensionLatestMetrics(req)
+	if err != nil {
+		t.Errorf("Get Multi-Dimension latest metrics error with %v\n", err)
+	}
+	content, _ := json.Marshal(response)
+	fmt.Println(string(content))
+}
+
+func TestClient_GetMetricsByPartialDimensions(t *testing.T) {
+	req := &model.MetricsByPartialDimensionsRequest{
+		UserID: bcmConf.UserId,
+		Scope:  "BCE_BLB",
+		Region: "su",
+		Dimensions: []model.Dimension{
+			{
+				Name:  "BlbPortType",
+				Value: "TCP",
+			},
+		},
+		Statistics:   []string{"sum", "average", "minimum", "maximum"},
+		ResourceType: "Blb",
+		MetricName:   "ActiveConnCount",
+		StartTime:    "2024-03-20T02:21:17Z",
+		EndTime:      "2024-03-20T03:21:17Z",
+		Cycle:        30,
+		PageNo:       2,
+		PageSize:     2,
+	}
+	response, err := bcmClient.GetMetricsByPartialDimensions(req)
+	if err != nil {
+		t.Errorf("Get metricsByPartialDimensions error with %v\n", err)
+	}
+	//fmt.Printf("%+v", response)
+	content, _ := json.Marshal(response)
+	fmt.Println(string(content))
+}
+
+func TestClient_GetMetricsByPartialDimensions_atLeastParam(t *testing.T) {
+	req := &model.MetricsByPartialDimensionsRequest{
+		UserID:     bcmConf.UserId,
+		Scope:      "BCE_BCC",
+		Statistics: []string{"sum", "average", "minimum", "maximum"},
+		MetricName: "CpuIdlePercent",
+		StartTime:  "2024-03-20T02:21:17Z",
+		EndTime:    "2024-03-20T03:21:17Z",
+	}
+	response, err := bcmClient.GetMetricsByPartialDimensions(req)
+	if err != nil {
+		t.Errorf("Get metricsByPartialDimensions error with %v\n", err)
+	}
+	//fmt.Printf("%+v", response)
+	content, _ := json.Marshal(response)
+	fmt.Println(string(content))
+}
+
+func TestClient_GetMetricsAllDataV2(t *testing.T) {
+	req := &model.TsdbMetricAllDataQueryRequest{
+		UserID: bcmConf.UserId,
+		Scope:  "BCE_BCC",
+		Region: "bj",
+		Dimensions: [][]model.Dimension{
+			{
+				{
+					Name:  "InstanceId",
+					Value: "i-DMxr6UxX",
+				},
+			},
+			{
+				{
+					Name:  "InstanceId",
+					Value: "i-Y8NAmymd",
+				},
+			},
+		},
+		Statistics:  []string{"average", "sum"},
+		StartTime:   "2024-03-20T07:01:00Z",
+		EndTime:     "2024-03-20T07:05:00Z",
+		MetricNames: []string{"CPUUsagePercent", "MemUsedPercent"},
+	}
+	response, err := bcmClient.GetMetricsAllDataV2(req)
+	if err != nil {
+		t.Errorf("Get all data metrics error with %v\n", err)
+	}
+	content, _ := json.Marshal(response)
+	fmt.Println(string(content))
+}
+
+func TestClient_BatchGetMetricsAllDataV2(t *testing.T) {
+	req := &model.TsdbMetricAllDataQueryRequest{
+		UserID: bcmConf.UserId,
+		Scope:  "BCE_MQ_KAFKA",
+		Region: "bj",
+		Type:   "Node",
+		Dimensions: [][]model.Dimension{
+			{
+				{
+					Name:  "ClusterId",
+					Value: "efe456d667c64******0652c93812a79",
+				},
+				{
+					Name:  "NodeId",
+					Value: "i-Um1V8Haq",
+				},
+			},
+		},
+		Statistics:  []string{"average", "sum"},
+		StartTime:   "2024-03-21T06:33:50Z",
+		EndTime:     "2024-03-21T07:33:50Z",
+		MetricNames: []string{"CpuUsedPercent", "CpuIdlePercent"},
+	}
+	response, err := bcmClient.BatchGetMetricsAllDataV2(req)
+	if err != nil {
+		t.Errorf("Get all data metrics error with %v\n", err)
+	}
+	content, _ := json.Marshal(response)
+	fmt.Println(string(content))
+}

@@ -32,6 +32,8 @@ const (
 
 	REQUEST_INSTANCEGROUP_URL = "/instancegroup"
 
+	REQUEST_Addon_URL = "/addon"
+
 	REQUEST_INSTANCEGROUP_LIST_URL = "/instancegroups"
 
 	REQUEST_INSTANCEGROUP_AUTOSCALER_URL = "/autoscaler"
@@ -65,6 +67,8 @@ const (
 	REQUEST_TASK_LIST_URL = "/tasks"
 
 	REQUEST_EVENT_URL = "/event"
+
+	REQUEST_SYNC_URL = "/sync"
 )
 
 var _ Interface = &Client{}
@@ -96,6 +100,15 @@ func getClusterUriWithIDURI(clusterID string) string {
 func getClusterEventStepsURI(clusterID string) string {
 	return URI_PREFIX + REQUEST_EVENT_URL + REQUEST_CLUSTER_URL + "/" + clusterID
 }
+
+func getInstanceEventStepsURI(instanceID string) string {
+	return URI_PREFIX + REQUEST_EVENT_URL + REQUEST_INSTANCE_URL + "/" + instanceID
+}
+
+func getSyncInstancesURI(clusterID string) string {
+	return URI_PREFIX + REQUEST_SYNC_URL + REQUEST_CLUSTER_URL + clusterID + REQUEST_INSTANCE_LIST_URL
+}
+
 func getClusterListURI() string {
 	return URI_PREFIX + REQUEST_CLUSTER_LIST_URL
 }
@@ -190,6 +203,14 @@ func genUpdateInstanceCRDURI(clusterID string) string {
 
 func genGetClusterCRDURI(clusterID string) string {
 	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + "/crd"
+}
+
+func genAddonURI(clusterID string) string {
+	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_Addon_URL
+}
+
+func genAddonUpgradeURI(clusterID string) string {
+	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_Addon_URL + "/upgrade"
 }
 
 func genUpdateClusterCRDURI(clusterID string) string {

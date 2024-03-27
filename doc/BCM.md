@@ -277,6 +277,34 @@ resp, err := bcmClient.BatchGetMetricData(req)
 > **提示：**
 > - 详细的参数配置及限制条件，可以参考BCM API 文档[查询数据接口](https://cloud.baidu.com/doc/BCM/s/9jwvym3kb)
 
+## 根据部分维度查询最新数据
+
+### 接口描述
+根据部分维度查询最新数据，支持多维度多指标查找。
+
+### 请求示例
+```go
+req := &model.MultiDimensionalLatestMetricsRequest{
+		UserID: bcmConf.UserId,
+		Scope:  "BCE_BLB",
+		Region: "bj",
+		Dimensions: []model.Dimension{
+			{
+				Name:  "BlbId",
+				Value: "lb-****e1a0",
+			},
+		},
+		Statistics:  []string{"average", "sum"},
+		Timestamp:   "2024-03-18T06:01:00Z",
+		MetricNames: []string{"ActiveConnCount"},
+	}
+response, err := bcmClient.GetMultiDimensionLatestMetrics(req)
+print(response)
+```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考BCM API 文档[查询数据接口](https://cloud.baidu.com/doc/BCM/s/9jwvym3kb)
+
+
 ## 创建名字空间
 
 ### 接口描述

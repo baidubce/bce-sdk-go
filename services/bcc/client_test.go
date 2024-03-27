@@ -671,10 +671,13 @@ func TestDetachCDSVolume(t *testing.T) {
 
 func TestResizeCDSVolume(t *testing.T) {
 	args := &api.ResizeCSDVolumeArgs{
-		NewCdsSizeInGB: 100,
+		NewCdsSizeInGB: 461,
+		NewVolumeType:  "enhanced_ssd_pl2",
 	}
 
-	err := BCC_CLIENT.ResizeCDSVolume(BCC_TestCdsId, args)
+	res, err := BCC_CLIENT.ResizeCDSVolume(BCC_TestCdsId, args)
+
+	fmt.Println(res)
 	ExpectEqual(t.Errorf, err, nil)
 }
 
@@ -934,8 +937,8 @@ func TestListFlavorSpec(t *testing.T) {
 	args := &api.ListFlavorSpecArgs{}
 	res, err := BCC_CLIENT.ListFlavorSpec(args)
 	ExpectEqual(t.Errorf, err, nil)
-	//fmt.Println(res.ZoneResources[0].BccResources.FlavorGroups[0].Flavors[0].NetEthQueueCount)
-	//fmt.Println(res.ZoneResources[0].BccResources.FlavorGroups[0].Flavors[0].NetEthMaxQueueCount)
+	// fmt.Println(res.ZoneResources[0].BccResources.FlavorGroups[0].Flavors[0].NetEthQueueCount)
+	// fmt.Println(res.ZoneResources[0].BccResources.FlavorGroups[0].Flavors[0].NetEthMaxQueueCount)
 	fmt.Println(res)
 }
 
@@ -953,10 +956,10 @@ func TestGetPriceBySpec(t *testing.T) {
 	fmt.Println(res)
 }
 
-func TestDeletePrepaidInstanceWithRelateResource (t *testing.T) {
+func TestDeletePrepaidInstanceWithRelateResource(t *testing.T) {
 	args := &api.DeletePrepaidInstanceWithRelateResourceArgs{
-		InstanceId: BCC_TestBccId,
-		RelatedReleaseFlag: true,
+		InstanceId:            BCC_TestBccId,
+		RelatedReleaseFlag:    true,
 		DeleteCdsSnapshotFlag: true,
 		DeleteRelatedEnisFlag: true,
 	}
@@ -1732,7 +1735,6 @@ func TestImportCustomImage(t *testing.T) {
 }
 
 func TestGetAvailableImagesBySpec(t *testing.T) {
-
 	args := &api.GetAvailableImagesBySpecArg{
 		OsName:  "Centos",
 		Spec:    "bcc.ic4.c1m1",
@@ -1746,7 +1748,6 @@ func TestGetAvailableImagesBySpec(t *testing.T) {
 }
 
 func TestListCDSVolumeV3New(t *testing.T) {
-
 	args := &api.ListCDSVolumeArgs{
 		ChargeFilter: "postpay",
 		Name:         "cdsTest",
@@ -1758,8 +1759,21 @@ func TestListCDSVolumeV3New(t *testing.T) {
 	fmt.Println(result)
 }
 
-func TestListCDSVolumeNew(t *testing.T) {
+func TestBatchRefundResource(t *testing.T) {
 
+	arg := &api.BatchRefundResourceArg{
+		InstanceIds: []string{
+			"i-",
+		},
+		DeleteRelatedEnisFlag: true,
+	}
+
+	result, err := BCC_CLIENT.BatchRefundResource(arg)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}
+
+func TestListCDSVolumeNew(t *testing.T) {
 	args := &api.ListCDSVolumeArgs{
 		ChargeFilter: "postpay",
 		Name:         "test-ebcc-api-gc_datadiskvCSM",

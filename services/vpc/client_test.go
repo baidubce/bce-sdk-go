@@ -166,6 +166,25 @@ func TestGetVPCDetail(t *testing.T) {
 	ExpectEqual(t.Errorf, "tagV", result.VPC.Tags[0].TagValue)
 }
 
+func TestOpenRelay(t *testing.T) {
+	VPCID = ""
+	args := &UpdateVpcRelayArgs{
+		VpcId: VPCID,
+	}
+	err := VPC_CLIENT.OpenRelay(args)
+	ExpectEqual(t.Errorf, nil, err)
+
+}
+
+func TestShutdownRelay(t *testing.T) {
+	VPCID = ""
+	args := &UpdateVpcRelayArgs{
+		VpcId: VPCID,
+	}
+	err := VPC_CLIENT.ShutdownRelay(args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
 func TestUpdateVPC(t *testing.T) {
 	args := &UpdateVPCArgs{
 		Name:        "TestSDK-VPC-update",

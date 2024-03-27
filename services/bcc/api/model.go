@@ -443,6 +443,7 @@ type GetBidInstancePriceArgs struct {
 
 type CreateInstanceResult struct {
 	InstanceIds []string `json:"instanceIds"`
+	WarningList []string `json:"warningList"`
 }
 
 type CreateInstanceBySpecArgs struct {
@@ -602,7 +603,8 @@ type CreateSpecialInstanceBySpecArgs struct {
 
 	// CreateInstanceBySpecArgs 的基础上增加的参数
 	LabelConstraints []LabelConstraint `json:"labelConstraints,omitempty"`
-	ResGroupId       string            `json:"resGroupId,omitempty"`
+
+	ResGroupId string `json:"resGroupId,omitempty"`
 }
 
 type CreateSpecialInstanceBySpecResult struct {
@@ -1192,6 +1194,7 @@ type VolumeAttachmentModel struct {
 
 type AttachVolumeResult struct {
 	VolumeAttachment *VolumeAttachmentModel `json:"volumeAttachment"`
+	WarningList      []string               `json:"warningList"`
 }
 
 type CreateCDSVolumeArgs struct {
@@ -1211,6 +1214,7 @@ type CreateCDSVolumeArgs struct {
 	Tags               []model.TagModel     `json:"tags"`
 	AutoSnapshotPolicy []AutoSnapshotPolicy `json:"autoSnapshotPolicy"`
 	ClientToken        string               `json:"-"`
+	ChargeType         string               `json:"chargeType"`
 }
 
 type AutoSnapshotPolicy struct {
@@ -1232,10 +1236,12 @@ type CreateCDSVolumeV3Args struct {
 	RenewTimeUnit        string        `json:"renewTimeUnit"`
 	RenewTime            int           `json:"renewTime"`
 	ClientToken          string        `json:"-"`
+	ChargeType           string        `json:"chargeType"`
 }
 
 type CreateCDSVolumeResult struct {
-	VolumeIds []string `json:"volumeIds"`
+	VolumeIds   []string `json:"volumeIds"`
+	WarningList []string `json:"warningList"`
 }
 
 type GetVolumeDetailResult struct {
@@ -1263,6 +1269,10 @@ type ResizeCSDVolumeArgs struct {
 	NewCdsSizeInGB int         `json:"newCdsSizeInGB,omitempty"`
 	NewVolumeType  StorageType `json:"newVolumeType,omitempty"`
 	ClientToken    string      `json:"-"`
+}
+
+type ResizeCDSVolumeResult struct {
+	WarningList []string `json:"warningList"`
 }
 
 type RollbackCSDVolumeArgs struct {
@@ -2178,9 +2188,10 @@ type BatchChangeInstanceToPostpayArgs struct {
 }
 
 type PostpayConfig struct {
-	InstanceId  string   `json:"instanceId"`
-	RelationCds bool     `json:"relationCds"`
-	CdsList     []string `json:"cdsList"`
+	InstanceId    string   `json:"instanceId"`
+	RelationCds   bool     `json:"relationCds"`
+	CdsList       []string `json:"cdsList"`
+	EffectiveType string   `json:"effectiveType"`
 }
 
 type BatchChangeInstanceBillingMethodResult struct {
@@ -2288,6 +2299,17 @@ type GetAvailableImagesBySpecResult struct {
 	MaxKeys     int      `json:"maxKeys"`
 	NextMarker  string   `json:"nextMarker"`
 	Images      ImageArg `json:"images"`
+}
+
+type BatchRefundResourceArg struct {
+	InstanceIds           []string `json:"instanceIds"`
+	RelatedReleaseFlag    bool     `json:"relatedReleaseFlag"`
+	DeleteCdsSnapshotFlag bool     `json:"deleteCdsSnapshotFlag"`
+	DeleteRelatedEnisFlag bool     `json:"deleteRelatedEnisFlag"`
+}
+
+type BatchRefundResourceResult struct {
+	FailedInstanceIds []string `json:"failedInstanceIds"`
 }
 
 type ImageArg []struct {

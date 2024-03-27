@@ -20,6 +20,7 @@ package bcc
 
 import (
 	"encoding/json"
+
 	"github.com/baidubce/bce-sdk-go/auth"
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/services/bcc/api"
@@ -55,17 +56,18 @@ func NewClient(ak, sk, endPoint string) (*Client, error) {
 		ConnectionTimeoutInMillis: bce.DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS}
 	v1Signer := &auth.BceV1Signer{}
 
-	client := &Client{bce.NewBceClient(defaultConf, v1Signer)}
+	client := &Client{BceClient: bce.NewBceClient(defaultConf, v1Signer)}
 	return client, nil
 }
 
 // CreateInstance - create an instance with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create instance
+//   - args: the arguments to create instance
+//
 // RETURNS:
-//     - *api.CreateInstanceResult: the result of create Instance, contains new Instance ID
-//     - error: nil if success otherwise the specific error
+//   - *api.CreateInstanceResult: the result of create Instance, contains new Instance ID
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateInstance(args *api.CreateInstanceArgs) (*api.CreateInstanceResult, error) {
 	if len(args.AdminPass) > 0 {
 		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
@@ -91,10 +93,11 @@ func (c *Client) CreateInstance(args *api.CreateInstanceArgs) (*api.CreateInstan
 // CreateInstanceV2 - create an instance with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create instance
+//   - args: the arguments to create instance
+//
 // RETURNS:
-//     - *api.CreateInstanceResult: the result of create Instance, contains new Instance ID
-//     - error: nil if success otherwise the specific error
+//   - *api.CreateInstanceResult: the result of create Instance, contains new Instance ID
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateInstanceV2(argsV2 *api.CreateInstanceArgsV2) (*api.CreateInstanceResult, error) {
 	if len(argsV2.AdminPass) > 0 {
 		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, argsV2.AdminPass)
@@ -144,10 +147,11 @@ func (c *Client) CreateInstanceV2(argsV2 *api.CreateInstanceArgsV2) (*api.Create
 // CreateInstance - create an instance with the specific parameters and support the passing in of label
 //
 // PARAMS:
-//     - args: the arguments to create instance
+//   - args: the arguments to create instance
+//
 // RETURNS:
-//     - *api.CreateInstanceResult: the result of create Instance, contains new Instance ID
-//     - error: nil if success otherwise the specific error
+//   - *api.CreateInstanceResult: the result of create Instance, contains new Instance ID
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateInstanceByLabel(args *api.CreateSpecialInstanceBySpecArgs) (*api.CreateInstanceResult, error) {
 	if len(args.AdminPass) > 0 {
 		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
@@ -173,10 +177,11 @@ func (c *Client) CreateInstanceByLabel(args *api.CreateSpecialInstanceBySpecArgs
 // CreateInstanceBySpec - create an instance with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create instance
+//   - args: the arguments to create instance
+//
 // RETURNS:
-//     - *api.CreateInstanceBySpecResult: the result of create Instance, contains new Instance ID
-//     - error: nil if success otherwise the specific error
+//   - *api.CreateInstanceBySpecResult: the result of create Instance, contains new Instance ID
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateInstanceBySpec(args *api.CreateInstanceBySpecArgs) (*api.CreateInstanceBySpecResult, error) {
 	if len(args.AdminPass) > 0 {
 		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
@@ -202,10 +207,11 @@ func (c *Client) CreateInstanceBySpec(args *api.CreateInstanceBySpecArgs) (*api.
 // CreateInstanceBySpecV2 - create an instance with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create instance
+//   - args: the arguments to create instance
+//
 // RETURNS:
-//     - *api.CreateInstanceBySpecResult: the result of create Instance, contains new Instance ID
-//     - error: nil if success otherwise the specific error
+//   - *api.CreateInstanceBySpecResult: the result of create Instance, contains new Instance ID
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateInstanceBySpecV2(argsV2 *api.CreateInstanceBySpecArgsV2) (*api.CreateInstanceBySpecResult, error) {
 	if len(argsV2.AdminPass) > 0 {
 		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, argsV2.AdminPass)
@@ -259,10 +265,11 @@ func (c *Client) CreateInstanceBySpecV2(argsV2 *api.CreateInstanceBySpecArgsV2) 
 // CreateInstanceV3 - create an instance with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create instance
+//   - args: the arguments to create instance
+//
 // RETURNS:
-//     - *api.CreateInstanceV3Result: the result of create Instance, contains new Instance ID
-//     - error: nil if success otherwise the specific error
+//   - *api.CreateInstanceV3Result: the result of create Instance, contains new Instance ID
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateInstanceV3(args *api.CreateInstanceV3Args) (*api.CreateInstanceV3Result, error) {
 	if len(args.Password) > 0 {
 		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.Password)
@@ -288,10 +295,11 @@ func (c *Client) CreateInstanceV3(args *api.CreateInstanceV3Args) (*api.CreateIn
 // ListInstances - list all instance with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all instance
+//   - args: the arguments to list all instance
+//
 // RETURNS:
-//     - *api.ListInstanceResult: the result of list Instance
-//     - error: nil if success otherwise the specific error
+//   - *api.ListInstanceResult: the result of list Instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListInstances(args *api.ListInstanceArgs) (*api.ListInstanceResult, error) {
 	return api.ListInstances(c, args)
 }
@@ -299,10 +307,11 @@ func (c *Client) ListInstances(args *api.ListInstanceArgs) (*api.ListInstanceRes
 // ListRecycleInstances - list all instance in the recycle bin with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all instance in the recycle bin
+//   - args: the arguments to list all instance in the recycle bin
+//
 // RETURNS:
-//     - *api.ListRecycleInstanceResult: the result of list Instance in the recycle bin
-//     - error: nil if success otherwise the specific error
+//   - *api.ListRecycleInstanceResult: the result of list Instance in the recycle bin
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListRecycleInstances(args *api.ListRecycleInstanceArgs) (*api.ListRecycleInstanceResult, error) {
 	return api.ListRecycleInstances(c, args)
 }
@@ -310,10 +319,11 @@ func (c *Client) ListRecycleInstances(args *api.ListRecycleInstanceArgs) (*api.L
 // ListServersByMarkerV3 - list all instance with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all instance
+//   - args: the arguments to list all instance
+//
 // RETURNS:
-//     - *api.LogicMarkerResultResponseV3: the result of list Instance
-//     - error: nil if success otherwise the specific error
+//   - *api.LogicMarkerResultResponseV3: the result of list Instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListServersByMarkerV3(args *api.ListServerRequestV3Args) (*api.LogicMarkerResultResponseV3, error) {
 	return api.ListServersByMarkerV3(c, args)
 }
@@ -321,10 +331,11 @@ func (c *Client) ListServersByMarkerV3(args *api.ListServerRequestV3Args) (*api.
 // GetInstanceDetail - get a specific instance detail info
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
+//   - instanceId: the specific instance ID
+//
 // RETURNS:
-//     - *api.GetInstanceDetailResult: the result of get instance detail info
-//     - error: nil if success otherwise the specific error
+//   - *api.GetInstanceDetailResult: the result of get instance detail info
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetInstanceDetail(instanceId string) (*api.GetInstanceDetailResult, error) {
 	return api.GetInstanceDetail(c, instanceId)
 }
@@ -343,9 +354,10 @@ func (c *Client) GetInstanceDetailWithDeploySetAndFailed(instanceId string,
 // DeleteInstance - delete a specific instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
+//   - instanceId: the specific instance ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteInstance(instanceId string) error {
 	return api.DeleteInstance(c, instanceId)
 }
@@ -353,10 +365,11 @@ func (c *Client) DeleteInstance(instanceId string) error {
 // AutoReleaseInstance - set releaseTime of a postpay instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - releaseTime: an UTC string，eg:"2021-05-01T07:58:09Z"
+//   - instanceId: the specific instance ID
+//   - releaseTime: an UTC string，eg:"2021-05-01T07:58:09Z"
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) AutoReleaseInstance(instanceId string, releaseTime string) error {
 	args := &api.AutoReleaseArgs{
 		ReleaseTime: releaseTime,
@@ -367,10 +380,11 @@ func (c *Client) AutoReleaseInstance(instanceId string, releaseTime string) erro
 // ResizeInstance - resize a specific instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - args: the arguments to resize a specific instance
+//   - instanceId: the specific instance ID
+//   - args: the arguments to resize a specific instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ResizeInstance(instanceId string, args *api.ResizeInstanceArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -387,10 +401,11 @@ func (c *Client) ResizeInstance(instanceId string, args *api.ResizeInstanceArgs)
 // RebuildInstance - rebuild an instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - args: the arguments to rebuild an instance
+//   - instanceId: the specific instance ID
+//   - args: the arguments to rebuild an instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RebuildInstance(instanceId string, args *api.RebuildInstanceArgs) error {
 	if len(args.AdminPass) > 0 {
 		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
@@ -443,9 +458,10 @@ func (c *Client) RebuildInstanceV2(instanceId string, argsV2 *api.RebuildInstanc
 // StartInstance - start an instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
+//   - instanceId: the specific instance ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) StartInstance(instanceId string) error {
 	return api.StartInstance(c, instanceId)
 }
@@ -453,11 +469,12 @@ func (c *Client) StartInstance(instanceId string) error {
 // StopInstance - stop an instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - forceStop: choose to force stop an instance or not
-//     - stopWithNoCharge: choose to stop with nocharge an instance or not
+//   - instanceId: the specific instance ID
+//   - forceStop: choose to force stop an instance or not
+//   - stopWithNoCharge: choose to stop with nocharge an instance or not
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) StopInstanceWithNoCharge(instanceId string, forceStop bool, stopWithNoCharge bool) error {
 	args := &api.StopInstanceArgs{
 		ForceStop:        forceStop,
@@ -477,10 +494,11 @@ func (c *Client) StopInstanceWithNoCharge(instanceId string, forceStop bool, sto
 // StopInstance - stop an instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - forceStop: choose to force stop an instance or not
+//   - instanceId: the specific instance ID
+//   - forceStop: choose to force stop an instance or not
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) StopInstance(instanceId string, forceStop bool) error {
 	args := &api.StopInstanceArgs{
 		ForceStop: forceStop,
@@ -501,10 +519,11 @@ func (c *Client) StopInstance(instanceId string, forceStop bool) error {
 // RebootInstance - restart an instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - forceStop: choose to force stop an instance or not
+//   - instanceId: the specific instance ID
+//   - forceStop: choose to force stop an instance or not
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RebootInstance(instanceId string, forceStop bool) error {
 	args := &api.StopInstanceArgs{
 		ForceStop: forceStop,
@@ -538,10 +557,11 @@ func (c *Client) RecoveryInstance(args *api.RecoveryInstanceArgs) error {
 // ChangeInstancePass - change an instance's password
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - args: the arguments to change password
+//   - instanceId: the specific instance ID
+//   - args: the arguments to change password
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ChangeInstancePass(instanceId string, args *api.ChangeInstancePassArgs) error {
 	cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
 	if err != nil {
@@ -564,10 +584,11 @@ func (c *Client) ChangeInstancePass(instanceId string, args *api.ChangeInstanceP
 // ModifyDeletionProtection - Modify deletion protection of specified instance
 //
 // PARAMS:
-//     - instanceId: id of the instance
-//	   - args: the arguments to modify deletion protection, default 0 for deletable and 1 for deletion protection
+//   - instanceId: id of the instance
+//   - args: the arguments to modify deletion protection, default 0 for deletable and 1 for deletion protection
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyDeletionProtection(instanceId string, args *api.DeletionProtectionArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -583,10 +604,11 @@ func (c *Client) ModifyDeletionProtection(instanceId string, args *api.DeletionP
 // ModifyInstanceAttribute - modify an instance's attribute
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - args: the arguments of now instance's attribute
+//   - instanceId: the specific instance ID
+//   - args: the arguments of now instance's attribute
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyInstanceAttribute(instanceId string, args *api.ModifyInstanceAttributeArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -603,10 +625,11 @@ func (c *Client) ModifyInstanceAttribute(instanceId string, args *api.ModifyInst
 // ModifyInstanceDesc - modify an instance's description
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - args: the arguments of now instance's description
+//   - instanceId: the specific instance ID
+//   - args: the arguments of now instance's description
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyInstanceDesc(instanceId string, args *api.ModifyInstanceDescArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -623,10 +646,11 @@ func (c *Client) ModifyInstanceDesc(instanceId string, args *api.ModifyInstanceD
 // ModifyInstanceHostname - modify an instance's hostname
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - args: the arguments of now instance's hostname
+//   - instanceId: the specific instance ID
+//   - args: the arguments of now instance's hostname
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyInstanceHostname(instanceId string, args *api.ModifyInstanceHostnameArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -643,10 +667,11 @@ func (c *Client) ModifyInstanceHostname(instanceId string, args *api.ModifyInsta
 // BindSecurityGroup - bind a security group to an instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - securityGroupId: the security group ID which need to bind
+//   - instanceId: the specific instance ID
+//   - securityGroupId: the security group ID which need to bind
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BindSecurityGroup(instanceId string, securityGroupId string) error {
 	args := &api.BindSecurityGroupArgs{
 		SecurityGroupId: securityGroupId,
@@ -667,10 +692,11 @@ func (c *Client) BindSecurityGroup(instanceId string, securityGroupId string) er
 // UnBindSecurityGroup - unbind a security group ID from instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - securityGroupId: the security group ID which need to unbind
+//   - instanceId: the specific instance ID
+//   - securityGroupId: the security group ID which need to unbind
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UnBindSecurityGroup(instanceId string, securityGroupId string) error {
 	args := &api.BindSecurityGroupArgs{
 		SecurityGroupId: securityGroupId,
@@ -691,10 +717,11 @@ func (c *Client) UnBindSecurityGroup(instanceId string, securityGroupId string) 
 // GetInstanceVNC - get an instance's VNC url
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
+//   - instanceId: the specific instance ID
+//
 // RETURNS:
-//     - *api.GetInstanceVNCResult: the result of get instance's VNC url
-//     - error: nil if success otherwise the specific error
+//   - *api.GetInstanceVNCResult: the result of get instance's VNC url
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetInstanceVNC(instanceId string) (*api.GetInstanceVNCResult, error) {
 	return api.GetInstanceVNC(c, instanceId)
 }
@@ -702,12 +729,13 @@ func (c *Client) GetInstanceVNC(instanceId string) (*api.GetInstanceVNCResult, e
 // InstancePurchaseReserved - purchase reserve an instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - args: the arguments to purchase reserved an instance
+//   - instanceId: the specific instance ID
+//   - args: the arguments to purchase reserved an instance
+//
 // RETURNS:
-// 	   - *api.InstancePurchaseReservedResult: the result of purchase reserve an instance
-//     - error: nil if success otherwise the specific error
-func (c *Client) InstancePurchaseReserved(instanceId string, args *api.PurchaseReservedArgs)  (*api.InstancePurchaseReservedResult, error)  {
+//   - *api.InstancePurchaseReservedResult: the result of purchase reserve an instance
+//   - error: nil if success otherwise the specific error
+func (c *Client) InstancePurchaseReserved(instanceId string, args *api.PurchaseReservedArgs) (*api.InstancePurchaseReservedResult, error) {
 	// this api only support Prepaid instance
 	args.Billing.PaymentTiming = api.PaymentTimingPrePaid
 	relatedRenewFlag := args.RelatedRenewFlag
@@ -727,10 +755,11 @@ func (c *Client) InstancePurchaseReserved(instanceId string, args *api.PurchaseR
 // GetBidInstancePrice - get the market price of the specified bidding instance
 //
 // PARAMS:
-//      - args: the arguments to get the bidding instance market price
+//   - args: the arguments to get the bidding instance market price
+//
 // RETURNS:
-//     - *GetBidInstancePriceResult: result of the market price of the specified bidding instance
-//     - error: nil if success otherwise the specific error
+//   - *GetBidInstancePriceResult: result of the market price of the specified bidding instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetBidInstancePrice(args *api.GetBidInstancePriceArgs) (*api.GetBidInstancePriceResult, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -746,8 +775,8 @@ func (c *Client) GetBidInstancePrice(args *api.GetBidInstancePriceArgs) (*api.Ge
 // ListBidFlavor - list all flavors of the bidding instance
 //
 // RETURNS:
-//     - *ListBidFlavorResult: result of the flavor list
-//     - error: nil if success otherwise the specific error
+//   - *ListBidFlavorResult: result of the flavor list
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListBidFlavor() (*api.ListBidFlavorResult, error) {
 	return api.ListBidFlavor(c)
 }
@@ -755,10 +784,11 @@ func (c *Client) ListBidFlavor() (*api.ListBidFlavorResult, error) {
 // DeleteInstanceWithRelateResource - delete an instance and all eip/cds relate it
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - args: the arguments to delete instance and its relate resource
+//   - instanceId: the specific instance ID
+//   - args: the arguments to delete instance and its relate resource
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteInstanceWithRelateResource(instanceId string, args *api.DeleteInstanceWithRelateResourceArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -775,9 +805,10 @@ func (c *Client) DeleteInstanceWithRelateResource(instanceId string, args *api.D
 // InstanceChangeSubnet - change an instance's subnet
 //
 // PARAMS:
-//     - args: the arguments to change an instance's subnet
+//   - args: the arguments to change an instance's subnet
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) InstanceChangeSubnet(args *api.InstanceChangeSubnetArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -815,9 +846,10 @@ func (c *Client) DeletePrepaidInstanceWithRelateResource(args *api.DeletePrepaid
 // InstanceChangeVpc - change an instance's vpc
 //
 // PARAMS:
-//     - args: the arguments to change an instance's vpc
+//   - args: the arguments to change an instance's vpc
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) InstanceChangeVpc(args *api.InstanceChangeVpcArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -834,9 +866,10 @@ func (c *Client) InstanceChangeVpc(args *api.InstanceChangeVpcArgs) error {
 // BatchAddIP - Add ips to instance
 //
 // PARAMS:
-//      - args: the arguments to add ips to bbc instance
+//   - args: the arguments to add ips to bbc instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchAddIP(args *api.BatchAddIpArgs) (*api.BatchAddIpResponse, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -853,9 +886,10 @@ func (c *Client) BatchAddIP(args *api.BatchAddIpArgs) (*api.BatchAddIpResponse, 
 // BatchDelIP - Delete ips of instance
 //
 // PARAMS:
-//      - args: the arguments to add ips to bbc instance
+//   - args: the arguments to add ips to bbc instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchDelIP(args *api.BatchDelIpArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -868,26 +902,28 @@ func (c *Client) BatchDelIP(args *api.BatchDelIpArgs) error {
 	return api.BatchDelIp(c, args, body)
 }
 
-//cds sdk
+// cds sdk
 // CreateCDSVolume - create a CDS volume
 //
 // PARAMS:
-//     - args: the arguments to create CDS
+//   - args: the arguments to create CDS
+//
 // RETURNS:
-//     - *api.CreateCDSVolumeResult: the result of create CDS volume, contains new volume ID
-//     - error: nil if success otherwise the specific error
+//   - *api.CreateCDSVolumeResult: the result of create CDS volume, contains new volume ID
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateCDSVolume(args *api.CreateCDSVolumeArgs) (*api.CreateCDSVolumeResult, error) {
 	return api.CreateCDSVolume(c, args)
 }
 
-//cds sdk
+// cds sdk
 // CreateCDSVolumeV3 - create a CDS volume
 //
 // PARAMS:
-//     - args: the arguments to create CDS
+//   - args: the arguments to create CDS
+//
 // RETURNS:
-//     - *api.CreateCDSVolumeResult: the result of create CDS volume, contains new volume ID
-//     - error: nil if success otherwise the specific error
+//   - *api.CreateCDSVolumeResult: the result of create CDS volume, contains new volume ID
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateCDSVolumeV3(args *api.CreateCDSVolumeV3Args) (*api.CreateCDSVolumeResult, error) {
 	return api.CreateCDSVolumeV3(c, args)
 }
@@ -895,10 +931,11 @@ func (c *Client) CreateCDSVolumeV3(args *api.CreateCDSVolumeV3Args) (*api.Create
 // ListCDSVolume - list all cds volume with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all cds
+//   - args: the arguments to list all cds
+//
 // RETURNS:
-//     - *api.ListCDSVolumeResult: the result of list all CDS volume
-//     - error: nil if success otherwise the specific error
+//   - *api.ListCDSVolumeResult: the result of list all CDS volume
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListCDSVolume(queryArgs *api.ListCDSVolumeArgs) (*api.ListCDSVolumeResult, error) {
 	return api.ListCDSVolume(c, queryArgs)
 }
@@ -906,10 +943,11 @@ func (c *Client) ListCDSVolume(queryArgs *api.ListCDSVolumeArgs) (*api.ListCDSVo
 // ListCDSVolumeV3 - list all cds volume with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all cds
+//   - args: the arguments to list all cds
+//
 // RETURNS:
-//     - *api.ListCDSVolumeResultV3: the result of list all CDS volume
-//     - error: nil if success otherwise the specific error
+//   - *api.ListCDSVolumeResultV3: the result of list all CDS volume
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListCDSVolumeV3(queryArgs *api.ListCDSVolumeArgs) (*api.ListCDSVolumeResultV3, error) {
 	return api.ListCDSVolumeV3(c, queryArgs)
 }
@@ -917,10 +955,11 @@ func (c *Client) ListCDSVolumeV3(queryArgs *api.ListCDSVolumeArgs) (*api.ListCDS
 // GetCDSVolumeDetail - get a CDS volume's detail info
 //
 // PARAMS:
-//     - volumeId: the specific CDS volume ID
+//   - volumeId: the specific CDS volume ID
+//
 // RETURNS:
-//     - *api.GetVolumeDetailResult: the result of get a specific CDS volume's info
-//     - error: nil if success otherwise the specific error
+//   - *api.GetVolumeDetailResult: the result of get a specific CDS volume's info
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetCDSVolumeDetail(volumeId string) (*api.GetVolumeDetailResult, error) {
 	return api.GetCDSVolumeDetail(c, volumeId)
 }
@@ -928,10 +967,11 @@ func (c *Client) GetCDSVolumeDetail(volumeId string) (*api.GetVolumeDetailResult
 // GetCDSVolumeDetailV3 - get a CDS volume's detail info
 //
 // PARAMS:
-//     - volumeId: the specific CDS volume ID
+//   - volumeId: the specific CDS volume ID
+//
 // RETURNS:
-//     - *api.GetVolumeDetailResultV3: the result of get a specific CDS volume's info
-//     - error: nil if success otherwise the specific error
+//   - *api.GetVolumeDetailResultV3: the result of get a specific CDS volume's info
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetCDSVolumeDetailV3(volumeId string) (*api.GetVolumeDetailResultV3, error) {
 	return api.GetCDSVolumeDetailV3(c, volumeId)
 }
@@ -939,11 +979,12 @@ func (c *Client) GetCDSVolumeDetailV3(volumeId string) (*api.GetVolumeDetailResu
 // AttachCDSVolume - attach a CDS volume to an instance
 //
 // PARAMS:
-//     - volumeId: the specific CDS volume ID
-//     - args: the arguments to attach a CDS volume
+//   - volumeId: the specific CDS volume ID
+//   - args: the arguments to attach a CDS volume
+//
 // RETURNS:
-//     - *api.AttachVolumeResult: the result of attach a CDS volume
-//     - error: nil if success otherwise the specific error
+//   - *api.AttachVolumeResult: the result of attach a CDS volume
+//   - error: nil if success otherwise the specific error
 func (c *Client) AttachCDSVolume(volumeId string, args *api.AttachVolumeArgs) (*api.AttachVolumeResult, error) {
 	return api.AttachCDSVolume(c, volumeId, args)
 }
@@ -951,10 +992,11 @@ func (c *Client) AttachCDSVolume(volumeId string, args *api.AttachVolumeArgs) (*
 // DetachCDSVolume - detach a CDS volume
 //
 // PARAMS:
-//     - volumeId: the specific CDS volume ID
-//     - args: the arguments to detach a CDS volume
+//   - volumeId: the specific CDS volume ID
+//   - args: the arguments to detach a CDS volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DetachCDSVolume(volumeId string, args *api.DetachVolumeArgs) error {
 	return api.DetachCDSVolume(c, volumeId, args)
 }
@@ -962,9 +1004,10 @@ func (c *Client) DetachCDSVolume(volumeId string, args *api.DetachVolumeArgs) er
 // DeleteCDSVolume - delete a CDS volume
 //
 // PARAMS:
-//     - volumeId: the specific CDS volume ID
+//   - volumeId: the specific CDS volume ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteCDSVolume(volumeId string) error {
 	return api.DeleteCDSVolume(c, volumeId)
 }
@@ -972,10 +1015,11 @@ func (c *Client) DeleteCDSVolume(volumeId string) error {
 // DeleteCDSVolumeNew - delete a CDS volume and snapshot
 //
 // PARAMS:
-//     - volumeId: the specific CDS volume ID
-//     - args: the arguments to delete a CDS volume
+//   - volumeId: the specific CDS volume ID
+//   - args: the arguments to delete a CDS volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteCDSVolumeNew(volumeId string, args *api.DeleteCDSVolumeArgs) error {
 	return api.DeleteCDSVolumeNew(c, volumeId, args)
 }
@@ -983,21 +1027,23 @@ func (c *Client) DeleteCDSVolumeNew(volumeId string, args *api.DeleteCDSVolumeAr
 // ResizeCDSVolume - resize a CDS volume
 //
 // PARAMS:
-//     - volumeId: the specific CDS volume ID
-//     - args: the arguments to resize CDS volume
+//   - volumeId: the specific CDS volume ID
+//   - args: the arguments to resize CDS volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
-func (c *Client) ResizeCDSVolume(volumeId string, args *api.ResizeCSDVolumeArgs) error {
+//   - error: nil if success otherwise the specific error
+func (c *Client) ResizeCDSVolume(volumeId string, args *api.ResizeCSDVolumeArgs) (*api.ResizeCDSVolumeResult, error) {
 	return api.ResizeCDSVolume(c, volumeId, args)
 }
 
 // RollbackCDSVolume - rollback a CDS volume
 //
 // PARAMS:
-//     - volumeId: the specific CDS volume ID
-//     - args: the arguments to rollback a CDS volume
+//   - volumeId: the specific CDS volume ID
+//   - args: the arguments to rollback a CDS volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RollbackCDSVolume(volumeId string, args *api.RollbackCSDVolumeArgs) error {
 	return api.RollbackCDSVolume(c, volumeId, args)
 }
@@ -1005,10 +1051,11 @@ func (c *Client) RollbackCDSVolume(volumeId string, args *api.RollbackCSDVolumeA
 // PurchaseReservedCDSVolume - purchase reserve a CDS volume
 //
 // PARAMS:
-//     - volumeId: the specific CDS volume ID
-//     - args: the arguments to purchase reserve a CDS volume
+//   - volumeId: the specific CDS volume ID
+//   - args: the arguments to purchase reserve a CDS volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) PurchaseReservedCDSVolume(volumeId string, args *api.PurchaseReservedCSDVolumeArgs) error {
 	return api.PurchaseReservedCDSVolume(c, volumeId, args)
 }
@@ -1016,10 +1063,11 @@ func (c *Client) PurchaseReservedCDSVolume(volumeId string, args *api.PurchaseRe
 // RenameCDSVolume - rename a CDS volume
 //
 // PARAMS:
-//     - volumeId: the specific CDS volume ID
-//     - args: the arguments to rename a CDS volume
+//   - volumeId: the specific CDS volume ID
+//   - args: the arguments to rename a CDS volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RenameCDSVolume(volumeId string, args *api.RenameCSDVolumeArgs) error {
 	return api.RenameCDSVolume(c, volumeId, args)
 }
@@ -1027,10 +1075,11 @@ func (c *Client) RenameCDSVolume(volumeId string, args *api.RenameCSDVolumeArgs)
 // ModifyCDSVolume - modify a CDS volume
 //
 // PARAMS:
-//     - volumeId: the specific CDS volume ID
-//     - args: the arguments to modify a CDS volume
+//   - volumeId: the specific CDS volume ID
+//   - args: the arguments to modify a CDS volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyCDSVolume(volumeId string, args *api.ModifyCSDVolumeArgs) error {
 	return api.ModifyCDSVolume(c, volumeId, args)
 }
@@ -1038,10 +1087,11 @@ func (c *Client) ModifyCDSVolume(volumeId string, args *api.ModifyCSDVolumeArgs)
 // ModifyChargeTypeCDSVolume - modify a CDS volume's charge type
 //
 // PARAMS:
-//     - volumeId: the specific CDS volume ID
-//     - args: the arguments to create instance
+//   - volumeId: the specific CDS volume ID
+//   - args: the arguments to create instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyChargeTypeCDSVolume(volumeId string, args *api.ModifyChargeTypeCSDVolumeArgs) error {
 	return api.ModifyChargeTypeCDSVolume(c, volumeId, args)
 }
@@ -1049,9 +1099,10 @@ func (c *Client) ModifyChargeTypeCDSVolume(volumeId string, args *api.ModifyChar
 // AutoRenewCDSVolume - auto renew the specified cds volume
 //
 // PARAMS:
-//     - args: the arguments to auto renew the cds volume
+//   - args: the arguments to auto renew the cds volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) AutoRenewCDSVolume(args *api.AutoRenewCDSVolumeArgs) error {
 	return api.AutoRenewCDSVolume(c, args)
 }
@@ -1059,21 +1110,23 @@ func (c *Client) AutoRenewCDSVolume(args *api.AutoRenewCDSVolumeArgs) error {
 // CancelAutoRenewCDSVolume - cancel auto renew the specified cds volume
 //
 // PARAMS:
-//     - args: the arguments to cancel auto renew the cds volume
+//   - args: the arguments to cancel auto renew the cds volume
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) CancelAutoRenewCDSVolume(args *api.CancelAutoRenewCDSVolumeArgs) error {
 	return api.CancelAutoRenewCDSVolume(c, args)
 }
 
-//securityGroup sdk
+// securityGroup sdk
 // CreateSecurityGroup - create a security group
 //
 // PARAMS:
-//     - args: the arguments to create security group
+//   - args: the arguments to create security group
+//
 // RETURNS:
-//     - *api.CreateSecurityGroupResult: the result of create security group
-//     - error: nil if success otherwise the specific error
+//   - *api.CreateSecurityGroupResult: the result of create security group
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateSecurityGroup(args *api.CreateSecurityGroupArgs) (*api.CreateSecurityGroupResult, error) {
 	return api.CreateSecurityGroup(c, args)
 }
@@ -1081,10 +1134,11 @@ func (c *Client) CreateSecurityGroup(args *api.CreateSecurityGroupArgs) (*api.Cr
 // ListSecurityGroup - list all security group
 //
 // PARAMS:
-//     - args: the arguments to list all security group
+//   - args: the arguments to list all security group
+//
 // RETURNS:
-//     - *api.ListSecurityGroupResult: the result of create Instance, contains new Instance ID
-//     - error: nil if success otherwise the specific error
+//   - *api.ListSecurityGroupResult: the result of create Instance, contains new Instance ID
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListSecurityGroup(queryArgs *api.ListSecurityGroupArgs) (*api.ListSecurityGroupResult, error) {
 	return api.ListSecurityGroup(c, queryArgs)
 }
@@ -1092,10 +1146,11 @@ func (c *Client) ListSecurityGroup(queryArgs *api.ListSecurityGroupArgs) (*api.L
 // AuthorizeSecurityGroupRule - authorize a security group rule
 //
 // PARAMS:
-//     - securityGroupId: the specific securityGroup ID
-//     - args: the arguments to authorize a security group rule
+//   - securityGroupId: the specific securityGroup ID
+//   - args: the arguments to authorize a security group rule
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) AuthorizeSecurityGroupRule(securityGroupId string, args *api.AuthorizeSecurityGroupArgs) error {
 	return api.AuthorizeSecurityGroupRule(c, securityGroupId, args)
 }
@@ -1103,10 +1158,11 @@ func (c *Client) AuthorizeSecurityGroupRule(securityGroupId string, args *api.Au
 // RevokeSecurityGroupRule - revoke a security group rule
 //
 // PARAMS:
-//     - securityGroupId: the specific securityGroup ID
-//     - args: the arguments to revoke security group rule
+//   - securityGroupId: the specific securityGroup ID
+//   - args: the arguments to revoke security group rule
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RevokeSecurityGroupRule(securityGroupId string, args *api.RevokeSecurityGroupArgs) error {
 	return api.RevokeSecurityGroupRule(c, securityGroupId, args)
 }
@@ -1114,21 +1170,23 @@ func (c *Client) RevokeSecurityGroupRule(securityGroupId string, args *api.Revok
 // DeleteSecurityGroup - delete a security group
 //
 // PARAMS:
-//     - securityGroupId: the specific securityGroup ID
+//   - securityGroupId: the specific securityGroup ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteSecurityGroup(securityGroupId string) error {
 	return api.DeleteSecurityGroup(c, securityGroupId)
 }
 
-//image sdk
+// image sdk
 // CreateImage - create an image
 //
 // PARAMS:
-//     - args: the arguments to create image
+//   - args: the arguments to create image
+//
 // RETURNS:
-//     - *api.CreateImageResult: the result of create Image
-//     - error: nil if success otherwise the specific error
+//   - *api.CreateImageResult: the result of create Image
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateImage(args *api.CreateImageArgs) (*api.CreateImageResult, error) {
 	return api.CreateImage(c, args)
 }
@@ -1136,10 +1194,11 @@ func (c *Client) CreateImage(args *api.CreateImageArgs) (*api.CreateImageResult,
 // ListImage - list all images
 //
 // PARAMS:
-//     - args: the arguments to list all images
+//   - args: the arguments to list all images
+//
 // RETURNS:
-//     - *api.ListImageResult: the result of list all images
-//     - error: nil if success otherwise the specific error
+//   - *api.ListImageResult: the result of list all images
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListImage(queryArgs *api.ListImageArgs) (*api.ListImageResult, error) {
 	return api.ListImage(c, queryArgs)
 }
@@ -1147,10 +1206,11 @@ func (c *Client) ListImage(queryArgs *api.ListImageArgs) (*api.ListImageResult, 
 // GetImageDetail - get an image's detail info
 //
 // PARAMS:
-//     - imageId: the specific image ID
+//   - imageId: the specific image ID
+//
 // RETURNS:
-//     - *api.GetImageDetailResult: the result of get image's detail
-//     - error: nil if success otherwise the specific error
+//   - *api.GetImageDetailResult: the result of get image's detail
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetImageDetail(imageId string) (*api.GetImageDetailResult, error) {
 	return api.GetImageDetail(c, imageId)
 }
@@ -1158,9 +1218,10 @@ func (c *Client) GetImageDetail(imageId string) (*api.GetImageDetailResult, erro
 // DeleteImage - delete an image
 //
 // PARAMS:
-//     - imageId: the specific image ID
+//   - imageId: the specific image ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteImage(imageId string) error {
 	return api.DeleteImage(c, imageId)
 }
@@ -1168,10 +1229,11 @@ func (c *Client) DeleteImage(imageId string) error {
 // RemoteCopyImage - copy an image from other region
 //
 // PARAMS:
-//     - imageId: the specific image ID
-//     - args: the arguments to remote copy an image
+//   - imageId: the specific image ID
+//   - args: the arguments to remote copy an image
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RemoteCopyImage(imageId string, args *api.RemoteCopyImageArgs) error {
 	return api.RemoteCopyImage(c, imageId, args)
 }
@@ -1179,10 +1241,11 @@ func (c *Client) RemoteCopyImage(imageId string, args *api.RemoteCopyImageArgs) 
 // RemoteCopyImageReturnImageIds - copy an image from other region
 //
 // PARAMS:
-//     - imageId: the specific image ID
-//     - args: the arguments to remote copy an image
+//   - imageId: the specific image ID
+//   - args: the arguments to remote copy an image
+//
 // RETURNS:
-//     - imageIds of destination region if success otherwise the specific error
+//   - imageIds of destination region if success otherwise the specific error
 func (c *Client) RemoteCopyImageReturnImageIds(imageId string, args *api.RemoteCopyImageArgs) (*api.RemoteCopyImageResult, error) {
 	return api.RemoteCopyImageReturnImageIds(c, imageId, args)
 }
@@ -1190,9 +1253,10 @@ func (c *Client) RemoteCopyImageReturnImageIds(imageId string, args *api.RemoteC
 // CancelRemoteCopyImage - cancel a copy image from other region operation
 //
 // PARAMS:
-//     - imageId: the specific image ID
+//   - imageId: the specific image ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) CancelRemoteCopyImage(imageId string) error {
 	return api.CancelRemoteCopyImage(c, imageId)
 }
@@ -1200,10 +1264,11 @@ func (c *Client) CancelRemoteCopyImage(imageId string) error {
 // ShareImage - share an image
 //
 // PARAMS:
-//     - imageId: the specific image ID
-//     - args: the arguments to share an image
+//   - imageId: the specific image ID
+//   - args: the arguments to share an image
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ShareImage(imageId string, args *api.SharedUser) error {
 	return api.ShareImage(c, imageId, args)
 }
@@ -1211,10 +1276,11 @@ func (c *Client) ShareImage(imageId string, args *api.SharedUser) error {
 // UnShareImage - cancel share an image
 //
 // PARAMS:
-//     - imageId: the specific image ID
-//     - args: the arguments to cancel share an image
+//   - imageId: the specific image ID
+//   - args: the arguments to cancel share an image
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UnShareImage(imageId string, args *api.SharedUser) error {
 	return api.UnShareImage(c, imageId, args)
 }
@@ -1222,10 +1288,11 @@ func (c *Client) UnShareImage(imageId string, args *api.SharedUser) error {
 // GetImageSharedUser - get user list use this image
 //
 // PARAMS:
-//     - imageId: the specific image ID
+//   - imageId: the specific image ID
+//
 // RETURNS:
-//     - *api.GetImageSharedUserResult: the result of user list
-//     - error: nil if success otherwise the specific error
+//   - *api.GetImageSharedUserResult: the result of user list
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetImageSharedUser(imageId string) (*api.GetImageSharedUserResult, error) {
 	return api.GetImageSharedUser(c, imageId)
 }
@@ -1233,10 +1300,11 @@ func (c *Client) GetImageSharedUser(imageId string) (*api.GetImageSharedUserResu
 // GetImageOS - get image OS
 //
 // PARAMS:
-//     - args: the arguments to get OS info
+//   - args: the arguments to get OS info
+//
 // RETURNS:
-//     - *api.GetImageOsResult: the result of get image OS info
-//     - error: nil if success otherwise the specific error
+//   - *api.GetImageOsResult: the result of get image OS info
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetImageOS(args *api.GetImageOsArgs) (*api.GetImageOsResult, error) {
 	return api.GetImageOS(c, args)
 }
@@ -1244,10 +1312,11 @@ func (c *Client) GetImageOS(args *api.GetImageOsArgs) (*api.GetImageOsResult, er
 // CreateSnapshot - create a snapshot
 //
 // PARAMS:
-//     - args: the arguments to create a snapshot
+//   - args: the arguments to create a snapshot
+//
 // RETURNS:
-//     - *api.CreateSnapshotResult: the result of create snapshot
-//     - error: nil if success otherwise the specific error
+//   - *api.CreateSnapshotResult: the result of create snapshot
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateSnapshot(args *api.CreateSnapshotArgs) (*api.CreateSnapshotResult, error) {
 	return api.CreateSnapshot(c, args)
 }
@@ -1255,10 +1324,11 @@ func (c *Client) CreateSnapshot(args *api.CreateSnapshotArgs) (*api.CreateSnapsh
 // ListSnapshot - list all snapshots
 //
 // PARAMS:
-//     - args: the arguments to list all snapshots
+//   - args: the arguments to list all snapshots
+//
 // RETURNS:
-//     - *api.ListSnapshotResult: the result of list all snapshots
-//     - error: nil if success otherwise the specific error
+//   - *api.ListSnapshotResult: the result of list all snapshots
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListSnapshot(args *api.ListSnapshotArgs) (*api.ListSnapshotResult, error) {
 	return api.ListSnapshot(c, args)
 }
@@ -1266,10 +1336,11 @@ func (c *Client) ListSnapshot(args *api.ListSnapshotArgs) (*api.ListSnapshotResu
 // ListSnapshotChain - list all snapshot chains
 //
 // PARAMS:
-//     - args: the arguments to list all snapshot chains
+//   - args: the arguments to list all snapshot chains
+//
 // RETURNS:
-//     - *api.ListSnapshotChainResult: the result of list all snapshot chains
-//     - error: nil if success otherwise the specific error
+//   - *api.ListSnapshotChainResult: the result of list all snapshot chains
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListSnapshotChain(args *api.ListSnapshotChainArgs) (*api.ListSnapshotChainResult, error) {
 	return api.ListSnapshotChain(c, args)
 }
@@ -1277,10 +1348,11 @@ func (c *Client) ListSnapshotChain(args *api.ListSnapshotChainArgs) (*api.ListSn
 // GetSnapshotDetail - get a snapshot's detail info
 //
 // PARAMS:
-//     - snapshotId: the specific snapshot ID
+//   - snapshotId: the specific snapshot ID
+//
 // RETURNS:
-//     - *api.GetSnapshotDetailResult: the result of get snapshot's detail info
-//     - error: nil if success otherwise the specific error
+//   - *api.GetSnapshotDetailResult: the result of get snapshot's detail info
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetSnapshotDetail(snapshotId string) (*api.GetSnapshotDetailResult, error) {
 	return api.GetSnapshotDetail(c, snapshotId)
 }
@@ -1288,9 +1360,10 @@ func (c *Client) GetSnapshotDetail(snapshotId string) (*api.GetSnapshotDetailRes
 // DeleteSnapshot - delete a snapshot
 //
 // PARAMS:
-//     - snapshotId: the specific snapshot ID
+//   - snapshotId: the specific snapshot ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteSnapshot(snapshotId string) error {
 	return api.DeleteSnapshot(c, snapshotId)
 }
@@ -1298,10 +1371,11 @@ func (c *Client) DeleteSnapshot(snapshotId string) error {
 // CreateAutoSnapshotPolicy - create an auto snapshot policy
 //
 // PARAMS:
-//     - args: the arguments to create an auto snapshot policy
+//   - args: the arguments to create an auto snapshot policy
+//
 // RETURNS:
-//     - *api.CreateASPResult: the result of create an auto snapshot policy
-//     - error: nil if success otherwise the specific error
+//   - *api.CreateASPResult: the result of create an auto snapshot policy
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateAutoSnapshotPolicy(args *api.CreateASPArgs) (*api.CreateASPResult, error) {
 	return api.CreateAutoSnapshotPolicy(c, args)
 }
@@ -1309,10 +1383,11 @@ func (c *Client) CreateAutoSnapshotPolicy(args *api.CreateASPArgs) (*api.CreateA
 // AttachAutoSnapshotPolicy - attach an ASP to volumes
 //
 // PARAMS:
-//     - aspId: the specific auto snapshot policy ID
-//     - args: the arguments to attach an ASP
+//   - aspId: the specific auto snapshot policy ID
+//   - args: the arguments to attach an ASP
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) AttachAutoSnapshotPolicy(aspId string, args *api.AttachASPArgs) error {
 	return api.AttachAutoSnapshotPolicy(c, aspId, args)
 }
@@ -1320,10 +1395,11 @@ func (c *Client) AttachAutoSnapshotPolicy(aspId string, args *api.AttachASPArgs)
 // DetachAutoSnapshotPolicy - detach an ASP
 //
 // PARAMS:
-//     - aspId: the specific auto snapshot policy ID
-//     - args: the arguments to detach an ASP
+//   - aspId: the specific auto snapshot policy ID
+//   - args: the arguments to detach an ASP
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DetachAutoSnapshotPolicy(aspId string, args *api.DetachASPArgs) error {
 	return api.DetachAutoSnapshotPolicy(c, aspId, args)
 }
@@ -1331,9 +1407,10 @@ func (c *Client) DetachAutoSnapshotPolicy(aspId string, args *api.DetachASPArgs)
 // DeleteAutoSnapshotPolicy - delete an auto snapshot policy
 //
 // PARAMS:
-//     - aspId: the specific auto snapshot policy ID
+//   - aspId: the specific auto snapshot policy ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteAutoSnapshotPolicy(aspId string) error {
 	return api.DeleteAutoSnapshotPolicy(c, aspId)
 }
@@ -1341,10 +1418,11 @@ func (c *Client) DeleteAutoSnapshotPolicy(aspId string) error {
 // ListAutoSnapshotPolicy - list all auto snapshot policies
 //
 // PARAMS:
-//     - args: the arguments to create instance
+//   - args: the arguments to create instance
+//
 // RETURNS:
-//     - *api.ListASPResult: the result of list all auto snapshot policies
-//     - error: nil if success otherwise the specific error
+//   - *api.ListASPResult: the result of list all auto snapshot policies
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListAutoSnapshotPolicy(args *api.ListASPArgs) (*api.ListASPResult, error) {
 	return api.ListAutoSnapshotPolicy(c, args)
 }
@@ -1352,10 +1430,11 @@ func (c *Client) ListAutoSnapshotPolicy(args *api.ListASPArgs) (*api.ListASPResu
 // GetAutoSnapshotPolicy - get an auto snapshot policy's meta
 //
 // PARAMS:
-//     - aspId: the specific auto snapshot policy ID
+//   - aspId: the specific auto snapshot policy ID
+//
 // RETURNS:
-//     - *api.GetASPDetailResult: the result of get an auto snapshot policy's meta
-//     - error: nil if success otherwise the specific error
+//   - *api.GetASPDetailResult: the result of get an auto snapshot policy's meta
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetAutoSnapshotPolicy(aspId string) (*api.GetASPDetailResult, error) {
 	return api.GetAutoSnapshotPolicyDetail(c, aspId)
 }
@@ -1363,9 +1442,10 @@ func (c *Client) GetAutoSnapshotPolicy(aspId string) (*api.GetASPDetailResult, e
 // UpdateAutoSnapshotPolicy - update an auto snapshot policy
 //
 // PARAMS:
-//     - args: the arguments to update an auto snapshot policy
+//   - args: the arguments to update an auto snapshot policy
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateAutoSnapshotPolicy(args *api.UpdateASPArgs) error {
 	return api.UpdateAutoSnapshotPolicy(c, args)
 }
@@ -1373,8 +1453,8 @@ func (c *Client) UpdateAutoSnapshotPolicy(args *api.UpdateASPArgs) error {
 // ListSpec - list all spec
 //
 // RETURNS:
-//     - *api.ListSpecResult: the result of all spec
-//     - error: nil if success otherwise the specific error
+//   - *api.ListSpecResult: the result of all spec
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListSpec() (*api.ListSpecResult, error) {
 	return api.ListSpec(c)
 }
@@ -1382,8 +1462,8 @@ func (c *Client) ListSpec() (*api.ListSpecResult, error) {
 // ListZone - list all zones
 //
 // RETURNS:
-//     - *api.ListZoneResult: the result of list all zones
-//     - error: nil if success otherwise the specific error
+//   - *api.ListZoneResult: the result of list all zones
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListZone() (*api.ListZoneResult, error) {
 	return api.ListZone(c)
 }
@@ -1391,10 +1471,11 @@ func (c *Client) ListZone() (*api.ListZoneResult, error) {
 // ListFlavorSpec - get the specified flavor list
 //
 // PARAMS:
-//	   - args: the arguments to list the specified flavor
+//   - args: the arguments to list the specified flavor
+//
 // RETURNS:
-//     - *api.ListFlavorSpecResult: result of the specified flavor list
-//     - error: nil if success otherwise the specific error
+//   - *api.ListFlavorSpecResult: result of the specified flavor list
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListFlavorSpec(args *api.ListFlavorSpecArgs) (*api.ListFlavorSpecResult, error) {
 	return api.ListFlavorSpec(c, args)
 }
@@ -1402,10 +1483,11 @@ func (c *Client) ListFlavorSpec(args *api.ListFlavorSpecArgs) (*api.ListFlavorSp
 // GetPriceBySpec - get the price information of specified instance.
 //
 // PARAMS:
-//	   - args: the arguments to get the price information of specified instance.
+//   - args: the arguments to get the price information of specified instance.
+//
 // RETURNS:
-//     - *api.GetPriceBySpecResult: result of the specified instance's price information
-//     - error: nil if success otherwise the specific error
+//   - *api.GetPriceBySpecResult: result of the specified instance's price information
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetPriceBySpec(args *api.GetPriceBySpecArgs) (*api.GetPriceBySpecResult, error) {
 	return api.GetPriceBySpec(c, args)
 }
@@ -1413,10 +1495,11 @@ func (c *Client) GetPriceBySpec(args *api.GetPriceBySpecArgs) (*api.GetPriceBySp
 // CreateDeploySet - create a deploy set
 //
 // PARAMS:
-//     - args: the arguments to create a deploy set
+//   - args: the arguments to create a deploy set
+//
 // RETURNS:
-//     - *CreateDeploySetResult: results of creating a deploy set
-//     - error: nil if success otherwise the specific error
+//   - *CreateDeploySetResult: results of creating a deploy set
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateDeploySet(args *api.CreateDeploySetArgs) (*api.CreateDeploySetResult, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1432,8 +1515,8 @@ func (c *Client) CreateDeploySet(args *api.CreateDeploySetArgs) (*api.CreateDepl
 // ListDeploySets - list all deploy sets
 //
 // RETURNS:
-//     - *ListDeploySetsResult: the result of list all deploy sets
-//     - error: nil if success otherwise the specific error
+//   - *ListDeploySetsResult: the result of list all deploy sets
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListDeploySets() (*api.ListDeploySetsResult, error) {
 	return api.ListDeploySets(c)
 }
@@ -1441,10 +1524,11 @@ func (c *Client) ListDeploySets() (*api.ListDeploySetsResult, error) {
 // ModifyDeploySet - modify the deploy set
 //
 // PARAMS:
-//     - deploySetId: the id of the deploy set
+//   - deploySetId: the id of the deploy set
+//
 // RETURNS:
-//     - *ModifyDeploySetArgs: the detail of the deploy set
-//     - error: nil if success otherwise the specific error
+//   - *ModifyDeploySetArgs: the detail of the deploy set
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyDeploySet(deploySetId string, args *api.ModifyDeploySetArgs) (error, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1460,9 +1544,10 @@ func (c *Client) ModifyDeploySet(deploySetId string, args *api.ModifyDeploySetAr
 // DeleteDeploySet - delete a deploy set
 //
 // PARAMS:
-//     - deploySetId: the id of the deploy set
+//   - deploySetId: the id of the deploy set
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteDeploySet(deploySetId string) error {
 	return api.DeleteDeploySet(c, deploySetId)
 }
@@ -1470,10 +1555,11 @@ func (c *Client) DeleteDeploySet(deploySetId string) error {
 // GetDeploySet - get details of the deploy set
 //
 // PARAMS:
-//     - deploySetId: the id of the deploy set
+//   - deploySetId: the id of the deploy set
+//
 // RETURNS:
-//     - *GetDeploySetResult: the detail of the deploy set
-//     - error: nil if success otherwise the specific error
+//   - *GetDeploySetResult: the detail of the deploy set
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetDeploySet(deploySetId string) (*api.DeploySetResult, error) {
 	return api.GetDeploySet(c, deploySetId)
 }
@@ -1481,9 +1567,10 @@ func (c *Client) GetDeploySet(deploySetId string) (*api.DeploySetResult, error) 
 // UpdateInstanceDeploySet - update deployset and instance relation
 //
 // PARAMS:
-//     - args: the arguments to update deployset and instance relation
+//   - args: the arguments to update deployset and instance relation
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateInstanceDeploySet(args *api.UpdateInstanceDeployArgs) (error, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1499,9 +1586,10 @@ func (c *Client) UpdateInstanceDeploySet(args *api.UpdateInstanceDeployArgs) (er
 // DelInstanceDeploySet - delete deployset and instance relation
 //
 // PARAMS:
-//     - args: the arguments to delete deployset and instance relation
+//   - args: the arguments to delete deployset and instance relation
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DelInstanceDeploySet(args *api.DelInstanceDeployArgs) (error, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1517,10 +1605,11 @@ func (c *Client) DelInstanceDeploySet(args *api.DelInstanceDeployArgs) (error, e
 // ResizeInstanceBySpec - resize a specific instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
-//     - args: the arguments to resize a specific instance
+//   - instanceId: the specific instance ID
+//   - args: the arguments to resize a specific instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ResizeInstanceBySpec(instanceId string, args *api.ResizeInstanceArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1537,9 +1626,10 @@ func (c *Client) ResizeInstanceBySpec(instanceId string, args *api.ResizeInstanc
 // RebuildBatchInstance - batch rebuild instances
 //
 // PARAMS:
-//     - args: the arguments to batch rebuild instances
+//   - args: the arguments to batch rebuild instances
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchRebuildInstances(args *api.RebuildBatchInstanceArgs) error {
 	if len(args.AdminPass) > 0 {
 		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
@@ -1564,9 +1654,10 @@ func (c *Client) BatchRebuildInstances(args *api.RebuildBatchInstanceArgs) error
 // RebuildBatchInstancesV2 - batch rebuild instances
 //
 // PARAMS:
-//     - args: the arguments to batch rebuild instances
+//   - args: the arguments to batch rebuild instances
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchRebuildInstancesV2(argsV2 *api.RebuildBatchInstanceArgsV2) error {
 	if len(argsV2.AdminPass) > 0 {
 		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, argsV2.AdminPass)
@@ -1599,10 +1690,11 @@ func (c *Client) BatchRebuildInstancesV2(argsV2 *api.RebuildBatchInstanceArgsV2)
 // ChangeToPrepaid - to prepaid
 //
 // PARAMS:
-//     - instanceId: instanceId
-//     - args: the arguments to ChangeToPrepaid
+//   - instanceId: instanceId
+//   - args: the arguments to ChangeToPrepaid
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ChangeToPrepaid(instanceId string, args *api.ChangeToPrepaidRequest) (*api.ChangeToPrepaidResponse,
 	error) {
 	jsonBytes, jsonErr := json.Marshal(args)
@@ -1620,10 +1712,11 @@ func (c *Client) ChangeToPrepaid(instanceId string, args *api.ChangeToPrepaidReq
 // BindInstanceToTags - bind instance to tags
 //
 // PARAMS:
-//     - instanceId: instanceId
-//     - args: the arguments to BindInstanceToTags
+//   - instanceId: instanceId
+//   - args: the arguments to BindInstanceToTags
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BindInstanceToTags(instanceId string, args *api.BindTagsRequest) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1640,10 +1733,11 @@ func (c *Client) BindInstanceToTags(instanceId string, args *api.BindTagsRequest
 // UnBindInstanceToTags - unbind instance to tags
 //
 // PARAMS:
-//     - instanceId: instanceId
-//     - args: the arguments to unBindInstanceToTags
+//   - instanceId: instanceId
+//   - args: the arguments to unBindInstanceToTags
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UnBindInstanceToTags(instanceId string, args *api.UnBindTagsRequest) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1660,10 +1754,11 @@ func (c *Client) UnBindInstanceToTags(instanceId string, args *api.UnBindTagsReq
 // GetInstanceNoChargeList - get instance with nocharge list
 //
 // PARAMS:
-//     - args: the arguments to list all nocharge instance
+//   - args: the arguments to list all nocharge instance
+//
 // RETURNS:
-//     - *api.ListInstanceResult: the result of list Instance
-//     - error: nil if success otherwise the specific error
+//   - *api.ListInstanceResult: the result of list Instance
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetInstanceNoChargeList(args *api.ListInstanceArgs) (*api.ListInstanceResult, error) {
 	return api.GetInstanceNoChargeList(c, args)
 }
@@ -1671,10 +1766,11 @@ func (c *Client) GetInstanceNoChargeList(args *api.ListInstanceArgs) (*api.ListI
 // CreateBidInstance - create an instance with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create instance
+//   - args: the arguments to create instance
+//
 // RETURNS:
-//     - *api.CreateInstanceResult: the result of create Instance, contains new Instance ID
-//     - error: nil if success otherwise the specific error
+//   - *api.CreateInstanceResult: the result of create Instance, contains new Instance ID
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateBidInstance(args *api.CreateInstanceArgs) (*api.CreateInstanceResult, error) {
 	if len(args.AdminPass) > 0 {
 		cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
@@ -1700,9 +1796,10 @@ func (c *Client) CreateBidInstance(args *api.CreateInstanceArgs) (*api.CreateIns
 // CancelBidOrder - Cancel the bidding instance order.
 //
 // PARAMS:
-//     - args: the arguments to cancel bid order
+//   - args: the arguments to cancel bid order
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) CancelBidOrder(args *api.CancelBidOrderRequest) (*api.CreateBidInstanceResult, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1719,11 +1816,12 @@ func (c *Client) CancelBidOrder(args *api.CancelBidOrderRequest) (*api.CreateBid
 // GetAvailableDiskInfo - get available diskInfos of the specified zone
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - zoneName: the zone name eg:cn-bj-a
+//   - cli: the client agent which can perform sending request
+//   - zoneName: the zone name eg:cn-bj-a
+//
 // RETURNS:
-//     - *GetAvailableDiskInfoResult: the result of the specified zone diskInfos
-//     - error: nil if success otherwise the specific error
+//   - *GetAvailableDiskInfoResult: the result of the specified zone diskInfos
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetAvailableDiskInfo(zoneName string) (*api.GetAvailableDiskInfoResult, error) {
 	return api.GetAvailableDiskInfo(c, zoneName)
 }
@@ -1731,22 +1829,24 @@ func (c *Client) GetAvailableDiskInfo(zoneName string) (*api.GetAvailableDiskInf
 // DeletePrepayVolume - delete the volumes for prepay
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments of method
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments of method
+//
 // RETURNS:
-//     - *VolumeDeleteResultResponse: the result of deleting volumes
-//     - error: nil if success otherwise the specific error
+//   - *VolumeDeleteResultResponse: the result of deleting volumes
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeletePrepayVolume(args *api.VolumePrepayDeleteRequestArgs) (*api.VolumeDeleteResultResponse, error) {
 	return api.DeletePrepayVolume(c, args)
 }
 
 // ListTypeZones - list instanceType zones
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceType: the instanceType like "N1"
+//   - cli: the client agent which can perform sending request
+//   - instanceType: the instanceType like "N1"
+//
 // RETURNS:
-//     - *api.ListTypeZonesResult: the result of list instanceType zones
-//     - error: nil if success otherwise the specific error
+//   - *api.ListTypeZonesResult: the result of list instanceType zones
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListTypeZones(args *api.ListTypeZonesArgs) (*api.ListTypeZonesResult, error) {
 	return api.ListTypeZones(c, args)
 }
@@ -1754,10 +1854,11 @@ func (c *Client) ListTypeZones(args *api.ListTypeZonesArgs) (*api.ListTypeZonesR
 // ListInstanceEni - get the eni list of the bcc instance
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - instanceId: the bcc instance id
+//   - cli: the client agent which can perform sending request
+//   - instanceId: the bcc instance id
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListInstanceEnis(instanceId string) (*api.ListInstanceEniResult, error) {
 	return api.ListInstanceEnis(c, instanceId)
 }
@@ -1801,8 +1902,8 @@ func (c *Client) UpdateKeypairDescription(args *api.KeypairUpdateDescArgs) error
 // GetAllStocks - get the bcc and bbc's stock
 //
 // RETURNS:
-//     - *GetAllStocksResult: the result of the bcc and bbc's stock
-//     - error: nil if success otherwise the specific error
+//   - *GetAllStocksResult: the result of the bcc and bbc's stock
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetAllStocks() (*api.GetAllStocksResult, error) {
 	return api.GetAllStocks(c)
 }
@@ -1810,8 +1911,8 @@ func (c *Client) GetAllStocks() (*api.GetAllStocksResult, error) {
 // GetStockWithDeploySet - get the bcc's stock with deploySet
 //
 // RETURNS:
-//     - *GetStockWithDeploySetResults: the result of the bcc's stock
-//     - error: nil if success otherwise the specific error
+//   - *GetStockWithDeploySetResults: the result of the bcc's stock
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetStockWithDeploySet(args *api.GetStockWithDeploySetArgs) (*api.GetStockWithDeploySetResults, error) {
 	return api.GetStockWithDeploySet(c, args)
 }
@@ -1819,8 +1920,8 @@ func (c *Client) GetStockWithDeploySet(args *api.GetStockWithDeploySetArgs) (*ap
 // GetStockWithSpec - get the bcc's stock with spec
 //
 // RETURNS:
-//     - *GetStockWithSpecResults: the result of the bcc's stock
-//     - error: nil if success otherwise the specific error
+//   - *GetStockWithSpecResults: the result of the bcc's stock
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetStockWithSpec(args *api.GetStockWithSpecArgs) (*api.GetStockWithSpecResults, error) {
 	return api.GetStockWithSpec(c, args)
 }
@@ -1836,9 +1937,10 @@ func (c *Client) GetInstanceResizeStock(args *api.ResizeInstanceStockArgs) (*api
 // BatchCreateAutoRenewRules - Batch Create AutoRenew Rules
 //
 // PARAMS:
-//      - args: the arguments to batch create autorenew rules
+//   - args: the arguments to batch create autorenew rules
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchCreateAutoRenewRules(args *api.BccCreateAutoRenewArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1854,9 +1956,10 @@ func (c *Client) BatchCreateAutoRenewRules(args *api.BccCreateAutoRenewArgs) err
 // BatchDeleteAutoRenewRules - Batch Delete AutoRenew Rules
 //
 // PARAMS:
-//      - args: the arguments to batch delete autorenew rules
+//   - args: the arguments to batch delete autorenew rules
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchDeleteAutoRenewRules(args *api.BccDeleteAutoRenewArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1876,9 +1979,10 @@ func (c *Client) DeleteInstanceIngorePayment(args *api.DeleteInstanceIngorePayme
 // DeleteRecycledInstance - delete a recycled instance
 //
 // PARAMS:
-//     - instanceId: the specific instance ID
+//   - instanceId: the specific instance ID
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteRecycledInstance(instanceId string) error {
 	return api.DeleteRecycledInstance(c, instanceId)
 }
@@ -1890,9 +1994,10 @@ func (c *Client) ListInstanceByInstanceIds(args *api.ListInstanceByInstanceIdArg
 // BatchDeleteInstanceWithRelateResource - batch delete instance and all eip/cds relate it
 //
 // PARAMS:
-//     - args: the arguments to batch delete instance and its relate resource
+//   - args: the arguments to batch delete instance and its relate resource
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchDeleteInstanceWithRelateResource(args *api.BatchDeleteInstanceWithRelateResourceArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1909,9 +2014,10 @@ func (c *Client) BatchDeleteInstanceWithRelateResource(args *api.BatchDeleteInst
 // BatchStartInstance - batch start instance
 //
 // PARAMS:
-//     - args: the arguments to batch start instance
+//   - args: the arguments to batch start instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchStartInstance(args *api.BatchStartInstanceArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1928,9 +2034,10 @@ func (c *Client) BatchStartInstance(args *api.BatchStartInstanceArgs) error {
 // BatchStopInstance - batch stop instance
 //
 // PARAMS:
-//     - args: the arguments to batch stop instance
+//   - args: the arguments to batch stop instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchStopInstance(args *api.BatchStopInstanceArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1946,10 +2053,11 @@ func (c *Client) BatchStopInstance(args *api.BatchStopInstanceArgs) error {
 // ListInstanceTypes - list all instance type with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list all instance type
+//   - args: the arguments to list all instance type
+//
 // RETURNS:
-//     - *api.ListInstanceTypeResults: the result of list Instance type
-//     - error: nil if success otherwise the specific error
+//   - *api.ListInstanceTypeResults: the result of list Instance type
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListInstanceTypes(args *api.ListInstanceTypeArgs) (*api.ListInstanceTypeResults, error) {
 	return api.ListInstanceTypes(c, args)
 }
@@ -1957,10 +2065,11 @@ func (c *Client) ListInstanceTypes(args *api.ListInstanceTypeArgs) (*api.ListIns
 // ListIdMappings - Long and short ID conversion parameters
 //
 // PARAMS:
-//     - args: the arguments to Long and short ID conversion
+//   - args: the arguments to Long and short ID conversion
+//
 // RETURNS:
-//     - *api.ListIdMappingResults: result of the Long short mapping
-//     - error: nil if success otherwise the specific error
+//   - *api.ListIdMappingResults: result of the Long short mapping
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListIdMappings(args *api.ListIdMappingArgs) (*api.ListIdMappingResults, error) {
 	return api.ListIdMappings(c, args)
 }
@@ -1968,9 +2077,10 @@ func (c *Client) ListIdMappings(args *api.ListIdMappingArgs) (*api.ListIdMapping
 // BatchResizeInstance - batch resize a specific instance
 //
 // PARAMS:
-//     - args: the arguments to resize a specific instance
+//   - args: the arguments to resize a specific instance
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) BatchResizeInstance(args *api.BatchResizeInstanceArgs) (*api.BatchResizeInstanceResults, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -1987,9 +2097,10 @@ func (c *Client) BatchResizeInstance(args *api.BatchResizeInstanceArgs) (*api.Ba
 // DeleteSecurityGroupRule - delete a security group rule
 //
 // PARAMS:
-//	   - securityGroupRuleId: the id of the specific security group rule
+//   - securityGroupRuleId: the id of the specific security group rule
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteSecurityGroupRule(args *api.DeleteSecurityGroupRuleArgs) error {
 	return api.DeleteSecurityGroupRule(c, args)
 }
@@ -1997,15 +2108,15 @@ func (c *Client) DeleteSecurityGroupRule(args *api.DeleteSecurityGroupRuleArgs) 
 // UpdateSecurityGroupRule - update security group rule with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to update the specific security group rule
+//   - args: the arguments to update the specific security group rule
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateSecurityGroupRule(args *api.UpdateSecurityGroupRuleArgs) error {
 	return api.UpdateSecurityGroupRule(c, args)
 }
 
 func (c *Client) GetInstanceDeleteProgress(args *api.GetInstanceDeleteProgressArgs) (map[string]interface{}, error) {
-
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
 		return nil, jsonErr
@@ -2017,6 +2128,7 @@ func (c *Client) GetInstanceDeleteProgress(args *api.GetInstanceDeleteProgressAr
 
 	return api.GetInstanceDeleteProgress(c, body)
 }
+
 func (c *Client) TagVolume(volumeId string, args *api.TagVolumeArgs) error {
 	return api.TagVolume(c, volumeId, args)
 }
@@ -2035,7 +2147,6 @@ func (c *Client) UntagSnapshotChain(chainId string, args *api.TagVolumeArgs) err
 
 func (c *Client) ListAvailableResizeSpecs(args *api.ListAvailableResizeSpecsArgs) (
 	*api.ListAvailableResizeSpecResults, error) {
-
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
 		return nil, jsonErr
@@ -2059,7 +2170,6 @@ func (c *Client) BatchChangeInstanceToPrepay(args *api.BatchChangeInstanceToPrep
 		return nil, err
 	}
 	return api.BatchChangeInstanceToPrepay(c, body)
-
 }
 
 func (c *Client) BatchChangeInstanceToPostpay(args *api.BatchChangeInstanceToPostpayArgs) (
@@ -2076,12 +2186,10 @@ func (c *Client) BatchChangeInstanceToPostpay(args *api.BatchChangeInstanceToPos
 }
 
 func (c *Client) ListInstanceRoles() (*api.ListInstanceRolesResult, error) {
-
 	return api.ListInstanceRoles(c)
 }
 
 func (c *Client) BindInstanceRole(args *api.BindInstanceRoleArgs) (*api.BindInstanceRoleResult, error) {
-
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
 		return nil, jsonErr
@@ -2095,7 +2203,6 @@ func (c *Client) BindInstanceRole(args *api.BindInstanceRoleArgs) (*api.BindInst
 }
 
 func (c *Client) UnBindInstanceRole(args *api.UnBindInstanceRoleArgs) (*api.UnBindInstanceRoleResult, error) {
-
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
 		return nil, jsonErr
@@ -2109,7 +2216,6 @@ func (c *Client) UnBindInstanceRole(args *api.UnBindInstanceRoleArgs) (*api.UnBi
 }
 
 func (c *Client) DeleteIpv6(args *api.DeleteIpv6Args) error {
-
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
 		return jsonErr
@@ -2123,7 +2229,6 @@ func (c *Client) DeleteIpv6(args *api.DeleteIpv6Args) error {
 }
 
 func (c *Client) AddIpv6(args *api.AddIpv6Args) (*api.AddIpv6Result, error) {
-
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
 		return nil, jsonErr
@@ -2164,17 +2269,21 @@ func (c *Client) UnBindImageToTags(imageId string, args *api.UnBindTagsRequest) 
 
 func (c *Client) CreateRemoteCopySnapshot(snapshotId string, args *api.RemoteCopySnapshotArgs) (*api.RemoteCopySnapshotResult,
 	error) {
-
 	return api.CreateRemoteCopySnapshot(c, snapshotId, args)
 }
 
 func (c *Client) ImportCustomImage(args *api.ImportCustomImageArgs) (*api.ImportCustomImageResult,
 	error) {
-
 	return api.ImportCustomImage(c, args)
 }
 
-func (c *Client) GetAvailableImagesBySpec(args *api.GetAvailableImagesBySpecArg) (*api.GetAvailableImagesBySpecResult, error) {
+func (c *Client) BatchRefundResource(arg *api.BatchRefundResourceArg) (*api.BatchRefundResourceResult,
+	error) {
 
+	return api.BatchRefundResource(c, arg)
+}
+
+
+func (c *Client) GetAvailableImagesBySpec(args *api.GetAvailableImagesBySpecArg) (*api.GetAvailableImagesBySpecResult, error) {
 	return api.GetAvailableImagesBySpec(c, args)
 }

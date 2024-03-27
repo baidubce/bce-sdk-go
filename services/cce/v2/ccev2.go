@@ -42,13 +42,41 @@ func (c *Client) GetClusterEventSteps(clusterID string) (*GetEventStepsResponse,
 		return nil, fmt.Errorf("cluster is empty")
 	}
 	result := &GetEventStepsResponse{}
-	bce.NewRequestBuilder(c).
+	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
 		WithURL(getClusterEventStepsURI(clusterID)).WithResult(result).
 		Do()
 
-	return result, nil
+	return result, err
 
+}
+
+// GetClusterEventSteps 获取集群事件详情
+func (c *Client) GetInstanceEventSteps(instanceID string) (*GetEventStepsResponse, error) {
+	if instanceID == "" {
+		return nil, fmt.Errorf("instanceID is empty")
+	}
+	result := &GetEventStepsResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getInstanceEventStepsURI(instanceID)).WithResult(result).
+		Do()
+
+	return result, err
+
+}
+
+// SyncInstances 同步节点元信息
+func (c *Client) SyncInstances(clusterID string) (*SyncInstancesResponse, error) {
+	if clusterID == "" {
+		return nil, fmt.Errorf("clusterID is empty")
+	}
+	result := &SyncInstancesResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getSyncInstancesURI(clusterID)).WithResult(result).
+		Do()
+	return result, err
 }
 
 // DeleteCluster 删除集群
@@ -684,6 +712,107 @@ func (c *Client) UpdateClusterCRD(args *UpdateClusterCRDArgs) (*CommonResponse, 
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
 		WithURL(genUpdateClusterCRDURI(args.Cluster.Spec.ClusterID)).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+func (c *Client) ListAddons(args *ListAddonArgs) (*GetAddonStatusResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	if args.ClusterID == "" {
+		return nil, fmt.Errorf("clusterID is nil")
+	}
+
+	result := &GetAddonStatusResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(genAddonURI(args.ClusterID)).
+		WithQueryParamFilter("addons", args.Addons).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+func (c *Client) InstallAddon(args *InstallAddonArgs) (*CommonAddonResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	if args.ClusterID == "" {
+		return nil, fmt.Errorf("clusterID is nil")
+	}
+
+	result := &CommonAddonResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(genAddonURI(args.ClusterID)).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+func (c *Client) UnInstallAddon(args *UninstallAddonArgs) (*CommonAddonResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	if args.ClusterID == "" {
+		return nil, fmt.Errorf("clusterID is nil")
+	}
+
+	result := &CommonAddonResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(genAddonURI(args.ClusterID)).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// 升级
+func (c *Client) UpgradeAddon(args *UpgradeAddonArgs) (*CommonAddonResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	if args.ClusterID == "" {
+		return nil, fmt.Errorf("clusterID is nil")
+	}
+
+	result := &CommonAddonResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(genAddonUpgradeURI(args.ClusterID)).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+func (c *Client) UpdateAddon(args *UpdateAddonArgs) (*CommonAddonResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	if args.ClusterID == "" {
+		return nil, fmt.Errorf("clusterID is nil")
+	}
+
+	result := &CommonAddonResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(genAddonURI(args.ClusterID)).
 		WithBody(args).
 		WithResult(result).
 		Do()

@@ -396,7 +396,8 @@ type InstanceStatus struct {
 
 // Machine - 定义机器相关信息
 type Machine struct {
-	InstanceID string `json:"instanceID"`
+	InstanceID   string `json:"instanceID"`
+	InstanceUUID string `json:"instanceUUID,omitempty"`
 
 	OrderID string `json:"orderID,omitempty"`
 
@@ -406,6 +407,9 @@ type Machine struct {
 	VPCIPIPv6 string `json:"vpcIPIPv6,omitempty"`
 
 	EIP string `json:"eip,omitempty"`
+
+	K8SNodeName string `json:"k8sNodeName,omitempty"`
+	Hostname    string `json:"hostname,omitempty"`
 }
 
 // DeleteInstancesRequest - 删除节点请求
@@ -656,6 +660,11 @@ type CreateInstanceGroupResponse struct {
 type ListInstanceGroupResponse struct {
 	CommonResponse
 	Page ListInstanceGroupPage `json:"page"`
+}
+
+type SyncInstancesResponse struct {
+	ClusterID string `json:"clusterID"`
+	RequestID string `json:"requestID"`
 }
 
 type ListInstanceGroupPage struct {
@@ -917,4 +926,51 @@ type UpdateClusterCRDArgs struct {
 }
 
 type UpdateClusterCRDResponses struct {
+}
+type ListAddonArgs struct {
+	ClusterID string `json:"clusterID"`
+	Addons    string `json:"addons"`
+}
+
+type GetAddonStatusResponse struct {
+	RequestID string            `json:"requestID"`
+	Items     []types.AddOnInfo `json:"items"`
+	Code      string            `json:"code"`
+	Message   string            `json:"message"`
+}
+
+type InstallAddonArgs struct {
+	Name      string `json:"name"`
+	Version   string `json:"version,omitempty"`
+	Params    string `json:"params,omitempty"`
+	ClusterID string `json:"clusterID"`
+}
+
+// UninstallAddonArgs 组件卸载请求 Body 内容
+type UninstallAddonArgs struct {
+	Name         string `json:"name"`
+	ClusterID    string `json:"clusterID"`
+	InstanceName string `json:"instanceName,omitempty"`
+}
+
+type CommonAddonResponse struct {
+	RequestID string `json:"requestID"`
+	Code      string `json:"code,omitempty"`
+	Message   string `json:"message,omitempty"`
+}
+
+// UpgradeAddonArgs 组件升级请求 Body 内容
+type UpgradeAddonArgs struct {
+	Name              string `json:"name,omitempty"`
+	ClusterID         string `json:"clusterID"`
+	TargetVersion     string `json:"targetVersion,omitempty"`
+	AddOnInstanceName string `json:"instanceName,omitempty"`
+	Params            string `json:"params,omitempty"`
+}
+
+type UpdateAddonArgs struct {
+	Name              string `json:"name"`
+	ClusterID         string `json:"clusterID"`
+	AddOnInstanceName string `json:"instanceName,omitempty"`
+	Params            string `json:"params,omitempty"`
 }

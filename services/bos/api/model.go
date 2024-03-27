@@ -629,3 +629,16 @@ type BosContext struct {
 	Bucket string 
 	PathStyleEnable bool
 }
+
+type PutObjectTagArgs struct {
+	ObjectTags []ObjectTags `json:"tagSet"`
+}
+
+type ObjectTags struct {
+	TagInfo []ObjectTag `json:"tagInfo"`
+}
+
+type ObjectTag struct {
+	Key string `json:"key"`
+	Value string `json:"value"`
+}

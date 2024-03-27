@@ -12,18 +12,18 @@
 
 在确认您使用SDK时配置的Endpoint时，可先阅读开发人员指南中关于[RDS服务域名](https://cloud.baidu.com/doc/RDS/s/Ejwvz0uoq)的部分，理解Endpoint相关的概念。百度云目前开放了多区域支持，请参考[区域选择说明](https://cloud.baidu.com/doc/Reference/s/2jwvz23xx/)。
 
-目前支持“华北-北京”、“华北-保定”、“华南-广州”、“华东-苏州”、“金融华中-武汉”、“华东-上海”、“中国香港”、“新加坡”区域。对应信息为：
+目前支持“华北-北京”、“华北-保定”、“华南-广州”、“华东-苏州”、“金融华中-武汉”、“华东-上海”、“西南-成都”、“华东-南京”区域。对应信息为：
 
 访问区域 | 对应Endpoint | 协议
 ---|---|---
 北京 | rds.bj.baidubce.com | HTTP and HTTPS
-保定 | rds.bj.baidubce.com | HTTP and HTTPS
+保定 | rds.bd.baidubce.com | HTTP and HTTPS
 广州 | rds.gz.baidubce.com | HTTP and HTTPS
 苏州 | rds.su.baidubce.com | HTTP and HTTPS
 武汉 | rds.fwh.baidubce.com| HTTP and HTTPS
 上海 | rds.fsh.baidubce.com| HTTP and HTTPS
-香港 | rds.hkg.baidubce.com| HTTP and HTTPS
-新加坡 | rds.sin.baidubce.com| HTTP and HTTPS
+成都 | rds.cd.baidubce.com| HTTP and HTTPS
+南京 | rds.nj.baidubce.com| HTTP and HTTPS
 ## 获取密钥
 
 要使用百度云RDS，您需要拥有一个有效的AK(Access Key ID)和SK(Secret Access Key)用来进行签名认证。AK/SK是由系统分配给用户的，均为字符串，用于标识用户，为访问RDS做签名验证。
@@ -794,7 +794,7 @@ args := &rds.CreateAccountArgs{
     AccountName: "accountName",
     // 账号的密码，由字母、数字或下划线组成，长度6～32位，密码需要加密传输，禁止明文传输，必选
     Password: "password",
-    // 账号权限类型，Common：普通帐号,Super：super账号。默认为普通账号，可选
+    // 账号权限类型，Common：普通账号,Super：super账号。默认为普通账号，可选
     AccountType: "Common",
     // MySQL和SQL Server实例可设置此项，可选
     DatabasePrivileges: []rds.DatabasePrivilege{
@@ -805,9 +805,9 @@ args := &rds.CreateAccountArgs{
                 AuthType: "ReadOnly",
             },   
         },
-    // 帐号的描述信息，可选
+    // 账号的描述信息，可选
     Desc: "账号user1", 
-    // 帐号归属类型，OnlyMaster：主实例上使用的帐号,RdsProxy：该主实例对应的代理实例上使用的帐号。默认为OnlyMaster账号，可选
+    // 账号归属类型，OnlyMaster：主实例上使用的账号,RdsProxy：该主实例对应的代理实例上使用的账号。默认为OnlyMaster账号，可选
     Type: "OnlyMaster",
 }
 err = client.CreateAccount(instanceId, args)
@@ -912,7 +912,7 @@ if err != nil {
 fmt.Printf("update account password success\n")
 ```
 ## 更新账号权限
-使用以下代码可以更新账号密码
+使用以下代码可以更新账号权限
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/rds"
 args := &UpdateAccountPrivileges{
@@ -953,7 +953,7 @@ fmt.Println(result.Etag)
 
 ## 修改配置参数
 
-使用以下代码可以云数据库 RDS for MySQL 的参数配置。
+使用以下代码可以修改云数据库 RDS for MySQL 的参数配置。
 
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/rds"
@@ -987,7 +987,7 @@ fmt.Printf("update parameter success\n")
 
 ## 参数修改历史
 
-使用以下代码可以云数据库 RDS for MySQL 的参数配置。
+使用以下代码可以查看参数修改历史。
 
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/rds"
@@ -2076,7 +2076,7 @@ fmt.Printf("get ConnectionList list success\n")
 jsonData, _ := json.Marshal(result)
 fmt.Println(string(jsonData))
 ```
-# 备份管理
+# 备份恢复管理
 
 ## 获取备份列表
 

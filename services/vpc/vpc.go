@@ -228,3 +228,35 @@ func (c *Client) GetVPCDhcpInfo(vpcId string) (*VpcDhcpInfo, error) {
 		Do()
 	return result, err
 }
+
+// OpenRelay open vpc relay service
+// Param：
+//		updateVpcRelayArgs
+// return：
+// Return error message; if successful, return nil.
+func (c *Client) OpenRelay(updateVpcRelayArgs *UpdateVpcRelayArgs) error {
+	if updateVpcRelayArgs == nil {
+		return fmt.Errorf("The UpdateVPCReleyArgs cannot be nil.")
+	}
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForVPC()+"/openRelay/"+updateVpcRelayArgs.VpcId).
+		WithMethod(http.PUT).
+		WithQueryParamFilter("clientToken", updateVpcRelayArgs.ClientToken).
+		Do()
+}
+
+// ShutdownRelay Shutdown VPC relay service
+//
+// param：
+// updateVpcRelayArgs:
+//		the vpc id to shut down vpc's relay service
+//
+// return：
+// error: Return error message; if successful, return nil.
+func (c *Client) ShutdownRelay(updateVpcRelayArgs *UpdateVpcRelayArgs) error {
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForVPC()+"/shutdownRelay/"+updateVpcRelayArgs.VpcId).
+		WithMethod(http.PUT).
+		WithQueryParamFilter("clientToken", updateVpcRelayArgs.ClientToken).
+		Do()
+}

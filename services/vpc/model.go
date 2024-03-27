@@ -169,6 +169,7 @@ type ShowVPCModel struct {
 	CreatedTime   string           `json:"createdTime"`
 	Description   string           `json:"description"`
 	IsDefault     bool             `json:"isDefault"`
+	Relay         bool             `json:"relay"`
 	Subnets       []Subnet         `json:"subnets"`
 	SecondaryCidr []string         `json:"secondaryCidr"`
 	Tags          []model.TagModel `json:"tags"`
@@ -247,42 +248,42 @@ type UpdateSubnetArgs struct {
 
 // CreateIpreserveArgs - arguments for creating a reserved CIDR
 type CreateIpreserveArgs struct {
-    SubnetId    string `json:"subnetId"`
-    IpCidr      string `json:"ipCidr"`
-    IpVersion   int32  `json:"ipVersion"`
-    Description string `json:"description"`
-    ClientToken string `json:"-"`
+	SubnetId    string `json:"subnetId"`
+	IpCidr      string `json:"ipCidr"`
+	IpVersion   int32  `json:"ipVersion"`
+	Description string `json:"description"`
+	ClientToken string `json:"-"`
 }
 
 // CreateIpreserveResult - result of creating a reserved CIDR
 type CreateIpreserveResult struct {
-    IpReserveId string `json:"ipReserveId"`
+	IpReserveId string `json:"ipReserveId"`
 }
 
 // ListIpeserveArgs - arguments for listing reserved CIDRs
 type ListIpeserveArgs struct {
-    SubnetId string `json:"subnetId,omitempty"`
-    Marker   string `json:"marker,omitempty"`
-    MaxKeys  int    `json:"maxKeys,omitempty"`
+	SubnetId string `json:"subnetId,omitempty"`
+	Marker   string `json:"marker,omitempty"`
+	MaxKeys  int    `json:"maxKeys,omitempty"`
 }
 
 type ipReserve struct {
-	IpReserveId  string `json:"ipReserveId"`
-	SubnetId     string `json:"subnetId"`
-	IpCidr       string `json:"ipCidr"`
-	IpVersion    int32  `json:"ipVersion"`
-	Description  string `json:"description"`
-	CreatedTime  string `json:"createdTime"`
-	UpdatedTime  string `json:"updatedTime"`
+	IpReserveId string `json:"ipReserveId"`
+	SubnetId    string `json:"subnetId"`
+	IpCidr      string `json:"ipCidr"`
+	IpVersion   int32  `json:"ipVersion"`
+	Description string `json:"description"`
+	CreatedTime string `json:"createdTime"`
+	UpdatedTime string `json:"updatedTime"`
 }
 
 // ListIpeserveResult - result of listing reserved CIDRs
 type ListIpeserveResult struct {
-    IpReserves   []ipReserve `json:"ipReserves"`
-    Marker       string      `json:"marker,omitempty"`
-    IsTruncated  bool        `json:"isTruncated"`
-    NextMarker   string      `json:"nextMarker,omitempty"`
-    MaxKeys      int         `json:"maxKeys,omitempty"`
+	IpReserves  []ipReserve `json:"ipReserves"`
+	Marker      string      `json:"marker,omitempty"`
+	IsTruncated bool        `json:"isTruncated"`
+	NextMarker  string      `json:"nextMarker,omitempty"`
+	MaxKeys     int         `json:"maxKeys,omitempty"`
 }
 
 type RouteRule struct {
@@ -304,27 +305,27 @@ type GetRouteTableResult struct {
 }
 
 type GetRouteRuleArgs struct {
-	RouteTableId string      `json:"routeTableId"`
-	VpcId        string      `json:"vpcId"`
-	Marker		 string		 `json:"marker"`
-	MaxKeys      int         `json:"maxKeys"`
+	RouteTableId string `json:"routeTableId"`
+	VpcId        string `json:"vpcId"`
+	Marker       string `json:"marker"`
+	MaxKeys      int    `json:"maxKeys"`
 }
 
 type GetRouteRuleResult struct {
-	Marker		 string		 `json:"marker"`
-	IsTruncated  bool        `json:"isTruncated"`
-	NextMarker   string      `json:"nextMarker"`
-	MaxKeys      int         `json:"maxKeys"`
-	RouteRules   []RouteRule `json:"routeRules"`
+	Marker      string      `json:"marker"`
+	IsTruncated bool        `json:"isTruncated"`
+	NextMarker  string      `json:"nextMarker"`
+	MaxKeys     int         `json:"maxKeys"`
+	RouteRules  []RouteRule `json:"routeRules"`
 }
 
 type UpdateRouteRuleArgs struct {
-	RouteRuleId        string      `json:"routeRuleId"`
-	ClientToken        string      `json:"-"`	
-	SourceAddress      string      `json:"sourceAddress"`
-	DestinationAddress string      `json:"destinationAddress"`
-	NexthopId          string      `json:"nexthopId,omitempty"`
-	Description        string      `json:"description,omitempty"`
+	RouteRuleId        string `json:"routeRuleId"`
+	ClientToken        string `json:"-"`
+	SourceAddress      string `json:"sourceAddress"`
+	DestinationAddress string `json:"destinationAddress"`
+	NexthopId          string `json:"nexthopId,omitempty"`
+	Description        string `json:"description,omitempty"`
 }
 
 // CreateRouteRuleArgs defines the structure of the input parameters for the CreateRouteRule api
@@ -992,4 +993,9 @@ type VpcDhcpInfo struct {
 
 type DhcpOptions struct {
 	DomainNameServers string `json:"domainNameServers"`
+}
+
+type UpdateVpcRelayArgs struct {
+	ClientToken string `json:"-"`
+	VpcId       string `json:"vpcId"`
 }

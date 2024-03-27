@@ -38,14 +38,31 @@ type DescribeResultMeta struct {
 }
 
 type CreateLoadBalancerArgs struct {
-	ClientToken     string           `json:"-"`
-	Name            string           `json:"name,omitempty"`
-	Description     string           `json:"desc,omitempty"`
-	SubnetId        string           `json:"subnetId"`
-	VpcId           string           `json:"vpcId"`
-	ClusterProperty string           `json:"clusterProperty"`
-	Type            string           `json:"type,omitempty"`
-	Tags            []model.TagModel `json:"tags,omitempty"`
+	ClientToken       string           `json:"-"`
+	Name              string           `json:"name,omitempty"`
+	Description       string           `json:"desc,omitempty"`
+	SubnetId          string           `json:"subnetId"`
+	VpcId             string           `json:"vpcId"`
+	ClusterProperty   string           `json:"clusterProperty"`
+	Type              string           `json:"type,omitempty"`
+	Address           string           `json:"address,omitempty"`
+	Eip               string           `json:"eip,omitempty"`
+	ResourceGroupId   string           `json:"resourceGroupId,omitempty"`
+	AutoRenewLength   int              `json:"autoRenewLength,omitempty"`
+	AutoRenewTimeUnit string           `json:"autoRenewTimeUnit,omitempty"`
+	PerformanceLevel  string           `json:"performanceLevel,omitempty"`
+	Billing           *Billing         `json:"billing,omitempty"`
+	Tags              []model.TagModel `json:"tags,omitempty"`
+}
+
+type Billing struct {
+	PaymentTiming string       `json:"paymentTiming,omitempty"`
+	Reservation   *Reservation `json:"reservation,omitempty"`
+}
+
+type Reservation struct {
+	ReservationLength   int    `json:"reservationLength,omitempty"`
+	ReservationTimeUnit string `json:"reservationTimeUnit,omitempty"`
 }
 
 type CreateLoadBalancerResult struct {
@@ -65,6 +82,12 @@ type UpdateLoadBalancerArgs struct {
 type UpdateLoadBalancerAclArgs struct {
 	ClientToken string `json:"-"`
 	SupportAcl  *bool  `json:"supportAcl,omitempty"`
+}
+
+type StartLoadBalancerAutoRenewArgs struct {
+	ClientToken       string `json:"-"`
+	AutoRenewLength   int    `json:"autoRenewLength"`
+	AutoRenewTimeUnit string `json:"autoRenewTimeUnit,omitempty"`
 }
 
 type DescribeLoadBalancersArgs struct {
@@ -105,26 +128,37 @@ type ListenerModel struct {
 }
 
 type PortTypeModel struct {
-	Port int `json:"port"`
+	Port int    `json:"port"`
 	Type string `json:"type"`
 }
 
 type DescribeLoadBalancerDetailResult struct {
-	BlbId           string           `json:"blbId"`
-	Status          BLBStatus        `json:"status"`
-	Name            string           `json:"name"`
-	Description     string           `json:"desc"`
-	Address         string           `json:"address"`
-	PublicIp        string           `json:"publicIp"`
-	Cidr            string           `json:"cidr"`
-	VpcName         string           `json:"vpcName"`
-	CreateTime      string           `json:"createTime"`
-	Layer4ClusterId string           `json:"layer4ClusterId"`
-	Layer7ClusterId string           `json:"layer7ClusterId"`
-	Listener        []ListenerModel  `json:"listener"`
-	Tags            []model.TagModel `json:"tags"`
-	EipRouteType    string           `json:"eipRouteType"`
-	Ipv6            string           `json:"ipv6,omitempty"`
+	BlbId                  string           `json:"blbId"`
+	Status                 BLBStatus        `json:"status"`
+	Name                   string           `json:"name"`
+	Description            string           `json:"desc"`
+	Address                string           `json:"address"`
+	PublicIp               string           `json:"publicIp"`
+	Cidr                   string           `json:"cidr"`
+	VpcName                string           `json:"vpcName"`
+	CreateTime             string           `json:"createTime"`
+	Layer4ClusterId        string           `json:"layer4ClusterId"`
+	Layer7ClusterId        string           `json:"layer7ClusterId"`
+	Listener               []ListenerModel  `json:"listener"`
+	Tags                   []model.TagModel `json:"tags"`
+	EipRouteType           string           `json:"eipRouteType"`
+	Ipv6                   string           `json:"ipv6,omitempty"`
+	Layer4ClusterExclusive bool             `json:"layer4ClusterExclusive"`
+	Layer7ClusterExclusive bool             `json:"layer7ClusterExclusive"`
+	Layer4ClusterMode      string           `json:"layer4ClusterMode"`
+	Layer7ClusterMode      string           `json:"layer7ClusterMode"`
+	Layer4MasterAz         string           `json:"layer4MasterAz"`
+	Layer7MasterAz         string           `json:"layer7MasterAz"`
+	Layer4SlaveAz          string           `json:"layer4SlaveAz"`
+	Layer7SlaveAz          string           `json:"layer7SlaveAz"`
+	PaymentTiming          string           `json:"paymentTiming"`
+	PerformanceLevel       string           `json:"performanceLevel"`
+	ExpireTime             string           `json:"expireTime"`
 }
 
 type CreateTCPListenerArgs struct {
@@ -386,7 +420,7 @@ type HTTPSListenerModel struct {
 	ClientCertIds              []string `json:"clientCertIds"`
 	EncryptionType             string   `json:"encryptionType"`
 	EncryptionProtocols        []string `json:"encryptionProtocols"`
-	AppliedCiphers    		   string   `json:"appliedCiphers"`
+	AppliedCiphers             string   `json:"appliedCiphers"`
 }
 
 type SSLListenerModel struct {
@@ -401,7 +435,7 @@ type SSLListenerModel struct {
 	CertIds                    []string `json:"certIds"`
 	EncryptionType             string   `json:"encryptionType"`
 	EncryptionProtocols        []string `json:"encryptionProtocols"`
-	AppliedCiphers    		   string   `json:"appliedCiphers"`
+	AppliedCiphers             string   `json:"appliedCiphers"`
 	DualAuth                   bool     `json:"dualAuth"`
 	ClientCertIds              []string `json:"clientCertIds"`
 	ServerTimeout              int      `json:"serverTimeout"`
@@ -429,15 +463,15 @@ type AllListenerModel struct {
 	UnhealthyThreshold         int      `json:"unhealthyThreshold"`
 	HealthyThreshold           int      `json:"healthyThreshold"`
 	HealthCheckNormalStatus    string   `json:"healthCheckNormalStatus"`
-	HealthCheckHost    		   string   `json:"healthCheckHost"`
+	HealthCheckHost            string   `json:"healthCheckHost"`
 	ServerTimeout              int      `json:"serverTimeout"`
 	RedirectPort               int      `json:"redirectPort"`
 	CertIds                    []string `json:"certIds"`
 	DualAuth                   bool     `json:"dualAuth"`
 	ClientCertIds              []string `json:"clientCertIds"`
-	EncryptionType    		   string   `json:"encryptionType"`
+	EncryptionType             string   `json:"encryptionType"`
 	EncryptionProtocols        []string `json:"encryptionProtocols"`
-	AppliedCiphers    		   string   `json:"appliedCiphers"`
+	AppliedCiphers             string   `json:"appliedCiphers"`
 }
 
 type DescribeListenerArgs struct {
@@ -477,9 +511,9 @@ type DescribeAllListenersResult struct {
 }
 
 type DeleteListenersArgs struct {
-	ClientToken string   `json:"-"`
-	PortList    []uint16 `json:"portList"`
-	PortTypeList    []PortTypeModel `json:"portTypeList"`
+	ClientToken  string          `json:"-"`
+	PortList     []uint16        `json:"portList"`
+	PortTypeList []PortTypeModel `json:"portTypeList"`
 }
 
 type AddBackendServersArgs struct {
@@ -579,7 +613,7 @@ type UpdateSecurityGroupsArgs struct {
 }
 
 type UpdateEnterpriseSecurityGroupsArgs struct {
-	ClientToken      string   `json:"-"`
+	ClientToken                string   `json:"-"`
 	EnterpriseSecurityGroupIds []string `json:"enterpriseSecurityGroupIds"`
 }
 
@@ -592,17 +626,17 @@ type DescribeEnterpriseSecurityGroupsResult struct {
 }
 
 type BlbSecurityGroupModel struct {
-	SecurityGroupId    string                  `json:"securityGroupId"`
-	SecurityGroupName  string                  `json:"securityGroupName"`
-	SecurityGroupDesc  string                  `json:"securityGroupDesc"`
-	VpcName            string                  `json:"vpcName"`
+	SecurityGroupId    string                      `json:"securityGroupId"`
+	SecurityGroupName  string                      `json:"securityGroupName"`
+	SecurityGroupDesc  string                      `json:"securityGroupDesc"`
+	VpcName            string                      `json:"vpcName"`
 	SecurityGroupRules []BlbSecurityGroupRuleModel `json:"securityGroupRules"`
 }
 
 type BlbEnterpriseSecurityGroupModel struct {
-	EnterpriseSecurityGroupId    string                  `json:"enterpriseSecurityGroupId"`
-	EnterpriseSecurityGroupName  string                  `json:"enterpriseSecurityGroupName"`
-	EnterpriseSecurityGroupDesc  string                  `json:"enterpriseSecurityGroupDesc"`
+	EnterpriseSecurityGroupId    string                                `json:"enterpriseSecurityGroupId"`
+	EnterpriseSecurityGroupName  string                                `json:"enterpriseSecurityGroupName"`
+	EnterpriseSecurityGroupDesc  string                                `json:"enterpriseSecurityGroupDesc"`
 	EnterpriseSecurityGroupRules []BlbEnterpriseSecurityGroupRuleModel `json:"enterpriseSecurityGroupRules"`
 }
 
@@ -620,13 +654,13 @@ type BlbSecurityGroupRuleModel struct {
 
 type BlbEnterpriseSecurityGroupRuleModel struct {
 	EnterpriseSecurityGroupRuleId string `json:"enterpriseSecurityGroupRuleId"`
-	Direction           string `json:"direction"`
-	Action           string `json:"action"`
-	Priority           int `json:"priority"`
-	Remark           string `json:"remark"`
-	Ethertype           string `json:"ethertype,omitempty"`
-	PortRange           string `json:"portRange,omitempty"`
-	Protocol            string `json:"protocol,omitempty"`
-	SourceIp            string `json:"sourceIp,omitempty"`
-	DestIp              string `json:"destIp,omitempty"`
+	Direction                     string `json:"direction"`
+	Action                        string `json:"action"`
+	Priority                      int    `json:"priority"`
+	Remark                        string `json:"remark"`
+	Ethertype                     string `json:"ethertype,omitempty"`
+	PortRange                     string `json:"portRange,omitempty"`
+	Protocol                      string `json:"protocol,omitempty"`
+	SourceIp                      string `json:"sourceIp,omitempty"`
+	DestIp                        string `json:"destIp,omitempty"`
 }

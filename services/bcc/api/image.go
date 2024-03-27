@@ -511,6 +511,37 @@ func ImportCustomImage(cli bce.Client, args *ImportCustomImageArgs) (*ImportCust
 	return jsonBody, nil
 }
 
+func BatchRefundResource(cli bce.Client, args *BatchRefundResourceArg) (*BatchRefundResourceResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getBatchRefundResourceUri())
+	req.SetMethod(http.POST)
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return nil, err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &BatchRefundResourceResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
 func GetAvailableImagesBySpec(cli bce.Client, args *GetAvailableImagesBySpecArg) (*GetAvailableImagesBySpecResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
