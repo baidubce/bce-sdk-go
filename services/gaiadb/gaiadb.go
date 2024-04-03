@@ -34,11 +34,11 @@ func (c *Client) Request(method, uri string, body interface{}) (interface{}, err
 	if body != nil {
 		err = req.
 			WithBody(body).
-			WithResult(res).
+			WithResult(&res).
 			Do()
 	} else {
 		err = req.
-			WithResult(res).
+			WithResult(&res).
 			Do()
 	}
 

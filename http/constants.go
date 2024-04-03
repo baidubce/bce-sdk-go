@@ -61,6 +61,7 @@ const (
 	BCE_USER_METADATA_PREFIX = "x-bce-meta-"
 	BCE_SECURITY_TOKEN       = "x-bce-security-token"
 	BCE_DATE                 = "x-bce-date"
+	BCE_TAG                  = "x-bce-tag-list"
 
 	// BOS HTTP Headers
 	BCE_COPY_METADATA_DIRECTIVE         = "x-bce-metadata-directive"

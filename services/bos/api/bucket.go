@@ -130,11 +130,16 @@ func HeadBucket(cli bce.Client, bucket string, ctx *BosContext) (error, *bce.Bce
 // RETURNS:
 //     - string: the location of the new bucket if create success
 //     - error: nil if create success otherwise the specific error
-func PutBucket(cli bce.Client, bucket string, ctx *BosContext) (string, error) {
+func PutBucket(cli bce.Client, bucket string, args *PutBucketArgs, ctx *BosContext) (string, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getBucketUri(bucket))
 	req.SetMethod(http.PUT)
 	ctx.Bucket = bucket
+	if args != nil {
+		if len(args.TagList) != 0 {
+			req.SetHeader(http.BCE_TAG, args.TagList)
+		}
+	}
 	resp := &bce.BceResponse{}
 	if err := SendRequest(cli, req, resp, ctx); err != nil {
 		return "", err
@@ -1177,7 +1182,6 @@ func DeleteBucketMirror(cli bce.Client, bucket string, ctx *BosContext) error {
 	defer func() { resp.Body().Close() }()
 	return nil
 }
-
 
 func PutBucketTag(cli bce.Client, bucket string, putBucketTagArgs *PutBucketTagArgs, ctx *BosContext) error {
 	req := &bce.BceRequest{}

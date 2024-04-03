@@ -154,6 +154,7 @@ func validCannedAcl(val string) bool {
 	return false
 }
 
+
 func toHttpHeaderKey(key string) string {
 	var result bytes.Buffer
 	needToUpper := true

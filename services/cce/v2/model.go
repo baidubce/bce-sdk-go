@@ -303,6 +303,8 @@ type ClusterSpec struct {
 
 	MasterConfig           types.MasterConfig           `json:"masterConfig"`
 	ContainerNetworkConfig types.ContainerNetworkConfig `json:"containerNetworkConfig"`
+
+	Tags []types.Tag `json:"tags"`
 }
 
 // ClusterStatus - Cluster Status

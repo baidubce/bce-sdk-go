@@ -240,7 +240,11 @@ func (c *Client) IsNsBucket(bucket string) bool {
 //     - string: the location of the new bucket if create success
 //     - error: nil if create success otherwise the specific error
 func (c *Client) PutBucket(bucket string) (string, error) {
-	return api.PutBucket(c, bucket, c.BosContext)
+	return api.PutBucket(c, bucket, nil, c.BosContext)
+}
+
+func (c *Client) PutBucketWithArgs(bucket string, args *api.PutBucketArgs) (string, error) {
+	return api.PutBucket(c, bucket, args, c.BosContext)
 }
 
 // DeleteBucket - delete a empty bucket

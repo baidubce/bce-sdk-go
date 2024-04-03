@@ -78,21 +78,24 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 }
 
 func TestClient_CreateLoadBalancer(t *testing.T) {
+	AllowDelete := false
+	AllocateIpv6 := true
 	createArgs := &CreateLoadBalancerArgs{
 		ClientToken:     getClientToken(),
-		Name:            "sdkBlb",
+		Name:            "sdkBlb040101",
 		VpcId:           VPC_TEST_ID,
 		SubnetId:        SUBNET_TEST_ID,
-		Address:         "192.168.32.16",
 		AutoRenewLength: 1,
 		Billing: &Billing{
 			PaymentTiming: "Prepaid",
 			Reservation: &Reservation{
-				ReservationLength:   2,
+				ReservationLength:   1,
 				ReservationTimeUnit: "Month",
 			},
 		},
 		PerformanceLevel: "small1",
+		AllowDelete:      &AllowDelete,
+		AllocateIpv6:     &AllocateIpv6,
 	}
 
 	createResult, err := BLB_CLIENT.CreateLoadBalancer(createArgs)

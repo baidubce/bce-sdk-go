@@ -53,6 +53,8 @@ type CreateLoadBalancerArgs struct {
 	PerformanceLevel  string           `json:"performanceLevel,omitempty"`
 	Billing           *Billing         `json:"billing,omitempty"`
 	Tags              []model.TagModel `json:"tags,omitempty"`
+	AllowDelete       *bool            `json:"allowDelete,omitempty"`
+	AllocateIpv6      *bool            `json:"allocateIpv6,omitempty"`
 }
 
 type Billing struct {
@@ -70,6 +72,7 @@ type CreateLoadBalancerResult struct {
 	Name        string `json:"name"`
 	Description string `json:"desc"`
 	BlbId       string `json:"blbId"`
+	Ipv6        string `json:"ipv6"`
 }
 
 type UpdateLoadBalancerArgs struct {

@@ -190,8 +190,62 @@ type Instance struct {
 	Tags                 []model.TagModel `json:"tags"`
 	ResourceGroupId      string           `json:"resourceGroupId"`
 	ResourceGroupName    string           `json:"resourceGroupName"`
+	RoGroupList          []RoGroup        `json:"roGroupList"`
+	RoGroupAbnormal      bool             `json:"roGroupAbnormal"`
 }
 
+type RoGroup struct {
+	RoGroupId       string       `json:"roGroupId"`
+	RoGroupName     string       `json:"roGroupName"`
+	RoGroupEndpoint InstanceDict `json:"roGroupEndpoint"`
+	VpcId           string       `json:"vpcId"`
+	SubnetId        string       `json:"subnetId"`
+	EipStatus       string       `json:"eipStatus"`
+	RoGroupAppList  []AppList    `json:"roGroupAppList"`
+	VpcVo           SimpleVpcVo  `json:"vpcVo"`
+	SubnetVo        SubnetVo     `json:"subnetVo"`
+}
+
+type InstanceDict struct {
+	Address string `json:"address"`
+	Port    int    `json:"port"`
+	VnetIp  string `json:"vnetIp"`
+	InetIp  string `json:"inetIp"`
+}
+type AppList struct {
+	AppId       string `json:"appId"`
+	AppName     string `json:"appName"`
+	Weight      int    `json:"weight"`
+	RoGroupId   string `json:"roGroupId"`
+	SourceAppId string `json:"sourceAppId"`
+	Status      string `json:"status"`
+	CreateTime  string `json:"createTime"`
+	UpdateTime  string `json:"updateTime"`
+	AppStatus   string `json:"appStatus"`
+	AppIdShort  string `json:"appIdShort"`
+}
+type SimpleVpcVo struct {
+	VpcId         string   `json:"vpcId"`
+	ShortId       string   `json:"shortId"`
+	Name          string   `json:"name"`
+	Cidr          string   `json:"cidr"`
+	Status        int      `json:"status"`
+	CreateTime    string   `json:"createTime"`
+	Description   string   `json:"description"`
+	DefaultVpc    bool     `json:"defaultVpc"`
+	Ipv6Cidr      string   `json:"ipv6Cidr"`
+	AuxiliaryCidr []string `json:"auxiliaryCidr"`
+	Relay         bool     `json:"relay"`
+}
+type SubnetVo struct {
+	SubnetId   string `json:"subnetId"`
+	Name       string `json:"name"`
+	Az         string `json:"az"`
+	Cidr       string `json:"cidr"`
+	Ipv6Cidr   string `json:"ipv6Cidr"`
+	VpcId      string `json:"vpcId"`
+	VpcShortId string `json:"vpcShortId"`
+}
 type ListRdsResult struct {
 	Marker      string     `json:"marker"`
 	MaxKeys     int        `json:"maxKeys"`
