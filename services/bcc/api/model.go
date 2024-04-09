@@ -1788,6 +1788,18 @@ type UnBindTagsRequest struct {
 	ChangeTags []model.TagModel `json:"changeTags"`
 }
 
+type ReservedTagsRequest struct {
+	ReservedInstanceIds []string         `json:"reservedInstanceIds"`
+	ChangeTags          []model.TagModel `json:"changeTags"`
+}
+
+type TagsOperationRequest struct {
+	ResourceType  string           `json:"resourceType"`
+	ResourceIds   []string         `json:"resourceIds"`
+	Tags          []model.TagModel `json:"tags"`
+	IsRelationTag bool             `json:"isRelationTag"`
+}
+
 type CancelBidOrderRequest struct {
 	OrderId     string `json:"orderId"`
 	ClientToken string `json:"-"`

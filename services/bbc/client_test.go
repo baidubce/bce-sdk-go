@@ -40,14 +40,9 @@ type Conf struct {
 
 func init() {
 	_, f, _, _ := runtime.Caller(0)
-	for i := 0; i < 6; i++ {
-		f = filepath.Dir(f)
-	}
-	conf := filepath.Join(f, "config.json")
-	fmt.Println(conf)
+	conf := filepath.Join(filepath.Dir(f), "config.json")
 	fp, err := os.Open(conf)
 	if err != nil {
-		fmt.Println("config json file of ak/sk not given: ", conf)
 		log.Fatal("config json file of ak/sk not given:", conf)
 		os.Exit(1)
 	}
@@ -400,6 +395,38 @@ func TestUnbindTags(t *testing.T) {
 		},
 	}
 	err := BBC_CLIENT.UnbindTags(BBC_TestBbcId, unbindTagsArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBindReservedInstanceToTags(t *testing.T) {
+	args := &ReservedTagsRequest{
+		ChangeTags: []model.TagModel{
+			{
+				TagKey:   "TagKey-go",
+				TagValue: "TagValue",
+			},
+		},
+		ReservedInstanceIds: []string{
+			"r-Aev4dfQV", "r-0OlWLZ4p",
+		},
+	}
+	err := BBC_CLIENT.BindReservedInstanceToTags(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestUnbindReservedInstanceFromTags(t *testing.T) {
+	args := &ReservedTagsRequest{
+		ChangeTags: []model.TagModel{
+			{
+				TagKey:   "TagKey-go",
+				TagValue: "TagValue",
+			},
+		},
+		ReservedInstanceIds: []string{
+			"r-Aev4dfQV", "r-0OlWLZ4p",
+		},
+	}
+	err := BBC_CLIENT.UnbindReservedInstanceFromTags(args)
 	ExpectEqual(t.Errorf, err, nil)
 }
 

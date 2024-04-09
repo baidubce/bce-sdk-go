@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/baidubce/bce-sdk-go/bce"
+	"github.com/baidubce/bce-sdk-go/model"
 )
 
 // DomainStatus defined a struct for domain info,
@@ -149,14 +150,24 @@ func IsValidDomain(cli bce.Client, domain string) (*DomainValidInfo, error) {
 //     - cli: the client agent which can perform sending request
 //     - domain: the specified domain
 //     - originInit: initialized data for a CDN domain
+//     - tags: bind with the specified tags
 // RETURNS:
 //     - *DomainCreatedInfo: the details about created a CDN domain
 //     - error: nil if success otherwise the specific error
-func CreateDomain(cli bce.Client, domain string, originInit *OriginInit) (*DomainCreatedInfo, error) {
+func CreateDomain(cli bce.Client, domain string, originInit *OriginInit, tags []model.TagModel) (*DomainCreatedInfo, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s", domain)
 	respObj := &DomainCreatedInfo{}
 
-	err := httpRequest(cli, "PUT", urlPath, nil, originInit, respObj)
+	type Request struct {
+		*OriginInit
+		Tags []model.TagModel `json:"tags,omitempty"`
+	}
+
+	requestObject := &Request{
+		OriginInit: originInit,
+		Tags:       tags,
+	}
+	err := httpRequest(cli, "PUT", urlPath, nil, requestObject, respObj)
 	if err != nil {
 		return nil, err
 	}

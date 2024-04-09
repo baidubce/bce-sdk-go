@@ -3,6 +3,7 @@ package cdn
 import (
 	"github.com/baidubce/bce-sdk-go/auth"
 	"github.com/baidubce/bce-sdk-go/bce"
+	"github.com/baidubce/bce-sdk-go/model"
 	"github.com/baidubce/bce-sdk-go/services/cdn/api"
 )
 
@@ -102,17 +103,86 @@ func (cli *Client) IsValidDomain(domain string) (*api.DomainValidInfo, error) {
 	return api.IsValidDomain(cli, domain)
 }
 
-// CreateDomain - add a specified domain into CDN service
+// CreateDomainOption defined a method for setting optional configurations.
+type CreateDomainOption func(interface{})
+
+// CreateDomainWithTags defined a method for binding a CDN domain with the specified tags.
+func CreateDomainWithTags(tags []model.TagModel) CreateDomainOption {
+	return func(o interface{}) {
+		cfg, ok := o.(*createDomainOption)
+		if ok {
+			cfg.tags = tags
+		}
+	}
+}
+
+// CreateDomainWithOriginDefaultHost configure the request header "Host" to origin server.
+// It has lower priority, compare with the OriginPeer[i].Host.
+func CreateDomainWithOriginDefaultHost(defaultHost string) CreateDomainOption {
+	return func(o interface{}) {
+		cfg, ok := o.(*createDomainOption)
+		if ok {
+			cfg.defaultHost = defaultHost
+		}
+	}
+}
+
+// CreateDomainWithForm configure the form of the CDN domain.
+// The follow list the valid forms:
+// - default
+// - image
+// - download
+// - media
+// If you not call CreateDomainWithForm, the "default" will be used as the form.
+func CreateDomainWithForm(form string) CreateDomainOption {
+	return func(o interface{}) {
+		cfg, ok := o.(*createDomainOption)
+		if ok {
+			cfg.form = form
+		}
+	}
+}
+
+type createDomainOption struct {
+	tags        []model.TagModel
+	defaultHost string
+	form        string
+}
+
+// CreateDomain - create a BCE CDN domain
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/gjwvyex4o
 //
 // PARAMS:
 //     - domain: the specified domain
-//     - originInit: initialized data for a CDN domain
+//     - originInit: origin server for a CDN domain
 // RETURNS:
 //     - *DomainCreatedInfo: the details about created a CDN domain
 //     - error: nil if success otherwise the specific error
 func (cli *Client) CreateDomain(domain string, originInit *api.OriginInit) (*api.DomainCreatedInfo, error) {
-	return api.CreateDomain(cli, domain, originInit)
+	return api.CreateDomain(cli, domain, originInit, nil)
+}
+
+// CreateDomainWithOptions - create a BCE CDN domain with optional configurations.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/gjwvyex4o
+//
+// PARAMS:
+//     - domain: the specified domain
+//     - origins: the origin servers
+//     - opts: optional configure for a CDN domain, e.g. bind with BCE tags.
+// RETURNS:
+//     - *DomainCreatedInfo: the details about created a CDN domain
+//     - error: nil if success otherwise the specific error
+func (cli *Client) CreateDomainWithOptions(domain string, origins []api.OriginPeer, opts ...CreateDomainOption) (*api.DomainCreatedInfo, error) {
+	var cfg createDomainOption
+	for _, opt := range opts {
+		opt(&cfg)
+	}
+	originInit := &api.OriginInit{
+		Origin:      origins,
+		DefaultHost: cfg.defaultHost,
+		Form:        cfg.form,
+	}
+	return api.CreateDomain(cli, domain, originInit, cfg.tags)
 }
 
 // EnableDomain - enable a specified domain
@@ -902,6 +972,30 @@ func (cli *Client) SetContentEncoding(domain string, enabled bool, encodingType 
 //     - error: nil if success otherwise the specific error
 func (cli *Client) GetContentEncoding(domain string) (string, error) {
 	return api.GetContentEncoding(cli, domain)
+}
+
+// SetTags - bind CDN domain with the specified tags.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/ylub1afy6
+//
+// PARAMS:
+//     - domain: the specified domain
+//     - tags: identifying CDN domain as something
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (cli *Client) SetTags(domain string, tags []model.TagModel) error {
+	return api.SetTags(cli, domain, tags)
+}
+
+// GetTags - get tags the CDN domain bind with.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Plub1mrgx
+//
+// PARAMS:
+//     - domain: the specified domain
+// RETURNS:
+//     - []Tag: tags the CDN domain bind with
+//     - error: nil if success otherwise the specific error
+func (cli *Client) GetTags(domain string) ([]model.TagModel, error) {
+	return api.GetTags(cli, domain)
 }
 
 // Purge - tells the CDN system to purge the specified files

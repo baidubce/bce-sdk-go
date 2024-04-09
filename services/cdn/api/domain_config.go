@@ -7,48 +7,50 @@ import (
 	"strings"
 
 	"github.com/baidubce/bce-sdk-go/bce"
+	"github.com/baidubce/bce-sdk-go/model"
 )
 
 // DomainConfig defined a struct for a specified domain's configuration
 type DomainConfig struct {
-	Domain         			string          `json:"domain"`
-	Cname          			string          `json:"cname"`
-	Status         			string          `json:"status"`
-	CreateTime     			string          `json:"createTime"`
-	LastModifyTime 			string          `json:"lastModifyTime"`
-	IsBan          			string          `json:"isBan"`
-	Origin         			[]OriginPeer    `json:"origin"`
-	OriginProtocol 			*OriginProtocol `json:"originProtocol,omitempty"`
-	OriginTimeout  			*OriginTimeout  `json:"originTimeout,omitempty"`
-	OriginFixedISP 			bool            `json:"originFixedISP,omitempty"`
-	DefaultHost             string          `json:"defaultHost,omitempty"`
-	RequestHostAsOriginHost bool   			`json:"requestHostAsOriginHost"`
-	CacheTTL       			[]CacheTTL      `json:"cacheTTL"`
-	LimitRate      			int             `json:"limitRate"`
-	RequestAuth    			*RequestAuth    `json:"requestAuth,omitempty"`
-	Https          			*HTTPSConfig    `json:"https,omitempty"`
-	FollowProtocol 			bool            `json:"followProtocol"`
-	SeoSwitch      			*SeoSwitch      `json:"seoSwitch"`
-	Form           			string          `json:"form"`
-	RangeSwitch    			string          `json:"rangeSwitch"`
-	OfflineMode    			bool            `json:"offlineMode"`
-	ClientIp       			*ClientIp       `json:"clientIp"`
-	OCSP           			bool            `json:"ocsp"`
-	HttpHeader     			[]HttpHeader    `json:"httpHeader"`
-	MediaDragConf  			*MediaDragConf  `json:"mediaDragConf"`
-	FileTrim       			bool            `json:"fileTrim"`
-	QUIC           			bool            `json:"quic"`
-	RefererACL     			*RefererACL     `json:"refererACL"`
-	IpACL          			*IpACL          `json:"ipACL"`
-	UaAcl          			*UaACL          `json:"uaAcl"`
-	AccessLimit    			*AccessLimit    `json:"accessLimit"`
-	TrafficLimit   			*TrafficLimit   `json:"trafficLimit"`
-	ErrorPage      			[]ErrorPage     `json:"errorPage"`
-	CacheShare     			*CacheShared    `json:"cacheShare"`
-	Compress       			*Compress       `json:"compress,omitempty"`
-	Cors           			*CorsCfg        `json:"cors,omitempty"`
-	Ipv6Dispatch   			*Ipv6Dispatch   `json:"ipv6Dispatch,omitempty"`
-	RetryOrigin    			*RetryOrigin    `json:"retryOrigin,omitempty"`
+	Domain                  string           `json:"domain"`
+	Cname                   string           `json:"cname"`
+	Status                  string           `json:"status"`
+	CreateTime              string           `json:"createTime"`
+	LastModifyTime          string           `json:"lastModifyTime"`
+	IsBan                   string           `json:"isBan"`
+	Origin                  []OriginPeer     `json:"origin"`
+	OriginProtocol          *OriginProtocol  `json:"originProtocol,omitempty"`
+	OriginTimeout           *OriginTimeout   `json:"originTimeout,omitempty"`
+	OriginFixedISP          bool             `json:"originFixedISP,omitempty"`
+	DefaultHost             string           `json:"defaultHost,omitempty"`
+	RequestHostAsOriginHost bool             `json:"requestHostAsOriginHost"`
+	CacheTTL                []CacheTTL       `json:"cacheTTL"`
+	LimitRate               int              `json:"limitRate"`
+	RequestAuth             *RequestAuth     `json:"requestAuth,omitempty"`
+	Https                   *HTTPSConfig     `json:"https,omitempty"`
+	FollowProtocol          bool             `json:"followProtocol"`
+	SeoSwitch               *SeoSwitch       `json:"seoSwitch"`
+	Form                    string           `json:"form"`
+	RangeSwitch             string           `json:"rangeSwitch"`
+	OfflineMode             bool             `json:"offlineMode"`
+	ClientIp                *ClientIp        `json:"clientIp"`
+	OCSP                    bool             `json:"ocsp"`
+	HttpHeader              []HttpHeader     `json:"httpHeader"`
+	MediaDragConf           *MediaDragConf   `json:"mediaDragConf"`
+	FileTrim                bool             `json:"fileTrim"`
+	QUIC                    bool             `json:"quic"`
+	RefererACL              *RefererACL      `json:"refererACL"`
+	IpACL                   *IpACL           `json:"ipACL"`
+	UaAcl                   *UaACL           `json:"uaAcl"`
+	AccessLimit             *AccessLimit     `json:"accessLimit"`
+	TrafficLimit            *TrafficLimit    `json:"trafficLimit"`
+	ErrorPage               []ErrorPage      `json:"errorPage"`
+	CacheShare              *CacheShared     `json:"cacheShare"`
+	Compress                *Compress        `json:"compress,omitempty"`
+	Cors                    *CorsCfg         `json:"cors,omitempty"`
+	Ipv6Dispatch            *Ipv6Dispatch    `json:"ipv6Dispatch,omitempty"`
+	RetryOrigin             *RetryOrigin     `json:"retryOrigin,omitempty"`
+	Tags                    []model.TagModel `json:"tags"`
 }
 
 // CacheTTL defined a struct for cached rules setting
@@ -1877,4 +1879,58 @@ func GetContentEncoding(cli bce.Client, domain string) (string, error) {
 	}
 
 	return contentEncoding, nil
+}
+
+// SetTags - bind CDN domain with the specified tags.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/ylub1afy6
+//
+// PARAMS:
+//     - cli: the client agent can execute sending request
+//     - domain: the specified domain
+//     - tags: identifying CDN domain as something
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func SetTags(cli bce.Client, domain string, tags []model.TagModel) error {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"tags": "",
+	}
+	err := httpRequest(cli, "PUT", urlPath, params, &struct {
+		Tags []model.TagModel `json:"tags"`
+	}{
+		Tags: tags,
+	}, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetTags - get tags the CDN domain bind with.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Plub1mrgx
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - domain: the specified domain
+// RETURNS:
+//     - []Tag: tags the CDN domain bind with
+//     - error: nil if success otherwise the specific error
+func GetTags(cli bce.Client, domain string) ([]model.TagModel, error) {
+	urlPath := fmt.Sprintf("/v2/domain/%s/config", domain)
+	params := map[string]string{
+		"tags": "",
+	}
+
+	respObj := struct {
+		Tags []model.TagModel `json:"tags"`
+	}{}
+
+	err := httpRequest(cli, "GET", urlPath, params, nil, &respObj)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return respObj.Tags, nil
 }

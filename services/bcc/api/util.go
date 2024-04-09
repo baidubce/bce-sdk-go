@@ -40,6 +40,8 @@ const (
 	REQUEST_IMAGE_SHAREDUSER_URI = "/sharedUsers"
 	REQUEST_IMAGE_OS_URI         = "/os"
 	REQUEST_INSTANCE_URI         = "/instance"
+	REQUEST_BCC_RESERVED_TAG_URI = "/bcc/reserved/tag"
+	REQUEST_ServiceType_TAG_URI  = "/bcc/tag"
 	REQUEST_INSTANCE_LABEL_URI   = "/instanceByLabel"
 	REQUEST_LIST_URI             = "/list"
 	REQUEST_SECURITYGROUP_URI    = "/securityGroup"
@@ -309,6 +311,14 @@ func getbindInstanceToTagsUri(id string) string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/" + id + REQUEST_TAG_URI
 }
 
+func GetBccReservedToTagsUri() string {
+	return URI_PREFIXV2 + REQUEST_BCC_RESERVED_TAG_URI
+}
+
+func GetServiceTypeTagsUri() string {
+	return URI_PREFIXV3 + REQUEST_ServiceType_TAG_URI
+}
+
 func GetInstanceNoChargeListUri() string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_NOCHARGE_URI
 }
@@ -442,5 +452,5 @@ func getBatchRefundResourceUri() string {
 }
 
 func getAvailableImagesBySpecUri() string {
-	return URI_PREFIXV2 +"/image/getAvailableImagesBySpec"
+	return URI_PREFIXV2 + "/image/getAvailableImagesBySpec"
 }

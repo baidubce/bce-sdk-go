@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/baidubce/bce-sdk-go/bce"
+	"github.com/baidubce/bce-sdk-go/model"
 	"github.com/baidubce/bce-sdk-go/services/cdn/api"
 	"github.com/baidubce/bce-sdk-go/util"
 )
@@ -143,10 +144,31 @@ func TestCreateDomain(t *testing.T) {
 		Origin: []api.OriginPeer{
 			{
 				Peer: "1.2.3.4",
-				Host: "1.2.3.4",
+				Host: "www.baidu.com",
 			},
 		},
 	})
+
+	t.Logf("domainCreatedInfo: %v", domainCreatedInfo)
+	checkClientErr(t, "CreateDomain", err)
+}
+
+func TestCreateDomainWithTags(t *testing.T) {
+	domainCreatedInfo, err := testCli.CreateDomainWithOptions("0307-001.qq.com", []api.OriginPeer{
+		{
+			Peer: "1.2.3.4",
+			Host: "www.baidu.com",
+		},
+	}, CreateDomainWithTags([]model.TagModel{
+		{
+			TagKey:   "service",
+			TagValue: "web",
+		},
+		{
+			TagKey:   "域名类型",
+			TagValue: "网站服务",
+		},
+	}), CreateDomainWithForm("image"), CreateDomainWithOriginDefaultHost("origin.baidu.com"))
 
 	t.Logf("domainCreatedInfo: %v", domainCreatedInfo)
 	checkClientErr(t, "CreateDomain", err)
@@ -713,6 +735,22 @@ func TestSetContentEncoding(t *testing.T) {
 func TestGetContentEncoding(t *testing.T) {
 	contentEncoding, err := testCli.GetContentEncoding(testAuthorityDomain)
 	t.Logf("contentEncoding: %+v", contentEncoding)
+	checkClientErr(t, "GetContentEncoding", err)
+}
+
+func TestSetTags(t *testing.T) {
+	err := testCli.SetTags(testAuthorityDomain, []model.TagModel{
+		{
+			TagKey:   "service",
+			TagValue: "download",
+		},
+	})
+	checkClientErr(t, "SetTags", err)
+}
+
+func TestGetTags(t *testing.T) {
+	tags, err := testCli.GetTags(testAuthorityDomain)
+	t.Logf("tags: %+v", tags)
 	checkClientErr(t, "GetContentEncoding", err)
 }
 

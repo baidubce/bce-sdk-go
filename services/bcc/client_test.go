@@ -1099,6 +1099,74 @@ func TestUnBindInstanceToTags(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestBindReservedInstanceToTags(t *testing.T) {
+	args := &api.ReservedTagsRequest{
+		ChangeTags: []model.TagModel{
+			{
+				TagKey:   "TagKey-go",
+				TagValue: "TagValue",
+			},
+		},
+		ReservedInstanceIds: []string{
+			"r-Qyycx1SX",
+		},
+	}
+	err := BCC_CLIENT.BindReservedInstanceToTags(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestUnbindReservedInstanceToTags(t *testing.T) {
+	args := &api.ReservedTagsRequest{
+		ChangeTags: []model.TagModel{
+			{
+				TagKey:   "TagKey-go",
+				TagValue: "TagValue",
+			},
+		},
+		ReservedInstanceIds: []string{
+			"r-Qyycx1SX",
+		},
+	}
+	err := BCC_CLIENT.UnbindReservedInstanceFromTags(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBindInstanceToTagsByResourceType(t *testing.T) {
+	args := &api.TagsOperationRequest{
+		ResourceType: "bccri",
+		ResourceIds: []string{
+			"r-oFpMXKhv", "r-HrztSVk0",
+		},
+		Tags: []model.TagModel{
+			{
+				TagKey:   "TagKey-go",
+				TagValue: "TagValue",
+			},
+		},
+		IsRelationTag: false,
+	}
+	err := BCC_CLIENT.BindInstanceToTagsByResourceType(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestUnbindInstanceToTagsByResourceType(t *testing.T) {
+	args := &api.TagsOperationRequest{
+		ResourceType: "bccri",
+		ResourceIds: []string{
+			"r-oFpMXKhv", "r-HrztSVk0",
+		},
+		Tags: []model.TagModel{
+			{
+				TagKey:   "TagKey-go",
+				TagValue: "TagValue",
+			},
+		},
+		IsRelationTag: false,
+	}
+	err := BCC_CLIENT.UnbindInstanceToTagsByResourceType(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestGetInstanceNoChargeList(t *testing.T) {
 	listArgs := &api.ListInstanceArgs{}
 	_, err := BCC_CLIENT.GetInstanceNoChargeList(listArgs)

@@ -27,14 +27,14 @@ const (
 	URI_PREFIX_V1 = bce.URI_PREFIX + "v1"
 	URI_PREFIX_V2 = bce.URI_PREFIX + "v2"
 
-	REQUEST_INSTANCE_URI     	= "/instance"
-	REQUEST_INSTANCE_LABEL_URI	= "/instanceByLabel"
-	REQUEST_BATCH_DELETE_URI 	= "/batchDelete"
-	REQUEST_RECYCLE_URI      	= "/recycle"
-	REQUEST_RECOVERY_URI     	= "/recovery"
-	REQUEST_SUBNET_URI       	= "/vpcSubnet"
-	REQUEST_VPC_URI          	= "/vpc"
-	SECURITY_GROUP_URI       	= "/securitygroup"
+	REQUEST_INSTANCE_URI       = "/instance"
+	REQUEST_INSTANCE_LABEL_URI = "/instanceByLabel"
+	REQUEST_BATCH_DELETE_URI   = "/batchDelete"
+	REQUEST_RECYCLE_URI        = "/recycle"
+	REQUEST_RECOVERY_URI       = "/recovery"
+	REQUEST_SUBNET_URI         = "/vpcSubnet"
+	REQUEST_VPC_URI            = "/vpc"
+	SECURITY_GROUP_URI         = "/securitygroup"
 
 	REQUEST_IMAGE_URI                        = "/image"
 	REQUEST_BATCHADDIP_URI                   = "/batchAddIp"
@@ -61,12 +61,13 @@ const (
 	REQUEST_REPAIR_TASK_URI        = "/task"
 	REQUEST_REPAIR_CLOSED_TASK_URI = "/closedTask"
 
-	REQUEST_RULE_URI    = "/rule"
-	REQUEST_CREATE_URI  = "/create"
-	REQUEST_DELETE_URI  = "/delete"
-	REQUEST_DISABLE_URI = "/disable"
-	REQUEST_ENABLE_URI  = "/enable"
-	REQUEST_VOLUME_URI  = "/volume"
+	REQUEST_RULE_URI             = "/rule"
+	REQUEST_CREATE_URI           = "/create"
+	REQUEST_DELETE_URI           = "/delete"
+	REQUEST_DISABLE_URI          = "/disable"
+	REQUEST_ENABLE_URI           = "/enable"
+	REQUEST_VOLUME_URI           = "/volume"
+	REQUEST_BBC_RESERVED_TAG_URI = "/bbc/reserved/tag"
 )
 
 func Aes128EncryptUseSecreteKey(sk string, data string) (string, error) {
@@ -92,4 +93,8 @@ func geBbcStockWithDeploySetUri() string {
 
 func getListInstancesByIdsUrl() string {
 	return URI_PREFIX_V1 + REQUEST_INSTANCE_URI + "/listByInstanceId"
+}
+
+func GetBbcReservedToTagsUri() string {
+	return URI_PREFIX_V2 + REQUEST_BBC_RESERVED_TAG_URI
 }

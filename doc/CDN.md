@@ -165,6 +165,37 @@ fmt.Printf("err:%+v\n", err)
 | Backup    | bool   | 表示是否为备用源站，备用源站在主源站都不可用的情况下才会使用，false表示这个源站是主源站。需要注意的是在golang中bool对象默认值为false，如果没有显式设置Backup的值，那么默认就是false。 |
 | Follow302 | bool   | true表示当回源到源站时源站返回302时，CDN系统会处理Location重定向，主动获取资源返回给客户端。false表示当源站返回302时，CDN系统透传302给客户端。**需要注意的是，目前Follow302已经修改为所有源站级别的配置，所以要求所有的源站Follow302必须一致，否则可能会出现不可预料的结果**。 |
 
+
+另外，您也可以使用更高级的 **CreateDomainWithOptions** 方法创建域名，目前支持的 Option 有以下几项：
+- CreateDomainWithForm：配置域名的form（类型、类别）
+- CreateDomainWithOriginDefaultHost：配置域名的域名级别回源Host，优先级低于源站级别回源Host
+- CreateDomainWithTags：绑定域名到标签
+
+下面通过代码展示如何调用 CreateDomainWithOptions。
+
+```go
+cli := client.GetDefaultClient()
+domainCreatedInfo, err := testCli.CreateDomainWithOptions("test_go_sdk.baidu.com", []api.OriginPeer{
+		{
+			Peer: "1.2.3.4",
+			Host: "www.baidu.com",
+		},
+	}, CreateDomainWithTags([]model.TagModel{
+		{
+			TagKey:   "service",
+			TagValue: "web",
+		},
+		{
+			TagKey:   "域名类型",
+			TagValue: "网站服务",
+		},
+	}), CreateDomainWithForm("image"), CreateDomainWithOriginDefaultHost("origin.baidu.com"))
+
+fmt.Printf("domainCreatedInfo:%+v\n", domainCreatedInfo)
+fmt.Printf("err:%+v\n", err)
+```
+
+
 ### 启用/停止/删除加速域名 EnableDomain/DisableDomain/DeleteDomain
 
 ```go
@@ -1097,6 +1128,52 @@ ocspSwitch, err := cli.GetOCSP(testDomain)
 fmt.Printf("err:%+v\n", err)      
 fmt.Printf("ocspSwitch:%+v\n", ocspSwitch)    
 ```
+
+
+### 设置/查询标签
+
+> 标签是一组标识，您可以将具备某些共同点的域名进行归类，即打上标签，以此对资源进行组织。
+
+一组标签定义为tags，他的类型如下：
+
+| 字段  | 类型   | 说明  |
+| :----------| :----- | :------- |
+| tags | model.TagModel[] | 目标关联到的标签集合，需传入资源的全量标签信息，如原有3个标签，现删除1个标签的情况下新增2个标签，则应传入全量4个标签。当 tags 为空时，表示将域名关联的所有标签清空。标签个数最多为 10 个。 |
+
+
+model.TagModel 类型如下：
+
+| 参数             | 类型   | 说明                                                       |
+| ---------------- | ------ | ---------------------------------------------------------- |
+| tagKey          | string   |  标签的键，可包含大小写字母、数字、中文以及-_ /.特殊字符，长度 1-65                             |
+| tagValue           | string | 标签的值，可包含大小写字母、数字、中文以及-_ /.特殊字符，长度 0-65         |
+
+
+下面展示通过SDK方法配置标签与查询标签。
+
+```go
+cli := client.GetDefaultClient()     
+testDomain := "test_go_sdk.baidu.com"
+
+// 配置标签
+err := testCli.SetTags(testDomain, []model.TagModel{
+		{
+			TagKey:   "service",
+			TagValue: "download",
+		},
+	})
+fmt.Printf("err: %+v\n", err)
+
+// 查询标签
+tags, err := testCli.GetTags(testDomain)
+fmt.Printf("tags: %+v\n", tags)
+
+// 移除所有标签
+err := testCli.SetTags(testDomain, []model.TagModel{}) // 等同于 testCli.SetTags(testDomain, nil)
+fmt.Printf("err: %+v\n", err)
+
+```
+
 
 ## 证书管理接口
 

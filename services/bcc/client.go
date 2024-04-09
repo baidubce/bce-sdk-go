@@ -1751,6 +1751,58 @@ func (c *Client) UnBindInstanceToTags(instanceId string, args *api.UnBindTagsReq
 	return api.UnBindInstanceToTags(c, instanceId, body)
 }
 
+func (c *Client) BindReservedInstanceToTags(args *api.ReservedTagsRequest) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.BindReservedInstanceToTags(c, body)
+}
+
+func (c *Client) UnbindReservedInstanceFromTags(args *api.ReservedTagsRequest) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.UnbindReservedInstanceFromTags(c, body)
+}
+
+func (c *Client) BindInstanceToTagsByResourceType(args *api.TagsOperationRequest) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.BindInstanceToTagsByResourceType(c, body)
+}
+
+func (c *Client) UnbindInstanceToTagsByResourceType(args *api.TagsOperationRequest) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.UnbindInstanceToTagsByResourceType(c, body)
+}
+
 // GetInstanceNoChargeList - get instance with nocharge list
 //
 // PARAMS:

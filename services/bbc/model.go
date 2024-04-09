@@ -1047,3 +1047,8 @@ type BbcStock struct {
 type ListInstanceByInstanceIdArgs struct {
 	InstanceIds []string `json:"instanceIdList"`
 }
+
+type ReservedTagsRequest struct {
+	ReservedInstanceIds []string         `json:"reservedInstanceIds"`
+	ChangeTags          []model.TagModel `json:"changeTags"`
+}
