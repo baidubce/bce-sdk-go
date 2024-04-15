@@ -244,7 +244,7 @@ args := &rds.CreateRdsArgs{
     Engine:            "mysql",
     // 指定rds的数据库版本，必选
     EngineVersion:  "5.6",
-    // 计费相关参数，PaymentTiming取值为 预付费：Prepaid，后付费：Postpaid；Reservation：支付方式为后支付时不需要设置，预支付时必须设置；必选
+    // 计费相关参数，PaymentTiming取值为 预付费：Prepaid，后付费：Postpaid；Reservation：支付方式为后付费时不需要设置，预付费时必须设置；必选
     Billing: rds.Billing{
         PaymentTiming: "Postpaid",
         //Reservation: rds.Reservation{ReservationLength: 1, ReservationTimeUnit: "Month"},
@@ -271,11 +271,11 @@ args := &rds.CreateRdsArgs{
     //指定zone信息，默认为空，由系统自动选择，可选
     //zoneName命名规范是小写的“国家-region-可用区序列"，例如北京可用区A为"cn-bj-a"。
     ZoneNames: []string{"cn-bj-d"},
-    //vpc，如果不提供则属于默认vpc，可选
+    //vpc，必选
     VpcId: "vpc-IyrqYIQ7",
     //是否进行直接支付，默认false，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑，可选
     IsDirectPay: false,
-    //vpc内，每个可用区的subnetId；如果不是默认vpc则必须指定 subnetId，可选
+    //vpc内，每个可用区的subnetId；必选
     Subnets: []rds.SubnetMap{
         {
             ZoneName: "cn-bj-a",
@@ -318,7 +318,7 @@ for _, e := range result.InstanceIds {
 args := &rds.CreateReadReplicaArgs{
     //主实例ID，必选
     SourceInstanceId: "sourceInstanceId"
-    // 计费相关参数，只读实例只支持后付费Postpaid，必选
+    // 计费相关参数，PaymentTiming取值为 预付费：Prepaid，后付费：Postpaid；Reservation：支付方式为后付费时不需要设置，预付费时必须设置；必选
     Billing: rds.Billing{
         PaymentTiming: "Postpaid",
     },
@@ -328,18 +328,18 @@ args := &rds.CreateReadReplicaArgs{
     MemoryCapacity: 1,
     //套餐磁盘大小，单位GB，每5G递增，必选
     VolumeCapacity: 5,
-    //批量创建云数据库 RDS 只读实例个数, 目前只支持一次创建一个,可选
+    //批量创建云数据库 RDS 只读实例的个数,可选
     PurchaseCount: 1,
     //实例名称，允许小写字母、数字，长度限制为1~32，默认命名规则:{engine} + {engineVersion}，可选
     InstanceName: "instanceName",
     //指定zone信息，默认为空，由系统自动选择，可选
     //zoneName命名规范是小写的“国家-region-可用区序列"，例如北京可用区A为"cn-bj-a"。
     ZoneNames: []string{"cn-bj-d"},
-    //与主实例 vpcId 相同，可选
+    //与主实例 vpcId 相同，必选
     VpcId: "vpc-IyrqYIQ7",
     //是否进行直接支付，默认false，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑，可选
     IsDirectPay: false,
-    //vpc内，每个可用区的subnetId；如果不是默认vpc则必须指定 subnetId，可选
+    //vpc内，每个可用区的subnetId；必选
     Subnets: []rds.SubnetMap{
         {
             ZoneName: "cn-bj-a",
@@ -367,8 +367,7 @@ for _, e := range result.InstanceIds {
 > - 只读实例的数据库引擎和数据库版本与主实例相同，无需设置，主实例版本最低是 MySQL 5.6
 > - 只读实例的磁盘容量不能小于主实例的磁盘容量
 > - 只读实例的 vpcId 需跟主实例一致
-> - 一个云数据库 RDS 实例，最多只能有 5 个只读实例，且一次只能创建一个
-> - 只读实例只支持后付费方式购买
+> - 一个云数据库 RDS 实例，最多只能有 5 个只读实例
 
 ## 创建RDS代理实例
 
@@ -1010,7 +1009,7 @@ fmt.Println(string(jsonData))
 // import "github.com/baidubce/bce-sdk-go/services/rds"
 args := &rds.UpdateDatabasePortArgs{
     EntryPort: 3309,
-})
+}
 err := client.UpdateDatabasePort(instanceId, args)
 if err != nil {
     fmt.Printf("update database port error: %+v\n", err)

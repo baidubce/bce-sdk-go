@@ -549,6 +549,13 @@ func TestRoleAttachPolicyAndDetachPolicy(t *testing.T) {
 	policy := policies.Policies[0]
 	ExpectEqual(t.Errorf, policyName, policy.Name)
 
+	policyId := policy.Id
+	entities, err := IAM_CLIENT.ListPolicyAttachedEntities(policyId)
+	ExpectEqual(t.Errorf, err, nil)
+	entity := entities.PolicyAttachedEntities[0]
+	ExpectEqual(t.Errorf, entity.Name, roleName)
+	ExpectEqual(t.Errorf, entity.Type, "RolePolicy")
+
 	detachArgs := &api.DetachPolicyToRoleArgs{
 		RoleName:   roleName,
 		PolicyName: policyName,

@@ -129,6 +129,7 @@ func TestClient_CreateInstance(t *testing.T) {
 		PaymentTiming: "prepay",
 		Billing:       billing,
 		PaymentMethod: []PaymentMethod{},
+		Tags:          []Tag{},
 	}
 
 	resp, err := CCR_CLIENT.CreateInstance(args)
@@ -434,6 +435,20 @@ func TestClient_BatchDeleteBuildRepositoryTask(t *testing.T) {
 		Items: []string{"1", "2"},
 	}
 	err := CCR_CLIENT.BatchDeleteBuildRepositoryTask(CCR_INSTANCE_ID, "test", "pip", args)
+
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_AssignInstanceTag(t *testing.T) {
+	args := &AssignTagsRequest{
+		Tags: []Tag{
+			{
+				TagKey:   "key1",
+				TagValue: "value1",
+			},
+		},
+	}
+	err := CCR_CLIENT.AssignInstanceTag(CCR_INSTANCE_ID, args)
 
 	ExpectEqual(t.Errorf, nil, err)
 }

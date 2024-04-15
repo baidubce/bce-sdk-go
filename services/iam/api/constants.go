@@ -19,6 +19,7 @@ const (
 	URI_USER      = "/user"
 	URI_GROUP     = "/group"
 	URI_POLICY    = "/policy"
+	URI_ENTITY    = "/entity"
 	URI_ACCESSKEY = "/accesskey"
 	URI_ROLE      = "/role"
 

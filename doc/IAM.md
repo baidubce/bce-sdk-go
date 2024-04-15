@@ -679,6 +679,26 @@ if err != nil {
 > **提示：**
 > - 详细的参数配置及限制条件，可以参考IAM API 文档[创建策略](https://cloud.baidu.com/doc/IAM/s/Wjx35jxes#%E5%88%9B%E5%BB%BA%E7%AD%96%E7%95%A5)
 
+### 查询策略绑定实体关系
+通过以下代码查询策略绑定实体关系
+```go
+	policyId := "1234abcd"
+	result, err := client.ListPolicyAttachedEntities(policyId)
+	if err != nil {
+		fmt.Println("List policy attach entities failed", err)
+	} else {
+		fmt.Println("List policy attach entities success", result)
+	}
+```
+返回字段说明:
+
+字段名称        |  说明
+----------------|-------------------
+id  | 实体ID
+Name | 实体名称
+Type | 实体类型，包括UserPolicy、GroupPolicy、RolePolicy，分别表示用户、用户组、角色
+AttachTime | 绑定时间
+
 ### 删除策略
 通过以下代码删除策略
 ```go
@@ -939,3 +959,7 @@ BceServiceError | IAM服务返回的错误
 
 - 修改子用户的操作保护
 - 修改子用户密码
+
+
+## v0.9.175 [2024-04-10]
+- 增加查询策略绑定实体类接口

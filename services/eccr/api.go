@@ -35,6 +35,7 @@ type Interface interface {
 	GetBuildRepositoryTask(instanceID, projectName, repositoryName, imageBuildID string) (*BuildRepositoryTaskResult, error)
 	DeleteBuildRepositoryTask(instanceID, projectName, repositoryName, imageBuildID string) error
 	BatchDeleteBuildRepositoryTask(instanceID, projectName, repositoryName string, args *BatchDeleteBuildRepositoryTaskArgs) error
+	AssignInstanceTag(instanceID string, args *AssignTagsRequest) error
 }
 
 // ListInstances - list all instance with the specific parameters
@@ -583,6 +584,25 @@ func (c *Client) BatchDeleteBuildRepositoryTask(instanceID, projectName, reposit
 		WithMethod(http.DELETE).
 		WithBody(args).
 		WithURL(getImageBuildURI(instanceID, projectName, base64.RawURLEncoding.EncodeToString([]byte(repositoryName)))).
+		Do()
+
+	return err
+}
+
+// AssignInstanceTag - assign instance tag
+//
+// PARAMS:
+//   - instanceId: the specific instance ID
+//   - AssignTagsRequest: parameters required to assign instance tag info
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) AssignInstanceTag(instanceID string, args *AssignTagsRequest) error {
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getInstanceTagURI(instanceID)).
+		WithBody(args).
 		Do()
 
 	return err

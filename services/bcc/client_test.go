@@ -1852,3 +1852,15 @@ func TestListCDSVolumeNew(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(result)
 }
+
+func TestGetAvailableStockWithSpec(t *testing.T) {
+	rootOnLocal := true
+	args := &api.GetAvailableStockWithSpecArgs{
+		SpecList:     []string{"bcc.l3.c1m100", "bcc.g5.c2m8"},
+		DeploySetIds: []string{"dset-lhs1Ju39", "dset-A2Y3FLfZ"},
+		RootOnLocal:  &rootOnLocal,
+	}
+	result, err := BCC_CLIENT.GetAvailableStockWithSpec(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}

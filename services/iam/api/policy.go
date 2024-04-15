@@ -280,6 +280,26 @@ func ListRoleAttachedPolicies(cli bce.Client, roleName string) (*ListPolicyResul
 	return jsonBody, nil
 }
 
+func ListPolicyAttachedEntities(cli bce.Client, policyId string) (*ListPolicyAttachedEntityResult, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getPolicyUri(policyId) + URI_ENTITY)
+	req.SetMethod(http.GET)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	jsonBody := &ListPolicyAttachedEntityResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	defer func() { resp.Body().Close() }()
+	return jsonBody, nil
+}
+
 func getPolicyUri(name string) string {
 	return URI_PREFIX + URI_POLICY + "/" + name
 }

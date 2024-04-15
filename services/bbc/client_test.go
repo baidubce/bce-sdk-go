@@ -679,7 +679,10 @@ func TestGetInstanceStock(t *testing.T) {
 
 func TestListRepairTasks(t *testing.T) {
 	listArgs := &ListRepairTaskArgs{
-		MaxKeys: 100,
+		MaxKeys:        100,
+		TimeRangeType:  AUTHORIZE_TASK,
+		TimeRangeStart: "2024-01-01 00:00:00",
+		TimeRangeEnd:   "2024-12-31 23:59:59",
 	}
 	res, err := BBC_CLIENT.ListRepairTasks(listArgs)
 	fmt.Println(res)
@@ -688,7 +691,10 @@ func TestListRepairTasks(t *testing.T) {
 
 func TestListClosedRepairTasks(t *testing.T) {
 	listArgs := &ListClosedRepairTaskArgs{
-		MaxKeys: 100,
+		MaxKeys:        100,
+		TimeRangeType:  AUTHORIZE_TASK,
+		TimeRangeStart: "2024-01-01 00:00:00",
+		TimeRangeEnd:   "2024-12-31 23:59:59",
 	}
 	res, err := BBC_CLIENT.ListClosedRepairTasks(listArgs)
 	fmt.Println(res)

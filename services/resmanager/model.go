@@ -23,6 +23,43 @@ type Binding struct {
 	GroupId        string `json:"groupId"`
 }
 
+type BindGroupInfo struct {
+	GroupInfo
+	BindTime string `json:"bindTime"`
+}
+
+type Tag struct {
+	TagKey   string `json:"tagKey"`
+	TagValue string `json:"tagValue"`
+}
+
+type ResourceInfo struct {
+	Name   string `json:"name"`
+	Type   string `json:"type"`
+	Region string `json:"region"`
+	// 资源的短id
+	Id string `json:"id"`
+	// 资源的长id
+	UUID      string `json:"uuid"`
+	Summary   string `json:"summary"`
+	Url       string `json:"url"`
+	AccountId string `json:"accountId"`
+	UserId    string `json:"userId"`
+	Tag       []Tag  `json:"tags"`
+}
+
+type GroupInfo struct {
+	Name       string `json:"name"`
+	Extra      string `json:"extra"`
+	ParentUUID string `json:"parentUuid"`
+	GroupId    string `json:"groupId"`
+	AccountId  string `json:"accountId"`
+	UserId     string `json:"userId"`
+	CreateTime string `json:"createTime"`
+	UpdateTime string `json:"updateTime"`
+	DeleteTime string `json:"deleteTime"`
+}
+
 type BindResourceToGroupArgs struct {
 	Bindings []Binding `json:"bindings"`
 }
@@ -78,4 +115,24 @@ type GroupTree struct {
 
 type GroupList struct {
 	GroupTrees []GroupTree `json:"groups"`
+}
+
+type ResourceBrief struct {
+	ResourceId     string `json:"resourceId"`
+	ResourceType   string `json:"resourceType"`
+	ResourceRegion string `json:"resourceRegion"`
+	AccountId      string `json:"accountId"`
+}
+
+type ResGroupDetailRequest struct {
+	ResourceBrief []ResourceBrief `json:"resourceBriefs"`
+}
+
+type ResourceGroupsDetailFull struct {
+	ResourceInfo
+	BindGroupInfo []BindGroupInfo `json:"groups"`
+}
+
+type ResGroupDetailResponse struct {
+	ResourceGroupsDetailFull []ResourceGroupsDetailFull `json:"resGroups"`
 }

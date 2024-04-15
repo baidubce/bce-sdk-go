@@ -19,11 +19,12 @@ package resmanager
 import "github.com/baidubce/bce-sdk-go/bce"
 
 const (
-	URI_PREFIX           = bce.URI_PREFIX
-	DEFAULT_ENDPOINT     = "resourcemanager.baidubce.com"
-	REQUEST_ADD_TO_GROUP = "v1/res/resource"
-	REQUEST_CHANGE_GROUP = "v1/res/resource/move"
-	REQUEST_QUERY_GROUP  = "v1/res/group"
+	URI_PREFIX                = bce.URI_PREFIX
+	DEFAULT_ENDPOINT          = "resourcemanager.baidubce.com"
+	REQUEST_ADD_TO_GROUP      = "v1/res/resource"
+	REQUEST_CHANGE_GROUP      = "v1/res/resource/move"
+	REQUEST_QUERY_GROUP       = "v1/res/group"
+	REQUEST_QUERY_GROUP_BATCH = "v1/res/resource/batch/queryGroupRes"
 )
 
 // Client of Group service is a kind of BceClient, so derived from BceClient
@@ -49,6 +50,11 @@ func getAddToGroupUri() string {
 func getChangeGroupUri() string {
 	return URI_PREFIX + REQUEST_CHANGE_GROUP
 }
+
 func getQueryGroupUri() string {
 	return URI_PREFIX + REQUEST_QUERY_GROUP
+}
+
+func getGroupBatchUri() string {
+	return URI_PREFIX + REQUEST_QUERY_GROUP_BATCH
 }

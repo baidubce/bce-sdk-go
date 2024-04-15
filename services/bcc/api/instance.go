@@ -1626,6 +1626,38 @@ func GetStockWithDeploySet(cli bce.Client, args *GetStockWithDeploySetArgs) (*Ge
 	return jsonBody, nil
 }
 
+func GetAvailableStockWithSpec(cli bce.Client, args *GetAvailableStockWithSpecArgs) (*GetAvailableStockWithSpecResults, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getAvailableStockWithSpec())
+	req.SetMethod(http.POST)
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return nil, err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &GetAvailableStockWithSpecResults{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
 // GetStockWithSpec - get the bcc's stock with spec
 //
 // PARAMS:

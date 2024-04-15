@@ -759,18 +759,38 @@ type InstancePirceResult struct {
 	Pirce string `json:"price"`
 }
 
+type TimeRangeType string
+
+const (
+	ERR_START         TimeRangeType = "errStart"
+	NEW_TASK          TimeRangeType = "newTask"
+	AUTHORIZE_TASK    TimeRangeType = "authorizeTask"
+	UN_AUTHORIZE_TASK TimeRangeType = "unAuthorizeTask"
+	CONFIRM_TASK      TimeRangeType = "confirmTask"
+)
+
 type ListRepairTaskArgs struct {
-	Marker     string `json:"marker"`
-	MaxKeys    int    `json:"MaxKeys"`
-	ErrResult  string `json:"errResult"`
-	InstanceId string `json:"instanceId"`
+	Marker         string        `json:"marker"`
+	MaxKeys        int           `json:"MaxKeys"`
+	ErrResult      string        `json:"errResult"`
+	InstanceId     string        `json:"instanceId"`
+	TimeRangeType  TimeRangeType `json:"timeRangeType"`
+	TimeRangeStart string        `json:"timeRangeStart"`
+	TimeRangeEnd   string        `json:"timeRangeEnd"`
 }
 
 type RepairTask struct {
-	TaskId     string `json:"taskId"`
-	InstanceId string `json:"instanceId"`
-	ErrResult  string `json:"errResult"`
-	Status     string `json:"status"`
+	TaskId              string `json:"taskId"`
+	InstanceId          string `json:"instanceId"`
+	ErrResult           string `json:"errResult"`
+	Status              string `json:"status"`
+	ErrStartTime        string `json:"errStartTime"`
+	NewTaskTime         string `json:"newTaskTime"`
+	AuthorizeTaskTime   string `json:"authorizeTaskTime"`
+	UnAuthorizeTaskTime string `json:"unAuthorizeTaskTime"`
+	SimCompletionTime   string `json:"simCompletionTime"`
+	CheckTaskTime       string `json:"checkTaskTime"`
+	FirstConfirmedTime  string `json:"firstConfirmedTime"`
 }
 
 type ListRepairTaskResult struct {
@@ -782,21 +802,31 @@ type ListRepairTaskResult struct {
 }
 
 type ListClosedRepairTaskArgs struct {
-	Marker     string `json:"marker"`
-	MaxKeys    int    `json:"MaxKeys"`
-	ErrResult  string `json:"errResult"`
-	InstanceId string `json:"instanceId"`
-	TaskId     string `json:"taskId"`
-	StartTime  string `json:"startTime"`
-	EndTime    string `json:"endTime"`
+	Marker         string        `json:"marker"`
+	MaxKeys        int           `json:"MaxKeys"`
+	ErrResult      string        `json:"errResult"`
+	InstanceId     string        `json:"instanceId"`
+	TaskId         string        `json:"taskId"`
+	TimeRangeType  TimeRangeType `json:"timeRangeType"`
+	TimeRangeStart string        `json:"timeRangeStart"`
+	TimeRangeEnd   string        `json:"timeRangeEnd"`
+	StartTime      string        `json:"startTime"`
+	EndTime        string        `json:"endTime"`
 }
 
 type ClosedRepairTask struct {
-	TaskId     string `json:"taskId"`
-	InstanceId string `json:"instanceId"`
-	ErrResult  string `json:"errResult"`
-	CreateTime string `json:"createTime"`
-	EndTime    string `json:"endTime"`
+	TaskId              string `json:"taskId"`
+	InstanceId          string `json:"instanceId"`
+	ErrResult           string `json:"errResult"`
+	CreateTime          string `json:"createTime"`
+	EndTime             string `json:"endTime"`
+	ErrStartTime        string `json:"errStartTime"`
+	NewTaskTime         string `json:"newTaskTime"`
+	AuthorizeTaskTime   string `json:"authorizeTaskTime"`
+	UnAuthorizeTaskTime string `json:"unAuthorizeTaskTime"`
+	SimCompletionTime   string `json:"simCompletionTime"`
+	CheckTaskTime       string `json:"checkTaskTime"`
+	FirstConfirmedTime  string `json:"firstConfirmedTime"`
 }
 
 type ListClosedRepairTaskResult struct {

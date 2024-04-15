@@ -39,6 +39,7 @@ type InstanceInfo struct {
 	Region       string    `json:"region"`
 	PublicURL    string    `json:"publicURL"`
 	ExpireTime   time.Time `json:"expireTime"`
+	Tags         []Tag     `json:"tags"`
 }
 
 type InstanceStatistic struct {
@@ -62,6 +63,15 @@ type GetInstanceDetailResponse struct {
 	Region    string            `json:"region,omitempty"`
 }
 
+type Tag struct {
+	TagKey   string `json:"tagKey"`
+	TagValue string `json:"tagValue"`
+}
+
+type AssignTagsRequest struct {
+	Tags []Tag `json:"tags"`
+}
+
 type CreateInstanceArgs struct {
 	Type   string `json:"type" binding:"required,oneof=BASIC STANDARD ADVANCED"`
 	Name   string `json:"name" binding:"required,max=256,min=1"`
@@ -71,6 +81,8 @@ type CreateInstanceArgs struct {
 	Billing       Billing `json:"billing"`
 
 	PaymentMethod []PaymentMethod `json:"paymentMethod"`
+
+	Tags []Tag `json:"tags"`
 }
 
 type PaymentMethod struct {

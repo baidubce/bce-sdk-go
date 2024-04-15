@@ -64,6 +64,10 @@ func getInstanceUpgradeURI(instanceID string) string {
 	return URI_PREFIX + REQUEST_INSTANCE_URL + "/" + instanceID + "/upgrade"
 }
 
+func getInstanceTagURI(instanceID string) string {
+	return URI_PREFIX + REQUEST_INSTANCE_URL + "/" + instanceID + "/tags"
+}
+
 func getPrivateNetworkListResponseURI(instanceID string) string {
 	return URI_PREFIX + REQUEST_INSTANCE_URL + "/" + instanceID + REQUEST_PRIVATELINK_URL
 }

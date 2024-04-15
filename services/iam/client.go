@@ -254,6 +254,10 @@ func (c *Client) ListRoleAttachedPolicies(name string) (*api.ListPolicyResult, e
 	return api.ListRoleAttachedPolicies(c, name)
 }
 
+func (c *Client) ListPolicyAttachedEntities(policyId string) (*api.ListPolicyAttachedEntityResult, error) {
+	return api.ListPolicyAttachedEntities(c, policyId)
+}
+
 func (c *Client) UserOperationMfaSwitch(args *api.UserSwitchMfaArgs) error {
 	body, err := NewBodyFromStruct(args)
 	if err != nil {

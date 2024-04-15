@@ -1978,6 +1978,10 @@ func (c *Client) GetStockWithSpec(args *api.GetStockWithSpecArgs) (*api.GetStock
 	return api.GetStockWithSpec(c, args)
 }
 
+func (c *Client) GetAvailableStockWithSpec(args *api.GetAvailableStockWithSpecArgs) (*api.GetAvailableStockWithSpecResults, error) {
+	return api.GetAvailableStockWithSpec(c, args)
+}
+
 func (c *Client) GetInstanceCreateStock(args *api.CreateInstanceStockArgs) (*api.InstanceStockResult, error) {
 	return api.GetInstanceCreateStock(c, args)
 }

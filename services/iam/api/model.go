@@ -225,3 +225,14 @@ type UpdateSubUserArgs struct {
 	Provider string `json:"provider,omitempty"`
 	Enable   bool   `json:"enable"`
 }
+
+type PolicyAttachedEntity struct {
+	Id         string    `json:"id,omitempty"`
+	Name       string    `json:"name,omitempty"`
+	Type       string    `json:"type,omitempty"`
+	AttachTime time.Time `json:"attachTime,omitempty"`
+}
+
+type ListPolicyAttachedEntityResult struct {
+	PolicyAttachedEntities []PolicyAttachedEntity `json:"entities"`
+}

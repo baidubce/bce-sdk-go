@@ -34,14 +34,15 @@ type UpdateCertNameArgs struct {
 }
 
 type CertificateMeta struct {
-	CertId         string `json:"certId"`
-	CertName       string `json:"certName"`
-	CertCommonName string `json:"certCommonName"`
-	CertStartTime  string `json:"certStartTime"`
-	CertStopTime   string `json:"certStopTime"`
-	CertCreateTime string `json:"certCreateTime"`
-	CertUpdateTime string `json:"certUpdateTime"`
-	CertType       int    `json:"certType"`
+	CertId          string `json:"certId"`
+	CertName        string `json:"certName"`
+	CertCommonName  string `json:"certCommonName"`
+	CertFingerprint string `json:"certFingerprint"`
+	CertStartTime   string `json:"certStartTime"`
+	CertStopTime    string `json:"certStopTime"`
+	CertCreateTime  string `json:"certCreateTime"`
+	CertUpdateTime  string `json:"certUpdateTime"`
+	CertType        int    `json:"certType"`
 }
 
 type ListCertResult struct {

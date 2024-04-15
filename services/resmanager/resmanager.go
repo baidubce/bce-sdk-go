@@ -22,7 +22,6 @@ import (
 	"github.com/baidubce/bce-sdk-go/http"
 )
 
-
 func (c *Client) BindResourceToGroup(args *BindResourceToGroupArgs) (*BindResourceResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
@@ -94,6 +93,25 @@ func (c *Client) QueryGroupList(name string) (*GroupList, error) {
 		WithURL(getQueryGroupUri()).
 		WithQueryParamFilter("name", name).
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+func (c *Client) getResGroupBatch(args *ResGroupDetailRequest) (*ResGroupDetailResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("unset args")
+	}
+	if len(args.ResourceBrief) == 0 {
+		return nil, fmt.Errorf("unset ResourceBrief")
+	}
+	result := &ResGroupDetailResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getGroupBatchUri()).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
 		WithResult(result).
 		Do()
 

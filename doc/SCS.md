@@ -232,7 +232,7 @@ args := &scs.CreateInstanceArgs{
     },
     // 购买个数，最大不超过10，默认1
 	PurchaseCount: 1,
-    // 实例名
+    // 实例名称
     // 要求：1）支持大小写字母、数字以及-_ /.等特殊字符，必须以字母开头；2）长度限制为1-64；
 	InstanceName:  "sdk-scs",
     // 端口号 1025<port<22222，22222<port<65535
@@ -351,7 +351,7 @@ if err != nil {
 result, err := client.GetInstanceDetail(instanceId)
 if err != nil {
     fmt.Println("get instance detail failed:", err)
-} else 
+} else {
     fmt.Println("get instance detail success ", result)
 }
 ```
@@ -370,7 +370,7 @@ args := &scs.CreatePriceArgs{
 result, err := client.GetCreatePrice(args)
 if err != nil {
     fmt.Println("get instance price failed:", err)
-} else 
+} else {
     fmt.Println("get instance price success ", result)
 }
 ```
@@ -388,7 +388,7 @@ args := &scs.ResizePriceArgs{
 result, err := client.GetResizePrice(args)
 if err != nil {
     fmt.Println("get instance price failed:", err)
-} else 
+} else {
     fmt.Println("get instance price success ", result)
 }
 ```
@@ -428,7 +428,7 @@ if err != nil {
 
 ## 重启实例
 
-使用以下代码可以重启实例。支持用户决定是否延迟到维护窗口内重启。
+使用以下代码可以重启实例。支持用户决定是否在维护时间窗口内重启。
 
 ```go
 // 立即重启

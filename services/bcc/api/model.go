@@ -407,6 +407,16 @@ type GetStockWithSpecArgs struct {
 	DeploySetIds []string `json:"deploySetIds"`
 }
 
+type GetAvailableStockWithSpecArgs struct {
+	SpecList     []string `json:"specList"`
+	RootOnLocal  *bool    `json:"rootOnLocal"`
+	DeploySetIds []string `json:"deploySetIds"`
+}
+
+type GetAvailableStockWithSpecResults struct {
+	BccStocks []BccStock `json:"bccStocks"`
+}
+
 type GetStockWithSpecResults struct {
 	BccStocks []BccStock `json:"bccStocks"`
 }

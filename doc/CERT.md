@@ -323,6 +323,8 @@ fmt.Println("cert id: ", result.CertId)
 fmt.Println("cert name: ", result.CertName)
 // 获取得到证书通用名称
 fmt.Println("cert common name: ", result.CertCommonName)
+// 获取得到证书指纹
+fmt.Println("cert fingerprint: ", result.CertFingerprint)
 // 获取得到证书生效时间
 fmt.Println("cert start time: ", result.CertStartTime)
 // 获取得到证书到期时间
@@ -494,3 +496,6 @@ myLogger.Info("this is my own logger from the CERT go sdk")
 首次发布:
 
  - 支持创建证书、修改证书名称、查看证书列表、获取证书信息(无证书公钥私钥)、删除证书、替换证书接口。
+
+## v0.9.175 [2024-04-10]
+- 查询证书接口增加证书指纹信息CertFingerprint
