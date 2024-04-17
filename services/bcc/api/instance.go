@@ -249,6 +249,9 @@ func ListInstances(cli bce.Client, args *ListInstanceArgs) (*ListInstanceResult,
 		if len(args.VpcId) != 0 {
 			req.SetParam("vpcId", args.VpcId)
 		}
+		if len(args.Ipv6Addresses) != 0 {
+			req.SetParam("ipv6Addresses", args.Ipv6Addresses)
+		}
 	}
 	if args == nil || args.MaxKeys == 0 {
 		req.SetParam("maxKeys", "1000")
@@ -1066,7 +1069,6 @@ func DeletePrepaidInstanceWithRelatedResource(cli bce.Client, reqBody *bce.Body)
 
 	return jsonBody, nil
 }
-
 
 // InstanceChangeSubnet - change the subnet to which the instance belongs
 //

@@ -121,7 +121,6 @@ type ResourceBrief struct {
 	ResourceId     string `json:"resourceId"`
 	ResourceType   string `json:"resourceType"`
 	ResourceRegion string `json:"resourceRegion"`
-	AccountId      string `json:"accountId"`
 }
 
 type ResGroupDetailRequest struct {

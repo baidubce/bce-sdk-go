@@ -18,8 +18,11 @@ package api
 
 import (
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"net"
 	net_http "net/http"
+	"net/url"
 	"strings"
 
 	"github.com/baidubce/bce-sdk-go/bce"
@@ -154,6 +157,28 @@ func validCannedAcl(val string) bool {
 	return false
 }
 
+func validObjectTagging(tagging string) (bool, string) {
+	if len(tagging) > 4000 {
+		return false, ""
+	}
+	encodeTagging := []string{}
+	pair := strings.Split(tagging, "&")
+	for _, p := range pair {
+		kv := strings.Split(p, "=")
+		if len(kv) != 2 {
+			return false, ""
+		}
+		key := kv[0]
+		value := kv[1]
+		encodeKey := url.QueryEscape(key)
+		encodeValue := url.QueryEscape(value)
+		if len(encodeKey) > 128 || len(encodeValue) > 256 {
+			return false, ""
+		}
+		encodeTagging = append(encodeTagging, encodeKey+"="+encodeValue)
+	}
+	return true, strings.Join(encodeTagging, "&")
+}
 
 func toHttpHeaderKey(key string) string {
 	var result bytes.Buffer
@@ -375,4 +400,28 @@ func getDefaultContentType(object string) string {
 	}
 	return "application/octet-stream"
 
+}
+
+func ParseObjectTagResult(rawData []byte) (map[string]interface{}, error) {
+	var data map[string]interface{}
+	err := json.Unmarshal(rawData, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	tagSet, ok := data["tagSet"].([]interface{})
+	if !ok || len(tagSet) == 0 {
+		return nil, fmt.Errorf("decode tagSet error")
+	}
+
+	tagInfoMap, ok := tagSet[0].(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("decode tagInfo error")
+	}
+
+	tags, ok := tagInfoMap["tagInfo"].(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("decode tags error")
+	}
+	return tags, nil
 }

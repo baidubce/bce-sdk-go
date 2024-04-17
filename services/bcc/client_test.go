@@ -308,6 +308,16 @@ func TestListInstances(t *testing.T) {
 	fmt.Println(res)
 }
 
+func TestListInstancesByVpcAndIp(t *testing.T) {
+	listArgs := &api.ListInstanceArgs{
+		VpcId:         "vpc-41avheyaawqc",
+		Ipv6Addresses: "240c:4082:2:5d08::2",
+	}
+	res, err := BCC_CLIENT.ListInstances(listArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
 func TestListRecycleInstances(t *testing.T) {
 	listArgs := &api.ListRecycleInstanceArgs{}
 	res, err := BCC_CLIENT.ListRecycleInstances(listArgs)

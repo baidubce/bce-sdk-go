@@ -836,7 +836,8 @@ func (c *Client) DeleteBucketCopyrightProtection(bucket string) error {
 //     - error: the uploaded error if any occurs
 func (c *Client) PutObject(bucket, object string, body *bce.Body,
 	args *api.PutObjectArgs) (string, error) {
-	return api.PutObject(c, bucket, object, body, args, c.BosContext)
+	etag, _, err := api.PutObject(c, bucket, object, body, args, c.BosContext)
+	return etag, err
 }
 
 // BasicPutObject - the basic interface of uploading an object
@@ -849,7 +850,8 @@ func (c *Client) PutObject(bucket, object string, body *bce.Body,
 //     - string: etag of the uploaded object
 //     - error: the uploaded error if any occurs
 func (c *Client) BasicPutObject(bucket, object string, body *bce.Body) (string, error) {
-	return api.PutObject(c, bucket, object, body, nil, c.BosContext)
+ 	etag , _, err := api.PutObject(c, bucket, object, body, nil, c.BosContext)
+	return etag, err
 }
 
 // PutObjectFromBytes - upload a new object or rewrite the existed object from a byte array
@@ -868,7 +870,9 @@ func (c *Client) PutObjectFromBytes(bucket, object string, bytesArr []byte,
 	if err != nil {
 		return "", err
 	}
-	return api.PutObject(c, bucket, object, body, args, c.BosContext)
+	etag, _, err := api.PutObject(c, bucket, object, body, args, c.BosContext)
+	return etag, err
+
 }
 
 // PutObjectFromString - upload a new object or rewrite the existed object from a string
@@ -887,7 +891,9 @@ func (c *Client) PutObjectFromString(bucket, object, content string,
 	if err != nil {
 		return "", err
 	}
-	return api.PutObject(c, bucket, object, body, args, c.BosContext)
+	etag , _, err := api.PutObject(c, bucket, object, body, args, c.BosContext)
+	return etag, err
+
 }
 
 // PutObjectFromFile - upload a new object or rewrite the existed object from a local file
@@ -906,7 +912,8 @@ func (c *Client) PutObjectFromFile(bucket, object, fileName string,
 	if err != nil {
 		return "", err
 	}
-	return api.PutObject(c, bucket, object, body, args, c.BosContext)
+	etag , _, err := api.PutObject(c, bucket, object, body, args, c.BosContext)
+	return etag, err
 }
 
 // PutObjectFromStream - upload a new object or rewrite the existed object from stream
@@ -925,9 +932,19 @@ func (c *Client) PutObjectFromStream(bucket, object string, reader io.Reader,
 	if err != nil {
 		return "", err
 	}
-	return api.PutObject(c, bucket, object, body, args, c.BosContext)
+	etag , _, err := api.PutObject(c, bucket, object, body, args, c.BosContext)
+	return etag, err
 }
 
+func (c *Client) PutObjectFromFileWithCallback(bucket, object, fileName string,
+	args *api.PutObjectArgs) (string, *api.PutObjectResult, error) {
+	body, err := bce.NewBodyFromFile(fileName)
+	if err != nil {
+		return "", nil, err
+	}
+	etag, putObjectResult, err := api.PutObject(c, bucket, object, body, args, c.BosContext)
+	return etag, putObjectResult, err
+}
 // CopyObject - copy a remote object to another one
 //
 // PARAMS:
@@ -2273,11 +2290,11 @@ func (c *Client) DeleteBucketTag(bucket string) error {
 	return api.DeleteBucketTag(c, bucket, c.BosContext)
 }
 
-func (c *Client) PutObjectTag(bucket string, object string, putBucketTagArgs *api.PutObjectTagArgs) error {
-	return api.PutObjectTag(c, bucket, object, putBucketTagArgs, c.BosContext)
+func (c *Client) PutObjectTag(bucket string, object string, putObjectTagArgs *api.PutObjectTagArgs) error {
+	return api.PutObjectTag(c, bucket, object, putObjectTagArgs, c.BosContext)
 }
 
-func (c *Client) GetObjectTag(bucket string, object string) (string, error) {
+func (c *Client) GetObjectTag(bucket string, object string) (map[string]interface{}, error) {
 	return api.GetObjectTag(c, bucket, object, c.BosContext)
 }
 

@@ -99,7 +99,7 @@ func (c *Client) QueryGroupList(name string) (*GroupList, error) {
 	return result, err
 }
 
-func (c *Client) getResGroupBatch(args *ResGroupDetailRequest) (*ResGroupDetailResponse, error) {
+func (c *Client) GetResGroupBatch(args *ResGroupDetailRequest) (*ResGroupDetailResponse, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
 	}

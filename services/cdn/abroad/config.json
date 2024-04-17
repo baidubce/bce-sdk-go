@@ -1,0 +1,6 @@
+{
+  "AK":"Your BCE account AK",
+  "SK":"Your BCE account SK",
+  "Endpoint":"https://cdn.baidubce.com",
+  "TestDomain": "CDN domain for unit-test, must be created first."
+}

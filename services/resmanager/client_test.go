@@ -108,19 +108,21 @@ func TestGetResGroupBatch(t *testing.T) {
 	args := &ResGroupDetailRequest{
 		ResourceBrief: []ResourceBrief{
 			{
-				ResourceId:     "vpc-qgwnxy2udska",
-				ResourceType:   "VPC",
-				ResourceRegion: "bj",
-				AccountId:      "ab2d7ee7a3a34ba09b8ecd25723a869d",
+				ResourceId:     "weaxsey.org",
+				ResourceType:   "CDN",
+				ResourceRegion: "global",
 			}, {
-				ResourceId:     "vpc-ajnydiwtyzib",
-				ResourceType:   "VPC",
+				ResourceId:     "vpc-vbgiiq5bmz2w",
+				ResourceType:   "NETWORK",
 				ResourceRegion: "bj",
-				AccountId:      "ab2d7ee7a3a34ba09b8ecd25723a869d",
+			}, {
+				ResourceId:     "vpc-zz1w1i8m1j5d",
+				ResourceType:   "NETWORK",
+				ResourceRegion: "bj",
 			},
 		},
 	}
-	res, err := resClient.getResGroupBatch(args)
+	res, err := resClient.GetResGroupBatch(args)
 	ExpectEqual(t.Errorf, err, nil)
 	jsonRes, _ := json.Marshal(res)
 	t.Logf(string(jsonRes))

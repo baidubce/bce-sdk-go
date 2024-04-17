@@ -265,6 +265,7 @@ type PutObjectArgs struct {
 	StorageClass       string
 	Process            string
 	CannedAcl          string
+	ObjectTagging      string
 	TrafficLimit       int64
 }
 
@@ -282,6 +283,14 @@ type CopyObjectArgs struct {
 
 type MultiCopyObjectArgs struct {
 	StorageClass string
+}
+
+type CallbackResult struct {
+	Result string `json:"result"`
+}
+
+type PutObjectResult struct {
+	Callback CallbackResult `json:"callback"`
 }
 
 // CopyObjectResult defines the result json structure for the copy object api.

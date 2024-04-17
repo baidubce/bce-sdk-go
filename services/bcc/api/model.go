@@ -712,6 +712,7 @@ type ListInstanceArgs struct {
 	Tags             string
 	VpcId            string
 	PrivateIps       string
+	Ipv6Addresses    string
 }
 
 type ListInstanceResult struct {

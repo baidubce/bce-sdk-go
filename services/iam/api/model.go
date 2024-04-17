@@ -64,6 +64,7 @@ type ListAccessKeyResult struct {
 type LoginProfileModel struct {
 	Password          string `json:"password,omitempty"`
 	NeedResetPassword bool   `json:"needResetPassword"`
+	EnabledLogin      bool   `json:"enabledLogin"`
 	EnabledLoginMfa   bool   `json:"enabledLoginMfa"`
 	LoginMfaType      string `json:"loginMfaType,omitempty"`
 	ThirdPartyType    bool   `json:"thirdPartyType,omitempty"`

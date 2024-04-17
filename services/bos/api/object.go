@@ -42,13 +42,14 @@ import (
 //     - string: the etag of the object
 //     - error: nil if ok otherwise the specific error
 func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
-	args *PutObjectArgs, ctx *BosContext) (string, error) {
+	args *PutObjectArgs, ctx *BosContext) (string, *PutObjectResult, error) {
 	req := &bce.BceRequest{}
+	NeedReturnCallback := false
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetMethod(http.PUT)
 	ctx.Bucket = bucket
 	if body == nil {
-		return "", bce.NewBceClientError("PutObject body should not be emtpy")
+		return "", nil, bce.NewBceClientError("PutObject body should not be emtpy")
 	}
 	if body.Size() >= THRESHOLD_100_CONTINUE {
 		req.SetHeader("Expect", "100-continue")
@@ -70,11 +71,11 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 			// be reset. The `net/http.Client' does not support the Content-Length bigger than the
 			// body size.
 			if args.ContentLength > body.Size() {
-				return "", bce.NewBceClientError(fmt.Sprintf("ContentLength %d is bigger than body size %d", args.ContentLength, body.Size()))
+				return "", nil, bce.NewBceClientError(fmt.Sprintf("ContentLength %d is bigger than body size %d", args.ContentLength, body.Size()))
 			}
 			body, err := bce.NewBodyFromSizedReader(body.Stream(), args.ContentLength)
 			if err != nil {
-				return "", bce.NewBceClientError(err.Error())
+				return "", nil, bce.NewBceClientError(err.Error())
 			}
 			req.SetHeader(http.CONTENT_LENGTH, fmt.Sprintf("%d", args.ContentLength))
 			req.SetBody(body) // re-assign body
@@ -83,7 +84,7 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 		//set traffic-limit
 		if args.TrafficLimit > 0 {
 			if args.TrafficLimit > TRAFFIC_LIMIT_MAX || args.TrafficLimit < TRAFFIC_LIMIT_MIN {
-				return "", bce.NewBceClientError(fmt.Sprintf("TrafficLimit must between %d ~ %d, current value:%d", TRAFFIC_LIMIT_MIN, TRAFFIC_LIMIT_MAX, args.TrafficLimit))
+				return "", nil, bce.NewBceClientError(fmt.Sprintf("TrafficLimit must between %d ~ %d, current value:%d", TRAFFIC_LIMIT_MIN, TRAFFIC_LIMIT_MAX, args.TrafficLimit))
 			}
 			req.SetHeader(http.BCE_TRAFFIC_LIMIT, fmt.Sprintf("%d", args.TrafficLimit))
 		}
@@ -97,21 +98,29 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 			req.SetHeader(http.BCE_STORAGE_CLASS, args.StorageClass)
 		} else {
 			if len(args.StorageClass) != 0 {
-				return "", bce.NewBceClientError("invalid storage class value: " +
+				return "", nil, bce.NewBceClientError("invalid storage class value: " +
 					args.StorageClass)
 			}
 		}
 
 		if err := setUserMetadata(req, args.UserMeta); err != nil {
-			return "", err
+			return "", nil, err
 		}
 
 		if len(args.Process) != 0 {
 			req.SetHeader(http.BCE_PROCESS, args.Process)
+			if strings.HasPrefix(args.Process, "callback") {
+				NeedReturnCallback = true
+			}
 		}
 		if len(args.CannedAcl) != 0 {
 			if validCannedAcl(args.CannedAcl) {
 				req.SetHeader(http.BCE_ACL, args.CannedAcl)
+			}
+		}
+		if len(args.ObjectTagging) != 0 {
+			if ok, encodeTagging := validObjectTagging(args.ObjectTagging); ok {
+				req.SetHeader(http.BCE_OBJECT_TAGGING, encodeTagging)
 			}
 		}
 	}
@@ -122,13 +131,20 @@ func PutObject(cli bce.Client, bucket, object string, body *bce.Body,
 
 	resp := &bce.BceResponse{}
 	if err := SendRequest(cli, req, resp, ctx); err != nil {
-		return "", err
+		return "", nil, err
 	}
 	if resp.IsFail() {
-		return "", resp.ServiceError()
+		return "", nil, resp.ServiceError()
 	}
 	defer func() { resp.Body().Close() }()
-	return strings.Trim(resp.Header(http.ETAG), "\""), nil
+	if NeedReturnCallback {
+		jsonBody := &PutObjectResult{}
+		if err := resp.ParseJsonBody(jsonBody); err != nil {
+			return "", nil, err
+		}
+		return strings.Trim(resp.Header(http.ETAG), "\""), jsonBody, nil
+	}
+	return strings.Trim(resp.Header(http.ETAG), "\""), nil, nil
 }
 
 // CopyObject - copy one object to a new object with new bucket and/or name. It can alse set the
@@ -1047,7 +1063,7 @@ func PutObjectTag(cli bce.Client, bucket, object string, putObjectTagArgs *PutOb
 	return nil
 }
 
-func GetObjectTag(cli bce.Client, bucket, object string, ctx *BosContext) (string, error) {
+func GetObjectTag(cli bce.Client, bucket, object string, ctx *BosContext) (map[string]interface{}, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getObjectUri(bucket, object))
 	req.SetMethod(http.GET)
@@ -1055,17 +1071,21 @@ func GetObjectTag(cli bce.Client, bucket, object string, ctx *BosContext) (strin
 	ctx.Bucket = bucket
 	resp := &bce.BceResponse{}
 	if err := SendRequest(cli, req, resp, ctx); err != nil {
-		return "", err
+		return nil, err
 	}
 	if resp.IsFail() {
-		return "", resp.ServiceError()
+		return nil, resp.ServiceError()
 	}
 	defer func() { resp.Body().Close() }()
 	bodyBytes, err := ioutil.ReadAll(resp.Body())
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	result := string(bodyBytes)
+
+	result, err := ParseObjectTagResult(bodyBytes)
+	if err != nil {
+		return nil, err
+	}
 	return result, nil
 }
 
