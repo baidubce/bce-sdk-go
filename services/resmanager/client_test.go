@@ -127,3 +127,63 @@ func TestGetResGroupBatch(t *testing.T) {
 	jsonRes, _ := json.Marshal(res)
 	t.Logf(string(jsonRes))
 }
+
+func TestRemoveResourceFromGroup(t *testing.T) {
+	args := &BindResourceToGroupArgs{
+		Bindings: []Binding{
+			{
+				ResourceId:     "weaxsey.org",
+				ResourceType:   "CDN",
+				ResourceRegion: "global",
+				GroupId:        "RESG-kvst7Bqqygx",
+			},
+		},
+	}
+	err := resClient.RemoveResourceFromGroup(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBindResourceToGroup(t *testing.T) {
+	args := &BindResourceToGroupArgs{
+		Bindings: []Binding{
+			{
+				ResourceId:     "weaxsey.org",
+				ResourceType:   "CDN",
+				ResourceRegion: "global",
+				GroupId:        "RESG-kvst7Bqqygx",
+			},
+		},
+	}
+	res, err := resClient.BindResourceToGroup(args)
+	ExpectEqual(t.Errorf, err, nil)
+	jsonRes, _ := json.Marshal(res)
+	t.Logf(string(jsonRes))
+}
+
+func TestChangeResourceGroup(t *testing.T) {
+	args := &ChangeResourceGroupArgs{
+		MoveResModels: []MoveResModel{
+			{
+				TargetGroupId: "RESG-a088c216",
+				OldGroupResInfo: OldGroupResInfo{
+					ResourceId:     "weaxsey.org",
+					ResourceType:   "CDN",
+					ResourceRegion: "global",
+					GroupId:        "RESG-kvst7Bqqygx",
+				},
+			},
+		},
+	}
+	res, err := resClient.ChangeResourceGroup(args)
+	ExpectEqual(t.Errorf, err, nil)
+	jsonRes, _ := json.Marshal(res)
+	t.Logf(string(jsonRes))
+}
+
+func TestQueryGroupList(t *testing.T) {
+	var args = "test"
+	res, err := resClient.QueryGroupList(args)
+	ExpectEqual(t.Errorf, err, nil)
+	jsonRes, _ := json.Marshal(res)
+	t.Logf(string(jsonRes))
+}

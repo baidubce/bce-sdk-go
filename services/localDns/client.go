@@ -178,11 +178,12 @@ func (c *Client) ListPrivateZone(request *ListPrivateZoneRequest) (
 //
 // PARAMS:
 //     - zoneId: Zone的ID
+//     - request: 获取解析记录列表的入参，包含分页数maxKeys和起始标记marker等
 // RETURNS:
 //     - *api.ListRecordResponse:
 //     - error: the return error if any occurs
-func (c *Client) ListRecord(zoneId string) (*ListRecordResponse, error) {
-	return ListRecord(c, zoneId)
+func (c *Client) ListRecord(zoneId string, request *ListRecordRequest) (*ListRecordResponse, error) {
+	return ListRecord(c, zoneId, request.Marker, request.MaxKeys, request.SourceType)
 }
 
 // UnbindVpc -

@@ -3540,7 +3540,90 @@ if res, err := bccClient.GetStockWithSpec(args); err != nil {
     fmt.Println("GetStockWithSpec failed: ", err)
 } else {
     fmt.Println("GetStockWithSpec success: ", res)
+```
+### 对预留实例券发起转移
+对预留实例券发起转移（仅支持0预付的预留实例券）
+```go
+args := &api.TransferReservedInstanceRequest{
+ReservedInstanceIds: []string{
+// 预留实例券id
+"r-3p89YnJf",
+},
+RecipientAccountId: "",
 }
+result, err := BCC_CLIENT.TransferReservedInstanceOrder(args)
+ExpectEqual(t.Errorf, err, nil)
+fmt.Println(result)
+```
+
+### 撤销预留实例券转移
+撤销预留实例券转移
+```go
+args := &api.TransferReservedInstanceOperateRequest{
+TransferRecordIds: []string{
+// 预留实例券转移记录id
+"t-tgQYk4Rx",
+},
+}
+err := BCC_CLIENT.RevokeTransferReservedInstanceOrder(args)
+ExpectEqual(t.Errorf, err, nil)
+```
+
+### 拒绝预留实例券转移
+拒绝预留实例券转移
+```go
+args := &api.TransferReservedInstanceOperateRequest{
+TransferRecordIds: []string{
+// 预留实例券转移记录id
+"t-tgQYk4Rx",
+},
+}
+err := BCC_CLIENT.RefuseTransferReservedInstanceOrder(args)
+ExpectEqual(t.Errorf, err, nil)
+```
+### 接受预留实例券转移
+接受预留实例券转移
+```go
+args := &api.AcceptTransferReservedInstanceRequest{
+// 预留实例券转移记录id
+TransferRecordId: "t-uNwDdZO9",
+}
+err := BCC_CLIENT.AcceptTransferReservedInstanceOrder(args)
+ExpectEqual(t.Errorf, err, nil)
+```
+### 预留实例券转入列表
+预留实例券转入列表
+```go
+args := &api.DescribeTransferReservedInstancesRequest{
+ReservedInstanceIds: []string{
+"r-I8rLAfcM",
+},
+TransferRecordIds: []string{
+"t-FoM4l1xI",
+},
+Spec: "bcc.g3.c1m1",
+Status: "timeout",
+}
+result, err := BCC_CLIENT.TransferInReservedInstanceOrders(args)
+ExpectEqual(t.Errorf, err, nil)
+fmt.Println(result)
+```
+### 预留实例券转出列表
+预留实例券转出列表
+```go
+args := &api.DescribeTransferReservedInstancesRequest{
+ReservedInstanceIds: []string{
+"r-ObFTPNIp",
+},
+TransferRecordIds: []string{
+"t-PKnSYeWh",
+},
+Spec: "bcc.ic4.c2m2",
+Status: "fail",
+}
+result, err := BCC_CLIENT.TransferOutReservedInstanceOrders(args)
+ExpectEqual(t.Errorf, err, nil)
+fmt.Println(result)
 ```
 
 ### 查询实例套餐库存

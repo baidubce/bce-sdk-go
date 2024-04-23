@@ -20,7 +20,7 @@ package bcc
 
 import (
 	"encoding/json"
-
+	"fmt"
 	"github.com/baidubce/bce-sdk-go/auth"
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/services/bcc/api"
@@ -2342,4 +2342,130 @@ func (c *Client) BatchRefundResource(arg *api.BatchRefundResourceArg) (*api.Batc
 
 func (c *Client) GetAvailableImagesBySpec(args *api.GetAvailableImagesBySpecArg) (*api.GetAvailableImagesBySpecResult, error) {
 	return api.GetAvailableImagesBySpec(c, args)
+}
+
+// TransferReservedInstanceOrder - Batch transfer reserved instance orders to designated users
+//
+// PARAMS:
+//   - args: the arguments to initiate transfer reserved instance order
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - []string: transfer record ids
+func (c *Client) TransferReservedInstanceOrder(args *api.TransferReservedInstanceRequest) (*[]string, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.TransferReservedInstanceOrder(c, body)
+}
+
+// RevokeTransferReservedInstanceOrder - Batch revoke transfer reserved instance orders
+//
+// PARAMS:
+//   - args: transfer record ids for operation
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) RevokeTransferReservedInstanceOrder(args *api.TransferReservedInstanceOperateRequest) (error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.RevokeTransferReservedInstanceOrder(c, body)
+}
+
+// RefuseTransferReservedInstanceOrder - Batch refuse transfer reserved instance orders
+//
+// PARAMS:
+//   - args: transfer record ids for operation
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) RefuseTransferReservedInstanceOrder(args *api.TransferReservedInstanceOperateRequest) (error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.RefuseTransferReservedInstanceOrder(c, body)
+}
+
+// AcceptTransferReservedInstanceOrder - Accept a transfer reserved instance order
+//
+// PARAMS:
+//   - args: transfer record id for operation
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) AcceptTransferReservedInstanceOrder(args *api.AcceptTransferReservedInstanceRequest) (error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+
+	return api.AcceptTransferReservedInstanceOrder(c, body)
+}
+
+// TransferInReservedInstanceOrders - Search transfer in reserved instance orders
+//
+// PARAMS:
+//   - args: the arguments to search transfer in reserved instance orders
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - DescribeTransferInRecordsResponse: search result
+func (c *Client) TransferInReservedInstanceOrders(args *api.DescribeTransferReservedInstancesRequest) (*api.DescribeTransferInRecordsResponse, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	result := &api.DescribeTransferInRecordsResponse{}
+	result, err = api.TransferInReservedInstanceOrders(c, body)
+
+	jsonString, err :=  json.Marshal(result);
+	fmt.Println(string(jsonString))
+	return result, err;
+}
+
+// TransferOutReservedInstanceOrders - Search transfer out reserved instance orders
+//
+// PARAMS:
+//   - args: the arguments to search transfer out reserved instance orders
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - DescribeTransferOutRecordsResponse: search result
+func (c *Client) TransferOutReservedInstanceOrders(args *api.DescribeTransferReservedInstancesRequest) (*api.DescribeTransferOutRecordsResponse, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return api.TransferOutReservedInstanceOrders(c, body)
 }

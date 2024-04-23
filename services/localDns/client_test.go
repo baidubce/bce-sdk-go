@@ -21,7 +21,7 @@ var (
 	RR        = "rr"
 	TYPE      = "A"
 	VALUE     = "1.2.3.5"
-	ZONE_ID   = "zone-mk2guy4qxd7c"
+	ZONE_ID   = "zone-ky94ixins803"
 	RECORD_ID = "rc-9mfacvjk6weq"
 )
 
@@ -149,7 +149,11 @@ func TestClient_DeleteRecord(t *testing.T) {
 }
 
 func TestClient_ListRecord(t *testing.T) {
-	res, err := LD_CLIENT.ListRecord(ZONE_ID)
+	listRecordRequest := &ListRecordRequest{
+		Marker:  "rc-14ifmguzv5j2",
+		MaxKeys: 1000,
+	}
+	res, err := LD_CLIENT.ListRecord(ZONE_ID, listRecordRequest)
 	fmt.Print(res)
 	ExpectEqual(t.Errorf, nil, err)
 }

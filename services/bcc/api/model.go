@@ -186,22 +186,23 @@ type BbcStock struct {
 }
 
 type NicInfo struct {
-	Status         string    `json:"status"`
-	MacAddress     string    `json:"macAddress"`
-	DeviceId       string    `json:"deviceId"`
-	VpcId          string    `json:"vpcId"`
-	EniId          string    `json:"eniId"`
-	Name           string    `json:"name"`
-	Type           string    `json:"type"`
-	CreatedTime    string    `json:"createdTime"`
-	SubnetType     string    `json:"subnetType"`
-	SubnetId       string    `json:"subnetId"`
-	EniNum         int       `json:"eniNum"`
-	Az             string    `json:"az"`
-	EniUuid        string    `json:"eniUuid"`
-	Description    string    `json:"description"`
-	Ips            []IpModel `json:"ips"`
-	SecurityGroups []string  `json:"securityGroups"`
+	Status         				string    `json:"status"`
+	MacAddress     				string    `json:"macAddress"`
+	DeviceId       				string    `json:"deviceId"`
+	VpcId          				string    `json:"vpcId"`
+	EniId          				string    `json:"eniId"`
+	Name           				string    `json:"name"`
+	Type           				string    `json:"type"`
+	CreatedTime    				string    `json:"createdTime"`
+	SubnetType     				string    `json:"subnetType"`
+	SubnetId       				string    `json:"subnetId"`
+	EniNum         				int       `json:"eniNum"`
+	Az             				string    `json:"az"`
+	EniUuid        				string    `json:"eniUuid"`
+	Description    				string    `json:"description"`
+	Ips           				[]IpModel `json:"ips"`
+	SecurityGroups 				[]string  `json:"securityGroups"`
+	EnterpriseSecurityGroups 	[]string  `json:"enterpriseSecurityGroups"`
 }
 
 type IpModel struct {
@@ -995,6 +996,89 @@ type ReleasePrepaidInstanceResponse struct {
 	SuccessResources   InstanceDeleteResultModel `json:"successResources"`
 	FailResources      InstanceDeleteResultModel `json:"failResources"`
 	InstanceRefundFlag bool                      `json:"instanceRefundFlag"`
+}
+
+type DescribeTransferReservedInstancesRequest struct {
+	ReservedInstanceIds []string `json:"reservedInstanceIds"`
+	TransferRecordIds 	[]string `json:"transferRecordIds"`
+	Spec 				string `json:"spec"`
+	Status 				string `json:"status"`
+}
+
+type TransferReservedInstanceRequest struct {
+	ReservedInstanceIds []string `json:"reservedInstanceIds"`
+	RecipientAccountId  string   `json:"recipientAccountId"`
+}
+
+type TransferReservedInstanceOperateRequest struct {
+	TransferRecordIds []string `json:"transferRecordIds"`
+}
+
+type AcceptTransferReservedInstanceRequest struct {
+	TransferRecordId string `json:"transferRecordId"`
+}
+
+type TransferSuccessInfo struct {
+	TransferRecordId string `json:"transferRecordId"`
+	TransferOrderId  string `json:"transferOrderId"`
+}
+
+type TransferFailInfo struct {
+	TransferRecordId string `json:"transferRecordId"`
+}
+
+type AcceptTransferResponse struct {
+	Success []TransferSuccessInfo `json:"success"`
+	Fail    []TransferFailInfo    `json:"fail"`
+}
+
+type DescribeTransferInRecordsResponse struct {
+	TotalCount int                    	`json:"totalCount"`
+	TransferRecords []TransferInRecord 	`json:"transferRecords"`
+}
+
+type DescribeTransferOutRecordsResponse struct {
+	TotalCount int                    		`json:"totalCount"`
+	TransferRecords []TransferOutRecord 	`json:"transferRecords"`
+}
+
+type TransferInRecord struct {
+	TransferRecordId 		string 					`json:"transferRecordId"`
+	GrantorUserId           string 					`json:"grantorUserId"`
+	Status           		string 					`json:"status"`
+	ReservedInstanceInfo 	ReservedInstanceModel	`json:"reservedInstanceInfo"`
+	ApplicationTime        	string 					`json:"applicationTime"`
+	ExpireTime        		string 					`json:"expireTime"`
+	EndTime        			string 					`json:"endTime"`
+}
+
+type TransferOutRecord struct {
+	TransferRecordId 		string 					`json:"transferRecordId"`
+	RecipientUserId         string 					`json:"recipientUserId"`
+	Status           		string 					`json:"status"`
+	ReservedInstanceInfo 	ReservedInstanceModel	`json:"reservedInstanceInfo"`
+	ApplicationTime        	string 					`json:"applicationTime"`
+	ExpireTime        		string 					`json:"expireTime"`
+	EndTime        			string 					`json:"endTime"`
+}
+
+type ReservedInstanceModel struct {
+	ReservedInstanceId		string 	`json:"reservedInstanceId"`
+	ReservedInstanceName 	string 	`json:"reservedInstanceName"`
+	Scope 					string 	`json:"scope"`
+	ZoneName 				string 	`json:"zoneName"`
+	Spec 					string 	`json:"spec"`
+	ReservedType            string 	`json:"reservedType"`
+	OfferingType       		string 	`json:"offeringType"`
+	OsType             		string 	`json:"osType"`
+	ReservedInstanceStatus	string 	`json:"reservedInstanceStatus"`
+	InstanceCount           int		`json:"instanceCount"`
+	EffectiveTime           string 	`json:"effectiveTime"`
+	ExpireTime             	string	`json:"expireTime"`
+	AutoRenew             	bool 	`json:"autoRenew"`
+	RenewTimeUnit           string 	`json:"renewTimeUnit"`
+	RenewTime             	int 	`json:"renewTime"`
+	NextRenewTime           string 	`json:"nextRenewTime"`
 }
 
 type InstanceDeleteResultModel struct {

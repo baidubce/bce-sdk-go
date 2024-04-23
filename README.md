@@ -284,3 +284,4 @@ SNIC服务网卡 | SNIC      | github.com/baidubce/bce-sdk-go/services/endpoint 
 VPN网关 | VPN       | github.com/baidubce/bce-sdk-go/services/vpn       | [VPN.md](./doc/VPN.md)
 多模态媒资检索 | MMS       | github.com/baidubce/bce-sdk-go/services/mms       | [MMS.md](./doc/MMS.md)
 数据库专属集群 | DDC       | github.com/baidubce/bce-sdk-go/services/ddc       | [DDC.md](./doc/DDC.md)
+资源管理 | RES_MANAGER | github.com/baidubce/bce-sdk-go/services/resmanager | [RES_MANAGER.md](./doc/RES_MANAGER.md)

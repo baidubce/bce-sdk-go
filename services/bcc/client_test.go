@@ -1874,3 +1874,77 @@ func TestGetAvailableStockWithSpec(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(result)
 }
+
+
+func TestTransferReservedInstanceOrder(t *testing.T) {
+	args := &api.TransferReservedInstanceRequest{
+		ReservedInstanceIds: []string{
+			"r-3p89YnJf",
+		},
+		RecipientAccountId: "",
+	}
+	result, err := BCC_CLIENT.TransferReservedInstanceOrder(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}
+
+func TestRevokeTransferReservedInstanceOrder(t *testing.T) {
+	args := &api.TransferReservedInstanceOperateRequest{
+		TransferRecordIds: []string{
+			"t-tgQYk4Rx",
+		},
+	}
+	err := BCC_CLIENT.RevokeTransferReservedInstanceOrder(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestRefuseTransferReservedInstanceOrder(t *testing.T) {
+	args := &api.TransferReservedInstanceOperateRequest{
+		TransferRecordIds: []string{
+			"t-tgQYk4Rx",
+		},
+	}
+	err := BCC_CLIENT.RefuseTransferReservedInstanceOrder(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestAcceptTransferReservedInstanceOrder(t *testing.T) {
+	args := &api.AcceptTransferReservedInstanceRequest{
+		TransferRecordId: "t-uNwDdZO9",
+	}
+	err := BCC_CLIENT.AcceptTransferReservedInstanceOrder(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestTransferInReservedInstanceOrders(t *testing.T) {
+	args := &api.DescribeTransferReservedInstancesRequest{
+		ReservedInstanceIds: []string{
+			//"r-I8rLAfcM",
+		},
+		TransferRecordIds: []string{
+			//"t-FoM4l1xI",
+		},
+		Spec: "bcc.g3.c1m1",
+		Status: "timeout",
+	}
+	result, err := BCC_CLIENT.TransferInReservedInstanceOrders(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+
+}
+
+func TestTransferOutReservedInstanceOrders(t *testing.T) {
+	args := &api.DescribeTransferReservedInstancesRequest{
+		ReservedInstanceIds: []string{
+			"r-ObFTPNIp",
+		},
+		TransferRecordIds: []string{
+			"t-PKnSYeWh",
+		},
+		Spec: "bcc.ic4.c2m2",
+		Status: "fail",
+	}
+	result, err := BCC_CLIENT.TransferOutReservedInstanceOrders(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}

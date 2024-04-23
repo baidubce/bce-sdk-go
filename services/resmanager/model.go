@@ -99,7 +99,7 @@ type MoveResModel struct {
 }
 
 type OldGroupResInfo struct {
-	ResourceId     string `json:"reourceId"`
+	ResourceId     string `json:"resourceId"`
 	ResourceType   string `json:"resourceType"`
 	ResourceRegion string `json:"resourceRegion"`
 	GroupId        string `json:"groupId"`

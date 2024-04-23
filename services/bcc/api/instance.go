@@ -2252,3 +2252,188 @@ func AddIpv6(cli bce.Client, reqBody *bce.Body) (*AddIpv6Result, error) {
 
 	return jsonBody, nil
 }
+
+// TransferReservedInstanceOrder - Batch transfer reserved instance orders to designated users
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - reqBody: the arguments to initiate transfer reserved instance order
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - []string: transfer record ids
+func TransferReservedInstanceOrder(cli bce.Client, reqBody *bce.Body) (*[]string, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getCreateTransferReservedInstanceOrderUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &[]string{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+// RevokeTransferReservedInstanceOrder - Batch revoke transfer reserved instance orders
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - reqBody: transfer record ids for operation
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func RevokeTransferReservedInstanceOrder(cli bce.Client, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getRevokeTransferReservedInstanceOrderUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+
+	return nil
+}
+
+// RefuseTransferReservedInstanceOrder - Batch refuse transfer reserved instance orders
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - reqBody: transfer record ids for operation
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func RefuseTransferReservedInstanceOrder(cli bce.Client, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getRefuseTransferReservedInstanceOrderUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+
+	return nil
+}
+
+// AcceptTransferReservedInstanceOrder - Accept a transfer reserved instance order
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - reqBody: transfer record id for operation
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func AcceptTransferReservedInstanceOrder(cli bce.Client, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getAcceptTransferReservedInstanceOrderUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+// TransferInReservedInstanceOrders - Search transfer in reserved instance orders
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to search transfer in reserved instance orders
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - DescribeTransferInRecordsResponse: search result
+func TransferInReservedInstanceOrders(cli bce.Client, reqBody *bce.Body) (*DescribeTransferInRecordsResponse, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getTransferInReservedInstanceOrdersUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &DescribeTransferInRecordsResponse{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+// TransferOutReservedInstanceOrders - Search transfer out reserved instance orders
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to search transfer out reserved instance orders
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - DescribeTransferOutRecordsResponse: search result
+func TransferOutReservedInstanceOrders(cli bce.Client, reqBody *bce.Body) (*DescribeTransferOutRecordsResponse, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getTransferOutReservedInstanceOrdersUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &DescribeTransferOutRecordsResponse{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}

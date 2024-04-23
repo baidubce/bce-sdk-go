@@ -320,15 +320,29 @@ func ListPrivateZone(cli bce.Client, marker string, maxKeys int) (
 // PARAMS:
 //     - cli: the client agent which can perform sending request
 //     - zoneId: Zone的ID
+//     - marker: 批量获取列表的查询的起始位置，是一个由系统生成的字符串
+//     - maxKeys: 每页包含的最大数量，最大数量通常不超过1000。缺省值为1000
+//     - sourceType: 记录类型，可选值
 // RETURNS:
 //     - *api.ListRecordResponse:
 //     - error: the return error if any occurs
-func ListRecord(cli bce.Client, zoneId string) (*ListRecordResponse, error) {
+func ListRecord(cli bce.Client, zoneId string, marker string, maxKeys int,
+	sourceType string) (*ListRecordResponse, error) {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.GET)
 	path := "/v1/privatezone/[zoneId]/record"
 	path = strings.Replace(path, "[zoneId]", zoneId, -1)
 	req.SetUri(path)
+
+	if "" != sourceType {
+		req.SetParam("sourceType", sourceType)
+	}
+	if "" != marker {
+		req.SetParam("marker", marker)
+	}
+	if 0 != maxKeys {
+		req.SetParam("maxKeys", strconv.Itoa(maxKeys))
+	}
 
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {

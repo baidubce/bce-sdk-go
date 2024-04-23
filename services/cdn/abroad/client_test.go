@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/baidubce/bce-sdk-go/model"
 	"github.com/baidubce/bce-sdk-go/services/cdn/abroad/api"
 	"github.com/baidubce/bce-sdk-go/util"
 	"github.com/baidubce/bce-sdk-go/util/log"
@@ -320,4 +321,110 @@ func TestClient_GethitRate(t *testing.T) {
 		t.Fatalf("GetRealHit failed: %s", err)
 	}
 	t.Logf("GetRealHit successfully: %+v", details)
+}
+
+func TestClient_SetHTTPSConfigWithOptions(t *testing.T) {
+	var err error
+
+	// 开启 HTTPS
+	var certId = "cert-4xkhw3m73hxs"
+	err = testCli.SetHTTPSConfigWithOptions(testDomain, true,
+		api.HTTPSConfigCertID(certId),    // 必选
+		api.HTTPSConfigRedirectWith301(), // 可选
+		api.HTTPSConfigEnableH2(),        // 可选
+	)
+	if err != nil {
+		t.Fatalf("SetHTTPSConfigWithOptions enable HTTPS failed: %s", err)
+	}
+	t.Logf("SetHTTPSConfigWithOptions enable HTTPS successfully")
+
+	// 关闭 HTTPS
+	err = testCli.SetHTTPSConfigWithOptions(testDomain, false)
+	if err != nil {
+		t.Fatalf("SetHTTPSConfigWithOptions disable HTTPS failed: %s", err)
+	}
+	t.Logf("SetHTTPSConfigWithOptions disable HTTPS successfully")
+}
+
+func TestClient_SetHTTPSConfig(t *testing.T) {
+	var err error
+
+	// 开启 HTTPS
+	var certId = "cert-4xkhw3m73hxs"
+	err = testCli.SetHTTPSConfig(testDomain, &api.HTTPSConfig{
+		Enabled:      true,
+		CertId:       certId,
+		HttpRedirect: true,
+		Http2Enabled: true,
+	})
+	if err != nil {
+		t.Fatalf("SetHTTPSConfig enable HTTPS failed: %s", err)
+	}
+	t.Logf("SetHTTPSConfig enable HTTPS successfully")
+
+	// 关闭 HTTPS
+	err = testCli.SetHTTPSConfig(testDomain, &api.HTTPSConfig{
+		Enabled: false,
+	})
+	if err != nil {
+		t.Fatalf("SetHTTPSConfig disable HTTPS failed: %s", err)
+	}
+	t.Logf("SetHTTPSConfig disable HTTPS successfully")
+}
+
+func TestClient_ListDomains(t *testing.T) {
+	domains, _, err := testCli.ListDomains("")
+	if err != nil {
+		t.Fatalf("ListDomains failed: %s", err)
+	}
+	t.Logf("ListDomains success: %v", domains)
+}
+
+func TestClient_CreateDomainWithOptions(t *testing.T) {
+	info, err := testCli.CreateDomainWithOptions(testDomain, []api.OriginPeer{
+		{
+			Type:   "IP",
+			Backup: false,
+			Addr:   "1.1.1.1",
+		},
+		{
+			Type:   "IP",
+			Backup: true,
+			Addr:   "2.2.2.2",
+		},
+	}, CreateDomainWithTags([]model.TagModel{
+		{
+			TagKey:   "abroad",
+			TagValue: "test",
+		},
+	}))
+	if err != nil {
+		t.Fatalf("CreateDomainWithOptions for %s failed: %s", testDomain, err)
+	}
+
+	t.Logf("CreateDomainWithOptions for %s success: %+v", testDomain, info)
+}
+
+func TestClient_EnableDomain(t *testing.T) {
+	err := testCli.EnableDomain(testDomain)
+	if err != nil {
+		t.Fatalf("EnableDomain for %s failed: %s", testDomain, err)
+	}
+	t.Logf("EnableDomain for %s success", testDomain)
+}
+
+func TestClient_DisableDomain(t *testing.T) {
+	err := testCli.DisableDomain(testDomain)
+	if err != nil {
+		t.Fatalf("DisableDomain for %s failed: %s", testDomain, err)
+	}
+	t.Logf("DisableDomain for %s success", testDomain)
+}
+
+func TestClient_DeleteDomain(t *testing.T) {
+	err := testCli.DeleteDomain(testDomain)
+	if err != nil {
+		t.Fatalf("DeleteDomain for %s failed: %s", testDomain, err)
+	}
+	t.Logf("DeleteDomain for %s success", testDomain)
 }

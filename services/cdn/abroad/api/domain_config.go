@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/baidubce/bce-sdk-go/bce"
@@ -15,6 +16,7 @@ type DomainConfig struct {
 	OriginHost   *string      `json:"originHost"`
 	RefererACL   *RefererACL  `json:"refererACL"`
 	IpACL        *IpACL       `json:"ipACL"`
+	HTTPSConfig  *HTTPSConfig `json:"https"`
 }
 
 // OriginPeer defined a struct for Origin server.
@@ -44,6 +46,13 @@ type RefererACL struct {
 type IpACL struct {
 	BlackList []string `json:"blackList"`
 	WhiteList []string `json:"whiteList"`
+}
+
+type HTTPSConfig struct {
+	Enabled      bool   `json:"enabled"`
+	CertId       string `json:"certId,omitempty"`
+	HttpRedirect bool   `json:"httpRedirect,omitempty"`
+	Http2Enabled bool   `json:"http2Enabled,omitempty"`
 }
 
 // GetDomainConfig - get the configuration for the specified domain
@@ -224,4 +233,133 @@ func SetIpACL(cli bce.Client, domain string, ipACL *IpACL) error {
 	}
 
 	return nil
+}
+
+// HTTPSConfigOption defined a method for setting optional configurations for HTTPS config.
+type HTTPSConfigOption func(interface{})
+
+// HTTPSConfigCertID defined a method to pass certId witch represents a certificate uploaded in BCE SSL platform:
+// https://console.bce.baidu.com/cas/#/cas/purchased/common/list.
+// This Option works while the HTTPS in enabled state.
+func HTTPSConfigCertID(certId string) HTTPSConfigOption {
+	return func(o interface{}) {
+		cfg, ok := o.(*httpsConfig)
+		if ok {
+			cfg.certId = certId
+		}
+	}
+}
+
+// HTTPSConfigRedirectWith301 defined a method to enable the CDN PoPs to redirect the requests in HTTP protocol
+// to the HTTPS ones, with the status 301.
+// e.g. Assume that you have a CDN domain cdn.baidu.com, configured HTTPSConfigRedirectWith301, while the request
+// comes just like "http://cdn.baidu.com/1.txt", the CDN Edge server would respond 301 page with Location header
+// https://cdn.baidu.com/1.txt which change the scheme from "http" to "https".
+// This Option works while the HTTPS in enabled state.
+func HTTPSConfigRedirectWith301() HTTPSConfigOption {
+	return func(o interface{}) {
+		cfg, ok := o.(*httpsConfig)
+		if ok {
+			cfg.httpRedirect301 = true
+		}
+	}
+}
+
+// HTTPSConfigEnableH2 defined a method to enable HTTP2 in CDN Edge server.
+// This Option works while the HTTPS in enabled state.
+func HTTPSConfigEnableH2() HTTPSConfigOption {
+	return func(o interface{}) {
+		cfg, ok := o.(*httpsConfig)
+		if ok {
+			cfg.enableH2 = true
+		}
+	}
+}
+
+type httpsConfig struct {
+	certId          string
+	httpRedirect301 bool
+	enableH2        bool
+}
+
+// SetHTTPSConfigWithOptions - enable or disable HTTPS.
+// For details, please refer https://cloud.baidu.com/doc/CDN-ABROAD/s/ckb0fx9ea
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - domain: the specified domain
+//     - enabled: true means enable HTTPS, otherwise disable.
+//     - options: more operations to configure HTTPS, the valid options are:
+//       1. HTTPSConfigCertID
+//       2. HTTPSConfigRedirectWith301
+//       3. HTTPSConfigEnableH2
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func SetHTTPSConfigWithOptions(cli bce.Client, domain string, enabled bool, options ...HTTPSConfigOption) error {
+	urlPath := fmt.Sprintf("/v2/abroad/domain/%s/config", domain)
+	params := map[string]string{
+		"https": "",
+	}
+
+	var config httpsConfig
+	for _, opt := range options {
+		opt(&config)
+	}
+
+	requestObj := map[string]interface{}{
+		"enabled": enabled,
+	}
+	if enabled {
+		if config.certId == "" {
+			return errors.New("try enable HTTPS but the certId is empty")
+		}
+		requestObj["certId"] = config.certId
+		requestObj["httpRedirect"] = config.httpRedirect301
+		requestObj["http2Enabled"] = config.enableH2
+	} else {
+		if config.enableH2 {
+			return errors.New("config conflict: try enable HTTP2 and disable HTTPS")
+		}
+		if config.httpRedirect301 {
+			return errors.New("config conflict: try enable redirecting HTTPS requests to HTTP ones and disable HTTPS")
+		}
+	}
+
+	err := httpRequest(cli, "PUT", urlPath, params, &struct {
+		HTTPS interface{} `json:"https"`
+	}{
+		HTTPS: requestObj,
+	}, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// SetHTTPSConfig - enable or disable HTTPS.
+// For details, please refer https://cloud.baidu.com/doc/CDN-ABROAD/s/ckb0fx9ea
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - domain: the specified domain
+//     - httpsConfig: HTTPS configurations.
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func SetHTTPSConfig(cli bce.Client, domain string, httpsConfig *HTTPSConfig) error {
+	if httpsConfig == nil {
+		return errors.New("HTTPS config is empty")
+	}
+
+	var options []HTTPSConfigOption
+	if httpsConfig.CertId != "" {
+		options = append(options, HTTPSConfigCertID(httpsConfig.CertId))
+	}
+	if httpsConfig.HttpRedirect {
+		options = append(options, HTTPSConfigRedirectWith301())
+	}
+	if httpsConfig.Http2Enabled {
+		options = append(options, HTTPSConfigEnableH2())
+	}
+	return SetHTTPSConfigWithOptions(cli, domain, httpsConfig.Enabled, options...)
 }

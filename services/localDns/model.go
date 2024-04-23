@@ -142,3 +142,9 @@ type Zone struct {
 	CreateTime  string `json:"createTime"`
 	UpdateTime  string `json:"updateTime"`
 }
+
+type ListRecordRequest struct {
+	SourceType string
+	Marker     string
+	MaxKeys    int
+}

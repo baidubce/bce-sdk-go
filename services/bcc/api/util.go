@@ -82,6 +82,12 @@ const (
 	REQUEST_GET_STOCK_WITH_SPEC              = "/getStockWithSpec"
 	REQUEST_GET_AVAILABLE_STOCK_WITH_SPEC    = "/getAvailableStockWithSpec"
 	REQUEST_DELETION_PROTECTION              = "/deletionProtection"
+	REQUEST_TRANSFER_CREATE_URI              = "/reserved/transfer/create"
+	REQUEST_TRANSFER_REVOKE_URI              = "/reserved/transfer/revoke"
+	REQUEST_TRANSFER_REFUSE_URI              = "/reserved/transfer/refuse"
+	REQUEST_TRANSFER_ACCEPT_URI              = "/reserved/transfer/accept"
+	REQUEST_TRANSFER_IN_URI                  = "/reserved/transfer/in/list"
+	REQUEST_TRANSFER_OUT_URI                 = "/reserved/transfer/out/list"
 )
 
 func getInstanceUri() string {
@@ -458,4 +464,28 @@ func getBatchRefundResourceUri() string {
 
 func getAvailableImagesBySpecUri() string {
 	return URI_PREFIXV2 + "/image/getAvailableImagesBySpec"
+}
+
+func getCreateTransferReservedInstanceOrderUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_TRANSFER_CREATE_URI
+}
+
+func getRevokeTransferReservedInstanceOrderUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_TRANSFER_REVOKE_URI
+}
+
+func getRefuseTransferReservedInstanceOrderUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_TRANSFER_REFUSE_URI
+}
+
+func getAcceptTransferReservedInstanceOrderUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_TRANSFER_ACCEPT_URI
+}
+
+func getTransferInReservedInstanceOrdersUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_TRANSFER_IN_URI
+}
+
+func getTransferOutReservedInstanceOrdersUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_TRANSFER_OUT_URI
 }
