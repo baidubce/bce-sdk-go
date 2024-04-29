@@ -3,6 +3,7 @@ package eip
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/baidubce/bce-sdk-go/model"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -80,7 +81,14 @@ func TestClient_CreateEip(t *testing.T) {
 			PaymentTiming: "Postpaid",
 			BillingMethod: "ByTraffic",
 		},
-		ClientToken: getClientToken(),
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagK",
+				TagValue: "tagV",
+			},
+		},
+		ResourceGroupId: "RESG-Xnuw3joXLcy",
+		ClientToken:     getClientToken(),
 	}
 	result, err := EIP_CLIENT.CreateEip(args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -90,7 +98,7 @@ func TestClient_CreateEip(t *testing.T) {
 
 func TestClient_BatchCreateEip(t *testing.T) {
 	args := &BatchCreateEipArgs{
-		Name:            "sdk-eip",
+		Name:            "sdk-eip-batch",
 		BandWidthInMbps: 1,
 		Billing: &Billing{
 			PaymentTiming: "Postpaid",
@@ -99,8 +107,15 @@ func TestClient_BatchCreateEip(t *testing.T) {
 		Count:     254,
 		RouteType: "BGP",
 		//Idc:         "bjdd_cu",
-		Continuous:  true,
-		ClientToken: getClientToken(),
+		Continuous: true,
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagK",
+				TagValue: "tagV",
+			},
+		},
+		ResourceGroupId: "RESG-Xnuw3joXLcy",
+		ClientToken:     getClientToken(),
 	}
 	result, err := EIP_CLIENT.BatchCreateEip(args)
 	if err != nil {
@@ -150,7 +165,13 @@ func TestClient_PurchaseReservedEip(t *testing.T) {
 
 func TestClient_ListEip(t *testing.T) {
 	args := &ListEipArgs{}
-	EIP_CLIENT.ListEip(args)
+	result, err := EIP_CLIENT.ListEip(args)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		r, _ := json.Marshal(result)
+		fmt.Println(string(r))
+	}
 }
 
 func TestClient_DeleteEip(t *testing.T) {
@@ -252,10 +273,17 @@ func TestClient_CreateEipGroup(t *testing.T) {
 			PaymentTiming: "Postpaid",
 			BillingMethod: "ByBandwidth",
 		},
-		EipCount:    254,
-		RouteType:   "BGP",
-		Continuous:  true,
-		ClientToken: getClientToken(),
+		EipCount:  2,
+		RouteType: "BGP",
+		//Continuous: true,
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagK",
+				TagValue: "tagV",
+			},
+		},
+		ResourceGroupId: "RESG-Xnuw3joXLcy",
+		ClientToken:     getClientToken(),
 	}
 	result, err := EIP_CLIENT.CreateEipGroup(args)
 	if err != nil {
@@ -365,7 +393,14 @@ func TestClient_CreateEipBp(t *testing.T) {
 		Eip:             "100.88.3.216",
 		BandwidthInMbps: 10,
 		Type:            "BandwidthPackage",
-		AutoReleaseTime: "2023-12-13T20:38:43Z",
+		//AutoReleaseTime: "2023-12-13T20:38:43Z",
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagK",
+				TagValue: "tagV",
+			},
+		},
+		ResourceGroupId: "RESG-Xnuw3joXLcy",
 		ClientToken:     getClientToken(),
 	}
 	_, err := EIP_CLIENT.CreateEipBp(args)
@@ -382,8 +417,14 @@ func TestClient_DeleteEipBp(t *testing.T) {
 func TestClient_GetEipBp(t *testing.T) {
 	id := "bw-7fP4jhXO"
 	clientToken := getClientToken()
-	_, err := EIP_CLIENT.GetEipBp(id, clientToken)
+	result, err := EIP_CLIENT.GetEipBp(id, clientToken)
 	ExpectEqual(t.Errorf, nil, err)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		r, _ := json.Marshal(result)
+		fmt.Println(string(r))
+	}
 }
 
 func TestClient_ListEipBp(t *testing.T) {

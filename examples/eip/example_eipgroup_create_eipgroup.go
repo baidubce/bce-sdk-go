@@ -17,6 +17,7 @@ package eipexamples
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/baidubce/bce-sdk-go/model"
 
 	EIP "github.com/baidubce/bce-sdk-go/services/eip"
 )
@@ -35,6 +36,13 @@ func CreateEipGroup() {
 				ReservationTimeUnit: "month", // 预付费的周期单位
 			},
 		},
+		Tags: []model.TagModel{ //标签信息
+			{
+				TagKey:   "tagK",
+				TagValue: "tagV",
+			},
+		},
+		ResourceGroupId: "RESG-Xnuw3joXLcy", //资源组ID
 	}
 	eipGroupResult, err := eipClient.CreateEipGroup(createEipGroupArgs)
 	if err != nil {

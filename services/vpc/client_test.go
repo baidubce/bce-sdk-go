@@ -399,11 +399,11 @@ func TestCreateEnhanceNatGateway(t *testing.T) {
 		Billing: &Billing{
 			PaymentTiming: PAYMENT_TIMING_POSTPAID,
 		},
+		ResourceGroupId: "ResourceGroupId",
 	}
 	result, err := VPC_CLIENT.CreateNatGateway(args)
 	ExpectEqual(t.Errorf, nil, err)
 	NatID = result.NatId
-
 	err = waitStateForNatGateway(NatID, NAT_STATUS_UNCONFIGURED)
 	ExpectEqual(t.Errorf, nil, err)
 }
@@ -782,6 +782,7 @@ func TestCreatePeerConn(t *testing.T) {
 				TagValue: "tagValue",
 			},
 		},
+		ResourceGroupId: "ResourceGroupId",
 	}
 	result, err := VPC_CLIENT.CreatePeerConn(args)
 	ExpectEqual(t.Errorf, nil, err)

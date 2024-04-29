@@ -13,11 +13,11 @@ type PrefetchId string
 
 // CStatusQueryData defined a struct for the query conditions about the tasks' progress
 type CStatusQueryData struct {
-	EndTime   string
+	Id        string
 	StartTime string
+	EndTime   string
 	Url       string
 	Marker    string
-	Id        string
 }
 
 // CRecordQueryData defined a struct for the query conditions about the operated records

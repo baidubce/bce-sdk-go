@@ -432,15 +432,16 @@ type UpdateAclRuleArgs struct {
 
 // CreateNatGatewayArgs defines the structure of the input parameters for the CreateNatGateway api
 type CreateNatGatewayArgs struct {
-	ClientToken string             `json:"-"`
-	Name        string             `json:"name"`
-	VpcId       string             `json:"vpcId"`
-	Spec        NatGatewaySpecType `json:"spec"`
-	CuNum       string             `json:"cuNum,omitempty"`
-	Eips        []string           `json:"eips,omitempty"`
-	DnatEips    []string           `json:"dnatEips,omitempty"`
-	Billing     *Billing           `json:"billing"`
-	Tags        []model.TagModel   `json:"tags,omitempty"`
+	ClientToken     string             `json:"-"`
+	Name            string             `json:"name"`
+	VpcId           string             `json:"vpcId"`
+	Spec            NatGatewaySpecType `json:"spec"`
+	CuNum           string             `json:"cuNum,omitempty"`
+	Eips            []string           `json:"eips,omitempty"`
+	DnatEips        []string           `json:"dnatEips,omitempty"`
+	Billing         *Billing           `json:"billing"`
+	Tags            []model.TagModel   `json:"tags,omitempty"`
+	ResourceGroupId string             `json:"resourceGroupId,omitempty"`
 }
 
 type ResizeNatGatewayArgs struct {
@@ -668,6 +669,7 @@ type CreatePeerConnArgs struct {
 	PeerIfName      string           `json:"peerIfName,omitempty"`
 	Billing         *Billing         `json:"billing"`
 	Tags            []model.TagModel `json:"tags,omitempty"`
+	ResourceGroupId string           `json:"resourceGroupId,omitempty"`
 }
 
 // CreatePeerConnResult defines the structure of the output parameters for the CreatePeerConn api

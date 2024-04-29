@@ -104,7 +104,6 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 }
 
 func TestGetResGroupBatch(t *testing.T) {
-
 	args := &ResGroupDetailRequest{
 		ResourceBrief: []ResourceBrief{
 			{
@@ -186,4 +185,20 @@ func TestQueryGroupList(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 	jsonRes, _ := json.Marshal(res)
 	t.Logf(string(jsonRes))
+}
+
+func TestQueryFullListArgsTooLarge(t *testing.T) {
+	var groupId = "RESG-kvst7Bqqygx"
+	var id = "weaxsey.org"
+	var types = "CDN"
+	var regions = "global,bj"
+	var name = "weaxsey.org"
+	var isCurrent = false
+	var tags = "默认项目:"
+	var pageNo = 1
+	var pageSize = 10
+	res, err := resClient.getGroupRes(groupId, id, types, regions, name, isCurrent, tags, pageNo, pageSize)
+	ExpectEqual(t.Errorf, err, nil)
+	jsonRes, _ := json.Marshal(res)
+	t.Logf("response jsonRes:%s", string(jsonRes))
 }

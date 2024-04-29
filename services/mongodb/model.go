@@ -157,9 +157,15 @@ type Reservation struct {
 	ReservationTimeUnit string `json:"reservationTimeUnit"` // 时间单位，Month
 }
 
+type AutoRenewModel struct {
+	AutoRenewLength   int    `json:"autoRenewLength"`   // 到期后续费的时长（月），取值范围为[0,1,2,3,4,5,6,7,8,9,12,24,36]。0表示关闭自动续费，否则为开启自动续费。
+	AutoRenewTimeUnit string `json:"autoRenewTimeUnit"` // 时间单位，取值范围为["Month"]，当前仅支持按月
+}
+
 type BillingModel struct {
-	PaymentTiming string      `json:"paymentTiming"` // 付费方式
-	Reservation   Reservation `json:"reservation"`   // 保留信息
+	PaymentTiming string         `json:"paymentTiming"` // 付费方式
+	Reservation   Reservation    `json:"reservation"`   // 保留信息
+	AutoRenew     AutoRenewModel `json:"autoRenew"`     // 自动续费
 }
 
 type CreateReplicaArgs struct {

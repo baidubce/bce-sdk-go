@@ -449,3 +449,27 @@ type TsdbMetricAllDataQueryRequest struct {
 	StartTime   string        `json:"startTime,omitempty"`
 	EndTime     string        `json:"endTime,omitempty"`
 }
+
+type TsdbDimensionTopQuery struct {
+	UserID     string            `json:"userId,omitempty"`
+	Region     string            `json:"region,omitempty"`
+	Scope      string            `json:"scope,omitempty"`
+	Dimensions map[string]string `json:"dimensions,omitempty"`
+	MetricName string            `json:"metricName,omitempty"`
+	Statistics string            `json:"statistics,omitempty"`
+	StartTime  string            `json:"startTime,omitempty"`
+	EndTime    string            `json:"endTime,omitempty"`
+	Order      string            `json:"order,omitempty"`
+	TopNum     int               `json:"topNum,omitempty"`
+	Labels     []string          `json:"labels,omitempty"`
+}
+
+type TsdbDimensionTopResult struct {
+	RequestId string    `json:"requestId,omitempty"`
+	TopDatas  []TopData `json:"topDatas,omitempty"`
+}
+
+type TopData struct {
+	Order      int         `json:"order,omitempty"`
+	Dimensions []Dimension `json:"dimensions,omitempty"`
+}

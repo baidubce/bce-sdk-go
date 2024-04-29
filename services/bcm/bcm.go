@@ -65,6 +65,7 @@ const (
 	MetricsByPartialDimensionsPath  = "/csm/api/v2/userId/%s/services/%s/data/metricData/PartialDimension"
 	MultiMetricAllDataPath          = "/csm/api/v2/data/metricAllData"
 	MultiMetricAllDataBatchPath     = "/csm/api/v2/data/metricAllData/batch"
+	GetMetricDimensionTopPath       = "/csm/api/v2/dimensions/top"
 
 	Average     = "average"
 	Maximum     = "maximum"
@@ -4191,6 +4192,47 @@ func (c *Client) BatchGetMetricsAllDataV2(req *model.TsdbMetricAllDataQueryReque
 	result := &model.MultiDimensionalMetricsResponse{}
 	err := bce.NewRequestBuilder(c).
 		WithURL(MultiMetricAllDataBatchPath).
+		WithBody(req).
+		WithMethod(http.POST).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+func (c *Client) GetMetricDimensionTop(req *model.TsdbDimensionTopQuery) (*model.TsdbDimensionTopResult, error) {
+	if req == nil {
+		return nil, errors.New("req should not be empty")
+	}
+	if len(req.UserID) <= 0 {
+		return nil, errors.New("userId should not be empty")
+	}
+	if len(req.Scope) <= 0 {
+		return nil, errors.New("scope should not be empty")
+	}
+	if len(req.MetricName) <= 0 {
+		return nil, errors.New("metricName should not be empty")
+	}
+	if len(req.Dimensions) <= 0 {
+		return nil, errors.New("dimensions should not be empty")
+	}
+	if len(req.Labels) <= 0 {
+		return nil, errors.New("labels should not be empty")
+	}
+	if len(req.StartTime) <= 0 {
+		return nil, errors.New("startTime should not be empty")
+	}
+	if len(req.EndTime) <= 0 {
+		return nil, errors.New("endTime should not be empty")
+	}
+	if len(req.Order) == 0 {
+		req.Order = "top"
+	}
+	if req.TopNum <= 0 {
+		req.TopNum = 10
+	}
+	result := &model.TsdbDimensionTopResult{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(GetMetricDimensionTopPath).
 		WithBody(req).
 		WithMethod(http.POST).
 		WithResult(result).

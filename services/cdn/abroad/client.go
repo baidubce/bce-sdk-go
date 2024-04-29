@@ -459,3 +459,27 @@ func (cli *Client) SetHTTPSConfigWithOptions(domain string, enabled bool, option
 func (cli *Client) SetHTTPSConfig(domain string, httpsConfig *api.HTTPSConfig) error {
 	return api.SetHTTPSConfig(cli, domain, httpsConfig)
 }
+
+// SetTags - bind ABROAD-CDN domain with the specified tags.
+//
+// PARAMS:
+//   - domain: the specified domain
+//   - tags: identifying ABROAD-CDN domain as something
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (cli *Client) SetTags(domain string, tags []model.TagModel) error {
+	return api.SetTags(cli, domain, tags)
+}
+
+// GetTags - get tags the ABROAD-CDN domain bind with.
+//
+// PARAMS:
+//   - domain: the specified domain
+//
+// RETURNS:
+//   - []Tag: tags the ABROAD-CDN domain bind with
+//   - error: nil if success otherwise the specific error
+func (cli *Client) GetTags(domain string) ([]model.TagModel, error) {
+	return api.GetTags(cli, domain)
+}

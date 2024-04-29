@@ -94,6 +94,56 @@ func TestCreateReplica(t *testing.T) {
 	ExpectEqual(t.Errorf, true, len(result.DbInstanceSimpleModels) > 0)
 }
 
+func TestCreateReplicaPrepaid(t *testing.T) {
+	vpcId := "vpc-e5kk1bvt1t11"
+	subnetId := "sbn-urdqd0y5sf11"
+	zoneName := "cn-gz-f"
+	resGroupId := "RESG-XiqksQtNE11"
+	args := &CreateReplicaArgs{
+		StorageEngine:            "WiredTiger",
+		DbInstanceType:           "replica",
+		DbInstanceCpuCount:       1,
+		DbInstanceMemoryCapacity: 2,
+		ReadonlyNodeNum:          0,
+		DbInstanceStorage:        5,
+		VotingMemberNum:          1,
+		EngineVersion:            "3.6",
+		DbInstanceName:           "test_name",
+		ResGroupId:               resGroupId,
+		VpcId:                    vpcId,
+		Subnets: []SubnetMap{
+			{
+				ZoneName: zoneName,
+				SubnetId: subnetId,
+			},
+		},
+		Billing: BillingModel{
+			Reservation: Reservation{
+				ReservationLength:   1,
+				ReservationTimeUnit: "Month",
+			},
+			AutoRenew: AutoRenewModel{
+				AutoRenewLength:   2,
+				AutoRenewTimeUnit: "Month",
+			},
+			PaymentTiming: "Prepaid",
+		},
+		Tags: []TagModel{
+			{
+				TagKey:   "123",
+				TagValue: "13",
+			},
+			{
+				TagKey:   "test",
+				TagValue: "test",
+			},
+		},
+	}
+	result, err := CLIENT.CreateReplica(args)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, true, len(result.DbInstanceSimpleModels) > 0)
+}
+
 func TestReplicaResize(t *testing.T) {
 	instanceId := "m-cvbCWv"
 	args := ReplicaResizeArgs{

@@ -8,7 +8,7 @@ CDN服务
 
 ## 确认Endpoint
 
-目前使用CDN服务时，CDN的Endpoint都统一使用`https://cdn.baidubce.com`，这也是默认值。
+目前使用CDN服务时，CDN的 Endpoint 统一使用`https://cdn.baidubce.com`，这也是默认值。
 
 ## 获取密钥
 
@@ -217,7 +217,7 @@ fmt.Printf("err:%+v\n", err)
 
 ## 域名配置接口
 
-### 查询加速域名详情 GetDefaultClient
+### 查询加速域名详情 GetDomainConfig
 
 > 查询某个特定域名的全部配置信息
 

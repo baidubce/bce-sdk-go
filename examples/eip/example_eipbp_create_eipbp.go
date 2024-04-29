@@ -17,6 +17,7 @@ package eipexamples
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/baidubce/bce-sdk-go/model"
 
 	EIP "github.com/baidubce/bce-sdk-go/services/eip"
 )
@@ -31,6 +32,13 @@ func CreateEipBp() {
 		BandwidthInMbps: 200,                    // EipBp的带宽，单位Mbps，该值与所绑定资源的带宽总和不大于200Mbps
 		Type:            "BandwidthPackage",     // EipBp的类型
 		AutoReleaseTime: "2023-12-13T20:38:43Z", // EipBp的自动释放时间，格式为UTC时间，如不填写则随所绑定资源的到期一并释放
+		Tags: []model.TagModel{ //标签信息
+			{
+				TagKey:   "tagK",
+				TagValue: "tagV",
+			},
+		},
+		ResourceGroupId: "RESG-Xnuw3joXLcy", //资源组ID
 	}
 	createEipBpResult, err := eipClient.CreateEipBp(createEipBpArgs)
 	if err != nil {

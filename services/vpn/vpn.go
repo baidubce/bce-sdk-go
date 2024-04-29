@@ -53,7 +53,7 @@ func (c *Client) CreateVpnGateway(args *CreateVpnGatewayArgs) (*CreateVpnGateway
 // PARAMS:
 //    - args: the arguments to list vpn gateways
 // RETURNS:
-//    - *ListVpnGatewayResult: the result of vpn gateway list
+//    - *ListVpnGatewayResult: the result of vpn gateway list, excluding tags.
 //    - error: nil if success otherwise the specific error
 
 func (c *Client) ListVpnGateway(args *ListVpnGatewayArgs) (*ListVpnGatewayResult, error) {

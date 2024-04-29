@@ -3,6 +3,7 @@ package vpn
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/baidubce/bce-sdk-go/model"
 	"github.com/baidubce/bce-sdk-go/util"
 	"github.com/baidubce/bce-sdk-go/util/log"
 	"os"
@@ -82,15 +83,22 @@ func TestClient_CreateVpnGateway(t *testing.T) {
 	args := &CreateVpnGatewayArgs{
 		VpnName:     "TestSDK-VPN",
 		Description: "vpn test",
-		VpcId:       "vpc-2pa2x0bjt26i",
+		VpcId:       "vpc-d2uzry1n7h4k",
 		Billing: &Billing{
-			PaymentTiming: PAYMENT_TIMING_PREPAID,
+			PaymentTiming: PAYMENT_TIMING_POSTPAID,
 			Reservation: &Reservation{
 				ReservationLength:   1,
 				ReservationTimeUnit: "month",
 			},
 		},
-		ClientToken: getClientToken(),
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagKey",
+				TagValue: "tagValue",
+			},
+		},
+		ResourceGroupId: "RESG-UoMgbkuLNjj",
+		ClientToken:     getClientToken(),
 	}
 	result, err := VPN_CLIENT.CreateVpnGateway(args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -101,7 +109,7 @@ func TestClient_CreateVpnGateway(t *testing.T) {
 func TestClient_ListVpnGateway(t *testing.T) {
 	args := &ListVpnGatewayArgs{
 		MaxKeys: 1000,
-		VpcId:   "vpc-2pa2x0bjt26i",
+		VpcId:   "vpc-d2uzry1n7h4k",
 	}
 	res, err := VPN_CLIENT.ListVpnGateway(args)
 	ExpectEqual(t.Errorf, nil, err)
@@ -134,11 +142,17 @@ func TestClient_UpdateVpnGateway(t *testing.T) {
 }
 
 func TestClient_GetVpnGatewayDetail(t *testing.T) {
-	result, err := VPN_CLIENT.GetVpnGatewayDetail("vpn-shr6dtz1jjbk")
+	result, err := VPN_CLIENT.GetVpnGatewayDetail("vpn-81b7ead9471c")
 	ExpectEqual(t.Errorf, nil, err)
+	tags := []model.TagModel{
+		{
+			TagKey:   "tagKey",
+			TagValue: "tagValue",
+		},
+	}
 	r, err := json.Marshal(result)
 	fmt.Println(string(r))
-
+	ExpectEqual(t.Errorf, tags, result.Tags)
 }
 
 func TestClient_RenewVpnGateway(t *testing.T) {
@@ -165,8 +179,8 @@ func TestClient_ListVpnConn(t *testing.T) {
 }
 func TestClient_UpdateVpnConn(t *testing.T) {
 	args := &UpdateVpnConnArgs{
-		vpnConnId: "vpnconn-mpfwkca8zsuv",
-		updateVpnconn: &CreateVpnConnArgs{
+		VpnConnId: "vpnconn-mpfwkca8zsuv",
+		UpdateVpnconn: &CreateVpnConnArgs{
 			VpnId:         "vpn-shr6dtz1jjbk",
 			VpnConnName:   "vpnconntest",
 			LocalIp:       "0.1.2.3",

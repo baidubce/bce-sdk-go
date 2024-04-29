@@ -3243,3 +3243,27 @@ func TestClient_BatchGetMetricsAllDataV2(t *testing.T) {
 	content, _ := json.Marshal(response)
 	fmt.Println(string(content))
 }
+
+func TestGetMetricDimensionTop(t *testing.T) {
+	req := &model.TsdbDimensionTopQuery{
+		UserID: bcmConf.UserId,
+		Region: "bj",
+		Scope:  "BCE_PFS",
+		Dimensions: map[string]string{
+			"InstanceId": "pfs-1*****7",
+		},
+		MetricName: "WriteIO",
+		Statistics: "average",
+		StartTime:  "2024-04-27T07:10:01Z",
+		EndTime:    "2024-04-27T07:20:01Z",
+		Labels: []string{
+			"FilesetId",
+		},
+	}
+	response, err := bcmClient.GetMetricDimensionTop(req)
+	if err != nil {
+		t.Errorf("Get metric dimensions top error with %v\n", err)
+	}
+	content, _ := json.Marshal(response)
+	fmt.Println(string(content))
+}

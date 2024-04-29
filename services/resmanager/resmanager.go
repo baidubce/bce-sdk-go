@@ -17,6 +17,7 @@ package resmanager
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
@@ -34,7 +35,7 @@ func (c *Client) BindResourceToGroup(args *BindResourceToGroupArgs) (*BindResour
 	result := &BindResourceResult{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
-		WithURL(getAddToGroupUri()).
+		WithURL(getBaseResourceUri()).
 		WithQueryParamFilter("force", "false").
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
@@ -75,7 +76,7 @@ func (c *Client) RemoveResourceFromGroup(args *BindResourceToGroupArgs) error {
 	}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
-		WithURL(getAddToGroupUri()).
+		WithURL(getBaseResourceUri()).
 		WithQueryParamFilter("force", "false").
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
@@ -112,6 +113,28 @@ func (c *Client) GetResGroupBatch(args *ResGroupDetailRequest) (*ResGroupDetailR
 		WithURL(getGroupBatchUri()).
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+func (c *Client) getGroupRes(groupId, id, types, regions, name string, isCurrent bool, tags string, pageNo, pageSize int) (*ResourceGroupsPageInfo, error) {
+	result := &ResourceGroupsPageInfo{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getBaseResourceUri()).
+		WithQueryParam("queryGroupResource", "").
+		WithQueryParamFilter("groupId", groupId).
+		WithQueryParamFilter("id", id).
+		WithQueryParamFilter("types", types).
+		WithQueryParamFilter("regions", regions).
+		WithQueryParamFilter("name", name).
+		WithQueryParamFilter("isCurrent", strconv.FormatBool(isCurrent)).
+		WithQueryParamFilter("tags", tags).
+		WithQueryParamFilter("pageNo", strconv.Itoa(pageNo)).
+		WithQueryParamFilter("pageSize", strconv.Itoa(pageSize)).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithResult(result).
 		Do()
 

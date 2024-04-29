@@ -16,6 +16,8 @@
 
 package vpn
 
+import "github.com/baidubce/bce-sdk-go/model"
+
 type (
 	PaymentTimingType string
 	PeerConnRoleType  string
@@ -34,12 +36,14 @@ const (
 
 // CreateVpnGatewayArgs defines the structure of the input parameters for the CreateVpnGateway api
 type CreateVpnGatewayArgs struct {
-	ClientToken string   `json:"-"`
-	VpnName     string   `json:"vpnName"`
-	VpcId       string   `json:"vpcId"`
-	Description string   `json:"description,omitempty"`
-	Eip         string   `json:"eip,omitempty"`
-	Billing     *Billing `json:"billing"`
+	ClientToken     string           `json:"-"`
+	VpnName         string           `json:"vpnName"`
+	VpcId           string           `json:"vpcId"`
+	Description     string           `json:"description,omitempty"`
+	Eip             string           `json:"eip,omitempty"`
+	Billing         *Billing         `json:"billing"`
+	ResourceGroupId string           `json:"resourceGroupId,omitempty"`
+	Tags            []model.TagModel `json:"tags,omitempty"`
 }
 
 type Reservation struct {
@@ -76,17 +80,18 @@ type ListVpnGatewayResult struct {
 
 // VPN is the result for getVpnDetail api.
 type VPN struct {
-	Status          VpnStatusType `json:"status"`
-	Eip             string        `json:"eip"`
-	VpnId           string        `json:"vpnId"`
-	VpcId           string        `json:"vpcId"`
-	Description     string        `json:"description"`
-	ExpiredTime     string        `json:"expiredTime"`
-	ProductType     string        `json:"paymentTiming"`
-	VpnConnNum      int           `json:"vpnConnNum"`
-	BandwidthInMbps int           `json:"bandwidthInMbps"`
-	VpnConns        []VpnConn     `json:"vpnConns"`
-	Name            string        `json:"vpnName"`
+	Status          VpnStatusType    `json:"status"`
+	Eip             string           `json:"eip"`
+	VpnId           string           `json:"vpnId"`
+	VpcId           string           `json:"vpcId"`
+	Description     string           `json:"description"`
+	ExpiredTime     string           `json:"expiredTime"`
+	ProductType     string           `json:"paymentTiming"`
+	VpnConnNum      int              `json:"vpnConnNum"`
+	BandwidthInMbps int              `json:"bandwidthInMbps"`
+	VpnConns        []VpnConn        `json:"vpnConns"`
+	Name            string           `json:"vpnName"`
+	Tags            []model.TagModel `json:"tags"`
 }
 
 // UpdateVpnGatewayArgs defines the structure of the input parameters for the UpdateVpnGateway api

@@ -5,18 +5,20 @@ import (
 	"fmt"
 
 	"github.com/baidubce/bce-sdk-go/bce"
+	"github.com/baidubce/bce-sdk-go/model"
 )
 
 // DomainConfig defined a struct for total configurations.
 type DomainConfig struct {
-	Domain       string       `json:"domain"`
-	Origin       []OriginPeer `json:"originConfig"`
-	CacheTTL     []CacheTTL   `json:"cacheTtl"`
-	CacheFullUrl bool         `json:"cacheFullUrl"`
-	OriginHost   *string      `json:"originHost"`
-	RefererACL   *RefererACL  `json:"refererACL"`
-	IpACL        *IpACL       `json:"ipACL"`
-	HTTPSConfig  *HTTPSConfig `json:"https"`
+	Domain       string           `json:"domain"`
+	Origin       []OriginPeer     `json:"originConfig"`
+	CacheTTL     []CacheTTL       `json:"cacheTtl"`
+	CacheFullUrl bool             `json:"cacheFullUrl"`
+	OriginHost   *string          `json:"originHost"`
+	RefererACL   *RefererACL      `json:"refererACL"`
+	IpACL        *IpACL           `json:"ipACL"`
+	HTTPSConfig  *HTTPSConfig     `json:"https"`
+	Tags         []model.TagModel `json:"tags"`
 }
 
 // OriginPeer defined a struct for Origin server.
@@ -59,11 +61,12 @@ type HTTPSConfig struct {
 // For details, please refer https://cloud.baidu.com/doc/CDN-ABROAD/s/9kbsye6k8
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
 // RETURNS:
-//     - *DomainConfig: the configuration about the specified domain
-//     - error: nil if success otherwise the specific error
+//   - *DomainConfig: the configuration about the specified domain
+//   - error: nil if success otherwise the specific error
 func GetDomainConfig(cli bce.Client, domain string) (*DomainConfig, error) {
 	urlPath := fmt.Sprintf("/v2/abroad/domain/%s/config", domain)
 	var config DomainConfig
@@ -79,11 +82,12 @@ func GetDomainConfig(cli bce.Client, domain string) (*DomainConfig, error) {
 // For details, please refer https://cloud.baidu.com/doc/CDN-ABROAD/s/Gkbstcgaa
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - origins: the origin servers
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - origins: the origin servers
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetDomainOrigin(cli bce.Client, domain string, origins []OriginPeer) error {
 	urlPath := fmt.Sprintf("/v2/abroad/domain/%s/config", domain)
 	params := map[string]string{
@@ -103,11 +107,12 @@ func SetDomainOrigin(cli bce.Client, domain string, origins []OriginPeer) error 
 // For details, please refer https://cloud.baidu.com/doc/CDN-ABROAD/s/Zkbstm0vg
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - cacheTTLs: the cache setting list
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - cacheTTLs: the cache setting list
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetCacheTTL(cli bce.Client, domain string, cacheTTLs []CacheTTL) error {
 	urlPath := fmt.Sprintf("/v2/abroad/domain/%s/config", domain)
 	params := map[string]string{
@@ -131,11 +136,12 @@ func SetCacheTTL(cli bce.Client, domain string, cacheTTLs []CacheTTL) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN-ABROAD/s/nkbsxko6t
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - cacheFullUrl: the query part in URL being added to the cache key or not
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - cacheFullUrl: the query part in URL being added to the cache key or not
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetCacheFullUrl(cli bce.Client, domain string, cacheFullUrl bool) error {
 	urlPath := fmt.Sprintf("/v2/abroad/domain/%s/config", domain)
 	params := map[string]string{
@@ -158,11 +164,12 @@ func SetCacheFullUrl(cli bce.Client, domain string, cacheFullUrl bool) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN-ABROAD/s/Pkbsxw8xw
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - originHost: specified HOST header for origin server
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - originHost: specified HOST header for origin server
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetHostToOrigin(cli bce.Client, domain string, originHost string) error {
 	urlPath := fmt.Sprintf("/v2/abroad/domain/%s/config", domain)
 	params := map[string]string{
@@ -185,11 +192,12 @@ func SetHostToOrigin(cli bce.Client, domain string, originHost string) error {
 // For details, please refer https://cloud.baidu.com/doc/CDN-ABROAD/s/ekbsxow69
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - refererACL: referer of whitelist or blacklist
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - refererACL: referer of whitelist or blacklist
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetRefererACL(cli bce.Client, domain string, refererACL *RefererACL) error {
 	urlPath := fmt.Sprintf("/v2/abroad/domain/%s/config", domain)
 	params := map[string]string{
@@ -212,11 +220,12 @@ func SetRefererACL(cli bce.Client, domain string, refererACL *RefererACL) error 
 // For details, please refer https://cloud.baidu.com/doc/CDN-ABROAD/s/2kbsxt693
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - ipACL: IP whitelist or blacklist
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - ipACL: IP whitelist or blacklist
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetIpACL(cli bce.Client, domain string, ipACL *IpACL) error {
 	urlPath := fmt.Sprintf("/v2/abroad/domain/%s/config", domain)
 	params := map[string]string{
@@ -286,15 +295,16 @@ type httpsConfig struct {
 // For details, please refer https://cloud.baidu.com/doc/CDN-ABROAD/s/ckb0fx9ea
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - enabled: true means enable HTTPS, otherwise disable.
-//     - options: more operations to configure HTTPS, the valid options are:
-//       1. HTTPSConfigCertID
-//       2. HTTPSConfigRedirectWith301
-//       3. HTTPSConfigEnableH2
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - enabled: true means enable HTTPS, otherwise disable.
+//   - options: more operations to configure HTTPS, the valid options are:
+//     1. HTTPSConfigCertID
+//     2. HTTPSConfigRedirectWith301
+//     3. HTTPSConfigEnableH2
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetHTTPSConfigWithOptions(cli bce.Client, domain string, enabled bool, options ...HTTPSConfigOption) error {
 	urlPath := fmt.Sprintf("/v2/abroad/domain/%s/config", domain)
 	params := map[string]string{
@@ -341,11 +351,12 @@ func SetHTTPSConfigWithOptions(cli bce.Client, domain string, enabled bool, opti
 // For details, please refer https://cloud.baidu.com/doc/CDN-ABROAD/s/ckb0fx9ea
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - domain: the specified domain
-//     - httpsConfig: HTTPS configurations.
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - httpsConfig: HTTPS configurations.
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SetHTTPSConfig(cli bce.Client, domain string, httpsConfig *HTTPSConfig) error {
 	if httpsConfig == nil {
 		return errors.New("HTTPS config is empty")
@@ -362,4 +373,58 @@ func SetHTTPSConfig(cli bce.Client, domain string, httpsConfig *HTTPSConfig) err
 		options = append(options, HTTPSConfigEnableH2())
 	}
 	return SetHTTPSConfigWithOptions(cli, domain, httpsConfig.Enabled, options...)
+}
+
+// SetTags - bind ABROAD-CDN domain with the specified tags.
+//
+// PARAMS:
+//   - cli: the client agent can execute sending request
+//   - domain: the specified domain
+//   - tags: identifying CDN domain as something
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func SetTags(cli bce.Client, domain string, tags []model.TagModel) error {
+	urlPath := fmt.Sprintf("/v2/abroad/domain/%s/config", domain)
+	params := map[string]string{
+		"tags": "",
+	}
+	err := httpRequest(cli, "PUT", urlPath, params, &struct {
+		Tags []model.TagModel `json:"tags"`
+	}{
+		Tags: tags,
+	}, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetTags - get tags the ABROAD-CDN domain bind with.
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
+// RETURNS:
+//   - []Tag: tags the ABROAD-CDN domain bind with
+//   - error: nil if success otherwise the specific error
+func GetTags(cli bce.Client, domain string) ([]model.TagModel, error) {
+	urlPath := fmt.Sprintf("/v2/abroad/domain/%s/config", domain)
+	params := map[string]string{
+		"tags": "",
+	}
+
+	respObj := struct {
+		Tags []model.TagModel `json:"tags"`
+	}{}
+
+	err := httpRequest(cli, "GET", urlPath, params, nil, &respObj)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return respObj.Tags, nil
 }

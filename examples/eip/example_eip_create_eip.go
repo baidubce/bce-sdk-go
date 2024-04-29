@@ -16,6 +16,7 @@ package eipexamples
 
 import (
 	"fmt"
+	"github.com/baidubce/bce-sdk-go/model"
 
 	EIP "github.com/baidubce/bce-sdk-go/services/eip"
 )
@@ -31,6 +32,13 @@ func CreateEip() {
 		Name:            "test-eip", //EIP名称
 		BandWidthInMbps: 10,         //带宽，单位Mbps
 		Billing:         billing,    //订单信息
+		Tags: []model.TagModel{ //标签信息
+			{
+				TagKey:   "tagK",
+				TagValue: "tagV",
+			},
+		},
+		ResourceGroupId: "RESG-Xnuw3joXLcy", //资源组ID
 	}
 	resp, err := eipClient.CreateEip(args)
 

@@ -34,7 +34,8 @@ type CreateEipArgs struct {
 	Name              string           `json:"name,omitempty"`
 	BandWidthInMbps   int              `json:"bandwidthInMbps"`
 	Billing           *Billing         `json:"billing"`
-	Tags              []model.TagModel `json:"tags"`
+	Tags              []model.TagModel `json:"tags,omitempty"`
+	ResourceGroupId   string           `json:"resourceGroupId,omitempty"`
 	AutoRenewTimeUnit string           `json:"autoRenewTimeUnit,omitempty"`
 	AutoRenewTime     int              `json:"autoRenewTime,omitempty"`
 	RouteType         string           `json:"routeType,omitempty"`
@@ -46,7 +47,8 @@ type BatchCreateEipArgs struct {
 	Name              string           `json:"name,omitempty"`
 	BandWidthInMbps   int              `json:"bandwidthInMbps"`
 	Billing           *Billing         `json:"billing"`
-	Tags              []model.TagModel `json:"tags"`
+	Tags              []model.TagModel `json:"tags,omitempty"`
+	ResourceGroupId   string           `json:"resourceGroupId,omitempty"`
 	AutoRenewTimeUnit string           `json:"autoRenewTimeUnit,omitempty"`
 	AutoRenewTime     int              `json:"autoRenewTime,omitempty"`
 	RouteType         string           `json:"routeType,omitempty"`
@@ -232,7 +234,8 @@ type CreateEipGroupArgs struct {
 	EipCount        int              `json:"eipCount"`
 	BandWidthInMbps int              `json:"bandwidthInMbps"`
 	Billing         *Billing         `json:"billing"`
-	Tags            []model.TagModel `json:"tags"`
+	Tags            []model.TagModel `json:"tags,omitempty"`
+	ResourceGroupId string           `json:"resourceGroupId,omitempty"`
 	RouteType       string           `json:"routeType,omitempty"`
 	Idc             string           `json:"idc,omitempty"`
 	Continuous      bool             `json:"continuous,omitempty"`
@@ -280,22 +283,23 @@ type ListEipGroupResult struct {
 }
 
 type EipGroupModel struct {
-	Name                      string     `json:"name"`
-	Status                    string     `json:"status"`
-	Id                        string     `json:"id"`
-	BandWidthInMbps           int        `json:"bandwidthInMbps"`
-	DefaultDomesticBandwidth  int        `json:"defaultDomesticBandwidth"`
-	BwShortId                 string     `json:"bwShortId"`
-	BwBandwidthInMbps         int        `json:"bwBandwidthInMbps"`
-	DomesticBwShortId         string     `json:"domesticBwShortId"`
-	DomesticBwBandwidthInMbps int        `json:"domesticBwBandwidthInMbps"`
-	PaymentTiming             string     `json:"paymentTiming"`
-	BillingMethod             string     `json:"billingMethod"`
-	CreateTime                string     `json:"createTime"`
-	ExpireTime                string     `json:"expireTime"`
-	Region                    string     `json:"region"`
-	RouteType                 string     `json:"routeType"`
-	Eips                      []EipModel `json:"eips"`
+	Name                      string           `json:"name"`
+	Status                    string           `json:"status"`
+	Id                        string           `json:"id"`
+	BandWidthInMbps           int              `json:"bandwidthInMbps"`
+	DefaultDomesticBandwidth  int              `json:"defaultDomesticBandwidth"`
+	BwShortId                 string           `json:"bwShortId"`
+	BwBandwidthInMbps         int              `json:"bwBandwidthInMbps"`
+	DomesticBwShortId         string           `json:"domesticBwShortId"`
+	DomesticBwBandwidthInMbps int              `json:"domesticBwBandwidthInMbps"`
+	PaymentTiming             string           `json:"paymentTiming"`
+	BillingMethod             string           `json:"billingMethod"`
+	CreateTime                string           `json:"createTime"`
+	ExpireTime                string           `json:"expireTime"`
+	Region                    string           `json:"region"`
+	RouteType                 string           `json:"routeType"`
+	Eips                      []EipModel       `json:"eips"`
+	Tags                      []model.TagModel `json:"tags"`
 }
 
 type EipGroupMoveOutArgs struct {
@@ -320,13 +324,15 @@ type EipGroupPurchaseReservedArgs struct {
 }
 
 type CreateEipBpArgs struct {
-	Name            string `json:"name"`
-	Eip             string `json:"eip"`
-	EipGroupId      string `json:"eipGroupId"`
-	BandwidthInMbps int    `json:"bandwidthInMbps"`
-	Type            string `json:"type"`
-	AutoReleaseTime string `json:"autoReleaseTime"`
-	ClientToken     string `json:"-"`
+	Name            string           `json:"name"`
+	Eip             string           `json:"eip"`
+	EipGroupId      string           `json:"eipGroupId"`
+	BandwidthInMbps int              `json:"bandwidthInMbps"`
+	Type            string           `json:"type"`
+	AutoReleaseTime string           `json:"autoReleaseTime"`
+	Tags            []model.TagModel `json:"tags,omitempty"`
+	ResourceGroupId string           `json:"resourceGroupId,omitempty"`
+	ClientToken     string           `json:"-"`
 }
 
 type CreateEipBpResult struct {
@@ -339,17 +345,18 @@ type ResizeEipBpArgs struct {
 }
 
 type EipBpDetail struct {
-	Name                    string   `json:"name"`
-	Id                      string   `json:"id"`
-	BindType                string   `json:"bindType"`
-	BandwidthInMbps         int      `json:"bandwidthInMbps"`
-	InstanceId              string   `json:"instanceId"`
-	Eips                    []string `json:"eips"`
-	InstanceBandwidthInMbps int      `json:"instanceBandwidthInMbps"`
-	CreateTime              string   `json:"createTime"`
-	AutoReleaseTime         string   `json:"autoReleaseTime"`
-	Type                    string   `json:"type"`
-	Region                  string   `json:"region"`
+	Name                    string           `json:"name"`
+	Id                      string           `json:"id"`
+	BindType                string           `json:"bindType"`
+	BandwidthInMbps         int              `json:"bandwidthInMbps"`
+	InstanceId              string           `json:"instanceId"`
+	Eips                    []string         `json:"eips"`
+	InstanceBandwidthInMbps int              `json:"instanceBandwidthInMbps"`
+	CreateTime              string           `json:"createTime"`
+	AutoReleaseTime         string           `json:"autoReleaseTime"`
+	Type                    string           `json:"type"`
+	Region                  string           `json:"region"`
+	Tags                    []model.TagModel `json:"tags"`
 }
 
 type ListEipBpArgs struct {

@@ -428,3 +428,23 @@ func TestClient_DeleteDomain(t *testing.T) {
 	}
 	t.Logf("DeleteDomain for %s success", testDomain)
 }
+
+func TestSetTags(t *testing.T) {
+	err := testCli.SetTags(testDomain, []model.TagModel{
+		{
+			TagKey:   "abroad",
+			TagValue: "test",
+		},
+	})
+	if err != nil {
+		t.Fatalf("SetTags for %s failed: %s", testDomain, err)
+	}
+}
+
+func TestGetTags(t *testing.T) {
+	tags, err := testCli.GetTags(testDomain)
+	if err != nil {
+		t.Fatalf("GetTags for %s failed: %s", testDomain, err)
+	}
+	t.Logf("tags: %+v", tags)
+}

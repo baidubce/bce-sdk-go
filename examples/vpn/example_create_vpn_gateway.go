@@ -2,6 +2,7 @@ package vpnexamples
 
 import (
 	"fmt"
+	"github.com/baidubce/bce-sdk-go/model"
 
 	"github.com/baidubce/bce-sdk-go/services/vpn"
 )
@@ -22,7 +23,14 @@ func CreateVpnGateway() {
 				ReservationTimeUnit: "month",
 			},
 		},
-		ClientToken: "Your ClientToken", // client token
+		Tags: []model.TagModel{ // tags
+			{
+				TagKey:   "tagKey",
+				TagValue: "tagValue",
+			},
+		},
+		ResourceGroupId: "RESG-UoMgbkuLNjj", // resource groupId
+		ClientToken:     "Your ClientToken", // client token
 	}
 	result, err := client.CreateVpnGateway(args)
 	if err != nil {

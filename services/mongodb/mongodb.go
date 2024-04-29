@@ -128,6 +128,8 @@ func (c *Client) CreateReplica(args *CreateReplicaArgs) (*CreateResult, error) {
 	if args.Billing.PaymentTiming == S_POSTPAID {
 		args.Billing.Reservation.ReservationLength = 0
 		args.Billing.Reservation.ReservationTimeUnit = "Month"
+		args.Billing.AutoRenew.AutoRenewLength = 0
+		args.Billing.AutoRenew.AutoRenewTimeUnit = "Month"
 	}
 
 	if len(args.AccountPassword) > 0 {

@@ -60,6 +60,11 @@ type GroupInfo struct {
 	DeleteTime string `json:"deleteTime"`
 }
 
+type ResourceGroupsInfo struct {
+	ResourceInfo
+	GroupIds []string `json:"groupIds"`
+}
+
 type BindResourceToGroupArgs struct {
 	Bindings []Binding `json:"bindings"`
 }
@@ -134,4 +139,9 @@ type ResourceGroupsDetailFull struct {
 
 type ResGroupDetailResponse struct {
 	ResourceGroupsDetailFull []ResourceGroupsDetailFull `json:"resGroups"`
+}
+
+type ResourceGroupsPageInfo struct {
+	ResourceGroupsInfo []ResourceGroupsInfo `json:"infos"`
+	Total              int                  `json:"total"`
 }

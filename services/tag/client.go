@@ -12,19 +12,19 @@
  * and limitations under the License.
  */
 
-// client.go - define the client for resmanager service
+// client.go - define the client for tag service
 
-package resmanager
+package tag
 
 import "github.com/baidubce/bce-sdk-go/bce"
 
 const (
-	URI_PREFIX                = bce.URI_PREFIX
-	DEFAULT_ENDPOINT          = "resourcemanager.baidubce.com"
-	REQUEST_BASE_RESOURCE     = "v1/res/resource"
-	REQUEST_CHANGE_GROUP      = REQUEST_BASE_RESOURCE + "/move"
-	REQUEST_QUERY_GROUP       = "v1/res/group"
-	REQUEST_QUERY_GROUP_BATCH = REQUEST_BASE_RESOURCE + "/batch/queryGroupRes"
+	URI_PREFIX          = bce.URI_PREFIX
+	DEFAULT_ENDPOINT    = "tag.baidubce.com"
+	URI_TAG_PREFIX      = "v1/tag"
+	URI_RESOURCE_PREFIX = "v1/resource"
+	URI_QUERY_FULL_LIST = URI_TAG_PREFIX + "/queryFullList"
+	URI_TAG_RESOURCES   = URI_TAG_PREFIX + "/tagResources"
 )
 
 // Client of Group service is a kind of BceClient, so derived from BceClient
@@ -43,18 +43,17 @@ func NewClient(ak, sk, endPoint string) (*Client, error) {
 	return &Client{client}, nil
 }
 
-func getChangeGroupUri() string {
-	return URI_PREFIX + REQUEST_CHANGE_GROUP
+func queryFullListUri() string {
+	return URI_PREFIX + URI_QUERY_FULL_LIST
 }
 
-func getQueryGroupUri() string {
-	return URI_PREFIX + REQUEST_QUERY_GROUP
+func tagsResourcesUri() string {
+	return URI_PREFIX + URI_TAG_RESOURCES
 }
 
-func getGroupBatchUri() string {
-	return URI_PREFIX + REQUEST_QUERY_GROUP_BATCH
+func tagBaseUri() string {
+	return URI_PREFIX + URI_TAG_PREFIX
 }
-
-func getBaseResourceUri() string {
-	return URI_PREFIX + REQUEST_BASE_RESOURCE
+func resourceBaseUri() string {
+	return URI_PREFIX + URI_RESOURCE_PREFIX
 }
