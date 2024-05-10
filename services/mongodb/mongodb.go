@@ -630,6 +630,27 @@ func (c *Client) MigrateAzone(instanceId string, args *MigrateAzoneArgs) error {
 		Do()
 }
 
+// RefundInstance - Refund a specified instance
+//
+// PARAMS:
+//   - instanceId: the specific instanceId
+//   - args: the arguments to Refund instance
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) RefundInstance(instanceId string, args *RefundModel) (*OrderUuidResult, error) {
+	result := &OrderUuidResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getMongodbUriWithInstanceId(instanceId)).
+		WithQueryParam("refund", "").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
 // InstanceAssignTags - update tags of instance / 全量更新实例绑定的标签，即覆盖更新
 // PARAMS:
 //   - instanceId: the specific mongodb Instance's ID

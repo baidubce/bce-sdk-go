@@ -15,6 +15,7 @@ func CreateVpc() {
 		Name:        "TestSDK-VPC",    // vpc名称
 		Description: "vpc test",       // vpc描述
 		Cidr:        "192.168.0.0/16", // vpc网段
+		EnableIpv6:  true,             // 是否分配Ipv6网段
 		Tags: []model.TagModel{ // vpc标签
 			{
 				TagKey:   "tagK",

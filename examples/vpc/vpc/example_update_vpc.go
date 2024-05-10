@@ -17,6 +17,10 @@ func UpdateVpc() {
 		ClientToken: clientToken,
 		Name:        "test_vpc", // 更新vpc名称
 		Description: "",         // 更新vpc描述
+		EnableIpv6:  true,       // 更新vpc是否开启ipv6功能
+		SecondaryCidr: []string{ // 更新vpc辅助网段
+			"172.16.0.0/16",
+		},
 	}
 	err := client.UpdateVPC(vpcID, updateVpcArgs) // 更新vpc
 

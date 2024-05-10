@@ -127,6 +127,7 @@ func TestCreateVPC(t *testing.T) {
 		Name:        "TestSDK-VPC",
 		Description: "vpc test",
 		Cidr:        "192.168.0.0/16",
+		EnableIpv6:  true,
 		Tags: []model.TagModel{
 			{
 				TagKey:   "tagK",
@@ -189,6 +190,10 @@ func TestUpdateVPC(t *testing.T) {
 	args := &UpdateVPCArgs{
 		Name:        "TestSDK-VPC-update",
 		Description: "vpc update",
+		EnableIpv6:  false,
+		SecondaryCidr: []string{
+			"172.16.0.0/16",
+		},
 		ClientToken: getClientToken(),
 	}
 	err := VPC_CLIENT.UpdateVPC(VPCID, args)

@@ -153,19 +153,19 @@ type InstanceDetail struct {
 }
 
 type Reservation struct {
-	ReservationLength   int    `json:"reservationLength"`   // 时长
-	ReservationTimeUnit string `json:"reservationTimeUnit"` // 时间单位，Month
+	ReservationLength   int    `json:"reservationLength,omitempty"`   // 时长
+	ReservationTimeUnit string `json:"reservationTimeUnit,omitempty"` // 时间单位，Month
 }
 
 type AutoRenewModel struct {
-	AutoRenewLength   int    `json:"autoRenewLength"`   // 到期后续费的时长（月），取值范围为[0,1,2,3,4,5,6,7,8,9,12,24,36]。0表示关闭自动续费，否则为开启自动续费。
-	AutoRenewTimeUnit string `json:"autoRenewTimeUnit"` // 时间单位，取值范围为["Month"]，当前仅支持按月
+	AutoRenewLength   int    `json:"autoRenewLength,omitempty"`   // 到期后续费的时长（月），取值范围为[0,1,2,3,4,5,6,7,8,9,12,24,36]。0表示关闭自动续费，否则为开启自动续费。
+	AutoRenewTimeUnit string `json:"autoRenewTimeUnit,omitempty"` // 时间单位，取值范围为["Month"]，当前仅支持按月
 }
 
 type BillingModel struct {
-	PaymentTiming string         `json:"paymentTiming"` // 付费方式
-	Reservation   Reservation    `json:"reservation"`   // 保留信息
-	AutoRenew     AutoRenewModel `json:"autoRenew"`     // 自动续费
+	PaymentTiming string         `json:"paymentTiming,omitempty"` // 付费方式
+	Reservation   Reservation    `json:"reservation,omitempty"`   // 保留信息
+	AutoRenew     AutoRenewModel `json:"autoRenew,omitempty"`     // 自动续费
 }
 
 type CreateReplicaArgs struct {
@@ -272,6 +272,15 @@ type MemberRoleModel struct {
 type MigrateAzoneArgs struct {
 	Subnets []SubnetMap       `json:"subnets,omitempty"`
 	Members []MemberRoleModel `json:"members,omitempty"`
+}
+
+type RefundModel struct {
+	RefundType   string `json:"refundType,omitempty"`   // 退款类型。"ALL"表示资源全生命周期退订。
+	RefundReason string `json:"refundReason,omitempty"` // 退款原因。最大字符数4096。
+}
+
+type OrderUuidResult struct {
+	OrderId string `json:"orderId,omitempty"`
 }
 
 type LogicAssignResource struct {

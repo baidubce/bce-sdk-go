@@ -118,6 +118,7 @@ type CreateVPCArgs struct {
 	Name        string           `json:"name"`
 	Description string           `json:"description,omitempty"`
 	Cidr        string           `json:"cidr"`
+	EnableIpv6  bool             `json:"enableIpv6,omitempty"`
 	Tags        []model.TagModel `json:"tags,omitempty"`
 }
 
@@ -191,9 +192,11 @@ type Subnet struct {
 
 // UpdateVPCArgs defines the structure of the input parameters for the UpdateVPC api
 type UpdateVPCArgs struct {
-	ClientToken string `json:"-"`
-	Name        string `json:"name"`
-	Description string `json:"description,omitempty"`
+	ClientToken   string   `json:"-"`
+	Name          string   `json:"name"`
+	Description   string   `json:"description,omitempty"`
+	EnableIpv6    bool     `json:"enableIpv6"`
+	SecondaryCidr []string `json:"secondaryCidr,omitempty"`
 }
 
 // CreateSubnetArgs defines the structure of the input parameters for the CreateSubnet api

@@ -360,6 +360,17 @@ func TestMigrateAzone(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
+func TestRefundInstance(t *testing.T) {
+	instanceId := "m-ARidmu"
+	args := RefundModel{
+		RefundReason: "TestRefundInstance",
+		RefundType:   "ALL",
+	}
+	result, err := CLIENT.RefundInstance(instanceId, &args)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, true, len(result.OrderId) > 0)
+}
+
 func TestInstanceAssignTags(t *testing.T) {
 	instanceId := "m-oHGYu8"
 	tags := []TagModel{

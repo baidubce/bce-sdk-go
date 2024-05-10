@@ -176,19 +176,20 @@ type StorageClassType struct {
 type BucketReplicationDescriptor struct {
 	Bucket       string `json:"bucket,omitempty"`
 	StorageClass string `json:"storageClass,omitempty"`
+	Prefix       string `json:"prefix,omitempty"`
 }
 
 // BucketReplicationType defines the data structure for Put and Get of bucket replication
 type BucketReplicationType struct {
-	Id               string                       `json:"id"`
-	Status           string                       `json:"status"`
-	Resource         []string                     `json:"resource"`
-	NotIncludeResource []string                   `json:"notIncludeResource,omitempty"`
-	ReplicateDeletes string                       `json:"replicateDeletes"`
-	Destination      *BucketReplicationDescriptor `json:"destination,omitempty"`
-	ReplicateHistory *BucketReplicationDescriptor `json:"replicateHistory,omitempty"`
-	CreateTime       int64                        `json:"createTime"`
-	DestRegion       string                       `json:"destRegion"`
+	Id                 string                       `json:"id"`
+	Status             string                       `json:"status"`
+	Resource           []string                     `json:"resource"`
+	NotIncludeResource []string                     `json:"notIncludeResource,omitempty"`
+	ReplicateDeletes   string                       `json:"replicateDeletes"`
+	Destination        *BucketReplicationDescriptor `json:"destination,omitempty"`
+	ReplicateHistory   *BucketReplicationDescriptor `json:"replicateHistory,omitempty"`
+	CreateTime         int64                        `json:"createTime"`
+	DestRegion         string                       `json:"destRegion"`
 }
 
 type PutBucketReplicationArgs BucketReplicationType
@@ -277,8 +278,8 @@ type CopyObjectArgs struct {
 	IfNoneMatch       string
 	IfModifiedSince   string
 	IfUnmodifiedSince string
-	TrafficLimit       int64
-	CannedAcl          string
+	TrafficLimit      int64
+	CannedAcl         string
 }
 
 type MultiCopyObjectArgs struct {
@@ -478,7 +479,7 @@ type UploadPartCopyArgs struct {
 	IfNoneMatch       string
 	IfModifiedSince   string
 	IfUnmodifiedSince string
-	TrafficLimit  int64
+	TrafficLimit      int64
 }
 
 type PutSymlinkArgs struct {
@@ -601,7 +602,6 @@ type PutBucketNotificationAppsSt struct {
 	XVars    string `json:"xVars"`
 }
 
-
 type MirrorConfigurationRule struct {
 	Prefix          string       `json:"prefix,omitempty"`
 	SourceUrl       string       `json:"sourceUrl"`
@@ -628,18 +628,17 @@ type PutBucketMirrorArgs struct {
 	BucketMirroringConfiguration []MirrorConfigurationRule `json:"bucketMirroringConfiguration"`
 }
 
-
 type PutBucketTagArgs struct {
 	Tags []Tag `json:"tags"`
 }
 
 type Tag struct {
-	TagKey string `json:"tagKey"`
+	TagKey   string `json:"tagKey"`
 	TagValue string `json:"tagValue"`
 }
 
 type BosContext struct {
-	Bucket string 
+	Bucket          string
 	PathStyleEnable bool
 }
 
@@ -652,6 +651,6 @@ type ObjectTags struct {
 }
 
 type ObjectTag struct {
-	Key string `json:"key"`
+	Key   string `json:"key"`
 	Value string `json:"value"`
 }
