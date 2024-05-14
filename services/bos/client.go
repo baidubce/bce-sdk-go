@@ -945,6 +945,13 @@ func (c *Client) PutObjectFromFileWithCallback(bucket, object, fileName string,
 	etag, putObjectResult, err := api.PutObject(c, bucket, object, body, args, c.BosContext)
 	return etag, putObjectResult, err
 }
+
+func (c *Client) PutObjectWithCallback(bucket, object string, body *bce.Body,
+	args *api.PutObjectArgs) (string, *api.PutObjectResult, error) {
+	etag, putObjectResult, err := api.PutObject(c, bucket, object, body, args, c.BosContext)
+	return etag, putObjectResult, err
+}
+
 // CopyObject - copy a remote object to another one
 //
 // PARAMS:
@@ -2282,7 +2289,7 @@ func (c *Client) PutBucketTag(bucket string, putBucketTagArgs *api.PutBucketTagA
 	return api.PutBucketTag(c, bucket, putBucketTagArgs, c.BosContext)
 }
 
-func (c *Client) GetBucketTag(bucket string) (*api.PutBucketTagArgs, error) {
+func (c *Client) GetBucketTag(bucket string) (*api.GetBucketTagResult, error) {
 	return api.GetBucketTag(c, bucket, c.BosContext)
 }
 

@@ -1206,7 +1206,7 @@ func PutBucketTag(cli bce.Client, bucket string, putBucketTagArgs *PutBucketTagA
 	return nil
 }
 
-func GetBucketTag(cli bce.Client, bucket string, ctx *BosContext) (*PutBucketTagArgs, error) {
+func GetBucketTag(cli bce.Client, bucket string, ctx *BosContext) (*GetBucketTagResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getBucketUri(bucket))
 	req.SetMethod(http.GET)
@@ -1219,7 +1219,7 @@ func GetBucketTag(cli bce.Client, bucket string, ctx *BosContext) (*PutBucketTag
 	if resp.IsFail() {
 		return nil, resp.ServiceError()
 	}
-	result := &PutBucketTagArgs{}
+	result := &GetBucketTagResult{}
 	if err := resp.ParseJsonBody(result); err != nil {
 		return nil, err
 	}

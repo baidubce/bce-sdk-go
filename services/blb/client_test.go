@@ -80,11 +80,31 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 func TestClient_CreateLoadBalancer(t *testing.T) {
 	AllowDelete := false
 	AllocateIpv6 := true
+	Layer4ClusterExclusive := false
+	createArgs := &CreateLoadBalancerArgs{
+		ClientToken:            getClientToken(),
+		Name:                   "sdkBlb051103",
+		VpcId:                  "vpc-rfujg1q3zqqf",
+		SubnetId:               "sbn-sx0zf4qbcbmp",
+		AllowDelete:            &AllowDelete,
+		AllocateIpv6:           &AllocateIpv6,
+		Layer4ClusterExclusive: &Layer4ClusterExclusive,
+	}
+
+	createResult, err := BLB_CLIENT.CreateLoadBalancer(createArgs)
+	ExpectEqual(t.Errorf, nil, err)
+
+	BLB_ID = createResult.BlbId
+}
+
+func TestClient_CreatePrePayLoadBalancer(t *testing.T) {
+	AllowDelete := false
+	AllocateIpv6 := true
 	createArgs := &CreateLoadBalancerArgs{
 		ClientToken:     getClientToken(),
-		Name:            "sdkBlb040101",
-		VpcId:           VPC_TEST_ID,
-		SubnetId:        SUBNET_TEST_ID,
+		Name:            "sdkBlb051101",
+		VpcId:           "vpc-rfujg1q3zqqf",
+		SubnetId:        "sbn-sx0zf4qbcbmp",
 		AutoRenewLength: 1,
 		Billing: &Billing{
 			PaymentTiming: "Prepaid",
@@ -443,6 +463,14 @@ func TestClient_StartLoadBalancerAutoRenew(t *testing.T) {
 		AutoRenewLength: 1,
 	}
 	err := BLB_CLIENT.StartLoadBalancerAutoRenew(TEST_BLB_ID, updateArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_RefundLoadBalancer(t *testing.T) {
+	updateArgs := &RefundLoadBalancerArgs{
+		ClientToken: getClientToken(),
+	}
+	err := BLB_CLIENT.RefundLoadBalancer("lb-3d3d4a58", updateArgs)
 	ExpectEqual(t.Errorf, nil, err)
 }
 

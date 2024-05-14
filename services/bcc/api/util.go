@@ -88,6 +88,7 @@ const (
 	REQUEST_TRANSFER_ACCEPT_URI              = "/reserved/transfer/accept"
 	REQUEST_TRANSFER_IN_URI                  = "/reserved/transfer/in/list"
 	REQUEST_TRANSFER_OUT_URI                 = "/reserved/transfer/out/list"
+	REQUEST_RELATED_DELETE_POLICY            = "/modifyRelatedDeletePolicy"
 )
 
 func getInstanceUri() string {
@@ -148,6 +149,10 @@ func getInstanceVNCUri(id string) string {
 
 func getInstanceDeletionProtectionUri(id string) string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/" + id + REQUEST_DELETION_PROTECTION
+}
+
+func getInstanceRelatedDeletePolicy(id string) string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/" + id + REQUEST_RELATED_DELETE_POLICY
 }
 
 func Aes128EncryptUseSecreteKey(sk string, data string) (string, error) {

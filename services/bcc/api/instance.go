@@ -796,6 +796,34 @@ func ModifyDeletionProtection(cli bce.Client, instanceId string, reqBody *bce.Bo
 	return nil
 }
 
+// ModifyRelatedDeletePolicy - Modify RelatedDeletePolicy of specified instance
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - instanceId: id of the instance
+//	   - reqBody: the request body to set an instance
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func ModifyRelatedDeletePolicy(cli bce.Client, instanceId string, reqBody *bce.Body) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getInstanceRelatedDeletePolicy(instanceId))
+	req.SetMethod(http.PUT)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
 // ModifyInstanceAttribute - modify attribute of a specified instance
 //
 // PARAMS:

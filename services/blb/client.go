@@ -70,6 +70,10 @@ func getBlbAutoRenewUriWithId(id string) string {
 	return URI_PREFIX + REQUEST_BLB_URL + "/autoRenew/" + id
 }
 
+func getBlbRefundUriWithId(id string) string {
+	return URI_PREFIX + REQUEST_BLB_URL + "/refund/" + id
+}
+
 func getListenerUri(id string) string {
 	return URI_PREFIX + REQUEST_BLB_URL + "/" + id + LISTENER_URL
 }

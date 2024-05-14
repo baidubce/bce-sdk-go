@@ -601,6 +601,25 @@ func (c *Client) ModifyDeletionProtection(instanceId string, args *api.DeletionP
 	return api.ModifyDeletionProtection(c, instanceId, body)
 }
 
+// ModifyRelatedDeletePolicy - Modify RelatedDeletePolicy of specified instance
+//
+// PARAMS:
+//     - instanceId: id of the instance
+//	   - args: the arguments to ModifyRelatedDeletePolicy
+// RETURNS:
+//     - error: nil if success otherwise the specific error
+func (c *Client) ModifyRelatedDeletePolicy(instanceId string, args *api.RelatedDeletePolicy) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return api.ModifyRelatedDeletePolicy(c, instanceId, body)
+}
+
 // ModifyInstanceAttribute - modify an instance's attribute
 //
 // PARAMS:
@@ -2338,7 +2357,6 @@ func (c *Client) BatchRefundResource(arg *api.BatchRefundResourceArg) (*api.Batc
 
 	return api.BatchRefundResource(c, arg)
 }
-
 
 func (c *Client) GetAvailableImagesBySpec(args *api.GetAvailableImagesBySpecArg) (*api.GetAvailableImagesBySpecResult, error) {
 	return api.GetAvailableImagesBySpec(c, args)

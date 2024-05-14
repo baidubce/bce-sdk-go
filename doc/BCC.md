@@ -712,6 +712,8 @@ createInstanceArgs := &CreateInstanceArgs{
     RequestToken          string           "requestToken"
     // 设置要绑定的资源组id
     ResGroupId            string           "resGroupId"
+    // 设置竞价实例eip释放时自动释放 默认false不启用，true启用
+    IsEipAutoRelatedDelete    bool         &IsEipAutoRelatedDelete
 }
 if res, err := bccClient.CreateBidInstance(createInstanceBySpecArgs); err != nil {
     fmt.Println("create instance failed: ", err)
@@ -1417,6 +1419,27 @@ if err := bccClient.ModifyDeletionProtection(instanceId, args); err != nil {
     fmt.Println("modifyDeletionProtection failed: ", err)
 } else {
     fmt.Println("modifyDeletionProtection success.")
+}
+```
+
+> **提示：**
+> -   只有付抢占实例允许设定关联eip释放策略
+> -   true表示当抢占实例自动释放时，eip随之释放，false表示当抢占实例自动释放时，eip解绑，不随实例释放。默认设置为false
+
+### 设置eip随抢占实例自动释放
+使用以下代码可以为BCC抢占实例设置关联eip自动释放，实例当前设置可查询实例详情IsEipAutoRelatedDelete，默认false解绑，true关联释放:
+
+```go
+args := &api.RelatedDeletePolicy {
+    IsEipAutoRelatedDelete: true,
+}
+// 设置你要操作的instanceId
+instanceId := "your-choose-instance-id"
+
+if err := bccClient.ModifyRelatedDeletePolicy(instanceId, args); err != nil {
+    fmt.Println("ModifyRelatedDeletePolicy failed: ", err)
+} else {
+    fmt.Println("ModifyRelatedDeletePolicy success.")
 }
 ```
 

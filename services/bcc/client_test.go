@@ -1875,6 +1875,23 @@ func TestGetAvailableStockWithSpec(t *testing.T) {
 	fmt.Println(result)
 }
 
+func TestModifyRelatedDeletePolicy(t *testing.T) {
+
+	args := &api.RelatedDeletePolicy{
+		IsEipAutoRelatedDelete: true,
+	}
+	err := BCC_CLIENT.ModifyRelatedDeletePolicy("i-ZMRzyU8f", args)
+	ExpectEqual(t.Errorf, err, nil)
+	instance, _ := BCC_CLIENT.GetInstanceDetail("i-ZMRzyU8f")
+	ExpectEqual(t.Errorf, instance.Instance.IsEipAutoRelatedDelete, true)
+	args = &api.RelatedDeletePolicy{
+		IsEipAutoRelatedDelete: false,
+	}
+	_ = BCC_CLIENT.ModifyRelatedDeletePolicy("i-ZMRzyU8f", args)
+	ExpectEqual(t.Errorf, err, nil)
+	instance, _ = BCC_CLIENT.GetInstanceDetail("i-ZMRzyU8f")
+	ExpectEqual(t.Errorf, instance.Instance.IsEipAutoRelatedDelete, false)
+}
 
 func TestTransferReservedInstanceOrder(t *testing.T) {
 	args := &api.TransferReservedInstanceRequest{
@@ -1924,7 +1941,7 @@ func TestTransferInReservedInstanceOrders(t *testing.T) {
 		TransferRecordIds: []string{
 			//"t-FoM4l1xI",
 		},
-		Spec: "bcc.g3.c1m1",
+		Spec:   "bcc.g3.c1m1",
 		Status: "timeout",
 	}
 	result, err := BCC_CLIENT.TransferInReservedInstanceOrders(args)
@@ -1941,10 +1958,27 @@ func TestTransferOutReservedInstanceOrders(t *testing.T) {
 		TransferRecordIds: []string{
 			"t-PKnSYeWh",
 		},
-		Spec: "bcc.ic4.c2m2",
+		Spec:   "bcc.ic4.c2m2",
 		Status: "fail",
 	}
 	result, err := BCC_CLIENT.TransferOutReservedInstanceOrders(args)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(result)
+}
+
+func TestCreateVolumeWithResGroup(t *testing.T) {
+	args := &api.CreateCDSVolumeArgs{
+		PurchaseCount: 1,
+		CdsSizeInGB:   40,
+		Billing: &api.Billing{
+			PaymentTiming: api.PaymentTimingPostPaid,
+		},
+		ResGroupId: "RESG-4xiymzjDzqX",
+	}
+
+	result, _ := BCC_CLIENT.CreateCDSVolume(args)
+	BCC_TestCdsId = result.VolumeIds[0]
+	fmt.Print(BCC_TestCdsId)
+	res, _ := BCC_CLIENT.GetCDSVolumeDetail(BCC_TestCdsId)
+	fmt.Println(res.Volume)
 }

@@ -983,8 +983,10 @@ fmt.Printf("update instance name success\n")
 // import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
 
 args := &ddcrds.SwitchArgs{
-	// 立即切换
+	// 该字段已废弃，请使用waitSwitch。立即切换
     IsSwitchNow: true,
+	// 执行时机控制。0：立即变配；1：维护时间内执行；2：用户控制执行时机
+	WaitSwitch: 0,
 }
 result, err := client.SwitchInstance(instanceId, args)
 if err != nil {
@@ -1141,8 +1143,10 @@ args := &ddcrds.ResizeRdsArgs{
     NodeAmount: 2,
     // 是否进行直接支付，默认true，设置为直接支付的变配订单会直接扣款，不需要再走支付逻辑，可选
     IsDirectPay: false,
-    // 是否立即变配 RDS只支持立即变配
-    IsResizeNow: true,
+    // 该字段已废弃，请使用WaitSwitch。是否立即变配 RDS只支持立即变配
+    //IsResizeNow: true,
+	// 变配时间窗口控制。0：立即变配；1：维护时间内变配；2：用户控制执行时机
+	WaitSwitch: 0,
 }
 orderIdResponse, err = client.ResizeRds(instanceId, args)
 if err != nil {

@@ -38,23 +38,27 @@ type DescribeResultMeta struct {
 }
 
 type CreateLoadBalancerArgs struct {
-	ClientToken       string           `json:"-"`
-	Name              string           `json:"name,omitempty"`
-	Description       string           `json:"desc,omitempty"`
-	SubnetId          string           `json:"subnetId"`
-	VpcId             string           `json:"vpcId"`
-	ClusterProperty   string           `json:"clusterProperty"`
-	Type              string           `json:"type,omitempty"`
-	Address           string           `json:"address,omitempty"`
-	Eip               string           `json:"eip,omitempty"`
-	ResourceGroupId   string           `json:"resourceGroupId,omitempty"`
-	AutoRenewLength   int              `json:"autoRenewLength,omitempty"`
-	AutoRenewTimeUnit string           `json:"autoRenewTimeUnit,omitempty"`
-	PerformanceLevel  string           `json:"performanceLevel,omitempty"`
-	Billing           *Billing         `json:"billing,omitempty"`
-	Tags              []model.TagModel `json:"tags,omitempty"`
-	AllowDelete       *bool            `json:"allowDelete,omitempty"`
-	AllocateIpv6      *bool            `json:"allocateIpv6,omitempty"`
+	ClientToken            string           `json:"-"`
+	Name                   string           `json:"name,omitempty"`
+	Description            string           `json:"desc,omitempty"`
+	SubnetId               string           `json:"subnetId"`
+	VpcId                  string           `json:"vpcId"`
+	ClusterProperty        string           `json:"clusterProperty"`
+	Type                   string           `json:"type,omitempty"`
+	Address                string           `json:"address,omitempty"`
+	Eip                    string           `json:"eip,omitempty"`
+	ResourceGroupId        string           `json:"resourceGroupId,omitempty"`
+	AutoRenewLength        int              `json:"autoRenewLength,omitempty"`
+	AutoRenewTimeUnit      string           `json:"autoRenewTimeUnit,omitempty"`
+	PerformanceLevel       string           `json:"performanceLevel,omitempty"`
+	Billing                *Billing         `json:"billing,omitempty"`
+	Tags                   []model.TagModel `json:"tags,omitempty"`
+	AllowDelete            *bool            `json:"allowDelete,omitempty"`
+	AllocateIpv6           *bool            `json:"allocateIpv6,omitempty"`
+	Layer4ClusterExclusive *bool            `json:"layer4ClusterExclusive,omitempty"`
+	Layer7ClusterExclusive *bool            `json:"layer7ClusterExclusive,omitempty"`
+	Layer4ClusterId        string           `json:"layer4ClusterId,omitempty"`
+	Layer7ClusterId        string           `json:"layer7ClusterId,omitempty"`
 }
 
 type Billing struct {
@@ -93,6 +97,10 @@ type StartLoadBalancerAutoRenewArgs struct {
 	AutoRenewTimeUnit string `json:"autoRenewTimeUnit,omitempty"`
 }
 
+type RefundLoadBalancerArgs struct {
+	ClientToken string `json:"-"`
+}
+
 type DescribeLoadBalancersArgs struct {
 	Address      string
 	Name         string
@@ -105,19 +113,21 @@ type DescribeLoadBalancersArgs struct {
 }
 
 type BLBModel struct {
-	BlbId           string           `json:"blbId"`
-	Name            string           `json:"name"`
-	Description     string           `json:"desc"`
-	Address         string           `json:"address"`
-	Status          BLBStatus        `json:"status"`
-	VpcId           string           `json:"vpcId"`
-	SubnetId        string           `json:"subnetId"`
-	PublicIp        string           `json:"publicIp"`
-	Layer4ClusterId string           `json:"layer4ClusterId"`
-	Layer7ClusterId string           `json:"layer7ClusterId"`
-	Tags            []model.TagModel `json:"tags"`
-	EipRouteType    string           `json:"eipRouteType"`
-	AllowDelete     bool             `json:"allowDelete"`
+	BlbId                  string           `json:"blbId"`
+	Name                   string           `json:"name"`
+	Description            string           `json:"desc"`
+	Address                string           `json:"address"`
+	Status                 BLBStatus        `json:"status"`
+	VpcId                  string           `json:"vpcId"`
+	SubnetId               string           `json:"subnetId"`
+	PublicIp               string           `json:"publicIp"`
+	Layer4ClusterId        string           `json:"layer4ClusterId"`
+	Layer7ClusterId        string           `json:"layer7ClusterId"`
+	Tags                   []model.TagModel `json:"tags"`
+	EipRouteType           string           `json:"eipRouteType"`
+	AllowDelete            bool             `json:"allowDelete"`
+	Layer4ClusterExclusive bool             `json:"layer4ClusterExclusive"`
+	Layer7ClusterExclusive bool             `json:"layer7ClusterExclusive"`
 }
 
 type DescribeLoadBalancersResult struct {
@@ -162,6 +172,8 @@ type DescribeLoadBalancerDetailResult struct {
 	PaymentTiming          string           `json:"paymentTiming"`
 	PerformanceLevel       string           `json:"performanceLevel"`
 	ExpireTime             string           `json:"expireTime"`
+	AllowDelete            bool             `json:"allowDelete"`
+	VpcId                  string           `json:"vpcId"`
 }
 
 type CreateTCPListenerArgs struct {

@@ -637,6 +637,15 @@ type Tag struct {
 	TagValue string `json:"tagValue"`
 }
 
+type GetBucketTagResult struct {
+	Tags []BucketTag `json:"tag"`
+}
+
+type BucketTag struct {
+	TagKey   string `json:"tag_key"`
+	TagValue string `json:"tag_value"`
+}
+
 type BosContext struct {
 	Bucket          string
 	PathStyleEnable bool

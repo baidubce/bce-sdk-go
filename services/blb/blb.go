@@ -232,3 +232,19 @@ func (c *Client) StartLoadBalancerAutoRenew(blbId string, args *StartLoadBalance
 		WithBody(args).
 		Do()
 }
+
+// RefundLoadBalancer - refund the specified LoadBalancer
+//
+// PARAMS:
+//     - blbId: LoadBalancer's ID
+//     - args: parameters to refund LoadBalancer
+// RETURNS:
+//     - error: nil if ok otherwise the specific error
+func (c *Client) RefundLoadBalancer(blbId string, args *RefundLoadBalancerArgs) error {
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getBlbRefundUriWithId(blbId)).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithBody(args).
+		Do()
+}
