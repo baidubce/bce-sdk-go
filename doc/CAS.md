@@ -283,6 +283,8 @@ res, err := casClient.QuerySslPrice(req)
 ### 请求示例
 ```go
 req := &CreateNewOrderReq{
+    AutoApply:      true,
+    OrderType:      "NEW",
     CertType:       "DV",
     ProductType:    "SINGLE",
     Brand:          "TRUSTASIA",

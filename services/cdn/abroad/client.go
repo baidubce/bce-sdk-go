@@ -460,6 +460,19 @@ func (cli *Client) SetHTTPSConfig(domain string, httpsConfig *api.HTTPSConfig) e
 	return api.SetHTTPSConfig(cli, domain, httpsConfig)
 }
 
+// SetOriginProtocol - set originProtocol.
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - originProtocol: http or https.
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (cli *Client) SetOriginProtocol(domain, originProtocol string) error {
+	return api.SetOriginProtocol(cli, domain, originProtocol)
+}
+
 // SetTags - bind ABROAD-CDN domain with the specified tags.
 //
 // PARAMS:

@@ -40,6 +40,9 @@ func CreateMobileBlack(cli bce.Client, args *CreateMobileBlackArgs) error {
 	if err := CheckError(len(args.Phone) > 0, "phone can not be blank"); err != nil {
 		return err
 	}
+	if err := CheckError(len(args.CountryType) > 0, "countryType can not be blank"); err != nil {
+		return err
+	}
 	if args.Type == "SignatureBlack" {
 		if err := CheckError(len(args.SmsType) > 0,
 			"smsType can not be blank, when 'type' is 'SignatureBlack'."); err != nil {
@@ -112,6 +115,9 @@ func GetMobileBlack(cli bce.Client, args *GetMobileBlackArgs) (*GetMobileBlackRe
 	paramsMap := make(map[string]string)
 	if len(args.Phone) > 0 {
 		paramsMap["phone"] = args.Phone
+	}
+	if len(args.CountryType) > 0 {
+		paramsMap["countryType"] = args.CountryType
 	}
 	if len(args.SmsType) > 0 {
 		paramsMap["smsType"] = args.SmsType

@@ -40,6 +40,13 @@ var (
 		"EVPRO": "增强型专业版（EV PRO)证书",
 	}
 
+	OrderTypes = map[string]string{
+		"NEW":          "新购",
+		"NEW_INTERNAL": "内部用户新购",
+		"RENEW":        "续费",
+		"BIG_RESOURCE": "大客户",
+	}
+
 	certBrands = map[string]string{
 		"SECURESITE": "SECURESITE",
 		"GEOTRUST":   "GEOTRUST",
@@ -139,12 +146,14 @@ type QuerySslPriceResp struct {
 }
 
 type CreateNewOrderReq struct {
+	AutoApply      bool   `json:"autoApply,omitempty"`
 	CertType       string `json:"certType,omitempty"`
 	ProductType    string `json:"productType,omitempty"`
 	Brand          string `json:"brand,omitempty"`
 	DomainNumber   int    `json:"domainNumber,omitempty"`
 	WildcardNumber int    `json:"wildcardNumber,omitempty"`
 	PurchaseLength int    `json:"purchaseLength,omitempty"`
+	OrderType      string `json:"orderType,omitempty"`
 }
 
 type CreateNewOrderResp struct {

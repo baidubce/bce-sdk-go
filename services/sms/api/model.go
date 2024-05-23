@@ -170,6 +170,7 @@ type CreateMobileBlackArgs struct {
 	SmsType        string `json:"smsType"`
 	SignatureIdStr string `json:"signatureIdStr"`
 	Phone          string `json:"phone"`
+	CountryType    string `json:"countryType"`
 }
 
 // DeleteMobileBlackArgs defines the data structure for deleting mobileBlack by phones
@@ -181,6 +182,7 @@ type DeleteMobileBlackArgs struct {
 // startTime、endTime format is yyyy-MM-dd
 type GetMobileBlackArgs struct {
 	Phone          string
+	CountryType    string
 	SmsType        string
 	SignatureIdStr string
 	StartTime      string
@@ -200,6 +202,7 @@ type GetMobileBlackResult struct {
 // MobileBlackDetail defines the data structure for mobileBlackList detail
 type MobileBlackDetail struct {
 	Phone          string `json:"phone"`
+	CountryType    string `json:"countryType"`
 	Type           string `json:"type"`
 	SmsType        string `json:"smsType"`
 	SignatureIdStr string `json:"signatureIdStr"`

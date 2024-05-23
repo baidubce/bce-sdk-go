@@ -8,17 +8,25 @@ import (
 	"github.com/baidubce/bce-sdk-go/model"
 )
 
+const (
+	HTTPOrigin  = "http"
+	HTTPSOrigin = "https"
+)
+
 // DomainConfig defined a struct for total configurations.
 type DomainConfig struct {
-	Domain       string           `json:"domain"`
-	Origin       []OriginPeer     `json:"originConfig"`
-	CacheTTL     []CacheTTL       `json:"cacheTtl"`
-	CacheFullUrl bool             `json:"cacheFullUrl"`
-	OriginHost   *string          `json:"originHost"`
-	RefererACL   *RefererACL      `json:"refererACL"`
-	IpACL        *IpACL           `json:"ipACL"`
-	HTTPSConfig  *HTTPSConfig     `json:"https"`
-	Tags         []model.TagModel `json:"tags"`
+	Domain         string           `json:"domain"`
+	Status         string           `json:"status"`
+	Cname          string           `json:"cname"`
+	Origin         []OriginPeer     `json:"originConfig"`
+	CacheTTL       []CacheTTL       `json:"cacheTtl"`
+	CacheFullUrl   bool             `json:"cacheFullUrl"`
+	OriginHost     *string          `json:"originHost"`
+	RefererACL     *RefererACL      `json:"refererACL"`
+	IpACL          *IpACL           `json:"ipACL"`
+	HTTPSConfig    *HTTPSConfig     `json:"https"`
+	OriginProtocol string           `json:"originProtocol"`
+	Tags           []model.TagModel `json:"tags"`
 }
 
 // OriginPeer defined a struct for Origin server.
@@ -373,6 +381,35 @@ func SetHTTPSConfig(cli bce.Client, domain string, httpsConfig *HTTPSConfig) err
 		options = append(options, HTTPSConfigEnableH2())
 	}
 	return SetHTTPSConfigWithOptions(cli, domain, httpsConfig.Enabled, options...)
+}
+
+// SetOriginProtocol - set originProtocol.
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//   - originProtocol: http or https.
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func SetOriginProtocol(cli bce.Client, domain, originProtocol string) error {
+	if originProtocol != "http" && originProtocol != "https" {
+		return errors.New("originProtocol must be http or https")
+	}
+
+	urlPath := fmt.Sprintf("/v2/abroad/domain/%s/config", domain)
+	params := map[string]string{
+		"originProtocol": "",
+	}
+
+	err := httpRequest(cli, "PUT", urlPath, params, map[string]string{
+		"originProtocol": originProtocol,
+	}, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // SetTags - bind ABROAD-CDN domain with the specified tags.

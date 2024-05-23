@@ -118,6 +118,8 @@ func TestQuerySslPriceTest(t *testing.T) {
 
 func TestCreateNewOrder(t *testing.T) {
 	req := &CreateNewOrderReq{
+		AutoApply:      true,
+		OrderType:      "NEW",
 		CertType:       "DV",
 		ProductType:    "SINGLE",
 		Brand:          "TRUSTASIA",
@@ -128,7 +130,6 @@ func TestCreateNewOrder(t *testing.T) {
 	res, err := casClient.CreateNewOrder(req)
 	ExpectEqual(t.Errorf, err, nil)
 	t.Logf("%+v", res)
-	//
 }
 
 func TestApplyCert(t *testing.T) {

@@ -167,17 +167,18 @@ fmt.Printf("GetDomainConfig for %s got: %+v", testDomain, domainConfig)
 
 `domainConfig`是`*api.DomainConfig`类型的对象，他的结构相对比较复杂，如下所示：
 
-| 字段           | 类型               | 说明                                          |
-|--------------|------------------|-------------------------------------------------|
-| Domain       | string           | 域名信息，如：`test.baidu.com`。                   |
-| Origin       | []api.OriginPeer | 源站信息，在创建加速域名接口有详细说明。               |
-| CacheTTL     | []api.CacheTTL   | 缓存过期规则，在`设置缓存过期规则`有详细说明。          |
-| CacheFullUrl | bool             | 参数参与缓存规则，在`设置参数参与缓存规则`有详细说明。   |
-| OriginHost   | *string          | 回源host，默认为nil，代表着未设置过该值。             |
-| RefererACL   | *api.RefererACL  | referer黑白名单，在`设置 referer 黑白名单`有详细说明。 |
-| IpAcl        | *api.IpACL       | 客户端IP黑白名单，在`设置客户端 IP 黑白名单`有详细说明。 |
-| HTTPSConfig  | *api.HTTPSConfig | HTTPS 配置，在`设置 HTTPS 配置`   有详细说明。        |
-| Tags         | []model.TagModel | 域名所属的标签。                                    |
+| 字段             | 类型               | 说明                                   |
+|----------------|------------------|--------------------------------------|
+| Domain         | string           | 域名信息，如：`test.baidu.com`。             |
+| Origin         | []api.OriginPeer | 源站信息，在创建加速域名接口有详细说明。                 |
+| CacheTTL       | []api.CacheTTL   | 缓存过期规则，在`设置缓存过期规则`有详细说明。             |
+| CacheFullUrl   | bool             | 参数参与缓存规则，在`设置参数参与缓存规则`有详细说明。         |
+| OriginHost     | *string          | 回源host，默认为nil，代表着未设置过该值。             |
+| RefererACL     | *api.RefererACL  | referer黑白名单，在`设置 referer 黑白名单`有详细说明。 |
+| IpAcl          | *api.IpACL       | 客户端IP黑白名单，在`设置客户端 IP 黑白名单`有详细说明。     |
+| HTTPSConfig    | *api.HTTPSConfig | HTTPS 配置，在`设置 HTTPS 配置`   有详细说明。     |
+| OriginProtocol | string           | 回源协议，`http`或`https`。                 |
+| Tags           | []model.TagModel | 域名所属的标签。                             |
 
 
 ### 更新加速域名回源地址 SetDomainOrigin
@@ -415,6 +416,19 @@ if err != nil {
 	return
 }
 fmt.Printf("SetHTTPSConfigWithOptions disable HTTPS successfully\n")
+```
+
+### 设置回源协议 SetOriginProtocol
+
+**> 设置回源协议为HTTPS**
+
+```go
+err := testCli.SetOriginProtocol(testDomain, api.HTTPSOrigin)
+if err != nil {
+	fmt.Printf("SetOriginProtocol for %s failed: %s\n", testDomain, err)
+	return
+}
+fmt.Printf("SetOriginProtocol successfully.\n")
 ```
 
 ### 管理域名标签 SetTags/GetTags

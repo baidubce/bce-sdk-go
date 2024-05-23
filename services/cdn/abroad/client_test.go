@@ -129,6 +129,14 @@ func TestClient_SetIpACL(t *testing.T) {
 	t.Logf("SetIpACL successfully.")
 }
 
+func TestClient_SetOriginProtocol(t *testing.T) {
+	err := testCli.SetOriginProtocol(testDomain, api.HTTPSOrigin)
+	if err != nil {
+		t.Fatalf("SetOriginProtocol for %s failed: %s", testDomain, err)
+	}
+	t.Logf("SetOriginProtocol successfully.")
+}
+
 func TestClient_GetQuota(t *testing.T) {
 	quota, err := testCli.GetQuota()
 	if err != nil {
