@@ -2487,3 +2487,7 @@ func (c *Client) TransferOutReservedInstanceOrders(args *api.DescribeTransferRes
 	}
 	return api.TransferOutReservedInstanceOrders(c, body)
 }
+
+func (c *Client) getCdsPrice(args *api.VolumePriceRequestArgs) (*api.VolumePriceResponse, error) {
+	return api.GetCdsPrice(c, args)
+}

@@ -1102,10 +1102,12 @@ type InstanceChangeVpcArgs struct {
 }
 
 type InstanceChangeSubnetArgs struct {
-	InstanceId string `json:"instanceId"`
-	SubnetId   string `json:"subnetId"`
-	InternalIp string `json:"internalIp"`
-	Reboot     bool   `json:"reboot"`
+	InstanceId                 string   `json:"instanceId"`
+	SubnetId                   string   `json:"subnetId"`
+	InternalIp                 string   `json:"internalIp"`
+	Reboot                     bool     `json:"reboot"`
+	SecurityGroupIds           []string `json:"securityGroupIds"`
+	EnterpriseSecurityGroupIds []string `json:"enterpriseSecurityGroupIds"`
 }
 
 type BatchAddIpArgs struct {
@@ -2027,6 +2029,7 @@ type Eni struct {
 	VpcId        string      `json:"vpcId"`
 	SubnetId     string      `json:"subnetId"`
 	Status       string      `json:"status"`
+	CreatedTime  string      `json:"createdTime"`
 	PrivateIpSet []PrivateIP `json:"privateIpSet"`
 }
 
@@ -2442,4 +2445,24 @@ type ImageArg []struct {
 	OsName       string `json:"osName"`
 	OsLang       string `json:"osLang"`
 	MinSizeInGiB int    `json:"minSizeInGiB"`
+}
+
+type VolumePriceRequestArgs struct {
+	PurchaseLength int    `json:"purchaseLength"`
+	PaymentTiming  string `json:"paymentTiming"`
+	StorageType    string `json:"storageType"`
+	CdsSizeInGB    int    `json:"cdsSizeInGB"`
+	PurchaseCount  int    `json:"purchaseCount"`
+	ZoneName       string `json:"zoneName"`
+}
+
+type VolumePriceResponse struct {
+	Price []CdsPrice `json:"price"`
+}
+
+type CdsPrice struct {
+	StorageType string  `json:"storageType"`
+	CdsSizeInGB int     `json:"cdsSizeInGB"`
+	Price       float64 `json:"price"`
+	Unit        string  `json:"unit"`
 }

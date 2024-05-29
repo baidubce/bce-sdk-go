@@ -14,17 +14,20 @@
 
 package endpoint
 
+import "github.com/baidubce/bce-sdk-go/model"
+
 type Endpoint struct {
-	EndpointId  string `json:"endpointId"`
-	Name        string `json:"name"`
-	IpAddress   string `json:"ipAddress"`
-	Status      string `json:"status"`
-	Service     string `json:"service"`
-	SubnetId    string `json:"subnetId"`
-	Description string `json:"description"`
-	CreateTime  string `json:"createTime"`
-	VpcId       string `json:"vpcId"`
-	ProductType string `json:"productType"`
+	EndpointId  string           `json:"endpointId"`
+	Name        string           `json:"name"`
+	IpAddress   string           `json:"ipAddress"`
+	Status      string           `json:"status"`
+	Service     string           `json:"service"`
+	SubnetId    string           `json:"subnetId"`
+	Description string           `json:"description"`
+	CreateTime  string           `json:"createTime"`
+	VpcId       string           `json:"vpcId"`
+	ProductType string           `json:"productType"`
+	Tags        []model.TagModel `json:"tags,omitempty"`
 }
 
 type ListEndpointArgs struct {
@@ -66,14 +69,15 @@ type UpdateEndpointESGArgs struct {
 }
 
 type CreateEndpointArgs struct {
-	ClientToken string   `json:"-"`
-	VpcId       string   `json:"vpcId"`
-	Name        string   `json:"name"`
-	SubnetId    string   `json:"subnetId"`
-	Service     string   `json:"service"`
-	Description string   `json:"description,omitempty"`
-	IpAddress   string   `json:"ipAddress,omitempty"`
-	Billing     *Billing `json:"billing"`
+	ClientToken string           `json:"-"`
+	VpcId       string           `json:"vpcId"`
+	Name        string           `json:"name"`
+	SubnetId    string           `json:"subnetId"`
+	Service     string           `json:"service"`
+	Description string           `json:"description,omitempty"`
+	IpAddress   string           `json:"ipAddress,omitempty"`
+	Billing     *Billing         `json:"billing"`
+	Tags        []model.TagModel `json:"tags,omitempty"`
 }
 
 type CreateEndpointResult struct {

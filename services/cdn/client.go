@@ -1,6 +1,8 @@
 package cdn
 
 import (
+	"fmt"
+
 	"github.com/baidubce/bce-sdk-go/auth"
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/model"
@@ -143,10 +145,31 @@ func CreateDomainWithForm(form string) CreateDomainOption {
 	}
 }
 
+// CreateDomainAsDrcdnType configure the target product type as `DRCDN`, posting DRCDN rules by
+// dsa argument which can not be nil value.
+// Please be sure you are activated DRCDN first, then you can create DRCDN domain successfully.
+// Don't know what is DRCDN or don't know how to activate DRCDN? Please read this
+// tutorial DOC: https://cloud.baidu.com/doc/DRCDN/s/gkh08rmki
+func CreateDomainAsDrcdnType(dsa *api.DSAConfig) CreateDomainOption {
+	return func(o interface{}) {
+		cfg, ok := o.(*createDomainOption)
+		if ok {
+			if dsa == nil {
+				cfg.errMsg = "nil dsa argument at CreateDomainAsDrcdnType"
+				return
+			}
+			cfg.dsa = dsa
+		}
+	}
+}
+
 type createDomainOption struct {
 	tags        []model.TagModel
 	defaultHost string
 	form        string
+	dsa         *api.DSAConfig
+
+	errMsg string
 }
 
 // CreateDomain - create a BCE CDN domain
@@ -159,7 +182,7 @@ type createDomainOption struct {
 //     - *DomainCreatedInfo: the details about created a CDN domain
 //     - error: nil if success otherwise the specific error
 func (cli *Client) CreateDomain(domain string, originInit *api.OriginInit) (*api.DomainCreatedInfo, error) {
-	return api.CreateDomain(cli, domain, originInit, nil)
+	return api.CreateDomain(cli, domain, originInit, nil, nil)
 }
 
 // CreateDomainWithOptions - create a BCE CDN domain with optional configurations.
@@ -176,13 +199,16 @@ func (cli *Client) CreateDomainWithOptions(domain string, origins []api.OriginPe
 	var cfg createDomainOption
 	for _, opt := range opts {
 		opt(&cfg)
+		if cfg.errMsg != "" {
+			return nil, fmt.Errorf("input to SDK error: %s", cfg.errMsg)
+		}
 	}
 	originInit := &api.OriginInit{
 		Origin:      origins,
 		DefaultHost: cfg.defaultHost,
 		Form:        cfg.form,
 	}
-	return api.CreateDomain(cli, domain, originInit, cfg.tags)
+	return api.CreateDomain(cli, domain, originInit, cfg.tags, cfg.dsa)
 }
 
 // EnableDomain - enable a specified domain

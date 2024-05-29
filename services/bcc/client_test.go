@@ -806,10 +806,11 @@ func TestInstanceChangeVpc(t *testing.T) {
 
 func TestInstanceChangeSubnet(t *testing.T) {
 	args := &api.InstanceChangeSubnetArgs{
-		InstanceId: "i-YRMFRB6Z",
-		SubnetId:   "sbn-z1y9tcedqnh6",
-		InternalIp: "192.168.5.12",
-		Reboot:     false,
+		InstanceId:       "i-YRMFRB6Z",
+		SubnetId:         "sbn-z1y9tcedqnh6",
+		InternalIp:       "192.168.5.12",
+		Reboot:           false,
+		SecurityGroupIds: []string{"g-i24fkh******"},
 	}
 
 	err := BCC_CLIENT.InstanceChangeSubnet(args)
@@ -1981,4 +1982,19 @@ func TestCreateVolumeWithResGroup(t *testing.T) {
 	fmt.Print(BCC_TestCdsId)
 	res, _ := BCC_CLIENT.GetCDSVolumeDetail(BCC_TestCdsId)
 	fmt.Println(res.Volume)
+}
+
+func TestGetCDSPrice(t *testing.T) {
+	args := &api.VolumePriceRequestArgs{
+		PurchaseLength: 1,
+		PaymentTiming:  "Prepaid",
+		StorageType:    "cloud_hp1",
+		CdsSizeInGB:    1000,
+		PurchaseCount:  1,
+		ZoneName:       "cn-bj-a",
+	}
+
+	result, err := BCC_CLIENT.getCdsPrice(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
 }

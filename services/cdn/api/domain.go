@@ -151,22 +151,32 @@ func IsValidDomain(cli bce.Client, domain string) (*DomainValidInfo, error) {
 //     - domain: the specified domain
 //     - originInit: initialized data for a CDN domain
 //     - tags: bind with the specified tags
+//     - dsa: DRCDN type domain config, the rules of speed up the dynamic asserts.
 // RETURNS:
 //     - *DomainCreatedInfo: the details about created a CDN domain
 //     - error: nil if success otherwise the specific error
-func CreateDomain(cli bce.Client, domain string, originInit *OriginInit, tags []model.TagModel) (*DomainCreatedInfo, error) {
+func CreateDomain(cli bce.Client, domain string, originInit *OriginInit, tags []model.TagModel, dsa *DSAConfig) (*DomainCreatedInfo, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s", domain)
 	respObj := &DomainCreatedInfo{}
 
 	type Request struct {
 		*OriginInit
-		Tags []model.TagModel `json:"tags,omitempty"`
+		Tags        []model.TagModel `json:"tags,omitempty"`
+		ProductType int              `json:"productType,omitempty"`
+		Dsa         *DSAConfig       `json:"dsa,omitempty"`
 	}
 
 	requestObject := &Request{
 		OriginInit: originInit,
 		Tags:       tags,
 	}
+
+	// Make a request body to create DRCDN domain.
+	if dsa != nil {
+		requestObject.ProductType = 1
+		requestObject.Dsa = dsa
+	}
+
 	err := httpRequest(cli, "PUT", urlPath, nil, requestObject, respObj)
 	if err != nil {
 		return nil, err

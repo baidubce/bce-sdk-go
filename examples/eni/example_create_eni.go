@@ -2,6 +2,7 @@ package eniexamples
 
 import (
 	"fmt"
+	"github.com/baidubce/bce-sdk-go/model"
 
 	"github.com/baidubce/bce-sdk-go/services/eni"
 	"github.com/baidubce/bce-sdk-go/util"
@@ -33,6 +34,12 @@ func CreateEni() {
 			{
 				Primary:          false, // 弹性网卡内网IPv6是否为主IP
 				PrivateIpAddress: "",    // 弹性网卡内网IPv6
+			},
+		},
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagKey",
+				TagValue: "tagValue",
 			},
 		},
 		Description: "go sdk test: create eni", // 弹性网卡描述

@@ -16,6 +16,7 @@ package endpointexamples
 
 import (
 	"fmt"
+	"github.com/baidubce/bce-sdk-go/model"
 
 	"github.com/baidubce/bce-sdk-go/services/endpoint"
 )
@@ -32,6 +33,12 @@ func CreateEndpoint() {
 		Description: "desc",
 		Billing: &endpoint.Billing{
 			PaymentTiming: "Postpaid",
+		},
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagKey",
+				TagValue: "tagValue",
+			},
 		},
 	}
 	result, err := client.CreateEndpoint(args) // 创建endpoint

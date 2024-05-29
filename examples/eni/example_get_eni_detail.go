@@ -14,7 +14,6 @@ func getClientToken() string {
 func GetEniDetail() {
 	// 初始化AK/SK/Endpoint
 	ak, sk, endpoint := "Your AK", "Your SK", "Your Endpoint"
-
 	ENI_CLIENT, _ := eni.NewClient(ak, sk, endpoint) // 初始化client
 
 	response, err := ENI_CLIENT.GetEniDetail("eni-477g9akswgjv") // 查询指定的弹性网卡

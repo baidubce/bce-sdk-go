@@ -128,7 +128,6 @@ func (c *Client) GetEniDetail(eniId string) (*Eni, error) {
 	if eniId == "" {
 		return nil, fmt.Errorf("The eniId cannot be empty.")
 	}
-
 	result := &Eni{}
 	err := bce.NewRequestBuilder(c).
 		WithURL(getURLForEniId(eniId)).

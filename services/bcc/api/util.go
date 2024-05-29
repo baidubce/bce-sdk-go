@@ -89,6 +89,7 @@ const (
 	REQUEST_TRANSFER_IN_URI                  = "/reserved/transfer/in/list"
 	REQUEST_TRANSFER_OUT_URI                 = "/reserved/transfer/out/list"
 	REQUEST_RELATED_DELETE_POLICY            = "/modifyRelatedDeletePolicy"
+	REQUEST_VOLUME_PRICE_URI                 = "/volume/getPrice"
 )
 
 func getInstanceUri() string {
@@ -493,4 +494,8 @@ func getTransferInReservedInstanceOrdersUri() string {
 
 func getTransferOutReservedInstanceOrdersUri() string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_TRANSFER_OUT_URI
+}
+
+func getCdsPriceUri() string {
+	return URI_PREFIXV2 + REQUEST_VOLUME_PRICE_URI
 }

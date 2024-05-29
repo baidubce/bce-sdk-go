@@ -14,16 +14,19 @@
 
 package eni
 
+import "github.com/baidubce/bce-sdk-go/model"
+
 type CreateEniArgs struct {
-	ClientToken                string      `json:"-"`
-	Name                       string      `json:"name"`
-	SubnetId                   string      `json:"subnetId"`
-	InstanceId                 string      `json:"instanceId,omitempty"`
-	SecurityGroupIds           []string    `json:"securityGroupIds"`
-	EnterpriseSecurityGroupIds []string    `json:"enterpriseSecurityGroupIds"`
-	PrivateIpSet               []PrivateIp `json:"privateIpSet"`
-	Ipv6PrivateIpSet           []PrivateIp `json:"ipv6PrivateIpSet,omitempty"`
-	Description                string      `json:"description,omitempty"`
+	ClientToken                string           `json:"-"`
+	Name                       string           `json:"name"`
+	SubnetId                   string           `json:"subnetId"`
+	InstanceId                 string           `json:"instanceId,omitempty"`
+	SecurityGroupIds           []string         `json:"securityGroupIds"`
+	EnterpriseSecurityGroupIds []string         `json:"enterpriseSecurityGroupIds"`
+	PrivateIpSet               []PrivateIp      `json:"privateIpSet"`
+	Ipv6PrivateIpSet           []PrivateIp      `json:"ipv6PrivateIpSet,omitempty"`
+	Description                string           `json:"description,omitempty"`
+	Tags                       []model.TagModel `json:"tags,omitempty"`
 }
 
 type CreateEniResult struct {
@@ -60,20 +63,21 @@ type ListEniResult struct {
 }
 
 type Eni struct {
-	EniId                      string      `json:"eniId"`
-	Name                       string      `json:"name"`
-	ZoneName                   string      `json:"zoneName"`
-	Description                string      `json:"description"`
-	InstanceId                 string      `json:"instanceId"`
-	MacAddress                 string      `json:"macAddress"`
-	VpcId                      string      `json:"vpcId"`
-	SubnetId                   string      `json:"subnetId"`
-	Status                     string      `json:"status"`
-	PrivateIpSet               []PrivateIp `json:"privateIpSet"`
-	Ipv6PrivateIpSet           []PrivateIp `json:"ipv6PrivateIpSet"`
-	SecurityGroupIds           []string    `json:"securityGroupIds"`
-	EnterpriseSecurityGroupIds []string    `json:"enterpriseSecurityGroupIds"`
-	CreatedTime                string      `json:"createdTime"`
+	EniId                      string           `json:"eniId"`
+	Name                       string           `json:"name"`
+	ZoneName                   string           `json:"zoneName"`
+	Description                string           `json:"description"`
+	InstanceId                 string           `json:"instanceId"`
+	MacAddress                 string           `json:"macAddress"`
+	VpcId                      string           `json:"vpcId"`
+	SubnetId                   string           `json:"subnetId"`
+	Status                     string           `json:"status"`
+	PrivateIpSet               []PrivateIp      `json:"privateIpSet"`
+	Ipv6PrivateIpSet           []PrivateIp      `json:"ipv6PrivateIpSet"`
+	SecurityGroupIds           []string         `json:"securityGroupIds"`
+	EnterpriseSecurityGroupIds []string         `json:"enterpriseSecurityGroupIds"`
+	CreatedTime                string           `json:"createdTime"`
+	Tags                       []model.TagModel `json:"tags,omitempty"`
 }
 
 type PrivateIp struct {

@@ -154,7 +154,7 @@ func TestCreateDomain(t *testing.T) {
 }
 
 func TestCreateDomainWithTags(t *testing.T) {
-	domainCreatedInfo, err := testCli.CreateDomainWithOptions("0307-001.qq.com", []api.OriginPeer{
+	domainCreatedInfo, err := testCli.CreateDomainWithOptions("test.com", []api.OriginPeer{
 		{
 			Peer: "1.2.3.4",
 			Host: "www.baidu.com",
@@ -170,6 +170,44 @@ func TestCreateDomainWithTags(t *testing.T) {
 		},
 	}), CreateDomainWithForm("image"), CreateDomainWithOriginDefaultHost("origin.baidu.com"))
 
+	t.Logf("domainCreatedInfo: %v", domainCreatedInfo)
+	checkClientErr(t, "CreateDomain", err)
+}
+
+func TestCreateDomainAsDrcdnType(t *testing.T) {
+	var domainCreatedInfo *api.DomainCreatedInfo
+	var err error
+
+	// Bad Case: Set option CreateDomainAsDrcdnType and passing nil dsa.
+	domainCreatedInfo, err = testCli.CreateDomainWithOptions("test.com", []api.OriginPeer{
+		{
+			Peer: "1.2.3.4",
+			Host: "www.baidu.com",
+		},
+	}, CreateDomainAsDrcdnType(nil))
+	if err == nil {
+		t.Fatalf("CreateDomainAsDrcdnType with nil dsa expected error but got nil")
+	}
+
+	// Good Case: Set option CreateDomainAsDrcdnType and passing value dsa rules.
+	domainCreatedInfo, err = testCli.CreateDomainWithOptions("test.com", []api.OriginPeer{
+		{
+			Peer: "1.2.3.4",
+			Host: "www.baidu.com",
+		},
+	}, CreateDomainAsDrcdnType(&api.DSAConfig{
+		Enabled: true,
+		Rules: []api.DSARule{
+			{
+				Type:  "suffix",
+				Value: ".php",
+			},
+			{
+				Type:  "method",
+				Value: "POST;PUT;DELETE",
+			},
+		},
+	}))
 	t.Logf("domainCreatedInfo: %v", domainCreatedInfo)
 	checkClientErr(t, "CreateDomain", err)
 }

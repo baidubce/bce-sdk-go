@@ -321,6 +321,7 @@ type InstanceModel struct {
 	Zone                  string           `json:"zone"`
 	Region                string           `json:"region"`
 	HasAlive              int              `json:"hasAlive"`
+	AutoRenew             bool             `json:"autoRenew"`
 	Tags                  []model.TagModel `json:"tags"`
 	SwitchId              string           `json:"switchId"`
 	HostId                string           `json:"hostId"`

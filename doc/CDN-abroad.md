@@ -373,12 +373,12 @@ fmt.Printf("SetHTTPSConfig disable HTTPS successfully\n")
 
 上述例子中，`api.HTTPSConfig`的详细说明如下：
 
-| 字段      | 类型     | 说明                                                                                                                         |
-|---------|--------|----------------------------------------------------------------------------------------------------------------------------|
-| Enabled | bool   | true 表示开启HTTPS，certId必须有效且真实存在                                                                                             |                                                                                         |
-| CertId  | string | 证书ID，百度智能云统一通过证书中心进行证书管理，您必须先通过 [证书管理中心](https://console.bce.baidu.com/cas/#/cas/purchased/common/list)  进行证书上传/购买，才能获得证书ID。 |
-|    HttpRedirect     | bool   | 为true时将HTTP请求重定向到HTTPS（重定向状态码为301)。                                                                                        |
-|         Http2Enabled            | bool   | true 表示开启HTTP2。                                                                                                            |
+| 字段      | 类型     | 说明                                                                                                                       |
+|---------|--------|--------------------------------------------------------------------------------------------------------------------------|
+| Enabled | bool   | true 表示开启HTTPS，certId必须有效且真实存在                                                                                           |                                                                                         |
+| CertId  | string | 证书ID，百度智能云统一通过`SSL证书服务`进行证书管理，您必须先通过 [SSL证书服务](https://console.bce.baidu.com/cas/#/cas/purchased/common/list) 进行证书上传/购买，才能获得证书ID。 |
+|    HttpRedirect     | bool   | 为true时将HTTP请求重定向到HTTPS（重定向状态码为301)。                                                                                      |
+|         Http2Enabled            | bool   | true 表示开启HTTP2。                                                                                                          |
 
 
 

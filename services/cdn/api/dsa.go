@@ -6,7 +6,20 @@ import (
 	"github.com/baidubce/bce-sdk-go/bce"
 )
 
-// DSARule defined a struct for DSA urls
+// DSARule configure the rule of speed up which asserts.
+// Valid rule types are:
+// - suffix: the file suffix in the URL, such as http://test.com/1.php has the suffix .php, or you can call it as extension.
+// - path: the directory about URL, such as http://test.com/web/1.php, located at two directories, "/" and the "/web".
+// - exactPath: the absolute URL path.
+// - method: the HTTP request method, now we only support 5 methods, they are GET, POST, PUT, DELETE and OPTIONS.
+//
+// The value is related to the rule type, for example, we can configure "method" type rule with 3 methods,
+// the value of it are "GET;POST;PUT" which come from 3 method string connect to each other by semicolon.
+// Here shows how to construct a DSARule object of above example:
+// 	var rule = &DSARule{
+//		Type:  "method",
+//		Value: "GET;POST;PUT",
+//	}
 type DSARule struct {
 	Type  string `json:"type"`
 	Value string `json:"value"`

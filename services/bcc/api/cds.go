@@ -902,3 +902,35 @@ func UntagVolume(cli bce.Client, volumeId string, args *TagVolumeArgs) error {
 	}
 	return nil
 }
+
+func GetCdsPrice(cli bce.Client, args *VolumePriceRequestArgs) (*VolumePriceResponse, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getCdsPriceUri())
+	req.SetMethod(http.POST)
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return nil, err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &VolumePriceResponse{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+

@@ -17,6 +17,7 @@ package eni
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/baidubce/bce-sdk-go/model"
 	"github.com/baidubce/bce-sdk-go/util"
 	"github.com/baidubce/bce-sdk-go/util/log"
 	"os"
@@ -38,7 +39,7 @@ type Conf struct {
 }
 
 const (
-	VPC_ID    string = "vpc-q1hcnhf7nmve"
+	VPC_ID    string = "vpc-8cc084a3itrt"
 	SUBNET_ID string = "sbn-cxwi5hmf8ugx"
 )
 
@@ -60,7 +61,6 @@ func init() {
 	confObj := &Conf{}
 	decoder.Decode(confObj)
 	ENI_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
-
 	region = confObj.Endpoint[4:6]
 
 }
@@ -98,21 +98,27 @@ func getClientToken() string {
 
 func TestClient_CreateEni(t *testing.T) {
 	args := &CreateEniArgs{
-		Name:     "GO_SDK_TEST_CREATE",
-		SubnetId: "sbn-56s25qecigix",
+		Name:     "GO_SDK_TEST_CREATE_EIP_M",
+		SubnetId: "sbn-u1ft0w2m1and",
 		EnterpriseSecurityGroupIds: []string{
-			"esg-rn49gxbin4x7",
+			"esg-d8e5pi46f2dt",
 		},
 		PrivateIpSet: []PrivateIp{
 			{
 				Primary:          true,
-				PrivateIpAddress: "",
+				PrivateIpAddress: "10.0.0.5",
 			},
 		},
 		Ipv6PrivateIpSet: []PrivateIp{
 			{
 				Primary:          false,
-				PrivateIpAddress: "2400:da00:e003:0:1d2:100:0:15",
+				PrivateIpAddress: "",
+			},
+		},
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagKey",
+				TagValue: "tagValue",
 			},
 		},
 		Description: "go sdk test",
@@ -158,7 +164,7 @@ func TestClient_ListEnis(t *testing.T) {
 }
 
 func TestClient_GetEniDetail(t *testing.T) {
-	result, err := ENI_CLIENT.GetEniDetail("eni-wbi6thg2p6vj")
+	result, err := ENI_CLIENT.GetEniDetail("eni-sbfskxwsz4x3")
 	ExpectEqual(t.Errorf, nil, err)
 	r, err := json.Marshal(result)
 	fmt.Println(string(r))

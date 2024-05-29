@@ -1623,7 +1623,7 @@ if err != nil {
 
 > **提示：**
 > - 变更子网后默认自动重启，用户选择是否执行该操作。
-> - 变更子网的范围目前仅支持在同AZ下变更子网，不支持跨AZ或跨VPC变更子网，如果从普通子网变更至NAT专属子网请先手动解绑EIP。
+> - 变更子网的范围目前仅支持在同AZ下变更子网，如果从普通子网变更至NAT专属子网请先手动解绑EIP。
 
 ### 实例变更VPC
 
@@ -3686,6 +3686,24 @@ if res, err := bccClient.GetInstanceCreateStock(args); err != nil {
 }
 ```
 
+### CDS询价
+以下代码可以查询CDS价格
+```go
+args := &api.VolumePriceRequestArgs{
+    PurchaseLength: 1,
+    PaymentTiming:  "Prepaid",
+    StorageType:    "cloud_hp1",
+    CdsSizeInGB:    1000,
+    PurchaseCount:  1,
+    ZoneName:       "cn-bj-a",
+}
+
+if res, err := bccClient.getCdsPrice(args); err != nil {
+    fmt.Println("getCdsPrice failed: ", err)
+} else {
+    fmt.Println("getCdsPrice success: ", res)
+}
+```
   
 ### 实例扩缩容库存查询
 实例变配余量查询

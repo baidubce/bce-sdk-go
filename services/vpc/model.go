@@ -167,6 +167,7 @@ type ShowVPCModel struct {
 	VPCId         string           `json:"vpcId"`
 	Name          string           `json:"name"`
 	Cidr          string           `json:"cidr"`
+	Ipv6Cidr      string           `json:"ipv6Cidr"`
 	CreatedTime   string           `json:"createdTime"`
 	Description   string           `json:"description"`
 	IsDefault     bool             `json:"isDefault"`

@@ -17,6 +17,7 @@ package endpoint
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/baidubce/bce-sdk-go/model"
 	"github.com/baidubce/bce-sdk-go/util"
 	"github.com/baidubce/bce-sdk-go/util/log"
 	"os"
@@ -43,8 +44,8 @@ type Conf struct {
 const (
 	PAYMENT_TIMING_POSTPAID PaymentTimingType = "Postpaid"
 
-	VPC_ID    string = "vpc-q1hcnhf7nmve"
-	SUBNET_ID string = "sbn-crqu2vxzj049"
+	VPC_ID    string = "vpc-ntznvh7tvzqg"
+	SUBNET_ID string = "sbn-4wze1np5530r"
 	SERVICE   string = "77.uservice-a7f5795b.beijing.baidubce.com"
 )
 
@@ -112,12 +113,18 @@ func TestClient_GetService(t *testing.T) {
 func TestClient_CreateEndpoint(t *testing.T) {
 	args := &CreateEndpointArgs{
 		VpcId:       VPC_ID,
-		Name:        "go-sdk-create-1",
+		Name:        "go-sdk-create-endpoint_1",
 		SubnetId:    SUBNET_ID,
-		Service:     "77.uservice-a7f5795b.beijing.baidubce.com",
+		Service:     "testCreateEndPointServiceName.uservice-4fd59ea1.beijing.baidubce.com",
 		Description: "go sdk test",
 		Billing: &Billing{
 			PaymentTiming: PAYMENT_TIMING_POSTPAID,
+		},
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagKey",
+				TagValue: "tagValue",
+			},
 		},
 		ClientToken: getClientToken(),
 	}
@@ -154,7 +161,7 @@ func TestClient_ListEndpoints(t *testing.T) {
 }
 
 func TestClient_GetEndpointDetail(t *testing.T) {
-	result, err := ENDPOINT_CLIENT.GetEndpointDetail("endpoint-3c7e02cb")
+	result, err := ENDPOINT_CLIENT.GetEndpointDetail("endpoint-f3aaebf8")
 	ExpectEqual(t.Errorf, nil, err)
 	r, err := json.Marshal(result)
 	fmt.Println(string(r))
