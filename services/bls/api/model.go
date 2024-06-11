@@ -16,6 +16,8 @@
 
 package api
 
+import "github.com/baidubce/bce-sdk-go/model"
+
 type DateTime string
 
 type LogRecord struct {
@@ -30,10 +32,11 @@ type LogStream struct {
 }
 
 type LogStore struct {
-	CreationDateTime DateTime `json:"creationDateTime"`
-	LastModifiedTime DateTime `json:"lastModifiedTime"`
-	LogStoreName     string   `json:"logStoreName"`
-	Retention        int      `json:"retention"`
+	CreationDateTime DateTime         `json:"creationDateTime"`
+	LastModifiedTime DateTime         `json:"lastModifiedTime"`
+	LogStoreName     string           `json:"logStoreName"`
+	Retention        int              `json:"retention"`
+	Tags             []model.TagModel `json:"tags,omitempty"`
 }
 
 type LogShipper struct {

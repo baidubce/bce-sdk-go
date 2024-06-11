@@ -24,6 +24,7 @@ import (
 	"encoding/json"
 
 	"github.com/baidubce/bce-sdk-go/bce"
+	"github.com/baidubce/bce-sdk-go/model"
 	"github.com/baidubce/bce-sdk-go/services/bls/api"
 )
 
@@ -63,6 +64,22 @@ func (c *Client) CreateLogStore(logStore string, retention int) error {
 	params, jsonErr := json.Marshal(&api.LogStore{
 		LogStoreName: logStore,
 		Retention:    retention,
+	})
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromString(string(params))
+	if err != nil {
+		return err
+	}
+	return api.CreateLogStore(c, body)
+}
+
+func (c *Client) CreateLogStoreWithTags(logStore string, retention int, tags []model.TagModel) error {
+	params, jsonErr := json.Marshal(&api.LogStore{
+		LogStoreName: logStore,
+		Retention:    retention,
+		Tags:         tags,
 	})
 	if jsonErr != nil {
 		return jsonErr

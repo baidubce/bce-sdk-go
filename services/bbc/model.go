@@ -970,6 +970,20 @@ type DeleteInstanceResult struct {
 	FailResources    *DeleteInstanceModel `json:"failResources"`
 }
 
+type DescribeRegionsArgs struct {
+	Region string `json:"region,omitempty"`
+}
+
+type DescribeRegionsResult struct {
+	Regions []Region `json:"regions"`
+}
+
+type Region struct {
+	RegionId       string `json:"regionId"`
+	RegionName     string `json:"regionName"`
+	RegionEndpoint string `json:"regionEndpoint"`
+}
+
 type SharedUser struct {
 	AccountId string `json:"accountId,omitempty"`
 	Account   string `json:"account,omitempty"`

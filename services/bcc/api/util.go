@@ -40,6 +40,7 @@ const (
 	REQUEST_IMAGE_SHAREDUSER_URI = "/sharedUsers"
 	REQUEST_IMAGE_OS_URI         = "/os"
 	REQUEST_INSTANCE_URI         = "/instance"
+	REQUEST_REGION_URI           = "/region"
 	REQUEST_BCC_RESERVED_TAG_URI = "/bcc/reserved/tag"
 	REQUEST_ServiceType_TAG_URI  = "/bcc/tag"
 	REQUEST_INSTANCE_LABEL_URI   = "/instanceByLabel"
@@ -90,6 +91,8 @@ const (
 	REQUEST_TRANSFER_OUT_URI                 = "/reserved/transfer/out/list"
 	REQUEST_RELATED_DELETE_POLICY            = "/modifyRelatedDeletePolicy"
 	REQUEST_VOLUME_PRICE_URI                 = "/volume/getPrice"
+
+	REQUEST_DESCRIBE_REGIONS_URI = "/describeRegions"
 )
 
 func getInstanceUri() string {
@@ -362,6 +365,10 @@ func getDeleteInstanceDeleteIngorePaymentUri() string {
 
 func getDeleteRecycledInstanceUri(id string) string {
 	return URI_PREFIXV2 + "/recycle" + REQUEST_INSTANCE_URI + "/" + id
+}
+
+func getDescribeRegionsUri() string {
+	return URI_PREFIXV2 + REQUEST_REGION_URI + REQUEST_DESCRIBE_REGIONS_URI
 }
 
 func getListInstancesByIdsUrl() string {

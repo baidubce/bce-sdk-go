@@ -536,6 +536,38 @@ func DeleteRecycledInstance(cli bce.Client, instanceId string) error {
 	return nil
 }
 
+// DescribeRegions - list all region's endpoint information.
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - reqBody: http request body
+// RETURNS:
+//     - *DescribeRegionsResult: results of list all region's endpoint information
+//     - error: nil if success otherwise the specific error
+func DescribeRegions(cli bce.Client, reqBody *bce.Body) (*DescribeRegionsResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getDescribeRegionsUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &DescribeRegionsResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
 // AutoReleaseInstance - set releaseTime of a postpay instance
 //
 // PARAMS:

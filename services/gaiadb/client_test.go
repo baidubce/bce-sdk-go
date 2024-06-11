@@ -82,6 +82,18 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 func getClientToken() string {
 	return util.NewUUID()
 }
+
+func TestClient_GetAvailableSubnetList(t *testing.T) {
+	vpcId := "vpc-xxxyyy"
+	result, err := GAIADB_CLIENT.GetAvailableSubnetList(vpcId)
+
+	ExpectEqual(t.Errorf, nil, err)
+
+	for index, subnet := range result {
+		fmt.Printf("Index: %d, VpcId: %s, SubnetId: %s\n", index, subnet.VpcId, subnet.SubnetId)
+	}
+}
+
 func TestClient_CreateGaiadb(t *testing.T) {
 
 	args := &CreateClusterArgs{

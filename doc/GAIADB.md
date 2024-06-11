@@ -138,7 +138,7 @@ gaiadbClient, _ := gaiadb.NewClient(AK, SK, ENDPOINT)
 
 ### 使用代理
 
-下面一段代码可以让客户端使用代理访问SCS服务：
+下面一段代码可以让客户端使用代理访问GAIADB服务：
 
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/gaiadb"
@@ -221,6 +221,20 @@ ExpireSeconds | int   | 签名字符串的有效期
 
 
 ## 集群管理
+
+### 查询可用子网
+使用以下代码可以查询创建Gaiadb集群所需的子网
+```go
+//vpc ID，若不需要指定 vpc 则使用空字符串即可
+vpcId = "vpc-xxxyyy"
+result, err := GAIADB_CLIENT.GetAvailableSubnetList(vpcId)
+
+if err != nil {
+    fmt.Println("get available subnetList failed:", err)
+} else {
+    fmt.Println("get available subnetList success: ", result)
+}
+```
 
 ### 创建集群
 使用以下代码可以创建Gaiadb集群

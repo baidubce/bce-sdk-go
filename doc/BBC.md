@@ -15,6 +15,8 @@
 
 由于BBC维修任务并不按照区域区分，在访问维修任务相关接口时，Endpoint统一使用北京区域的BBC访问域名。
 
+DescribeRegions接口并不按照区域区分，在调用DescribeRegions接口时，Endpoint统一使用 bbc.baidubce.com。
+
 ## 获取密钥
 
 要使用百度云BBC，您需要拥有一个有效的AK(Access Key ID)和SK(Secret Access Key)用来进行签名认证。
@@ -1525,5 +1527,22 @@ if res, err := BBC_CLIENT.GetBbcStockWithDeploySet(queryArgs); err != nil {
 		fmt.Println("get bbc stock failed: ", err)
 } else {
 	fmt.Println("list volume success, result: ", res)
+}
+```
+
+## 地域
+### 查询BBC域名列表
+- 注意，使用该接口时，bbcClient域名Endpoint(全局唯一)需设置为：bbc.baidubce.com
+
+使用以下代码查询所有开放了BBC的BBC域名列表信息：
+```go
+queryArgs := &DescribeRegionsArgs{
+    // 通过region指定获取对应region的域名列表信息，缺省或者为空则获取所有开放了BBC的BBC域名列表信息
+    Region: "your-choose-region",
+}
+if res, err := bbcClient.DescribeRegions(queryArgs); err != nil {
+    fmt.Println("list all region's endpoint information failed: ", err)
+} else {
+    fmt.Println("list all region's endpoint information success, result: ", res)
 }
 ```

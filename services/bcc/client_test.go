@@ -326,7 +326,7 @@ func TestListRecycleInstances(t *testing.T) {
 }
 
 func TestGetInstanceDetail(t *testing.T) {
-	res, err := BCC_CLIENT.GetInstanceDetail("i-aFW4mJkZ")
+	res, err := BCC_CLIENT.GetInstanceDetail("i-JVXcfQ6M")
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(res.Instance.NetEthQueueCount)
 	fmt.Println(res)
@@ -574,6 +574,17 @@ func TestGetSnapshotDetail(t *testing.T) {
 func TestDeleteSnapshot(t *testing.T) {
 	err := BCC_CLIENT.DeleteSnapshot(BCC_TestSnapshotId)
 	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestDescribeRegions(t *testing.T) {
+	queryArgs := &api.DescribeRegionsArgs{
+		Region: "",
+	}
+	if res, err := BCC_CLIENT.DescribeRegions(queryArgs); err != nil {
+		fmt.Println("list all region's endpoint information failed: ", err)
+	} else {
+		fmt.Println("list all region's endpoint information: ", res)
+	}
 }
 
 func TestCreateAutoSnapshotPolicy(t *testing.T) {
@@ -1892,6 +1903,16 @@ func TestModifyRelatedDeletePolicy(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 	instance, _ = BCC_CLIENT.GetInstanceDetail("i-ZMRzyU8f")
 	ExpectEqual(t.Errorf, instance.Instance.IsEipAutoRelatedDelete, false)
+}
+
+func TestModifyInstanceAttributeForJumboFrame(t *testing.T) {
+	var openJumboFrame = new(bool)
+	*openJumboFrame = true
+	modifyArgs := &api.ModifyInstanceAttributeArgs{
+		EnableJumboFrame: openJumboFrame,
+	}
+	err := BCC_CLIENT.ModifyInstanceAttribute(BCC_TestBccId, modifyArgs)
+	ExpectEqual(t.Errorf, err, nil)
 }
 
 func TestTransferReservedInstanceOrder(t *testing.T) {

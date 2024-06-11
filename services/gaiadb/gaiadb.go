@@ -67,6 +67,26 @@ func getQueryParams(val interface{}) (map[string]string, error) {
 	return params, nil
 }
 
+// GetAvailableSubnetList - get available subnetList
+//
+// PARAMS:
+//   - vpcId: the vpc id which you want to query
+//
+// RETURNS:
+//   - []AvailableSubnet: the result of get available subnetList
+//   - error: nil if success otherwise the specific error
+func (c *Client) GetAvailableSubnetList(vpcId string) ([]AvailableSubnet, error) {
+	result := &[]AvailableSubnet{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getGaiadbUri()+"/cluster/subnetId").
+		WithQueryParamFilter("vpcId", vpcId).
+		WithResult(result).
+		Do()
+
+	return *result, err
+}
+
 // CreateCluster - create gaiadb cluster
 //
 // PARAMS:

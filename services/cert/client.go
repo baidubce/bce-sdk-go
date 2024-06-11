@@ -20,9 +20,11 @@ package cert
 import "github.com/baidubce/bce-sdk-go/bce"
 
 const (
-	URI_PREFIX       = bce.URI_PREFIX + "v1"
-	DEFAULT_ENDPOINT = "certificate.baidubce.com"
-	REQUEST_CERT_URL = "/certificate"
+	URI_PREFIX                   = bce.URI_PREFIX + "v1"
+	DEFAULT_ENDPOINT             = "certificate.baidubce.com"
+	REQUEST_CERT_URL             = "/certificate"
+	REQUEST_CERT_LIST_DETAIL_URL = "/certificate/detail"
+	REQUEST_DETAIL_URL           = "/detail"
 )
 
 // Client of Cert service is a kind of BceClient, so derived from BceClient
@@ -45,6 +47,14 @@ func getCertUri() string {
 	return URI_PREFIX + REQUEST_CERT_URL
 }
 
+func getListCertDetailUri() string {
+	return URI_PREFIX + REQUEST_CERT_LIST_DETAIL_URL
+}
+
 func getCertUriWithId(id string) string {
 	return URI_PREFIX + REQUEST_CERT_URL + "/" + id
+}
+
+func getCertDetailUriWithId(id string) string {
+	return URI_PREFIX + REQUEST_CERT_URL + "/" + id + REQUEST_DETAIL_URL
 }

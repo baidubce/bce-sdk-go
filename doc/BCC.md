@@ -10,6 +10,8 @@
 
 在确认您使用SDK时配置的Endpoint时，可先阅读开发人员指南中关于[BCC访问域名](https://cloud.baidu.com/doc/BCC/s/0jwvyo603)的部分，理解Endpoint相关的概念。百度云目前开放了多区域支持，请参考[区域选择说明](https://cloud.baidu.com/doc/Reference/s/2jwvz23xx/)。
 
+DescribeRegions接口并不按照区域区分，在调用DescribeRegions接口时，Endpoint统一使用 bcc.baidubce.com。
+
 ## 获取密钥
 
 要使用百度云BCC，您需要拥有一个有效的AK(Access Key ID)和SK(Secret Access Key)用来进行签名认证。AK/SK是由系统分配给用户的，均为字符串，用于标识用户，为访问BCC做签名验证。
@@ -3843,6 +3845,22 @@ if err != nil {
 }
 ```
 
+## 地域
+### 查询BCC(CDS、预留实例劵)域名列表
+- 注意，使用该接口时，client域名Endpoint(全局唯一)需设置为：bcc.baidubce.com
+
+使用以下代码查询所有开放了BCC(CDS、预留实例劵)的BCC(CDS、预留实例劵)域名列表信息：
+```go
+queryArgs := &DescribeRegionsArgs{
+    // 通过region指定获取对应region的域名列表信息，缺省或者为空则获取所有开放了BCC(CDS、预留实例劵)的BCC(CDS、预留实例劵)域名列表信息
+    Region: "your-choose-region",
+}
+if res, err := client.DescribeRegions(queryArgs); err != nil {
+    fmt.Println("list all region's endpoint information failed: ", err)
+} else {
+    fmt.Println("list all region's endpoint information success, result: ", res)
+}
+```
 
 # 错误处理
 

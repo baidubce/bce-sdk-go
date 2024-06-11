@@ -93,10 +93,21 @@ func TestClient_ListCerts(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
+func TestClient_ListCertDetail(t *testing.T) {
+	_, err := CERT_CLIENT.ListCertDetail()
+	ExpectEqual(t.Errorf, nil, err)
+}
+
 func TestClient_GetCertMeta(t *testing.T) {
 	result, err := CERT_CLIENT.GetCertMeta(CERT_ID)
 	ExpectEqual(t.Errorf, nil, err)
 	ExpectEqual(t.Errorf, "sdkCreateTest", result.CertName)
+	ExpectEqual(t.Errorf, 1, result.CertType)
+}
+
+func TestClient_GetCertDetail(t *testing.T) {
+	result, err := CERT_CLIENT.GetCertDetail(CERT_ID)
+	ExpectEqual(t.Errorf, nil, err)
 	ExpectEqual(t.Errorf, 1, result.CertType)
 }
 

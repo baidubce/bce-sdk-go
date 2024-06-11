@@ -87,6 +87,11 @@ type Target struct {
 	Inserts              *[]Insert `json:"inserts,omitempty"`
 	DigitalWmSecretKeyId string    `json:"digitalWmSecretKeyId,omitempty"`
 	DigitalWmTextContent string    `json:"digitalWmTextContent,omitempty"`
+	JobCfg               *JobCfg   `json:"jobCfg,omitempty"`
+}
+
+type JobCfg struct {
+	Notification string `json:"notification,omitempty"`
 }
 
 type Area struct {

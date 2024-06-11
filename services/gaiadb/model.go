@@ -16,6 +16,11 @@
 
 package gaiadb
 
+type AvailableSubnet struct {
+	VpcId    string `json:"vpcId"`
+	SubnetId string `json:"subnetId"`
+}
+
 type CreateClusterArgs struct {
 	ClientToken       string        `json:"-"`
 	ProductType       string        `json:"productType"`

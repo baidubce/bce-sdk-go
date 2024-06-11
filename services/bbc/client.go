@@ -462,6 +462,27 @@ func (c *Client) DeleteInstance(instanceId string) error {
 	return DeleteInstance(c, instanceId)
 }
 
+// DescribeRegions - list all region's endpoint information with the specific parameters.
+// 					 use global endpoint bbc.baidubce.com to get BBC's endpoint.
+//
+// PARAMS:
+//   - args: the arguments to list all region's endpoint information
+//
+// RETURNS:
+//   - *DescribeRegionsResult: the result of list all region's endpoint information
+//   - error: nil if success otherwise the specific error
+func (c *Client) DescribeRegions(args *DescribeRegionsArgs) (*DescribeRegionsResult, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return DescribeRegions(c, body)
+}
+
 // ListInstances - list all instance with the specific parameters
 //
 // PARAMS:

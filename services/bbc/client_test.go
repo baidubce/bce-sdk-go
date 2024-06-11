@@ -862,6 +862,17 @@ func TestDeleteInstanceV2(t *testing.T) {
 	}
 }
 
+func TestDescribeRegions(t *testing.T) {
+	queryArgs := &DescribeRegionsArgs{
+		Region: "",
+	}
+	if res, err := BBC_CLIENT.DescribeRegions(queryArgs); err != nil {
+		fmt.Println("list all region's endpoint information failed: ", err)
+	} else {
+		fmt.Println("list all region's endpoint information: ", res)
+	}
+}
+
 func TestListRecycledInstances(t *testing.T) {
 	queryArgs := &ListRecycledInstancesArgs{
 		Marker:        "your marker",

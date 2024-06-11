@@ -28,6 +28,7 @@ const (
 	URI_PREFIX_V2 = bce.URI_PREFIX + "v2"
 
 	REQUEST_INSTANCE_URI       = "/instance"
+	REQUEST_REGION_URI         = "/region"
 	REQUEST_INSTANCE_LABEL_URI = "/instanceByLabel"
 	REQUEST_BATCH_DELETE_URI   = "/batchDelete"
 	REQUEST_RECYCLE_URI        = "/recycle"
@@ -68,6 +69,8 @@ const (
 	REQUEST_ENABLE_URI           = "/enable"
 	REQUEST_VOLUME_URI           = "/volume"
 	REQUEST_BBC_RESERVED_TAG_URI = "/bbc/reserved/tag"
+
+	REQUEST_DESCRIBE_REGIONS_URI = "/describeRegions"
 )
 
 func Aes128EncryptUseSecreteKey(sk string, data string) (string, error) {

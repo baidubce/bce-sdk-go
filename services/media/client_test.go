@@ -173,6 +173,28 @@ func TestCreateJobCustomizeDelogoCrop(t *testing.T) {
 	t.Logf("%+v", jobResponse)
 }
 
+func TestCreateJobWithNotify(t *testing.T) {
+	args := &api.CreateJobArgs{}
+	args.PipelineName = "go_sdk_test"
+	source := &api.Source{Clips: &[]api.SourceClip{{
+		SourceKey: "01.mp4",
+	}}}
+	args.Source = source
+	target := &api.Target{}
+	targetKey := "clips_playback_watermark_delogo_crop2.mp4"
+	target.TargetKey = targetKey
+	presetName := "go_test_customize_audio_video"
+	target.PresetName = presetName
+	cfg := &api.JobCfg{}
+	cfg.Notification = "http://hello.lyq.com:80/job"
+	target.JobCfg = cfg
+	args.Target = target
+
+	jobResponse, err := MEDIA_CLIENT.CreateJobCustomize(args)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", jobResponse)
+}
+
 func TestListTranscodingJobs(t *testing.T) {
 	listTranscodingJobsResponse, err := MEDIA_CLIENT.ListTranscodingJobs("go_sdk_test")
 	ExpectEqual(t.Errorf, err, nil)
@@ -180,9 +202,10 @@ func TestListTranscodingJobs(t *testing.T) {
 }
 
 func TestGetTranscodingJob(t *testing.T) {
-	getTranscodingJobResponse, err := MEDIA_CLIENT.GetTranscodingJob("job-pbsq30p9161enwpz")
+	getTranscodingJobResponse, err := MEDIA_CLIENT.GetTranscodingJob("job-qfan7kgbfh6tc2pp")
 	ExpectEqual(t.Errorf, err, nil)
 	t.Logf("%+v", getTranscodingJobResponse)
+	t.Logf("%+v", getTranscodingJobResponse.Target.JobCfg.Notification)
 }
 
 func TestListPresets(t *testing.T) {

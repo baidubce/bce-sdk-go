@@ -131,6 +131,7 @@ type InstanceModel struct {
 	NetworkCapacityInMbps  int                    `json:"networkCapacityInMbps"`
 	PlacementPolicy        string                 `json:"placementPolicy"`
 	ZoneName               string                 `json:"zoneName"`
+	FlavorSubType          string                 `json:"flavorSubType"`
 	SubnetId               string                 `json:"subnetId"`
 	VpcId                  string                 `json:"vpcId"`
 	AutoRenew              bool                   `json:"autoRenew"`
@@ -141,6 +142,7 @@ type InstanceModel struct {
 	Ipv6                   string                 `json:"ipv6"`
 	EniQuota               int                    `json:"eniQuota"`
 	EriQuota               int                    `json:"eriQuota"`
+	RdmaType               string                 `json:"rdmaType"`
 	RdmaTypeApi            string                 `json:"rdmaTypeApi"`
 	SwitchId               string                 `json:"switchId"`
 	HostId                 string                 `json:"hostId"`
@@ -152,6 +154,7 @@ type InstanceModel struct {
 	DeletionProtection     int                    `json:"deletionProtection"`
 	NetEthQueueCount       string                 `json:"netEthQueueCount"`
 	Volumes                []VolumeModel          `json:"volumes"`
+	EnableJumboFrame       bool                   `json:"enableJumboFrame"`
 	IsEipAutoRelatedDelete bool                   `json:"isEipAutoRelatedDelete"`
 }
 
@@ -372,6 +375,20 @@ type CreateInstanceArgsV2 struct {
 	ResGroupId                 string            `json:"resGroupId,omitempty"`
 }
 
+type DescribeRegionsArgs struct {
+	Region string `json:"region,omitempty"`
+}
+
+type DescribeRegionsResult struct {
+	Regions []Region `json:"regions"`
+}
+
+type Region struct {
+	RegionId       string `json:"regionId"`
+	RegionName     string `json:"regionName"`
+	RegionEndpoint string `json:"regionEndpoint"`
+}
+
 type FileSystemModel struct {
 	FsID     string `json:"fsId"`
 	MountAds string `json:"mountAds"`
@@ -507,6 +524,7 @@ type CreateInstanceBySpecArgs struct {
 	BidModel                   string           `json:"bidModel,omitempty"`
 	BidPrice                   string           `json:"bidPrice,omitempty"`
 	ResGroupId                 string           `json:"resGroupId,omitempty"`
+	EnableJumboFrame           bool             `json:"enableJumboFrame"`
 }
 
 type CreateInstanceBySpecArgsV2 struct {
@@ -917,6 +935,7 @@ type ChangeInstancePassArgs struct {
 
 type ModifyInstanceAttributeArgs struct {
 	Name             string `json:"name"`
+	EnableJumboFrame *bool  `json:"enableJumboFrame"`
 	NetEthQueueCount string `json:"netEthQueueCount"`
 }
 
@@ -1952,11 +1971,13 @@ type BccFlavor struct {
 	ProductType         string `json:"productType"`
 	Spec                string `json:"spec"`
 	SpecId              string `json:"specId"`
+	FlavorSubType       string `json:"flavorSubType"`
 	CpuModel            string `json:"cpuModel"`
 	CpuGHz              string `json:"cpuGHz"`
 	NetworkBandwidth    string `json:"networkBandwidth"`
 	NetworkPackage      string `json:"networkPackage"`
 	NetEthQueueCount    string `json:"netEthQueueCount"`
+	EnableJumboFrame    bool   `json:"enableJumboFrame"`
 	NetEthMaxQueueCount string `json:"netEthMaxQueueCount"`
 }
 
@@ -1982,6 +2003,7 @@ type EbcFlavor struct {
 	ProductType        string `json:"productType"`
 	Spec               string `json:"spec"`
 	SpecId             string `json:"specId"`
+	FlavorSubType      string `json:"flavorSubType"`
 	CpuModel           string `json:"cpuModel"`
 	CpuGHz             string `json:"cpuGHz"`
 	NetworkBandwidth   string `json:"networkBandwidth"`

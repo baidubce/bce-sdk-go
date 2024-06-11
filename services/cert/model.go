@@ -45,8 +45,28 @@ type CertificateMeta struct {
 	CertType        int    `json:"certType"`
 }
 
+type CertificateDetailMeta struct {
+	CertId          string              `json:"certId"`
+	CertName        string              `json:"certName"`
+	CertCommonName  string              `json:"certCommonName"`
+	CertFingerprint string              `json:"certFingerprint"`
+	CertStartTime   string              `json:"certStartTime"`
+	CertStopTime    string              `json:"certStopTime"`
+	CertCreateTime  string              `json:"certCreateTime"`
+	CertUpdateTime  string              `json:"certUpdateTime"`
+	CertType        int                 `json:"certType"`
+	CertDNSNames    string              `json:"certDNSNames"`
+	Resources       []CertInServiceMeta `json:"resources"`
+	Status          string              `json:"status"`
+	Expired         bool                `json:"expired"`
+}
+
 type ListCertResult struct {
 	Certs []CertificateMeta `json:"certs"`
+}
+
+type ListCertDetailResult struct {
+	Certs []CertificateDetailMeta `json:"certs"`
 }
 
 type UpdateCertDataArgs struct {
@@ -55,4 +75,11 @@ type UpdateCertDataArgs struct {
 	CertPrivateData string `json:"certPrivateData"`
 	CertLinkData    string `json:"certLinkData,omitempty"`
 	CertType        int    `json:"certType,omitempty"`
+}
+
+type CertInServiceMeta struct {
+	ServiceName string `json:"serviceName"`
+	ResourceID  string `json:"resourceId"`
+	CreateTime  string `json:"createTime"`
+	UpdateTime  string `json:"updateTime"`
 }

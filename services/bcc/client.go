@@ -2062,6 +2062,27 @@ func (c *Client) DeleteRecycledInstance(instanceId string) error {
 	return api.DeleteRecycledInstance(c, instanceId)
 }
 
+// DescribeRegions - list all region's endpoint information with the specific parameters.
+// 					 use global endpoint bcc.baidubce.com to get BCC,CDS and ReservedInstance's endpoint.
+//
+// PARAMS:
+//   - args: the arguments to list all region's endpoint information
+//
+// RETURNS:
+//   - *DescribeRegionsResult: the result of list all region's endpoint information
+//   - error: nil if success otherwise the specific error
+func (c *Client) DescribeRegions(args *api.DescribeRegionsArgs) (*api.DescribeRegionsResult, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return api.DescribeRegions(c, body)
+}
+
 func (c *Client) ListInstanceByInstanceIds(args *api.ListInstanceByInstanceIdArgs) (*api.ListInstancesResult, error) {
 	return api.ListInstanceByInstanceIds(c, args)
 }

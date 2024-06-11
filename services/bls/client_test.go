@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/baidubce/bce-sdk-go/bce"
+	"github.com/baidubce/bce-sdk-go/model"
 	"github.com/baidubce/bce-sdk-go/services/bls/api"
 	"github.com/baidubce/bce-sdk-go/util/log"
 )
@@ -90,6 +91,24 @@ func TestCreateLogStore(t *testing.T) {
 	err := BLS_CLIENT.CreateLogStore(EXIST_LOGSTORE, 3)
 	ExpectEqual(t.Errorf, err, nil)
 	err = BLS_CLIENT.CreateLogStore(EXIST_LOGSTORE, 36)
+	if realErr, ok := err.(*bce.BceServiceError); ok {
+		ExpectEqual(t.Errorf, realErr.StatusCode, http.StatusConflict)
+	}
+	res, err := BLS_CLIENT.DescribeLogStore(EXIST_LOGSTORE)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res.LogStoreName, EXIST_LOGSTORE)
+	ExpectEqual(t.Errorf, res.Retention, 3)
+}
+
+func TestCreateLogStoreWithTags(t *testing.T) {
+	tag := model.TagModel{
+		TagKey:   "默认项目",
+		TagValue: "test",
+	}
+	tags := []model.TagModel{tag}
+	err := BLS_CLIENT.CreateLogStoreWithTags(EXIST_LOGSTORE, 3, tags)
+	ExpectEqual(t.Errorf, err, nil)
+	err = BLS_CLIENT.CreateLogStoreWithTags(EXIST_LOGSTORE, 36, tags)
 	if realErr, ok := err.(*bce.BceServiceError); ok {
 		ExpectEqual(t.Errorf, realErr.StatusCode, http.StatusConflict)
 	}
@@ -536,7 +555,7 @@ func TestClient_BulkDeleteLogShipper(t *testing.T) {
 		ids = append(ids, id)
 	}
 	time.Sleep(time.Second * 2)
-	args := &api.BulkDeleteShipperCondition{LogShipperIDs:ids}
+	args := &api.BulkDeleteShipperCondition{LogShipperIDs: ids}
 	err := BLS_CLIENT.BulkDeleteLogShipper(args)
 	ExpectEqual(t.Errorf, err, nil)
 	for _, id := range ids {
