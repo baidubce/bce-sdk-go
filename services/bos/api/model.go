@@ -207,6 +207,28 @@ type GetBucketReplicationProgressResult struct {
 	LatestReplicationTime     string  `json:"latestReplicationTime"`
 }
 
+// BucketMirroring defines the data structure for bucket mirroring
+type BucketMirroring struct {
+	SourceURL       string        `json:"sourceUrl"`
+	Prefix          string        `json:"prefix"`
+	StorageClass    string        `json:"storageClass"`
+	PassQuerystring bool          `json:"passQuerystring"`
+	Mode            string        `json:"mode"`
+	PassHeaders     []interface{} `json:"passHeaders"`
+	IgnoreHeaders   []interface{} `json:"ignoreHeaders"`
+	CustomHeaders   []interface{} `json:"customHeaders"`
+}
+
+// PutBucketMirroringArgs defines the arguments for put bucket mirroring
+type PutBucketMirroringArgs struct {
+	MirroringConfiguration []BucketMirroring `json:"bucketMirroringConfiguration"`
+}
+
+// GetBucketMirroringResult defines the result for get bucket mirroring
+type GetBucketMirroringResult struct {
+	MirroringConfiguration []BucketMirroring `json:"bucketMirroringConfiguration"`
+}
+
 // BucketEncryptionType defines the data structure for Put and Get of bucket encryption
 type BucketEncryptionType struct {
 	EncryptionAlgorithm string `json:"encryptionAlgorithm"`
