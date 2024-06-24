@@ -75,6 +75,9 @@ type ClusterSpec struct {
 	AuthenticateMode AuthenticateMode `json:"authenticateMode,omitempty" validate:"readonly"`
 
 	Tags []Tag `json:"tags,omitempty" validate:"readonly"`
+
+	// 资源分组 ID
+	ResourceGroupID string `json:"resourceGroupID,omitempty"`
 }
 
 // ResourceChargingOption 定义IaaS资源付费配置

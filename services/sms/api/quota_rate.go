@@ -26,13 +26,13 @@ import (
 // QueryQuotaRate - query the quota and rate limit detail of an user
 //
 // RETURNS:
-//     - *QueryQuotaRateResult: the result of the query
-//     - error: the return error if any occurs
+//   - *QueryQuotaRateResult: the result of the query
+//   - error: the return error if any occurs
 func QueryQuotaRate(cli bce.Client) (*QueryQuotaRateResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(REQUEST_URI_QUOTA)
 	req.SetMethod(http.GET)
-	req.SetParam("userQuery", "")
+	req.SetParam("userQuery", "sms")
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
 		return nil, err
@@ -50,11 +50,12 @@ func QueryQuotaRate(cli bce.Client) (*QueryQuotaRateResult, error) {
 // UpdateQuotaRate - update the quota and rate limit detail of an user
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - args: the arguments to update the quota and rate limit
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to update the quota and rate limit
+//
 // RETURNS:
-//     - *ListBucketsResult: the result bucket list structure
-//     - error: nil if ok otherwise the specific error
+//   - *ListBucketsResult: the result bucket list structure
+//   - error: nil if ok otherwise the specific error
 func UpdateQuotaRate(cli bce.Client, args *UpdateQuotaRateArgs) error {
 	req := &bce.BceRequest{}
 	req.SetUri(REQUEST_URI_QUOTA)

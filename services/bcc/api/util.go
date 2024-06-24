@@ -17,7 +17,7 @@ package api
 
 import (
 	"encoding/hex"
-	"fmt"
+	"errors"
 
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/util/crypto"
@@ -56,6 +56,7 @@ const (
 	REQUEST_ZONE_URI             = "/zone"
 	REQUEST_RECYCLE              = "/recycle"
 	REQUEST_DELETEPREPAY         = "/volume/deletePrepay"
+
 	//
 	REQUEST_FLAVOR_SPEC_URI       = "/instance/flavorSpec"
 	REQUEST_PRICE_URI             = "/price"
@@ -63,6 +64,7 @@ const (
 	REQUEST_CANCEL_AUTO_RENEW_URI = "/cancelAutoRenew"
 	REQUEST_BID_PRICE_URI         = "/bidPrice"
 	REQUEST_BID_FLAVOR_URI        = "/bidFlavor"
+
 	//
 	REQUEST_INSTANCE_PRICE_URI               = "/instance/price"
 	REQUEST_INSTANCE_BY_SPEC_URI             = "/instanceBySpec"
@@ -92,7 +94,11 @@ const (
 	REQUEST_RELATED_DELETE_POLICY            = "/modifyRelatedDeletePolicy"
 	REQUEST_VOLUME_PRICE_URI                 = "/volume/getPrice"
 
-	REQUEST_DESCRIBE_REGIONS_URI = "/describeRegions"
+	REQUEST_DESCRIBE_REGIONS_URI   = "/describeRegions"
+	REQUEST_EHC_CLUSTER_CREATE_URI = "/ehc/cluster/create"
+	REQUEST_EHC_CLUSTER_LIST_URI   = "/ehc/cluster/list"
+	REQUEST_EHC_CLUSTER_MODIFY_URI = "/ehc/cluster/modify"
+	REQUEST_EHC_CLUSTER_DELETE_URI = "/ehc/cluster/delete"
 )
 
 func getInstanceUri() string {
@@ -161,7 +167,7 @@ func getInstanceRelatedDeletePolicy(id string) string {
 
 func Aes128EncryptUseSecreteKey(sk string, data string) (string, error) {
 	if len(sk) < 16 {
-		return "", fmt.Errorf("error secrete key")
+		return "", errors.New("error secrete key")
 	}
 
 	crypted, err := crypto.EBCEncrypto([]byte(sk[:16]), []byte(data))
@@ -199,6 +205,7 @@ func getAutoRenewVolumeUri() string {
 func getCancelAutoRenewVolumeUri() string {
 	return URI_PREFIXV2 + REQUEST_VOLUME_URI + REQUEST_CANCEL_AUTO_RENEW_URI
 }
+
 func getAvailableDiskInfo() string {
 	return URI_PREFIXV2 + REQUEST_VOLUME_DISK_URI
 }
@@ -333,6 +340,14 @@ func getbindInstanceToTagsUri(id string) string {
 
 func GetBccReservedToTagsUri() string {
 	return URI_PREFIXV2 + REQUEST_BCC_RESERVED_TAG_URI
+}
+
+func getCreateReservedInstanceUri() string {
+	return URI_PREFIXV2 + "/instance/reserved/create"
+}
+
+func getModifyReservedInstancesUri() string {
+	return URI_PREFIXV2 + "/instance/reserved/modify"
 }
 
 func GetServiceTypeTagsUri() string {
@@ -505,4 +520,20 @@ func getTransferOutReservedInstanceOrdersUri() string {
 
 func getCdsPriceUri() string {
 	return URI_PREFIXV2 + REQUEST_VOLUME_PRICE_URI
+}
+
+func getCreateEhcClusterUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_EHC_CLUSTER_CREATE_URI
+}
+
+func getEhcClusterListUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_EHC_CLUSTER_LIST_URI
+}
+
+func getEhcClusterModifyUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_EHC_CLUSTER_MODIFY_URI
+}
+
+func getEhcClusterDeleteUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_EHC_CLUSTER_DELETE_URI
 }

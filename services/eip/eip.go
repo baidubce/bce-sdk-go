@@ -403,6 +403,22 @@ func (c *Client) UnDirectEip(eip, clientToken string) error {
 		Do()
 }
 
+// RefundEip - refund prepay EIP with the specific parameters
+//
+// PARAMS:
+//   - eip: the specific EIP
+//   - clientToken: the specific client token
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) RefundEip(eip, clientToken string) error {
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getRefundEipUriWithEip(eip)).
+		WithQueryParamFilter("clientToken", clientToken).
+		Do()
+}
+
 // CreateEipTp - create an EIP TP with the specific parameters
 //
 // PARAMS:

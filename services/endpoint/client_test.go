@@ -120,6 +120,7 @@ func TestClient_CreateEndpoint(t *testing.T) {
 		Billing: &Billing{
 			PaymentTiming: PAYMENT_TIMING_POSTPAID,
 		},
+		Bandwidth: 10,
 		Tags: []model.TagModel{
 			{
 				TagKey:   "tagKey",

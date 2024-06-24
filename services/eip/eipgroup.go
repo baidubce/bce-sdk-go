@@ -260,3 +260,19 @@ func (c *Client) EipGroupPurchaseReserved(id string, args *EipGroupPurchaseReser
 		WithBody(args).
 		Do()
 }
+
+// RefundEipGroup - refund prepay EIP_GROUP with the specific parameters
+//
+// PARAMS:
+//   - id: the eipGroup's id
+//   - clientToken: optional parameter, an Idempotent Token
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) RefundEipGroup(id string, clientToken string) error {
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getRefundEipGroupUriWithId(id)).
+		WithQueryParamFilter("clientToken", clientToken).
+		Do()
+}

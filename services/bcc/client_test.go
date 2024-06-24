@@ -178,6 +178,7 @@ func TestCreateInstanceBySpec(t *testing.T) {
 			PaymentTiming: api.PaymentTimingPostPaid,
 		},
 		DeployIdList: DeploySetIds,
+		EhcClusterId: "ehc-bk4hM1N3",
 	}
 	createResult, err := BCC_CLIENT.CreateInstanceBySpec(createInstanceBySpecArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -300,7 +301,8 @@ func TestCreateImage(t *testing.T) {
 
 func TestListInstances(t *testing.T) {
 	listArgs := &api.ListInstanceArgs{
-		ZoneName: "cn-bj-a",
+		ZoneName:     "cn-bj-a",
+		EhcClusterId: "ehc-bk4hM1N3",
 	}
 	res, err := BCC_CLIENT.ListInstances(listArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -1440,8 +1442,9 @@ func TestGetAllStocks(t *testing.T) {
 
 func TestGetStockWithDeploySet(t *testing.T) {
 	args := &api.GetStockWithDeploySetArgs{
-		Spec:         "bcc.g3.c2m8",
-		DeploySetIds: []string{"DeploySetId"},
+		Spec:         "ehc.lgn5.c128m1024.8a100.8re.4d",
+		DeploySetIds: []string{"dset-Z3aEKdeY"},
+		EhcClusterId: "ehc-bk4hM1N3",
 	}
 	if res, err := BCC_CLIENT.GetStockWithDeploySet(args); err != nil {
 		fmt.Println("get stock with deploySet failed: ", err)
@@ -1756,6 +1759,17 @@ func TestDeleteIpv6(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestDeleteIpv6WithIpv6Address(t *testing.T) {
+	deleteIpv6Args := &api.DeleteIpv6Args{
+		InstanceId:  "i-0nPl9WFJ",
+		Ipv6Address: "2400:da00:e003:0:41c:4100:0:5",
+		Reboot:      true,
+	}
+
+	err := BCC_CLIENT.DeleteIpv6(deleteIpv6Args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestAddIpv6(t *testing.T) {
 	addIpv6Args := &api.AddIpv6Args{
 		InstanceId:  BCC_TestBccId,
@@ -1850,7 +1864,6 @@ func TestListCDSVolumeV3New(t *testing.T) {
 }
 
 func TestBatchRefundResource(t *testing.T) {
-
 	arg := &api.BatchRefundResourceArg{
 		InstanceIds: []string{
 			"i-",
@@ -1878,9 +1891,10 @@ func TestListCDSVolumeNew(t *testing.T) {
 func TestGetAvailableStockWithSpec(t *testing.T) {
 	rootOnLocal := true
 	args := &api.GetAvailableStockWithSpecArgs{
-		SpecList:     []string{"bcc.l3.c1m100", "bcc.g5.c2m8"},
-		DeploySetIds: []string{"dset-lhs1Ju39", "dset-A2Y3FLfZ"},
+		SpecList:     []string{"ehc.lgn5.c128m1024.8a100.8re.4d"},
+		DeploySetIds: []string{"dset-Z3aEKdeY"},
 		RootOnLocal:  &rootOnLocal,
+		EhcClusterId: "ehc-bk4hM1N3",
 	}
 	result, err := BCC_CLIENT.GetAvailableStockWithSpec(args)
 	ExpectEqual(t.Errorf, err, nil)
@@ -1888,7 +1902,6 @@ func TestGetAvailableStockWithSpec(t *testing.T) {
 }
 
 func TestModifyRelatedDeletePolicy(t *testing.T) {
-
 	args := &api.RelatedDeletePolicy{
 		IsEipAutoRelatedDelete: true,
 	}
@@ -1950,6 +1963,7 @@ func TestRefuseTransferReservedInstanceOrder(t *testing.T) {
 func TestAcceptTransferReservedInstanceOrder(t *testing.T) {
 	args := &api.AcceptTransferReservedInstanceRequest{
 		TransferRecordId: "t-uNwDdZO9",
+		EhcClusterId:     "ehc-bk4hM1N3",
 	}
 	err := BCC_CLIENT.AcceptTransferReservedInstanceOrder(args)
 	ExpectEqual(t.Errorf, err, nil)
@@ -1958,10 +1972,10 @@ func TestAcceptTransferReservedInstanceOrder(t *testing.T) {
 func TestTransferInReservedInstanceOrders(t *testing.T) {
 	args := &api.DescribeTransferReservedInstancesRequest{
 		ReservedInstanceIds: []string{
-			//"r-I8rLAfcM",
+			// "r-I8rLAfcM",
 		},
 		TransferRecordIds: []string{
-			//"t-FoM4l1xI",
+			// "t-FoM4l1xI",
 		},
 		Spec:   "bcc.g3.c1m1",
 		Status: "timeout",
@@ -1969,7 +1983,6 @@ func TestTransferInReservedInstanceOrders(t *testing.T) {
 	result, err := BCC_CLIENT.TransferInReservedInstanceOrders(args)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(result)
-
 }
 
 func TestTransferOutReservedInstanceOrders(t *testing.T) {
@@ -2018,4 +2031,102 @@ func TestGetCDSPrice(t *testing.T) {
 	result, err := BCC_CLIENT.getCdsPrice(args)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(result)
+}
+
+func TestCreateEhcCluster(t *testing.T) {
+	args := &api.CreateEhcClusterArg{
+		Name:        "test-ehcCluster",
+		ZoneName:    "cn-bj-a",
+		Description: "test description",
+	}
+	result, _ := BCC_CLIENT.CreateEhcCluster(args)
+	fmt.Println(result)
+}
+
+func TestEhcClusterList(t *testing.T) {
+	args := &api.DescribeEhcClusterListArg{
+		EhcClusterIdList: []string{
+			"ehc-bk4hM1N3",
+		}, NameList: []string{
+			"test-modify",
+		},
+		ZoneName: "cn-bj-a",
+		SortKey:  "name",
+		SortDir:  "asc",
+	}
+	result, err := BCC_CLIENT.ListEhcCluster(args)
+	fmt.Println(result)
+	fmt.Println(err)
+}
+
+func TestCreateReservedInstance(t *testing.T) {
+
+	args := &api.CreateReservedInstanceArgs{
+		ClientToken:              "myClientToken",
+		ReservedInstanceName:     "myReservedInstance",
+		Scope:                    "AZ",
+		ZoneName:                 "cn-bj-a",
+		Spec:                     "bcc.g5.c2m8",
+		OfferingType:             "FullyPrepay",
+		InstanceCount:            1,
+		ReservedInstanceCount:    1,
+		ReservedInstanceTime:     1,
+		ReservedInstanceTimeUnit: "month",
+		AutoRenewTimeUnit:        "month",
+		AutoRenewTime:            1,
+		AutoRenew:                true,
+		Tags: []api.Tag{
+			{
+				TagKey:   "Env",
+				TagValue: "Production",
+			},
+		},
+		TicketId: "ticket456",
+	}
+
+	result, err := BCC_CLIENT.CreateReservedInstance(args)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(result)
+}
+
+func TestModifyReservedInstances(t *testing.T) {
+	args := &api.ModifyReservedInstancesArgs{
+		ReservedInstances: []api.ModifyReservedInstance{
+			{
+				ReservedInstanceId:   "r-UBVQFB5b",
+				ReservedInstanceName: "update-reserved-instance",
+			},
+		},
+	}
+
+	result, err := BCC_CLIENT.ModifyReservedInstances(args)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(result)
+}
+
+func TestEhcClusterModify(t *testing.T) {
+	descriptions := ""
+	args := &api.ModifyEhcClusterArg{
+		EhcClusterId: "ehc-bk4hM1N3",
+		Name:         "test-modify",
+		Description:  &descriptions,
+	}
+	err := BCC_CLIENT.ModifyEhcCluster(args)
+	fmt.Println(err)
+}
+
+func TestEhcClusterDelete(t *testing.T) {
+	args := &api.DeleteEhcClusterArg{
+		EhcClusterIdList: []string{
+			"ehc-tBmphmZE",
+		},
+	}
+	err := BCC_CLIENT.DeleteEhcCluster(args)
+	fmt.Println(err)
 }

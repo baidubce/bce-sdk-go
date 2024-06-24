@@ -34,6 +34,7 @@ func CreateEndpoint() {
 		Billing: &endpoint.Billing{
 			PaymentTiming: "Postpaid",
 		},
+		Bandwidth: 10,
 		Tags: []model.TagModel{
 			{
 				TagKey:   "tagKey",

@@ -28,11 +28,15 @@ const (
 
 	REQUEST_RECYCLE_EIP_URL = "/eip/recycle"
 
+	REQUEST_REFUND_EIP_URL = "/eip/refund"
+
 	REQUEST_EIP_CLUSTER_URL = "/eipcluster"
 
 	REQUEST_EIP_TP_URL = "/eiptp"
 
 	REQUEST_EIP_GROUP_URL = "/eipgroup"
+
+	REQUEST_REFUND_EIP_GROUP_URL = "/eipgroup/refund"
 
 	REQUEST_EIP_BP_URL = "/eipbp"
 )
@@ -69,6 +73,10 @@ func getRecycleEipUriWithEip(eip string) string {
 	return URI_PREFIX + REQUEST_RECYCLE_EIP_URL + "/" + eip
 }
 
+func getRefundEipUriWithEip(eip string) string {
+	return URI_PREFIX + REQUEST_REFUND_EIP_URL + "/" + eip
+}
+
 func getEipClusterUri() string {
 	return URI_PREFIX + REQUEST_EIP_CLUSTER_URL
 }
@@ -91,6 +99,10 @@ func getEipGroupUri() string {
 
 func getEipGroupUriWithId(id string) string {
 	return URI_PREFIX + REQUEST_EIP_GROUP_URL + "/" + id
+}
+
+func getRefundEipGroupUriWithId(id string) string {
+	return URI_PREFIX + REQUEST_REFUND_EIP_GROUP_URL + "/" + id
 }
 
 func getEipBpUrl() string {

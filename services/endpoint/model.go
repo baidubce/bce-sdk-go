@@ -78,6 +78,7 @@ type CreateEndpointArgs struct {
 	IpAddress   string           `json:"ipAddress,omitempty"`
 	Billing     *Billing         `json:"billing"`
 	Tags        []model.TagModel `json:"tags,omitempty"`
+	Bandwidth   int              `json:"bandwidth"`
 }
 
 type CreateEndpointResult struct {

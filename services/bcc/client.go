@@ -604,10 +604,11 @@ func (c *Client) ModifyDeletionProtection(instanceId string, args *api.DeletionP
 // ModifyRelatedDeletePolicy - Modify RelatedDeletePolicy of specified instance
 //
 // PARAMS:
-//     - instanceId: id of the instance
-//	   - args: the arguments to ModifyRelatedDeletePolicy
+//   - instanceId: id of the instance
+//   - args: the arguments to ModifyRelatedDeletePolicy
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ModifyRelatedDeletePolicy(instanceId string, args *api.RelatedDeletePolicy) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -2063,7 +2064,8 @@ func (c *Client) DeleteRecycledInstance(instanceId string) error {
 }
 
 // DescribeRegions - list all region's endpoint information with the specific parameters.
-// 					 use global endpoint bcc.baidubce.com to get BCC,CDS and ReservedInstance's endpoint.
+//
+//	use global endpoint bcc.baidubce.com to get BCC,CDS and ReservedInstance's endpoint.
 //
 // PARAMS:
 //   - args: the arguments to list all region's endpoint information
@@ -2411,7 +2413,7 @@ func (c *Client) TransferReservedInstanceOrder(args *api.TransferReservedInstanc
 //
 // RETURNS:
 //   - error: nil if success otherwise the specific error
-func (c *Client) RevokeTransferReservedInstanceOrder(args *api.TransferReservedInstanceOperateRequest) (error) {
+func (c *Client) RevokeTransferReservedInstanceOrder(args *api.TransferReservedInstanceOperateRequest) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
 		return jsonErr
@@ -2431,7 +2433,7 @@ func (c *Client) RevokeTransferReservedInstanceOrder(args *api.TransferReservedI
 //
 // RETURNS:
 //   - error: nil if success otherwise the specific error
-func (c *Client) RefuseTransferReservedInstanceOrder(args *api.TransferReservedInstanceOperateRequest) (error) {
+func (c *Client) RefuseTransferReservedInstanceOrder(args *api.TransferReservedInstanceOperateRequest) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
 		return jsonErr
@@ -2451,7 +2453,7 @@ func (c *Client) RefuseTransferReservedInstanceOrder(args *api.TransferReservedI
 //
 // RETURNS:
 //   - error: nil if success otherwise the specific error
-func (c *Client) AcceptTransferReservedInstanceOrder(args *api.AcceptTransferReservedInstanceRequest) (error) {
+func (c *Client) AcceptTransferReservedInstanceOrder(args *api.AcceptTransferReservedInstanceRequest) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
 		return jsonErr
@@ -2484,9 +2486,9 @@ func (c *Client) TransferInReservedInstanceOrders(args *api.DescribeTransferRese
 	result := &api.DescribeTransferInRecordsResponse{}
 	result, err = api.TransferInReservedInstanceOrders(c, body)
 
-	jsonString, err :=  json.Marshal(result);
+	jsonString, err := json.Marshal(result)
 	fmt.Println(string(jsonString))
-	return result, err;
+	return result, err
 }
 
 // TransferOutReservedInstanceOrders - Search transfer out reserved instance orders
@@ -2511,4 +2513,101 @@ func (c *Client) TransferOutReservedInstanceOrders(args *api.DescribeTransferRes
 
 func (c *Client) getCdsPrice(args *api.VolumePriceRequestArgs) (*api.VolumePriceResponse, error) {
 	return api.GetCdsPrice(c, args)
+}
+
+// CreateEhcCluster - create an ehcCluster
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments to search transfer out reserved instance orders
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - CreateEhcClusterResponse: result of the ehcCluster id newly created
+func (c *Client) CreateEhcCluster(args *api.CreateEhcClusterArg) (*api.CreateEhcClusterResponse, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return api.CreateEhcCluster(c, body)
+}
+
+func (c *Client) CreateReservedInstance(args *api.CreateReservedInstanceArgs) (*api.CreateReservedInstanceResponse, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return api.CreateReservedInstance(c, args.ClientToken, body)
+}
+
+func (c *Client) ModifyReservedInstances(args *api.ModifyReservedInstancesArgs) (*api.ModifyReservedInstancesResponse, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return api.ModifyReservedInstances(c, args.ClientToken, body)
+}
+
+func (c *Client) ListEhcCluster(args *api.DescribeEhcClusterListArg) (*api.DescribeEhcClusterListResponse, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return api.EhcClusterList(c, body)
+}
+
+// ModifyEhcCluster - modify ehcCluster
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments of method
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) ModifyEhcCluster(args *api.ModifyEhcClusterArg) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return api.EhcClusterModify(c, body)
+}
+
+// DeleteEhcCluster - delete ehcCluster
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - args: the arguments of method
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) DeleteEhcCluster(args *api.DeleteEhcClusterArg) error {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	return api.EhcClusterDelete(c, body)
 }

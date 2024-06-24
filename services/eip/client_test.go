@@ -237,6 +237,11 @@ func TestClient_DeleteRecycleEip(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
+func TestClient_RefundEip(t *testing.T) {
+	err := EIP_CLIENT.RefundEip("EIP_ADDRESS", getClientToken())
+	ExpectEqual(t.Errorf, nil, err)
+}
+
 func TestClient_CreateEipTp(t *testing.T) {
 	args := &CreateEipTpArgs{
 		ReservationLength: 1,
@@ -384,6 +389,11 @@ func TestClient_EipGroupPurchaseReserved(t *testing.T) {
 		ClientToken: getClientToken(),
 	}
 	err := EIP_CLIENT.EipGroupPurchaseReserved("eg-2b1ef0db", args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_RefundEipGroup(t *testing.T) {
+	err := EIP_CLIENT.RefundEipGroup("EIP_GROUP_ID", getClientToken())
 	ExpectEqual(t.Errorf, nil, err)
 }
 

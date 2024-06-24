@@ -156,6 +156,8 @@ type InstanceModel struct {
 	Volumes                []VolumeModel          `json:"volumes"`
 	EnableJumboFrame       bool                   `json:"enableJumboFrame"`
 	IsEipAutoRelatedDelete bool                   `json:"isEipAutoRelatedDelete"`
+	ResGroupInfos          []ResGroupInfoModel    `json:"resGroupInfos"`
+	EhcClusterId           string                 `json:"ehcClusterId"`
 }
 
 type DeploySetSimpleModel struct {
@@ -416,6 +418,7 @@ type ResizeInstanceStockArgs struct {
 type GetStockWithDeploySetArgs struct {
 	Spec         string   `json:"spec"`
 	DeploySetIds []string `json:"deploySetIds"`
+	EhcClusterId string   `json:"ehcClusterId"`
 }
 
 type GetStockWithDeploySetResults struct {
@@ -425,12 +428,14 @@ type GetStockWithDeploySetResults struct {
 type GetStockWithSpecArgs struct {
 	Spec         string   `json:"spec"`
 	DeploySetIds []string `json:"deploySetIds"`
+	EhcClusterId string   `json:"ehcClusterId"`
 }
 
 type GetAvailableStockWithSpecArgs struct {
 	SpecList     []string `json:"specList"`
 	RootOnLocal  *bool    `json:"rootOnLocal"`
 	DeploySetIds []string `json:"deploySetIds"`
+	EhcClusterId string   `json:"ehcClusterId"`
 }
 
 type GetAvailableStockWithSpecResults struct {
@@ -525,6 +530,7 @@ type CreateInstanceBySpecArgs struct {
 	BidPrice                   string           `json:"bidPrice,omitempty"`
 	ResGroupId                 string           `json:"resGroupId,omitempty"`
 	EnableJumboFrame           bool             `json:"enableJumboFrame"`
+	EhcClusterId               string           `json:"ehcClusterId,omitempty"`
 }
 
 type CreateInstanceBySpecArgsV2 struct {
@@ -635,7 +641,8 @@ type CreateSpecialInstanceBySpecArgs struct {
 	// CreateInstanceBySpecArgs 的基础上增加的参数
 	LabelConstraints []LabelConstraint `json:"labelConstraints,omitempty"`
 
-	ResGroupId string `json:"resGroupId,omitempty"`
+	ResGroupId   string `json:"resGroupId,omitempty"`
+	EhcClusterId string `json:"ehcClusterId,omitempty"`
 }
 
 type CreateSpecialInstanceBySpecResult struct {
@@ -734,6 +741,7 @@ type ListInstanceArgs struct {
 	VpcId            string
 	PrivateIps       string
 	Ipv6Addresses    string
+	EhcClusterId     string
 }
 
 type ListInstanceResult struct {
@@ -1038,6 +1046,7 @@ type TransferReservedInstanceOperateRequest struct {
 
 type AcceptTransferReservedInstanceRequest struct {
 	TransferRecordId string `json:"transferRecordId"`
+	EhcClusterId     string `json:"ehcClusterId,omitempty"`
 }
 
 type TransferSuccessInfo struct {
@@ -1248,6 +1257,11 @@ type ListCDSVolumeResultV3 struct {
 	NextMarker  string          `json:"nextMarker"`
 	MaxKeys     int             `json:"maxKeys"`
 	Volumes     []VolumeModelV3 `json:"volumes"`
+}
+
+type ResGroupInfoModel struct {
+	GroupId   string `json:"groupId"`
+	GroupName string `json:"groupName"`
 }
 
 type VolumeModel struct {
@@ -2386,8 +2400,9 @@ type UnBindInstanceRoleResult struct {
 }
 
 type DeleteIpv6Args struct {
-	InstanceId string `json:"instanceId"`
-	Reboot     bool   `json:"reboot"`
+	InstanceId  string `json:"instanceId"`
+	Ipv6Address string `json:"ipv6Address"`
+	Reboot      bool   `json:"reboot"`
 }
 
 type AddIpv6Args struct {
@@ -2487,4 +2502,95 @@ type CdsPrice struct {
 	CdsSizeInGB int     `json:"cdsSizeInGB"`
 	Price       float64 `json:"price"`
 	Unit        string  `json:"unit"`
+}
+
+type CreateEhcClusterArg struct {
+	Name        string `json:"name,omitempty"`
+	ZoneName    string `json:"zoneName,omitempty"`
+	Description string `json:"description,omitempty"`
+}
+
+type CreateEhcClusterResponse struct {
+	EhcClusterId string `json:"ehcClusterId"`
+}
+
+type DeleteEhcClusterArg struct {
+	EhcClusterIdList []string `json:"ehcClusterIdList"`
+}
+
+type ModifyEhcClusterArg struct {
+	EhcClusterId string  `json:"ehcClusterId,omitempty"`
+	Name         string  `json:"name,omitempty"`
+	Description  *string `json:"description,omitempty"`
+}
+
+type DescribeEhcClusterListArg struct {
+	EhcClusterIdList []string `json:"ehcClusterIdList"`
+	NameList         []string `json:"nameList,omitempty"`
+	ZoneName         string   `json:"zoneName,omitempty"`
+	SortKey          string   `json:"sortKey,omitempty"`
+	SortDir          string   `json:"sortDir,omitempty"`
+}
+
+type ModifyReservedInstancesArgs struct {
+	ClientToken       string                   `json:"-"`
+	ReservedInstances []ModifyReservedInstance `json:"reservedInstances"`
+}
+
+type ModifyReservedInstance struct {
+	ReservedInstanceId   string `json:"reservedInstanceId"`
+	ZoneName             string `json:"zoneName"`
+	ReservedInstanceName string `json:"reservedInstanceName"`
+	EhcClusterId         string `json:"ehcClusterId"`
+}
+
+type ModifyReservedInstancesResponse struct {
+	ModifyReservedInstanceOrders []ModifyReservedInstanceOrder `json:"modifyReservedInstanceOrders"`
+}
+
+type ModifyReservedInstanceOrder struct {
+	ReservedInstanceId string `json:"reservedInstanceId"`
+	OrderId            string `json:"orderId"`
+	Success            bool   `json:"success"`
+	Exception          string `json:"exception"`
+}
+
+type CreateReservedInstanceArgs struct {
+	ClientToken              string `json:"-"`
+	ReservedInstanceName     string `json:"reservedInstanceName"`
+	Scope                    string `json:"scope"`
+	ZoneName                 string `json:"zoneName"`
+	Spec                     string `json:"spec"`
+	OfferingType             string `json:"offeringType"`
+	InstanceCount            int64  `json:"instanceCount"`
+	ReservedInstanceCount    int64  `json:"reservedInstanceCount"`
+	ReservedInstanceTime     int64  `json:"reservedInstanceTime"`
+	ReservedInstanceTimeUnit string `json:"reservedInstanceTimeUnit"`
+	AutoRenewTimeUnit        string `json:"autoRenewTimeUnit"`
+	AutoRenewTime            int64  `json:"autoRenewTime"`
+	AutoRenew                bool   `json:"autoRenew"`
+	EffectiveTime            string `json:"effectiveTime"`
+	Tags                     []Tag  `json:"tags"`
+	EhcClusterId             string `json:"ehcClusterId"`
+	TicketId                 string `json:"ticketId"`
+}
+
+type CreateReservedInstanceResponse struct {
+	ReservedInstanceIds []string `json:"reservedInstanceIds"`
+	OrderId             string   `json:"orderId"`
+}
+
+type DescribeEhcClusterListResponse struct {
+	TotalCount  int          `json:"totalCount"`
+	EhcClusters []EhcCluster `json:"ehcClusters"`
+}
+
+type EhcCluster struct {
+	EhcClusterId        string   `json:"ehcClusterId"`
+	Name                string   `json:"name"`
+	Description         string   `json:"description"`
+	ZoneName            string   `json:"zoneName"`
+	CreatedTime         string   `json:"createdTime"`
+	InstanceIds         []string `json:"instanceIds"`
+	ReservedInstanceIds []string `json:"reservedInstanceIds"`
 }

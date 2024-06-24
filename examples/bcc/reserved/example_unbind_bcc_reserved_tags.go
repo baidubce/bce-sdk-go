@@ -1,4 +1,4 @@
-package bcc
+package reserved
 
 import (
 	"github.com/baidubce/bce-sdk-go/model"

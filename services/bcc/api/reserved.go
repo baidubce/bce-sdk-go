@@ -62,3 +62,58 @@ func UnbindReservedInstanceFromTags(cli bce.Client, reqBody *bce.Body) error {
 	defer func() { resp.Body().Close() }()
 	return nil
 }
+
+func CreateReservedInstance(cli bce.Client, clientToken string, reqBody *bce.Body) (*CreateReservedInstanceResponse, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getCreateReservedInstanceUri())
+	req.SetMethod(http.POST)
+	req.SetBody(reqBody)
+	if len(clientToken) > 0 {
+		req.SetParam("clientToken", clientToken)
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &CreateReservedInstanceResponse{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+func ModifyReservedInstances(cli bce.Client, clientToken string, reqBody *bce.Body) (*ModifyReservedInstancesResponse, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getModifyReservedInstancesUri())
+	req.SetMethod(http.PUT)
+	req.SetBody(reqBody)
+	if len(clientToken) > 0 {
+		req.SetParam("clientToken", clientToken)
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ModifyReservedInstancesResponse{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+

@@ -467,6 +467,8 @@ createInstanceBySpecArgs := &api.CreateInstanceBySpecArgsV2{
     RequestToken          string           "requestToken"
     // 设置要绑定的资源组id
     ResGroupId            string           "resGroupId"
+	// 指定的EHC高性能集群id
+	EhcClusterId          string           "ehcClusterId"
 }
 result, err := client.CreateInstanceBySpecV2(args)
 if err != nil {
@@ -3566,6 +3568,58 @@ if res, err := bccClient.GetStockWithSpec(args); err != nil {
 } else {
     fmt.Println("GetStockWithSpec success: ", res)
 ```
+### 创建EHC高性能集群
+创建一个EHC高性能集群
+```go
+args := &api.CreateEhcClusterArg{
+Name:        "test-ehcCluster",
+ZoneName:    "cn-bj-a",
+Description: "test description",
+}
+result, _ := BCC_CLIENT.CreateEhcCluster(args)
+fmt.Println(result)
+```
+
+### 查询EHC高性能集群列表
+查询EHC高性能集群列表
+```go
+args := &api.DescribeEhcClusterListArg{
+EhcClusterIdList: []string{
+"ehc-bk4hM1N3",
+}, NameList: []string{
+"test-modify",
+},
+ZoneName: "cn-bj-a",
+SortKey:  "name",
+SortDir:  "asc",
+}
+```
+
+### 修改EHC高性能集群
+修改EHC高性能集群信息
+```go
+descriptions := ""
+args := &api.ModifyEhcClusterArg{
+	EhcClusterId: "ehc-bk4hM1N3",
+	Name:         "test-modify",
+	Description:  &descriptions,
+}
+err := BCC_CLIENT.ModifyEhcCluster(args)
+fmt.Println(err)
+```
+
+### 删除EHC高性能集群
+删除无实例EHC高性能集群
+```go
+args := &api.DeleteEhcClusterArg{
+	EhcClusterIdList: []string{
+		"ehc-tBmphmZE",
+	},
+}
+err := BCC_CLIENT.DeleteEhcCluster(args)
+fmt.Println(err)
+```
+
 ### 对预留实例券发起转移
 对预留实例券发起转移（仅支持0预付的预留实例券）
 ```go
@@ -3612,6 +3666,7 @@ ExpectEqual(t.Errorf, err, nil)
 args := &api.AcceptTransferReservedInstanceRequest{
 // 预留实例券转移记录id
 TransferRecordId: "t-uNwDdZO9",
+EhcClusterId:     "ehc-bk4hM1N3",
 }
 err := BCC_CLIENT.AcceptTransferReservedInstanceOrder(args)
 ExpectEqual(t.Errorf, err, nil)

@@ -92,6 +92,8 @@ type InstanceSpec struct {
 	AutoSnapshotID string `json:"autoSnapshotID,omitempty"` // 自动快照策略   ID
 
 	IsOpenHostnameDomain bool `json:"isOpenHostnameDomain,omitempty"`
+
+	ResourceGroupID string `json:"resourceGroupID,omitempty"`
 }
 
 // VPCConfig 定义 Instance VPC

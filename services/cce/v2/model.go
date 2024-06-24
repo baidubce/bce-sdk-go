@@ -343,7 +343,10 @@ const (
 	// InstanceKeywordTypeInstanceName 节点模糊查询字段: InstanceName
 	InstanceKeywordTypeInstanceName InstanceKeywordType = "instanceName"
 	// InstanceKeywordTypeInstanceID 节点模糊查询字段: InstanceID
-	InstanceKeywordTypeInstanceID InstanceKeywordType = "instanceID"
+	InstanceKeywordTypeInstanceID      InstanceKeywordType = "instanceID"
+	InstanceKeywordTypeK8sNodeName     InstanceKeywordType = "k8sNodeName"
+	InstanceKeywordTypeVpcIP           InstanceKeywordType = "vpcIP"
+	InstanceKeywordTypeInstanceGroupID InstanceKeywordType = "instanceGroupID"
 )
 
 // InstanceOrderBy 节点查询排序字段
@@ -630,6 +633,11 @@ type ShrinkPolicy string
 type UpdatePolicy string
 type CleanPolicy string
 
+const (
+	CleanPolicyRemain CleanPolicy = "Remain"
+	CleanPolicyDelete CleanPolicy = "Delete"
+)
+
 type ClusterAutoscalerSpec struct {
 	Enabled              bool `json:"enabled"`
 	MinReplicas          int  `json:"minReplicas"`
@@ -866,9 +874,12 @@ type CreateScaleUpInstanceGroupTaskArgs struct {
 }
 
 type CreateScaleDownInstanceGroupTaskArgs struct {
-	ClusterID            string
-	InstanceGroupID      string
-	InstancesToBeRemoved []string
+	ClusterID            string              `json:"-"`
+	InstanceGroupID      string              `json:"-"`
+	InstancesToBeRemoved []string            `json:"instancesToBeRemoved"`
+	K8sNodesToBeRemoved  []string            `json:"k8sNodesToBeRemoved,omitempty"`
+	CleanPolicy          CleanPolicy         `json:"cleanPolicy"`
+	DeleteOption         *types.DeleteOption `json:"deleteOption,omitempty"`
 }
 
 type CreateTaskResp struct {

@@ -576,15 +576,11 @@ func (c *Client) CreateScaleDownInstanceGroupTask(args *CreateScaleDownInstanceG
 		return nil, fmt.Errorf("instances to be removed are not provided")
 	}
 
-	body := map[string]interface{}{
-		"instancesToBeRemoved": args.InstancesToBeRemoved,
-	}
-
 	result := &CreateTaskResp{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
 		WithURL(getScaleDownInstanceGroupURI(args.ClusterID, args.InstanceGroupID)).
-		WithBody(body).
+		WithBody(args).
 		WithResult(result).
 		Do()
 	return result, err
