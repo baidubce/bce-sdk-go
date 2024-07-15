@@ -462,6 +462,7 @@ type TsdbDimensionTopQuery struct {
 	Order      string            `json:"order,omitempty"`
 	TopNum     int               `json:"topNum,omitempty"`
 	Labels     []string          `json:"labels,omitempty"`
+	Cycle      int               `json:"cycle,omitempty"`
 }
 
 type TsdbDimensionTopResult struct {
@@ -472,4 +473,14 @@ type TsdbDimensionTopResult struct {
 type TopData struct {
 	Order      int         `json:"order,omitempty"`
 	Dimensions []Dimension `json:"dimensions,omitempty"`
+}
+
+type TsdbQueryMetaData struct {
+	RequestId   string        `json:"requestId,omitempty"`
+	UserId      string        `json:"userId,omitempty"`
+	ServiceName string        `json:"serviceName,omitempty"`
+	MetricName  string        `json:"metricName,omitempty"`
+	Statistics  []string      `json:"statistics,omitempty"`
+	ResourceID  string        `json:"resourceId,omitempty"`
+	DataPoints  []*DataPoints `json:"dataPoints,omitempty"`
 }

@@ -1,5 +1,7 @@
 package etGateway
 
+import "github.com/baidubce/bce-sdk-go/model"
+
 type (
 	HealthCheckType string
 )
@@ -9,14 +11,15 @@ const (
 )
 
 type CreateEtGatewayArgs struct {
-	Name        string   `json:"name"`
-	VpcId       string   `json:"vpcId"`
-	Speed       int      `json:"speed"`
-	Description string   `json:"description"`
-	EtId        string   `json:"etId"`
-	ChannelId   string   `json:"channelId"`
-	LocalCidrs  []string `json:"localCidrs"`
-	ClientToken string   `json:"clientToken,omitempty"`
+	Name        string           `json:"name"`
+	VpcId       string           `json:"vpcId"`
+	Speed       int              `json:"speed"`
+	Description string           `json:"description"`
+	EtId        string           `json:"etId"`
+	ChannelId   string           `json:"channelId"`
+	LocalCidrs  []string         `json:"localCidrs"`
+	ClientToken string           `json:"clientToken,omitempty"`
+	Tags        []model.TagModel `json:"tags,omitempty"`
 }
 
 type CreateEtGatewayResult struct {
@@ -53,22 +56,23 @@ type EtGateway struct {
 }
 
 type EtGatewayDetail struct {
-	EtGatewayId         string   `json:"etGatewayId"`
-	Name                string   `json:"name"`
-	Status              string   `json:"status"`
-	Speed               int      `json:"speed"`
-	CreateTime          string   `json:"createTime"`
-	Description         string   `json:"description"`
-	VpcId               string   `json:"vpcId"`
-	EtId                string   `json:"etId"`
-	ChannelId           string   `json:"channelId"`
-	LocalCidrs          []string `json:"localCidrs"`
-	HealthCheckSourceIp string   `json:"healthCheckSourceIp"`
-	HealthCheckDestIp   string   `json:"healthCheckDestIp"`
-	HealthCheckType     string   `json:"healthCheckType"`
-	HealthCheckInterval int      `json:"healthCheckInterval"`
-	HealthThreshold     int      `json:"healthThreshold"`
-	UnhealthThreshold   int      `json:"unhealthThreshold"`
+	EtGatewayId         string           `json:"etGatewayId"`
+	Name                string           `json:"name"`
+	Status              string           `json:"status"`
+	Speed               int              `json:"speed"`
+	CreateTime          string           `json:"createTime"`
+	Description         string           `json:"description"`
+	VpcId               string           `json:"vpcId"`
+	EtId                string           `json:"etId"`
+	ChannelId           string           `json:"channelId"`
+	LocalCidrs          []string         `json:"localCidrs"`
+	HealthCheckSourceIp string           `json:"healthCheckSourceIp"`
+	HealthCheckDestIp   string           `json:"healthCheckDestIp"`
+	HealthCheckType     string           `json:"healthCheckType"`
+	HealthCheckInterval int              `json:"healthCheckInterval"`
+	HealthThreshold     int              `json:"healthThreshold"`
+	UnhealthThreshold   int              `json:"unhealthThreshold"`
+	Tags                []model.TagModel `json:"tags,omitempty"`
 }
 
 //  参数localCidrs只有在专线网关处于running状态时允许更新。

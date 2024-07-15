@@ -2,6 +2,7 @@ package lbdc
 
 import (
 	"encoding/json"
+	"github.com/baidubce/bce-sdk-go/model"
 	"github.com/baidubce/bce-sdk-go/util"
 	"github.com/baidubce/bce-sdk-go/util/log"
 	"os"
@@ -97,6 +98,12 @@ func TestClient_CreateLbdc(t *testing.T) {
 		},
 		RenewReservation: &Reservation{
 			ReservationLength: 1,
+		},
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagKey",
+				TagValue: "tagValue",
+			},
 		},
 	}
 	res, err := LDBC_CLIENT.CreateLbdc(args)

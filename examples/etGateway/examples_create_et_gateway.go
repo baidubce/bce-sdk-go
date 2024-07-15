@@ -2,6 +2,7 @@ package etgatewayexamples
 
 import (
 	"fmt"
+	"github.com/baidubce/bce-sdk-go/model"
 	"github.com/baidubce/bce-sdk-go/services/etGateway"
 	"github.com/baidubce/bce-sdk-go/util"
 )
@@ -28,6 +29,12 @@ func CreateEtGateway() {
 		ChannelId:   "sdxs",
 		LocalCidrs:  []string{"10.240.0.0/16", "192.168.3.0/24"},
 		ClientToken: getClientToken(),
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagKey",
+				TagValue: "tagValue",
+			},
+		},
 	}
 	result, err := client.CreateEtGateway(args)
 	if err != nil {

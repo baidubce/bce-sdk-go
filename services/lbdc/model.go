@@ -16,6 +16,8 @@
 
 package lbdc
 
+import "github.com/baidubce/bce-sdk-go/model"
+
 type Reservation struct {
 	ReservationLength int `json:"reservationLength"`
 }
@@ -46,13 +48,14 @@ type Cluster struct {
 
 // CreateLbdcArgs defines the structure of input parameters for the CreateLbdc api
 type CreateLbdcArgs struct {
-	ClientToken      string       `json:"-"`
-	Name             string       `json:"name"`
-	Type             string       `json:"type"`
-	CcuCount         int          `json:"ccuCount"`
-	Description      *string      `json:"desc,omitempty"`
-	Billing          *Billing     `json:"billing"`
-	RenewReservation *Reservation `json:"renewReservation"`
+	ClientToken      string           `json:"-"`
+	Name             string           `json:"name"`
+	Type             string           `json:"type"`
+	CcuCount         int              `json:"ccuCount"`
+	Description      *string          `json:"desc,omitempty"`
+	Billing          *Billing         `json:"billing"`
+	RenewReservation *Reservation     `json:"renewReservation"`
+	Tags             []model.TagModel `json:"tags,omitempty"`
 }
 
 // CreateLbdcResult defines the structure of output parameters for the CreateLbdc api
@@ -107,11 +110,12 @@ type GetLbdcDetailResult struct {
 	NetworkOutBps     int64  `json:"networkOutBps"`
 
 	// 7layer
-	HttpsQps           *int64 `json:"httpsQps,omitempty"`
-	HttpQps            *int64 `json:"httpQps,omitempty"`
-	HttpNewConnectCps  *int64 `json:"httpNewConnectCps,omitempty"`
-	HttpsNewConnectCps *int64 `json:"httpsNewConnectCps,omitempty"`
-	SslNewConnectCps   *int64 `json:"sslNewConnectCps,omitempty"`
+	HttpsQps           *int64           `json:"httpsQps,omitempty"`
+	HttpQps            *int64           `json:"httpQps,omitempty"`
+	HttpNewConnectCps  *int64           `json:"httpNewConnectCps,omitempty"`
+	HttpsNewConnectCps *int64           `json:"httpsNewConnectCps,omitempty"`
+	SslNewConnectCps   *int64           `json:"sslNewConnectCps,omitempty"`
+	Tags               []model.TagModel `json:"tags,omitempty"`
 }
 
 // UpdateLbdcArgs defines the structure of input parameters for the UpdateLbdc api

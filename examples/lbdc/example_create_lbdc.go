@@ -16,6 +16,7 @@ package lbdcexamples
 
 import (
 	"fmt"
+	"github.com/baidubce/bce-sdk-go/model"
 
 	"github.com/baidubce/bce-sdk-go/services/lbdc"
 )
@@ -32,6 +33,12 @@ func CreateLbdc() {
 			PaymentTiming: "Prepaid",
 			Reservation: &lbdc.Reservation{
 				ReservationLength: 1,
+			},
+		},
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagKey",
+				TagValue: "tagValue",
 			},
 		},
 	}

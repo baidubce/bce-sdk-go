@@ -3,6 +3,7 @@ package etGateway
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/baidubce/bce-sdk-go/model"
 	"github.com/baidubce/bce-sdk-go/util"
 	"github.com/baidubce/bce-sdk-go/util/log"
 	"os"
@@ -83,6 +84,12 @@ func TestClient_CreateEtGateway(t *testing.T) {
 		VpcId:       "vpc-2pa2x0bjt26i",
 		Speed:       100,
 		ClientToken: getClientToken(),
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagKey",
+				TagValue: "tagValue",
+			},
+		},
 	}
 	result, err := EtGateway_CLIENT.CreateEtGateway(args)
 	ExpectEqual(t.Errorf, nil, err)

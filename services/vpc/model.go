@@ -861,11 +861,12 @@ type GetProbeDetailResult struct {
 
 // CreateIPv6GatewayArgs defines the structure of the input parameters for the CreateIPv6Gateway api
 type CreateIPv6GatewayArgs struct {
-	ClientToken     string   `json:"-"`
-	Name            string   `json:"name"`
-	VpcId           string   `json:"vpcId"`
-	BandwidthInMbps int      `json:"bandwidthInMbps"`
-	Billing         *Billing `json:"billing"`
+	ClientToken     string           `json:"-"`
+	Name            string           `json:"name"`
+	VpcId           string           `json:"vpcId"`
+	BandwidthInMbps int              `json:"bandwidthInMbps"`
+	Billing         *Billing         `json:"billing"`
+	Tags            []model.TagModel `json:"tags,omitempty"`
 }
 
 // CreateIPv6GatewayResult defines the structure of the output parameters for the CreateIPv6Gateway api

@@ -102,13 +102,14 @@ func TestClient_CreateGaiadb(t *testing.T) {
 		ProductType: "postpay",
 		InstanceParam: InstanceParam{
 			ReleaseVersion:       "8.0",
-			SubnetId:             "sbn-na4tmg4v11hs",
+			SubnetId:             "sbn-dqafncqsy3y4",
 			AllocatedCpuInCore:   2,
 			AllocatedMemoryInMB:  8192,
 			AllocatedStorageInGB: 5120,
-			VpcId:                "vpc-it3v6qt3jhvj",
+			VpcId:                "vpc-70pxg3pmv8rv",
 			InstanceAmount:       2,
 			ProxyAmount:          2,
+			ComputeTplId:         "p80f1db2-a21c-4bc5-ba6b-62afafdb8080",
 		},
 	}
 	result, err := GAIADB_CLIENT.CreateCluster(args)

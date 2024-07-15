@@ -253,6 +253,7 @@ args := &gaiadb.CreateClusterArgs{
         VpcId:                "vpc-it3v6qt3jhvj",
         InstanceAmount:       2,
         ProxyAmount:          2,
+        ComputeTplId:         "p80f-xxxyyy",
     },
 }
 result, err := GAIADB_CLIENT.CreateCluster(args)

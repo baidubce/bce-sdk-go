@@ -2,6 +2,7 @@ package ipv6gateway
 
 import (
 	"fmt"
+	"github.com/baidubce/bce-sdk-go/model"
 
 	"github.com/baidubce/bce-sdk-go/services/vpc"
 )
@@ -23,6 +24,12 @@ func CreateIPv6Gateway() {
 		// 设置ipv6网关的计费信息
 		Billing: &vpc.Billing{
 			PaymentTiming: vpc.PAYMENT_TIMING_POSTPAID,
+		},
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagKey",
+				TagValue: "tagValue",
+			},
 		},
 	}
 	result, err := ipv6gatewayClient.CreateIPv6Gateway(args)

@@ -43,6 +43,7 @@ type InstanceParam struct {
 	SnapshotId           string `json:"snapshotId,omitempty"`
 	Pit                  string `json:"pit,omitempty"`
 	LowerCaseTableNames  string `json:"lowercaseTableNames,omitempty"`
+	ComputeTplId         string `json:"computeTplId,omitempty"`
 }
 type CreateResult struct {
 	OrderId    string   `json:"orderId"`
