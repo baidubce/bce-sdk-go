@@ -771,8 +771,15 @@ type VmServiceBatchActionArgs struct {
 }
 
 type CreateVmImageArgs struct {
-	VmId string `json:"vmId,omitempty"`
-	Name string `json:"name,omitempty"`
+	VmId   string      `json:"vmId,omitempty"`
+	Name   string      `json:"name,omitempty"`
+	Images []ImageInfo `json:"images,omitempty"`
+}
+
+type ImageInfo struct {
+	ImageName        string `json:"imageName,omitempty"`
+	PvcId            string `json:"pvcId,omitempty"`
+	ImageProcessType string `json:"imageProcessType,omitempty"`
 }
 
 type CreateVmImageResult struct {
