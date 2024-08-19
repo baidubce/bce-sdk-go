@@ -158,6 +158,8 @@ type InstanceModel struct {
 	IsEipAutoRelatedDelete bool                   `json:"isEipAutoRelatedDelete"`
 	ResGroupInfos          []ResGroupInfoModel    `json:"resGroupInfos"`
 	EhcClusterId           string                 `json:"ehcClusterId"`
+	AutoRenewPeriodUnit    string                 `json:"autoRenewPeriodUnit,omitempty"`
+	AutoRenewPeriod        int                    `json:"autoRenewPeriod,omitempty"`
 }
 
 type DeploySetSimpleModel struct {
@@ -2043,9 +2045,10 @@ type SpecIdPrices struct {
 }
 
 type SpecPrices struct {
-	Spec      string `json:"spec"`
-	Status    string `json:"status"`
-	SpecPrice string `json:"specPrice"`
+	Spec       string `json:"spec"`
+	Status     string `json:"status"`
+	SpecPrice  string `json:"specPrice"`
+	TradePrice string `json:"tradePrice"`
 }
 
 type PrivateIP struct {

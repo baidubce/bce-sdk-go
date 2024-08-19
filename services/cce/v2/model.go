@@ -111,6 +111,14 @@ type InstanceSet struct {
 	Count        int                `json:"count"`
 }
 
+type ExistedInstanceInCluster struct {
+	ExistedInstanceID string `json:"existedInstanceID"`
+	MachineType       string `json:"machineType"`
+	Ip                string `json:"ip"`
+	Name              string `json:"name"`
+	InstanceName      string `json:"instanceName"`
+}
+
 // GetEventStepsResponse 查询 Cluster/Instance 创建/删除 返回
 type GetEventStepsResponse struct {
 	Status    string  `json:"status"`
@@ -806,6 +814,9 @@ type ListInstanceByInstanceGroupIDArgs struct {
 	InstanceGroupID string
 	PageNo          int
 	PageSize        int
+	KeywordType     InstanceKeywordType
+	Keyword         string
+	Phases          string
 }
 
 type GetInstanceGroupArgs struct {
@@ -830,6 +841,24 @@ type DeleteInstanceGroupArgs struct {
 	InstanceGroupID     string
 	DeleteInstances     bool
 	ReleaseAllResources bool
+}
+
+type AttachInstancesToInstanceGroupArgs struct {
+	ClusterID       string
+	InstanceGroupID string
+	Request         *AttachInstancesToInstanceGroupRequest
+}
+
+type AttachInstancesToInstanceGroupRequest struct {
+	Incluster                 bool                        `json:"inCluster"`
+	UseInstanceGroupConfig    bool                        `json:"useInstanceGroupConfig"`
+	ExistedInstances          []*InstanceSet              `json:"existedInstances"`
+	ExistedInstancesInCluster []*ExistedInstanceInCluster `json:"existedInstancesInCluster"`
+}
+
+type AttachInstancesToInstanceGroupResponse struct {
+	CommonResponse
+	TaskID string `json:"taskID"`
 }
 
 // KubeConfigType - kube config 类型

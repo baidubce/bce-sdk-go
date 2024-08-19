@@ -44,6 +44,8 @@ const (
 
 	REQUEST_INSTANCEGROUP_SCALE_DOWN_URL = "/scaledown"
 
+	REQUEST_INSTANCEGROUP_ATTACH_INSTANCE_URL = "/attachInstances"
+
 	REQUEST_QUOTA_URL = "/quota"
 
 	REQUEST_NODE_URL = "/node"
@@ -147,6 +149,10 @@ func getScaleUpInstanceGroupURI(clusterID, instanceGroupID string) string {
 
 func getScaleDownInstanceGroupURI(clusterID, instanceGroupID string) string {
 	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_INSTANCEGROUP_URL + "/" + instanceGroupID + REQUEST_INSTANCEGROUP_SCALE_DOWN_URL
+}
+
+func getAttachInstancesToInstanceGroupURI(clusterID string, instanceGroupID string) string {
+	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_INSTANCEGROUP_URL + "/" + instanceGroupID + REQUEST_INSTANCEGROUP_ATTACH_INSTANCE_URL
 }
 
 func getInstanceGroupReplicasURI(clusterID, instanceGroupID string) string {

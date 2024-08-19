@@ -26,6 +26,13 @@ type TagModel struct {
 	TagValue string `json:"tagValue"`
 }
 
+type CloneInitialDataReference struct {
+	InstanceId    string `json:"instanceId"`
+	ReferenceType string `json:"referenceType"`
+	SnapshotId    string `json:"snapshotId"`
+	Datetime      string `json:"datetime"`
+}
+
 type CreateInstanceArgs struct {
 	ClientToken  string         `json:"-"`
 	InstanceType string         `json:"instanceType,omitempty"`
@@ -34,26 +41,27 @@ type CreateInstanceArgs struct {
 }
 
 type CreateRdsArgs struct {
-	ClientToken       string      `json:"-"`
-	Billing           Billing     `json:"billing,omitempty"`
-	PurchaseCount     int         `json:"purchaseCount,omitempty"`
-	InstanceName      string      `json:"instanceName,omitempty"`
-	Engine            string      `json:"engine,omitempty"`
-	EngineVersion     string      `json:"engineVersion,omitempty"`
-	Category          string      `json:"category,omitempty"`
-	CpuCount          int         `json:"cpuCount,omitempty"`
-	MemoryCapacity    float64     `json:"memoryCapacity,omitempty"`
-	VolumeCapacity    int         `json:"volumeCapacity,omitempty"`
-	ZoneNames         []string    `json:"zoneNames,omitempty"`
-	VpcId             string      `json:"vpcId,omitempty"`
-	IsDirectPay       bool        `json:"isDirectPay,omitempty"`
-	Subnets           []SubnetMap `json:"subnets,omitempty"`
-	Tags              []TagModel  `json:"tags,omitempty"`
-	AutoRenewTimeUnit string      `json:"autoRenewTimeUnit,omitempty"`
-	AutoRenewTime     int         `json:"autoRenewTime,omitempty"`
-	DeployId          string      `json:"deployId,omitempty"`
-	PoolId            string      `json:"poolId"`
-	SyncMode          string      `json:"syncMode"`
+	ClientToken          string                    `json:"-"`
+	Billing              Billing                   `json:"billing,omitempty"`
+	PurchaseCount        int                       `json:"purchaseCount,omitempty"`
+	InstanceName         string                    `json:"instanceName,omitempty"`
+	Engine               string                    `json:"engine,omitempty"`
+	EngineVersion        string                    `json:"engineVersion,omitempty"`
+	Category             string                    `json:"category,omitempty"`
+	CpuCount             int                       `json:"cpuCount,omitempty"`
+	MemoryCapacity       float64                   `json:"memoryCapacity,omitempty"`
+	VolumeCapacity       int                       `json:"volumeCapacity,omitempty"`
+	ZoneNames            []string                  `json:"zoneNames,omitempty"`
+	VpcId                string                    `json:"vpcId,omitempty"`
+	IsDirectPay          bool                      `json:"isDirectPay,omitempty"`
+	Subnets              []SubnetMap               `json:"subnets,omitempty"`
+	Tags                 []TagModel                `json:"tags,omitempty"`
+	AutoRenewTimeUnit    string                    `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime        int                       `json:"autoRenewTime,omitempty"`
+	DeployId             string                    `json:"deployId,omitempty"`
+	PoolId               string                    `json:"poolId"`
+	SyncMode             string                    `json:"syncMode"`
+	InitialDataReference CloneInitialDataReference `json:"initialDataReference,omitempty"`
 }
 
 type CreateReadReplicaArgs struct {
@@ -180,34 +188,35 @@ type InstanceModelResult struct {
 }
 
 type CreateInstance struct {
-	InstanceId           string     `json:"instanceId,omitempty"`
-	InstanceName         string     `json:"instanceName,omitempty"`
-	SourceInstanceId     string     `json:"sourceInstanceId,omitempty"`
-	Engine               string     `json:"engine,omitempty"`
-	EngineVersion        string     `json:"engineVersion,omitempty"`
-	CpuCount             int        `json:"cpuCount,omitempty"`
-	AllocatedMemoryInGB  int        `json:"allocatedMemoryInGB,omitempty"`
-	AllocatedStorageInGB int        `json:"allocatedStorageInGB,omitempty"`
-	AZone                string     `json:"azone,omitempty"`
-	VpcId                string     `json:"vpcId,omitempty"`
-	SubnetId             string     `json:"subnetId,omitempty"`
-	DiskIoType           string     `json:"diskIoType,omitempty"`
-	DeployId             string     `json:"deployId,omitempty"`
-	PoolId               string     `json:"poolId,omitempty"`
-	RoGroupId            string     `json:"roGroupId,omitempty"`
-	IsBalanceRoLoad      Integer    `json:"isBalanceRoLoad,omitempty"`
-	EnableDelayOff       Integer    `json:"enableDelayOff,omitempty"`
-	DelayThreshold       Integer    `json:"delayThreshold,omitempty"`
-	LeastInstanceAmount  Integer    `json:"leastInstanceAmount,omitempty"`
-	RoGroupWeight        Integer    `json:"roGroupWeight,omitempty"`
-	IsDirectPay          bool       `json:"IsDirectPay,omitempty"`
-	Billing              Billing    `json:"billing,omitempty"`
-	AutoRenewTimeUnit    string     `json:"autoRenewTimeUnit,omitempty"`
-	AutoRenewTime        int        `json:"autoRenewTime,omitempty"`
-	Category             string     `json:"category,omitempty"`
-	Tags                 []TagModel `json:"tags,omitempty"`
-	SyncMode             string     `json:"syncMode,omitempty"`
-	Remark               string     `json:"remark,omitempty"`
+	InstanceId           string                    `json:"instanceId,omitempty"`
+	InstanceName         string                    `json:"instanceName,omitempty"`
+	SourceInstanceId     string                    `json:"sourceInstanceId,omitempty"`
+	Engine               string                    `json:"engine,omitempty"`
+	EngineVersion        string                    `json:"engineVersion,omitempty"`
+	CpuCount             int                       `json:"cpuCount,omitempty"`
+	AllocatedMemoryInGB  int                       `json:"allocatedMemoryInGB,omitempty"`
+	AllocatedStorageInGB int                       `json:"allocatedStorageInGB,omitempty"`
+	AZone                string                    `json:"azone,omitempty"`
+	VpcId                string                    `json:"vpcId,omitempty"`
+	SubnetId             string                    `json:"subnetId,omitempty"`
+	DiskIoType           string                    `json:"diskIoType,omitempty"`
+	DeployId             string                    `json:"deployId,omitempty"`
+	PoolId               string                    `json:"poolId,omitempty"`
+	RoGroupId            string                    `json:"roGroupId,omitempty"`
+	IsBalanceRoLoad      Integer                   `json:"isBalanceRoLoad,omitempty"`
+	EnableDelayOff       Integer                   `json:"enableDelayOff,omitempty"`
+	DelayThreshold       Integer                   `json:"delayThreshold,omitempty"`
+	LeastInstanceAmount  Integer                   `json:"leastInstanceAmount,omitempty"`
+	RoGroupWeight        Integer                   `json:"roGroupWeight,omitempty"`
+	IsDirectPay          bool                      `json:"IsDirectPay,omitempty"`
+	Billing              Billing                   `json:"billing,omitempty"`
+	AutoRenewTimeUnit    string                    `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime        int                       `json:"autoRenewTime,omitempty"`
+	Category             string                    `json:"category,omitempty"`
+	Tags                 []TagModel                `json:"tags,omitempty"`
+	SyncMode             string                    `json:"syncMode,omitempty"`
+	Remark               string                    `json:"remark,omitempty"`
+	InitialDataReference CloneInitialDataReference `json:"initialDataReference,omitempty"`
 }
 
 type Pool struct {

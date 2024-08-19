@@ -380,6 +380,9 @@ func (c *Client) ListInstancesByInstanceGroupID(args *ListInstanceByInstanceGrou
 		WithMethod(http.GET).
 		WithQueryParamFilter("pageNo", strconv.Itoa(args.PageNo)).
 		WithQueryParamFilter("pageSize", strconv.Itoa(args.PageSize)).
+		WithQueryParamFilter("keywordType", string(args.KeywordType)).
+		WithQueryParamFilter("keyword", args.Keyword).
+		WithQueryParamFilter("phases", args.Phases).
 		WithURL(getClusterInstanceListWithInstanceGroupIDURI(args.ClusterID, args.InstanceGroupID)).
 		WithResult(result).
 		Do()
@@ -460,6 +463,22 @@ func (c *Client) DeleteInstanceGroup(args *DeleteInstanceGroupArgs) (*DeleteInst
 		WithURL(getInstanceGroupWithIDURI(args.ClusterID, args.InstanceGroupID)).
 		WithQueryParamFilter("deleteInstances", strconv.FormatBool(args.DeleteInstances)).
 		WithQueryParamFilter("releaseAllResources", strconv.FormatBool(args.ReleaseAllResources)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+func (c *Client) AttachInstancesToInstanceGroup(args *AttachInstancesToInstanceGroupArgs) (*AttachInstancesToInstanceGroupResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	result := &AttachInstancesToInstanceGroupResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getAttachInstancesToInstanceGroupURI(args.ClusterID, args.InstanceGroupID)).
+		WithBody(args.Request).
 		WithResult(result).
 		Do()
 
@@ -572,8 +591,8 @@ func (c *Client) CreateScaleDownInstanceGroupTask(args *CreateScaleDownInstanceG
 	if args.InstanceGroupID == "" {
 		return nil, fmt.Errorf("instanceGroupID is empty")
 	}
-	if len(args.InstancesToBeRemoved) == 0 {
-		return nil, fmt.Errorf("instances to be removed are not provided")
+	if len(args.InstancesToBeRemoved) == 0 && len(args.K8sNodesToBeRemoved) == 0 {
+		return nil, fmt.Errorf("instances and nodes to be removed are not provided")
 	}
 
 	result := &CreateTaskResp{}

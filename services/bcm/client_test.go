@@ -51,7 +51,7 @@ func TestClient_GetMetricData(t *testing.T) {
 	req := &model.GetMetricDataRequest{
 		UserId:         bcmConf.UserId,
 		Scope:          "BCE_BCC",
-		MetricName:     "vCPUUsagePercent",
+		MetricName:     "CPUUsagePercent",
 		Dimensions:     dimensions,
 		Statistics:     strings.Split(Average+","+SampleCount+","+Sum+","+Minimum+","+Maximum, ","),
 		PeriodInSecond: 60,
@@ -68,19 +68,19 @@ func TestClient_GetMetricData(t *testing.T) {
 	if len(resp.DataPoints) < 1 {
 		t.Error("bcm get metric data response dataPoints size not be greater 0\n")
 	} else {
-		if resp.DataPoints[0].Sum <= 0 {
+		if *resp.DataPoints[0].Sum <= 0 {
 			t.Error("bcm get metric data response dataPoints[0] sum not be greater 0\n")
 		}
-		if resp.DataPoints[0].Average <= 0 {
+		if *resp.DataPoints[0].Average <= 0 {
 			t.Error("bcm get metric data response dataPoints[0] average not be greater 0\n")
 		}
-		if resp.DataPoints[0].SampleCount <= 0 {
+		if *resp.DataPoints[0].SampleCount <= 0 {
 			t.Error("bcm get metric data response dataPoints[0] sampleCount not be greater 0\n")
 		}
-		if resp.DataPoints[0].Minimum <= 0 {
+		if *resp.DataPoints[0].Minimum <= 0 {
 			t.Error("bcm get metric data response dataPoints[0] minimum not be greater 0\n")
 		}
-		if resp.DataPoints[0].Maximum <= 0 {
+		if *resp.DataPoints[0].Maximum <= 0 {
 			t.Error("bcm get metric data response dataPoints[0] maximum not be greater 0\n")
 		}
 	}
@@ -116,19 +116,19 @@ func TestClient_BatchGetMetricData(t *testing.T) {
 		if len(resp.SuccessList[0].DataPoints) <= 0 {
 			t.Error("bcm batch get metric data response successList dataPoints size not be greater 0\n")
 		}
-		if resp.SuccessList[0].DataPoints[0].Sum <= 0 {
+		if *resp.SuccessList[0].DataPoints[0].Sum <= 0 {
 			t.Error("bcm batch get metric data response successList dataPoints[0] sum not be greater 0\n")
 		}
-		if resp.SuccessList[0].DataPoints[0].Average <= 0 {
+		if *resp.SuccessList[0].DataPoints[0].Average <= 0 {
 			t.Error("bcm batch get metric data response successList dataPoints[0] average not be greater 0\n")
 		}
-		if resp.SuccessList[0].DataPoints[0].SampleCount <= 0 {
+		if *resp.SuccessList[0].DataPoints[0].SampleCount <= 0 {
 			t.Error("bcm batch get metric data response successList dataPoints[0] sampleCount not be greater 0\n")
 		}
-		if resp.SuccessList[0].DataPoints[0].Minimum <= 0 {
+		if *resp.SuccessList[0].DataPoints[0].Minimum <= 0 {
 			t.Error("bcm batch get metric data response successList dataPoints[0] minimum not be greater 0\n")
 		}
-		if resp.SuccessList[0].DataPoints[0].Maximum <= 0 {
+		if *resp.SuccessList[0].DataPoints[0].Maximum <= 0 {
 			t.Error("bcm batch get metric data response successList dataPoints[0] maximum not be greater 0\n")
 		}
 	}

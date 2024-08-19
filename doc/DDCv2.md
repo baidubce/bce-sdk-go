@@ -423,16 +423,18 @@ fmt.Printf("delete deploy set success\n")
 
 # 实例管理
 
-## 创建实例
-使用以下代码可以创建主实例。
+## 创建实例&克隆实例
+使用以下代码可以创建主实例及克隆主实例。
 ```go
 // import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
 
 // DDC
 args := &ddcrds.CreateRdsArgs{
     // 指定ddc的数据库引擎，取值mysql,必选
+	// 克隆实例时当前参数值需和原实例保持一致
     Engine:            "mysql",
     // 指定ddc的数据库版本，必选
+	// 克隆实例时当前参数值需和原实例保持一致
     EngineVersion:  "5.6",
     // 计费相关参数，PaymentTiming取值为 预付费：Prepaid，后付费：Postpaid；Reservation：支付方式为后支付时不需要设置，预支付时必须设置；必选
     // 目前仅支持预付费
@@ -456,6 +458,7 @@ args := &ddcrds.CreateRdsArgs{
     //ddc实例名称，允许小写字母、数字，长度限制为1~32，默认命名规则:{engine} + {engineVersion}，可选
     InstanceName: "instanceName",
     //所属系列，Singleton:单机版，Basic：单机基础版，Standard：双机高可用版。仅SQLServer 2012sp3 支持单机基础版。默认Standard，可选
+    // 克隆实例时当前参数值需和原实例保持一致
     Category: "Standard",
     //指定zone信息，默认为空，由系统自动选择，可选
     //zoneName命名规范是小写的“国家-region-可用区序列"，例如北京可用区A为"cn-bj-a"。
@@ -485,6 +488,16 @@ args := &ddcrds.CreateRdsArgs{
     PoolId:"xxxyzzzyy-123",
     // 创建双机版主实例支持选择同步方式 Semi_sync：开启半同步/Async：异步
     SyncMode:"Semi_sync",
+    // 克隆实例信息，克隆实例时必选，其他情况时忽略
+	// 参数说明：
+	//InstanceId为原实例ID；ReferenceType为克隆类型，取值snapshot表示按备份集恢复，datetime表示按时间点恢复；
+	//SnapshotId表示备份集ID；Datetime表示克隆实例的时间点（该时间点需要再允许的时间范围内，时间范围从接口(GetRecoverableDateTime)获取）
+    InitialDataReference: ddcrds.CloneInitialDataReference{
+        InstanceId:    "ddc-xxx",
+        ReferenceType: "snapshot",
+        SnapshotId:    "1722452382843900406",
+        Datetime:      "2021-10-01T01:23:45Z",
+    },
 }
 // 创建DDC数据库专属集群产品，需要传入产品类型参数ddc
 result, err := client.CreateRds(args,"ddc")

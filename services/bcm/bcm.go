@@ -32,6 +32,9 @@ const (
 	ListNamespaceEventsPath         = "/csm/api/v1/custom/event/configs/list"
 	GetCustomEventPath              = "/csm/api/v1/custom/event/configs/detail"
 
+	GetAlarmListPath   = "/ah-api/v1/alarmhouse/alarm/list"
+	GetAlarmDetailPath = "/ah-api/v1/alarmhouse/alarm"
+
 	ApplicationInfoPath                 = "/csm/api/v1/userId/%s/application"
 	ApplicationInstanceListPath         = "/csm/api/v1/userId/%s/instances/all"
 	ApplicationInstanceCreatePath       = "/csm/api/v1/userId/%s/application/instance/bind"
@@ -4289,4 +4292,53 @@ func (c *Client) GetMetricDimensionTopData(req *model.TsdbDimensionTopQuery) ([]
 func isUtcTime(str string) bool {
 	_, err := time.Parse(time.RFC3339, str)
 	return err == nil
+}
+
+func (c *Client) GetAlarmList(req *model.AlarmListQuery) (*model.AlarmListResponse, error) {
+	if req == nil {
+		return nil, errors.New("req should not be empty")
+	}
+	if len(req.UserID) <= 0 {
+		return nil, errors.New("userId should not be empty")
+	}
+	if len(req.AlarmType) <= 0 {
+		return nil, errors.New("alarmType should not be empty")
+	}
+	if req.PageNo <= 0 {
+		req.PageNo = 1
+	}
+	if req.PageSize <= 0 {
+		req.PageSize = 10
+	}
+
+	result := &model.AlarmListResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(GetAlarmListPath).
+		WithBody(req).
+		WithMethod(http.POST).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+func (c *Client) GetAlarmDetail(req *model.AlarmDetailQuery) (*model.AlarmDetailResponse, error) {
+	if req == nil {
+		return nil, errors.New("req should not be empty")
+	}
+	if len(req.UserID) <= 0 {
+		return nil, errors.New("userId should not be empty")
+	}
+	if len(req.AlarmID) <= 0 {
+		return nil, errors.New("alarId should not be empty")
+	}
+
+	result := &model.AlarmDetailResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(GetAlarmDetailPath).
+		WithQueryParam("userId", req.UserID).
+		WithQueryParam("alarmId", req.AlarmID).
+		WithMethod(http.GET).
+		WithResult(result).
+		Do()
+	return result, err
 }

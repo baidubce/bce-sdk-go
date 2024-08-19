@@ -19,13 +19,13 @@ type GetMetricDataResponse struct {
 }
 
 type DataPoints struct {
-	Average     float64 `json:"average,omitempty"`
-	Sum         float64 `json:"sum,omitempty"`
-	Minimum     float64 `json:"minimum,omitempty"`
-	Maximum     float64 `json:"maximum,omitempty"`
-	SampleCount int64   `json:"sampleCount,omitempty"`
-	Value       float64 `json:"value,omitempty"`
-	Timestamp   string  `json:"timestamp,omitempty"`
+	Average     *float64 `json:"average,omitempty"`
+	Sum         *float64 `json:"sum,omitempty"`
+	Minimum     *float64 `json:"minimum,omitempty"`
+	Maximum     *float64 `json:"maximum,omitempty"`
+	SampleCount *int64   `json:"sampleCount,omitempty"`
+	Value       *float64 `json:"value,omitempty"`
+	Timestamp   string   `json:"timestamp,omitempty"`
 }
 
 type BatchGetMetricDataRequest struct {
@@ -483,4 +483,106 @@ type TsdbQueryMetaData struct {
 	Statistics  []string      `json:"statistics,omitempty"`
 	ResourceID  string        `json:"resourceId,omitempty"`
 	DataPoints  []*DataPoints `json:"dataPoints,omitempty"`
+}
+
+type AlarmListQuery struct {
+	UserID         string              `json:"userId,omitempty"`
+	States         []string            `json:"states,omitempty"`
+	AlarmType      string              `json:"alarmType,omitempty"`
+	StartTime      int64               `json:"startTime,omitempty"`
+	EndTime        int64               `json:"endTime,omitempty"`
+	Sort           string              `json:"sort,omitempty"`
+	Ascending      bool                `json:"ascending,omitempty"`
+	PageNo         int                 `json:"pageNo"`
+	PageSize       int                 `json:"pageSize"`
+	Scope          string              `json:"scope,omitempty"`
+	Region         string              `json:"region,omitempty"`
+	ResourceType   string              `json:"resourceType,omitempty"`
+	Level          string              `json:"level,omitempty"`
+	AlarmAliasName string              `json:"alarmAliasName,omitempty"`
+	Resource       map[string]string   `json:"resource,omitempty"`
+	Resources      []map[string]string `json:"resources,omitempty"`
+}
+
+type AlarmListResponse struct {
+	Success bool   `json:"success,omitempty"`
+	Msg     string `json:"msg,omitempty"`
+	Result  struct {
+		Alarms     []Alarm `json:"alarms,omitempty"`
+		PageNo     int     `json:"pageNo,omitempty"`
+		PageSize   int     `json:"pageSize,omitempty"`
+		TotalCount int     `json:"totalCount,omitempty"`
+	} `json:"result,omitempty"`
+}
+
+type AlarmDetailQuery struct {
+	UserID  string `json:"userId,omitempty"`
+	AlarmID string `json:"alarmId,omitempty"`
+}
+
+type AlarmDetailResponse struct {
+	Success bool   `json:"success,omitempty"`
+	Msg     string `json:"msg,omitempty"`
+	Result  Alarm  `json:"result,omitempty"`
+}
+
+type AlertMetric struct {
+	Metric struct {
+		Name        string            `json:"name,omitempty"`
+		Value       float64           `json:"value,omitempty"`
+		Dimensions  map[string]string `json:"dimensions,omitempty"`
+		AliasName   string            `json:"aliasName,omitempty"`
+		AliasNameEn string            `json:"aliasNameEn,omitempty"`
+		Unit        string            `json:"unit,omitempty"`
+	} `json:"metric,omitempty"`
+	Rule struct {
+		Seq             int32               `json:"seq"`
+		MetricName      string              `json:"metricName"`
+		MetricDimension map[string][]string `json:"metricDimension,omitempty"`
+		Operator        string              `json:"operator"`
+		Threshold       float64             `json:"threshold"`
+		Statistics      string              `json:"statistics"`
+		Window          int32               `json:"window"`
+	} `json:"rule,omitempty"`
+}
+
+type Alarm struct {
+	ID          string `json:"id,omitempty"`
+	UserID      string `json:"userId"`
+	SeriesID    string `json:"seriesId"`
+	State       string `json:"state"`
+	InitState   string `json:"initState"`
+	CloseReason string `json:"closeReason,omitempty"`
+	StartTime   int64  `json:"startTime"`
+	EndTime     int64  `json:"endTime,omitempty"`
+	AlarmType   string `json:"alarmType,omitempty"`
+	Resource    struct {
+		Scope            string            `json:"scope,omitempty"`
+		ResourceType     string            `json:"resourceType,omitempty"`
+		Region           string            `json:"region,omitempty"`
+		Identifiers      map[string]string `json:"identifiers,omitempty"`
+		Properties       map[string]string `json:"properties,omitempty"`
+		MetricDimensions map[string]string `json:"metricDimensions,omitempty"`
+	} `json:"resource,omitempty"`
+	Policy struct {
+		ID          int64             `json:"id,omitempty"`
+		Name        string            `json:"name,omitempty"`
+		IndexedName string            `json:"indexedName,omitempty"`
+		AliasName   string            `json:"aliasName,omitempty"`
+		UpdateTime  int64             `json:"updateTime,omitempty"`
+		Content     string            `json:"content,omitempty"`
+		ContentEn   string            `json:"contentEn,omitempty"`
+		Level       string            `json:"level,omitempty"`
+		Extra       map[string]string `json:"extra,omitempty"`
+	} `json:"policy,omitempty"`
+	Actions []struct {
+		Name          string    `json:"name,omitempty"`
+		Type          string    `json:"type,omitempty"`
+		ExecutedTime  int64     `json:"executedTime,omitempty"`
+		Alias         string    `json:"alias"`         // 通知模板名称，也用标识是否 hover 展示
+		Notifications *[]string `json:"notifications"` // 通知方式,
+		CallBacks     *[]string `json:"callBacks"`     // 回调
+		Members       *[]string `json:"members"`       // 用户/用户组}
+	} `json:"actions,omitempty"`
+	AlertMetrics []AlertMetric `json:"alertMetrics,omitempty"`
 }
