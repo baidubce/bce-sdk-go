@@ -143,20 +143,22 @@ type SubnetModel struct {
 }
 
 type InstanceModel struct {
-	InstanceId      string `json:"instanceId,omitempty"`
-	InstanceName    string `json:"instanceName,omitempty"`
-	Status          string `json:"status,omitempty"`
-	ZoneName        string `json:"zoneName,omitempty"`
-	CPUType         string `json:"cpuType,omitempty"`
-	GPUType         string `json:"gpuType,omitempty"`
-	BandwidthInMbps int    `json:"bandwidthInMbps,omitempty"`
-	InternalIp      string `json:"internalIp,omitempty"`
-	PublicIp        string `json:"publicIp,omitempty"`
-	CreateTime      string `json:"createTime,omitempty"`
-	UpdateTime      string `json:"updateTime,omitempty"`
-	DeleteTime      string `json:"deleteTime,omitempty"`
-	RestartPolicy   string `json:"restartPolicy,omitempty"`
-	Tags            []Tag  `json:"tags,omitempty"`
+	InstanceId      string  `json:"instanceId,omitempty"`
+	InstanceName    string  `json:"instanceName,omitempty"`
+	Status          string  `json:"status,omitempty"`
+	ZoneName        string  `json:"zoneName,omitempty"`
+	CPUType         string  `json:"cpuType,omitempty"`
+	GPUType         string  `json:"gpuType,omitempty"`
+	Cpu             float64 `json:"cpu,omitempty"`
+	Memory          float64 `json:"memory,omitempty"`
+	BandwidthInMbps int     `json:"bandwidthInMbps,omitempty"`
+	InternalIp      string  `json:"internalIp,omitempty"`
+	PublicIp        string  `json:"publicIp,omitempty"`
+	CreateTime      string  `json:"createTime,omitempty"`
+	UpdateTime      string  `json:"updateTime,omitempty"`
+	DeleteTime      string  `json:"deleteTime,omitempty"`
+	RestartPolicy   string  `json:"restartPolicy,omitempty"`
+	Tags            []Tag   `json:"tags,omitempty"`
 }
 
 type Tag struct {
