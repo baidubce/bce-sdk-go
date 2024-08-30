@@ -160,6 +160,15 @@ type InstanceModel struct {
 	EhcClusterId           string                 `json:"ehcClusterId"`
 	AutoRenewPeriodUnit    string                 `json:"autoRenewPeriodUnit,omitempty"`
 	AutoRenewPeriod        int                    `json:"autoRenewPeriod,omitempty"`
+	RoleName               string                 `json:"roleName"`
+	CreatedFrom            string                 `json:"createdFrom"`
+	HosteyeType			   string                 `json:"hosteyeType"`
+	RepairStatus		   string                 `json:"repairStatus"`
+	OsVersion			   string                 `json:"osVersion"`
+	OsArch				   string                 `json:"osArch"`
+	OsName				   string                 `json:"osName"`
+	ImageName			   string                 `json:"imageName"`
+	ImageType			   string                 `json:"imageType"`
 }
 
 type DeploySetSimpleModel struct {
@@ -211,6 +220,14 @@ type NicInfo struct {
 	Ips                      []IpModel `json:"ips"`
 	SecurityGroups           []string  `json:"securityGroups"`
 	EnterpriseSecurityGroups []string  `json:"enterpriseSecurityGroups"`
+	EriNum					 int       `json:"eriNum"`
+	EriInfos				 []EriInfo `json:"eriInfos"`
+	Ipv6s					 []IpModel `json:"ipv6s"`
+}
+
+type EriInfo struct {
+	Name           string `json:"name"`
+	EriId          string `json:"eriId"`
 }
 
 type IpModel struct {
@@ -920,6 +937,8 @@ type RebuildInstanceArgs struct {
 	SysRootSize       int    `json:"sysRootSize,omitempty"`
 	RootPartitionType string `json:"rootPartitionType,omitempty"`
 	DataPartitionType string `json:"dataPartitionType,omitempty"`
+	UserData	      string `json:"userData,omitempty"`
+	CleanLastUserData *bool  `json:"cleanLastUserData"`
 }
 
 type RebuildInstanceArgsV2 struct {
@@ -932,6 +951,8 @@ type RebuildInstanceArgsV2 struct {
 	SysRootSize       int    `json:"sysRootSize,omitempty"`
 	RootPartitionType string `json:"rootPartitionType,omitempty"`
 	DataPartitionType string `json:"dataPartitionType,omitempty"`
+	UserData	      string `json:"userData,omitempty"`
+	CleanLastUserData *bool  `json:"cleanLastUserData"`
 }
 
 type StopInstanceArgs struct {
@@ -1238,6 +1259,7 @@ type DeleteCDSVolumeArgs struct {
 
 type ModifyChargeTypeCSDVolumeArgs struct {
 	Billing *Billing `json:"billing"`
+	EffectiveType string `json:"effectiveType"`
 }
 
 type ResGroupInfo struct {
@@ -1357,6 +1379,8 @@ type CreateCDSVolumeArgs struct {
 	AutoSnapshotPolicy []AutoSnapshotPolicy `json:"autoSnapshotPolicy"`
 	ClientToken        string               `json:"-"`
 	ChargeType         string               `json:"chargeType"`
+	CdsExtraIo		   int					`json:"cdsExtraIo"`
+	RelationTag		   *bool				`json:"relationTag"`
 }
 
 type AutoSnapshotPolicy struct {
@@ -1459,25 +1483,27 @@ type AutoSnapshotPolicyModel struct {
 }
 
 type SecurityGroupRuleModel struct {
-	SourceIp        string `json:"sourceIp,omitempty"`
-	DestIp          string `json:"destIp,omitempty"`
-	Protocol        string `json:"protocol,omitempty"`
-	SourceGroupId   string `json:"sourceGroupId,omitempty"`
-	Ethertype       string `json:"ethertype,omitempty"`
-	PortRange       string `json:"portRange,omitempty"`
-	DestGroupId     string `json:"destGroupId,omitempty"`
-	SecurityGroupId string `json:"securityGroupId,omitempty"`
-	Remark          string `json:"remark,omitempty"`
-	Direction       string `json:"direction"`
+	SourceIp            string `json:"sourceIp,omitempty"`
+	DestIp              string `json:"destIp,omitempty"`
+	Protocol            string `json:"protocol,omitempty"`
+	SourceGroupId       string `json:"sourceGroupId,omitempty"`
+	Ethertype           string `json:"ethertype,omitempty"`
+	PortRange           string `json:"portRange,omitempty"`
+	DestGroupId         string `json:"destGroupId,omitempty"`
+	SecurityGroupId     string `json:"securityGroupId,omitempty"`
+	Remark              string `json:"remark,omitempty"`
+	Direction           string `json:"direction"`
+	SecurityGroupRuleId string `json:"securityGroupRuleId,omitempty"`
 }
 
 type SecurityGroupModel struct {
-	Id    string                   `json:"id"`
-	Name  string                   `json:"name"`
-	Desc  string                   `json:"desc"`
-	VpcId string                   `json:"vpcId"`
-	Rules []SecurityGroupRuleModel `json:"rules"`
-	Tags  []model.TagModel         `json:"tags"`
+	Id          string                   `json:"id"`
+	Name        string                   `json:"name"`
+	Desc        string                   `json:"desc"`
+	VpcId       string                   `json:"vpcId"`
+	Rules       []SecurityGroupRuleModel `json:"rules"`
+	Tags        []model.TagModel         `json:"tags"`
+	CreatedTime string                   `json:"createdTime"`
 }
 
 type CreateSecurityGroupArgs struct {
@@ -1898,6 +1924,8 @@ type RebuildBatchInstanceArgs struct {
 	SysRootSize       int      `json:"sysRootSize,omitempty"`
 	RootPartitionType string   `json:"rootPartitionType,omitempty"`
 	DataPartitionType string   `json:"dataPartitionType,omitempty"`
+	UserData 		  string `json:"userData,omitempty"`
+	CleanLastUserData *bool `json:"cleanLastUserData"`
 }
 
 type RebuildBatchInstanceArgsV2 struct {
@@ -2070,6 +2098,7 @@ type Eni struct {
 	Status       string      `json:"status"`
 	CreatedTime  string      `json:"createdTime"`
 	PrivateIpSet []PrivateIP `json:"privateIpSet"`
+	SecurityGroupIds []string `json:"securityGroupIds"`
 }
 
 type ListInstanceEniResult struct {
