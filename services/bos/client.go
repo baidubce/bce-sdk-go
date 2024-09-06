@@ -1108,12 +1108,19 @@ func (c *Client) BasicFetchObject(bucket, object, source string) (*api.FetchObje
 //     - source: fetch source url
 //     - mode: fetch mode which supports sync and async
 //     - storageClass: the storage class of the fetched object
+//     - fetchCallBackAddress: the callback address of the fetched object
 // RETURNS:
 //     - *api.FetchObjectResult: result struct with Code, Message, RequestId and JobId fields
 //     - error: any error if it occurs
 func (c *Client) SimpleFetchObject(bucket, object, source, mode,
-	storageClass string) (*api.FetchObjectResult, error) {
-	args := &api.FetchObjectArgs{mode, storageClass}
+	storageClass, fetchCallBackAddress string) (*api.FetchObjectResult, error) {
+
+	args := &api.FetchObjectArgs{
+		FetchMode:            mode,
+		StorageClass:         storageClass,
+		FetchCallBackAddress: fetchCallBackAddress,
+	}
+
 	return api.FetchObject(c, bucket, object, source, args, c.BosContext)
 }
 
