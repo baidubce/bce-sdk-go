@@ -791,7 +791,7 @@ func TestBasicFetchObject(t *testing.T) {
 func TestSimpleFetchObject(t *testing.T) {
 	res, err := BOS_CLIENT.SimpleFetchObject(EXISTS_BUCKET, "test-fetch-object",
 		"https://bj.bcebos.com/gosdk-unittest-bucket/testsumlink",
-		api.FETCH_MODE_ASYNC, api.STORAGE_CLASS_COLD)
+		api.FETCH_MODE_ASYNC, api.STORAGE_CLASS_COLD, "")
 	ExpectEqual(t.Errorf, err, nil)
 	t.Logf("result: %+v", res)
 }
