@@ -21,10 +21,16 @@ import (
 )
 
 const (
-	LOGSTORE_PREFIX   = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logstore"
-	FASTQUERY_PREFIX  = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "fastquery"
-	LOGSHIPPER_PREFIX = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logshipper"
+	PROJECT_PREFIX      = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "project"
+	LIST_PROJECT_PREFIX = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "project" + bce.URI_PREFIX + "list"
+	LOGSTORE_PREFIX     = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logstore"
+	FASTQUERY_PREFIX    = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "fastquery"
+	LOGSHIPPER_PREFIX   = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logshipper"
 )
+
+func getProjectUri(UUID string) string {
+	return PROJECT_PREFIX + bce.URI_PREFIX + UUID
+}
 
 func getLogStoreUri(logStoreName string) string {
 	return LOGSTORE_PREFIX + bce.URI_PREFIX + logStoreName

@@ -34,10 +34,7 @@ var (
 
 func init() {
 	_, f, _, _ := runtime.Caller(0)
-	for i := 0; i < 7; i++ {
-		f = filepath.Dir(f)
-	}
-	conf := filepath.Join(f, "config.json")
+	conf := filepath.Join(filepath.Dir(f), "config.json")
 	fp, err := os.Open(conf)
 	if err != nil {
 		fmt.Printf("config json file of ak/sk not given: %+v\n", conf)
@@ -51,7 +48,7 @@ func init() {
 		return
 	}
 	// default use http protocol
-	BLS_CLIENT, _ = NewClient(confObj.Ak, confObj.Sk, DEFAULT_TEST_DOMAIN)
+	BLS_CLIENT, _ = NewClient(confObj.Ak, confObj.Sk, confObj.Endpoint)
 	// log.SetLogHandler(log.STDERR | log.FILE)
 	// log.SetRotateType(log.ROTATE_SIZE)
 	log.SetLogLevel(log.WARN)

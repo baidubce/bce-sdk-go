@@ -17,23 +17,21 @@
 package api
 
 import (
-	"strconv"
-
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
 )
 
-// CreateLogStore - create logStore
+// CreateProject - create project
 //
 // PARAMS:
 //   - cli: the client agent which can perform sending request
-//   - body: logStore parameters body
+//   - body: project parameters body
 //
 // RETURNS:
 //   - error: nil if success otherwise the specific error
-func CreateLogStore(cli bce.Client, body *bce.Body) error {
+func CreateProject(cli bce.Client, body *bce.Body) error {
 	req := &bce.BceRequest{}
-	req.SetUri(LOGSTORE_PREFIX)
+	req.SetUri(PROJECT_PREFIX)
 	req.SetMethod(http.POST)
 	if body != nil {
 		req.SetBody(body)
@@ -49,21 +47,18 @@ func CreateLogStore(cli bce.Client, body *bce.Body) error {
 	return nil
 }
 
-// UpdateLogStore - update logStore retention
+// UpdateProject - update project
 //
 // PARAMS:
 //   - cli: the client agent which can perform sending request
-//   - project: logstore project
-//   - logStore: logStore to update
 //   - body: logStore parameters body
 //
 // RETURNS:
 //   - error: nil if success otherwise the specific error
-func UpdateLogStore(cli bce.Client, project string, logStore string, body *bce.Body) error {
+func UpdateProject(cli bce.Client, body *bce.Body) error {
 	req := &bce.BceRequest{}
-	req.SetUri(getLogStoreUri(logStore))
+	req.SetUri(PROJECT_PREFIX)
 	req.SetMethod(http.PUT)
-	req.SetParam("project", project)
 	req.SetBody(body)
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
@@ -76,20 +71,18 @@ func UpdateLogStore(cli bce.Client, project string, logStore string, body *bce.B
 	return nil
 }
 
-// DescribeLogStore - get logStore info
+// DescribeProject - get logStore info
 //
 // PARAMS:
 //   - cli: the client agent which can perform sending request
-//   - project: logstore project
-//   - logStore: logStore to get
+//   - uuid: project uuid
 //
 // RETURNS:
-//   - *LogStore: logStore info
+//   - *Project: project info
 //   - error: nil if success otherwise the specific error
-func DescribeLogStore(cli bce.Client, project string, logStore string) (*LogStore, error) {
+func DescribeProject(cli bce.Client, UUID string) (*Project, error) {
 	req := &bce.BceRequest{}
-	req.SetUri(getLogStoreUri(logStore))
-	req.SetParam("project", project)
+	req.SetUri(getProjectUri(UUID))
 	req.SetMethod(http.GET)
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
@@ -98,26 +91,24 @@ func DescribeLogStore(cli bce.Client, project string, logStore string) (*LogStor
 	if resp.IsFail() {
 		return nil, resp.ServiceError()
 	}
-	result := &LogStore{}
+	result := &DescribeProjectResponse{}
 	if err := resp.ParseJsonBody(result); err != nil {
 		return nil, err
 	}
-	return result, nil
+	return result.Result.Project, nil
 }
 
-// DeleteLogStore - delete logStore
+// DeleteProject - delete project
 //
 // PARAMS:
 //   - cli: the client agent which can perform sending request
-//   - project: logstore project
-//   - logStore: logStore to delete
+//   - uuid: project uuid
 //
 // RETURNS:
 //   - error: nil if success otherwise the specific error
-func DeleteLogStore(cli bce.Client, project, logStore string) error {
+func DeleteProject(cli bce.Client, UUID string) error {
 	req := &bce.BceRequest{}
-	req.SetUri(getLogStoreUri(logStore))
-	req.SetParam("project", project)
+	req.SetUri(getProjectUri(UUID))
 	req.SetMethod(http.DELETE)
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
@@ -130,38 +121,22 @@ func DeleteLogStore(cli bce.Client, project, logStore string) error {
 	return nil
 }
 
-// ListLogStore - get all pattern-match logStore info
+// ListProject - get all pattern-match project info
 //
 // PARAMS:
 //   - cli: the client agent which can perform sending request
 //   - project: logstore project
-//   - args: conditions logStore should match
+//   - body: conditions project should match
 //
 // RETURNS:
-//   - *ListLogStoreResult: logStore result set
+//   - *ListProjectResult: project result set
 //   - error: nil if success otherwise the specific error
-func ListLogStore(cli bce.Client, project string, args *QueryConditions) (*ListLogStoreResult, error) {
+func ListProject(cli bce.Client, body *bce.Body) (*ListProjectResult, error) {
 	req := &bce.BceRequest{}
-	req.SetUri(LOGSTORE_PREFIX)
-	req.SetParam("project", project)
-	req.SetMethod(http.GET)
-	// Set optional args
-	if args != nil {
-		if args.NamePattern != "" {
-			req.SetParam("namePattern", args.NamePattern)
-		}
-		if args.Order != "" {
-			req.SetParam("order", args.Order)
-		}
-		if args.OrderBy != "" {
-			req.SetParam("orderBy", args.OrderBy)
-		}
-		if args.PageNo > 0 {
-			req.SetParam("pageNo", strconv.Itoa(args.PageNo))
-		}
-		if args.PageSize > 0 {
-			req.SetParam("pageSize", strconv.Itoa(args.PageSize))
-		}
+	req.SetUri(LIST_PROJECT_PREFIX)
+	req.SetMethod(http.POST)
+	if body != nil {
+		req.SetBody(body)
 	}
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
@@ -170,9 +145,9 @@ func ListLogStore(cli bce.Client, project string, args *QueryConditions) (*ListL
 	if resp.IsFail() {
 		return nil, resp.ServiceError()
 	}
-	result := &ListLogStoreResult{}
+	result := &ListProjectResponse{}
 	if err := resp.ParseJsonBody(result); err != nil {
 		return nil, err
 	}
-	return result, nil
+	return result.Result, nil
 }

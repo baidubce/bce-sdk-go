@@ -24,14 +24,17 @@ import (
 // CreateIndex - create index for logStore
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - logStoreName: logStore needs to be indexed
-//     - body: index mappings body
+//   - cli: the client agent which can perform sending request
+//   - project: logstore project
+//   - logStoreName: logStore needs to be indexed
+//   - body: index mappings body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
-func CreateIndex(cli bce.Client, logStoreName string, body *bce.Body) error {
+//   - error: nil if success otherwise the specific error
+func CreateIndex(cli bce.Client, project string, logStoreName string, body *bce.Body) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getIndexUri(logStoreName))
+	req.SetParam("project", project)
 	req.SetMethod(http.POST)
 	req.SetBody(body)
 	resp := &bce.BceResponse{}
@@ -48,14 +51,17 @@ func CreateIndex(cli bce.Client, logStoreName string, body *bce.Body) error {
 // UpdateIndex - update index info
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - logStoreName: logStore needs to be updated
-//     - body: index mappings body
+//   - cli: the client agent which can perform sending request
+//   - project: logstore project
+//   - logStoreName: logStore needs to be updated
+//   - body: index mappings body
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
-func UpdateIndex(cli bce.Client, logStoreName string, body *bce.Body) error {
+//   - error: nil if success otherwise the specific error
+func UpdateIndex(cli bce.Client, project string, logStoreName string, body *bce.Body) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getIndexUri(logStoreName))
+	req.SetParam("project", project)
 	req.SetMethod(http.PUT)
 	req.SetBody(body)
 	resp := &bce.BceResponse{}
@@ -72,13 +78,16 @@ func UpdateIndex(cli bce.Client, logStoreName string, body *bce.Body) error {
 // DeleteIndex - delete index for logStore
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - logStoreName: logStore to be deleted
+//   - cli: the client agent which can perform sending request
+//   - project: logstore project
+//   - logStoreName: logStore to be deleted
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
-func DeleteIndex(cli bce.Client, logStoreName string) error {
+//   - error: nil if success otherwise the specific error
+func DeleteIndex(cli bce.Client, project string, logStoreName string) error {
 	req := &bce.BceRequest{}
 	req.SetUri(getIndexUri(logStoreName))
+	req.SetParam("project", project)
 	req.SetMethod(http.DELETE)
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
@@ -94,14 +103,17 @@ func DeleteIndex(cli bce.Client, logStoreName string) error {
 // DescribeIndex - get specific logStore index info
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - logStoreName: logStore needs to be get
+//   - cli: the client agent which can perform sending request
+//   - project: logstore project
+//   - logStoreName: logStore needs to be get
+//
 // RETURNS:
-//     - *IndexFields: index mappings info
-//     - error: nil if success otherwise the specific error
-func DescribeIndex(cli bce.Client, logStoreName string) (*IndexFields, error) {
+//   - *IndexFields: index mappings info
+//   - error: nil if success otherwise the specific error
+func DescribeIndex(cli bce.Client, project, logStoreName string) (*IndexFields, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getIndexUri(logStoreName))
+	req.SetParam("project", project)
 	req.SetMethod(http.GET)
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {

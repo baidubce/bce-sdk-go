@@ -10,12 +10,16 @@
 
 在确认您使用SDK时配置的Endpoint时，可先阅读开发人员指南中关于[BLS访问域名](https://cloud.baidu.com/doc/BLS/s/4k8qysj2z)的部分，理解Endpoint相关的概念。百度云目前开放了多区域支持，请参考[区域选择说明](https://cloud.baidu.com/doc/Reference/s/2jwvz23xx)。
 
-目前支持“华北-北京”和“华南-广州”两个区域。北京区域：`bls-log.bj.baidubce.com`广州区域：`bls-log.gz.baidubce.com`。对应信息为：
+目前支持“华北-北京”、“华南-广州”、“华东-苏州”、“华北-保定”、“华中金融-武汉”、“华北-阳泉”六个区域。对应信息为：
 
-| 访问区域  | 对应Endpoint            | Protocol   |
-| --------- | ----------------------- | ---------- |
-| 华北-北京 | bls-log.bj.baidubce.com | HTTP/HTTPS |
-| 华南-广州 | bls-log.gz.baidubce.com | HTTP/HTTPS |
+| 访问区域  | 对应Endpoint               | Protocol   |
+| --------- |--------------------------| ---------- |
+| 华北-北京 | bls-log.bj.baidubce.com  | HTTP/HTTPS |
+| 华南-广州 | bls-log.gz.baidubce.com  | HTTP/HTTPS |
+| 华东-苏州 | bls-log.su.baidubce.com  | HTTP/HTTPS |
+| 华北-保定 | bls-log.bd.baidubce.com  | HTTP/HTTPS |
+| 华中金融-武汉 | bls-log.fwh.baidubce.com | HTTP/HTTPS |
+| 华北-阳泉 | bls-log.yq.baidubce.com  | HTTP/HTTPS |
 
 ## 获取密钥
 

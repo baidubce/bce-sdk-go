@@ -102,24 +102,24 @@ func (c *Client) UpdateLogStore(logStore string, retention int) error {
 	if err != nil {
 		return err
 	}
-	return api.UpdateLogStore(c, logStore, body)
+	return api.UpdateLogStore(c, DefaultProject, logStore, body)
 }
 
 func (c *Client) DescribeLogStore(logStore string) (*api.LogStore, error) {
-	return api.DescribeLogStore(c, logStore)
+	return api.DescribeLogStore(c, DefaultProject, logStore)
 }
 
 func (c *Client) DeleteLogStore(logStore string) error {
-	return api.DeleteLogStore(c, logStore)
+	return api.DeleteLogStore(c, DefaultProject, logStore)
 }
 
 func (c *Client) ListLogStore(args *api.QueryConditions) (*api.ListLogStoreResult, error) {
-	return api.ListLogStore(c, args)
+	return api.ListLogStore(c, DefaultProject, args)
 }
 
 // LogStream opt
 func (c *Client) ListLogStream(logStore string, args *api.QueryConditions) (*api.ListLogStreamResult, error) {
-	return api.ListLogStream(c, logStore, args)
+	return api.ListLogStream(c, DefaultProject, logStore, args)
 }
 
 // LogRecord opts
@@ -136,15 +136,15 @@ func (c *Client) PushLogRecord(logStore string, logStream string, logType string
 	if err != nil {
 		return err
 	}
-	return api.PushLogRecord(c, logStore, body)
+	return api.PushLogRecord(c, DefaultProject, logStore, body)
 }
 
 func (c *Client) PullLogRecord(logStore string, args *api.PullLogRecordArgs) (*api.PullLogRecordResult, error) {
-	return api.PullLogRecord(c, logStore, args)
+	return api.PullLogRecord(c, DefaultProject, logStore, args)
 }
 
 func (c *Client) QueryLogRecord(logStore string, args *api.QueryLogRecordArgs) (*api.QueryLogResult, error) {
-	return api.QueryLogRecord(c, logStore, args)
+	return api.QueryLogRecord(c, DefaultProject, logStore, args)
 }
 
 // FastQuery opts
@@ -181,7 +181,7 @@ func (c *Client) DeleteFastQuery(fastQueryName string) error {
 }
 
 func (c *Client) ListFastQuery(args *api.QueryConditions) (*api.ListFastQueryResult, error) {
-	return api.ListFastQuery(c, args)
+	return api.ListFastQuery(c, "", "", args)
 }
 
 // Index opts
@@ -197,7 +197,7 @@ func (c *Client) CreateIndex(logStore string, fulltext bool, fields map[string]a
 	if err != nil {
 		return err
 	}
-	return api.CreateIndex(c, logStore, body)
+	return api.CreateIndex(c, DefaultProject, logStore, body)
 }
 
 func (c *Client) UpdateIndex(logStore string, fulltext bool, fields map[string]api.LogField) error {
@@ -212,15 +212,15 @@ func (c *Client) UpdateIndex(logStore string, fulltext bool, fields map[string]a
 	if err != nil {
 		return err
 	}
-	return api.UpdateIndex(c, logStore, body)
+	return api.UpdateIndex(c, DefaultProject, logStore, body)
 }
 
 func (c *Client) DeleteIndex(logStore string) error {
-	return api.DeleteIndex(c, logStore)
+	return api.DeleteIndex(c, DefaultProject, logStore)
 }
 
 func (c *Client) DescribeIndex(logStore string) (*api.IndexFields, error) {
-	return api.DescribeIndex(c, logStore)
+	return api.DescribeIndex(c, DefaultProject, logStore)
 }
 
 // LogShipper opts

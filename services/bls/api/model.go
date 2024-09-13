@@ -16,9 +16,46 @@
 
 package api
 
-import "github.com/baidubce/bce-sdk-go/model"
+import (
+	"github.com/baidubce/bce-sdk-go/model"
+)
 
 type DateTime string
+
+type Project struct {
+	CreatedTime DateTime `json:"createdTime"`
+	UpdatedTime DateTime `json:"updatedTime"`
+	UUID        string   `json:"uuid"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	Top         bool     `json:"top"`
+}
+
+type DescribeProjectResult struct {
+	Project *Project `json:"project"`
+}
+
+type DescribeProjectResponse struct {
+	Code    string                `json:"code"`
+	Message string                `json:"message"`
+	Result  DescribeProjectResult `json:"result"`
+}
+
+type ListProjectResult struct {
+	Order          string    `json:"order"`
+	OrderBy        string    `json:"orderBy"`
+	PageNo         int       `json:"pageNo"`
+	PageSize       int       `json:"pageSize"`
+	TotalCount     int       `json:"totalCount"`
+	DefaultProject Project   `json:"default"`
+	Projects       []Project `json:"projects"`
+}
+
+type ListProjectResponse struct {
+	Code    string             `json:"code"`
+	Message string             `json:"message"`
+	Result  *ListProjectResult `json:"result"`
+}
 
 type LogRecord struct {
 	Message   string `json:"message"`
@@ -34,6 +71,7 @@ type LogStream struct {
 type LogStore struct {
 	CreationDateTime DateTime         `json:"creationDateTime"`
 	LastModifiedTime DateTime         `json:"lastModifiedTime"`
+	Project          string           `json:"project"`
 	LogStoreName     string           `json:"logStoreName"`
 	Retention        int              `json:"retention"`
 	Tags             []model.TagModel `json:"tags,omitempty"`
@@ -42,6 +80,7 @@ type LogStore struct {
 type LogShipper struct {
 	Status         string             `json:"status"`
 	LogShipperName string             `json:"logShipperName"`
+	Project        string             `json:"project"`
 	LogStoreName   string             `json:"logStoreName"`
 	StartTime      string             `json:"startTime"`
 	DestType       string             `json:"destType"`
@@ -140,8 +179,11 @@ type FastQuery struct {
 	FastQueryName    string   `json:"fastQueryName"`
 	Description      string   `json:"description"`
 	Query            string   `json:"query"`
+	Project          string   `json:"project"`
 	LogStoreName     string   `json:"logStoreName"`
 	LogStreamName    string   `json:"logStreamName"`
+	StartDateTime    DateTime `json:"startDateTime"`
+	EndDateTime      DateTime `json:"endDateTime"`
 }
 
 type CreateFastQueryBody struct {
@@ -198,6 +240,7 @@ type ShipperDestConfig struct {
 	CompressType             string `json:"compressType"`
 	DeliverInterval          int64  `json:"deliverInterval"`
 	StorageFormat            string `json:"storageFormat"`
+	ShipperType              string `json:"shipperType"`
 	CsvHeadline              bool   `json:"csvHeadline"`
 	CsvDelimiter             string `json:"csvDelimiter"`
 	CsvQuote                 string `json:"csvQuote"`
@@ -231,6 +274,7 @@ type ListShipperResult struct {
 type ShipperSummary struct {
 	LogShipperID   string `json:"logShipperID"`
 	LogShipperName string `json:"logShipperName"`
+	Project        string `json:"project"`
 	LogStoreName   string `json:"logStoreName"`
 	DestType       string `json:"destType"`
 	Status         string `json:"status"`
@@ -241,6 +285,7 @@ type ShipperSummary struct {
 type ListLogShipperCondition struct {
 	LogShipperID   string `json:"logShipperID"`
 	LogShipperName string `json:"logShipperName"`
+	Project        string `json:"project"`
 	LogStoreName   string `json:"logStoreName"`
 	DestType       string `json:"destType"`
 	Status         string `json:"status"`
