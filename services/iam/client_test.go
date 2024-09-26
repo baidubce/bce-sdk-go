@@ -596,3 +596,38 @@ func TestSubUserUpdate(t *testing.T) {
 	t.Logf(string(jsonRes))
 	ExpectEqual(t.Errorf, res.Name, userName)
 }
+
+func TestGetSubUserIdpConfig(t *testing.T) {
+	config, err := IAM_CLIENT.GetSubUserIdpConfig()
+	ExpectEqual(t.Errorf, err, nil)
+	jsonRes, _ := json.Marshal(config)
+	t.Logf(string(jsonRes))
+}
+
+func TestUpdateSubUserIdpStatus(t *testing.T) {
+	status := "disable"
+	config, err := IAM_CLIENT.UpdateSubUserIdpStatus(status)
+	ExpectEqual(t.Errorf, err, nil)
+	jsonRes, _ := json.Marshal(config)
+	t.Logf(string(jsonRes))
+	ExpectEqual(t.Errorf, status, config.Status)
+}
+
+func TestUpdateSubUserIdp(t *testing.T) {
+	var request api.UpdateSubUserIdpRequest
+	auxiliaryDomain := "www.qq.com"
+	fileName := "ok.xml"
+	request.AuxiliaryDomain = auxiliaryDomain
+	request.FileName = fileName
+	config, err := IAM_CLIENT.UpdateSubUserIdp(&request)
+	ExpectEqual(t.Errorf, err, nil)
+	jsonRes, _ := json.Marshal(config)
+	t.Logf(string(jsonRes))
+	ExpectEqual(t.Errorf, config.AuxiliaryDomain, auxiliaryDomain)
+	ExpectEqual(t.Errorf, config.FileName, fileName)
+}
+
+func TestDeleteSubUserIdp(t *testing.T) {
+	err := IAM_CLIENT.DeleteSubUserIdp()
+	ExpectEqual(t.Errorf, err, nil)
+}

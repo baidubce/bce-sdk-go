@@ -274,6 +274,26 @@ func (c *Client) SubUserUpdate(userName string, args *api.UpdateSubUserArgs) (*a
 	return api.SubUserUpdate(c, body, userName)
 }
 
+func (c *Client) GetSubUserIdpConfig() (*api.IdpWithStatus, error) {
+	return api.GetSubUserIdpConfig(c)
+}
+
+func (c *Client) UpdateSubUserIdpStatus(status string) (*api.IdpWithStatus, error) {
+	return api.UpdateSubUserIdpStatus(c, status)
+}
+
+func (c *Client) UpdateSubUserIdp(request *api.UpdateSubUserIdpRequest) (*api.IdpWithStatus, error) {
+	body, err := NewBodyFromStruct(request)
+	if err != nil {
+		return nil, err
+	}
+	return api.UpdateSubUserIdp(c, body)
+}
+
+func (c *Client) DeleteSubUserIdp() error {
+	return api.DeleteSubUserIdp(c)
+}
+
 func NewBodyFromStruct(args interface{}) (*bce.Body, error) {
 	jsonBytes, err := json.Marshal(args)
 	if err != nil {

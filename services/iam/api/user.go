@@ -216,6 +216,89 @@ func SubUserUpdate(cli bce.Client, body *bce.Body, name string) (*UpdateUserResu
 	return jsonBody, nil
 }
 
+func GetSubUserIdpConfig(cli bce.Client) (*IdpWithStatus, error) {
+	req := &bce.BceRequest{}
+	req.SetUri("/v1/subUser/idp/query")
+	req.SetMethod(http.GET)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	jsonBody := &IdpWithStatus{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	defer func() { resp.Body().Close() }()
+	return jsonBody, nil
+}
+
+func UpdateSubUserIdpStatus(cli bce.Client, status string) (*IdpWithStatus, error) {
+	req := &bce.BceRequest{}
+	req.SetUri("/v1/subUser/idp/updateStatus")
+	req.SetMethod(http.POST)
+	req.SetParam("status", status)
+	req.SetHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	jsonBody := &IdpWithStatus{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	defer func() { resp.Body().Close() }()
+	return jsonBody, nil
+
+}
+
+func UpdateSubUserIdp(cli bce.Client, body *bce.Body) (*IdpWithStatus, error) {
+	req := &bce.BceRequest{}
+	req.SetUri("/v1/subUser/idp/update")
+	req.SetMethod(http.POST)
+	req.SetBody(body)
+	req.SetHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	jsonBody := &IdpWithStatus{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	defer func() { resp.Body().Close() }()
+	return jsonBody, nil
+
+}
+
+func DeleteSubUserIdp(cli bce.Client) error {
+	req := &bce.BceRequest{}
+	req.SetUri("/v1/subUser/idp/delete")
+	req.SetMethod(http.POST)
+	req.SetHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
 func getUserUri(name string) string {
 	return URI_PREFIX + URI_USER + "/" + name
 }

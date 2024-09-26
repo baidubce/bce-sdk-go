@@ -107,7 +107,7 @@ func TestClient_RecommitEtChannel(t *testing.T) {
 			Networks:            []string{"Your Networks"},      // networks
 			CustomerAddress:     "Your CustomerAddress",         // customer address
 			RouteType:           "Your RouteType",               // route type
-			VlanId:              1,                              // vlan id
+			VlanId:              "1",                            // vlan id
 			Status:              "Your Status",                  // status
 			EnableIpv6:          0,                              // enable ipv6
 			BaiduIpv6Address:    "Your BaiduIpv6Address",        // baidu ipv6 address
@@ -176,18 +176,20 @@ func getClientToken() string {
 	return util.NewUUID()
 }
 
+// TestClient_CreateEtDcphy 测试Client_CreateEtDcphy函数，创建一个ET DCphy实例
+// 参数：t *testing.T - 单元测试对象指针，用于输出错误信息
 func TestClient_CreateEtDcphy(t *testing.T) {
-	args := &CreateEtDcphyArgs {
+	args := &CreateEtDcphyArgs{
 		ClientToken: getClientToken(),
-		Name:      "test_InitEt",
-		Isp:       "ISP_CMCC",
-		IntfType:  "1G",
-		ApType:    "SINGLE",
-		ApAddr:    "BJYZ",
-		UserName:  "test",
-		UserPhone: "18266666666",
-		UserEmail: "18266666666@baidu.com",
-		UserIdc:   "北京|市辖区|东城区|百度科技园K2",
+		Name:        "test_InitEt",
+		Isp:         "ISP_CMCC",
+		IntfType:    "1G",
+		ApType:      "SINGLE",
+		ApAddr:      "BJYZ",
+		UserName:    "test",
+		UserPhone:   "18266666666",
+		UserEmail:   "18266666666@baidu.com",
+		UserIdc:     "北京|市辖区|东城区|百度科技园K2",
 	}
 
 	r, err := EtClient.CreateEtDcphy(args)
@@ -195,8 +197,11 @@ func TestClient_CreateEtDcphy(t *testing.T) {
 	ExpectEqual(t.Errorf, true, len(r.Id) != 0)
 }
 
+// TestClient_UpdateEtDcphy 测试Client_UpdateEtDcphy方法，更新ET DCphy信息
+// 参数：t *testing.T - 类型为*testing.T的指针，表示测试对象
+// 返回值：nil - 无返回值
 func TestClient_UpdateEtDcphy(t *testing.T) {
-	args := &UpdateEtDcphyArgs {
+	args := &UpdateEtDcphyArgs{
 		Name:        "test_Update",
 		Description: "new",
 		UserName:    "testUpdate",
@@ -208,8 +213,11 @@ func TestClient_UpdateEtDcphy(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
+// TestClient_ListEtDcphy 测试Client_ListEtDcphy方法，用于获取ET DC/PHY列表
+// 参数：t *testing.T - 类型为*testing.T的指针，表示测试对象
+// 返回值：nil - 无返回值
 func TestClient_ListEtDcphy(t *testing.T) {
-	args := &ListEtDcphyArgs {
+	args := &ListEtDcphyArgs{
 		Marker:  "your marker",
 		MaxKeys: 10000,
 		Status:  "established",
@@ -226,21 +234,24 @@ func TestClient_ListEtDcphyDetail(t *testing.T) {
 	ExpectEqual(t.Errorf, true, len(r.Name) != 0)
 }
 
+// TestClient_CreateEtChannel 测试Client_CreateEtChannel方法，创建一个ET通道。
+// 参数：*testing.T - t，表示单元测试的对象，用于报错和判定。
+// 返回值：nil - 无返回值，只是进行单元测试。
 func TestClient_CreateEtChannel(t *testing.T) {
-	args := &CreateEtChannelArgs {
-		ClientToken: getClientToken(),
-		EtId:         "dcphy-234r5",
-		Description:  "test",
-		BaiduAddress: "172.1.1.1/24",
-		Name:         "testChannel",
-		Networks:     []string{"192.168.0.0/16"},
-		CustomerAddress: "172.1.1.2/24",
-		RouteType:    "static-route",
-		VlanId:       100,
-		EnableIpv6:   1,
+	args := &CreateEtChannelArgs{
+		ClientToken:         getClientToken(),
+		EtId:                "dcphy-234r5",
+		Description:         "test",
+		BaiduAddress:        "172.1.1.1/24",
+		Name:                "testChannel",
+		Networks:            []string{"192.168.0.0/16"},
+		CustomerAddress:     "172.1.1.2/24",
+		RouteType:           "static-route",
+		VlanId:              100,
+		EnableIpv6:          1,
 		BaiduIpv6Address:    "2400:da00:e003:0:1eb:200::1/88",
 		CustomerIpv6Address: "2400:da00:e003:0:0:200::1/88",
-		Ipv6Networks: []string{"2400:da00:e003:0:15f::/87"},
+		Ipv6Networks:        []string{"2400:da00:e003:0:15f::/87"},
 	}
 
 	r, err := EtClient.CreateEtChannel(args)
@@ -295,4 +306,84 @@ func TestDeleteEtChannelRouteRule(t *testing.T) {
 	}
 	err := EtClient.DeleteEtChannelRouteRule(req)
 	ExpectEqual(t.Errorf, nil, err)
+}
+
+// TestClient_ListEtDcphyWithTag 是一个用于测试EtClient的ListEtDcphy方法返回是否带有Tags的单元测试
+func TestClient_ListEtDcphyWithTag(t *testing.T) {
+	args := &ListEtDcphyArgs{
+		Marker:  "",
+		MaxKeys: 10000,
+		Status:  "established",
+	}
+
+	r, err := EtClient.ListEtDcphy(args)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, true, len(r.Ets[0].Tags) > 0)
+}
+
+// TestClient_CreateEtDcphyWithTag 测试Client_CreateEtDcphy函数，带有Tag标签
+// 参数：t *testing.T - 单元测试对象指针，用于输出错误信息
+func TestClient_CreateEtDcphyWithTag(t *testing.T) {
+	args := &CreateEtDcphyArgs{
+		ClientToken: getClientToken(),
+		Name:        "test_InitEt",
+		Isp:         "ISP_CMCC",
+		IntfType:    "1G",
+		ApType:      "SINGLE",
+		ApAddr:      "BJYZ",
+		UserName:    "test",
+		UserPhone:   "18266666666",
+		UserEmail:   "18266666666@baidu.com",
+		UserIdc:     "北京|市辖区|东城区|百度科技园K2",
+		Tags:        []Tag{{"tag-chongkuitai", "chongkuitai"}},
+	}
+
+	r, err := EtClient.CreateEtDcphy(args)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, true, len(r.Id) != 0)
+}
+
+// TestClient_ListEtDcphyDetailWithTag 测试带有Tag标签的专线详情查询
+func TestClient_ListEtDcphyDetailWithTag(t *testing.T) {
+	r, err := EtClient.ListEtDcphyDetail("dcphy-3r2uaz4psic5")
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, true, len(r.Name) != 0)
+}
+
+// TestClient_CreateEtChannelWithTag 测试Client_CreateEtChannel方法，创建一个带有tag的ET通道。
+// 参数：*testing.T - t，表示单元测试的对象，用于报错和判定。
+// 返回值：nil - 无返回值，只是进行单元测试。
+func TestClient_CreateEtChannelWithTag(t *testing.T) {
+	args := &CreateEtChannelArgs{
+		ClientToken:         getClientToken(),
+		EtId:                "dcphy-axibreesn6af",
+		Description:         "test",
+		BaiduAddress:        "11.11.11.1/24",
+		Name:                "testChannel",
+		Networks:            []string{"192.168.0.0/16"},
+		CustomerAddress:     "11.11.11.2/24",
+		RouteType:           "static-route",
+		VlanId:              56,
+		EnableIpv6:          1,
+		BaiduIpv6Address:    "2400:da00:e003:0:1eb:200::1/88",
+		CustomerIpv6Address: "2400:da00:e003:0:1eb:201::1/88",
+		Ipv6Networks:        []string{"2400:da00:e003:0:15f::/87"},
+		Tags:                []Tag{{"tag-chongkuitai", "chongkuitai"}},
+	}
+
+	r, err := EtClient.CreateEtChannel(args)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, true, len(r.Id) != 0)
+}
+
+// TestClient_GetEtChannelWithTag 测试带有tag的ET通道查询
+func TestClient_GetEtChannelWithTag(t *testing.T) {
+	args := &GetEtChannelArgs{
+		ClientToken: getClientToken(),
+		EtId:        "dcphy-axibreesn6af",
+	}
+	result, err := EtClient.GetEtChannel(args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(result)
+	log.Debug(string(r))
 }

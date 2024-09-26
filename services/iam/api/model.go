@@ -237,3 +237,19 @@ type PolicyAttachedEntity struct {
 type ListPolicyAttachedEntityResult struct {
 	PolicyAttachedEntities []PolicyAttachedEntity `json:"entities"`
 }
+
+type IdpWithStatus struct {
+	Status          string    `json:"status,omitempty"`
+	AuxiliaryDomain string    `json:"auxiliaryDomain,omitempty"`
+	DomainId        string    `json:"domainId,omitempty"`
+	EncodeMetadata  string    `json:"encodeMetadata,omitempty"`
+	FileName        string    `json:"fileName,omitempty"`
+	CreateTime      time.Time `json:"createTime,omitempty"`
+	UpdateTime      time.Time `json:"updateTime,omitempty"`
+}
+
+type UpdateSubUserIdpRequest struct {
+	FileName        string `json:"fileName,omitempty"`
+	EncodeMetadata  string `json:"encodeMetadata,omitempty"`
+	AuxiliaryDomain string `json:"auxiliaryDomain,omitempty"`
+}

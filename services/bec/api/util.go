@@ -46,6 +46,8 @@ const (
 
 	REQUEST_VM_IMAGE_URL = URI_PREFIX + "/vm" + "/image"
 
+	IMPORT_VM_IMAGE_URL = URI_PREFIX + "/vm" + "/image" + "/import"
+
 	REQUEST_LOADBALANCER_URL = URI_PREFIX + "/blb"
 
 	REQUEST_LOADBALANCER_URL_V2 = URI_PREFIX_V2 + "/appblb"
@@ -137,6 +139,10 @@ func GetVmServiceActionURI(serviceId, action string) string {
 
 func GetVmImageURI() string {
 	return REQUEST_VM_IMAGE_URL
+}
+
+func GetImportImageURI() string {
+	return IMPORT_VM_IMAGE_URL
 }
 
 func GetLoadBalancerURI() string {
