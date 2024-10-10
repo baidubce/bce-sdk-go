@@ -32,6 +32,7 @@ func CreateEtDcphy() {
 		UserPhone:   "Your Phone",                // 用户手机号码
 		UserEmail:   "Your Email",                // 用户邮箱
 		UserIdc:     "Your Idc",                  // 对端地址
+		Tags:        []Tag{{"Your TagKey", "Your TagValue"}}, // 标签
 	}
 
 	if err = client.CreateEtDcphy(args); err != nil {

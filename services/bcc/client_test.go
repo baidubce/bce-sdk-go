@@ -2169,3 +2169,9 @@ func TestBatchChangeInstanceToPrepayWithAutoRenew(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(result)
 }
+
+func TestClient_GetSecurityDetail(t *testing.T) {
+	res, err := BCC_CLIENT.GetSecurityGroupDetail("g-7dyv27r6pnse")
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}

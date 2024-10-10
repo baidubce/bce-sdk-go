@@ -2611,3 +2611,15 @@ func (c *Client) DeleteEhcCluster(args *api.DeleteEhcClusterArg) error {
 	}
 	return api.EhcClusterDelete(c, body)
 }
+
+// GetSecurityGroupDetail - get security group detail
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - securityGroupId: the id of security group
+//
+// RETURNS:
+//   - *GetSecurityGroupDetailResult: the result of get security group detail
+func (c *Client) GetSecurityGroupDetail(securityGroupId string) (*api.GetSecurityGroupDetailResult, error) {
+	return api.GetSecurityGroupDetail(c, securityGroupId)
+}
