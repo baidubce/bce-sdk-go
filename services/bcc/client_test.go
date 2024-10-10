@@ -2130,3 +2130,42 @@ func TestEhcClusterDelete(t *testing.T) {
 	err := BCC_CLIENT.DeleteEhcCluster(args)
 	fmt.Println(err)
 }
+
+func TestChangeToPrepaidWithAutoRenew(t *testing.T) {
+	args := &api.ChangeToPrepaidRequest{
+		Duration:        1,
+		RelationCds:     true,
+		AutoRenew:       true,
+		AutoRenewPeriod: 12,
+	}
+	_, err := BCC_CLIENT.ChangeToPrepaid("i-Dzmlx7Fz", args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestBatchChangeInstanceToPrepayWithAutoRenew(t *testing.T) {
+	batchChangeInstanceToPrepayArgs := &api.BatchChangeInstanceToPrepayArgs{
+		Config: []api.PrepayConfig{
+			{
+				InstanceId:      "i-kfnD7UQ7",
+				Duration:        1,
+				AutoRenew:       true,
+				AutoRenewPeriod: 9,
+				CdsList: []string{
+					"all",
+				},
+			},
+			{
+				InstanceId:      "i-Dzmlx7Fz",
+				Duration:        1,
+				AutoRenew:       true,
+				AutoRenewPeriod: 24,
+				CdsList: []string{
+					"all",
+				},
+			},
+		},
+	}
+	result, err := BCC_CLIENT.BatchChangeInstanceToPrepay(batchChangeInstanceToPrepayArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}

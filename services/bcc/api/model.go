@@ -1942,8 +1942,10 @@ type RebuildBatchInstanceArgsV2 struct {
 }
 
 type ChangeToPrepaidRequest struct {
-	Duration    int  `json:"duration"`
-	RelationCds bool `json:"relationCds"`
+	Duration        int  `json:"duration"`
+	RelationCds     bool `json:"relationCds"`
+	AutoRenew       bool `json:"autoRenew"`
+	AutoRenewPeriod int  `json:"autoRenewPeriod"`
 }
 
 type ChangeToPrepaidResponse struct {
@@ -2368,11 +2370,13 @@ type BatchChangeInstanceToPrepayArgs struct {
 }
 
 type PrepayConfig struct {
-	InstanceId  string   `json:"instanceId"`
-	Duration    int      `json:"duration"`
-	RelationCds bool     `json:"relationCds"`
-	CdsList     []string `json:"cdsList"`
-	AutoPay     bool     `json:"autoPay"`
+	InstanceId      string   `json:"instanceId"`
+	Duration        int      `json:"duration"`
+	RelationCds     bool     `json:"relationCds"`
+	CdsList         []string `json:"cdsList"`
+	AutoPay         bool     `json:"autoPay"`
+	AutoRenew       bool     `json:"autoRenew"`
+	AutoRenewPeriod int      `json:"autoRenewPeriod"`
 }
 
 type BatchChangeInstanceToPostpayArgs struct {
