@@ -340,6 +340,7 @@ type CreateInstanceArgs struct {
 	IsOpenHostEye              bool              `json:"isOpenHostEye,omitempty"`
 	ResGroupId                 string            `json:"resGroupId,omitempty"`
 	IsEipAutoRelatedDelete     bool              `json:"isEipAutoRelatedDelete,omitempty"`
+	KeepImageLogin             bool              `json:"keepImageLogin"`
 }
 
 type CreateInstanceArgsV2 struct {
@@ -394,6 +395,7 @@ type CreateInstanceArgsV2 struct {
 	FileSystems                []FileSystemModel `json:"fileSystems,omitempty"`
 	IsOpenHostEye              *bool             `json:"isOpenHostEye"`
 	ResGroupId                 string            `json:"resGroupId,omitempty"`
+	KeepImageLogin             bool              `json:"keepImageLogin"`
 }
 
 type DescribeRegionsArgs struct {
@@ -601,6 +603,8 @@ type CreateInstanceBySpecArgsV2 struct {
 	BidPrice                   string           `json:"bidPrice,omitempty"`
 	ResGroupId                 string           `json:"resGroupId,omitempty"`
 	EnableHt                   *bool            `json:"enableHt"`
+	KeepImageLogin             bool             `json:"keepImageLogin"`
+	EhcClusterId               string           `json:"ehcClusterId,omitempty"`
 }
 
 const (

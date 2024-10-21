@@ -200,6 +200,7 @@ func TestCreateInstanceBySpecV2(t *testing.T) {
 		},
 		DeployIdList: DeploySetIds,
 		EnableHt:     &EnableHt,
+		EhcClusterId: "ehcClusterId",
 	}
 	createResult, err := BCC_CLIENT.CreateInstanceBySpecV2(createInstanceBySpecArgs)
 	ExpectEqual(t.Errorf, err, nil)

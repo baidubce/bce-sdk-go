@@ -80,6 +80,20 @@ func (cli *Client) ListDomains(marker string) ([]string, string, error) {
 	return api.ListDomains(cli, marker)
 }
 
+// ListDomainInfos - list all domains that in ABROAD-CDN service
+// For details, please refer https://cloud.baidu.com/doc/CDN-ABROAD/s/1kbsyj9m6
+//
+// PARAMS:
+//   - marker: a marker is a start point of searching
+//
+// RETURNS:
+//   - []DomainInfo: domains belongs to the user
+//   - string: a marker for next searching, empty if is in the end
+//   - error: nil if success otherwise the specific error
+func (cli *Client) ListDomainInfos(marker string) ([]api.DomainInfo, string, error) {
+	return api.ListDomainInfos(cli, marker)
+}
+
 // CreateDomainOption defined a method for setting optional configurations.
 type CreateDomainOption func(interface{})
 

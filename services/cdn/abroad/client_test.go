@@ -388,6 +388,14 @@ func TestClient_ListDomains(t *testing.T) {
 	t.Logf("ListDomains success: %v", domains)
 }
 
+func TestClient_ListDomainsInfo(t *testing.T) {
+	domainsInfo, _, err := testCli.ListDomainInfos("")
+	if err != nil {
+		t.Fatalf("ListDomainsInfo failed: %s", err)
+	}
+	t.Logf("ListDomainsInfo success: %v", domainsInfo)
+}
+
 func TestClient_CreateDomainWithOptions(t *testing.T) {
 	info, err := testCli.CreateDomainWithOptions(testDomain, []api.OriginPeer{
 		{

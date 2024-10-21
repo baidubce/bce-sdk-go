@@ -22,6 +22,12 @@ type DomainCreatedInfo struct {
 	Cname  string `json:"cname"`
 }
 
+// DomainInfo defined a struct for domain information
+type DomainInfo struct {
+	Name string `json:"name"`
+	Form string `json:"form"`
+}
+
 // ListDomains - list all domains that in ABROAD-CDN service
 // For details, please refer https://cloud.baidu.com/doc/CDN-ABROAD/s/1kbsyj9m6
 //
@@ -60,6 +66,37 @@ func ListDomains(cli bce.Client, marker string) ([]string, string, error) {
 	}
 
 	return domains, respObj.NextMarker, nil
+}
+
+// ListDomainInfos - list all domains that in ABROAD-CDN service
+// For details, please refer https://cloud.baidu.com/doc/CDN-ABROAD/s/1kbsyj9m6
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - marker: a marker is a start point of searching
+//
+// RETURNS:
+//   - []DomainInfo: domains belongs to the user
+//   - string: a marker for next searching, empty if is in the end
+//   - error: nil if success otherwise the specific error
+func ListDomainInfos(cli bce.Client, marker string) ([]DomainInfo, string, error) {
+	respObj := &struct {
+		IsTruncated bool         `json:"isTruncated"`
+		Domains     []DomainInfo `json:"domains"`
+		NextMarker  string       `json:"nextMarker"`
+	}{}
+
+	params := map[string]string{}
+	if marker != "" {
+		params["marker"] = marker
+	}
+
+	err := httpRequest(cli, "GET", "/v2/abroad/domains", params, nil, respObj)
+	if err != nil {
+		return nil, "", err
+	}
+
+	return respObj.Domains, respObj.NextMarker, nil
 }
 
 // CreateDomain - add a specified domain into ABROAD-CDN service
