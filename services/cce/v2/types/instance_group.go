@@ -29,8 +29,11 @@ type InstanceGroupSpec struct {
 
 	CleanPolicy CleanPolicy `json:"cleanPolicy,omitempty" `
 
-	InstanceTemplate InstanceTemplate `json:"instanceTemplate" `
-	Replicas         int              `json:"replicas" `
+	// Deprecated: Use InstanceTemplates instead.
+	InstanceTemplate  InstanceTemplate   `json:"instanceTemplate" `
+	InstanceTemplates []InstanceTemplate `json:"instanceTemplates,omitempty" `
+
+	Replicas int `json:"replicas" `
 
 	ClusterAutoscalerSpec *ClusterAutoscalerSpec `json:"clusterAutoscalerSpec,omitempty" `
 }

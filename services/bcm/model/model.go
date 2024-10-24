@@ -192,11 +192,28 @@ type EventDataRequest struct {
 }
 
 type CloudEventResponse struct {
-	PageNo     int          `json:"pageNo,omitempty"`
-	PageSize   int          `json:"pageSize,omitempty"`
-	TotalCount int          `json:"totalCount,omitempty"`
-	TotalPage  int          `json:"totalPage,omitempty"`
-	Result     []CloudEvent `json:"result,omitempty"`
+	PageNumber    int              `json:"pageNumber,omitempty"`
+	PageSize      int              `json:"pageSize,omitempty"`
+	PageElements  int              `json:"pageElements,omitempty"`
+	Last          bool             `json:"last,omitempty"`
+	First         bool             `json:"first,omitempty"`
+	TotalPages    bool             `json:"totalPages,omitempty"`
+	TotalElements int              `json:"totalElements,omitempty"`
+	Content       []CloudEventData `json:"content,omitempty"`
+}
+
+type CloudEventData struct {
+	AccountID    string `json:"accountId,omitempty"`
+	ServiceName  string `json:"serviceName,omitempty"`
+	Region       string `json:"region,omitempty"`
+	ResourceType string `json:"resourceType,omitempty"`
+	ResourceID   string `json:"resourceId,omitempty"`
+	EventID      string `json:"eventId,omitempty"`
+	EventType    string `json:"eventType,omitempty"`
+	EventLevel   string `json:"eventLevel,omitempty"`
+	EventAlias   string `json:"eventAlias,omitempty"`
+	Timestamp    string `json:"timestamp,omitempty"`
+	Content      string `json:"content,omitempty"`
 }
 
 type CloudEvent struct {
