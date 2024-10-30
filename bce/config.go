@@ -53,6 +53,7 @@ func init() {
 // BceClientConfiguration defines the config components structure.
 type BceClientConfiguration struct {
 	Endpoint                  string
+	BaseUrl                   string
 	ProxyUrl                  string
 	Region                    string
 	UserAgent                 string
