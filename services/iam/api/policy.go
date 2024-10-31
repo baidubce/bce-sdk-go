@@ -41,6 +41,28 @@ func CreatePolicy(cli bce.Client, body *bce.Body) (*CreatePolicyResult, error) {
 	return jsonBody, nil
 }
 
+func UpdatePolicy(cli bce.Client, name string, body *bce.Body) (*UpdatePolicyResult, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getPolicyUri(name))
+	req.SetMethod(http.POST)
+	req.SetBody(body)
+	req.SetHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	jsonBody := &UpdatePolicyResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	defer func() { resp.Body().Close() }()
+	return jsonBody, nil
+}
+
 func GetPolicy(cli bce.Client, name, policyType string) (*GetPolicyResult, error) {
 	req := &bce.BceRequest{}
 	req.SetUri(getPolicyUri(name))

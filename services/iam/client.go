@@ -21,6 +21,7 @@ package iam
 
 import (
 	"encoding/json"
+
 	"github.com/baidubce/bce-sdk-go/auth"
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/services/iam/api"
@@ -57,7 +58,7 @@ func NewClientWithEndpoint(ak, sk, endpoint string) (*Client, error) {
 		ConnectionTimeoutInMillis: bce.DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS}
 	v1Signer := &auth.BceV1Signer{}
 
-	client := &Client{bce.NewBceClient(defaultConf, v1Signer)}
+	client := &Client{BceClient: bce.NewBceClient(defaultConf, v1Signer)}
 	return client, nil
 }
 
@@ -156,6 +157,18 @@ func (c *Client) CreatePolicy(args *api.CreatePolicyArgs) (*api.CreatePolicyResu
 		return nil, err
 	}
 	return api.CreatePolicy(c, body)
+}
+
+func (c *Client) UpdatePolicy(args *api.UpdatePolicyArgs) (*api.UpdatePolicyResult, error) {
+	if args.Name == "" {
+		args.Name = args.PolicyName
+	}
+
+	body, err := NewBodyFromStruct(args)
+	if err != nil {
+		return nil, err
+	}
+	return api.UpdatePolicy(c, args.PolicyName, body)
 }
 
 func (c *Client) GetPolicy(name, policyType string) (*api.GetPolicyResult, error) {

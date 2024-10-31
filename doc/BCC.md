@@ -3619,6 +3619,16 @@ args := &api.DeleteEhcClusterArg{
 err := BCC_CLIENT.DeleteEhcCluster(args)
 fmt.Println(err)
 ```
+### 查询预留实例券列表
+```go
+args := &api.ListReservedInstanceArgs{
+     ZoneName: "cn-bj-a",
+     MaxKeys:  10,
+}
+result, err := BCC_CLIENT.ListReservedInstances(args)
+ExpectEqual(t.Errorf, err, nil)
+fmt.Println(result)
+```
 
 ### 对预留实例券发起转移
 对预留实例券发起转移（仅支持0预付的预留实例券）
@@ -3702,6 +3712,33 @@ Spec: "bcc.ic4.c2m2",
 Status: "fail",
 }
 result, err := BCC_CLIENT.TransferOutReservedInstanceOrders(args)
+ExpectEqual(t.Errorf, err, nil)
+fmt.Println(result)
+```
+
+### 续费预留实例劵
+续费预留实例劵
+```go
+args := &api.RenewReservedInstancesArgs{
+	// 客户端Token
+    ClientToken: "myClientToken",
+	// 预留实例券ids
+    ReservedInstanceIds: []string{
+        "test-renew",
+    },
+	// 预留实例券续费时长，支持3，6，9，12，24，36个月
+    ReservedInstanceTime:     1,
+	// 预留实例券购买时长单位，默认为month，不可变更
+    ReservedInstanceTimeUnit: "month",
+	// 预留实例券自动续费时长单位，默认为month，不可变更
+    AutoRenewTimeUnit:        "month",
+	// 预留实例券自动续费时长，支持3，6，9，12，24，36个月，autoRenew为true时，必选且必须与reservedInstanceTime一致
+    AutoRenewTime:            1,
+	// 自动续费开关，默认为false
+    AutoRenew:                true,
+}
+
+result, err := BCC_CLIENT.RenewReservedInstances(args)
 ExpectEqual(t.Errorf, err, nil)
 fmt.Println(result)
 ```

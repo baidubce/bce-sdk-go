@@ -71,6 +71,8 @@ const (
 	REQUEST_EVENT_URL = "/event"
 
 	REQUEST_SYNC_URL = "/sync"
+
+	REQUEST_RBAC_URL = "/rbac"
 )
 
 var _ Interface = &Client{}
@@ -221,6 +223,10 @@ func genAddonUpgradeURI(clusterID string) string {
 
 func genUpdateClusterCRDURI(clusterID string) string {
 	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + "/crd"
+}
+
+func getRBACURI() string {
+	return URI_PREFIX + REQUEST_RBAC_URL
 }
 
 func encodeUserScriptInInstanceSet(instancesSets []*InstanceSet) error {

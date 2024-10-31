@@ -1098,6 +1098,15 @@ func TestChangeToPrepaid(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestListReservedInstances(t *testing.T) {
+	args := &api.ListReservedInstanceArgs{
+		ZoneName: "cn-bj-a",
+		MaxKeys:  10,
+	}
+	_, err := BCC_CLIENT.ListReservedInstances(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestBindInstanceToTags(t *testing.T) {
 	args := &api.BindTagsRequest{
 		ChangeTags: []model.TagModel{
@@ -2104,6 +2113,27 @@ func TestModifyReservedInstances(t *testing.T) {
 	}
 
 	result, err := BCC_CLIENT.ModifyReservedInstances(args)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(result)
+}
+
+func TestRenewReservedInstances(t *testing.T) {
+	args := &api.RenewReservedInstancesArgs{
+		ClientToken: "myClientToken",
+		ReservedInstanceIds: []string{
+			"test-renew",
+		},
+		ReservedInstanceTime:     1,
+		ReservedInstanceTimeUnit: "month",
+		AutoRenewTimeUnit:        "month",
+		AutoRenewTime:            1,
+		AutoRenew:                true,
+	}
+
+	result, err := BCC_CLIENT.RenewReservedInstances(args)
 	if err != nil {
 		panic(err)
 	}

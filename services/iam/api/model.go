@@ -142,7 +142,16 @@ type CreatePolicyArgs struct {
 	Document    string `json:"document"`
 }
 
+type UpdatePolicyArgs struct {
+	PolicyName  string `json:"policyName"`
+	Name        string `json:"name,omitempty"`
+	Description string `json:"description,omitempty"`
+	Document    string `json:"document"`
+}
+
 type CreatePolicyResult PolicyModel
+
+type UpdatePolicyResult PolicyModel
 
 type GetPolicyResult PolicyModel
 

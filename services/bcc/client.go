@@ -1771,6 +1771,11 @@ func (c *Client) UnBindInstanceToTags(instanceId string, args *api.UnBindTagsReq
 	return api.UnBindInstanceToTags(c, instanceId, body)
 }
 
+
+func (c *Client) ListReservedInstances(args *api.ListReservedInstanceArgs) (*api.ListReservedInstanceResult, error) {
+	return api.ListReservedInstances(c, args)
+}
+
 func (c *Client) BindReservedInstanceToTags(args *api.ReservedTagsRequest) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
@@ -2558,6 +2563,18 @@ func (c *Client) ModifyReservedInstances(args *api.ModifyReservedInstancesArgs) 
 		return nil, err
 	}
 	return api.ModifyReservedInstances(c, args.ClientToken, body)
+}
+
+func (c *Client) RenewReservedInstances(args *api.RenewReservedInstancesArgs) (*api.RenewReservedInstancesResponse, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return api.RenewReservedInstances(c, args.ClientToken, body)
 }
 
 func (c *Client) ListEhcCluster(args *api.DescribeEhcClusterListArg) (*api.DescribeEhcClusterListResponse, error) {

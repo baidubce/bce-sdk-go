@@ -664,6 +664,29 @@ if err != nil {
 > **提示：**
 > - 详细的参数配置及限制条件，可以参考IAM API 文档[创建策略](https://cloud.baidu.com/doc/IAM/s/Wjx35jxes#%E5%88%9B%E5%BB%BA%E7%AD%96%E7%95%A5)
 
+### 更新策略
+通过以下代码创建策略
+```go
+
+updateArgs := &api.UpdatePolicyArgs{
+    PolicyName:  name,
+	Name:        "New_Name",
+	Document:    "{\"accessControlList\": [{\"region\":\"bj\",\"service\":\"bcc\"," +
+"\"resource\":[\"*\"],\"permission\":[\"*\"],\"effect\":\"Allow\"}]}",
+    Description: "New description",
+}
+
+result, err := client.UpdatePolicy(updateArgs)
+if err != nil {
+    fmt.Println("Update policy failed", err)
+} else {
+    fmt.Println("Update policy success", result)
+}
+```
+> **提示：**
+> - 详细的参数配置及限制条件，可以参考IAM API 文档[更新策略](https://cloud.baidu.com/doc/IAM/s/Wjx35jxes#%E6%9B%B4%E6%96%B0%E7%AD%96%E7%95%A5)
+
+
 ### 查询策略
 通过以下代码查询策略
 ```go

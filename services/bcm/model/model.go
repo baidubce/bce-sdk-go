@@ -197,7 +197,7 @@ type CloudEventResponse struct {
 	PageElements  int              `json:"pageElements,omitempty"`
 	Last          bool             `json:"last,omitempty"`
 	First         bool             `json:"first,omitempty"`
-	TotalPages    bool             `json:"totalPages,omitempty"`
+	TotalPages    int              `json:"totalPages,omitempty"`
 	TotalElements int              `json:"totalElements,omitempty"`
 	Content       []CloudEventData `json:"content,omitempty"`
 }

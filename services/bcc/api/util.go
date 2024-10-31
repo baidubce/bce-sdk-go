@@ -91,6 +91,7 @@ const (
 	REQUEST_TRANSFER_ACCEPT_URI              = "/reserved/transfer/accept"
 	REQUEST_TRANSFER_IN_URI                  = "/reserved/transfer/in/list"
 	REQUEST_TRANSFER_OUT_URI                 = "/reserved/transfer/out/list"
+	REQUEST_RESERVED_LIST_URI				 = "/reserved/list"
 	REQUEST_RELATED_DELETE_POLICY            = "/modifyRelatedDeletePolicy"
 	REQUEST_VOLUME_PRICE_URI                 = "/volume/getPrice"
 
@@ -350,6 +351,10 @@ func getModifyReservedInstancesUri() string {
 	return URI_PREFIXV2 + "/instance/reserved/modify"
 }
 
+func getRenewReservedInstancesUri() string {
+	return URI_PREFIXV2 + "/instance/reserved/renew"
+}
+
 func GetServiceTypeTagsUri() string {
 	return URI_PREFIXV3 + REQUEST_ServiceType_TAG_URI
 }
@@ -492,6 +497,10 @@ func getBatchRefundResourceUri() string {
 
 func getAvailableImagesBySpecUri() string {
 	return URI_PREFIXV2 + "/image/getAvailableImagesBySpec"
+}
+
+func getListReservedInstancesUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_RESERVED_LIST_URI;
 }
 
 func getCreateTransferReservedInstanceOrderUri() string {

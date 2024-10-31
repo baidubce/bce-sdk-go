@@ -1055,6 +1055,33 @@ type ReleasePrepaidInstanceResponse struct {
 	InstanceRefundFlag bool                      `json:"instanceRefundFlag"`
 }
 
+type ListReservedInstanceArgs struct {
+	Marker                 string   `json:"marker"`
+	MaxKeys                int      `json:"maxKeys"`
+	ReservedInstanceIds    []string `json:"reservedInstanceIds,omitempty"`
+	ReservedInstanceName   string   `json:"reservedInstanceName,omitempty"`
+	ZoneName               string   `json:"zoneName,omitempty"`
+	ReservedInstanceStatus string   `json:"reservedInstanceStatus,omitempty"`
+	Spec                   string   `json:"spec,omitempty"`
+	OfferingType           string   `json:"offeringType,omitempty"`
+	OsType                 string   `json:"osType,omitempty"`
+	InstanceId             string   `json:"instanceId,omitempty"`
+	InstanceName           string   `json:"instanceName,omitempty"`
+	IsDeduct               *bool    `json:"isDeduct,omitempty"`
+	EhcClusterId           string   `json:"ehcClusterId,omitempty"`
+	SortKey                string   `json:"sortKey,omitempty"`
+	SortDir                string   `json:"sortDir,omitempty"`
+}
+
+type ListReservedInstanceResult struct {
+	TotalCount        int                     `json:"totalCount"`
+	ReservedInstances []ReservedInstanceModel `json:"reservedInstances"`
+	Marker            string                  `json:"marker"`
+	MaxKeys           int                     `json:"maxKeys"`
+	NextMarker        string                  `json:"nextMarker"`
+	IsTruncated       bool                    `json:"isTruncated"`
+}
+
 type DescribeTransferReservedInstancesRequest struct {
 	ReservedInstanceIds []string `json:"reservedInstanceIds"`
 	TransferRecordIds   []string `json:"transferRecordIds"`
@@ -1122,6 +1149,7 @@ type TransferOutRecord struct {
 
 type ReservedInstanceModel struct {
 	ReservedInstanceId     string `json:"reservedInstanceId"`
+	ReservedInstanceUuid   string `json:"reservedInstanceUuid"`
 	ReservedInstanceName   string `json:"reservedInstanceName"`
 	Scope                  string `json:"scope"`
 	ZoneName               string `json:"zoneName"`
@@ -1131,12 +1159,15 @@ type ReservedInstanceModel struct {
 	OsType                 string `json:"osType"`
 	ReservedInstanceStatus string `json:"reservedInstanceStatus"`
 	InstanceCount          int    `json:"instanceCount"`
+	InstanceId             string `json:"instanceId"`
+	InstanceName           string `json:"instanceName"`
 	EffectiveTime          string `json:"effectiveTime"`
 	ExpireTime             string `json:"expireTime"`
 	AutoRenew              bool   `json:"autoRenew"`
 	RenewTimeUnit          string `json:"renewTimeUnit"`
 	RenewTime              int    `json:"renewTime"`
 	NextRenewTime          string `json:"nextRenewTime"`
+	EhcClusterId           string `json:"ehcClusterId"`
 }
 
 type InstanceDeleteResultModel struct {
@@ -2644,6 +2675,21 @@ type CreateReservedInstanceArgs struct {
 }
 
 type CreateReservedInstanceResponse struct {
+	ReservedInstanceIds []string `json:"reservedInstanceIds"`
+	OrderId             string   `json:"orderId"`
+}
+
+type RenewReservedInstancesArgs struct {
+	ClientToken              string   `json:"-"`
+	ReservedInstanceIds      []string `json:"reservedInstanceIds"`
+	ReservedInstanceTime     int64    `json:"reservedInstanceTime"`
+	ReservedInstanceTimeUnit string   `json:"reservedInstanceTimeUnit"`
+	AutoRenewTimeUnit        string   `json:"autoRenewTimeUnit"`
+	AutoRenewTime            int64    `json:"autoRenewTime"`
+	AutoRenew                bool     `json:"autoRenew"`
+}
+
+type RenewReservedInstancesResponse struct {
 	ReservedInstanceIds []string `json:"reservedInstanceIds"`
 	OrderId             string   `json:"orderId"`
 }

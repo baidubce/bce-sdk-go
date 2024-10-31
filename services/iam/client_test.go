@@ -17,13 +17,14 @@ package iam
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/services/iam/api"
-	"github.com/baidubce/bce-sdk-go/util/log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"testing"
+
+	"github.com/baidubce/bce-sdk-go/services/iam/api"
+	"github.com/baidubce/bce-sdk-go/util/log"
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -258,7 +259,6 @@ func getPolicyDocument() string {
 }
 
 func getAssumeRolePolicyDocument() string {
-
 	grantee := api.Grantee{
 		ID: "test-account-id",
 	}
@@ -294,6 +294,16 @@ func TestCreateGetListDeletePolicy(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 	ExpectEqual(t.Errorf, name, getRes.Name)
 	ExpectEqual(t.Errorf, args.Description, getRes.Description)
+
+	updateArgs := &api.UpdatePolicyArgs{
+		PolicyName:  name,
+		Document:    getPolicyDocument(),
+		Description: "updated description",
+	}
+
+	updateRes, err := IAM_CLIENT.UpdatePolicy(updateArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, updateArgs.Name, updateRes.Name)
 
 	listRes, err := IAM_CLIENT.ListPolicy(name, "")
 	ExpectEqual(t.Errorf, err, nil)
@@ -568,7 +578,6 @@ func TestRoleAttachPolicyAndDetachPolicy(t *testing.T) {
 
 	err = IAM_CLIENT.DeleteRole(roleName)
 	ExpectEqual(t.Errorf, err, nil)
-
 }
 
 func TestUserOperationMfaSwitch(t *testing.T) {
