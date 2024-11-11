@@ -172,7 +172,7 @@ func (c *Client) ListAsNode(req *ListAsGroupRequest) (*ListAsNodeResponse, error
 		WithURL(getAsNodeUri()).
 		WithMethod(http.GET).
 		WithQueryParamFilter(PAGE_NO, strconv.Itoa(req.PageNo)).
-		WithQueryParamFilter(PAGE_SIZE, strconv.Itoa(req.PageNo)).
+		WithQueryParamFilter(PAGE_SIZE, strconv.Itoa(req.PageSize)).
 		WithQueryParamFilter(ORDER, req.Order).
 		WithQueryParamFilter(ORDER_BY, req.OrderBy).
 		WithQueryParamFilter(GROUP_ID_V2, req.GroupId).
