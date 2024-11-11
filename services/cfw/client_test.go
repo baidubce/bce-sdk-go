@@ -16,12 +16,13 @@ package cfw
 
 import (
 	"encoding/json"
-	"github.com/baidubce/bce-sdk-go/util/log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"testing"
+
+	"github.com/baidubce/bce-sdk-go/util/log"
 )
 
 var (
@@ -82,6 +83,8 @@ func TestClient_CreateCfw(t *testing.T) {
 	args := &CreateCfwRequest{
 		Name:        "cfw_1",
 		Description: "desc",
+		Type:        1,
+		Border:      0,
 		CfwRules: []CreateRule{
 			{
 				IpVersion:     4,

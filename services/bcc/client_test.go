@@ -2072,7 +2072,7 @@ func TestEhcClusterList(t *testing.T) {
 func TestCreateReservedInstance(t *testing.T) {
 
 	args := &api.CreateReservedInstanceArgs{
-		ClientToken:              "myClientToken",
+		ClientToken:              "myClientToken1",
 		ReservedInstanceName:     "myReservedInstance",
 		Scope:                    "AZ",
 		ZoneName:                 "cn-bj-a",
@@ -2095,6 +2095,40 @@ func TestCreateReservedInstance(t *testing.T) {
 	}
 
 	result, err := BCC_CLIENT.CreateReservedInstance(args)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(result)
+}
+
+func TestCreateReservedInstanceWithoutOptionalParam(t *testing.T) {
+
+	args := &api.CreateReservedInstanceArgs{
+		ClientToken:          "myClientToken",
+		ZoneName:             "cn-bj-a",
+		Spec:                 "bcc.g5.c2m8",
+		OfferingType:         "FullyPrepay",
+		ReservedInstanceTime: 1,
+	}
+
+	result, err := BCC_CLIENT.CreateReservedInstance(args)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(result)
+}
+
+func TestRenewReservedInstancesWithoutOptionalParam(t *testing.T) {
+	args := &api.RenewReservedInstancesArgs{
+		ReservedInstanceIds: []string{
+			"r-dASbnDAH",
+		},
+		ReservedInstanceTime: 1,
+	}
+
+	result, err := BCC_CLIENT.RenewReservedInstances(args)
 	if err != nil {
 		panic(err)
 	}

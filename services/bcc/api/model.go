@@ -2656,22 +2656,22 @@ type ModifyReservedInstanceOrder struct {
 
 type CreateReservedInstanceArgs struct {
 	ClientToken              string `json:"-"`
-	ReservedInstanceName     string `json:"reservedInstanceName"`
-	Scope                    string `json:"scope"`
+	ReservedInstanceName     string `json:"reservedInstanceName,omitempty"`
+	Scope                    string `json:"scope,omitempty"`
 	ZoneName                 string `json:"zoneName"`
 	Spec                     string `json:"spec"`
 	OfferingType             string `json:"offeringType"`
-	InstanceCount            int64  `json:"instanceCount"`
-	ReservedInstanceCount    int64  `json:"reservedInstanceCount"`
+	InstanceCount            int64  `json:"instanceCount,omitempty"`
+	ReservedInstanceCount    int64  `json:"reservedInstanceCount,omitempty"`
 	ReservedInstanceTime     int64  `json:"reservedInstanceTime"`
-	ReservedInstanceTimeUnit string `json:"reservedInstanceTimeUnit"`
-	AutoRenewTimeUnit        string `json:"autoRenewTimeUnit"`
-	AutoRenewTime            int64  `json:"autoRenewTime"`
-	AutoRenew                bool   `json:"autoRenew"`
-	EffectiveTime            string `json:"effectiveTime"`
+	ReservedInstanceTimeUnit string `json:"reservedInstanceTimeUnit,omitempty"`
+	AutoRenewTimeUnit        string `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime            int64  `json:"autoRenewTime,omitempty"`
+	AutoRenew                bool   `json:"autoRenew,omitempty"`
+	EffectiveTime            string `json:"effectiveTime,omitempty"`
 	Tags                     []Tag  `json:"tags"`
-	EhcClusterId             string `json:"ehcClusterId"`
-	TicketId                 string `json:"ticketId"`
+	EhcClusterId             string `json:"ehcClusterId,omitempty"`
+	TicketId                 string `json:"ticketId,omitempty"`
 }
 
 type CreateReservedInstanceResponse struct {
@@ -2683,10 +2683,10 @@ type RenewReservedInstancesArgs struct {
 	ClientToken              string   `json:"-"`
 	ReservedInstanceIds      []string `json:"reservedInstanceIds"`
 	ReservedInstanceTime     int64    `json:"reservedInstanceTime"`
-	ReservedInstanceTimeUnit string   `json:"reservedInstanceTimeUnit"`
-	AutoRenewTimeUnit        string   `json:"autoRenewTimeUnit"`
-	AutoRenewTime            int64    `json:"autoRenewTime"`
-	AutoRenew                bool     `json:"autoRenew"`
+	ReservedInstanceTimeUnit string   `json:"reservedInstanceTimeUnit,omitempty"`
+	AutoRenewTimeUnit        string   `json:"autoRenewTimeUnit,omitempty"`
+	AutoRenewTime            int64    `json:"autoRenewTime,omitempty"`
+	AutoRenew                bool     `json:"autoRenew,omitempty"`
 }
 
 type RenewReservedInstancesResponse struct {

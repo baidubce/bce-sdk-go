@@ -28,6 +28,8 @@ type Cfw struct {
 	Description     string    `json:"description"`
 	CreatedTime     string    `json:"createdTime"`
 	BindInstanceNum int32     `json:"bindInstanceNum"`
+	Type            int32     `json:"type"`
+	Border          int32     `json:"border"`
 	CfwRules        []CfwRule `json:"cfwRules"`
 }
 
@@ -56,6 +58,8 @@ type CfwRule struct {
 type CreateCfwRequest struct {
 	Name        string       `json:"name"`
 	Description string       `json:"description"`
+	Type        int32        `json:"type"`
+	Border      int32        `json:"border"`
 	CfwRules    []CreateRule `json:"cfwRules"`
 }
 
@@ -111,6 +115,8 @@ type GetCfwResponse struct {
 	Description     string    `json:"description"`
 	CreatedTime     string    `json:"createdTime"`
 	BindInstanceNum int32     `json:"bindInstanceNum"`
+	Type            int32     `json:"type"`
+	Border          int32     `json:"border"`
 	CfwRules        []CfwRule `json:"cfwRules"`
 }
 
