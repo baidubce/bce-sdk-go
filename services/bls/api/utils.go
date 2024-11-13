@@ -21,11 +21,13 @@ import (
 )
 
 const (
-	PROJECT_PREFIX      = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "project"
-	LIST_PROJECT_PREFIX = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "project" + bce.URI_PREFIX + "list"
-	LOGSTORE_PREFIX     = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logstore"
-	FASTQUERY_PREFIX    = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "fastquery"
-	LOGSHIPPER_PREFIX   = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logshipper"
+	PROJECT_PREFIX            = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "project"
+	LIST_PROJECT_PREFIX       = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "project" + bce.URI_PREFIX + "list"
+	LOGSTORE_PREFIX           = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logstore"
+	FASTQUERY_PREFIX          = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "fastquery"
+	LOGSHIPPER_PREFIX         = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logshipper"
+	DOWNLOAD_TASK_PREFIX      = bce.URI_PREFIX + "v2" + bce.URI_PREFIX + "logstore" + bce.URI_PREFIX + "download"
+	LIST_DOWNLOAD_TASK_PREFIX = DOWNLOAD_TASK_PREFIX + bce.URI_PREFIX + "list"
 )
 
 func getProjectUri(UUID string) string {
@@ -66,4 +68,12 @@ func getLogShipperStatusUri(logShipperID string) string {
 
 func getBulkSetLogShipperStatusUri() string {
 	return LOGSHIPPER_PREFIX + bce.URI_PREFIX + "status" + bce.URI_PREFIX + "batch"
+}
+
+func getDownloadTaskUri(UUID string) string {
+	return DOWNLOAD_TASK_PREFIX + bce.URI_PREFIX + UUID
+}
+
+func getDownloadTaskLinkUri(UUID string) string {
+	return DOWNLOAD_TASK_PREFIX + bce.URI_PREFIX + "link" + bce.URI_PREFIX + UUID
 }

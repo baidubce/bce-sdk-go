@@ -107,6 +107,8 @@ type QueryLogRecordArgs struct {
 	StartDateTime DateTime `json:"startDatetime"`
 	EndDateTime   DateTime `json:"endDateTime"`
 	Limit         int      `json:"limit"`
+	Marker        string   `json:"marker"`
+	Sort          string   `json:"sort"`
 }
 
 type PullLogRecordArgs struct {
@@ -144,15 +146,19 @@ type DataSetScanInfo struct {
 }
 
 type ResultSet struct {
-	Columns         []string        `json:"columns"`
-	Rows            [][]interface{} `json:"rows"`
-	IsTruncated     bool            `json:"isTruncated"`
-	TruncatedReason string          `json:"truncatedReason"`
+	QueryType       string              `json:"queryType"`
+	Columns         []string            `json:"columns"`
+	ColumnTypes     []string            `json:"columnTypes"`
+	Rows            [][]interface{}     `json:"rows"`
+	Tags            []map[string]string `json:"tags,omitempty"`
+	IsTruncated     bool                `json:"isTruncated"`
+	TruncatedReason string              `json:"truncatedReason"`
 }
 
 type QueryLogResult struct {
 	ResultSet       *ResultSet       `json:"resultSet"`
 	DataSetScanInfo *DataSetScanInfo `json:"dataScanInfo"`
+	NextMarker      string           `json:"nextMarker"`
 }
 
 type ListLogStreamResult struct {
@@ -311,4 +317,77 @@ type SetSingleShipperStatusCondition struct {
 type BulkSetShipperStatusCondition struct {
 	LogShipperIDs []string `json:"logShipperIDs"`
 	DesiredStatus string   `json:"desiredStatus"`
+}
+
+type DownloadTask struct {
+	UUID           string `json:"uuid"`
+	Name           string `json:"name"`
+	Project        string `json:"project"`
+	LogStoreName   string `json:"logStoreName"`
+	LogStreamName  string `json:"logStreamName"`
+	Query          string `json:"query"`
+	QueryStartTime string `json:"queryStartTime"`
+	QueryEndTime   string `json:"queryEndTime"`
+	Format         string `json:"format"`
+	Limit          int64  `json:"limit"`
+	OrderBy        string `json:"orderBy"`
+	Order          string `json:"order"`
+	State          string `json:"state"`
+	FailedCode     string `json:"failedCode"`
+	FailedMessage  string `json:"failedMessage"`
+	Retry          int    `json:"retry"`
+	WrittenRows    int64  `json:"writtenRows"`
+	FileDir        string `json:"fileDir"`
+	FileName       string `json:"fileName"`
+	ExecStartTime  string `json:"execStartTime"`
+	ExecEndTime    string `json:"execEndTime"`
+	CreatedTime    string `json:"createdTime"`
+	UpdatedTime    string `json:"updatedTime"`
+}
+
+type CreateDownloadTaskResult struct {
+	UUID string `json:"uuid"`
+}
+
+type CreateDownloadResponse struct {
+	Code    string                   `json:"code"`
+	Message string                   `json:"message"`
+	Result  CreateDownloadTaskResult `json:"result"`
+}
+
+type DescribeDownloadTaskResult struct {
+	Task *DownloadTask `json:"task"`
+}
+
+type DescribeDownloadTaskResponse struct {
+	Code    string                     `json:"code"`
+	Message string                     `json:"message"`
+	Result  DescribeDownloadTaskResult `json:"result"`
+}
+
+type GetDownloadTaskLinkResult struct {
+	FileDir  string `json:"fileDir"`
+	FileName string `json:"fileName"`
+	Link     string `json:"link"`
+}
+
+type GetDownloadTaskLinkResponse struct {
+	Code    string                     `json:"code"`
+	Message string                     `json:"message"`
+	Result  *GetDownloadTaskLinkResult `json:"result"`
+}
+
+type ListDownloadTaskResult struct {
+	Order    string         `json:"order"`
+	OrderBy  string         `json:"orderBy"`
+	PageNo   int            `json:"pageNo"`
+	PageSize int            `json:"pageSize"`
+	Total    int            `json:"total"`
+	Tasks    []DownloadTask `json:"tasks"`
+}
+
+type ListDownloadTaskResponse struct {
+	Code    string                  `json:"code"`
+	Message string                  `json:"message"`
+	Result  *ListDownloadTaskResult `json:"result"`
 }

@@ -146,6 +146,8 @@ func (c *Client) QueryLogRecordV2(request QueryLogRecordRequest) (*api.QueryLogR
 		StartDateTime: api.DateTime(request.StartDateTime),
 		EndDateTime:   api.DateTime(request.EndDateTime),
 		Limit:         request.Limit,
+		Marker:        request.Marker,
+		Sort:          request.Sort,
 	}
 	return api.QueryLogRecord(c, request.Project, request.LogStoreName, args)
 }
@@ -322,4 +324,40 @@ func (c *Client) ListLogShipperRecordV2(request ListShipperRecordRequest) (*api.
 		PageSize:   request.PageSize,
 	}
 	return api.ListLogShipperRecord(c, request.LogShipperID, args)
+}
+
+func (c *Client) CreateDownloadTask(request CreateDownloadTaskRequest) (string, error) {
+	params, jsonErr := json.Marshal(request)
+	if jsonErr != nil {
+		return "", jsonErr
+	}
+	body, err := bce.NewBodyFromString(string(params))
+	if err != nil {
+		return "", err
+	}
+	return api.CreateDownloadTask(c, body)
+}
+
+func (c *Client) DescribeDownloadTask(request DescribeDownloadRequest) (*api.DownloadTask, error) {
+	return api.DescribeDownloadTask(c, request.UUID)
+}
+
+func (c *Client) GetDownloadTaskLink(request GetDownloadTaskLinkRequest) (*api.GetDownloadTaskLinkResult, error) {
+	return api.GetDownloadTaskLink(c, request.UUID)
+}
+
+func (c *Client) DeleteDownloadTask(request DeleteDownloadTaskRequest) error {
+	return api.DeleteDownloadTask(c, request.UUID)
+}
+
+func (c *Client) ListDownloadTask(request ListDownloadTaskRequest) (*api.ListDownloadTaskResult, error) {
+	param, jsonErr := json.Marshal(request)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromString(string(param))
+	if err != nil {
+		return nil, err
+	}
+	return api.ListDownloadTask(c, body)
 }

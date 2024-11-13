@@ -121,6 +121,12 @@ func QueryLogRecord(cli bce.Client, project string, logStore string, args *Query
 		if args.Limit > 0 {
 			req.SetParam("limit", strconv.Itoa(args.Limit))
 		}
+		if len(args.Sort) > 0 {
+			req.SetParam("sort", args.Sort)
+		}
+		if len(args.Marker) > 0 {
+			req.SetParam("marker", args.Marker)
+		}
 	}
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {

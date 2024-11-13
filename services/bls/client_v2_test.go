@@ -376,6 +376,10 @@ func TestRecordAndStreamV2WithProject(t *testing.T) {
 				Message:   "{\"@raw\": \"raw text\", \"level\": \"info\"}",
 				Timestamp: time.Now().UnixMilli(),
 			},
+			{
+				Message:   "{\"@raw\": \"raw text\", \"level\": \"error\"}",
+				Timestamp: time.Now().Add(-time.Second).UnixMilli(),
+			},
 		},
 	}
 	err = BLS_CLIENT.PushLogRecordV2(pushLogRecordRequest)
@@ -401,8 +405,9 @@ func TestRecordAndStreamV2WithProject(t *testing.T) {
 	}
 	rr, err := BLS_CLIENT.PullLogRecordV2(pullLogRecordRequest)
 	ExpectEqual(t.Errorf, err, nil)
-	ExpectEqual(t.Errorf, 1, len(rr.Result))
-	ExpectEqual(t.Errorf, "{\"@raw\":\"raw text\",\"level\":\"info\"}", rr.Result[0].Message)
+	ExpectEqual(t.Errorf, 2, len(rr.Result))
+	ExpectEqual(t.Errorf, "{\"@raw\":\"raw text\",\"level\":\"error\"}", rr.Result[0].Message)
+	ExpectEqual(t.Errorf, "{\"@raw\":\"raw text\",\"level\":\"info\"}", rr.Result[1].Message)
 
 	queryLogRecordRequest := QueryLogRecordRequest{
 		Project:       createLogStoreRequest.Project,
@@ -410,10 +415,20 @@ func TestRecordAndStreamV2WithProject(t *testing.T) {
 		Query:         "match *",
 		StartDateTime: time.Now().Add(-1 * time.Minute).UTC().Format("2006-01-02T15:04:05Z"),
 		EndDateTime:   time.Now().UTC().Format("2006-01-02T15:04:05Z"),
+		Limit:         1,
+		Sort:          "desc",
 	}
 	qr, err := BLS_CLIENT.QueryLogRecordV2(queryLogRecordRequest)
 	ExpectEqual(t.Errorf, err, nil)
 	ExpectEqual(t.Errorf, 1, len(qr.ResultSet.Rows))
+	ExpectEqual(t.Errorf, "{\"@raw\": \"raw text\", \"level\": \"info\"}", qr.ResultSet.Rows[0][3])
+	ExpectEqual(t.Errorf, true, len(qr.NextMarker) > 0)
+
+	queryLogRecordRequest.Marker = qr.NextMarker
+	qr, err = BLS_CLIENT.QueryLogRecordV2(queryLogRecordRequest)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, 1, len(qr.ResultSet.Rows))
+	ExpectEqual(t.Errorf, "{\"@raw\": \"raw text\", \"level\": \"error\"}", qr.ResultSet.Rows[0][3])
 
 	deleteLogStoreRequest := DeleteLogStoreRequest{
 		Project:      createLogStoreRequest.Project,
@@ -832,6 +847,186 @@ func TestLogShipperV2WithProject(t *testing.T) {
 	s, err = BLS_CLIENT.GetLogShipperV2(getLogShipperRequest)
 	ExpectEqual(t.Errorf, nil, err)
 	ExpectEqual(t.Errorf, "Deleted", s.Status)
+
+	deleteLogStoreRequest := DeleteLogStoreRequest{
+		Project:      createLogStoreRequest.Project,
+		LogStoreName: createLogStoreRequest.LogStoreName,
+	}
+	err = BLS_CLIENT.DeleteLogStoreV2(deleteLogStoreRequest)
+	ExpectEqual(t.Errorf, err, nil)
+
+	deleteProjectRequest := DeleteProjectRequest{
+		UUID: pr.Projects[0].UUID,
+	}
+	err = BLS_CLIENT.DeleteProject(deleteProjectRequest)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestDownloadTask(t *testing.T) {
+	createLogStoreRequest := CreateLogStoreRequest{
+		Project:      DefaultProject,
+		LogStoreName: "sdk-logstore-test",
+		Retention:    1,
+	}
+	err := BLS_CLIENT.CreateLogStoreV2(createLogStoreRequest)
+	ExpectEqual(t.Errorf, err, nil)
+
+	createDownloadTaskRequest := CreateDownloadTaskRequest{
+		Name:           "sdk-download-task-test",
+		Project:        createLogStoreRequest.Project,
+		LogStoreName:   createLogStoreRequest.LogStoreName,
+		LogStreamName:  "",
+		Query:          "match *",
+		QueryStartTime: time.Now().Add(-10 * time.Minute).UTC().Format("2006-01-02T15:04:05Z"),
+		QueryEndTime:   time.Now().UTC().Format("2006-01-02T15:04:05Z"),
+		Format:         "json",
+		Limit:          100,
+		Order:          "desc",
+		FileDir:        "",
+	}
+	uuid, err := BLS_CLIENT.CreateDownloadTask(createDownloadTaskRequest)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, true, len(uuid) > 0)
+
+	listDownloadTaskRequest := ListDownloadTaskRequest{
+		Project:      createLogStoreRequest.Project,
+		LogStoreName: createLogStoreRequest.LogStoreName,
+	}
+	trs, err := BLS_CLIENT.ListDownloadTask(listDownloadTaskRequest)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, 1, len(trs.Tasks))
+	ExpectEqual(t.Errorf, uuid, trs.Tasks[0].UUID)
+
+	describeDownloadRequest := DescribeDownloadRequest{
+		UUID: uuid,
+	}
+	dt, err := BLS_CLIENT.DescribeDownloadTask(describeDownloadRequest)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, uuid, dt.UUID)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.Name, dt.Name)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.Project, dt.Project)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.LogStoreName, dt.LogStoreName)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.LogStreamName, dt.LogStreamName)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.Query, dt.Query)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.QueryStartTime, dt.QueryStartTime)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.QueryEndTime, dt.QueryEndTime)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.Format, dt.Format)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.Limit, dt.Limit)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.Order, dt.Order)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.FileDir, dt.FileDir)
+
+	getDownloadTaskLinkRequest := GetDownloadTaskLinkRequest{
+		UUID: uuid,
+	}
+	lr, err := BLS_CLIENT.GetDownloadTaskLink(getDownloadTaskLinkRequest)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, true, len(lr.Link) > 0)
+	ExpectEqual(t.Errorf, false, len(lr.FileDir) > 0)
+	ExpectEqual(t.Errorf, true, len(lr.FileName) > 0)
+
+	deleteDownloadTaskRequest := DeleteDownloadTaskRequest{
+		UUID: uuid,
+	}
+	err = BLS_CLIENT.DeleteDownloadTask(deleteDownloadTaskRequest)
+	ExpectEqual(t.Errorf, err, nil)
+
+	dt, err = BLS_CLIENT.DescribeDownloadTask(describeDownloadRequest)
+	ExpectEqual(t.Errorf, nil, dt)
+	ExpectEqual(t.Errorf, "DownloadTaskNotFound", (err.(*bce.BceServiceError)).Code)
+
+	deleteLogStoreRequest := DeleteLogStoreRequest{
+		Project:      createLogStoreRequest.Project,
+		LogStoreName: createLogStoreRequest.LogStoreName,
+	}
+	err = BLS_CLIENT.DeleteLogStoreV2(deleteLogStoreRequest)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestDownloadTaskWithProject(t *testing.T) {
+	createProjectRequest := CreateProjectRequest{
+		Name: "sdk-project-test",
+	}
+	err := BLS_CLIENT.CreateProject(createProjectRequest)
+	ExpectEqual(t.Errorf, err, nil)
+
+	listProjectRequest := ListProjectRequest{
+		Name: createProjectRequest.Name,
+	}
+	pr, err := BLS_CLIENT.ListProject(listProjectRequest)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, 1, len(pr.Projects))
+	ExpectEqual(t.Errorf, createProjectRequest.Name, pr.Projects[0].Name)
+
+	createLogStoreRequest := CreateLogStoreRequest{
+		Project:      createProjectRequest.Name,
+		LogStoreName: "sdk-logstore-test",
+		Retention:    1,
+	}
+	err = BLS_CLIENT.CreateLogStoreV2(createLogStoreRequest)
+	ExpectEqual(t.Errorf, err, nil)
+
+	createDownloadTaskRequest := CreateDownloadTaskRequest{
+		Name:           "sdk-download-task-test",
+		Project:        createLogStoreRequest.Project,
+		LogStoreName:   createLogStoreRequest.LogStoreName,
+		LogStreamName:  "",
+		Query:          "match *",
+		QueryStartTime: time.Now().Add(-10 * time.Minute).UTC().Format("2006-01-02T15:04:05Z"),
+		QueryEndTime:   time.Now().UTC().Format("2006-01-02T15:04:05Z"),
+		Format:         "csv",
+		Limit:          100,
+		Order:          "asc",
+		FileDir:        "bls-test/test/",
+	}
+	uuid, err := BLS_CLIENT.CreateDownloadTask(createDownloadTaskRequest)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, true, len(uuid) > 0)
+
+	listDownloadTaskRequest := ListDownloadTaskRequest{
+		Project:      createLogStoreRequest.Project,
+		LogStoreName: createLogStoreRequest.LogStoreName,
+	}
+	trs, err := BLS_CLIENT.ListDownloadTask(listDownloadTaskRequest)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, 1, len(trs.Tasks))
+	ExpectEqual(t.Errorf, uuid, trs.Tasks[0].UUID)
+
+	describeDownloadRequest := DescribeDownloadRequest{
+		UUID: uuid,
+	}
+	dt, err := BLS_CLIENT.DescribeDownloadTask(describeDownloadRequest)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, uuid, dt.UUID)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.Name, dt.Name)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.Project, dt.Project)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.LogStoreName, dt.LogStoreName)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.LogStreamName, dt.LogStreamName)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.Query, dt.Query)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.QueryStartTime, dt.QueryStartTime)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.QueryEndTime, dt.QueryEndTime)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.Format, dt.Format)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.Limit, dt.Limit)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.Order, dt.Order)
+	ExpectEqual(t.Errorf, createDownloadTaskRequest.FileDir, dt.FileDir)
+
+	getDownloadTaskLinkRequest := GetDownloadTaskLinkRequest{
+		UUID: uuid,
+	}
+	lr, err := BLS_CLIENT.GetDownloadTaskLink(getDownloadTaskLinkRequest)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, true, len(lr.Link) > 0)
+	ExpectEqual(t.Errorf, true, len(lr.FileDir) > 0)
+	ExpectEqual(t.Errorf, true, len(lr.FileName) > 0)
+
+	deleteDownloadTaskRequest := DeleteDownloadTaskRequest{
+		UUID: uuid,
+	}
+	err = BLS_CLIENT.DeleteDownloadTask(deleteDownloadTaskRequest)
+	ExpectEqual(t.Errorf, err, nil)
+
+	dt, err = BLS_CLIENT.DescribeDownloadTask(describeDownloadRequest)
+	ExpectEqual(t.Errorf, nil, dt)
+	ExpectEqual(t.Errorf, "DownloadTaskNotFound", (err.(*bce.BceServiceError)).Code)
 
 	deleteLogStoreRequest := DeleteLogStoreRequest{
 		Project:      createLogStoreRequest.Project,

@@ -159,8 +159,12 @@ type QueryLogRecordRequest struct {
 	StartDateTime string `json:"startDateTime"`
 	// 日志的结束时间，必填，UTC时间，格式ISO8601，例如：2020-01-10T14:23:34Z
 	EndDateTime string `json:"endDateTime"`
-	// 返回的数据条数，选填，默认为100
+	// 返回的数据条数，选填，默认为100，最大支持1000
 	Limit int `json:"limit"`
+	// 置顶查询的游标，默认为空，从头开始查询；如果不为，将从游标位置开始查询
+	Marker string `json:"marker"`
+	// 排序字段，默认desc，按照时间倒序排序；asc，按照时间顺序排序
+	Sort string `json:"sort"`
 }
 
 type CreateFastQueryRequest struct {
@@ -345,6 +349,62 @@ type ListShipperRecordRequest struct {
 	LogShipperID string `json:"logShipperID"`
 	// 投递记录的开始时间，查询范围为：(now-SinceHours, now) 选填，默认为1
 	SinceHours int `json:"sinceHours"`
+	// 第几页 选填， 默认为1
+	PageNo int `json:"pageNo"`
+	// 每页大小 选填， 默认为10
+	PageSize int `json:"pageSize"`
+}
+
+type CreateDownloadTaskRequest struct {
+	// 下载任务名称，选填
+	Name string `json:"name"`
+	// 日志组名称，选填，默认default
+	Project string `json:"project"`
+	// 日志集名称，必填
+	LogStoreName string `json:"logStoreName"`
+	// 日志流名称 选填，默认在全部日志流中下载数据
+	LogStreamName string `json:"logStreamName"`
+	// 查询语句，选填，默认match *
+	Query string `json:"query"`
+	// 日志的开始时间， 必填，UTC时间，格式ISO8601，例如：2020-01-10T13:23:34Z
+	QueryStartTime string `json:"queryStartTime"`
+	// 日志的结束时间，必填，UTC时间，格式ISO8601，例如：2020-01-10T14:23:34Z
+	QueryEndTime string `json:"queryEndTime"`
+	// 下载文件的格式，选填， 默认json，支持 json,csv
+	Format string `json:"format"`
+	// 下载日志的行数，选填，默认1000000，最大1000000
+	Limit int64 `json:"limit"`
+	// 排序方式 选填 支持desc和asc，默认desc，按照时间倒序排序
+	Order string `json:"order"`
+	// 下载文件的bos目录，选填，默认放到bls资源账号的下载目录
+	// 如果不为空，表示放到用户自己的bos目录 需要确保bos的bucket存在，目录可以不存在，会自动创建
+	FileDir string `json:"fileDir"`
+}
+
+type DescribeDownloadRequest struct {
+	// 下载任务的UUID 必填
+	UUID string `json:"uuid"`
+}
+
+type GetDownloadTaskLinkRequest struct {
+	// 下载任务的UUID 必填
+	UUID string `json:"uuid"`
+}
+
+type DeleteDownloadTaskRequest struct {
+	// 下载任务的UUID 必填
+	UUID string `json:"uuid"`
+}
+
+type ListDownloadTaskRequest struct {
+	// 日志组名称关键字查询，精确匹配，选填
+	Project string `json:"project"`
+	// 日志集关键字查询，模糊匹配，选填
+	LogStoreName string `json:"logStoreName"`
+	// 排序方式 选填 支持desc和asc，默认desc
+	Order string `json:"order"`
+	// 排序字段 选填 支持 createdTime, updatedTime, name  默认按照createdTime创建时间排序
+	OrderBy string `json:"orderBy"`
 	// 第几页 选填， 默认为1
 	PageNo int `json:"pageNo"`
 	// 每页大小 选填， 默认为10
