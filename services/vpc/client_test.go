@@ -244,8 +244,10 @@ func TestListSubnets(t *testing.T) {
 		VpcId:      VPCID,
 		SubnetType: SUBNET_TYPE_BCC,
 	}
-	_, err := VPC_CLIENT.ListSubnets(args)
+	res, err := VPC_CLIENT.ListSubnets(args)
 	ExpectEqual(t.Errorf, nil, err)
+	r, err := json.Marshal(res)
+	fmt.Println(string(r))
 }
 
 func TestGetSubnetDetail(t *testing.T) {

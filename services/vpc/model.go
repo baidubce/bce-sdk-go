@@ -178,17 +178,18 @@ type ShowVPCModel struct {
 }
 
 type Subnet struct {
-	SubnetId    string           `json:"subnetId"`
-	Name        string           `json:"name"`
-	ZoneName    string           `json:"zoneName"`
-	Cidr        string           `json:"cidr"`
-	Ipv6Cidr    string           `json:"ipv6Cidr"`
-	VPCId       string           `json:"vpcId"`
-	SubnetType  SubnetType       `json:"subnetType"`
-	Description string           `json:"description"`
-	CreatedTime string           `json:"createdTime"`
-	AvailableIp int              `json:"availableIp"`
-	Tags        []model.TagModel `json:"tags"`
+	SubnetId              string           `json:"subnetId"`
+	Name                  string           `json:"name"`
+	ZoneName              string           `json:"zoneName"`
+	Cidr                  string           `json:"cidr"`
+	Ipv6Cidr              string           `json:"ipv6Cidr"`
+	VPCId                 string           `json:"vpcId"`
+	SubnetType            SubnetType       `json:"subnetType"`
+	Description           string           `json:"description"`
+	CreatedTime           string           `json:"createdTime"`
+	AvailableIp           int              `json:"availableIp"`
+	AvailableUnreservedIp int              `json:"availableUnreservedIp"`
+	Tags                  []model.TagModel `json:"tags"`
 }
 
 // UpdateVPCArgs defines the structure of the input parameters for the UpdateVPC api

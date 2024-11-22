@@ -34,6 +34,14 @@ type Conf struct {
 	Endpoint string
 }
 
+// In order to more conveniently represent some bool types
+var (
+	trueVal  = true
+	falseVal = false
+	True     = &trueVal
+	False    = &falseVal
+)
+
 func init() {
 	_, f, _, _ := runtime.Caller(0)
 	conf := filepath.Join(filepath.Dir(f), "config.json")
@@ -108,6 +116,7 @@ func TestClient_CreatePrePayLoadBalancer(t *testing.T) {
 		AutoRenewLength: 1,
 		Billing: &Billing{
 			PaymentTiming: "Prepaid",
+			BillingMethod: "BySpec",
 			Reservation: &Reservation{
 				ReservationLength:   1,
 				ReservationTimeUnit: "Month",
@@ -220,7 +229,7 @@ func TestClient_UpdateHTTPListener(t *testing.T) {
 		ClientToken:  getClientToken(),
 		ListenerPort: 92,
 		Scheduler:    "LeastConnection",
-		KeepSession:  true,
+		KeepSession:  True,
 	}
 	err := BLB_CLIENT.UpdateHTTPListener(BLB_ID, updateArgs)
 	ExpectEqual(t.Errorf, nil, err)
@@ -251,7 +260,7 @@ func TestClient_UpdateHTTPSListener(t *testing.T) {
 		ClientToken:  getClientToken(),
 		ListenerPort: 93,
 		Scheduler:    "LeastConnection",
-		KeepSession:  true,
+		KeepSession:  True,
 		CertIds:      []string{CERT_ID},
 	}
 	err := BLB_CLIENT.UpdateHTTPSListener(BLB_ID, updateArgs)

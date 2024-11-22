@@ -63,6 +63,7 @@ type CreateLoadBalancerArgs struct {
 
 type Billing struct {
 	PaymentTiming string       `json:"paymentTiming,omitempty"`
+	BillingMethod string       `json:"billingMethod,omitempty"`
 	Reservation   *Reservation `json:"reservation,omitempty"`
 }
 
@@ -206,11 +207,12 @@ type CreateHTTPListenerArgs struct {
 	ListenerPort               uint16 `json:"listenerPort"`
 	BackendPort                uint16 `json:"backendPort"`
 	Scheduler                  string `json:"scheduler"`
-	KeepSession                bool   `json:"keepSession,omitempty"`
+	KeepSession                *bool  `json:"keepSession,omitempty"`
 	KeepSessionType            string `json:"keepSessionType,omitempty"`
 	KeepSessionDuration        int    `json:"keepSessionDuration,omitempty"`
 	KeepSessionCookieName      string `json:"keepSessionCookieName,omitempty"`
-	XForwardedFor              bool   `json:"xForwardedFor,omitempty"`
+	XForwardedFor              *bool  `json:"xForwardFor,omitempty"`
+	XForwardedProto            *bool  `json:"xForwardedProto,omitempty"`
 	HealthCheckType            string `json:"healthCheckType,omitempty"`
 	HealthCheckPort            uint16 `json:"healthCheckPort,omitempty"`
 	HealthCheckURI             string `json:"healthCheckURI,omitempty"`
@@ -219,6 +221,7 @@ type CreateHTTPListenerArgs struct {
 	UnhealthyThreshold         int    `json:"unhealthyThreshold,omitempty"`
 	HealthyThreshold           int    `json:"healthyThreshold,omitempty"`
 	HealthCheckNormalStatus    string `json:"healthCheckNormalStatus,omitempty"`
+	HealthCheckHost            string `json:"healthCheckHost,omitempty"`
 	ServerTimeout              int    `json:"serverTimeout,omitempty"`
 	RedirectPort               uint16 `json:"redirectPort,omitempty"`
 }
@@ -229,11 +232,12 @@ type CreateHTTPSListenerArgs struct {
 	BackendPort                uint16   `json:"backendPort"`
 	Scheduler                  string   `json:"scheduler"`
 	CertIds                    []string `json:"certIds"`
-	KeepSession                bool     `json:"keepSession,omitempty"`
+	KeepSession                *bool    `json:"keepSession,omitempty"`
 	KeepSessionType            string   `json:"keepSessionType,omitempty"`
 	KeepSessionDuration        int      `json:"keepSessionDuration,omitempty"`
 	KeepSessionCookieName      string   `json:"keepSessionCookieName,omitempty"`
-	XForwardedFor              bool     `json:"xForwardedFor,omitempty"`
+	XForwardedFor              *bool    `json:"xForwardFor,omitempty"`
+	XForwardedProto            *bool    `json:"xForwardedProto,omitempty"`
 	HealthCheckType            string   `json:"healthCheckType,omitempty"`
 	HealthCheckPort            uint16   `json:"healthCheckPort,omitempty"`
 	HealthCheckURI             string   `json:"healthCheckURI,omitempty"`
@@ -242,12 +246,13 @@ type CreateHTTPSListenerArgs struct {
 	UnhealthyThreshold         int      `json:"unhealthyThreshold,omitempty"`
 	HealthyThreshold           int      `json:"healthyThreshold,omitempty"`
 	HealthCheckNormalStatus    string   `json:"healthCheckNormalStatus,omitempty"`
+	HealthCheckHost            string   `json:"healthCheckHost,omitempty"`
 	ServerTimeout              int      `json:"serverTimeout,omitempty"`
 	RedirectPort               uint16   `json:"redirectPort,omitempty"`
 	EncryptionType             string   `json:"encryptionType,omitempty"`
 	EncryptionProtocols        []string `json:"encryptionProtocols,omitempty"`
 	AppliedCiphers             string   `json:"appliedCiphers,omitempty"`
-	DualAuth                   bool     `json:"dualAuth,omitempty"`
+	DualAuth                   *bool    `json:"dualAuth,omitempty"`
 	ClientCertIds              []string `json:"clientCertIds,omitempty"`
 }
 
@@ -264,7 +269,7 @@ type CreateSSLListenerArgs struct {
 	EncryptionType             string   `json:"encryptionType,omitempty"`
 	EncryptionProtocols        []string `json:"encryptionProtocols,omitempty"`
 	AppliedCiphers             string   `json:"appliedCiphers,omitempty"`
-	DualAuth                   bool     `json:"dualAuth,omitempty"`
+	DualAuth                   *bool    `json:"dualAuth,omitempty"`
 	ClientCertIds              []string `json:"clientCertIds,omitempty"`
 }
 
@@ -305,11 +310,12 @@ type UpdateHTTPListenerArgs struct {
 	ListenerPort               uint16 `json:"-"`
 	BackendPort                uint16 `json:"backendPort,omitempty"`
 	Scheduler                  string `json:"scheduler,omitempty"`
-	KeepSession                bool   `json:"keepSession,omitempty"`
+	KeepSession                *bool  `json:"keepSession,omitempty"`
 	KeepSessionType            string `json:"keepSessionType,omitempty"`
 	KeepSessionDuration        int    `json:"keepSessionDuration,omitempty"`
 	KeepSessionCookieName      string `json:"keepSessionCookieName,omitempty"`
-	XForwardedFor              bool   `json:"xForwardedFor,omitempty"`
+	XForwardedFor              *bool  `json:"xForwardFor"`
+	XForwardedProto            *bool  `json:"xForwardedProto"`
 	HealthCheckType            string `json:"healthCheckType,omitempty"`
 	HealthCheckPort            uint16 `json:"healthCheckPort,omitempty"`
 	HealthCheckURI             string `json:"healthCheckURI,omitempty"`
@@ -318,6 +324,7 @@ type UpdateHTTPListenerArgs struct {
 	UnhealthyThreshold         int    `json:"unhealthyThreshold,omitempty"`
 	HealthyThreshold           int    `json:"healthyThreshold,omitempty"`
 	HealthCheckNormalStatus    string `json:"healthCheckNormalStatus,omitempty"`
+	HealthCheckHost            string `json:"healthCheckHost,omitempty"`
 	ServerTimeout              int    `json:"serverTimeout,omitempty"`
 	RedirectPort               uint16 `json:"redirectPort,omitempty"`
 }
@@ -327,11 +334,12 @@ type UpdateHTTPSListenerArgs struct {
 	ListenerPort               uint16   `json:"listenerPort"`
 	BackendPort                uint16   `json:"backendPort,omitempty"`
 	Scheduler                  string   `json:"scheduler,omitempty"`
-	KeepSession                bool     `json:"keepSession,omitempty"`
+	KeepSession                *bool    `json:"keepSession,omitempty"`
 	KeepSessionType            string   `json:"keepSessionType,omitempty"`
 	KeepSessionDuration        int      `json:"keepSessionDuration,omitempty"`
 	KeepSessionCookieName      string   `json:"keepSessionCookieName,omitempty"`
-	XForwardedFor              bool     `json:"xForwardedFor,omitempty"`
+	XForwardedFor              *bool    `json:"xForwardFor,omitempty"`
+	XForwardedProto            *bool    `json:"xForwardedProto,omitempty"`
 	HealthCheckType            string   `json:"healthCheckType,omitempty"`
 	HealthCheckPort            uint16   `json:"healthCheckPort,omitempty"`
 	HealthCheckURI             string   `json:"healthCheckURI,omitempty"`
@@ -340,6 +348,7 @@ type UpdateHTTPSListenerArgs struct {
 	UnhealthyThreshold         int      `json:"unhealthyThreshold,omitempty"`
 	HealthyThreshold           int      `json:"healthyThreshold,omitempty"`
 	HealthCheckNormalStatus    string   `json:"healthCheckNormalStatus,omitempty"`
+	HealthCheckHost            string   `json:"healthCheckHost,omitempty"`
 	ServerTimeout              int      `json:"serverTimeout,omitempty"`
 	CertIds                    []string `json:"certIds,omitempty"`
 	EncryptionType             string   `json:"encryptionType,omitempty"`
@@ -360,7 +369,7 @@ type UpdateSSLListenerArgs struct {
 	EncryptionType             string   `json:"encryptionType,omitempty"`
 	EncryptionProtocols        []string `json:"encryptionProtocols,omitempty"`
 	AppliedCiphers             string   `json:"appliedCiphers,omitempty"`
-	DualAuth                   bool     `json:"dualAuth,omitempty"`
+	DualAuth                   *bool    `json:"dualAuth,omitempty"`
 	ClientCertIds              []string `json:"clientCertIds,omitempty"`
 }
 
@@ -397,7 +406,8 @@ type HTTPListenerModel struct {
 	KeepSessionType            string `json:"keepSessionType"`
 	KeepSessionDuration        int    `json:"keepSessionDuration"`
 	KeepSessionCookieName      string `json:"keepSessionCookieName"`
-	XForwardedFor              bool   `json:"xForwardedFor"`
+	XForwardedFor              bool   `json:"xForwardFor"`
+	XForwardedProto            bool   `json:"xForwardedProto"`
 	HealthCheckType            string `json:"healthCheckType"`
 	HealthCheckPort            uint16 `json:"healthCheckPort"`
 	HealthCheckURI             string `json:"healthCheckURI"`
@@ -407,6 +417,7 @@ type HTTPListenerModel struct {
 	HealthyThreshold           int    `json:"healthyThreshold"`
 	GetBlbIp                   bool   `json:"getBlbIp"`
 	HealthCheckNormalStatus    string `json:"healthCheckNormalStatus"`
+	HealthCheckHost            string `json:"healthCheckHost"`
 	ServerTimeout              int    `json:"serverTimeout"`
 	RedirectPort               int    `json:"redirectPort"`
 }
@@ -419,7 +430,8 @@ type HTTPSListenerModel struct {
 	KeepSessionType            string   `json:"keepSessionType"`
 	KeepSessionDuration        int      `json:"keepSessionDuration"`
 	KeepSessionCookieName      string   `json:"keepSessionCookieName"`
-	XForwardedFor              bool     `json:"xForwardedFor"`
+	XForwardedFor              bool     `json:"xForwardFor"`
+	XForwardedProto            bool     `json:"xForwardedProto"`
 	HealthCheckType            string   `json:"healthCheckType"`
 	HealthCheckPort            uint16   `json:"healthCheckPort"`
 	HealthCheckURI             string   `json:"healthCheckURI"`
@@ -429,6 +441,7 @@ type HTTPSListenerModel struct {
 	HealthyThreshold           int      `json:"healthyThreshold"`
 	GetBlbIp                   bool     `json:"getBlbIp"`
 	HealthCheckNormalStatus    string   `json:"healthCheckNormalStatus"`
+	HealthCheckHost            string   `json:"healthCheckHost"`
 	ServerTimeout              int      `json:"serverTimeout"`
 	CertIds                    []string `json:"certIds"`
 	DualAuth                   bool     `json:"dualAuth"`
@@ -469,7 +482,8 @@ type AllListenerModel struct {
 	KeepSessionType            string   `json:"keepSessionType"`
 	KeepSessionDuration        int      `json:"keepSessionDuration"`
 	KeepSessionCookieName      string   `json:"keepSessionCookieName"`
-	XForwardedFor              bool     `json:"xForwardedFor"`
+	XForwardedFor              bool     `json:"xForwardFor"`
+	XForwardedProto            bool     `json:"xForwardedProto"`
 	HealthCheckType            string   `json:"healthCheckType"`
 	HealthCheckPort            uint16   `json:"healthCheckPort"`
 	HealthCheckURI             string   `json:"healthCheckURI"`

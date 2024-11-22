@@ -140,6 +140,7 @@ type InstanceModel struct {
 	DedicatedHostId        string                 `json:"dedicatedHostId"`
 	Tags                   []model.TagModel       `json:"tags"`
 	Ipv6                   string                 `json:"ipv6"`
+	Ipv6Addresses          []string               `json:"Ipv6Addresses"`
 	EniQuota               int                    `json:"eniQuota"`
 	EriQuota               int                    `json:"eriQuota"`
 	RdmaType               string                 `json:"rdmaType"`
@@ -2511,7 +2512,8 @@ type AddIpv6Args struct {
 }
 
 type AddIpv6Result struct {
-	Ipv6Address string `json:"ipv6Address"`
+	Ipv6Address      string `json:"ipv6Address"`
+	AddedIpv6Address string `json:"addedIpv6Address"`
 }
 
 type RemoteCopySnapshotArgs struct {

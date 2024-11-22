@@ -490,6 +490,7 @@ for _, sub := range result.Subnets {
     fmt.Println("subnet subnetType: ", sub.SubnetType)
     fmt.Println("subnet description: ", sub.Description)
     fmt.Println("subnet availableIp: ", sub.AvailableIp)
+    fmt.Println("subnet availableUnreservedIp: ", sub.AvailableUnreservedIp)
     fmt.Println("subnet tags: ", sub.Tags)
 }
 ```
@@ -524,6 +525,8 @@ fmt.Println("subnet subnetType: ", result.Subnet.SubnetType)
 fmt.Println("subnet description: ", result.Subnet.Description)
 // 查询得到子网内可用ip数
 fmt.Println("subnet availableIp: ", result.Subnet.AvailableIp)
+// 查询得到子网内除预留网段的可用ip数
+fmt.Println("subnet availableUnreservedIp: ", result.Subnet.AvailableUnreservedIp)
 // 查询得到子网绑定的标签列表
 fmt.Println("subnet tags: ", result.Subnet.Tags)
 ```

@@ -87,8 +87,10 @@ type AppServerGroupPort struct {
 	Port                        int       `json:"port"`
 	Type                        string    `json:"type"`
 	Status                      BLBStatus `json:"status"`
+	EnableHealthCheck           bool      `json:"enableHealthCheck"`
 	HealthCheck                 string    `json:"healthCheck"`
 	HealthCheckPort             int       `json:"healthCheckPort"`
+	HealthCheckHost             string    `json:"healthCheckHost"`
 	HealthCheckTimeoutInSecond  int       `json:"healthCheckTimeoutInSecond"`
 	HealthCheckIntervalInSecond int       `json:"healthCheckIntervalInSecond"`
 	HealthCheckDownRetry        int       `json:"healthCheckDownRetry"`
@@ -121,7 +123,9 @@ type CreateAppServerGroupPortArgs struct {
 	SgId                        string `json:"sgId"`
 	Port                        uint16 `json:"port"`
 	Type                        string `json:"type"`
+	EnableHealthCheck           *bool  `json:"enableHealthCheck,omitempty"`
 	HealthCheck                 string `json:"healthCheck,omitempty"`
+	HealthCheckHost             string `json:"healthCheckHost,omitempty"`
 	HealthCheckPort             int    `json:"healthCheckPort,omitempty"`
 	HealthCheckTimeoutInSecond  int    `json:"healthCheckTimeoutInSecond,omitempty"`
 	HealthCheckIntervalInSecond int    `json:"healthCheckIntervalInSecond,omitempty"`
@@ -143,8 +147,10 @@ type UpdateAppServerGroupPortArgs struct {
 	ClientToken                 string `json:"-"`
 	SgId                        string `json:"sgId"`
 	PortId                      string `json:"portId"`
+	EnableHealthCheck           *bool  `json:"enableHealthCheck,omitempty"`
 	HealthCheck                 string `json:"healthCheck,omitempty"`
 	HealthCheckPort             int    `json:"healthCheckPort,omitempty"`
+	HealthCheckHost             string `json:"healthCheckHost,omitempty"`
 	HealthCheckUrlPath          string `json:"healthCheckUrlPath,omitempty"`
 	HealthCheckTimeoutInSecond  int    `json:"healthCheckTimeoutInSecond,omitempty"`
 	HealthCheckIntervalInSecond int    `json:"healthCheckIntervalInSecond,omitempty"`
@@ -221,6 +227,7 @@ type CreateLoadBalancerArgs struct {
 
 type Billing struct {
 	PaymentTiming string       `json:"paymentTiming,omitempty"`
+	BillingMethod string       `json:"billingMethod,omitempty"`
 	Reservation   *Reservation `json:"reservation,omitempty"`
 }
 
@@ -339,11 +346,12 @@ type CreateAppHTTPListenerArgs struct {
 	ClientToken           string `json:"-"`
 	ListenerPort          uint16 `json:"listenerPort"`
 	Scheduler             string `json:"scheduler"`
-	KeepSession           bool   `json:"keepSession,omitempty"`
+	KeepSession           *bool  `json:"keepSession,omitempty"`
 	KeepSessionType       string `json:"keepSessionType,omitempty"`
 	KeepSessionTimeout    int    `json:"keepSessionTimeout,omitempty"`
 	KeepSessionCookieName string `json:"keepSessionCookieName,omitempty"`
-	XForwardedFor         bool   `json:"xForwardedFor,omitempty"`
+	XForwardedFor         *bool  `json:"xForwardedFor,omitempty"`
+	XForwardedProto       *bool  `json:"xForwardedProto,omitempty"`
 	ServerTimeout         int    `json:"serverTimeout,omitempty"`
 	RedirectPort          uint16 `json:"redirectPort,omitempty"`
 }
@@ -352,17 +360,18 @@ type CreateAppHTTPSListenerArgs struct {
 	ClientToken           string   `json:"-"`
 	ListenerPort          uint16   `json:"listenerPort"`
 	Scheduler             string   `json:"scheduler"`
-	KeepSession           bool     `json:"keepSession,omitempty"`
+	KeepSession           *bool    `json:"keepSession,omitempty"`
 	KeepSessionType       string   `json:"keepSessionType,omitempty"`
 	KeepSessionTimeout    int      `json:"keepSessionTimeout,omitempty"`
 	KeepSessionCookieName string   `json:"keepSessionCookieName,omitempty"`
-	XForwardedFor         bool     `json:"xForwardedFor,omitempty"`
+	XForwardedFor         *bool    `json:"xForwardedFor,omitempty"`
+	XForwardedProto       *bool    `json:"xForwardedProto,omitempty"`
 	ServerTimeout         int      `json:"serverTimeout,omitempty"`
 	CertIds               []string `json:"certIds"`
 	EncryptionType        string   `json:"encryptionType,omitempty"`
 	EncryptionProtocols   []string `json:"encryptionProtocols,omitempty"`
 	AppliedCiphers        string   `json:"appliedCiphers,omitempty"`
-	DualAuth              bool     `json:"dualAuth,omitempty"`
+	DualAuth              *bool    `json:"dualAuth,omitempty"`
 	ClientCertIds         []string `json:"clientCertIds,omitempty"`
 }
 
@@ -374,7 +383,7 @@ type CreateAppSSLListenerArgs struct {
 	EncryptionType      string   `json:"encryptionType,omitempty"`
 	EncryptionProtocols []string `json:"encryptionProtocols,omitempty"`
 	AppliedCiphers      string   `json:"appliedCiphers,omitempty"`
-	DualAuth            bool     `json:"dualAuth,omitempty"`
+	DualAuth            *bool    `json:"dualAuth,omitempty"`
 	ClientCertIds       []string `json:"clientCertIds,omitempty"`
 }
 
@@ -398,11 +407,12 @@ type UpdateAppHTTPListenerArgs struct {
 	ClientToken           string `json:"-"`
 	ListenerPort          uint16 `json:"-"`
 	Scheduler             string `json:"scheduler"`
-	KeepSession           bool   `json:"keepSession,omitempty"`
+	KeepSession           *bool  `json:"keepSession,omitempty"`
 	KeepSessionType       string `json:"keepSessionType,omitempty"`
 	KeepSessionTimeout    int    `json:"keepSessionTimeout,omitempty"`
 	KeepSessionCookieName string `json:"keepSessionCookieName,omitempty"`
-	XForwardedFor         bool   `json:"xForwardedFor,omitempty"`
+	XForwardedFor         *bool  `json:"xForwardedFor,omitempty"`
+	XForwardedProto       *bool  `json:"xForwardedProto,omitempty"`
 	ServerTimeout         int    `json:"serverTimeout,omitempty"`
 	RedirectPort          uint16 `json:"redirectPort,omitempty"`
 }
@@ -411,17 +421,18 @@ type UpdateAppHTTPSListenerArgs struct {
 	ClientToken           string   `json:"-"`
 	ListenerPort          uint16   `json:"listenerPort"`
 	Scheduler             string   `json:"scheduler"`
-	KeepSession           bool     `json:"keepSession,omitempty"`
+	KeepSession           *bool    `json:"keepSession,omitempty"`
 	KeepSessionType       string   `json:"keepSessionType,omitempty"`
 	KeepSessionTimeout    int      `json:"keepSessionTimeout,omitempty"`
 	KeepSessionCookieName string   `json:"keepSessionCookieName,omitempty"`
-	XForwardedFor         bool     `json:"xForwardedFor,omitempty"`
+	XForwardedFor         *bool    `json:"xForwardedFor,omitempty"`
+	XForwardedProto       *bool    `json:"xForwardedProto,omitempty"`
 	ServerTimeout         int      `json:"serverTimeout,omitempty"`
 	CertIds               []string `json:"certIds"`
 	EncryptionType        string   `json:"encryptionType,omitempty"`
 	EncryptionProtocols   []string `json:"encryptionProtocols,omitempty"`
 	AppliedCiphers        string   `json:"appliedCiphers,omitempty"`
-	DualAuth              bool     `json:"dualAuth,omitempty"`
+	DualAuth              *bool    `json:"dualAuth,omitempty"`
 	ClientCertIds         []string `json:"clientCertIds,omitempty"`
 }
 
@@ -433,7 +444,7 @@ type UpdateAppSSLListenerArgs struct {
 	EncryptionType      string   `json:"encryptionType,omitempty"`
 	EncryptionProtocols []string `json:"encryptionProtocols,omitempty"`
 	AppliedCiphers      string   `json:"appliedCiphers,omitempty"`
-	DualAuth            bool     `json:"dualAuth,omitempty"`
+	DualAuth            *bool    `json:"dualAuth,omitempty"`
 	ClientCertIds       []string `json:"clientCertIds,omitempty"`
 }
 
@@ -460,6 +471,7 @@ type AppHTTPListenerModel struct {
 	KeepSessionTimeout    int    `json:"keepSessionTimeout"`
 	KeepSessionCookieName string `json:"keepSessionCookieName"`
 	XForwardedFor         bool   `json:"xForwardedFor"`
+	XForwardedProto       bool   `json:"xForwardedProto"`
 	ServerTimeout         int    `json:"serverTimeout"`
 	RedirectPort          int    `json:"redirectPort"`
 }
@@ -472,6 +484,7 @@ type AppHTTPSListenerModel struct {
 	KeepSessionTimeout    int      `json:"keepSessionTimeout"`
 	KeepSessionCookieName string   `json:"keepSessionCookieName"`
 	XForwardedFor         bool     `json:"xForwardedFor"`
+	XForwardedProto       bool     `json:"xForwardedProto"`
 	ServerTimeout         int      `json:"serverTimeout"`
 	CertIds               []string `json:"certIds"`
 	EncryptionType        string   `json:"encryptionType"`
@@ -502,8 +515,8 @@ type AppAllListenerModel struct {
 	KeepSessionType       string   `json:"keepSessionType"`
 	KeepSessionTimeout    int      `json:"keepSessionTimeout"`
 	KeepSessionCookieName string   `json:"keepSessionCookieName"`
-	XForwardedFor         bool     `json:"xForwardedFor"`
-	xForwardedProto       bool     `json:"xForwardedProto"`
+	XForwardedFor         bool     `json:"xForwardFor"`
+	XForwardedProto       bool     `json:"xForwardedProto"`
 	ServerTimeout         int      `json:"serverTimeout"`
 	RedirectPort          int      `json:"redirectPort"`
 	CertIds               []string `json:"certIds"`
@@ -659,8 +672,10 @@ type AppIpGroup struct {
 type AppIpGroupBackendPolicy struct {
 	Id                          string `json:"id"`
 	Type                        string `json:"type"`
+	EnableHealthCheck           bool   `json:"enableHealthCheck"`
 	HealthCheck                 string `json:"healthCheck"`
 	HealthCheckPort             int    `json:"healthCheckPort"`
+	HealthCheckHost             string `json:"healthCheckHost"`
 	HealthCheckTimeoutInSecond  int    `json:"healthCheckTimeoutInSecond"`
 	HealthCheckIntervalInSecond int    `json:"healthCheckIntervalInSecond"`
 	HealthCheckDownRetry        int    `json:"healthCheckDownRetry"`
@@ -679,7 +694,9 @@ type CreateAppIpGroupBackendPolicyArgs struct {
 	ClientToken                 string `json:"-"`
 	IpGroupId                   string `json:"ipGroupId"`
 	Type                        string `json:"type"`
+	EnableHealthCheck           *bool  `json:"enableHealthCheck,omitempty"`
 	HealthCheckPort             int    `json:"healthCheckPort,omitempty"`
+	HealthCheckHost             string `json:"healthCheckHost,omitempty"`
 	HealthCheckTimeoutInSecond  int    `json:"healthCheckTimeoutInSecond,omitempty"`
 	HealthCheckIntervalInSecond int    `json:"healthCheckIntervalInSecond,omitempty"`
 	HealthCheckDownRetry        int    `json:"healthCheckDownRetry,omitempty"`
@@ -693,7 +710,9 @@ type UpdateAppIpGroupBackendPolicyArgs struct {
 	ClientToken                 string `json:"-"`
 	IpGroupId                   string `json:"ipGroupId"`
 	Id                          string `json:"id"`
+	EnableHealthCheck           *bool  `json:"enableHealthCheck,omitempty"`
 	HealthCheckPort             int    `json:"healthCheckPort,omitempty"`
+	HealthCheckHost             string `json:"healthCheckHost,omitempty"`
 	HealthCheckUrlPath          string `json:"healthCheckUrlPath,omitempty"`
 	HealthCheckTimeoutInSecond  int    `json:"healthCheckTimeoutInSecond,omitempty"`
 	HealthCheckIntervalInSecond int    `json:"healthCheckIntervalInSecond,omitempty"`
