@@ -934,3 +934,35 @@ func GetCdsPrice(cli bce.Client, args *VolumePriceRequestArgs) (*VolumePriceResp
 	return jsonBody, nil
 }
 
+func ModifySnapshotAttribute(cli bce.Client, snapshotId string, args *ModifySnapshotAttributeArgs) error {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getSnapshotUriWithId(snapshotId))
+	req.SetMethod(http.PUT)
+
+	req.SetParam("modifyAttribute", "")
+
+	jsonBytes, err := json.Marshal(args)
+	if err != nil {
+		return err
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetBody(body)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+

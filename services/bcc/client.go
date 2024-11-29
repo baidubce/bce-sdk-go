@@ -2640,3 +2640,16 @@ func (c *Client) DeleteEhcCluster(args *api.DeleteEhcClusterArg) error {
 func (c *Client) GetSecurityGroupDetail(securityGroupId string) (*api.GetSecurityGroupDetailResult, error) {
 	return api.GetSecurityGroupDetail(c, securityGroupId)
 }
+
+// ModifySnapshotAttribute - modify snapshot attribute
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - snapshotId: the id of snapshot
+//   - args: the arguments of method
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) ModifySnapshotAttribute(snapshotId string, args *api.ModifySnapshotAttributeArgs) error {
+	return api.ModifySnapshotAttribute(c, snapshotId, args)
+}

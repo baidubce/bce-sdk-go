@@ -197,8 +197,11 @@ func (c *Client) ListFastQueryV2(request ListFastQueryRequest) (*api.ListFastQue
 
 func (c *Client) CreateIndexV2(request CreateIndexRequest) error {
 	params, jsonErr := json.Marshal(&api.IndexFields{
-		FullText: request.Fulltext,
-		Fields:   request.Fields,
+		FullText:       request.Fulltext,
+		Fields:         request.Fields,
+		CaseSensitive:  request.CaseSensitive,
+		IncludeChinese: request.IncludeChinese,
+		Separators:     request.Separators,
 	})
 	if jsonErr != nil {
 		return jsonErr
@@ -212,8 +215,11 @@ func (c *Client) CreateIndexV2(request CreateIndexRequest) error {
 
 func (c *Client) UpdateIndexV2(request UpdateIndexRequest) error {
 	params, jsonErr := json.Marshal(&api.IndexFields{
-		FullText: request.Fulltext,
-		Fields:   request.Fields,
+		FullText:       request.Fulltext,
+		Fields:         request.Fields,
+		CaseSensitive:  request.CaseSensitive,
+		IncludeChinese: request.IncludeChinese,
+		Separators:     request.Separators,
 	})
 	if jsonErr != nil {
 		return jsonErr

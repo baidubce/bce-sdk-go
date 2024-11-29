@@ -1,6 +1,7 @@
 package bls
 
 import (
+	"strings"
 	"testing"
 	"time"
 
@@ -64,28 +65,58 @@ func TestLogStoreAndIndexV2(t *testing.T) {
 
 	// test index api
 	createIndexRequest := CreateIndexRequest{
-		Project:      createLogStoreRequest.Project,
-		LogStoreName: createLogStoreRequest.LogStoreName,
-		Fulltext:     true,
+		Project:        createLogStoreRequest.Project,
+		LogStoreName:   createLogStoreRequest.LogStoreName,
+		Fulltext:       true,
+		CaseSensitive:  true,
+		Separators:     "",
+		IncludeChinese: true,
 		Fields: map[string]api.LogField{
 			"test1": {
-				Type: "float",
+				Type:           "float",
+				CaseSensitive:  true,
+				Separators:     "",
+				IncludeChinese: true,
 			},
 		},
 	}
 	err = BLS_CLIENT.CreateIndexV2(createIndexRequest)
 	ExpectEqual(t.Errorf, err, nil)
+	idx, err := BLS_CLIENT.DescribeIndexV2(DescribeIndexRequest{
+		Project:      createIndexRequest.Project,
+		LogStoreName: createIndexRequest.LogStoreName,
+	})
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, true, idx.FullText)
+	ExpectEqual(t.Errorf, true, idx.CaseSensitive)
+	ExpectEqual(t.Errorf, true, idx.IncludeChinese)
+	ExpectEqual(t.Errorf, "@&?|#()='\",;:<>[]{}/ \n\t\r\\", idx.Separators)
+	ExpectEqual(t.Errorf, 1, len(idx.Fields))
+	ExpectEqual(t.Errorf, "float", idx.Fields["test1"].Type)
+	ExpectEqual(t.Errorf, true, idx.Fields["test1"].CaseSensitive)
+	ExpectEqual(t.Errorf, true, idx.Fields["test1"].IncludeChinese)
+	ExpectEqual(t.Errorf, "@&?|#()='\",;:<>[]{}/ \n\t\r\\", idx.Fields["test1"].Separators)
 
 	updateIndexRequest := UpdateIndexRequest{
-		Project:      createLogStoreRequest.Project,
-		LogStoreName: createLogStoreRequest.LogStoreName,
-		Fulltext:     true,
+		Project:        createLogStoreRequest.Project,
+		LogStoreName:   createLogStoreRequest.LogStoreName,
+		Fulltext:       true,
+		CaseSensitive:  false,
+		IncludeChinese: true,
+		Separators:     "@&?",
+
 		Fields: map[string]api.LogField{
 			"test1": {
-				Type: "float",
+				Type:           "float",
+				CaseSensitive:  true,
+				Separators:     "@?",
+				IncludeChinese: false,
 			},
 			"test2": {
-				Type: "bool",
+				Type:           "bool",
+				CaseSensitive:  true,
+				Separators:     "",
+				IncludeChinese: false,
 			},
 		},
 	}
@@ -96,12 +127,25 @@ func TestLogStoreAndIndexV2(t *testing.T) {
 		Project:      createLogStoreRequest.Project,
 		LogStoreName: createLogStoreRequest.LogStoreName,
 	}
-	idx, err := BLS_CLIENT.DescribeIndexV2(describeIndexRequest)
+	idx, err = BLS_CLIENT.DescribeIndexV2(describeIndexRequest)
 	ExpectEqual(t.Errorf, err, nil)
 	ExpectEqual(t.Errorf, true, idx.FullText)
+	ExpectEqual(t.Errorf, false, idx.CaseSensitive)
+	ExpectEqual(t.Errorf, true, idx.IncludeChinese)
+	ExpectEqual(t.Errorf, 3, len(idx.Separators))
+	ExpectEqual(t.Errorf, true, strings.Contains(idx.Separators, "@") && strings.Contains(idx.Separators, "?") &&
+		strings.Contains(idx.Separators, "&"))
 	ExpectEqual(t.Errorf, 2, len(idx.Fields))
 	ExpectEqual(t.Errorf, "float", idx.Fields["test1"].Type)
+	ExpectEqual(t.Errorf, true, idx.Fields["test1"].CaseSensitive)
+	ExpectEqual(t.Errorf, false, idx.Fields["test1"].IncludeChinese)
+	ExpectEqual(t.Errorf, 2, len(idx.Fields["test1"].Separators))
+	ExpectEqual(t.Errorf, true, strings.Contains(idx.Fields["test1"].Separators, "@") &&
+		strings.Contains(idx.Fields["test1"].Separators, "?"))
 	ExpectEqual(t.Errorf, "bool", idx.Fields["test2"].Type)
+	ExpectEqual(t.Errorf, true, idx.Fields["test2"].CaseSensitive)
+	ExpectEqual(t.Errorf, false, idx.Fields["test2"].IncludeChinese)
+	ExpectEqual(t.Errorf, "@&?|#()='\",;:<>[]{}/ \n\t\r\\", idx.Fields["test2"].Separators)
 
 	deleteIndexRequest := DeleteIndexRequest{
 		Project:      createLogStoreRequest.Project,

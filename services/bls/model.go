@@ -239,6 +239,12 @@ type CreateIndexRequest struct {
 	LogStoreName string `json:"logStoreName"`
 	// 是否开启全文索引，默认false，不开启全文索引
 	Fulltext bool `json:"fulltext"`
+	// 全文索引是否开启大小写敏感，默认false，不开启大小写敏感
+	CaseSensitive bool `json:"caseSensitive"`
+	// 全文分词符，将字段内容按照分词符拆分成若干个分词用于检索
+	Separators string `json:"separators"`
+	// 是否包含中文，默认为false，不包含中文
+	IncludeChinese bool `json:"includeChinese"`
 	// 字段索引信息
 	Fields map[string]api.LogField `json:"fields"`
 }
@@ -250,6 +256,12 @@ type UpdateIndexRequest struct {
 	LogStoreName string `json:"logStoreName"`
 	// 是否开启全文索引，默认false，不开启全文索引
 	Fulltext bool `json:"fulltext"`
+	// 全文索引是否开启大小写敏感，默认false，不开启大小写敏感
+	CaseSensitive bool `json:"caseSensitive"`
+	// 全文分词符，将字段内容按照分词符拆分成若干个分词用于检索
+	Separators string `json:"separators"`
+	// 是否包含中文，默认为false，不包含中文
+	IncludeChinese bool `json:"includeChinese"`
 	// 字段索引信息
 	Fields map[string]api.LogField `json:"fields"`
 }

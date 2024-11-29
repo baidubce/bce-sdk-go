@@ -217,13 +217,20 @@ type ListFastQueryResult struct {
 }
 
 type LogField struct {
-	Type   string              `json:"type"`
-	Fields map[string]LogField `json:"fields,omitempty"`
+	Type           string              `json:"type"`
+	CaseSensitive  bool                `json:"caseSensitive"`
+	Separators     string              `json:"separators"`
+	IncludeChinese bool                `json:"includeChinese"`
+	Fields         map[string]LogField `json:"fields,omitempty"`
+	DynamicMapping bool                `json:"dynamicMapping,omitempty"`
 }
 
 type IndexFields struct {
-	FullText bool                `json:"fulltext"`
-	Fields   map[string]LogField `json:"fields"`
+	FullText       bool                `json:"fulltext"`
+	CaseSensitive  bool                `json:"caseSensitive"`
+	Separators     string              `json:"separators"`
+	IncludeChinese bool                `json:"includeChinese"`
+	Fields         map[string]LogField `json:"fields"`
 }
 
 type CreateLogShipperBody struct {

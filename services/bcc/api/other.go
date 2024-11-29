@@ -101,6 +101,12 @@ func ListFlavorSpec(cli bce.Client, args *ListFlavorSpecArgs) (*ListFlavorSpecRe
 		if len(args.ZoneName) != 0 {
 			req.SetParam("zoneName", args.ZoneName)
 		}
+		if len(args.Specs) != 0 {
+			req.SetParam("specs", args.Specs)
+		}
+		if len(args.SpecIds) != 0 {
+			req.SetParam("specIds", args.SpecIds)
+		}
 	}
 
 	// Send request and get response

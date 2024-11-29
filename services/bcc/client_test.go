@@ -544,6 +544,7 @@ func TestCreateSnapshot(t *testing.T) {
 				TagValue: "val",
 			},
 		},
+		RetentionInDays: 1,
 	}
 	result, err := BCC_CLIENT.CreateSnapshot(args)
 	ExpectEqual(t.Errorf, err, nil)
@@ -959,7 +960,10 @@ func TestListZone(t *testing.T) {
 }
 
 func TestListFlavorSpec(t *testing.T) {
-	args := &api.ListFlavorSpecArgs{}
+	args := &api.ListFlavorSpecArgs{
+		Specs: "bcc.g5.c2m8",
+		ZoneName: "cn-bj-b",
+	}
 	res, err := BCC_CLIENT.ListFlavorSpec(args)
 	ExpectEqual(t.Errorf, err, nil)
 	// fmt.Println(res.ZoneResources[0].BccResources.FlavorGroups[0].Flavors[0].NetEthQueueCount)
@@ -2240,3 +2244,14 @@ func TestClient_GetSecurityDetail(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(res)
 }
+
+func TestModifySnapshotAttribute(t *testing.T) {
+	args := &api.ModifySnapshotAttributeArgs{
+		SnapshotName:      "test-snapshot",
+		Desc:              "test-desc",
+		RetentionInDays:   1,
+	}
+	err := BCC_CLIENT.ModifySnapshotAttribute("s-Dzmlx7Fz", args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+

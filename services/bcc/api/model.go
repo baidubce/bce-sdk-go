@@ -1741,11 +1741,12 @@ type GetImageOsArgs struct {
 }
 
 type CreateSnapshotArgs struct {
-	ClientToken  string           `json:"-"`
-	VolumeId     string           `json:"volumeId"`
-	SnapshotName string           `json:"snapshotName"`
-	Description  string           `json:"desc,omitempty"`
-	Tags         []model.TagModel `json:"tags"`
+	ClientToken     string           `json:"-"`
+	VolumeId        string           `json:"volumeId"`
+	SnapshotName    string           `json:"snapshotName"`
+	Description     string           `json:"desc,omitempty"`
+	Tags            []model.TagModel `json:"tags"`
+	RetentionInDays int              `json:"retentionInDays,omitempty"`
 }
 
 type CreateSnapshotResult struct {
@@ -2047,6 +2048,8 @@ type CreateBidInstanceResult struct {
 
 type ListFlavorSpecArgs struct {
 	ZoneName string `json:"zoneName,omitempty"`
+	Specs    string `json:"specs,omitempty"`
+	SpecIds  string `json:"specIds,omitempty"`
 }
 
 type ListFlavorSpecResult struct {
@@ -2069,26 +2072,34 @@ type FlavorGroup struct {
 }
 
 type BccFlavor struct {
-	CpuCount            int    `json:"cpuCount"`
-	MemoryCapacityInGB  int    `json:"memoryCapacityInGB"`
-	EphemeralDiskInGb   int    `json:"ephemeralDiskInGb"`
-	EphemeralDiskCount  int    `json:"ephemeralDiskCount"`
-	EphemeralDiskType   string `json:"ephemeralDiskType"`
-	GpuCardType         string `json:"gpuCardType"`
-	GpuCardCount        int    `json:"gpuCardCount"`
-	FpgaCardType        string `json:"fpgaCardType"`
-	FpgaCardCount       int    `json:"fpgaCardCount"`
-	ProductType         string `json:"productType"`
-	Spec                string `json:"spec"`
-	SpecId              string `json:"specId"`
-	FlavorSubType       string `json:"flavorSubType"`
-	CpuModel            string `json:"cpuModel"`
-	CpuGHz              string `json:"cpuGHz"`
-	NetworkBandwidth    string `json:"networkBandwidth"`
-	NetworkPackage      string `json:"networkPackage"`
-	NetEthQueueCount    string `json:"netEthQueueCount"`
-	EnableJumboFrame    bool   `json:"enableJumboFrame"`
-	NetEthMaxQueueCount string `json:"netEthMaxQueueCount"`
+	CpuCount           int      `json:"cpuCount"`
+	MemoryCapacityInGB int      `json:"memoryCapacityInGB"`
+	EphemeralDiskInGb  int      `json:"ephemeralDiskInGb"`
+	EphemeralDiskCount int      `json:"ephemeralDiskCount"`
+	EphemeralDiskType  string   `json:"ephemeralDiskType"`
+	GpuCardType        string   `json:"gpuCardType"`
+	GpuCardCount       int      `json:"gpuCardCount"`
+	FpgaCardType       string   `json:"fpgaCardType"`
+	FpgaCardCount      int      `json:"fpgaCardCount"`
+	ProductType        string   `json:"productType"`
+	Spec               string   `json:"spec"`
+	SpecId             string   `json:"specId"`
+	FlavorSubType      string   `json:"flavorSubType"`
+	CpuModel           string   `json:"cpuModel"`
+	CpuGHz             string   `json:"cpuGHz"`
+	NetworkBandwidth   string   `json:"networkBandwidth"`
+	NetworkPackage     string   `json:"networkPackage"`
+	NetEthQueueCount   string   `json:"netEthQueueCount"`
+	EnableJumboFrame   bool     `json:"enableJumboFrame"`
+	NicIpv4Quota       int      `json:"nicIpv4Quota"`
+	NicIpv6Quota       int      `json:"nicIpv6Quota"`
+	EniQuota           int      `json:"eniQuota"`
+	EriQuota           int      `json:"eriQuota"`
+	RdmaType           string   `json:"rdmaType"`
+	RdmaNetCardCount   int      `json:"rdmaNetCardCount"`
+	RdmaNetBandwidth   int      `json:"rdmaNetBandwidth"`
+	SystemDiskType     []string `json:"systemDiskType"`
+	DataDiskType       []string `json:"dataDiskType"`
 }
 
 type EbcResources struct {
@@ -2101,23 +2112,32 @@ type EbcFlavorGroup struct {
 }
 
 type EbcFlavor struct {
-	CpuCount           int    `json:"cpuCount"`
-	MemoryCapacityInGB int    `json:"memoryCapacityInGB"`
-	EphemeralDiskInGb  int    `json:"ephemeralDiskInGb"`
-	EphemeralDiskCount string `json:"ephemeralDiskCount"`
-	EphemeralDiskType  string `json:"ephemeralDiskType"`
-	GpuCardType        string `json:"gpuCardType"`
-	GpuCardCount       string `json:"gpuCardCount"`
-	FpgaCardType       string `json:"fpgaCardType"`
-	FpgaCardCount      string `json:"fpgaCardCount"`
-	ProductType        string `json:"productType"`
-	Spec               string `json:"spec"`
-	SpecId             string `json:"specId"`
-	FlavorSubType      string `json:"flavorSubType"`
-	CpuModel           string `json:"cpuModel"`
-	CpuGHz             string `json:"cpuGHz"`
-	NetworkBandwidth   string `json:"networkBandwidth"`
-	NetworkPackage     string `json:"networkPackage"`
+	CpuCount           int      `json:"cpuCount"`
+	MemoryCapacityInGB int      `json:"memoryCapacityInGB"`
+	EphemeralDiskInGb  int      `json:"ephemeralDiskInGb"`
+	EphemeralDiskCount string   `json:"ephemeralDiskCount"`
+	EphemeralDiskType  string   `json:"ephemeralDiskType"`
+	GpuCardType        string   `json:"gpuCardType"`
+	GpuCardCount       string   `json:"gpuCardCount"`
+	FpgaCardType       string   `json:"fpgaCardType"`
+	FpgaCardCount      string   `json:"fpgaCardCount"`
+	ProductType        string   `json:"productType"`
+	Spec               string   `json:"spec"`
+	SpecId             string   `json:"specId"`
+	FlavorSubType      string   `json:"flavorSubType"`
+	CpuModel           string   `json:"cpuModel"`
+	CpuGHz             string   `json:"cpuGHz"`
+	NetworkBandwidth   string   `json:"networkBandwidth"`
+	NetworkPackage     string   `json:"networkPackage"`
+	NicIpv4Quota       int      `json:"nicIpv4Quota"`
+	NicIpv6Quota       int      `json:"nicIpv6Quota"`
+	EniQuota           int      `json:"eniQuota"`
+	EriQuota           int      `json:"eriQuota"`
+	RdmaType           string   `json:"rdmaType"`
+	RdmaNetCardCount   int      `json:"rdmaNetCardCount"`
+	RdmaNetBandwidth   int      `json:"rdmaNetBandwidth"`
+	SystemDiskType     []string `json:"systemDiskType"`
+	DataDiskType       []string `json:"dataDiskType"`
 }
 
 type GetPriceBySpecArgs struct {
@@ -2709,4 +2729,10 @@ type EhcCluster struct {
 	CreatedTime         string   `json:"createdTime"`
 	InstanceIds         []string `json:"instanceIds"`
 	ReservedInstanceIds []string `json:"reservedInstanceIds"`
+}
+
+type ModifySnapshotAttributeArgs struct {
+	SnapshotName    string `json:"snapshotName,omitempty"`
+	Desc            string `json:"desc,omitempty"`
+	RetentionInDays int    `json:"retentionInDays,omitempty"`
 }

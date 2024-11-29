@@ -2763,6 +2763,7 @@ args := &api.CreateSnapshotArgs{
 	VolumeId:     volumeId,
 	SnapshotName: "sdk",
 	Description:  "create by sdk",
+	RetentionInDays: 1,
 }
 result, err := client.CreateSnapshot(args)
 if err != nil {
@@ -2794,6 +2795,22 @@ if err != nil {
     fmt.Println("get snapshot detail failed:", err)
 } else {
     fmt.Println("get snapshot detail success: ", result)
+}
+```
+### 修改快照属性
+
+如下代码可以修改快照属性
+```go
+args := &api.ModifySnapshotAttributeArgs{
+SnapshotName:      "test-snapshot",
+Desc:              "test-desc",
+RetentionInDays:   1,
+}
+err := client.ModifySnapshotAttribute(snapshotId, args)
+if err != nil {
+    fmt.Println("modify snapshot attribute failed:", err)
+} else {
+    fmt.Println("modify snapshot attribute success")
 }
 ```
 
@@ -3431,8 +3448,11 @@ if err != nil {
 ```go
 // 设置可用区名称，可选
 zoneName := "your-zone-name"
+// 设置套餐，可选
+specs := "spec1,spec2"
 args := &api.ListFlavorSpecArgs{
     ZoneName:   zoneName,
+	Specs:      specs,
 }
 if res, err := bccClient.ListFlavorSpec(args); err != nil {
     fmt.Println("Get specified flavor list failed: ", err)
