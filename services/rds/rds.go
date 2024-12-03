@@ -74,7 +74,7 @@ func (c *Client) CreateRds(args *CreateRdsArgs) (*CreateResult, error) {
 // RETURNS:
 //   - *InstanceIds: the result of create a readReplica RDS, contains the readReplica RDS's instanceIds
 //   - error: nil if success otherwise the specific error
-func (c *Client) CreateReadReplica(args *CreateReadReplicaArgs) (*CreateResult, error) {
+func (c *Client) CreateReadReplica(args *CreateRDSReadReplicaArgs) (*CreateResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")
 	}

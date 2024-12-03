@@ -315,7 +315,7 @@ for _, e := range result.InstanceIds {
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/rds"
 
-args := &rds.CreateReadReplicaArgs{
+args := &rds.CreateRDSReadReplicaArgs{
     //主实例ID，必选
     SourceInstanceId: "sourceInstanceId"
     // 计费相关参数，PaymentTiming取值为 预付费：Prepaid，后付费：Postpaid；Reservation：支付方式为后付费时不需要设置，预付费时必须设置；必选
@@ -363,8 +363,8 @@ for _, e := range result.InstanceIds {
 > 注意: 
 > - 需要在云数据库 RDS 主实例的基础上进行创建
 > - 实例可选套餐详见(https://cloud.baidu.com/doc/RDS/s/9jwvz0wd3)
-> - 仅数据库类型为 MySQL 的主实例支持创建只读实例
-> - 只读实例的数据库引擎和数据库版本与主实例相同，无需设置，主实例版本最低是 MySQL 5.6
+> - 仅数据库类型为 MySQL、PostgreSql 的主实例支持创建只读实例
+> - 只读实例的数据库引擎和数据库版本与主实例相同，无需设置，主实例版本最低是 MySQL 5.6、PostgreSql 10
 > - 只读实例的磁盘容量不能小于主实例的磁盘容量
 > - 只读实例的 vpcId 需跟主实例一致
 > - 一个云数据库 RDS 实例，最多只能有 5 个只读实例

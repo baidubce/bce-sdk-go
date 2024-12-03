@@ -110,6 +110,27 @@ type CreateReadReplicaArgs struct {
 	ResourceGroupId  string           `json:"resourceGroupId,omitempty"`
 }
 
+type CreateRDSReadReplicaArgs struct {
+	ClientToken           string           `json:"-"`
+	Billing               Billing          `json:"billing"`
+	PurchaseCount         int              `json:"purchaseCount,omitempty"`
+	SourceInstanceId      string           `json:"sourceInstanceId"`
+	InstanceName          string           `json:"instanceName,omitempty"`
+	CpuCount              int              `json:"cpuCount"`
+	MemoryCapacity        float64          `json:"memoryCapacity"`
+	VolumeCapacity        int              `json:"volumeCapacity"`
+	ZoneNames             []string         `json:"zoneNames,omitempty"`
+	VpcId                 string           `json:"vpcId,omitempty"`
+	IsDirectPay           bool             `json:"isDirectPay,omitempty"`
+	Subnets               []SubnetMap      `json:"subnets,omitempty"`
+	Tags                  []model.TagModel `json:"tags,omitempty"`
+	DiskIoType            string           `json:"diskIoType,omitempty"`
+	Ovip                  string           `json:"ovip,omitempty"`
+	EntryPort             string           `json:"entryPort,omitempty"`
+	ResourceGroupId       string           `json:"resourceGroupId,omitempty"`
+	IsInheritMasterAuthip bool             `json:"isInheritMasterAuthip,omitempty"`
+}
+
 type CreateRdsProxyArgs struct {
 	ClientToken      string           `json:"-"`
 	Billing          Billing          `json:"billing"`

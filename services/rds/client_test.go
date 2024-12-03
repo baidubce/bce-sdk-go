@@ -215,7 +215,14 @@ func TestClient_UpdateAccountPrivileges(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 func TestClient_CreateReadReplica(t *testing.T) {
-	args := &CreateReadReplicaArgs{
+	subnets := SubnetMap{
+		ZoneName: "cn-bj-d",
+		SubnetId: "sbn-dqafncqsy3y4",
+	}
+	var sub = []SubnetMap{
+		subnets,
+	}
+	args := &CreateRDSReadReplicaArgs{
 		SourceInstanceId: RDS_ID,
 		CpuCount:         1,
 		MemoryCapacity:   2,
@@ -224,6 +231,7 @@ func TestClient_CreateReadReplica(t *testing.T) {
 			PaymentTiming: "Postpaid",
 		},
 		ClientToken: getClientToken(),
+		Subnets:     sub,
 	}
 	time.Sleep(30 * time.Second)
 	isAvailable(RDS_ID)
