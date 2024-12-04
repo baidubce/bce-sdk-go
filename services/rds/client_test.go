@@ -222,7 +222,7 @@ func TestClient_CreateReadReplica(t *testing.T) {
 	var sub = []SubnetMap{
 		subnets,
 	}
-	args := &CreateRDSReadReplicaArgs{
+	args := &CreateReadReplicaArgs{
 		SourceInstanceId: RDS_ID,
 		CpuCount:         1,
 		MemoryCapacity:   2,

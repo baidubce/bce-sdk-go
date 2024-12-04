@@ -315,7 +315,7 @@ for _, e := range result.InstanceIds {
 ```go
 // import "github.com/baidubce/bce-sdk-go/services/rds"
 
-args := &rds.CreateRDSReadReplicaArgs{
+args := &rds.CreateReadReplicaArgs{
     //主实例ID，必选
     SourceInstanceId: "sourceInstanceId"
     // 计费相关参数，PaymentTiming取值为 预付费：Prepaid，后付费：Postpaid；Reservation：支付方式为后付费时不需要设置，预付费时必须设置；必选
