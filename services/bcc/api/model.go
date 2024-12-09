@@ -1699,6 +1699,11 @@ type RemoteCopyImageArgs struct {
 	DestRegion []string `json:"destRegion"`
 }
 
+type RenameImageArgs struct {
+	Name    string `json:"name"`
+	ImageId string `json:"imageId"`
+}
+
 type RemoteCopyImageResult struct {
 	RemoteCopyImages []RemoteCopyImageModel `json:"result"`
 }

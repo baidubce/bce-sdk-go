@@ -48,7 +48,7 @@ type LogQueryData struct {
 //     - []LogEntry: the log detail list
 //     - error: nil if success otherwise the specific error
 func GetDomainLog(cli bce.Client, domain string, timeInterval TimeInterval) ([]LogEntry, error) {
-	if err := checkTimeInterval(timeInterval, 14*24*60*60); err != nil {
+	if err := checkTimeInterval(timeInterval, 180*24*60*60); err != nil {
 		return nil, err
 	}
 
@@ -157,7 +157,7 @@ func checkTimeInterval(timeInterval TimeInterval, maxTimeRange int64) error {
 
 	curTs := time.Now().Unix()
 	if curTs-startTs > maxTimeRange {
-		return errors.New(fmt.Sprintf("only the first %d seconds of log files can be downloaded, please reset startTime", maxTimeRange))
+		return errors.New(fmt.Sprintf("only the log files of the last %d seconds can be downloaded, please reset startTime", maxTimeRange))
 	}
 
 	if startTs > curTs {

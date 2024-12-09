@@ -231,6 +231,10 @@ func getImageUriWithId(id string) string {
 	return URI_PREFIXV2 + REQUEST_IMAGE_URI + "/" + id
 }
 
+func getRenameImageUri() string {
+	return URI_PREFIXV2 + REQUEST_IMAGE_URI + "/rename"
+}
+
 func getImageSharedUserUri(id string) string {
 	return URI_PREFIXV2 + REQUEST_IMAGE_URI + "/" + id + REQUEST_IMAGE_SHAREDUSER_URI
 }

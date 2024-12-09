@@ -934,6 +934,15 @@ func TestDeleteImage(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestRenameImage(t *testing.T) {
+	args := &api.RenameImageArgs{
+		Name:    "newName",
+		ImageId: "m-z6YPac1v",
+	}
+	err := BCC_CLIENT.RenameImage(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestDeleteInstance(t *testing.T) {
 	err := BCC_CLIENT.DeleteInstance(BCC_TestBccId)
 	ExpectEqual(t.Errorf, err, nil)
@@ -2074,7 +2083,6 @@ func TestEhcClusterList(t *testing.T) {
 }
 
 func TestCreateReservedInstance(t *testing.T) {
-
 	args := &api.CreateReservedInstanceArgs{
 		ClientToken:              "myClientToken1",
 		ReservedInstanceName:     "myReservedInstance",

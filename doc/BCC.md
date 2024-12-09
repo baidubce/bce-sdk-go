@@ -2582,6 +2582,26 @@ if err != nil {
 }
 ```
 
+### 修改自定义镜像名称
+- 该接口用于修改用户自己的指定的自定义镜像的名称，仅限自定义镜像
+- imageId 自定义镜像id。
+- name 自定义镜像的新名称。
+
+以下代码可以修改自定义镜像名称：
+
+```go
+ args := &api.RenameImageArgs{
+    Name:       "your-newName",
+    ImageId: "your-imageId",
+}
+err := client.RenameImage(args)
+if err != nil {
+    fmt.Println("rename image failed:", err)
+} else {
+    fmt.Println("rename image success")
+}
+```
+
 ### 跨区域复制自定义镜像
 - 用于用户跨区域复制自定义镜像，仅限自定义镜像，系统镜像和服务集成镜像不能复制
 - regions如北京"bj",广州"gz",苏州"su"，可多选：

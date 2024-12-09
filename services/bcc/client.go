@@ -21,6 +21,7 @@ package bcc
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/baidubce/bce-sdk-go/auth"
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/services/bcc/api"
@@ -1246,6 +1247,17 @@ func (c *Client) DeleteImage(imageId string) error {
 	return api.DeleteImage(c, imageId)
 }
 
+// RenameImage - rename image
+//
+// PARAMS:
+//   - args: the arguments to rename image
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) RenameImage(args *api.RenameImageArgs) error {
+	return api.RenameImage(c, args)
+}
+
 // RemoteCopyImage - copy an image from other region
 //
 // PARAMS:
@@ -2382,7 +2394,6 @@ func (c *Client) ImportCustomImage(args *api.ImportCustomImageArgs) (*api.Import
 
 func (c *Client) BatchRefundResource(arg *api.BatchRefundResourceArg) (*api.BatchRefundResourceResult,
 	error) {
-
 	return api.BatchRefundResource(c, arg)
 }
 
