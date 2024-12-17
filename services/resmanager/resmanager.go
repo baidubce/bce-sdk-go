@@ -45,6 +45,25 @@ func (c *Client) BindResourceToGroup(args *BindResourceToGroupArgs) (*BindResour
 	return result, err
 }
 
+func (c *Client) CreateResourceGroup(args *CreateResourceGroupArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+
+	if len(args.Name) == 0 {
+		return fmt.Errorf("unset name")
+	}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getCreateGroupUri()).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+
+	return err
+}
+
 func (c *Client) ChangeResourceGroup(args *ChangeResourceGroupArgs) (*BindResourceResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("unset args")

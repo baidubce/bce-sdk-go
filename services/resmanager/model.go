@@ -94,6 +94,11 @@ type BindResourceResult struct {
 	ResGroups []ResGroup `json:"resGroups"`
 }
 
+type CreateResourceGroupArgs struct {
+	Name string `json:"name"`
+	Extra string `json:"extra"`
+}
+
 type ChangeResourceGroupArgs struct {
 	MoveResModels []MoveResModel `json:"moveResModels"`
 }

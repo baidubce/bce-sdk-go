@@ -159,6 +159,17 @@ func TestBindResourceToGroup(t *testing.T) {
 	t.Logf(string(jsonRes))
 }
 
+func TestCreateResourceGroup(t *testing.T) {
+	args := &CreateResourceGroupArgs{
+		// 资源组名称
+		Name: "资源组名称",
+		// 资源组的备注
+		Extra: "备注",
+	}
+	err := resClient.CreateResourceGroup(args)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestChangeResourceGroup(t *testing.T) {
 	args := &ChangeResourceGroupArgs{
 		MoveResModels: []MoveResModel{

@@ -224,6 +224,7 @@ ExpireSeconds | int   | 签名字符串的有效期
 - 变更资源绑定的资源分组
 - 查询资源分组列表
 - 资源ID查询资源资源分组
+- 创建资源分组
 
 ### 资源加入资源分组
 
@@ -370,6 +371,29 @@ if err != nil {
 > 2. 仅能查询当前账号资源，也就是根据AK, SK签名解析的账号下的资源。
 > 3. 接口详细描述请参考资源管理[API文档](https://cloud.baidu.com/doc/ResManagement/s/ilth0vmb9)。
 
+### 创建资源分组
+
+使用以下代码创建资源分组
+```go
+args := &CreateResourceGroupArgs{
+    // 资源组名称
+    Name: "资源组名称",
+    // 资源组的备注
+    Extra: "备注",
+}
+
+result, err := client.CreateResourceGroup(args)
+if err != nil {
+    fmt.Println("CreateResourceGroup failed:", err)
+} else {
+    fmt.Println("CreateResourceGroup success: ", result)
+}
+```
+
+> **提示：**
+> 1. 接口详细描述请参考资源管理[API文档](https://cloud.baidu.com/doc/ResManagement/s/ilth0vmb9)。
+> 2. 资源组的名称，同一用户下不能重复，支持中英文及常见符号-_ /.，1～20个字符，必填。
+> 3. 资源组的备注，可以为空。最多存储 256 个字符的文本。
 
 # 错误处理
 
@@ -410,3 +434,6 @@ if err != nil {
 首次发布：
 - 资源加入资源分组、资源从资源分组移除、变更资源绑定的资源分组、查询资源分组列表
 - 资源ID查询资源资源分组
+
+## v0.9.207 [2024-12-16]
+- 创建资源分组

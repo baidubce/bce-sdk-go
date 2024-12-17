@@ -43,6 +43,10 @@ func NewClient(ak, sk, endPoint string) (*Client, error) {
 	return &Client{client}, nil
 }
 
+func getCreateGroupUri() string {
+	return URI_PREFIX + REQUEST_QUERY_GROUP
+}
+
 func getChangeGroupUri() string {
 	return URI_PREFIX + REQUEST_CHANGE_GROUP
 }
