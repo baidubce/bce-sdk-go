@@ -99,6 +99,10 @@ type CreateResourceGroupArgs struct {
 	Extra string `json:"extra"`
 }
 
+type CreateResourceGroupResponse struct {
+	GroupId string `json:"groupId"`
+}
+
 type ChangeResourceGroupArgs struct {
 	MoveResModels []MoveResModel `json:"moveResModels"`
 }

@@ -166,8 +166,10 @@ func TestCreateResourceGroup(t *testing.T) {
 		// 资源组的备注
 		Extra: "备注",
 	}
-	err := resClient.CreateResourceGroup(args)
+	res, err := resClient.CreateResourceGroup(args)
 	ExpectEqual(t.Errorf, err, nil)
+	jsonRes, _ := json.Marshal(res)
+	t.Logf(string(jsonRes))
 }
 
 func TestChangeResourceGroup(t *testing.T) {
