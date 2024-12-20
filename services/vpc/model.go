@@ -1007,3 +1007,141 @@ type UpdateVpcRelayArgs struct {
 	ClientToken string `json:"-"`
 	VpcId       string `json:"vpcId"`
 }
+
+type TemplateIpAddressInfo struct {
+	IpAddress   string `json:"ipAddress"`
+	Description string `json:"description"`
+}
+
+type IpSet struct {
+	IpSetId           string                  `json:"ipSetId"`
+	Name              string                  `json:"name"`
+	Description       string                  `json:"description"`
+	IpVersion         string                  `json:"ipVersion"`
+	IpAddressInfo     []TemplateIpAddressInfo `json:"ipAddressInfo"`
+	BindedInstanceNum int                     `json:"bindedInstanceNum"`
+}
+
+type IpCollectionBindedInstance struct {
+	InstanceId   string `json:"instanceId"`
+	InstanceType string `json:"instanceType"`
+}
+
+type IpGroup struct {
+	IpGroupId         string   `json:"ipGroupId"`
+	Name              string   `json:"name"`
+	Description       string   `json:"description"`
+	IpVersion         string   `json:"ipVersion"`
+	IpSetIds          []string `json:"ipSetIds"`
+	BindedInstanceNum int      `json:"bindedInstanceNum"`
+}
+
+type CreateIpSetArgs struct {
+	ClientToken   string                  `json:"-"`
+	Name          string                  `json:"name"`
+	IpVersion     string                  `json:"ipVersion"`
+	IpAddressInfo []TemplateIpAddressInfo `json:"ipAddressInfo"`
+	Description   string                  `json:"description"`
+}
+
+type CreateIpSetResult struct {
+	IpSetId string `json:"ipSetId"`
+}
+
+type AddIpAddress2IpSetArgs struct {
+	ClientToken   string                  `json:"-"`
+	IpAddressInfo []TemplateIpAddressInfo `json:"ipAddressInfo"`
+}
+
+type DeleteIpAddressArgs struct {
+	ClientToken   string   `json:"-"`
+	IpAddressInfo []string `json:"ipAddressInfo"`
+}
+
+type UpdateIpSetArgs struct {
+	ClientToken string `json:"-"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+type DeleteIpSetArgs struct {
+	ClientToken string `json:"-"`
+}
+
+type ListIpSetArgs struct {
+	IpVersion string
+	Marker    string
+	MaxKeys   int
+}
+
+type ListIpSetResult struct {
+	IpSets      []IpSet `json:"ipSets"`
+	Marker      string  `json:"marker"`
+	IsTruncated bool    `json:"isTruncated"`
+	NextMarker  string  `json:"nextMarker"`
+	MaxKeys     int     `json:"maxKeys"`
+}
+
+type GetIpSetDetailResult struct {
+	IpSetId         string                       `json:"ipSetId"`
+	Name            string                       `json:"name"`
+	Description     string                       `json:"description"`
+	IpVersion       string                       `json:"ipVersion"`
+	IpAddressInfo   []TemplateIpAddressInfo      `json:"ipAddressInfo"`
+	BindedInstances []IpCollectionBindedInstance `json:"bindedInstances"`
+}
+
+type CreateIpGroupArgs struct {
+	ClientToken string   `json:"-"`
+	Name        string   `json:"name"`
+	IpVersion   string   `json:"ipVersion"`
+	IpSetIds    []string `json:"ipSetIds"`
+	Description string   `json:"description"`
+}
+
+type CreateIpGroupResult struct {
+	IpGroupId string `json:"ipGroupId"`
+}
+
+type AddIpSet2IpGroupArgs struct {
+	ClientToken string   `json:"-"`
+	IpSetIds    []string `json:"ipSetIds"`
+}
+
+type UnbindIpSetArgs struct {
+	ClientToken string   `json:"-"`
+	IpSetIds    []string `json:"ipSetIds"`
+}
+
+type UpdateIpGroupArgs struct {
+	ClientToken string `json:"-"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+type DeleteIpGroupArgs struct {
+	ClientToken string `json:"-"`
+}
+
+type ListIpGroupArgs struct {
+	IpVersion string
+	Marker    string
+	MaxKeys   int
+}
+
+type ListIpGroupResult struct {
+	IpGroups    []IpGroup `json:"ipGroups"`
+	Marker      string    `json:"marker"`
+	IsTruncated bool      `json:"isTruncated"`
+	NextMarker  string    `json:"nextMarker"`
+	MaxKeys     int       `json:"maxKeys"`
+}
+
+type GetIpGroupDetailResult struct {
+	IpGroupId       string                       `json:"ipGroupId"`
+	Name            string                       `json:"name"`
+	Description     string                       `json:"description"`
+	IpVersion       string                       `json:"ipVersion"`
+	IpSetIds        []string                     `json:"ipSetIds"`
+	BindedInstances []IpCollectionBindedInstance `json:"bindedInstances"`
+}

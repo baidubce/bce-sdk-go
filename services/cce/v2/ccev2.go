@@ -98,6 +98,22 @@ func (c *Client) DeleteCluster(args *DeleteClusterArgs) (*DeleteClusterResponse,
 	return result, err
 }
 
+func (c *Client) UpdateClusterForbidDelete(args *UpdateClusterForbidDeleteArgs) (*UpdateClusterForbidDeleteResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+
+	result := &UpdateClusterForbidDeleteResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getUpdateClusterForbidDeleteURI(args.ClusterID)).
+		WithBody(args.UpdateClusterForbidDeleteRequest).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
 // 获得集群详情
 func (c *Client) GetCluster(clusterID string) (*GetClusterResponse, error) {
 	if clusterID == "" {

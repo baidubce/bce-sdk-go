@@ -970,7 +970,7 @@ func TestListZone(t *testing.T) {
 
 func TestListFlavorSpec(t *testing.T) {
 	args := &api.ListFlavorSpecArgs{
-		Specs: "bcc.g5.c2m8",
+		Specs:    "bcc.g5.c2m8",
 		ZoneName: "cn-bj-b",
 	}
 	res, err := BCC_CLIENT.ListFlavorSpec(args)
@@ -1924,6 +1924,35 @@ func TestGetAvailableStockWithSpec(t *testing.T) {
 	fmt.Println(result)
 }
 
+func TestGetSortedInstFlavors(t *testing.T) {
+	if res, err := BCC_CLIENT.GetSortedInstFlavors(); err != nil {
+		fmt.Println("get sorted inst flavors failed: ", err)
+	} else {
+		fmt.Println("get sorted inst flavors success, result: ", res)
+	}
+}
+
+func TestGetInstOccupyStocksOfVm(t *testing.T) {
+	rootOnLocal := false
+	args := &api.GetInstOccupyStocksOfVmArgs{
+		Flavors: []api.OccupyStockFlavor{
+			{
+				Spec:   "bcc.g5.c4m16",
+				RootOnLocal: &rootOnLocal,
+				ZoneName: "cn-bj-a",
+			},
+			{
+				Spec:   "bcc.g5.c2m8",
+				RootOnLocal: &rootOnLocal,
+				ZoneName: "cn-bj-a",
+			},
+		},
+	}
+	result, err := BCC_CLIENT.GetInstOccupyStocksOfVm(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(result)
+}
+
 func TestModifyRelatedDeletePolicy(t *testing.T) {
 	args := &api.RelatedDeletePolicy{
 		IsEipAutoRelatedDelete: true,
@@ -2082,6 +2111,15 @@ func TestEhcClusterList(t *testing.T) {
 	fmt.Println(err)
 }
 
+func TestGetInstanceUserData(t *testing.T) {
+	args := &api.DescribeInstanceUserDataArg{
+		InstanceId: "i-b34ycow2",
+	}
+	result, err := BCC_CLIENT.getInstanceUserData(args)
+	fmt.Println(result)
+	fmt.Println(err)
+}
+
 func TestCreateReservedInstance(t *testing.T) {
 	args := &api.CreateReservedInstanceArgs{
 		ClientToken:              "myClientToken1",
@@ -2115,7 +2153,6 @@ func TestCreateReservedInstance(t *testing.T) {
 }
 
 func TestCreateReservedInstanceWithoutOptionalParam(t *testing.T) {
-
 	args := &api.CreateReservedInstanceArgs{
 		ClientToken:          "myClientToken",
 		ZoneName:             "cn-bj-a",
@@ -2255,11 +2292,10 @@ func TestClient_GetSecurityDetail(t *testing.T) {
 
 func TestModifySnapshotAttribute(t *testing.T) {
 	args := &api.ModifySnapshotAttributeArgs{
-		SnapshotName:      "test-snapshot",
-		Desc:              "test-desc",
-		RetentionInDays:   1,
+		SnapshotName:    "test-snapshot",
+		Desc:            "test-desc",
+		RetentionInDays: 1,
 	}
 	err := BCC_CLIENT.ModifySnapshotAttribute("s-Dzmlx7Fz", args)
 	ExpectEqual(t.Errorf, err, nil)
 }
-

@@ -70,6 +70,15 @@ type ListClustersArgs struct {
 	PageSize    int
 }
 
+type UpdateClusterForbidDeleteArgs struct {
+	ClusterID                        string
+	UpdateClusterForbidDeleteRequest UpdateClusterForbidDeleteRequest
+}
+
+type UpdateClusterForbidDeleteRequest struct {
+	ForbidDelete bool
+}
+
 type CreateInstancesArgs struct {
 	ClusterID string
 	Instances []*InstanceSet
@@ -1015,4 +1024,10 @@ type UpdateAddonArgs struct {
 	ClusterID         string `json:"clusterID"`
 	AddOnInstanceName string `json:"instanceName,omitempty"`
 	Params            string `json:"params,omitempty"`
+}
+
+// UpdateClusterForbidDeleteResponse - 更新 ClusterForbidDelete 返回
+type UpdateClusterForbidDeleteResponse struct {
+	Success      bool `json:"success"`
+	ForbidDelete bool `json:"forbidDelete"`
 }

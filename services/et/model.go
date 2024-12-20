@@ -270,3 +270,17 @@ type DeleteEtChannelRouteRuleArgs struct {
 	EtChannelId string `json:"etChannelId"`
 	RouteRuleId string `json:"routeRuleId"`
 }
+
+type AssociateEtChannelArgs struct {
+	ClientToken    string `json:"clientToken,omitempty"`
+	EtId           string `json:"etId"`
+	EtChannelId    string `json:"etChannelId"`
+	ExtraChannelId string `json:"extraChannelId"`
+}
+
+type DisAssociateEtChannelArgs struct {
+	ClientToken    string `json:"clientToken,omitempty"`
+	EtId           string `json:"etId"`
+	EtChannelId    string `json:"etChannelId"`
+	ExtraChannelId string `json:"extraChannelId"`
+}

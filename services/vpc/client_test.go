@@ -33,6 +33,8 @@ var (
 	LocalIfID    string
 	PeerVPCID    string
 	EIPAddress   string
+	IpSetID      string
+	IpGroupID    string
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -1149,4 +1151,163 @@ func TestClient_UnBindDnatEips(t *testing.T) {
 	}
 	err := VPC_CLIENT.UnBindDnatEips("nat-bc39ugw5ry9z", args)
 	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestCreateIpSet(t *testing.T) {
+	args := &CreateIpSetArgs{
+		ClientToken: getClientToken(),
+		Name:        "test_create_ip_set",
+		IpVersion:   "IPv4",
+		IpAddressInfo: []TemplateIpAddressInfo{
+			{IpAddress: "192.168.11.0/24", Description: "test1"},
+			{IpAddress: "192.168.12.0/24", Description: "test2"},
+		},
+		Description: "this is a test",
+	}
+	result, err := VPC_CLIENT.CreateIpSet(args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, _ := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
+func TestAddIpAddress2IpSet(t *testing.T) {
+	args := &AddIpAddress2IpSetArgs{
+		ClientToken: getClientToken(),
+		IpAddressInfo: []TemplateIpAddressInfo{
+			{IpAddress: "192.168.15.1", Description: "test1"},
+			{IpAddress: "192.168.16.2", Description: "test2"},
+		},
+	}
+	IpSetID = "ips-5eekehr75vbv"
+	err := VPC_CLIENT.AddIpAddress2IpSet(IpSetID, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestDeleteIpAddress(t *testing.T) {
+	args := &DeleteIpAddressArgs{
+		ClientToken: getClientToken(),
+		IpAddressInfo: []string{
+			"192.168.11.0/24",
+		},
+	}
+	IpSetID = "ips-edk700us464u"
+	err := VPC_CLIENT.DeleteIpAddress(IpSetID, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestUpdateIpSet(t *testing.T) {
+	args := &UpdateIpSetArgs{
+		ClientToken: getClientToken(),
+		Name:        "test_update_ip_set",
+		Description: "this is a test",
+	}
+	IpSetID = "ips-2etsti1g24hv"
+	err := VPC_CLIENT.UpdateIpSet(IpSetID, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestDeleteIpSet(t *testing.T) {
+	args := &DeleteIpSetArgs{
+		ClientToken: getClientToken(),
+	}
+	IpSetID = "ips-g1n60tupgsx5"
+	err := VPC_CLIENT.DeleteIpSet(IpSetID, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestListIpSet(t *testing.T) {
+	args := &ListIpSetArgs{
+		IpVersion: "IPv4",
+		Marker:    "",
+		MaxKeys:   2,
+	}
+	result, err := VPC_CLIENT.ListIpSet(args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, _ := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
+func TestGetIpSetDetail(t *testing.T) {
+	IpSetID = "ips-hms1n8fu184f"
+	result, err := VPC_CLIENT.GetIpSetDetail(IpSetID)
+	ExpectEqual(t.Errorf, nil, err)
+	r, _ := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
+func TestCreateIpGroup(t *testing.T) {
+	args := &CreateIpGroupArgs{
+		ClientToken: getClientToken(),
+		Name:        "test_create_ip_set",
+		IpVersion:   "IPv4",
+		IpSetIds: []string{
+			"ips-z2a8uk9qnkc1",
+			"ips-hms1n8fu184f",
+		},
+		Description: "this is a test",
+	}
+	result, err := VPC_CLIENT.CreateIpGroup(args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, _ := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
+func TestAddIpSet2IpGroup(t *testing.T) {
+	args := &AddIpSet2IpGroupArgs{
+		ClientToken: getClientToken(),
+		IpSetIds:    []string{"ips-vn4nfjau2t2u"},
+	}
+	IpGroupID = "ipg-95eapsuw195m"
+	err := VPC_CLIENT.AddIpSet2IpGroup(IpGroupID, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestUnbindIpSet(t *testing.T) {
+	args := &UnbindIpSetArgs{
+		ClientToken: getClientToken(),
+		IpSetIds:    []string{"ips-z2a8uk9qnkc1"},
+	}
+	IpGroupID = "ipg-9vd6xtyjz0in"
+	err := VPC_CLIENT.UnbindIpSet(IpGroupID, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestUpdateIpGroup(t *testing.T) {
+	args := &UpdateIpGroupArgs{
+		ClientToken: getClientToken(),
+		Name:        "test_update_ip_group",
+		Description: "this is a test",
+	}
+	IpGroupID = "ipg-9vd6xtyjz0in"
+	err := VPC_CLIENT.UpdateIpGroup(IpGroupID, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestDeleteIpGroup(t *testing.T) {
+	args := &DeleteIpGroupArgs{
+		ClientToken: getClientToken(),
+	}
+	IpGroupID = "ipg-riivgeymsiwe"
+	err := VPC_CLIENT.DeleteIpGroup(IpGroupID, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestListIpGroup(t *testing.T) {
+	args := &ListIpGroupArgs{
+		IpVersion: "IPv4",
+		Marker:    "",
+		MaxKeys:   2,
+	}
+	result, err := VPC_CLIENT.ListIpGroup(args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, _ := json.Marshal(result)
+	fmt.Println(string(r))
+}
+
+func TestGetIpGroupDetail(t *testing.T) {
+	IpGroupID = "ipg-kzcc0bfteds6"
+	result, err := VPC_CLIENT.GetIpGroupDetail(IpGroupID)
+	ExpectEqual(t.Errorf, nil, err)
+	r, _ := json.Marshal(result)
+	fmt.Println(string(r))
 }

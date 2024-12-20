@@ -2,7 +2,6 @@ package ldexample
 
 import (
 	"fmt"
-
 	"github.com/baidubce/bce-sdk-go/services/localDns"
 	"github.com/baidubce/bce-sdk-go/util"
 )
@@ -22,7 +21,15 @@ func ListRecord() {
 	}
 
 	zoneId := "Your private zone id"
-	result, err := client.ListRecord(zoneId)
+	sourceType := "" // 默认为空字符串, 可以指定类型
+	marker := ""     // 首次查询传递空字符串，后续查询时需要传递上次接口返回的marker值
+	maxKeys := 10    // 每次查询的最大数量
+	args := &localDns.ListRecordRequest{
+		SourceType: sourceType,
+		Marker:     marker,
+		MaxKeys:    maxKeys,
+	}
+	result, err := client.ListRecord(zoneId, args)
 	if err != nil {
 		fmt.Println("list record err:", err)
 		return

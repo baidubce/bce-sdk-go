@@ -178,8 +178,23 @@ type MasterConfig struct {
 
 // ManagedClusterMasterOption 托管集群 Master 配置
 type ManagedClusterMasterOption struct {
-	MasterVPCSubnetZone AvailableZone `json:"masterVPCSubnetZone,omitempty"`
+	MasterVPCSubnetZone     AvailableZone `json:"masterVPCSubnetZone,omitempty"`
+	MasterVPCSubnetUUID     string        `json:"masterVPCSubnetUUID,omitempty"`
+	MasterSecurityGroupUUID string        `json:"masterSecurityGroupUUID,omitempty"`
+
+	MasterFlavor MasterFlavor `json:"masterFlavor,omitempty"`
 }
+
+type MasterFlavor string
+
+const (
+	MasterFlavorL50   MasterFlavor = "l50"
+	MasterFlavorL200  MasterFlavor = "l200"
+	MasterFlavorL500  MasterFlavor = "l500"
+	MasterFlavorL1000 MasterFlavor = "l1000"
+	MasterFlavorL3000 MasterFlavor = "l3000"
+	MasterFlavorL5000 MasterFlavor = "l5000"
+)
 
 // RuntimeType defines the runtime on each node
 type RuntimeType string

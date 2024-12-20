@@ -2019,6 +2019,24 @@ func (c *Client) GetAvailableStockWithSpec(args *api.GetAvailableStockWithSpecAr
 	return api.GetAvailableStockWithSpec(c, args)
 }
 
+// GetSortedInstFlavors - get the sorted instance flavors
+//
+// RETURNS:
+//   - *GetSortedInstFlavorsResults: the result of the sorted instance flavors
+//   - error: nil if success otherwise the specific error
+func (c *Client) GetSortedInstFlavors() (*api.GetSortedInstFlavorsResults, error) {
+	return api.GetSortedInstFlavors(c)
+}
+
+// GetInstOccupyStocksOfVm - get the bcc's occupy stock with spec, logicalZone, rootOnLocal
+//
+// RETURNS:
+//   - *GetInstOccupyStocksOfVmResults: the result of the bcc's occupy stock
+//   - error: nil if success otherwise the specific error
+func (c *Client) GetInstOccupyStocksOfVm(args *api.GetInstOccupyStocksOfVmArgs) (*api.GetInstOccupyStocksOfVmResults, error) {
+	return api.GetInstOccupyStocksOfVm(c, args)
+}
+
 func (c *Client) GetInstanceCreateStock(args *api.CreateInstanceStockArgs) (*api.InstanceStockResult, error) {
 	return api.GetInstanceCreateStock(c, args)
 }
@@ -2598,6 +2616,18 @@ func (c *Client) ListEhcCluster(args *api.DescribeEhcClusterListArg) (*api.Descr
 		return nil, err
 	}
 	return api.EhcClusterList(c, body)
+}
+
+func (c *Client) getInstanceUserData(args *api.DescribeInstanceUserDataArg) (*api.InstanceUserDataAttrResult, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return api.GetInstanceUserDataAttr(c, body)
 }
 
 // ModifyEhcCluster - modify ehcCluster

@@ -73,6 +73,8 @@ const (
 	REQUEST_SYNC_URL = "/sync"
 
 	REQUEST_RBAC_URL = "/rbac"
+
+	REQUEST_FORBIDDELETE_URL = "/forbiddelete"
 )
 
 var _ Interface = &Client{}
@@ -115,6 +117,10 @@ func getSyncInstancesURI(clusterID string) string {
 
 func getClusterListURI() string {
 	return URI_PREFIX + REQUEST_CLUSTER_LIST_URL
+}
+
+func getUpdateClusterForbidDeleteURI(clusterID string) string {
+	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_FORBIDDELETE_URL
 }
 
 func getClusterInstanceListURI(clusterID string) string {

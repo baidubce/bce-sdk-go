@@ -42,7 +42,8 @@ func CreateEni() {
 				TagValue: "tagValue",
 			},
 		},
-		Description: "go sdk test: create eni", // 弹性网卡描述
+		Description:                 "go sdk test: create eni", // 弹性网卡描述
+		NetworkInterfaceTrafficMode: "standard",                // 区分创建弹性RDMA网卡（ERI）和普通弹性网卡（ENI）
 	}
 
 	response, err := ENI_CLIENT.CreateEni(createEniArgs) // 创建eni

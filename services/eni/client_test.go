@@ -99,14 +99,14 @@ func getClientToken() string {
 func TestClient_CreateEni(t *testing.T) {
 	args := &CreateEniArgs{
 		Name:     "GO_SDK_TEST_CREATE_EIP_M",
-		SubnetId: "sbn-u1ft0w2m1and",
+		SubnetId: "sbn-x1evbqf9vgxq",
 		EnterpriseSecurityGroupIds: []string{
-			"esg-d8e5pi46f2dt",
+			"esg-p9y1mmu5fqkx",
 		},
 		PrivateIpSet: []PrivateIp{
 			{
 				Primary:          true,
-				PrivateIpAddress: "10.0.0.5",
+				PrivateIpAddress: "192.168.0.23",
 			},
 		},
 		Ipv6PrivateIpSet: []PrivateIp{
@@ -121,8 +121,9 @@ func TestClient_CreateEni(t *testing.T) {
 				TagValue: "tagValue",
 			},
 		},
-		Description: "go sdk test",
-		ClientToken: getClientToken(),
+		Description:                 "go sdk test",
+		ClientToken:                 getClientToken(),
+		NetworkInterfaceTrafficMode: "standard",
 	}
 	result, err := ENI_CLIENT.CreateEni(args)
 	ExpectEqual(t.Errorf, nil, err)

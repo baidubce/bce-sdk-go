@@ -3574,6 +3574,50 @@ if res, err := BCC_CLIENT.GetAllStocks(); err != nil {
 }
 ```
 
+### 查询用户可购买的套餐，按规格族进行分类，按cpu、memory进行排序
+- 只返回用户可见的bcc套餐。
+- 该接口不支持查询ebc套餐。
+```go
+if res, err := BCC_CLIENT.GetSortedInstFlavors(); err != nil {
+    fmt.Println("get sorted inst flavors failed: ", err)
+} else {
+    fmt.Println("get sorted inst flavors success, result: ", res)
+}
+```
+
+### 通过spec,logicalZone,rootOnLocal 查询可购买bcc套餐抢占库存
+- 按照套餐传入的顺序依次计算，先传先抢占资源，一般建议先传同一个规格族下的大规格套餐，再传小规格套餐。
+- 一次性传入的套餐列表大小在 [1，100] 之间，超过该范围会报错。 
+- 该接口的库存（inventoryQuantity）计算说明：假设只有一台100c的物理机,先传入大规格50c套餐，再传入小规格2c套餐，
+库存计算有大套餐优先抢占物理机资源原则，那么50c的套餐的库存是2（可买出来2个实例），
+2c的套餐的库存为0(因为物理机已经被50c的抢占了)。
+- 查询时需要用户开启查询抢占库存白名单。
+- 只查询用户可见的套餐库存。
+- 该接口不支持查询ebc套餐。
+```go
+// 是否是本地系统盘
+rootOnLocal := false
+args := &api.GetInstOccupyStocksOfVmArgs{
+    Flavors: []api.OccupyStockFlavor{
+        {
+            Spec:   "bcc.g5.c4m16",
+            RootOnLocal: &rootOnLocal,
+            ZoneName: "cn-bj-a",
+        },
+        {
+            Spec:   "bcc.g5.c2m8",
+            RootOnLocal: &rootOnLocal,
+            ZoneName: "cn-bj-a",
+        },
+    },
+}
+if res, err := BCC_CLIENT.GetInstOccupyStocksOfVm(args); err != nil {
+    fmt.Println("get inst occupy stocks of vm failed: ", err)
+} else {
+    fmt.Println("get inst occupy stocks of vm success, result: ", res)
+}
+```
+
 ### 部署集粒度实例套餐库存
 查询部署集粒度的实例套餐库存
 ```go

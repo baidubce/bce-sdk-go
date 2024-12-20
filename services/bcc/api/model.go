@@ -195,6 +195,13 @@ type BccStock struct {
 	ZoneName          string `json:"logicalZone"`
 }
 
+type BccOnlineStock struct {
+	Spec              string `json:"spec"`
+	InventoryQuantity int    `json:"inventoryQuantity"`
+	RootOnLocal       bool   `json:"rootOnLocal"`
+	ZoneName          string `json:"logicalZone"`
+}
+
 type BbcStock struct {
 	FlavorId          string `json:"flavorId"`
 	InventoryQuantity int    `json:"inventoryQuantity"`
@@ -462,6 +469,24 @@ type GetAvailableStockWithSpecArgs struct {
 
 type GetAvailableStockWithSpecResults struct {
 	BccStocks []BccStock `json:"bccStocks"`
+}
+
+type GetInstOccupyStocksOfVmArgs struct {
+	Flavors []OccupyStockFlavor `json:"flavors"`
+}
+
+type OccupyStockFlavor struct {
+	Spec        string `json:"spec"`
+	RootOnLocal *bool   `json:"rootOnLocal,omitempty"`
+	ZoneName    string `json:"logicalZone"`
+}
+
+type GetInstOccupyStocksOfVmResults struct {
+	BccStocks []BccOnlineStock `json:"bccStocks"`
+}
+
+type GetSortedInstFlavorsResults struct {
+	ZoneResources []SortedZoneResource `json:"zoneResources"`
 }
 
 type GetStockWithSpecResults struct {
@@ -776,6 +801,11 @@ type ListInstanceResult struct {
 	Instances   []InstanceModel `json:"instances"`
 }
 
+type InstanceUserDataAttrResult struct {
+	UserData   string `json:"userData"`
+	InstanceId string `json:"instanceId"`
+}
+
 type ListRecycleInstanceArgs struct {
 	Marker        string `json:"marker,omitempty"`
 	MaxKeys       int    `json:"maxKeys,omitempty"`
@@ -1017,6 +1047,22 @@ type Flavor struct {
 	MemoryCapacityInGB int    `json:"memoryCapacityInGB"`
 	ProductType        string `json:"productType"`
 	Spec               string `json:"spec"`
+}
+
+type SortedZoneResource struct {
+	ZoneName     string              `json:"logicalZone"`
+	BccResources []SortedBccResource `json:"bccResources"`
+}
+
+type SortedBccResource struct {
+	SpecId  string         `json:"specId"`
+	Flavors []SimpleFlavor `json:"flavors"`
+}
+
+type SimpleFlavor struct {
+	Spec               string `json:"spec"`
+	CpuCount           int    `json:"cpuCount"`
+	MemoryCapacityInGB int    `json:"memoryCapacityInGB"`
 }
 
 type PurchaseReservedArgs struct {
@@ -2656,6 +2702,10 @@ type DescribeEhcClusterListArg struct {
 	ZoneName         string   `json:"zoneName,omitempty"`
 	SortKey          string   `json:"sortKey,omitempty"`
 	SortDir          string   `json:"sortDir,omitempty"`
+}
+
+type DescribeInstanceUserDataArg struct {
+	InstanceId string `json:"instanceId"`
 }
 
 type ModifyReservedInstancesArgs struct {

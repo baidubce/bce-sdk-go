@@ -17,16 +17,17 @@ package eni
 import "github.com/baidubce/bce-sdk-go/model"
 
 type CreateEniArgs struct {
-	ClientToken                string           `json:"-"`
-	Name                       string           `json:"name"`
-	SubnetId                   string           `json:"subnetId"`
-	InstanceId                 string           `json:"instanceId,omitempty"`
-	SecurityGroupIds           []string         `json:"securityGroupIds"`
-	EnterpriseSecurityGroupIds []string         `json:"enterpriseSecurityGroupIds"`
-	PrivateIpSet               []PrivateIp      `json:"privateIpSet"`
-	Ipv6PrivateIpSet           []PrivateIp      `json:"ipv6PrivateIpSet,omitempty"`
-	Description                string           `json:"description,omitempty"`
-	Tags                       []model.TagModel `json:"tags,omitempty"`
+	ClientToken                 string           `json:"-"`
+	Name                        string           `json:"name"`
+	SubnetId                    string           `json:"subnetId"`
+	InstanceId                  string           `json:"instanceId,omitempty"`
+	SecurityGroupIds            []string         `json:"securityGroupIds"`
+	EnterpriseSecurityGroupIds  []string         `json:"enterpriseSecurityGroupIds"`
+	PrivateIpSet                []PrivateIp      `json:"privateIpSet"`
+	Ipv6PrivateIpSet            []PrivateIp      `json:"ipv6PrivateIpSet,omitempty"`
+	Description                 string           `json:"description,omitempty"`
+	Tags                        []model.TagModel `json:"tags,omitempty"`
+	NetworkInterfaceTrafficMode string           `json:"networkInterfaceTrafficMode,omitempty"`
 }
 
 type CreateEniResult struct {

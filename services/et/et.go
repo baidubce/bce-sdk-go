@@ -27,10 +27,11 @@ import (
 // GetEtChannel - get an et channel
 //
 // PARAMS:
-//    - args: the arguments to get et channel
+//   - args: the arguments to get et channel
+//
 // RETURNS:
-//    - *GetEtChannelResult: the info of the et channel
-//    - error: nil if success otherwise the specific error
+//   - *GetEtChannelResult: the info of the et channel
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetEtChannel(args *GetEtChannelArgs) (*GetEtChannelsResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("The GetEtChannelArgs cannot be nil.")
@@ -50,9 +51,10 @@ func (c *Client) GetEtChannel(args *GetEtChannelArgs) (*GetEtChannelsResult, err
 // RecommitEtChannel - recommit et channel
 //
 // PARAMS:
-//    - args: the arguments to recommit et channel
+//   - args: the arguments to recommit et channel
+//
 // RETURNS:
-//    - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RecommitEtChannel(args *RecommitEtChannelArgs) error {
 	if args == nil {
 		return fmt.Errorf("The RecommitEtChannelArgs cannot be nil.")
@@ -70,9 +72,10 @@ func (c *Client) RecommitEtChannel(args *RecommitEtChannelArgs) error {
 // UpdateEtChannel - update et channel
 //
 // PARAMS:
-//    - args: the arguments to update et channel
+//   - args: the arguments to update et channel
+//
 // RETURNS:
-//    - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateEtChannel(args *UpdateEtChannelArgs) error {
 	if args == nil {
 		return fmt.Errorf("The UpdateEtChannelArgs cannot be nil.")
@@ -90,9 +93,10 @@ func (c *Client) UpdateEtChannel(args *UpdateEtChannelArgs) error {
 // DeleteEtChannel - delete et channel
 //
 // PARAMS:
-//    - args: the arguments to delete et channel
+//   - args: the arguments to delete et channel
+//
 // RETURNS:
-//    - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteEtChannel(args *DeleteEtChannelArgs) error {
 	if args == nil {
 		return fmt.Errorf("The DeleteEtChannelArgs cannot be nil.")
@@ -109,9 +113,10 @@ func (c *Client) DeleteEtChannel(args *DeleteEtChannelArgs) error {
 // EnableEtChannelIPv6 - enable et channel ipv6
 //
 // PARAMS:
-//    - args: the arguments to enable et channel ipv6
+//   - args: the arguments to enable et channel ipv6
+//
 // RETURNS:
-//    - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) EnableEtChannelIPv6(args *EnableEtChannelIPv6Args) error {
 	if args == nil {
 		return fmt.Errorf("The EnableEtChannelIPv6Args cannot be nil.")
@@ -146,14 +151,14 @@ func (c *Client) DisableEtChannelIPv6(args *DisableEtChannelIPv6Args) error {
 		Do()
 }
 
-
 // CreateEtDcphy - init a new Et
 //
 // PARAMS:
-//     - args: the arguments to init et dcphy
+//   - args: the arguments to init et dcphy
+//
 // RETURNS:
-//     - CreateEtDcphyResult: the id of et dcphy newly created
-//     - error: nil if success otherwise the specific error
+//   - CreateEtDcphyResult: the id of et dcphy newly created
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateEtDcphy(args *CreateEtDcphyArgs) (*CreateEtDcphyResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("The CreateEtDcphyArgs can not be nil")
@@ -161,7 +166,7 @@ func (c *Client) CreateEtDcphy(args *CreateEtDcphyArgs) (*CreateEtDcphyResult, e
 
 	result := &CreateEtDcphyResult{}
 	err := bce.NewRequestBuilder(c).
-		WithURL(getURLForEt() + "/init").
+		WithURL(getURLForEt()+"/init").
 		WithMethod(http.POST).
 		WithBody(args).
 		WithQueryParamFilter("clientToken", args.ClientToken).
@@ -174,10 +179,11 @@ func (c *Client) CreateEtDcphy(args *CreateEtDcphyArgs) (*CreateEtDcphyResult, e
 // UpdateEtDcphy - update an existed Et
 //
 // PARAMS:
-//     - edId: the id of et dcphy
-//     - args: the arguments to update et dcphy
+//   - edId: the id of et dcphy
+//   - args: the arguments to update et dcphy
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateEtDcphy(dcphyId string, args *UpdateEtDcphyArgs) error {
 	if len(dcphyId) == 0 {
 		return fmt.Errorf("please set et dcphy id")
@@ -196,10 +202,11 @@ func (c *Client) UpdateEtDcphy(dcphyId string, args *UpdateEtDcphyArgs) error {
 // ListEtDcphy - List ets
 //
 // PARAMS:
-//     - args: the arguments to list et
+//   - args: the arguments to list et
+//
 // RETURNS:
-//     - ListEtDcphyResult: list result
-//     - error: nil if success otherwise the specific error
+//   - ListEtDcphyResult: list result
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListEtDcphy(args *ListEtDcphyArgs) (*ListEtDcphyResult, error) {
 	if args == nil {
 		args = &ListEtDcphyArgs{}
@@ -225,10 +232,11 @@ func (c *Client) ListEtDcphy(args *ListEtDcphyArgs) (*ListEtDcphyResult, error) 
 // ListEtDcphyDetail - List specific et detail
 //
 // PARAMS:
-//     - dcphyId: the id of etDcphy
+//   - dcphyId: the id of etDcphy
+//
 // RETURNS:
-//     - EtDcphyDetail: etDcphy detail
-//     - error: nil if success otherwise the specific error
+//   - EtDcphyDetail: etDcphy detail
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListEtDcphyDetail(dcphyId string) (*EtDcphyDetail, error) {
 	if len(dcphyId) == 0 {
 		return nil, fmt.Errorf("please set et dcphy id")
@@ -247,10 +255,11 @@ func (c *Client) ListEtDcphyDetail(dcphyId string) (*EtDcphyDetail, error) {
 // CreateEtChannel - create an Et channel with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create an eip
+//   - args: the arguments to create an eip
+//
 // RETURNS:
-//     - CreateEipResult: the result of create EIP, contains new EIP's address
-//     - error: nil if success otherwise the specific error
+//   - CreateEipResult: the result of create EIP, contains new EIP's address
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateEtChannel(args *CreateEtChannelArgs) (*CreateEtChannelResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("please set create etChannel argments")
@@ -360,4 +369,44 @@ func (c *Client) DeleteEtChannelRouteRule(args *DeleteEtChannelRouteRuleArgs) er
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		Do()
 
+}
+
+// AssociateEtChannel - associate a specified EtChannel with the specified etChannelId
+//
+// PARAMS:
+//   - args: the arguments to associate EtChannel
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) AssociateEtChannel(args *AssociateEtChannelArgs) error {
+	if args == nil {
+		return fmt.Errorf("the associateEtChannelArgs cannot be nil")
+	}
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForEtChannelId(args.EtId, args.EtChannelId)).
+		WithMethod(http.PUT).
+		WithBody(args).
+		WithQueryParam("associate", "").
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
+}
+
+// DisAssociateEtChannel - disassociate a specified EtChannel with the specified etChannelId
+//
+// PARAMS:
+//   - args: the arguments to disassociate EtChannel
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) DisAssociateEtChannel(args *DisAssociateEtChannelArgs) error {
+	if args == nil {
+		return fmt.Errorf("the associateEtChannelArgs cannot be nil")
+	}
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForEtChannelId(args.EtId, args.EtChannelId)).
+		WithMethod(http.PUT).
+		WithBody(args).
+		WithQueryParam("disassociate", "").
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
 }
