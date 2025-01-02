@@ -2,6 +2,7 @@ package vpnexamples
 
 import (
 	"fmt"
+
 	"github.com/baidubce/bce-sdk-go/model"
 
 	"github.com/baidubce/bce-sdk-go/services/vpn"

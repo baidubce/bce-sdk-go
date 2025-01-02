@@ -27,10 +27,11 @@ import (
 // CreatePeerConn - create a new peer connection with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to create peer connection
+//   - args: the arguments to create peer connection
+//
 // RETURNS:
-//     - *CreatePeerConnResult: the id of peer connection newly created
-//     - error: nil if success otherwise the specific error
+//   - *CreatePeerConnResult: the id of peer connection newly created
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreatePeerConn(args *CreatePeerConnArgs) (*CreatePeerConnResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("The createPeerConnArgs cannot be nil.")
@@ -51,10 +52,11 @@ func (c *Client) CreatePeerConn(args *CreatePeerConnArgs) (*CreatePeerConnResult
 // ListPeerConn - list all peer connections with the specific parameters
 //
 // PARAMS:
-//     - args: the arguments to list peer connections
+//   - args: the arguments to list peer connections
+//
 // RETURNS:
-//     - *ListPeerConnsResult: the result of the peer connection list
-//     - error: nil if success otherwise the specific error
+//   - *ListPeerConnsResult: the result of the peer connection list
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListPeerConn(args *ListPeerConnsArgs) (*ListPeerConnsResult, error) {
 	if args == nil {
 		args = &ListPeerConnsArgs{}
@@ -79,11 +81,12 @@ func (c *Client) ListPeerConn(args *ListPeerConnsArgs) (*ListPeerConnsResult, er
 // GetPeerConnDetail - get details for the specific peer connection
 //
 // PARAMS:
-//     - peerConnId: the id of the specific peer connection
-//     - role: the role of the specific peer connection, which can be initiator or acceptor
+//   - peerConnId: the id of the specific peer connection
+//   - role: the role of the specific peer connection, which can be initiator or acceptor
+//
 // RETURNS:
-//     - *PeerConn: the result of the specfic peer connection details
-//     - error: nil if success otherwise the specific error
+//   - *PeerConn: the result of the specfic peer connection details
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetPeerConnDetail(peerConnId string, role PeerConnRoleType) (*PeerConn, error) {
 	result := &PeerConn{}
 	err := bce.NewRequestBuilder(c).
@@ -99,10 +102,11 @@ func (c *Client) GetPeerConnDetail(peerConnId string, role PeerConnRoleType) (*P
 // UpdatePeerConn - update the specific peer connection
 //
 // PARAMS:
-//     - peerConnId: the id of the specific peer connection
-//     - args: the arguments to update the specific peer connection
+//   - peerConnId: the id of the specific peer connection
+//   - args: the arguments to update the specific peer connection
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdatePeerConn(peerConnId string, args *UpdatePeerConnArgs) error {
 	if args == nil {
 		return fmt.Errorf("The updatePeerConnArgs cannot be nil.")
@@ -118,10 +122,11 @@ func (c *Client) UpdatePeerConn(peerConnId string, args *UpdatePeerConnArgs) err
 // AcceptPeerConnApply - accept the specific peer connection
 //
 // PARAMS:
-//     - peerConnId: the id of the specific peer connection
-//     - clientToken: the idempotent token
+//   - peerConnId: the id of the specific peer connection
+//   - clientToken: the idempotent token
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) AcceptPeerConnApply(peerConnId, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForPeerConnId(peerConnId)).
@@ -134,10 +139,11 @@ func (c *Client) AcceptPeerConnApply(peerConnId, clientToken string) error {
 // RejectPeerConnApply - reject the specific peer connection
 //
 // PARAMS:
-//     - peerConnId: the id of the specific peer connection
-//     - clientToken: the idempotent token
+//   - peerConnId: the id of the specific peer connection
+//   - clientToken: the idempotent token
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RejectPeerConnApply(peerConnId, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForPeerConnId(peerConnId)).
@@ -150,10 +156,11 @@ func (c *Client) RejectPeerConnApply(peerConnId, clientToken string) error {
 // DeletePeerConn - delete the specific peer connection
 //
 // PARAMS:
-//     - peerConnId: the id of the specific peer connection
-//     - clientToken: the idempotent token
+//   - peerConnId: the id of the specific peer connection
+//   - clientToken: the idempotent token
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeletePeerConn(peerConnId, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForPeerConnId(peerConnId)).
@@ -165,10 +172,11 @@ func (c *Client) DeletePeerConn(peerConnId, clientToken string) error {
 // ResizePeerConn - resize the specific peer connection
 //
 // PARAMS:
-//     - peerConnId: the id of the specific peer connection
-//     - args: the arguments to resize the peer connection
+//   - peerConnId: the id of the specific peer connection
+//   - args: the arguments to resize the peer connection
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ResizePeerConn(peerConnId string, args *ResizePeerConnArgs) error {
 	if args == nil {
 		return fmt.Errorf("The resizePeerConnArgs cannot be nil.")
@@ -186,10 +194,11 @@ func (c *Client) ResizePeerConn(peerConnId string, args *ResizePeerConnArgs) err
 // RenewPeerConn - renew the specific peer connection
 //
 // PARAMS:
-//     - peerConnId: the id of the specific peer connection
-//     - args: the arguments to renew the peer connection
+//   - peerConnId: the id of the specific peer connection
+//   - args: the arguments to renew the peer connection
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) RenewPeerConn(peerConnId string, args *RenewPeerConnArgs) error {
 	if args == nil {
 		return fmt.Errorf("The renewPeerConnArgs cannot be nil.")
@@ -207,10 +216,11 @@ func (c *Client) RenewPeerConn(peerConnId string, args *RenewPeerConnArgs) error
 // OpenPeerConnSyncDNS - open the dns synchronization for the given peer connection
 //
 // PARAMS:
-//     - peerConnId: the id of the specific peer connection
-//     - args: the arguments to open dns synchronization
+//   - peerConnId: the id of the specific peer connection
+//   - args: the arguments to open dns synchronization
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) OpenPeerConnSyncDNS(peerConnId string, args *PeerConnSyncDNSArgs) error {
 	if args == nil {
 		return fmt.Errorf("The peerConnSyncDNS cannot be nil.")
@@ -229,10 +239,11 @@ func (c *Client) OpenPeerConnSyncDNS(peerConnId string, args *PeerConnSyncDNSArg
 // ClosePeerConnSyncDNS - close the dns synchronization for the given peer connection
 //
 // PARAMS:
-//     - peerConnId: the id of the specific peer connection
-//     - args: the arguments to close dns synchronization
+//   - peerConnId: the id of the specific peer connection
+//   - args: the arguments to close dns synchronization
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) ClosePeerConnSyncDNS(peerConnId string, args *PeerConnSyncDNSArgs) error {
 	if args == nil {
 		return fmt.Errorf("The peerConnSyncDNS cannot be nil.")
@@ -244,5 +255,26 @@ func (c *Client) ClosePeerConnSyncDNS(peerConnId string, args *PeerConnSyncDNSAr
 		WithQueryParam("close", "").
 		WithQueryParamFilter("role", string(args.Role)).
 		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
+}
+
+// UpdatePeerConnDeleteProtect - update the delete protect for the given peer connection
+//
+// PARAMS:
+//   - peerConnId: the id of the specific peer connection
+//   - args: the arguments to update delete protect
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) UpdatePeerConnDeleteProtect(peerConnId string, args *UpdatePeerConnDeleteProtectArgs) error {
+	if args == nil {
+		return fmt.Errorf("The updatePeerConnDeleteProtect cannot be nil.")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForPeerConnDeleteProtect(peerConnId)).
+		WithMethod(http.PUT).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithBody(args).
 		Do()
 }

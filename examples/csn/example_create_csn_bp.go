@@ -3,6 +3,7 @@ package csnexamples
 import (
 	"fmt"
 
+	"github.com/baidubce/bce-sdk-go/model"
 	"github.com/baidubce/bce-sdk-go/services/csn"
 	"github.com/baidubce/bce-sdk-go/util"
 )
@@ -25,6 +26,12 @@ func CreateCsnBp() {
 			Reservation: &csn.Reservation{ // 保留信息，支付方式为后支付时不需要设置，预支付时必须设置
 				ReservationLength:   1,       // 时长，[1,2,3,4,5,6,7,8,9,12,24,36]
 				ReservationTimeUnit: "month", // 时间单位，当前仅支持按月，取值month
+			},
+		},
+		Tags: []model.TagModel{ // 带宽包的标签列表
+			{
+				TagKey:   "tagKey1",
+				TagValue: "tagValue1",
 			},
 		},
 	}

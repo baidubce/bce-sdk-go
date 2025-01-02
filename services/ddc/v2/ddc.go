@@ -131,6 +131,7 @@ func (c *DDCClient) CreateRds(args *CreateRdsArgs) (*CreateResult, error) {
 			Category:             args.Category,
 			SyncMode:             strings.ToLower(args.SyncMode),
 			InitialDataReference: args.InitialDataReference,
+			Parameters:           args.Parameters,
 		},
 	}
 
@@ -1051,6 +1052,31 @@ func (c *DDCClient) UpdateParameter(instanceId string, args *UpdateParameterArgs
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.PUT).
 		WithURL(getDdcUriWithInstanceIdV2(instanceId)+"/parameter"+"/modify").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// BatchUpdateParameterForMultipleInstance - Batch modify parameters for multiple instances
+// Only supports instances within the same region
+//
+// PARAMS:
+//   - Args: *BatchUpdateParameterForMultipleInstanceArgs
+//
+// RETURNS:
+//   - *BatchUpdateParameterForMultipleInstanceResponse:
+//     the result of modifying parameters, including the reason for the failure if it fails
+//   - error: nil if success otherwise the specific error
+func (c *DDCClient) BatchUpdateParameterForMultipleInstance(args *BatchUpdateParameterForMultipleInstanceArgs) (
+	*BatchUpdateParameterForMultipleInstanceResponse, error) {
+
+	result := &BatchUpdateParameterForMultipleInstanceResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getBatchUpdateParameterForMultipleInstanceUrl()).
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		WithResult(result).

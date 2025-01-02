@@ -716,6 +716,7 @@ type PeerConn struct {
 	CreatedTime     string             `json:"createdTime"`
 	ExpiredTime     string             `json:"expiredTime"`
 	Tags            []model.TagModel   `json:"tags"`
+	DeleteProtect   bool               `json:"deleteProtect"`
 }
 
 // UpdatePeerConnArgs defines the structure of the input parameters for the UpdatePeerConn api
@@ -741,6 +742,11 @@ type RenewPeerConnArgs struct {
 type PeerConnSyncDNSArgs struct {
 	Role        PeerConnRoleType `json:"role"`
 	ClientToken string           `json:"-"`
+}
+
+type UpdatePeerConnDeleteProtectArgs struct {
+	DeleteProtect bool   `json:"deleteProtect"`
+	ClientToken   string `json:"-"`
 }
 
 /*
@@ -846,6 +852,7 @@ type Probe struct {
 	SourceIpNum int      `json:"sourceIpNum,omitempty"`
 	Description string   `json:"description,omitempty"`
 	Payload     string   `json:"payload,omitempty"`
+	Status      string   `json:"status"`
 }
 
 type ListProbesResult struct {

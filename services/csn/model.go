@@ -14,6 +14,10 @@
 
 package csn
 
+import (
+	"github.com/baidubce/bce-sdk-go/model"
+)
+
 type AttachInstanceRequest struct {
 	InstanceType      string  `json:"instanceType"`
 	InstanceId        string  `json:"instanceId"`
@@ -23,6 +27,7 @@ type AttachInstanceRequest struct {
 
 type Billing struct {
 	PaymentTiming string       `json:"paymentTiming"`
+	BillingMethod string       `json:"billingMethod,omitempty"`
 	Reservation   *Reservation `json:"reservation,omitempty"`
 }
 
@@ -42,12 +47,13 @@ type CreateCsnBpLimitRequest struct {
 }
 
 type CreateCsnBpRequest struct {
-	Name          string  `json:"name"`
-	InterworkType *string `json:"interworkType,omitempty"`
-	Bandwidth     int32   `json:"bandwidth"`
-	GeographicA   string  `json:"geographicA"`
-	GeographicB   string  `json:"geographicB"`
-	Billing       Billing `json:"billing"`
+	Name          string           `json:"name"`
+	InterworkType *string          `json:"interworkType,omitempty"`
+	Bandwidth     int32            `json:"bandwidth"`
+	GeographicA   string           `json:"geographicA"`
+	GeographicB   string           `json:"geographicB"`
+	Billing       Billing          `json:"billing"`
+	Tags          []model.TagModel `json:"tags,omitempty"`
 }
 
 type CreateCsnBpResponse struct {
@@ -55,8 +61,9 @@ type CreateCsnBpResponse struct {
 }
 
 type CreateCsnRequest struct {
-	Name        string  `json:"name"`
-	Description *string `json:"description,omitempty"`
+	Name        string           `json:"name"`
+	Description *string          `json:"description,omitempty"`
+	Tags        []model.TagModel `json:"tags,omitempty"`
 }
 
 type CreateCsnResponse struct {
@@ -75,26 +82,28 @@ type CreateRouteRuleRequest struct {
 }
 
 type Csn struct {
-	CsnId       string `json:"csnId"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Status      string `json:"status"`
-	InstanceNum int32  `json:"instanceNum"`
-	CsnBpNum    int32  `json:"csnBpNum"`
+	CsnId       string           `json:"csnId"`
+	Name        string           `json:"name"`
+	Description string           `json:"description"`
+	Status      string           `json:"status"`
+	InstanceNum int32            `json:"instanceNum"`
+	CsnBpNum    int32            `json:"csnBpNum"`
+	Tags        []model.TagModel `json:"tags"`
 }
 
 type CsnBp struct {
-	CsnBpId         string `json:"csnBpId"`
-	Name            string `json:"name"`
-	Bandwidth       int32  `json:"bandwidth"`
-	UsedBandwidth   int32  `json:"usedBandwidth"`
-	CsnId           string `json:"csnId"`
-	InterworkType   string `json:"interworkType"`
-	InterworkRegion string `json:"interworkRegion"`
-	Status          string `json:"status"`
-	PaymentTiming   string `json:"paymentTiming"`
-	ExpireTime      string `json:"expireTime"`
-	CreatedTime     string `json:"createdTime"`
+	CsnBpId         string           `json:"csnBpId"`
+	Name            string           `json:"name"`
+	Bandwidth       int32            `json:"bandwidth"`
+	UsedBandwidth   int32            `json:"usedBandwidth"`
+	CsnId           string           `json:"csnId"`
+	InterworkType   string           `json:"interworkType"`
+	InterworkRegion string           `json:"interworkRegion"`
+	Status          string           `json:"status"`
+	PaymentTiming   string           `json:"paymentTiming"`
+	ExpireTime      string           `json:"expireTime"`
+	CreatedTime     string           `json:"createdTime"`
+	Tags            []model.TagModel `json:"tags"`
 }
 
 type CsnBpLimit struct {
@@ -164,26 +173,40 @@ type DetachInstanceRequest struct {
 }
 
 type GetCsnResponse struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	CsnId       string `json:"csnId"`
-	Status      string `json:"status"`
-	InstanceNum int32  `json:"instanceNum"`
-	CsnBpNum    int32  `json:"csnBpNum"`
+	Name        string           `json:"name"`
+	Description string           `json:"description"`
+	CsnId       string           `json:"csnId"`
+	Status      string           `json:"status"`
+	InstanceNum int32            `json:"instanceNum"`
+	CsnBpNum    int32            `json:"csnBpNum"`
+	Tags        []model.TagModel `json:"tags"`
 }
 
 type GetCsnBpResponse struct {
-	CsnBpId         string `json:"csnBpId"`
-	Name            string `json:"name"`
-	Bandwidth       int32  `json:"bandwidth"`
-	UsedBandwidth   int32  `json:"usedBandwidth"`
-	CsnId           string `json:"csnId"`
-	InterworkType   string `json:"interworkType"`
-	InterworkRegion string `json:"interworkRegion"`
-	Status          string `json:"status"`
-	PaymentTiming   string `json:"paymentTiming"`
-	ExpireTime      string `json:"expireTime"`
-	CreatedTime     string `json:"createdTime"`
+	CsnBpId         string           `json:"csnBpId"`
+	Name            string           `json:"name"`
+	Bandwidth       int32            `json:"bandwidth"`
+	UsedBandwidth   int32            `json:"usedBandwidth"`
+	CsnId           string           `json:"csnId"`
+	InterworkType   string           `json:"interworkType"`
+	InterworkRegion string           `json:"interworkRegion"`
+	Status          string           `json:"status"`
+	PaymentTiming   string           `json:"paymentTiming"`
+	ExpireTime      string           `json:"expireTime"`
+	CreatedTime     string           `json:"createdTime"`
+	Tags            []model.TagModel `json:"tags"`
+}
+
+type GetCsnBpPriceRequest struct {
+	Name        string  `json:"name"`
+	Bandwidth   int32   `json:"bandwidth,omitempty"`
+	GeographicA string  `json:"geographicA"`
+	GeographicB string  `json:"geographicB"`
+	Billing     Billing `json:"billing"`
+}
+
+type GetCsnBpPriceResponse struct {
+	Price string `json:"price"`
 }
 
 type Instance struct {

@@ -68,3 +68,7 @@ func getURLForSslVpnServerByVpnId(vpnId string) string {
 func getURLForSslVpnUserByVpnId(vpnId string) string {
 	return getURLForVPNId(vpnId) + "/sslVpnUser"
 }
+
+func getURLForVpnDeleteProtect(vpnId string) string {
+	return getURLForVPNId(vpnId) + "/deleteProtect"
+}

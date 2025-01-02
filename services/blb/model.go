@@ -102,6 +102,28 @@ type RefundLoadBalancerArgs struct {
 	ClientToken string `json:"-"`
 }
 
+type ResizeLoadBalancerArgs struct {
+	ClientToken      string `json:"-"`
+	PerformanceLevel string `json:"performanceLevel,omitempty"`
+}
+
+type ChangeToPostpaidArgs struct {
+	ClientToken      string `json:"-"`
+	BillingMethod    string `json:"billingMethod,omitempty"`
+	PerformanceLevel string `json:"performanceLevel,omitempty"`
+}
+
+type ChangeToPrepaidArgs struct {
+	ClientToken       string `json:"-"`
+	BillingMethod     string `json:"billingMethod,omitempty"`
+	PerformanceLevel  string `json:"performanceLevel,omitempty"`
+	ReservationLength int    `json:"reservationLength,omitempty"`
+}
+
+type OrderIdResult struct {
+	OrderId string `json:"orderId"`
+}
+
 type DescribeLoadBalancersArgs struct {
 	Address      string
 	Name         string
@@ -227,33 +249,34 @@ type CreateHTTPListenerArgs struct {
 }
 
 type CreateHTTPSListenerArgs struct {
-	ClientToken                string   `json:"-"`
-	ListenerPort               uint16   `json:"listenerPort"`
-	BackendPort                uint16   `json:"backendPort"`
-	Scheduler                  string   `json:"scheduler"`
-	CertIds                    []string `json:"certIds"`
-	KeepSession                *bool    `json:"keepSession,omitempty"`
-	KeepSessionType            string   `json:"keepSessionType,omitempty"`
-	KeepSessionDuration        int      `json:"keepSessionDuration,omitempty"`
-	KeepSessionCookieName      string   `json:"keepSessionCookieName,omitempty"`
-	XForwardedFor              *bool    `json:"xForwardFor,omitempty"`
-	XForwardedProto            *bool    `json:"xForwardedProto,omitempty"`
-	HealthCheckType            string   `json:"healthCheckType,omitempty"`
-	HealthCheckPort            uint16   `json:"healthCheckPort,omitempty"`
-	HealthCheckURI             string   `json:"healthCheckURI,omitempty"`
-	HealthCheckTimeoutInSecond int      `json:"healthCheckTimeoutInSecond,omitempty"`
-	HealthCheckInterval        int      `json:"healthCheckInterval,omitempty"`
-	UnhealthyThreshold         int      `json:"unhealthyThreshold,omitempty"`
-	HealthyThreshold           int      `json:"healthyThreshold,omitempty"`
-	HealthCheckNormalStatus    string   `json:"healthCheckNormalStatus,omitempty"`
-	HealthCheckHost            string   `json:"healthCheckHost,omitempty"`
-	ServerTimeout              int      `json:"serverTimeout,omitempty"`
-	RedirectPort               uint16   `json:"redirectPort,omitempty"`
-	EncryptionType             string   `json:"encryptionType,omitempty"`
-	EncryptionProtocols        []string `json:"encryptionProtocols,omitempty"`
-	AppliedCiphers             string   `json:"appliedCiphers,omitempty"`
-	DualAuth                   *bool    `json:"dualAuth,omitempty"`
-	ClientCertIds              []string `json:"clientCertIds,omitempty"`
+	ClientToken                string                       `json:"-"`
+	ListenerPort               uint16                       `json:"listenerPort"`
+	BackendPort                uint16                       `json:"backendPort"`
+	Scheduler                  string                       `json:"scheduler"`
+	CertIds                    []string                     `json:"certIds"`
+	AdditionalCertDomains      []AdditionalCertDomainsModel `json:"additionalCertDomains,omitempty"`
+	KeepSession                *bool                        `json:"keepSession,omitempty"`
+	KeepSessionType            string                       `json:"keepSessionType,omitempty"`
+	KeepSessionDuration        int                          `json:"keepSessionDuration,omitempty"`
+	KeepSessionCookieName      string                       `json:"keepSessionCookieName,omitempty"`
+	XForwardedFor              *bool                        `json:"xForwardFor,omitempty"`
+	XForwardedProto            *bool                        `json:"xForwardedProto,omitempty"`
+	HealthCheckType            string                       `json:"healthCheckType,omitempty"`
+	HealthCheckPort            uint16                       `json:"healthCheckPort,omitempty"`
+	HealthCheckURI             string                       `json:"healthCheckURI,omitempty"`
+	HealthCheckTimeoutInSecond int                          `json:"healthCheckTimeoutInSecond,omitempty"`
+	HealthCheckInterval        int                          `json:"healthCheckInterval,omitempty"`
+	UnhealthyThreshold         int                          `json:"unhealthyThreshold,omitempty"`
+	HealthyThreshold           int                          `json:"healthyThreshold,omitempty"`
+	HealthCheckNormalStatus    string                       `json:"healthCheckNormalStatus,omitempty"`
+	HealthCheckHost            string                       `json:"healthCheckHost,omitempty"`
+	ServerTimeout              int                          `json:"serverTimeout,omitempty"`
+	RedirectPort               uint16                       `json:"redirectPort,omitempty"`
+	EncryptionType             string                       `json:"encryptionType,omitempty"`
+	EncryptionProtocols        []string                     `json:"encryptionProtocols,omitempty"`
+	AppliedCiphers             string                       `json:"appliedCiphers,omitempty"`
+	DualAuth                   *bool                        `json:"dualAuth,omitempty"`
+	ClientCertIds              []string                     `json:"clientCertIds,omitempty"`
 }
 
 type CreateSSLListenerArgs struct {
@@ -330,30 +353,31 @@ type UpdateHTTPListenerArgs struct {
 }
 
 type UpdateHTTPSListenerArgs struct {
-	ClientToken                string   `json:"-"`
-	ListenerPort               uint16   `json:"listenerPort"`
-	BackendPort                uint16   `json:"backendPort,omitempty"`
-	Scheduler                  string   `json:"scheduler,omitempty"`
-	KeepSession                *bool    `json:"keepSession,omitempty"`
-	KeepSessionType            string   `json:"keepSessionType,omitempty"`
-	KeepSessionDuration        int      `json:"keepSessionDuration,omitempty"`
-	KeepSessionCookieName      string   `json:"keepSessionCookieName,omitempty"`
-	XForwardedFor              *bool    `json:"xForwardFor,omitempty"`
-	XForwardedProto            *bool    `json:"xForwardedProto,omitempty"`
-	HealthCheckType            string   `json:"healthCheckType,omitempty"`
-	HealthCheckPort            uint16   `json:"healthCheckPort,omitempty"`
-	HealthCheckURI             string   `json:"healthCheckURI,omitempty"`
-	HealthCheckTimeoutInSecond int      `json:"healthCheckTimeoutInSecond,omitempty"`
-	HealthCheckInterval        int      `json:"healthCheckInterval,omitempty"`
-	UnhealthyThreshold         int      `json:"unhealthyThreshold,omitempty"`
-	HealthyThreshold           int      `json:"healthyThreshold,omitempty"`
-	HealthCheckNormalStatus    string   `json:"healthCheckNormalStatus,omitempty"`
-	HealthCheckHost            string   `json:"healthCheckHost,omitempty"`
-	ServerTimeout              int      `json:"serverTimeout,omitempty"`
-	CertIds                    []string `json:"certIds,omitempty"`
-	EncryptionType             string   `json:"encryptionType,omitempty"`
-	EncryptionProtocols        []string `json:"encryptionProtocols,omitempty"`
-	AppliedCiphers             string   `json:"appliedCiphers,omitempty"`
+	ClientToken                string                       `json:"-"`
+	ListenerPort               uint16                       `json:"listenerPort"`
+	BackendPort                uint16                       `json:"backendPort,omitempty"`
+	Scheduler                  string                       `json:"scheduler,omitempty"`
+	KeepSession                *bool                        `json:"keepSession,omitempty"`
+	KeepSessionType            string                       `json:"keepSessionType,omitempty"`
+	KeepSessionDuration        int                          `json:"keepSessionDuration,omitempty"`
+	KeepSessionCookieName      string                       `json:"keepSessionCookieName,omitempty"`
+	XForwardedFor              *bool                        `json:"xForwardFor,omitempty"`
+	XForwardedProto            *bool                        `json:"xForwardedProto,omitempty"`
+	HealthCheckType            string                       `json:"healthCheckType,omitempty"`
+	HealthCheckPort            uint16                       `json:"healthCheckPort,omitempty"`
+	HealthCheckURI             string                       `json:"healthCheckURI,omitempty"`
+	HealthCheckTimeoutInSecond int                          `json:"healthCheckTimeoutInSecond,omitempty"`
+	HealthCheckInterval        int                          `json:"healthCheckInterval,omitempty"`
+	UnhealthyThreshold         int                          `json:"unhealthyThreshold,omitempty"`
+	HealthyThreshold           int                          `json:"healthyThreshold,omitempty"`
+	HealthCheckNormalStatus    string                       `json:"healthCheckNormalStatus,omitempty"`
+	HealthCheckHost            string                       `json:"healthCheckHost,omitempty"`
+	ServerTimeout              int                          `json:"serverTimeout,omitempty"`
+	CertIds                    []string                     `json:"certIds,omitempty"`
+	AdditionalCertDomains      []AdditionalCertDomainsModel `json:"additionalCertDomains"`
+	EncryptionType             string                       `json:"encryptionType,omitempty"`
+	EncryptionProtocols        []string                     `json:"encryptionProtocols,omitempty"`
+	AppliedCiphers             string                       `json:"appliedCiphers,omitempty"`
 }
 
 type UpdateSSLListenerArgs struct {
@@ -423,32 +447,33 @@ type HTTPListenerModel struct {
 }
 
 type HTTPSListenerModel struct {
-	ListenerPort               uint16   `json:"listenerPort"`
-	BackendPort                uint16   `json:"backendPort"`
-	Scheduler                  string   `json:"scheduler"`
-	KeepSession                bool     `json:"keepSession"`
-	KeepSessionType            string   `json:"keepSessionType"`
-	KeepSessionDuration        int      `json:"keepSessionDuration"`
-	KeepSessionCookieName      string   `json:"keepSessionCookieName"`
-	XForwardedFor              bool     `json:"xForwardFor"`
-	XForwardedProto            bool     `json:"xForwardedProto"`
-	HealthCheckType            string   `json:"healthCheckType"`
-	HealthCheckPort            uint16   `json:"healthCheckPort"`
-	HealthCheckURI             string   `json:"healthCheckURI"`
-	HealthCheckTimeoutInSecond int      `json:"healthCheckTimeoutInSecond"`
-	HealthCheckInterval        int      `json:"healthCheckInterval"`
-	UnhealthyThreshold         int      `json:"unhealthyThreshold"`
-	HealthyThreshold           int      `json:"healthyThreshold"`
-	GetBlbIp                   bool     `json:"getBlbIp"`
-	HealthCheckNormalStatus    string   `json:"healthCheckNormalStatus"`
-	HealthCheckHost            string   `json:"healthCheckHost"`
-	ServerTimeout              int      `json:"serverTimeout"`
-	CertIds                    []string `json:"certIds"`
-	DualAuth                   bool     `json:"dualAuth"`
-	ClientCertIds              []string `json:"clientCertIds"`
-	EncryptionType             string   `json:"encryptionType"`
-	EncryptionProtocols        []string `json:"encryptionProtocols"`
-	AppliedCiphers             string   `json:"appliedCiphers"`
+	ListenerPort               uint16                       `json:"listenerPort"`
+	BackendPort                uint16                       `json:"backendPort"`
+	Scheduler                  string                       `json:"scheduler"`
+	KeepSession                bool                         `json:"keepSession"`
+	KeepSessionType            string                       `json:"keepSessionType"`
+	KeepSessionDuration        int                          `json:"keepSessionDuration"`
+	KeepSessionCookieName      string                       `json:"keepSessionCookieName"`
+	XForwardedFor              bool                         `json:"xForwardFor"`
+	XForwardedProto            bool                         `json:"xForwardedProto"`
+	HealthCheckType            string                       `json:"healthCheckType"`
+	HealthCheckPort            uint16                       `json:"healthCheckPort"`
+	HealthCheckURI             string                       `json:"healthCheckURI"`
+	HealthCheckTimeoutInSecond int                          `json:"healthCheckTimeoutInSecond"`
+	HealthCheckInterval        int                          `json:"healthCheckInterval"`
+	UnhealthyThreshold         int                          `json:"unhealthyThreshold"`
+	HealthyThreshold           int                          `json:"healthyThreshold"`
+	GetBlbIp                   bool                         `json:"getBlbIp"`
+	HealthCheckNormalStatus    string                       `json:"healthCheckNormalStatus"`
+	HealthCheckHost            string                       `json:"healthCheckHost"`
+	ServerTimeout              int                          `json:"serverTimeout"`
+	CertIds                    []string                     `json:"certIds"`
+	AdditionalCertDomains      []AdditionalCertDomainsModel `json:"additionalCertDomains"`
+	DualAuth                   bool                         `json:"dualAuth"`
+	ClientCertIds              []string                     `json:"clientCertIds"`
+	EncryptionType             string                       `json:"encryptionType"`
+	EncryptionProtocols        []string                     `json:"encryptionProtocols"`
+	AppliedCiphers             string                       `json:"appliedCiphers"`
 }
 
 type SSLListenerModel struct {
@@ -470,37 +495,38 @@ type SSLListenerModel struct {
 }
 
 type AllListenerModel struct {
-	ListenerPort               uint16   `json:"listenerPort"`
-	ListenerType               string   `json:"listenerType"`
-	BackendPort                uint16   `json:"backendPort"`
-	Scheduler                  string   `json:"scheduler"`
-	GetBlbIp                   bool     `json:"getBlbIp"`
-	TcpSessionTimeout          int      `json:"tcpSessionTimeout"`
-	UdpSessionTimeout          int      `json:"udpSessionTimeout"`
-	HealthCheckString          string   `json:"healthCheckString"`
-	KeepSession                bool     `json:"keepSession"`
-	KeepSessionType            string   `json:"keepSessionType"`
-	KeepSessionDuration        int      `json:"keepSessionDuration"`
-	KeepSessionCookieName      string   `json:"keepSessionCookieName"`
-	XForwardedFor              bool     `json:"xForwardFor"`
-	XForwardedProto            bool     `json:"xForwardedProto"`
-	HealthCheckType            string   `json:"healthCheckType"`
-	HealthCheckPort            uint16   `json:"healthCheckPort"`
-	HealthCheckURI             string   `json:"healthCheckURI"`
-	HealthCheckTimeoutInSecond int      `json:"healthCheckTimeoutInSecond"`
-	HealthCheckInterval        int      `json:"healthCheckInterval"`
-	UnhealthyThreshold         int      `json:"unhealthyThreshold"`
-	HealthyThreshold           int      `json:"healthyThreshold"`
-	HealthCheckNormalStatus    string   `json:"healthCheckNormalStatus"`
-	HealthCheckHost            string   `json:"healthCheckHost"`
-	ServerTimeout              int      `json:"serverTimeout"`
-	RedirectPort               int      `json:"redirectPort"`
-	CertIds                    []string `json:"certIds"`
-	DualAuth                   bool     `json:"dualAuth"`
-	ClientCertIds              []string `json:"clientCertIds"`
-	EncryptionType             string   `json:"encryptionType"`
-	EncryptionProtocols        []string `json:"encryptionProtocols"`
-	AppliedCiphers             string   `json:"appliedCiphers"`
+	ListenerPort               uint16                       `json:"listenerPort"`
+	ListenerType               string                       `json:"listenerType"`
+	BackendPort                uint16                       `json:"backendPort"`
+	Scheduler                  string                       `json:"scheduler"`
+	GetBlbIp                   bool                         `json:"getBlbIp"`
+	TcpSessionTimeout          int                          `json:"tcpSessionTimeout"`
+	UdpSessionTimeout          int                          `json:"udpSessionTimeout"`
+	HealthCheckString          string                       `json:"healthCheckString"`
+	KeepSession                bool                         `json:"keepSession"`
+	KeepSessionType            string                       `json:"keepSessionType"`
+	KeepSessionDuration        int                          `json:"keepSessionDuration"`
+	KeepSessionCookieName      string                       `json:"keepSessionCookieName"`
+	XForwardedFor              bool                         `json:"xForwardFor"`
+	XForwardedProto            bool                         `json:"xForwardedProto"`
+	HealthCheckType            string                       `json:"healthCheckType"`
+	HealthCheckPort            uint16                       `json:"healthCheckPort"`
+	HealthCheckURI             string                       `json:"healthCheckURI"`
+	HealthCheckTimeoutInSecond int                          `json:"healthCheckTimeoutInSecond"`
+	HealthCheckInterval        int                          `json:"healthCheckInterval"`
+	UnhealthyThreshold         int                          `json:"unhealthyThreshold"`
+	HealthyThreshold           int                          `json:"healthyThreshold"`
+	HealthCheckNormalStatus    string                       `json:"healthCheckNormalStatus"`
+	HealthCheckHost            string                       `json:"healthCheckHost"`
+	ServerTimeout              int                          `json:"serverTimeout"`
+	RedirectPort               int                          `json:"redirectPort"`
+	CertIds                    []string                     `json:"certIds"`
+	AdditionalCertDomains      []AdditionalCertDomainsModel `json:"additionalCertDomains"`
+	DualAuth                   bool                         `json:"dualAuth"`
+	ClientCertIds              []string                     `json:"clientCertIds"`
+	EncryptionType             string                       `json:"encryptionType"`
+	EncryptionProtocols        []string                     `json:"encryptionProtocols"`
+	AppliedCiphers             string                       `json:"appliedCiphers"`
 }
 
 type DescribeListenerArgs struct {
@@ -692,4 +718,9 @@ type BlbEnterpriseSecurityGroupRuleModel struct {
 	Protocol                      string `json:"protocol,omitempty"`
 	SourceIp                      string `json:"sourceIp,omitempty"`
 	DestIp                        string `json:"destIp,omitempty"`
+}
+
+type AdditionalCertDomainsModel struct {
+	CertId string `json:"certId"`
+	Host   string `json:"host"`
 }

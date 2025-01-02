@@ -498,6 +498,13 @@ args := &ddcrds.CreateRdsArgs{
         SnapshotId:    "1722452382843900406",
         Datetime:      "2021-10-01T01:23:45Z",
     },
+	// 设置参数，非必填。克隆实例时不支持修改参数。
+    Parameters: []ddcrds.KVParameter{
+        {
+            Name: "connect_timeout",
+            Value: "15",
+        },
+    },
 }
 // 创建DDC数据库专属集群产品，需要传入产品类型参数ddc
 result, err := client.CreateRds(args,"ddc")
@@ -2103,6 +2110,34 @@ if err != nil {
 fmt.Println("update parameter success.")
 ```
 
+## 多实例批量修改参数
+使用以下代码可以修改云数据库 DDC 的参数配置。不支持跨地域实例同时修改参数。
+```go
+// import ddcrds "github.com/baidubce/bce-sdk-go/services/ddc/v2"
+
+args := &ddcrds.BatchUpdateParameterForMultipleInstanceArgs{
+    InstanceIds: []string{"ddc-mrsdu813", "ddc-mb8wfjax"},
+	Parameters:  []ddcrds.KVParameter{
+		{		
+			Name: "connect_timeout",
+			Value: "15",
+		},
+	},
+    // 执行参数修改任务的方式,默认为0; 0 为立刻执行，1 为时间窗口执行，2 用户控制触发时机
+    WaitSwitch: 1,
+}
+
+result, err := DDCRDS_CLIENT.BatchUpdateParameterForMultipleInstance(args)
+if err != nil {
+    fmt.Printf("batch update parameter for multiple instance error: %+v\n", err)
+    return
+}
+fmt.Println("batch update parameter for multiple instance success, result: ", result.Result)
+for _, e := range result.Result {
+    fmt.Println("batch update parameter for multiple instance success", e)
+}
+```
+
 # 安全管理
 
 ## 白名单列表
@@ -2292,6 +2327,18 @@ for _, e := range resp.Backups {
     fmt.Println("ddc snapshotStatus: ", e.SnapshotStatus)
     fmt.Println("ddc snapshotStartTime: ", e.SnapshotStartTime)
     fmt.Println("ddc snapshotEndTime: ", e.SnapshotEndTime)
+    fmt.Println("ddc name: ", e.Name)
+    fmt.Println("ddc deleted: ", e.Deleted)
+    fmt.Println("ddc dataDateTime: ", e.DataDateTime)
+    fmt.Println("ddc storageType: ", e.StorageType)
+    fmt.Println("ddc backupCopyEnable: ", e.BackupCopyEnable)
+    fmt.Println("ddc gtid: ", e.Gtid)
+    fmt.Println("ddc type: ", e.Type)
+    fmt.Println("ddc compressEnable: ", e.CompressEnable)
+    fmt.Println("ddc compressType: ", e.CompressType)
+    fmt.Println("ddc encryptEnable: ", e.EncryptEnable)
+    fmt.Println("ddc encryptType: ", e.EncryptType)
+    fmt.Println("ddc encryptKey: ", e.EncryptKey)
 }
 
 // RDS
@@ -2366,6 +2413,11 @@ fmt.Println("ddc snapshotStartTime: ", resp.Snapshot.SnapshotStartTime)
 fmt.Println("ddc snapshotEndTime: ", resp.Snapshot.SnapshotEndTime)
 fmt.Println("ddc downloadUrl: ", resp.Snapshot.DownloadUrl)
 fmt.Println("ddc downloadExpires: ", resp.Snapshot.DownloadExpires)
+fmt.Println("ddc compressEnable: ", resp.Snapshot.CompressEnable)
+fmt.Println("ddc compressType: ", resp.Snapshot.CompressType)
+fmt.Println("ddc encryptEnable: ", resp.Snapshot.EncryptEnable)
+fmt.Println("ddc encryptType: ", resp.Snapshot.EncryptType)
+fmt.Println("ddc encryptKey: ", resp.Snapshot.EncryptKey)
 ```
 
 ## 设置备份策略
@@ -2413,6 +2465,11 @@ for _, e := range resp.Binlogs {
     fmt.Println("ddc binlogStatus: ", e.BinlogStatus)
     fmt.Println("ddc binlogStartTime: ", e.BinlogStartTime)
     fmt.Println("ddc binlogEndTime: ", e.BinlogEndTime)
+    fmt.Println("ddc compressEnable: ", e.CompressEnable)
+    fmt.Println("ddc compressType: ", e.CompressType)
+    fmt.Println("ddc encryptEnable: ", e.EncryptEnable)
+    fmt.Println("ddc encryptType: ", e.EncryptType)
+    fmt.Println("ddc encryptKey: ", e.EncryptKey)
 }
 ```
 
@@ -2435,6 +2492,11 @@ fmt.Println("ddc binlogStartTime: ", resp.Binlog.BinlogStartTime)
 fmt.Println("ddc binlogEndTime: ", resp.Binlog.BinlogEndTime)
 fmt.Println("ddc downloadUrl: ", resp.Binlog.DownloadUrl)
 fmt.Println("ddc downloadExpires: ", resp.Binlog.DownloadExpires)
+fmt.Println("ddc compressEnable: ", resp.Binlog.CompressEnable)
+fmt.Println("ddc compressType: ", resp.Binlog.CompressType)
+fmt.Println("ddc encryptEnable: ", resp.Binlog.EncryptEnable)
+fmt.Println("ddc encryptType: ", resp.Binlog.EncryptType)
+fmt.Println("ddc encryptKey: ", resp.Binlog.EncryptKey)
 ```
 
 # 日志管理

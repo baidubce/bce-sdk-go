@@ -18,7 +18,8 @@ import (
 )
 
 const (
-	URI_PREFIX = bce.URI_PREFIX + "api/cce/service/v2"
+	URI_PREFIX        = bce.URI_PREFIX + "api/cce/service/v2"
+	REMEDY_URI_PREFIX = bce.URI_PREFIX + "api/cce/remedy/v1"
 
 	DEFAULT_ENDPOINT = "cce." + bce.DEFAULT_REGION + ".baidubce.com"
 
@@ -74,7 +75,27 @@ const (
 
 	REQUEST_RBAC_URL = "/rbac"
 
+	REMEDY_RULE_URL = "/remedyrules"
+
+	CHECK_WEBHOOK_URL = "/webhook/check"
+
+	REMEDYATION_URL = "/remediation"
+
+	REMEDY_TASK_URL = "/remedytasks"
+
+	AUTH_REPAIR_URL = "/authRepair"
+
+	CONFIRM_REPAIR_URL = "/confirm"
+
+	REQUIREREPAIRAUTH_URL = "/requireRepairAuth"
+
 	REQUEST_FORBIDDELETE_URL = "/forbiddelete"
+
+	// backup
+	BACKUP_REPO_URL          = "/backuprepositorys"
+	BACKUP_Task_URL          = "/backuptasks"
+	BACKUP_Schedule_Task_URL = "/backupScheduleRules"
+	BACKUP_RESTORE_Task_URL  = "/restoreTasks"
 )
 
 var _ Interface = &Client{}
@@ -233,6 +254,79 @@ func genUpdateClusterCRDURI(clusterID string) string {
 
 func getRBACURI() string {
 	return URI_PREFIX + REQUEST_RBAC_URL
+}
+
+func remedyRuleURI(clusterID string) string {
+	return REMEDY_URI_PREFIX + REQUEST_CLUSTER_LIST_URL + "/" + clusterID + REMEDY_RULE_URL
+}
+
+func getRemedyRuleURI(clusterID, ruleID string) string {
+	return REMEDY_URI_PREFIX + REQUEST_CLUSTER_LIST_URL + "/" + clusterID + REMEDY_RULE_URL + "/" + ruleID
+}
+
+func getCheckWebhookAddressURI(clusterID string) string {
+	return REMEDY_URI_PREFIX + REQUEST_CLUSTER_LIST_URL + "/" + clusterID + REMEDY_RULE_URL + CHECK_WEBHOOK_URL
+}
+
+func getInstanceGroupRemediationURI(clusterID, instanceGroupID string) string {
+	return REMEDY_URI_PREFIX + REQUEST_CLUSTER_LIST_URL + "/" + clusterID + REQUEST_INSTANCEGROUP_LIST_URL + "/" + instanceGroupID + REMEDYATION_URL
+}
+
+func instanceGroupRemedyRuleURI(clusterID, instanceGroupID string) string {
+	return REMEDY_URI_PREFIX + REQUEST_CLUSTER_LIST_URL + "/" + clusterID + REQUEST_INSTANCEGROUP_LIST_URL + "/" + instanceGroupID + REMEDY_RULE_URL
+}
+
+func getInstanceGroupRemedyRuleURI(clusterID, instanceGroupID, ruleID string) string {
+	return REMEDY_URI_PREFIX + REQUEST_CLUSTER_LIST_URL + "/" + clusterID + REQUEST_INSTANCEGROUP_LIST_URL + "/" + instanceGroupID + REMEDY_RULE_URL + "/" + ruleID
+}
+
+func instanceGroupRemedyTaskURI(clusterID, instanceGroupID string) string {
+	return REMEDY_URI_PREFIX + REQUEST_CLUSTER_LIST_URL + "/" + clusterID + REQUEST_INSTANCEGROUP_LIST_URL + "/" + instanceGroupID + REMEDY_TASK_URL
+}
+
+func getInstanceGroupRemedyTaskURI(clusterID, instanceGroupID, ruleID string) string {
+	return REMEDY_URI_PREFIX + REQUEST_CLUSTER_LIST_URL + "/" + clusterID + REQUEST_INSTANCEGROUP_LIST_URL + "/" + instanceGroupID + REMEDY_TASK_URL + "/" + ruleID
+}
+
+func getInstanceGroupRemedyTaskAuthRepairURI(clusterID, instanceGroupID, ruleID string) string {
+	return REMEDY_URI_PREFIX + REQUEST_CLUSTER_LIST_URL + "/" + clusterID + REQUEST_INSTANCEGROUP_LIST_URL + "/" + instanceGroupID + REMEDY_TASK_URL + "/" + ruleID + AUTH_REPAIR_URL
+}
+
+func getInstanceGroupRemedyTaskConfirmURI(clusterID, instanceGroupID, ruleID string) string {
+	return REMEDY_URI_PREFIX + REQUEST_CLUSTER_LIST_URL + "/" + clusterID + REQUEST_INSTANCEGROUP_LIST_URL + "/" + instanceGroupID + REMEDY_TASK_URL + "/" + ruleID + CONFIRM_REPAIR_URL
+}
+
+func getInstanceGroupRemedyTaskRequestAuthURI(clusterID, instanceGroupID, ruleID string) string {
+	return REMEDY_URI_PREFIX + REQUEST_CLUSTER_LIST_URL + "/" + clusterID + REQUEST_INSTANCEGROUP_LIST_URL + "/" + instanceGroupID + REMEDY_TASK_URL + "/" + ruleID + REQUIREREPAIRAUTH_URL
+}
+
+// backup url
+func getBackupRepoURL(id string) string {
+	if id == "" {
+		return URI_PREFIX + BACKUP_REPO_URL
+	}
+	return URI_PREFIX + BACKUP_REPO_URL + "/" + id
+}
+
+func getBackupTaskURL(clusterID, taskID string) string {
+	if taskID == "" {
+		return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + BACKUP_Task_URL
+	}
+	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + BACKUP_Task_URL + "/" + taskID
+}
+
+func getScheduleBackupTaskURL(clusterID, taskID string) string {
+	if taskID == "" {
+		return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + BACKUP_Schedule_Task_URL
+	}
+	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + BACKUP_Schedule_Task_URL + "/" + taskID
+}
+
+func getRestoreBackupTaskURL(clusterID, taskID string) string {
+	if taskID == "" {
+		return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + BACKUP_RESTORE_Task_URL
+	}
+	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + BACKUP_RESTORE_Task_URL + "/" + taskID
 }
 
 func encodeUserScriptInInstanceSet(instancesSets []*InstanceSet) error {

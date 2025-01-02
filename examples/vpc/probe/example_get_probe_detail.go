@@ -29,4 +29,5 @@ func GetProbeDetail() {
 	fmt.Println("probe sourceIps: ", result.SourceIps)
 	fmt.Println("probe sourceIpNum: ", result.SourceIpNum)
 	fmt.Println("probe payload: ", result.Payload)
+	fmt.Println("probe status: ", result.Status)
 }

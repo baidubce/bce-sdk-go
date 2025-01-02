@@ -39,9 +39,13 @@ type CreateVpnGatewayArgs struct {
 	ClientToken     string           `json:"-"`
 	VpnName         string           `json:"vpnName"`
 	VpcId           string           `json:"vpcId"`
+	SubnetId        string           `json:"subnetId,omitempty"`
+	Type            string           `json:"type,omitempty"`
 	Description     string           `json:"description,omitempty"`
 	Eip             string           `json:"eip,omitempty"`
 	Billing         *Billing         `json:"billing"`
+	MaxConnection   int              `json:"maxConnection,omitempty"`
+	DeleteProtect   bool             `json:"deleteProtect,omitempty"`
 	ResourceGroupId string           `json:"resourceGroupId,omitempty"`
 	Tags            []model.TagModel `json:"tags,omitempty"`
 }
@@ -67,6 +71,7 @@ type ListVpnGatewayArgs struct {
 	Eip     string
 	Marker  string
 	MaxKeys int
+	Type    string
 }
 
 // ListVpnGatewayResult defines the structure of the output parameters for the ListVpnGateway api
@@ -78,7 +83,6 @@ type ListVpnGatewayResult struct {
 	MaxKeys     int    `json:"maxKeys"`
 }
 
-// VPN is the result for getVpnDetail api.
 type VPN struct {
 	Status          VpnStatusType    `json:"status"`
 	Eip             string           `json:"eip"`
@@ -91,13 +95,19 @@ type VPN struct {
 	BandwidthInMbps int              `json:"bandwidthInMbps"`
 	VpnConns        []VpnConn        `json:"vpnConns"`
 	Name            string           `json:"vpnName"`
+	Type            string           `json:"type"`
+	MaxConnection   int              `json:"maxConnection"`
+	SSLVpnServer    SslVpnServer     `json:"sslVpnServer"`
+	CreateTime      string           `json:"createTime"`
 	Tags            []model.TagModel `json:"tags"`
+	DeleteProtect   bool             `json:"deleteProtect"`
 }
 
 // UpdateVpnGatewayArgs defines the structure of the input parameters for the UpdateVpnGateway api
 type UpdateVpnGatewayArgs struct {
 	ClientToken string `json:"-"`
 	Name        string `json:"vpnName"`
+	Description string `json:"description,omitempty"`
 }
 
 // BindEipArgs defines the structure of the input parameters for the BindEip api
@@ -292,4 +302,10 @@ type ListSslVpnUserResult struct {
 	NextMarker  string             `json:"nextMarker"`
 	MaxKeys     int                `json:"maxKeys"`
 	SslVpnUsers []SelectSslVpnUser `json:"sslVpnUsers"`
+}
+
+type UpdateVpnDeleteProtectArgs struct {
+	ClientToken   string `json:"-"`
+	VpnId         string `json:"vpnId"`
+	DeleteProtect bool   `json:"deleteProtect,omitempty"`
 }

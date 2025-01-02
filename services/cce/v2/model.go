@@ -874,7 +874,7 @@ type AttachInstancesToInstanceGroupResponse struct {
 type KubeConfigType string
 
 const (
-	// KubeConfigTypeInternal 使用 BLB FloatingIP
+	// Deprecated
 	KubeConfigTypeInternal KubeConfigType = "internal"
 
 	// KubeConfigTypeVPC 使用 BLB VPCIP

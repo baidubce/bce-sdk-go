@@ -2,6 +2,7 @@ package peerconnexamples
 
 import (
 	"fmt"
+
 	"github.com/baidubce/bce-sdk-go/services/vpc"
 )
 
@@ -16,7 +17,7 @@ func GetPeerConnDetail() {
 	result, err := client.GetPeerConnDetail(peerConnId, vpc.PEERCONN_ROLE_INITIATOR)
 	if err != nil {
 		fmt.Println("get peer conn detail error: ", err)
-		return 
+		return
 	}
 
 	// 查询得到对等连接的id
@@ -51,4 +52,8 @@ func GetPeerConnDetail() {
 	fmt.Println("peerconn createdTime: ", result.CreatedTime)
 	// 查询得到对等连接的过期时间
 	fmt.Println("peerconn expiredTime: ", result.ExpiredTime)
+	// 查询得到对等连接的标签
+	fmt.Println("peerconn tags: ", result.Tags)
+	// 查询得到对等连接是否开启删除保护
+	fmt.Println("peerconn deleteProtect: ", result.DeleteProtect)
 }

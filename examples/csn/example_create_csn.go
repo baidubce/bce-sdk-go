@@ -3,6 +3,7 @@ package csnexamples
 import (
 	"fmt"
 
+	"github.com/baidubce/bce-sdk-go/model"
 	"github.com/baidubce/bce-sdk-go/services/csn"
 	"github.com/baidubce/bce-sdk-go/util"
 )
@@ -17,6 +18,12 @@ func CreateCsn() {
 	request := &csn.CreateCsnRequest{
 		Name:        "csn_test",   // 云智能网的名称
 		Description: &description, // 云智能网的描述
+		Tags: []model.TagModel{ // 云智能网的标签信息
+			{
+				TagKey:   "tagKey1",
+				TagValue: "tagValue1",
+			},
+		},
 	}
 	response, err := client.CreateCsn(request, util.NewUUID())
 	if err != nil {

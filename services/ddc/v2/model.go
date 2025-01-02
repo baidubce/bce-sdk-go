@@ -62,6 +62,7 @@ type CreateRdsArgs struct {
 	PoolId               string                    `json:"poolId"`
 	SyncMode             string                    `json:"syncMode"`
 	InitialDataReference CloneInitialDataReference `json:"initialDataReference,omitempty"`
+	Parameters           []KVParameter             `json:"parameters,omitempty"`
 }
 
 type CreateReadReplicaArgs struct {
@@ -217,6 +218,7 @@ type CreateInstance struct {
 	SyncMode             string                    `json:"syncMode,omitempty"`
 	Remark               string                    `json:"remark,omitempty"`
 	InitialDataReference CloneInitialDataReference `json:"initialDataReference,omitempty"`
+	Parameters           []KVParameter             `json:"parameters,omitempty"`
 }
 
 type Pool struct {
@@ -618,6 +620,12 @@ type UpdateParameterArgs struct {
 	WaitSwitch int           `json:"waitSwitch"`
 }
 
+type BatchUpdateParameterForMultipleInstanceArgs struct {
+	InstanceIds []string      `json:"instanceIds"`
+	Parameters  []KVParameter `json:"parameters"`
+	WaitSwitch  int           `json:"waitSwitch"`
+}
+
 type KVParameter struct {
 	Name  string `json:"name"`
 	Value string `json:"value"`
@@ -630,6 +638,18 @@ type Snapshot struct {
 	SnapshotStatus      string `json:"snapshotStatus"`
 	SnapshotStartTime   string `json:"snapshotStartTime"`
 	SnapshotEndTime     string `json:"snapshotEndTime"`
+	Name                string `json:"name"`
+	Deleted             bool   `json:"deleted"`
+	DataDateTime        string `json:"dataDateTime"`
+	StorageType         string `json:"storageType"`
+	BackupCopyEnable    bool   `json:"backupCopyEnable"`
+	Gtid                string `json:"gtid"`
+	Type                string `json:"type"`
+	CompressEnable      bool   `json:"compressEnable"`
+	CompressType        string `json:"compressType"`
+	EncryptEnable       bool   `json:"encryptEnable"`
+	EncryptType         string `json:"encryptType"`
+	EncryptKey          string `json:"encryptKey"`
 }
 
 type SnapshotModel struct {
@@ -641,6 +661,11 @@ type SnapshotModel struct {
 	SnapshotEndTime     string `json:"snapshotEndTime"`
 	DownloadUrl         string `json:"downloadUrl"`
 	DownloadExpires     string `json:"downloadExpires"`
+	CompressEnable      bool   `json:"compressEnable"`
+	CompressType        string `json:"compressType"`
+	EncryptEnable       bool   `json:"encryptEnable"`
+	EncryptType         string `json:"encryptType"`
+	EncryptKey          string `json:"encryptKey"`
 }
 
 type BackupDetailResult struct {
@@ -653,6 +678,11 @@ type Binlog struct {
 	BinlogStatus      string `json:"binlogStatus"`
 	BinlogStartTime   string `json:"binlogStartTime"`
 	BinlogEndTime     string `json:"binlogEndTime"`
+	CompressEnable    bool   `json:"compressEnable"`
+	CompressType      string `json:"compressType"`
+	EncryptEnable     bool   `json:"encryptEnable"`
+	EncryptType       string `json:"encryptType"`
+	EncryptKey        string `json:"encryptKey"`
 }
 
 type BinlogModel struct {
@@ -663,6 +693,11 @@ type BinlogModel struct {
 	BinlogEndTime     string `json:"binlogEndTime"`
 	DownloadUrl       string `json:"downloadUrl"`
 	DownloadExpires   string `json:"downloadExpires"`
+	CompressEnable    bool   `json:"compressEnable"`
+	CompressType      string `json:"compressType"`
+	EncryptEnable     bool   `json:"encryptEnable"`
+	EncryptType       string `json:"encryptType"`
+	EncryptKey        string `json:"encryptKey"`
 }
 
 type BinlogListResult struct {
@@ -1276,4 +1311,16 @@ type AccessDetailArgs struct {
 	Marker        string `json:"marker,omitempty"`
 	MaxKeys       int    `json:"maxKeys,omitempty"`
 	DataType      string `json:"dataType,omitempty"`
+}
+
+type UpdateParameterResult struct {
+	Success int    `json:"success,omitempty"`
+	TaskId  int    `json:"taskId,omitempty"`
+	Code    string `json:"code,omitempty"`
+	Message string `json:"message,omitempty"`
+}
+
+type BatchUpdateParameterForMultipleInstanceResponse struct {
+	Success bool                             `json:"success"`
+	Result  map[string]UpdateParameterResult `json:"result"`
 }

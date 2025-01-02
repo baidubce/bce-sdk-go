@@ -351,3 +351,7 @@ func getInstanceSyncDelayUrl(instanceId string) string {
 func getInstanceSyncDelayReplicationUrl(instanceId string) string {
 	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/" + instanceId + "/replication"
 }
+
+func getBatchUpdateParameterForMultipleInstanceUrl() string {
+	return URI_PREFIX + REQUEST_DDC_INSTANCE_URL + "/parameter/modify/batch"
+}

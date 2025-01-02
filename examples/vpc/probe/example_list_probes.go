@@ -42,5 +42,6 @@ func ListProbes() {
 		fmt.Println("probe sourceIps: ", probe.SourceIps)
 		fmt.Println("probe sourceIpNum: ", probe.SourceIpNum)
 		fmt.Println("probe payload: ", probe.Payload)
+		fmt.Println("probe status: ", probe.Status)
 	}
 }

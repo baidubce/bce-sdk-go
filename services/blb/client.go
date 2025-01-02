@@ -36,6 +36,11 @@ const (
 	REQUEST_BLB_CLUSTER_URL       = "/blbcluster"
 	SECURITY_GROUP_URL            = "/securitygroup"
 	ENTERPRISE_SECURITY_GROUP_URL = "/enterprise/securitygroup"
+
+	ActionBlbToPostpaid       = "TO_POSTPAY"
+	ActionBLbCancelToPostpaid = "CANCEL_TO_POSTPAY"
+	ActionBlbToPrepaid        = "TO_PREPAY"
+	ActionBlbResize           = "RESIZE"
 )
 
 // Client of APPBLB service is a kind of BceClient, so derived from BceClient
@@ -72,6 +77,10 @@ func getBlbAutoRenewUriWithId(id string) string {
 
 func getBlbRefundUriWithId(id string) string {
 	return URI_PREFIX + REQUEST_BLB_URL + "/refund/" + id
+}
+
+func getBLbChargeUriWithId(id string) string {
+	return URI_PREFIX + REQUEST_BLB_URL + "/" + id + "/charge"
 }
 
 func getListenerUri(id string) string {

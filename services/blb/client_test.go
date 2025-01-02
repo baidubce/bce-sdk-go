@@ -133,6 +133,41 @@ func TestClient_CreatePrePayLoadBalancer(t *testing.T) {
 	BLB_ID = createResult.BlbId
 }
 
+func TestClient_ResizeLoadBalancer(t *testing.T) {
+	orderIdResult, err := BLB_CLIENT.ResizeLoadBalancer(BLB_ID, &ResizeLoadBalancerArgs{
+		ClientToken:      getClientToken(),
+		PerformanceLevel: "small2",
+	})
+	ExpectEqual(t.Errorf, nil, err)
+	fmt.Printf("ResizeLoadBalancer orderId:%v\n", orderIdResult.OrderId)
+}
+
+func TestClient_ChangeToPostpaid(t *testing.T) {
+	orderIdResult, err := BLB_CLIENT.ChangeToPostpaid(BLB_ID, &ChangeToPostpaidArgs{
+		ClientToken:      getClientToken(),
+		BillingMethod:    "ByCapacityUnit",
+		PerformanceLevel: "unlimited",
+	})
+	ExpectEqual(t.Errorf, nil, err)
+	fmt.Printf("ChangeToPostpaid orderId:%v\n", orderIdResult.OrderId)
+}
+
+func TestClient_CancelChangeToPostpaid(t *testing.T) {
+	err := BLB_CLIENT.CancelChangeToPostpaid(BLB_ID)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_ChangeToPrepaid(t *testing.T) {
+	orderIdResult, err := BLB_CLIENT.ChangeToPrepaid(BLB_ID, &ChangeToPrepaidArgs{
+		ClientToken:       getClientToken(),
+		BillingMethod:     "BySpec",
+		PerformanceLevel:  "small2",
+		ReservationLength: 1,
+	})
+	ExpectEqual(t.Errorf, nil, err)
+	fmt.Printf("ChangeToPrepaid orderId:%v\n", orderIdResult.OrderId)
+}
+
 func TestClient_UpdateLoadBalancer(t *testing.T) {
 	updateArgs := &UpdateLoadBalancerArgs{
 		Name:        "testSdk",

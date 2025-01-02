@@ -19,6 +19,17 @@ const (
 	RoleReadonly RBACRole = "cce:readonly" // 只读
 )
 
+// KubeConfigType - kube config 类型
+type KubeConfigType string
+
+const (
+	// KubeConfigTypeVPC 使用 BLB VPCIP
+	KubeConfigTypeVPC KubeConfigType = "vpc"
+
+	// KubeConfigTypePublic 使用 BLB EIP
+	KubeConfigTypePublic KubeConfigType = "public"
+)
+
 // RBACResponse - 应答，仅包含 requestID
 type RBACResponse struct {
 	RequestID string `json:"requestID,omitempty"` // request id
@@ -26,16 +37,23 @@ type RBACResponse struct {
 
 // RBACRequest - 创建 RBAC 请求内容
 type RBACRequest struct {
-	ClusterID string   `json:"clusterID"`
-	UserID    string   `json:"userID"`
-	Namespace string   `json:"namespace"`
-	Role      RBACRole `json:"role"`
+	ClusterID string   `json:"clusterID,omitempty"`
+	UserID    string   `json:"userID,omitempty"`
+	Namespace string   `json:"namespace,omitempty"`
+	Role      RBACRole `json:"role,omitempty"`
+
+	Temp           bool           `json:"temp,omitempty"`
+	ExpireHours    int            `json:"expireHours,omitempty"`
+	KubeConfigType KubeConfigType `json:"kubeConfigType,omitempty"`
 }
 
 // CreateRBACResponse - 创建 RBAC 权限接口的返回
 type CreateRBACResponse struct {
 	RBACResponse
-	Data []*CreateRBACMessage `json:"data"`
+	Data []*CreateRBACMessage `json:"data,omitempty"`
+
+	// 临时访问凭证
+	TemporaryKubeConfig string `json:"temporaryKubeConfig,omitempty"`
 }
 
 // CreateRBACMessage - 创建RBAC权限接口的主要信息

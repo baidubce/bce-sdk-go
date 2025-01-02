@@ -125,6 +125,10 @@ func getURLForPeerConnId(peerConnId string) string {
 	return getURLForPeerConn() + "/" + peerConnId
 }
 
+func getURLForPeerConnDeleteProtect(peerConnId string) string {
+	return getURLForPeerConn() + "/" + peerConnId + "/deleteProtect"
+}
+
 // getURLForNetworkTopology 获取网络拓扑信息的URL
 func getURLForNetworkTopology() string {
 	return getURLForVPC() + REQUEST_NETWORK_TOPOLOGY_URL
