@@ -699,6 +699,7 @@ type CreateAppIpGroupBackendPolicyArgs struct {
 	IpGroupId                   string `json:"ipGroupId"`
 	Type                        string `json:"type"`
 	EnableHealthCheck           *bool  `json:"enableHealthCheck,omitempty"`
+	HealthCheck                 string `json:"healthCheck,omitempty"`
 	HealthCheckPort             int    `json:"healthCheckPort,omitempty"`
 	HealthCheckHost             string `json:"healthCheckHost,omitempty"`
 	HealthCheckTimeoutInSecond  int    `json:"healthCheckTimeoutInSecond,omitempty"`
@@ -715,6 +716,7 @@ type UpdateAppIpGroupBackendPolicyArgs struct {
 	IpGroupId                   string `json:"ipGroupId"`
 	Id                          string `json:"id"`
 	EnableHealthCheck           *bool  `json:"enableHealthCheck,omitempty"`
+	HealthCheck                 string `json:"healthCheck,omitempty"`
 	HealthCheckPort             int    `json:"healthCheckPort,omitempty"`
 	HealthCheckHost             string `json:"healthCheckHost,omitempty"`
 	HealthCheckUrlPath          string `json:"healthCheckUrlPath,omitempty"`

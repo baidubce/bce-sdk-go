@@ -14,6 +14,7 @@ import (
 	"fmt"
 
 	"github.com/baidubce/bce-sdk-go/bce"
+	"github.com/baidubce/bce-sdk-go/services/cce/v2/model"
 	"github.com/baidubce/bce-sdk-go/services/cce/v2/types"
 )
 
@@ -216,7 +217,7 @@ func getAutoscalerURI(clusterID string) string {
 	return URI_PREFIX + REQUEST_AUTOSCALER + "/" + clusterID
 }
 
-func getKubeconfigURI(clusterID string, kubeConfigType KubeConfigType) string {
+func getKubeconfigURI(clusterID string, kubeConfigType model.KubeConfigType) string {
 	return URI_PREFIX + fmt.Sprintf(REQUEST_KUBECONFIG, clusterID, kubeConfigType)
 }
 

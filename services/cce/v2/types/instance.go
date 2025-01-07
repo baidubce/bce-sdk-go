@@ -16,7 +16,6 @@ import (
 
 // InstanceSpec 已有节点需要用户提供：ClusterRole 、短ID，密码，镜像ID,镜像类型, docker storage(可选); BBC要额外加preservedData、raidId、sysRootSize
 type InstanceSpec struct {
-
 	// 用于 CCE 唯一标识 Instance
 	CCEInstanceID string `json:"cceInstanceID,omitempty"`
 	InstanceName  string `json:"instanceName"`
@@ -111,6 +110,8 @@ type VPCConfig struct {
 	SecurityGroup SecurityGroup `json:"securityGroup,omitempty"`
 
 	SecurityGroupType string `json:"securityGroupType"`
+
+	SecurityGroups []SecurityGroupV2 `json:"securityGroups"`
 }
 
 // SecurityGroup 定义 Instance 安全组配置
@@ -122,6 +123,23 @@ type SecurityGroup struct {
 	// 用户自定义安全组 ID 列表
 	CustomSecurityGroupIDs []string `json:"customSecurityGroups,omitempty"`
 }
+
+type SecurityGroupV2 struct {
+	Name string            `json:"name"`
+	Type SecurityGroupType `json:"type"`
+	ID   string            `json:"id"`
+}
+
+type SecurityGroupType string
+
+const (
+	// 普通安全组
+	SecurityGroupTypeNormal SecurityGroupType = "normal"
+	// 企业安全组
+	SecurityGroupTypeEnterprise         SecurityGroupType = "enterprise"
+	SecurityGroupTypeNormalIDPrefix     string            = "g-"
+	SecurityGroupTypeEnterpriseIDPrefix string            = "esg-"
+)
 
 // InstanceResource 定义 Instance CPU/MEM/Disk 配置
 type InstanceResource struct {
@@ -210,6 +228,7 @@ type DeleteOption struct {
 	MoveOut           bool `json:"moveOut,omitempty"`
 	DeleteResource    bool `json:"deleteResource,omitempty"`
 	DeleteCDSSnapshot bool `json:"deleteCDSSnapshot,omitempty"`
+	DrainNode         bool `json:"drainNode,omitempty"`
 }
 
 // BBCOption BBC 相关配置
@@ -272,6 +291,7 @@ type DeployCustomConfig struct {
 	// KubeletBindAddressType, kubelet bind address
 	KubeletBindAddressType KubeletBindAddressType `json:"kubeletBindAddressType,omitempty"`
 
+	// PostUserScriptFailedAutoCordon 部署后执行脚本失败自动封锁节点
 	PostUserScriptFailedAutoCordon bool `json:"postUserScriptFailedAutoCordon,omitempty"`
 }
 
@@ -320,6 +340,8 @@ type CDSConfig struct {
 	StorageType bccapi.StorageType `json:"storageType,omitempty"`
 	CDSSize     int                `json:"cdsSize,omitempty"`
 	SnapshotID  string             `json:"snapshotID,omitempty"`
+	DataDevice  string             `json:"dataDevice,omitempty"`
+	NeedFormat  bool               `json:"needFormat,omitempty"`
 }
 
 // MountConfig - 磁盘挂载信息

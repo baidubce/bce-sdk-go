@@ -11,6 +11,7 @@ import (
 	"time"
 
 	bccapi "github.com/baidubce/bce-sdk-go/services/bcc/api"
+	"github.com/baidubce/bce-sdk-go/services/cce/v2/model"
 	"github.com/baidubce/bce-sdk-go/services/cce/v2/types"
 	"github.com/baidubce/bce-sdk-go/util/log"
 )
@@ -67,7 +68,8 @@ func setup() {
 
 // ExpectEqual is the helper function for test each case
 func ExpectEqual(alert func(format string, args ...interface{}),
-	expected interface{}, actual interface{}) bool {
+	expected interface{}, actual interface{},
+) bool {
 	expectedValue, actualValue := reflect.ValueOf(expected), reflect.ValueOf(actual)
 	equal := false
 	switch {
@@ -202,7 +204,7 @@ func TestClient_CreateCluster(t *testing.T) {
 	s, _ := json.MarshalIndent(resp, "", "\t")
 	fmt.Println("Response:" + string(s))
 
-	//等集群创建完成
+	// 等集群创建完成
 	time.Sleep(time.Duration(180) * time.Second)
 }
 
@@ -427,7 +429,7 @@ func TestClient_UpdateInstanceGroupClusterAutoscalerSpec(t *testing.T) {
 func TestClient_GetKubeConfig(t *testing.T) {
 	args := &GetKubeConfigArgs{
 		ClusterID:      CCE_CLUSTER_ID,
-		KubeConfigType: KubeConfigTypeVPC,
+		KubeConfigType: model.KubeConfigTypeVPC,
 	}
 
 	resp, err := CCE_CLIENT.GetKubeConfig(args)
@@ -657,7 +659,6 @@ func TestClient_InstanceCRD(t *testing.T) {
 
 func TestClient_UpdateClusterCRD(t *testing.T) {
 	getClusterCRDArgs := &GetClusterCRDArgs{
-
 		ClusterID: "cce-bvyohjkg",
 	}
 
@@ -685,4 +686,161 @@ func TestClient_UpdateClusterCRD(t *testing.T) {
 	}
 
 	fmt.Printf("Resuest ID: %s", commonResp.RequestID)
+}
+
+// TestClient_AttachInstancesToInstanceGroup 添加已有节点至节点组
+func TestClient_AttachInstancesToInstanceGroup(t *testing.T) {
+	var (
+		ak              = ""
+		sk              = ""
+		endpoint        = ""
+		clusterID       = ""
+		instanceGroupID = ""
+		existInstanceID = ""
+		AdminPassword   = ""
+		// rebuild 是否重装操作系统
+		rebuild = true
+		// useInstanceGroupConfig 是否使用节点组配置
+		useInstanceGroupConfig = true
+		// useLocalDiskForContainer 是否使用本地盘保存数据
+		useLocalDiskForContainer = false
+		imageID                  = ""
+	)
+
+	cceClient, err := NewClient(ak, sk, endpoint)
+	if err != nil {
+		fmt.Printf("NewClient error: %s", err.Error())
+		return
+	}
+
+	attachInstanceToInstanceGroupArgs := func() *AttachInstancesToInstanceGroupArgs {
+		args := AttachInstancesToInstanceGroupArgs{}
+		args.ClusterID = clusterID
+		args.InstanceGroupID = instanceGroupID
+		args.Request = &AttachInstancesToInstanceGroupRequest{
+			ExistedInstances:       make([]*InstanceSet, 0),
+			UseInstanceGroupConfig: useInstanceGroupConfig,
+		}
+		existInstance := &InstanceSet{
+			InstanceSpec: types.InstanceSpec{
+				Existed: true,
+				ExistedOption: types.ExistedOption{
+					// bcc 实例 id
+					ExistedInstanceID: existInstanceID,
+					Rebuild:           &rebuild,
+				},
+				// 看具体的类型，bcc，bbc，ebc
+				MachineType: types.MachineTypeBCC,
+				ClusterRole: types.ClusterRoleNode,
+
+				// 二选一
+				AdminPassword: AdminPassword,
+				SSHKeyID:      "",
+			},
+		}
+
+		// 如果需要重装操作系统，需要配置这里
+		if rebuild {
+			existInstance.InstanceSpec.InstanceOS = types.InstanceOS{
+				ImageType: bccapi.ImageTypeSystem,
+			}
+			existInstance.InstanceSpec.ImageID = imageID
+		}
+
+		if useLocalDiskForContainer {
+			// 将容器数据存储在数据盘或本地盘中
+			existInstance.InstanceSpec.InstanceResource = types.InstanceResource{
+				CDSList: types.CDSConfigList{
+					{
+						DataDevice: "/dev/xxx",
+						Path:       "/home/cce",
+					},
+				},
+			}
+		}
+		if !useInstanceGroupConfig {
+			existInstance.InstanceSpec.VPCConfig = types.VPCConfig{
+				SecurityGroups: []types.SecurityGroupV2{
+					{
+						ID:   "",
+						Name: "",
+						Type: types.SecurityGroupTypeNormal,
+					},
+				},
+			}
+			existInstance.InstanceSpec.DeployCustomConfig = types.DeployCustomConfig{
+				KubeletRootDir: "",
+				PreUserScript:  "",
+				PostUserScript: "",
+			}
+			// 标签配置
+			existInstance.InstanceSpec.Tags = types.TagList{
+				{
+					TagKey:   "",
+					TagValue: "",
+				},
+			}
+		}
+		args.Request.ExistedInstances = append(args.Request.ExistedInstances, existInstance)
+		return &args
+	}()
+	commonResp, err := cceClient.AttachInstancesToInstanceGroup(attachInstanceToInstanceGroupArgs)
+	if err != nil {
+		fmt.Printf("attach instance to instance group failed, errir: %v", err)
+		return
+	}
+	fmt.Printf("Request ID: %s", commonResp.RequestID)
+}
+
+func TestClient_CreateScaleDownInstanceGroupTask(t *testing.T) {
+	type fields struct {
+		ak, sk, endpoint string
+	}
+	type args struct {
+		args *CreateScaleDownInstanceGroupTaskArgs
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		{
+			name: "移出已有节点",
+			fields: fields{
+				ak:       "",
+				sk:       "",
+				endpoint: "",
+			},
+			args: args{
+				args: &CreateScaleDownInstanceGroupTaskArgs{
+					InstancesToBeRemoved: []string{""},
+					ClusterID:            "",
+					InstanceGroupID:      "",
+					CleanPolicy:          CleanPolicyDelete,
+					DeleteOption: &types.DeleteOption{
+						DeleteCDSSnapshot: false,
+						DeleteResource:    false,
+						DrainNode:         false,
+						MoveOut:           true,
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c, err := NewClient(tt.fields.ak, tt.fields.sk, tt.fields.endpoint)
+			if err != nil {
+				t.Errorf("failed init client, error = %v", err)
+				return
+			}
+			if resp, err := c.CreateScaleDownInstanceGroupTask(tt.args.args); err != nil {
+				t.Errorf("CreateScaleDownInstanceGroupTask() error = %v", err)
+
+			} else {
+				t.Logf("request id is: %s", resp.RequestID)
+			}
+
+		})
+	}
 }

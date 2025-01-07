@@ -105,7 +105,7 @@ type Insert struct {
 	Bucket   string    `json:"bucket,omitempty"`
 	Key      string    `json:"key,omitempty"`
 	Type     string    `json:"type,omitempty"`
-	Text     string    `json:"text"`
+	Text     *string   `json:"text"`
 	Font     *Font     `json:"font,omitempty"`
 	Timeline *Timeline `json:"timeline"`
 	Layout   *Layout   `json:"layout,omitempty"`
