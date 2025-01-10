@@ -141,6 +141,34 @@ func TestCreateJobCustomize(t *testing.T) {
 	t.Logf("%+v", jobResponse)
 }
 
+func TestCreateJobCustomizeFont(t *testing.T) {
+	args := &api.CreateJobArgs{}
+	args.PipelineName = "go_sdk_test"
+	source := &api.Source{Clips: &[]api.SourceClip{{
+		SourceKey:             "01.mp4",
+		EnableDelogo:          false,
+		DurationInMillisecond: 6656,
+		StartTimeInSecond:     2}}}
+	args.Source = source
+	target := &api.Target{}
+	targetKey := "clips_playback_watermark_delogo_crop2.mp4"
+	target.TargetKey = targetKey
+	presetName := "go_test_customize_audio_video"
+	target.PresetName = presetName
+
+	font := &api.Font{Color: "#FFFFFF"}
+	text := "hello world"
+	insert := &api.Insert{
+		Text: &text,
+		Font: font}
+	target.Inserts = &[]api.Insert{*insert}
+	args.Target = target
+
+	jobResponse, err := MEDIA_CLIENT.CreateJobCustomize(args)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", jobResponse)
+}
+
 func TestCreateJobCustomizeDelogoCrop(t *testing.T) {
 	args := &api.CreateJobArgs{}
 	args.PipelineName = "go_sdk_test"

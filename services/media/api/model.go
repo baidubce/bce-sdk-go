@@ -114,6 +114,7 @@ type Insert struct {
 type Font struct {
 	Family      string `json:"family,omitempty"`
 	SizeInPoint int    `json:"sizeInPoint,omitempty"`
+	Color       string `json:"color,omitempty"`
 }
 
 type Timeline struct {

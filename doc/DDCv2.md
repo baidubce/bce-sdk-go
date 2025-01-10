@@ -1167,6 +1167,8 @@ args := &ddcrds.ResizeRdsArgs{
     //IsResizeNow: true,
 	// 变配时间窗口控制。0：立即变配；1：维护时间内变配；2：用户控制执行时机
 	WaitSwitch: 0,
+	// 非必填参数。步幅大小，取值范围限制在2~8，单位GB,只有在本地变配时生效
+	BufferPoolStepSize: 2,
 }
 orderIdResponse, err = client.ResizeRds(instanceId, args)
 if err != nil {

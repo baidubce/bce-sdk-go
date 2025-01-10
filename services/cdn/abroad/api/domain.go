@@ -111,18 +111,20 @@ func ListDomainInfos(cli bce.Client, marker string) ([]DomainInfo, string, error
 // RETURNS:
 //   - *DomainCreatedInfo: the details about created a ABROAD-CDN domain
 //   - error: nil if success otherwise the specific error
-func CreateDomain(cli bce.Client, domain string, originConfig []OriginPeer, tags []model.TagModel) (*DomainCreatedInfo, error) {
+func CreateDomain(cli bce.Client, domain string, originConfig []OriginPeer, tags []model.TagModel, form string) (*DomainCreatedInfo, error) {
 	urlPath := fmt.Sprintf("/v2/abroad/domain/%s", domain)
 	respObj := &DomainCreatedInfo{}
 
 	type Request struct {
 		OriginConfig []OriginPeer     `json:"originConfig"`
 		Tags         []model.TagModel `json:"tags,omitempty"`
+		Form         string           `json:"form,omitempty"`
 	}
 
 	requestObject := &Request{
 		OriginConfig: originConfig,
 		Tags:         tags,
+		Form:         form,
 	}
 	err := httpRequest(cli, "POST", urlPath, nil, requestObject, respObj)
 	if err != nil {

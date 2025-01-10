@@ -107,8 +107,18 @@ func CreateDomainWithTags(tags []model.TagModel) CreateDomainOption {
 	}
 }
 
+func CreateDomainWithForm(form string) CreateDomainOption {
+	return func(o interface{}) {
+		cfg, ok := o.(*createDomainOption)
+		if ok {
+			cfg.form = form
+		}
+	}
+}
+
 type createDomainOption struct {
 	tags []model.TagModel
+	form string
 }
 
 // CreateDomain - create a BCE ABROAD-CDN domain
@@ -122,7 +132,7 @@ type createDomainOption struct {
 //   - *DomainCreatedInfo: the details about created a ABROAD-CDN domain
 //   - error: nil if success otherwise the specific error
 func (cli *Client) CreateDomain(domain string, originConfig []api.OriginPeer) (*api.DomainCreatedInfo, error) {
-	return api.CreateDomain(cli, domain, originConfig, nil)
+	return api.CreateDomain(cli, domain, originConfig, nil, "")
 }
 
 // CreateDomainWithOptions - create a BCE ABROAD-CDN domain with optional configurations.
@@ -141,7 +151,7 @@ func (cli *Client) CreateDomainWithOptions(domain string, origins []api.OriginPe
 	for _, opt := range opts {
 		opt(&cfg)
 	}
-	return api.CreateDomain(cli, domain, origins, cfg.tags)
+	return api.CreateDomain(cli, domain, origins, cfg.tags, cfg.form)
 }
 
 // EnableDomain - enable a specified domain

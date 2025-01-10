@@ -840,14 +840,15 @@ type CreateRdsProxyArgs struct {
 }
 
 type ResizeRdsArgs struct {
-	ClientToken    string  `json:"-"`
-	CpuCount       int     `json:"cpuCount"`
-	MemoryCapacity float64 `json:"memoryCapacity"`
-	VolumeCapacity int     `json:"volumeCapacity"`
-	NodeAmount     int     `json:"nodeAmount,omitempty"`
-	IsDirectPay    bool    `json:"isDirectPay,omitempty"`
-	IsResizeNow    bool    `json:"isResizeNow,omitempty"`
-	WaitSwitch     int     `json:"waitSwitch,omitempty"`
+	ClientToken        string  `json:"-"`
+	CpuCount           int     `json:"cpuCount"`
+	MemoryCapacity     float64 `json:"memoryCapacity"`
+	VolumeCapacity     int     `json:"volumeCapacity"`
+	NodeAmount         int     `json:"nodeAmount,omitempty"`
+	IsDirectPay        bool    `json:"isDirectPay,omitempty"`
+	IsResizeNow        bool    `json:"isResizeNow,omitempty"`
+	WaitSwitch         int     `json:"waitSwitch,omitempty"`
+	BufferPoolStepSize int     `json:"bufferPoolStepSize,omitempty"`
 }
 
 type OrderIdResponse struct {

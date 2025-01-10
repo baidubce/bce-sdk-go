@@ -11,16 +11,17 @@ import (
 // SendCustomRequest - send a HTTP request, and response data or error, it use the default times for retrying
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - method: the HTTP requested method, e.g. "GET", "POST", "PUT" ...
-//     - urlPath: a path component, consisting of a sequence of path segments separated by a slash ( / ).
-//     - params: the query params, which will be append to the query path, and separate by "&"
-//         e.g. http://www.baidu.com?query_param1=value1&query_param2=value2
-//     - reqHeaders: the request http headers
-//     - bodyObj: the HTTP requested body content transferred to a goland object
-//     - respObj: the HTTP response content transferred to a goland object
+//   - cli: the client agent which can perform sending request
+//   - method: the HTTP requested method, e.g. "GET", "POST", "PUT" ...
+//   - urlPath: a path component, consisting of a sequence of path segments separated by a slash ( / ).
+//   - params: the query params, which will be append to the query path, and separate by "&"
+//     e.g. http://www.baidu.com?query_param1=value1&query_param2=value2
+//   - reqHeaders: the request http headers
+//   - bodyObj: the HTTP requested body content transferred to a goland object
+//   - respObj: the HTTP response content transferred to a goland object
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func SendCustomRequest(cli bce.Client, method string, urlPath string, params, reqHeaders map[string]string, bodyObj interface{}, respObj interface{}) error {
 	if method != "GET" && method != "POST" && method != "PUT" && method != "DELETE" {
 		return errors.New("invalid http method")

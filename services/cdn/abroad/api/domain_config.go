@@ -13,6 +13,10 @@ const (
 	HTTPSOrigin = "https"
 )
 
+const (
+	DynamicDomainForm = "dynamic"
+)
+
 // DomainConfig defined a struct for total configurations.
 type DomainConfig struct {
 	Domain         string           `json:"domain"`

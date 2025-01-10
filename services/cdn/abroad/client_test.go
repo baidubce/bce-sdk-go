@@ -421,6 +421,21 @@ func TestClient_CreateDomainWithOptions(t *testing.T) {
 	t.Logf("CreateDomainWithOptions for %s success: %+v", testDomain, info)
 }
 
+func TestClient_CreateDomainForDynamic(t *testing.T) {
+	info, err := testCli.CreateDomainWithOptions(testDomain, []api.OriginPeer{
+		{
+			Type:   "IP",
+			Backup: false,
+			Addr:   "1.6.7.8",
+		},
+	}, CreateDomainWithForm(api.DynamicDomainForm))
+	if err != nil {
+		t.Fatalf("CreateDomainForDynamic for %s failed: %s", testDomain, err)
+	}
+
+	t.Logf("CreateDomainForDynamic for %s success: %+v", testDomain, info)
+}
+
 func TestClient_EnableDomain(t *testing.T) {
 	err := testCli.EnableDomain(testDomain)
 	if err != nil {
