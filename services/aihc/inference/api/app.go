@@ -2,9 +2,10 @@ package api
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
-	"strings"
 )
 
 func CreateApp(cli bce.Client, region string, reqBody *bce.Body, extraInfo map[string]string) (*CreateAppResult, error) {

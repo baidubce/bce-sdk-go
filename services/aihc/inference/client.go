@@ -20,68 +20,50 @@ package inference
 
 import (
 	"encoding/json"
-	"github.com/baidubce/bce-sdk-go/auth"
+
 	"github.com/baidubce/bce-sdk-go/bce"
+	"github.com/baidubce/bce-sdk-go/services/aihc/client"
 	"github.com/baidubce/bce-sdk-go/services/aihc/inference/api"
 )
 
 const DEFAULT_SERVICE_DOMAIN = "aihc.baidubce.com"
 
-// Client of aihc inference service is a kind of BceClient, so derived from BceClient
 type Client struct {
-	*bce.BceClient
+	client.Client
 }
 
 // NewClient make the aihc inference service client with default configuration.
 func NewClient(ak, sk, endPoint string) (*Client, error) {
-	credentials, err := auth.NewBceCredentials(ak, sk)
+	if len(endPoint) == 0 {
+		endPoint = DEFAULT_SERVICE_DOMAIN
+	}
+	aihcClient, err := client.NewClient(ak, sk, endPoint)
 	if err != nil {
 		return nil, err
 	}
-	if endPoint == "" {
-		endPoint = DEFAULT_SERVICE_DOMAIN
-	}
-	defaultSignOptions := &auth.SignOptions{
-		HeadersToSign: auth.DEFAULT_HEADERS_TO_SIGN,
-		ExpireSeconds: auth.DEFAULT_EXPIRE_SECONDS}
-	defaultConf := &bce.BceClientConfiguration{
-		Endpoint:                  endPoint,
-		Region:                    bce.DEFAULT_REGION,
-		UserAgent:                 bce.DEFAULT_USER_AGENT,
-		Credentials:               credentials,
-		SignOption:                defaultSignOptions,
-		Retry:                     bce.DEFAULT_RETRY_POLICY,
-		ConnectionTimeoutInMillis: bce.DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS}
-	v1Signer := &auth.BceV1Signer{}
+	newClient := Client{*aihcClient}
+	return &newClient, nil
+}
 
-	client := &Client{BceClient: bce.NewBceClient(defaultConf, v1Signer)}
-	return client, nil
+func (c *Client) SetBceClient(client *bce.BceClient) {
+	c.DefaultClient = client
+}
+
+func (c *Client) GetBceClient() *bce.BceClient {
+	return c.DefaultClient
 }
 
 // NewClientWithSTS make the aihc inference service client with STS configuration.
 func NewClientWithSTS(accessKey, secretKey, sessionToken, endPoint string) (*Client, error) {
-	credentials, err := auth.NewSessionBceCredentials(accessKey, secretKey, sessionToken)
+	if len(endPoint) == 0 {
+		endPoint = DEFAULT_SERVICE_DOMAIN
+	}
+	aihcClient, err := client.NewClientWithSTS(accessKey, secretKey, sessionToken, endPoint)
 	if err != nil {
 		return nil, err
 	}
-	if endPoint == "" {
-		endPoint = DEFAULT_SERVICE_DOMAIN
-	}
-	defaultSignOptions := &auth.SignOptions{
-		HeadersToSign: auth.DEFAULT_HEADERS_TO_SIGN,
-		ExpireSeconds: auth.DEFAULT_EXPIRE_SECONDS}
-	defaultConf := &bce.BceClientConfiguration{
-		Endpoint:                  endPoint,
-		Region:                    bce.DEFAULT_REGION,
-		UserAgent:                 bce.DEFAULT_USER_AGENT,
-		Credentials:               credentials,
-		SignOption:                defaultSignOptions,
-		Retry:                     bce.DEFAULT_RETRY_POLICY,
-		ConnectionTimeoutInMillis: bce.DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS}
-	v1Signer := &auth.BceV1Signer{}
-
-	client := &Client{BceClient: bce.NewBceClient(defaultConf, v1Signer)}
-	return client, nil
+	newClient := Client{*aihcClient}
+	return &newClient, nil
 }
 
 // CreateApp - create app with the specific parameters
@@ -104,7 +86,7 @@ func (c *Client) CreateApp(args *api.CreateAppArgs, region string, extraInfo map
 		return nil, err
 	}
 
-	return api.CreateApp(c, region, body, extraInfo)
+	return api.CreateApp(c.DefaultClient, region, body, extraInfo)
 }
 
 // ListApp - list app with the specific parameters
@@ -118,7 +100,7 @@ func (c *Client) CreateApp(args *api.CreateAppArgs, region string, extraInfo map
 //   - *api.ListAppResult: the result of list app, contains apps info
 //   - error: nil if success otherwise the specific error
 func (c *Client) ListApp(args *api.ListAppArgs, region string, extraInfo map[string]string) (*api.ListAppResult, error) {
-	return api.ListApp(c, region, args, extraInfo)
+	return api.ListApp(c.DefaultClient, region, args, extraInfo)
 }
 
 // ListAppStats - list app stats with the specific parameters
@@ -131,7 +113,7 @@ func (c *Client) ListApp(args *api.ListAppArgs, region string, extraInfo map[str
 //   - *api.ListAppStatsResult: the result of list app stats, contains apps status
 //   - error: nil if success otherwise the specific error
 func (c *Client) ListAppStats(args *api.ListAppStatsArgs, region string) (*api.ListAppStatsResult, error) {
-	return api.ListAppStats(c, region, args)
+	return api.ListAppStats(c.DefaultClient, region, args)
 }
 
 // AppDetails - the details of app with the specific parameters
@@ -144,7 +126,7 @@ func (c *Client) ListAppStats(args *api.ListAppStatsArgs, region string) (*api.L
 //   - *api.AppDetailsResult: the result of app details, contains apps status
 //   - error: nil if success otherwise the specific error
 func (c *Client) AppDetails(args *api.AppDetailsArgs, region string) (*api.AppDetailsResult, error) {
-	return api.AppDetails(c, region, args)
+	return api.AppDetails(c.DefaultClient, region, args)
 }
 
 // UpdateApp - update app with the specific parameters
@@ -166,7 +148,7 @@ func (c *Client) UpdateApp(args *api.UpdateAppArgs, region string) (*api.UpdateA
 		return nil, err
 	}
 
-	return api.UpdateApp(c, region, body, args)
+	return api.UpdateApp(c.DefaultClient, region, body, args)
 }
 
 // ScaleApp - scale app with the specific parameters
@@ -179,7 +161,7 @@ func (c *Client) UpdateApp(args *api.UpdateAppArgs, region string) (*api.UpdateA
 //   - *api.ScaleAppResult: the result of scale app
 //   - error: nil if success otherwise the specific error
 func (c *Client) ScaleApp(args *api.ScaleAppArgs, region string) (*api.ScaleAppResult, error) {
-	return api.ScaleApp(c, region, args)
+	return api.ScaleApp(c.DefaultClient, region, args)
 }
 
 // PubAccess - operate public access of app with the specific parameters
@@ -192,7 +174,7 @@ func (c *Client) ScaleApp(args *api.ScaleAppArgs, region string) (*api.ScaleAppR
 //   - *api.PubAccessResult: the result of operating public access of app
 //   - error: nil if success otherwise the specific error
 func (c *Client) PubAccess(args *api.PubAccessArgs, region string) (*api.PubAccessResult, error) {
-	return api.PubAccess(c, region, args)
+	return api.PubAccess(c.DefaultClient, region, args)
 }
 
 // ListChange - list app change with the specific parameters
@@ -205,7 +187,7 @@ func (c *Client) PubAccess(args *api.PubAccessArgs, region string) (*api.PubAcce
 //   - *api.ListChangeResult: the result of list app change, contains app change info
 //   - error: nil if success otherwise the specific error
 func (c *Client) ListChange(args *api.ListChangeArgs, region string) (*api.ListChangeResult, error) {
-	return api.ListChange(c, region, args)
+	return api.ListChange(c.DefaultClient, region, args)
 }
 
 // ChangeDetail - app change detail with the specific parameters
@@ -218,7 +200,7 @@ func (c *Client) ListChange(args *api.ListChangeArgs, region string) (*api.ListC
 //   - *api.ChangeDetailResult: the result of app change detail, contains app change detail info
 //   - error: nil if success otherwise the specific error
 func (c *Client) ChangeDetail(args *api.ChangeDetailArgs, region string) (*api.ChangeDetailResult, error) {
-	return api.ChangeDetail(c, region, args)
+	return api.ChangeDetail(c.DefaultClient, region, args)
 }
 
 // DeleteApp - delete app with the specific parameters
@@ -231,7 +213,7 @@ func (c *Client) ChangeDetail(args *api.ChangeDetailArgs, region string) (*api.C
 //   - *api.DeleteAppResult: the result of delete app
 //   - error: nil if success otherwise the specific error
 func (c *Client) DeleteApp(args *api.DeleteAppArgs, region string) (*api.DeleteAppResult, error) {
-	return api.DeleteApp(c, region, args)
+	return api.DeleteApp(c.DefaultClient, region, args)
 }
 
 // ListPod - list pod of app with the specific parameters
@@ -244,7 +226,7 @@ func (c *Client) DeleteApp(args *api.DeleteAppArgs, region string) (*api.DeleteA
 //   - *api.ListPodResult: the result of list pod of app, contains pod info
 //   - error: nil if success otherwise the specific error
 func (c *Client) ListPod(args *api.ListPodArgs, region string) (*api.ListPodResult, error) {
-	return api.ListPod(c, region, args)
+	return api.ListPod(c.DefaultClient, region, args)
 }
 
 // BlockPod - block pod with the specific parameters
@@ -257,7 +239,7 @@ func (c *Client) ListPod(args *api.ListPodArgs, region string) (*api.ListPodResu
 //   - *api.BlockPodResult: the result of block pod
 //   - error: nil if success otherwise the specific error
 func (c *Client) BlockPod(args *api.BlockPodArgs, region string) (*api.BlockPodResult, error) {
-	return api.BlockPod(c, region, args)
+	return api.BlockPod(c.DefaultClient, region, args)
 }
 
 // DeletePod - delete pod with the specific parameters
@@ -270,7 +252,7 @@ func (c *Client) BlockPod(args *api.BlockPodArgs, region string) (*api.BlockPodR
 //   - *api.DeletePodResult: the result of delete pod
 //   - error: nil if success otherwise the specific error
 func (c *Client) DeletePod(args *api.DeletePodArgs, region string) (*api.DeletePodResult, error) {
-	return api.DeletePod(c, region, args)
+	return api.DeletePod(c.DefaultClient, region, args)
 }
 
 // ListBriefResPool - list res pool brief info with the specific parameters
@@ -283,7 +265,7 @@ func (c *Client) DeletePod(args *api.DeletePodArgs, region string) (*api.DeleteP
 //   - *api.ListBriefResPoolResult: the result of list res pool brief, contains res pool brief info
 //   - error: nil if success otherwise the specific error
 func (c *Client) ListBriefResPool(args *api.ListBriefResPoolArgs, region string) (*api.ListBriefResPoolResult, error) {
-	return api.ListBriefResPool(c, region, args)
+	return api.ListBriefResPool(c.DefaultClient, region, args)
 }
 
 // ResPoolDetail - res pool detail with the specific parameters
@@ -296,5 +278,5 @@ func (c *Client) ListBriefResPool(args *api.ListBriefResPoolArgs, region string)
 //   - *api.ResPoolDetailResult: the result of res pool detail, contains res pool detail info
 //   - error: nil if success otherwise the specific error
 func (c *Client) ResPoolDetail(args *api.ResPoolDetailArgs, region string) (*api.ResPoolDetailResult, error) {
-	return api.ResPoolDetail(c, region, args)
+	return api.ResPoolDetail(c.DefaultClient, region, args)
 }

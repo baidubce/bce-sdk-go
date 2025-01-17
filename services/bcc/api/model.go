@@ -1626,10 +1626,11 @@ type CreateSecurityGroupArgs struct {
 }
 
 type ListSecurityGroupArgs struct {
-	Marker     string
-	MaxKeys    int
-	InstanceId string
-	VpcId      string
+	Marker           string
+	MaxKeys          int
+	InstanceId       string
+	VpcId            string
+	SecurityGroupId  string
 }
 
 type CreateSecurityGroupResult struct {

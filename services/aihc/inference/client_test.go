@@ -2,13 +2,14 @@ package inference
 
 import (
 	"encoding/json"
-	"github.com/baidubce/bce-sdk-go/services/aihc/inference/api"
-	"github.com/baidubce/bce-sdk-go/util/log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"testing"
+
+	"github.com/baidubce/bce-sdk-go/services/aihc/inference/api"
+	"github.com/baidubce/bce-sdk-go/util/log"
 )
 
 var (
