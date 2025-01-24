@@ -170,6 +170,8 @@ type InstanceModel struct {
 	OsName                 string                 `json:"osName"`
 	ImageName              string                 `json:"imageName"`
 	ImageType              string                 `json:"imageType"`
+	CpuThreadConfig        string                 `json:"cpuThreadConfig"`
+	NumaConfig             string                 `json:"numaConfig"`
 }
 
 type DeploySetSimpleModel struct {
@@ -477,7 +479,7 @@ type GetInstOccupyStocksOfVmArgs struct {
 
 type OccupyStockFlavor struct {
 	Spec        string `json:"spec"`
-	RootOnLocal *bool   `json:"rootOnLocal,omitempty"`
+	RootOnLocal *bool  `json:"rootOnLocal,omitempty"`
 	ZoneName    string `json:"logicalZone"`
 }
 
@@ -578,6 +580,8 @@ type CreateInstanceBySpecArgs struct {
 	ResGroupId                 string           `json:"resGroupId,omitempty"`
 	EnableJumboFrame           bool             `json:"enableJumboFrame"`
 	EhcClusterId               string           `json:"ehcClusterId,omitempty"`
+	CpuThreadConfig            string           `json:"cpuThreadConfig"`
+	NumaConfig                 string           `json:"numaConfig"`
 }
 
 type CreateInstanceBySpecArgsV2 struct {
@@ -959,6 +963,7 @@ type ResizeInstanceArgs struct {
 	EphemeralDisks     []EphemeralDisk `json:"ephemeralDisks,omitempty"`
 	Spec               string          `json:"spec"`
 	LiveResize         bool            `json:"liveResize"`
+	EnableJumboFrame   *bool           `json:"enableJumboFrame"`
 	ClientToken        string          `json:"-"`
 }
 
@@ -1509,6 +1514,12 @@ type GetAvailableDiskInfoResult struct {
 	DiskZoneResources  []DiskZoneResource `json:"diskZoneResources"`
 }
 
+type ListPurchasableDisksInfoResult struct {
+	CdsUsedCapacityGB  string     `json:"cdsUsedCapacityGB"`
+	CdsTotalCapacityGB string     `json:"cdsTotalCapacityGB"`
+	DiskInfos          []DiskInfo `json:"diskInfos"`
+}
+
 type AttachVolumeArgs struct {
 	InstanceId string `json:"instanceId"`
 }
@@ -1626,11 +1637,11 @@ type CreateSecurityGroupArgs struct {
 }
 
 type ListSecurityGroupArgs struct {
-	Marker           string
-	MaxKeys          int
-	InstanceId       string
-	VpcId            string
-	SecurityGroupId  string
+	Marker          string
+	MaxKeys         int
+	InstanceId      string
+	VpcId           string
+	SecurityGroupId string
 }
 
 type CreateSecurityGroupResult struct {
@@ -2444,8 +2455,9 @@ type IdMapping struct {
 }
 
 type BatchResizeInstanceArgs struct {
-	Spec           string   `json:"spec"`
-	InstanceIdList []string `json:"instanceIdList"`
+	Spec             string   `json:"spec"`
+	InstanceIdList   []string `json:"instanceIdList"`
+	EnableJumboFrame *bool    `json:"enableJumboFrame"`
 }
 
 type BatchResizeInstanceResults struct {

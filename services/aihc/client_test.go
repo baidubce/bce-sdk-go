@@ -18,6 +18,7 @@ var (
 
 	RESOURCE_POOL_ID string
 	QUEUE_NAME       string
+	AIJobID          string
 )
 
 // For security reason, ak/sk should not hard write here.
@@ -208,4 +209,258 @@ func TestGetQueue(t *testing.T) {
 		return
 	}
 	t.Logf("GetQueue success:\n%s", string(resultJSON))
+}
+
+func TestListJobs(t *testing.T) {
+	testName := "TestListJobs"
+	req := &v1.OpenAPIJobListRequest{
+		ResourcePoolID: RESOURCE_POOL_ID,
+		PageNo:         1,
+		PageSize:       3,
+	}
+	result, err := AIHC_CLIENT.ListJobs(req)
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	if result == nil {
+		t.Error("Result should not be nil")
+		return
+	}
+	// 使用 t.Logf 输出详细信息
+	resultJSON, err := json.MarshalIndent(result, "", "    ")
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	t.Logf("ListJobs success:\n%s", string(resultJSON))
+}
+
+func TestGetAIJob(t *testing.T) {
+	testName := "TestGetAIJob"
+	result, err := AIHC_CLIENT.GetJob(AIJobID, RESOURCE_POOL_ID)
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		t.Errorf("GetAIJob failed: %v", err)
+		return
+	}
+	if result == nil {
+		t.Error("Result should not be nil")
+		return
+	}
+	// 使用 t.Logf 输出详细信息
+	resultJSON, err := json.MarshalIndent(result, "", "    ")
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		t.Errorf("GetAIJob failed1: %v", err)
+		return
+	}
+	t.Logf("GetAIJob success:\n%s", string(resultJSON))
+}
+
+func TestDeleteJob(t *testing.T) {
+	testName := "TestDeleteJob"
+	result, err := AIHC_CLIENT.DeleteJob(AIJobID, RESOURCE_POOL_ID)
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	if result == nil {
+		t.Error("Result should not be nil")
+		return
+	}
+	// 使用 t.Logf 输出详细信息
+	resultJSON, err := json.MarshalIndent(result, "", "    ")
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	t.Logf("DeleteAIJob success:\n%s", string(resultJSON))
+}
+
+func TestCreateJob(t *testing.T) {
+	testName := "TestCreateJob"
+	result, err := AIHC_CLIENT.CreateJob(&v1.OpenAPIJobCreateRequest{
+		Name:                 "",
+		Queue:                "",
+		JobFramework:         "",
+		JobSpec:              v1.OpenAPIAIJobSpec{},
+		FaultTolerance:       false,
+		Labels:               nil,
+		Priority:             "",
+		Datasources:          nil,
+		FaultToleranceConfig: v1.OpenAPIJobFaultToleranceConfig{},
+		AlertConfig:          nil,
+		EnableBccl:           false,
+	}, RESOURCE_POOL_ID)
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	if result == nil {
+		t.Error("Result should not be nil")
+		return
+	}
+	// 使用 t.Logf 输出详细信息
+	resultJSON, err := json.MarshalIndent(result, "", "    ")
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	t.Logf("CreateAIJob success:\n%s", string(resultJSON))
+}
+
+func TestUpadateJob(t *testing.T) {
+	testName := "TestUpdateJob"
+	result, err := AIHC_CLIENT.UpdateJob(&v1.OpenAPIJobUpdateRequest{
+		Priority: "",
+	}, AIJobID, RESOURCE_POOL_ID)
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	if result == nil {
+		t.Error("Result should not be nil")
+		return
+	}
+	// 使用 t.Logf 输出详细信息
+	resultJSON, err := json.MarshalIndent(result, "", "    ")
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	t.Logf("UpdateAIJob success:\n%s", string(resultJSON))
+}
+
+func TestStopJob(t *testing.T) {
+	testName := "TestStopJob"
+	result, err := AIHC_CLIENT.StopJob(AIJobID, RESOURCE_POOL_ID)
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	if result == nil {
+		t.Error("Result should not be nil")
+		return
+	}
+	// 使用 t.Logf 输出详细信息
+	resultJSON, err := json.MarshalIndent(result, "", "    ")
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	t.Logf("StopAIJob success:\n%s", string(resultJSON))
+}
+
+func TestGetTaskEvents(t *testing.T) {
+	testName := "TestCreateTaskEvents"
+	result, err := AIHC_CLIENT.GetTaskEvent(&v1.GetJobEventsRequest{
+		Namespace:      "",
+		JobFramework:   "",
+		StartTime:      "",
+		EndTime:        "",
+		JobID:          "",
+		ResourcePoolID: "",
+	})
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	if result == nil {
+		t.Error("Result should not be nil")
+		return
+	}
+	// 使用 t.Logf 输出详细信息
+	resultJSON, err := json.MarshalIndent(result, "", "    ")
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	t.Logf("GetTaskEvent success:\n%s", string(resultJSON))
+}
+
+func TestGetPodEvents(t *testing.T) {
+
+	testName := "TestGetPodEvents"
+	result, err := AIHC_CLIENT.GetPodEvents(&v1.GetPodEventsRequest{
+		JobID:          "",
+		Namespace:      "",
+		JobFramework:   "",
+		StartTime:      "",
+		EndTime:        "",
+		ResourcePoolID: "",
+		PodName:        "",
+	})
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	if result == nil {
+		t.Error("Result should not be nil")
+		return
+	}
+	// 使用 t.Logf 输出详细信息
+	resultJSON, err := json.MarshalIndent(result, "", "    ")
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	t.Logf("GetPodEvent success:\n%s", string(resultJSON))
+}
+
+func TestGetPodLogs(t *testing.T) {
+	testName := "TestGetPodLogs"
+	result, err := AIHC_CLIENT.GetPodLogs(&v1.GetPodLogsRequest{
+		JobID:          "",
+		ResourcePoolID: "",
+		PodName:        "",
+		Namespace:      "",
+		StartTime:      "",
+		EndTime:        "",
+		MaxLines:       "",
+		Container:      "",
+		Chunk:          "",
+	})
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	if result == nil {
+		t.Error("Result should not be nil")
+		return
+	}
+	// 使用 t.Logf 输出详细信息
+	resultJSON, err := json.MarshalIndent(result, "", "    ")
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	t.Logf("GetPodLogs success:\n%s", string(resultJSON))
+}
+
+func TestGetJobNodesList(t *testing.T) {
+	testName := "TestGetJobNodesList"
+	result, err := AIHC_CLIENT.GetJobNodesList(AIJobID, RESOURCE_POOL_ID, "")
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	if result == nil {
+		t.Error("Result should not be nil")
+		return
+	}
+	// 使用 t.Logf 输出详细信息
+	resultJSON, err := json.MarshalIndent(result, "", "    ")
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	t.Logf("GetJobNodesList success:\n%s", string(resultJSON))
+}
+
+func TestGetTaskMetrics(t *testing.T) {
+	testName := "TestGetTaskMetrics"
+	result, err := AIHC_CLIENT.GetTaskMetrics(&v1.GetTaskMetricsRequest{
+		StartTime:      "",
+		ResourcePoolID: "",
+		EndTime:        "",
+		TimeStep:       "",
+		MetricType:     "",
+		JobID:          "",
+		Namespace:      "",
+		RateInterval:   "",
+	})
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	if result == nil {
+		t.Error("Result should not be nil")
+		return
+	}
+	// 使用 t.Logf 输出详细信息
+	resultJSON, err := json.MarshalIndent(result, "", "    ")
+	if !ExpectEqual(t.Errorf, err, nil, testName) {
+		return
+	}
+	t.Logf("GetTaskMetrics success:\n%s", string(resultJSON))
 }

@@ -15,6 +15,7 @@ const (
 	REQUEST_RESOURCE_POOL_URL = "/resourcepools"
 	REQUEST_NODE_URL          = "/nodes"
 	REQUEST_QUEUE_URL         = "/queue"
+	REQUEST_JOB_URL           = "/aijobs"
 )
 
 type Client struct {
@@ -146,8 +147,266 @@ func (c *Client) ListQueue(resourcePoolID string, args *v1.ListQueueRequest) (re
 	return result, err
 }
 
+func (c *Client) GetJob(jobID, resourcePoolId string) (*v1.OpenAPIGetJobResponse, error) {
+	if resourcePoolId == "" {
+		return nil, fmt.Errorf("resourcePoolId is empty")
+	}
+	if jobID == "" {
+		return nil, fmt.Errorf("jobID is empty")
+	}
+	result := &v1.OpenAPIGetJobResponse{}
+	err := bce.NewRequestBuilder(c.GetBceClient()).
+		WithMethod(http.GET).
+		WithURL(getAIJobUri(jobID)).
+		WithQueryParamFilter("resourcePoolId", resourcePoolId).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+func (c *Client) DeleteJob(jobID, resourcePoolId string) (*v1.OpenAPIJobDeleteResponse, error) {
+	if resourcePoolId == "" {
+		return nil, fmt.Errorf("resourcePoolId is empty")
+	}
+	if jobID == "" {
+		return nil, fmt.Errorf("jobID is empty")
+	}
+	result := &v1.OpenAPIJobDeleteResponse{}
+	err := bce.NewRequestBuilder(c.GetBceClient()).
+		WithMethod(http.DELETE).
+		WithURL(getAIJobUri(jobID)).
+		WithQueryParamFilter("resourcePoolId", resourcePoolId).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+func (c *Client) CreateJob(job *v1.OpenAPIJobCreateRequest, resourcePoolId string) (*v1.OpenAPIJobCreateResponse, error) {
+	if job == nil {
+		return nil, fmt.Errorf("job is empty")
+	}
+	if resourcePoolId == "" {
+		return nil, fmt.Errorf("resourcePoolId is empty")
+	}
+	if job.Name == "" {
+		return nil, fmt.Errorf("job name is empty")
+	}
+	result := &v1.OpenAPIJobCreateResponse{}
+	err := bce.NewRequestBuilder(c.GetBceClient()).
+		WithMethod(http.POST).
+		WithURL(listJobUri()).
+		WithBody(job).
+		WithQueryParamFilter("resourcePoolId", resourcePoolId).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+func (c *Client) UpdateJob(job *v1.OpenAPIJobUpdateRequest, jobID, resourcePoolId string) (*v1.OpenAPIJobUpdateResponse, error) {
+	if job == nil {
+		return nil, fmt.Errorf("job is empty")
+	}
+	if resourcePoolId == "" {
+		return nil, fmt.Errorf("resourcePoolId is empty")
+	}
+	if job.Priority == "" {
+		return nil, fmt.Errorf("job priority is empty")
+	}
+	result := &v1.OpenAPIJobUpdateResponse{}
+	err := bce.NewRequestBuilder(c.GetBceClient()).
+		WithMethod(http.PUT).
+		WithURL(getAIJobUri(jobID)).
+		WithQueryParamFilter("resourcePoolId", resourcePoolId).
+		WithBody(job).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+func (c *Client) StopJob(jobID, resourcePoolId string) (*v1.OpenAPIJobStopResponse, error) {
+	if jobID == "" {
+		return nil, fmt.Errorf("jobID is empty")
+	}
+	if resourcePoolId == "" {
+		return nil, fmt.Errorf("resourcePoolId is empty")
+	}
+	result := &v1.OpenAPIJobStopResponse{}
+	err := bce.NewRequestBuilder(c.GetBceClient()).
+		WithMethod(http.POST).
+		WithURL(getStopAIJobUri(jobID)).
+		WithQueryParamFilter("resourcePoolId", resourcePoolId).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+func (c *Client) GetJobNodesList(jobId, resourcePoolId, namespace string) (*v1.JobNodesListResponse, error) {
+	if jobId == "" {
+		return nil, fmt.Errorf("jobID is empty")
+	}
+	if resourcePoolId == "" {
+		return nil, fmt.Errorf("resourcePoolId is empty")
+	}
+	result := &v1.JobNodesListResponse{}
+	err := bce.NewRequestBuilder(c.GetBceClient()).
+		WithMethod(http.GET).
+		WithURL(getJobNodeListUri(jobId)).
+		WithQueryParamFilter("resourcePoolId", resourcePoolId).
+		WithQueryParamFilter("nameSpace", namespace).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+func (c *Client) GetTaskEvent(args *v1.GetJobEventsRequest) (*v1.GetJobEventsResponse, error) {
+	if args.JobID == "" {
+		return nil, fmt.Errorf("jobID is empty")
+	}
+	if args.ResourcePoolID == "" {
+		return nil, fmt.Errorf("resourcePoolId is empty")
+	}
+	if args.JobFramework == "" {
+		return nil, fmt.Errorf("jobFramework is empty")
+	}
+	result := &v1.GetJobEventsResponse{}
+	err := bce.NewRequestBuilder(c.GetBceClient()).
+		WithMethod(http.GET).
+		WithURL(getAIJobEventsUri(args.JobID)).
+		WithQueryParamFilter("resourcePoolId", args.ResourcePoolID).
+		WithQueryParamFilter("startTime", args.StartTime).
+		WithQueryParamFilter("endTime", args.EndTime).
+		WithQueryParamFilter("jobFramework", args.JobFramework).
+		WithQueryParamFilter("nameSpace", args.Namespace).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+func (c *Client) GetPodEvents(args *v1.GetPodEventsRequest) (*v1.GetPodEventsResponse, error) {
+	if args.JobID == "" {
+		return nil, fmt.Errorf("jobID is empty")
+	}
+	if args.ResourcePoolID == "" {
+		return nil, fmt.Errorf("resourcePoolId is empty")
+	}
+	if args.JobFramework == "" {
+		return nil, fmt.Errorf("jobFramework is empty")
+	}
+	if args.PodName == "" {
+		return nil, fmt.Errorf("podName is empty")
+	}
+	result := &v1.GetPodEventsResponse{}
+	err := bce.NewRequestBuilder(c.GetBceClient()).
+		WithMethod(http.GET).
+		WithURL(getPodEventsUri(args.JobID, args.PodName)).
+		WithQueryParamFilter("resourcePoolId", args.ResourcePoolID).
+		WithQueryParamFilter("nameSpace", args.Namespace).
+		WithQueryParamFilter("startTime", args.StartTime).
+		WithQueryParamFilter("endTime", args.EndTime).
+		WithQueryParamFilter("nameSpace", args.Namespace).
+		WithQueryParamFilter("jobFramework", args.JobFramework).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+func (c *Client) GetPodLogs(args *v1.GetPodLogsRequest) (*v1.GetPodLogResponse, error) {
+	if args.JobID == "" {
+		return nil, fmt.Errorf("jobID is empty")
+	}
+	if args.ResourcePoolID == "" {
+		return nil, fmt.Errorf("resourcePoolId is empty")
+	}
+	if args.PodName == "" {
+		return nil, fmt.Errorf("podName is empty")
+	}
+	result := &v1.GetPodLogResponse{}
+	err := bce.NewRequestBuilder(c.GetBceClient()).
+		WithMethod(http.GET).
+		WithURL(getAIJobPodLogsUri(args.JobID, args.PodName)).
+		WithQueryParamFilter("resourcePoolId", args.ResourcePoolID).
+		WithQueryParamFilter("startTime", args.StartTime).
+		WithQueryParamFilter("endTime", args.EndTime).
+		WithQueryParamFilter("maxLines", args.MaxLines).
+		WithQueryParamFilter("namespace", args.Namespace).
+		WithQueryParamFilter("chunck", args.Chunk).
+		WithQueryParamFilter("container", args.Container).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+func (c *Client) GetTaskMetrics(args *v1.GetTaskMetricsRequest) (*v1.GetTaskMetricsResponse, error) {
+	if args.JobID == "" {
+		return nil, fmt.Errorf("jobID is empty")
+	}
+	if args.ResourcePoolID == "" {
+		return nil, fmt.Errorf("resourcePoolId is empty")
+	}
+	result := &v1.GetTaskMetricsResponse{}
+	err := bce.NewRequestBuilder(c.GetBceClient()).
+		WithMethod(http.GET).
+		WithURL(getJobMetricsUri(args.JobID)).
+		WithQueryParamFilter("resourcePoolId", args.ResourcePoolID).
+		WithQueryParamFilter("startTime", args.StartTime).
+		WithQueryParamFilter("endTime", args.EndTime).
+		WithQueryParamFilter("timeStep", args.TimeStep).
+		WithQueryParamFilter("nameSpace", args.Namespace).
+		WithQueryParamFilter("rateInterval", args.RateInterval).
+		WithQueryParamFilter("metricType", args.MetricType).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+func (c *Client) GetWebSSHUrl(arg *v1.GetWebShellURLRequest) (*v1.GetWebShellURLResponse, error) {
+	if arg.JobID == "" {
+		return nil, fmt.Errorf("jobID is empty")
+	}
+	if arg.ResourcePoolID == "" {
+		return nil, fmt.Errorf("resourcePoolId is empty")
+	}
+	if arg.PodName == "" {
+		return nil, fmt.Errorf("podName is empty")
+	}
+	result := &v1.GetWebShellURLResponse{}
+	err := bce.NewRequestBuilder(c.GetBceClient()).
+		WithMethod(http.GET).
+		WithURL(getWebSSHUri(arg.JobID, arg.PodName)).
+		WithQueryParamFilter("resourcePoolId", arg.ResourcePoolID).
+		WithQueryParamFilter("podName", arg.PodName).
+		WithQueryParamFilter("nameSpace", arg.Namespace).
+		WithQueryParamFilter("pingTimeoutSecond", arg.PingTimeoutSecond).
+		WithQueryParamFilter("handshakeTimeoutSecond", arg.HandshakeTimeoutSecond).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+func (c *Client) ListJobs(args *v1.OpenAPIJobListRequest) (*v1.OpenAPIJobListResponse, error) {
+	if args.ResourcePoolID == "" {
+		return nil, fmt.Errorf("resourcePoolId is empty")
+	}
+	result := &v1.OpenAPIJobListResponse{}
+	err := bce.NewRequestBuilder(c.GetBceClient()).
+		WithMethod(http.GET).
+		WithURL(listJobUri()).
+		WithQueryParamFilter("resourcePoolId", args.ResourcePoolID).
+		WithQueryParamFilter("pageNo", strconv.Itoa(args.PageNo)).
+		WithQueryParamFilter("pageSize", strconv.Itoa(args.PageSize)).
+		WithQueryParamFilter("queue", args.Queue).
+		WithQueryParamFilter("order", args.Order).
+		WithQueryParamFilter("orderBy", args.OrderBy).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
 func listResourcePoolUri() string {
 	return URI_PREFIX + REQUEST_RESOURCE_POOL_URL
+}
+func listJobUri() string {
+	return URI_PREFIX + REQUEST_JOB_URL
 }
 
 func getResourcePoolUriWithID(resourcePoolID string) string {
@@ -164,4 +423,40 @@ func listQueueUri(resourcePoolID string) string {
 
 func getQueueUri(resourcePoolID, queueName string) string {
 	return getResourcePoolUriWithID(resourcePoolID) + REQUEST_QUEUE_URL + "/" + queueName
+}
+
+func getAIJobUri(jobID string) string {
+	return listJobUri() + "/" + jobID
+}
+
+func getStopAIJobUri(jobID string) string {
+	return getAIJobUri(jobID) + "/stop"
+}
+
+func getAIJobEventsUri(jobID string) string {
+	return getAIJobUri(jobID) + "/events"
+}
+
+func getPodEventsUri(jobID, podName string) string {
+	return getAIJobUri(jobID) + "/pods/" + podName + "/events"
+}
+
+func getAIJobPodLogsUri(jobID, podName string) string {
+	return getAIJobUri(jobID) + "/pods/" + podName + "/logs"
+}
+
+func getJobNodeListUri(jobID string) string {
+	return getAIJobUri(jobID) + "/nodes"
+}
+
+func getJobMetricsUri(jobID string) string {
+	return getAIJobUri(jobID) + "/metrics"
+}
+
+func getWebSSHUri(jobID, podName string) string {
+	return getAIJobUri(jobID) + "/pods/" + podName + "/webterminal"
+}
+
+func getCreateNotifyRuleUri() string {
+	return listJobUri() + "/notify/rule"
 }

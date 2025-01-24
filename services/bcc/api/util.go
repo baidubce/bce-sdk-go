@@ -71,6 +71,7 @@ const (
 	REQUEST_INSTANCE_PRICE_URI               = "/instance/price"
 	REQUEST_INSTANCE_BY_SPEC_URI             = "/instanceBySpec"
 	REQUEST_VOLUME_DISK_URI                  = "/volume/disk"
+	REQUEST_VOLUME_DISK_QUOTA_URI            = "/volume/disk/quota"
 	REQUEST_TYPE_ZONE_URI                    = "/instance/flavorZones"
 	REQUEST_ENI_URI                          = "/eni"
 	REQUEST_KEYPAIR_URI                      = "/keypair"
@@ -212,6 +213,10 @@ func getCancelAutoRenewVolumeUri() string {
 
 func getAvailableDiskInfo() string {
 	return URI_PREFIXV2 + REQUEST_VOLUME_DISK_URI
+}
+
+func listPurchasableDisksInfo() string {
+	return URI_PREFIXV2 + REQUEST_VOLUME_DISK_QUOTA_URI
 }
 
 func getSecurityGroupUri() string {

@@ -69,6 +69,17 @@ type HTTPSConfig struct {
 	Http2Enabled bool   `json:"http2Enabled,omitempty"`
 }
 
+type DomainVerifyRecord struct {
+	Domain  string             `json:"domain"`
+	Type    string             `json:"type"`
+	Details DomainVerifyDetail `json:"details"`
+}
+
+type DomainVerifyDetail struct {
+	VerifyDomain string `json:"verifyDomain"`
+	TargetTxt    string `json:"targetTxt"`
+}
+
 // GetDomainConfig - get the configuration for the specified domain
 // For details, please refer https://cloud.baidu.com/doc/CDN-ABROAD/s/9kbsye6k8
 //
@@ -468,4 +479,31 @@ func GetTags(cli bce.Client, domain string) ([]model.TagModel, error) {
 	}
 
 	return respObj.Tags, nil
+}
+
+// GetDomainVerifyRecord - get ABROAD-CDN domain how to verify.
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - domain: the specified domain
+//
+// RETURNS:
+//   - *DomainVerifyRecord: the verification record of the ABROAD-CDN
+//   - error: nil if success otherwise the specific error
+func GetDomainVerifyRecord(cli bce.Client, domain string) (*DomainVerifyRecord, error) {
+	urlPath := fmt.Sprintf("/v2/abroad/domain/%s/how-to-verify", domain)
+
+	respObj := struct {
+		HowToVerify []DomainVerifyRecord `json:"howToVerify"`
+	}{}
+
+	err := httpRequest(cli, "GET", urlPath, nil, nil, &respObj)
+	if err != nil {
+		return nil, err
+	}
+	if len(respObj.HowToVerify) == 0 {
+		return nil, errors.New("no verify record")
+	}
+
+	return &respObj.HowToVerify[0], nil
 }

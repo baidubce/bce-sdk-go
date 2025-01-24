@@ -19,6 +19,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"github.com/baidubce/bce-sdk-go/bce"
@@ -809,6 +810,28 @@ func GetAvailableDiskInfo(cli bce.Client, zoneName string) (*GetAvailableDiskInf
 	return jsonBody, nil
 }
 
+func ListPurchasableDisksInfo(cli bce.Client, zoneName string) (*ListPurchasableDisksInfoResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(listPurchasableDisksInfo())
+	req.SetMethod(http.GET)
+	req.SetParam("zoneName", zoneName)
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	fmt.Println(resp)
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	jsonBody := &ListPurchasableDisksInfoResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
 // DeletePrepayVolume - delete the volumes for prepay
 //
 // PARAMS:
@@ -964,5 +987,3 @@ func ModifySnapshotAttribute(cli bce.Client, snapshotId string, args *ModifySnap
 	defer func() { resp.Body().Close() }()
 	return nil
 }
-
-

@@ -115,9 +115,9 @@ func TestSendCustomRequest(t *testing.T) {
 	checkClientErr(t, "SendCustomRequest", err)
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Test function about operating domain.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func TestListDomains(t *testing.T) {
 	domains, _, err := testCli.ListDomains("")
 
@@ -246,9 +246,9 @@ func TestGetBackOriginNodes(t *testing.T) {
 	checkClientErr(t, "GetBackOriginNodes", err)
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Test function about CRUD domain config.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func TestGetDomainConfig(t *testing.T) {
 	domainConfig, err := testCli.GetDomainConfig(testAuthorityDomain)
 
@@ -792,9 +792,9 @@ func TestGetTags(t *testing.T) {
 	checkClientErr(t, "GetContentEncoding", err)
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Test function about purge/prefetch.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func TestPurge(t *testing.T) {
 	purgedId, err := testCli.Purge([]api.PurgeTask{
 		{
@@ -855,9 +855,9 @@ func TestGetCacheOpRecords(t *testing.T) {
 	checkClientErr(t, "GetCacheOpRecords", err)
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Test function about DSA.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func TestEnableDsa(t *testing.T) {
 	err := testCli.EnableDsa()
 	checkClientErr(t, "EnableDsa", err)
@@ -898,9 +898,9 @@ func TestSetDsaConfig(t *testing.T) {
 	checkClientErr(t, "SetDsaConfig", err)
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Test function about log.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func TestGetDomainLog(t *testing.T) {
 	endTs := time.Now().Unix()
 	startTs := endTs - 24*60*60
@@ -936,9 +936,9 @@ func TestGetMultiDomainLog(t *testing.T) {
 	checkClientErr(t, "GetMultiDomainLog", err)
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Test function about query statistics.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func TestGetAvgSpeed(t *testing.T) {
 	queryCondition := &api.QueryCondition{}
 	avgSpeedDetails, err := testCli.GetAvgSpeed(queryCondition)
@@ -984,6 +984,24 @@ func TestGetPvInRegion(t *testing.T) {
 	checkClientErr(t, "GetPvByRegion", err)
 }
 
+func TestGetPvByServiceArea(t *testing.T) {
+	queryCondition := &api.QueryCondition{}
+	pvDetail, err := testCli.GetPvByServiceArea(queryCondition, api.OutsideMainlandChina)
+
+	data, _ := json.Marshal(pvDetail)
+	t.Logf("pvDetail: %s", string(data))
+	checkClientErr(t, "TestGetPvByServiceArea", err)
+}
+
+func TestGetPvByCountry(t *testing.T) {
+	queryCondition := &api.QueryCondition{}
+	pvCountryDetail, err := testCli.GetPvByCountry(queryCondition, "uk")
+
+	data, _ := json.Marshal(pvCountryDetail)
+	t.Logf("pvCountryDetail: %s", string(data))
+	checkClientErr(t, "TestGetPvByCountry", err)
+}
+
 func TestGetUv(t *testing.T) {
 	queryCondition := &api.QueryCondition{}
 	uvDetails, err := testCli.GetUv(queryCondition)
@@ -1027,6 +1045,24 @@ func TestGetFlowByRegion(t *testing.T) {
 	checkClientErr(t, "GetFlowByRegion", err)
 }
 
+func TestGetFlowByServiceArea(t *testing.T) {
+	queryCondition := &api.QueryCondition{}
+	flowDetails, err := testCli.GetFlowByServiceArea(queryCondition, api.OutsideMainlandChina)
+
+	data, _ := json.Marshal(flowDetails)
+	t.Logf("flowDetails: %s", string(data))
+	checkClientErr(t, "TestGetFlowByServiceArea", err)
+}
+
+func TestGetFlowByCountry(t *testing.T) {
+	queryCondition := &api.QueryCondition{}
+	flowCountryDetail, err := testCli.GetFlowByCountry(queryCondition, "all")
+
+	data, _ := json.Marshal(flowCountryDetail)
+	t.Logf("flowCountryDetail: %s", string(data))
+	checkClientErr(t, "TestGetFlowByCountry", err)
+}
+
 func TestGetSrcFlow(t *testing.T) {
 	queryCondition := &api.QueryCondition{}
 	flowDetails, err := testCli.GetSrcFlow(queryCondition)
@@ -1045,6 +1081,15 @@ func TestGetRealHit(t *testing.T) {
 	checkClientErr(t, "GetRealHit", err)
 }
 
+func TestGetRealHitByServiceArea(t *testing.T) {
+	queryCondition := &api.QueryCondition{}
+	hitDetails, err := testCli.GetRealHitByServiceArea(queryCondition, api.OutsideMainlandChina)
+
+	data, _ := json.Marshal(hitDetails)
+	t.Logf("hitDetails: %s", string(data))
+	checkClientErr(t, "TestGetRealHitByServiceArea", err)
+}
+
 func TestGetPvHit(t *testing.T) {
 	queryCondition := &api.QueryCondition{}
 	hitDetails, err := testCli.GetPvHit(queryCondition)
@@ -1052,6 +1097,15 @@ func TestGetPvHit(t *testing.T) {
 	data, _ := json.Marshal(hitDetails)
 	t.Logf("hitDetails: %s", string(data))
 	checkClientErr(t, "GetPvHit", err)
+}
+
+func TestGetPvHitByServiceArea(t *testing.T) {
+	queryCondition := &api.QueryCondition{}
+	hitDetails, err := testCli.GetPvHitByServiceArea(queryCondition, api.OutsideMainlandChina)
+
+	data, _ := json.Marshal(hitDetails)
+	t.Logf("hitDetails: %s", string(data))
+	checkClientErr(t, "TestGetPvHitByServiceArea", err)
 }
 
 func TestGetHttpCode(t *testing.T) {
@@ -1079,6 +1133,24 @@ func TestGetHttpCodeByRegion(t *testing.T) {
 	data, _ := json.Marshal(httpCodeDetails)
 	t.Logf("httpCodeDetails: %s", string(data))
 	checkClientErr(t, "GetHttpCodeByRegion", err)
+}
+
+func TestGetHttpCodeByServiceArea(t *testing.T) {
+	queryCondition := &api.QueryCondition{}
+	httpCodeDetail, err := testCli.GetHttpCodeByServiceArea(queryCondition, api.OutsideMainlandChina)
+
+	data, _ := json.Marshal(httpCodeDetail)
+	t.Logf("httpCodeDetail: %s", string(data))
+	checkClientErr(t, "TestGetHttpCodeByServiceArea", err)
+}
+
+func TestGetHttpCodeByCountry(t *testing.T) {
+	queryCondition := &api.QueryCondition{}
+	httpCodeCountryDetail, err := testCli.GetHttpCodeByCountry(queryCondition, "hk")
+
+	data, _ := json.Marshal(httpCodeCountryDetail)
+	t.Logf("httpCodeCountryDetail: %s", string(data))
+	checkClientErr(t, "TestGetHttpCodeByCountry", err)
 }
 
 func TestGetTopNUrls(t *testing.T) {

@@ -1783,7 +1783,6 @@ func (c *Client) UnBindInstanceToTags(instanceId string, args *api.UnBindTagsReq
 	return api.UnBindInstanceToTags(c, instanceId, body)
 }
 
-
 func (c *Client) ListReservedInstances(args *api.ListReservedInstanceArgs) (*api.ListReservedInstanceResult, error) {
 	return api.ListReservedInstances(c, args)
 }
@@ -1913,6 +1912,10 @@ func (c *Client) CancelBidOrder(args *api.CancelBidOrderRequest) (*api.CreateBid
 //   - error: nil if success otherwise the specific error
 func (c *Client) GetAvailableDiskInfo(zoneName string) (*api.GetAvailableDiskInfoResult, error) {
 	return api.GetAvailableDiskInfo(c, zoneName)
+}
+
+func (c *Client) ListPurchasableDisksInfo(zoneName string) (*api.ListPurchasableDisksInfoResult, error) {
+	return api.ListPurchasableDisksInfo(c, zoneName)
 }
 
 // DeletePrepayVolume - delete the volumes for prepay

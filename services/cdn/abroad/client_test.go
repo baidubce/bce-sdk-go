@@ -479,3 +479,11 @@ func TestGetTags(t *testing.T) {
 	}
 	t.Logf("tags: %+v", tags)
 }
+
+func TestGetDomainVerifyRecord(t *testing.T) {
+	howToVerify, err := testCli.GetDomainVerifyRecord(testDomain)
+	if err != nil {
+		t.Fatalf("GetDomainVerifyRecord for %s failed: %s", testDomain, err)
+	}
+	t.Logf("GetDomainVerifyRecord for %s got: %+v", testDomain, howToVerify)
+}

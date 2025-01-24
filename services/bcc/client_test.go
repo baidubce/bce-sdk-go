@@ -1075,8 +1075,11 @@ func TestDelInstanceDeploySet(t *testing.T) {
 }
 
 func TestResizeInstanceBySpec(t *testing.T) {
+	var enableJumboFrame = new(bool)
+	*enableJumboFrame = false
 	resizeArgs := &api.ResizeInstanceArgs{
-		Spec: "Spec",
+		Spec:             "Spec",
+		EnableJumboFrame: enableJumboFrame,
 	}
 	err := BCC_CLIENT.ResizeInstanceBySpec(BCC_TestBccId, resizeArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -1275,6 +1278,15 @@ func TestGetAvailableDiskInfo(t *testing.T) {
 		fmt.Println("Get the specific zone flavor failed: ", err)
 	} else {
 		fmt.Println("Get the specific zone flavor success, result: ", res)
+	}
+}
+
+func TestListPurchasableDisksInfo(t *testing.T) {
+	zoneName := "cn-bj-c"
+	if res, err := BCC_CLIENT.ListPurchasableDisksInfo(zoneName); err != nil {
+		fmt.Println("ListPurchasableDisksInfo failed: ", err)
+	} else {
+		fmt.Println("ListPurchasableDisksInfo success, result: ", res)
 	}
 }
 
@@ -1599,12 +1611,15 @@ func TestListIdMappings(t *testing.T) {
 }
 
 func TestBatchResizeInstance(t *testing.T) {
+	var enableJumboFrame = new(bool)
+	*enableJumboFrame = false
 	listArgs := &api.BatchResizeInstanceArgs{
-		Spec: "spec",
+		Spec: "bcc.g5.c2m8",
 		InstanceIdList: []string{
 			"i-wQzV1qYZ",
 			"i-b1jcrdt5",
 		},
+		EnableJumboFrame: enableJumboFrame,
 	}
 	res, err := BCC_CLIENT.BatchResizeInstance(listArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -1937,14 +1952,14 @@ func TestGetInstOccupyStocksOfVm(t *testing.T) {
 	args := &api.GetInstOccupyStocksOfVmArgs{
 		Flavors: []api.OccupyStockFlavor{
 			{
-				Spec:   "bcc.g5.c4m16",
+				Spec:        "bcc.g5.c4m16",
 				RootOnLocal: &rootOnLocal,
-				ZoneName: "cn-bj-a",
+				ZoneName:    "cn-bj-a",
 			},
 			{
-				Spec:   "bcc.g5.c2m8",
+				Spec:        "bcc.g5.c2m8",
 				RootOnLocal: &rootOnLocal,
-				ZoneName: "cn-bj-a",
+				ZoneName:    "cn-bj-a",
 			},
 		},
 	}

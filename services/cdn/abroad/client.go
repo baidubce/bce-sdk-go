@@ -520,3 +520,15 @@ func (cli *Client) SetTags(domain string, tags []model.TagModel) error {
 func (cli *Client) GetTags(domain string) ([]model.TagModel, error) {
 	return api.GetTags(cli, domain)
 }
+
+// GetDomainVerifyRecord - get ABROAD-CDN domain how to verify.
+//
+// PARAMS:
+//   - domain: the specified domain
+//
+// RETURNS:
+//   - *DomainVerifyRecord: the verification record of the ABROAD-CDN
+//   - error: nil if success otherwise the specific error
+func (cli *Client) GetDomainVerifyRecord(domain string) (*api.DomainVerifyRecord, error) {
+	return api.GetDomainVerifyRecord(cli, domain)
+}

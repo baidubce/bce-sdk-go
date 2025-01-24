@@ -314,6 +314,346 @@ if err != nil {
 > 注意:
 > - 根据接口文档去填写具体的访问参数，接口链接为[队列详情](https://cloud.baidu.com/doc/AIHC/s/Hm569qc26)
 
+## 训练
+### 查询训练任务列表
+使用以下代码可以查询训练任务列表。
+```go
+// import "github.com/baidubce/bce-sdk-go/services/aihc"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+ak, sk, endpoint := ak_test, sk_test, endpoint_test
+client, _ := aihc.NewClient(ak, sk, endpoint)
+req := &v1.OpenAPIJobListRequest{
+ResourcePoolID: RESOURCE_POOL_ID,
+PageNo:         1,
+PageSize:       3,
+}
+result, err := client.ListJobs(req)
+
+if err != nil {
+panic(err)
+}
+jsonBytes, _ := json.Marshal(result)
+fmt.Println(string(jsonBytes))
+```
+
+> 注意:
+> - 根据接口文档去填写具体的访问参数，接口链接为[查询训练任务列表](https://cloud.baidu.com/doc/AIHC/s/rm56ipjsz)
+
+### 创建训练任务
+使用以下代码可以创建训练任务。
+```go
+// import "github.com/baidubce/bce-sdk-go/services/aihc"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+ak, sk, endpoint := ak_test, sk_test, endpoint_test
+resourcePoolID := RESOURCE_POOL_ID
+
+jobConfig := &v1.OpenAPIJobCreateRequest{
+Name: AIJobName,
+JobSpec: v1.OpenAPIAIJobSpec{
+Command:  `echo "hello sdk"; sleep infinity`,
+Replicas: 1,
+Image:    ImageID,
+Resources: []v1.OpenAPIResource{
+{
+Name:     "cpu",
+Quantity: 1,
+},
+},
+EnableRDMA: false,
+},
+EnableBccl: false,
+}
+client, _ := aihc.NewClient(ak, sk, endpoint)
+result, err := client.CreateJob(jobConfig, resourcePoolID)
+
+if err != nil {
+panic(err)
+}
+
+jsonBytes, _ := json.Marshal(result)
+fmt.Println(string(jsonBytes))
+```
+
+> 注意:
+> - 根据接口文档去填写具体的访问参数，接口链接为[创建训练任务](https://cloud.baidu.com/doc/AIHC/s/jm56inxn7)
+
+
+### 查询训练任务详情
+使用以下代码可以查询训练任务详情。
+```go
+// import "github.com/baidubce/bce-sdk-go/services/aihc"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+ak, sk, endpoint := ak_test, sk_test, endpoint_test
+resourcePoolID, JobID := RESOURCE_POOL_ID, AIJobID
+
+client, _ := aihc.NewClient(ak, sk, endpoint)
+result, err := client.GetJob(JobID, resourcePoolID)
+
+if err != nil {
+panic(err)
+}
+
+jsonBytes, _ := json.Marshal(result)
+fmt.Println(string(jsonBytes))
+```
+
+> 注意:
+> - 根据接口文档去填写具体的访问参数，接口链接为[查询训练任务详情](https://cloud.baidu.com/doc/AIHC/s/Cm56ir6ui)
+
+
+### 更新训练任务
+使用以下代码可以更新训练任务。
+```go
+// import "github.com/baidubce/bce-sdk-go/services/aihc"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+ak, sk, endpoint := ak_test, sk_test, endpoint_test
+resourcePoolID := RESOURCE_POOL_ID
+jobID := AIJobID
+
+jobConfig := &v1.OpenAPIJobUpdateRequest{
+Priority: "high",
+}
+client, _ := aihc.NewClient(ak, sk, endpoint)
+result, err := client.UpdateJob(jobConfig, jobID, resourcePoolID)
+
+if err != nil {
+panic(err)
+}
+jsonBytes, _ := json.Marshal(result)
+fmt.Println(string(jsonBytes))
+```
+
+> 注意:
+> - 根据接口文档去填写具体的访问参数，接口链接为[更新训练任务](https://cloud.baidu.com/doc/AIHC/s/um56issf8)
+
+### 停止训练任务
+使用以下代码可以停止训练任务。
+```go
+// import "github.com/baidubce/bce-sdk-go/services/aihc"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+ak, sk, endpoint := ak_test, sk_test, endpoint_test
+resourcePoolID := RESOURCE_POOL_ID
+jobID := AIJobID
+
+client, _ := aihc.NewClient(ak, sk, endpoint)
+result, err := client.StopJob(jobID, resourcePoolID)
+log.Infof("stop job result: %v", result)
+if err != nil {
+panic(err)
+}
+jsonBytes, _ := json.Marshal(result)
+fmt.Println(string(jsonBytes))
+```
+
+> 注意:
+> - 根据接口文档去填写具体的访问参数，接口链接为[停止训练任务](https://cloud.baidu.com/doc/AIHC/s/hm56izyfa)
+
+
+
+### 删除训练任务
+使用以下代码可以删除训练任务。
+```go
+// import "github.com/baidubce/bce-sdk-go/services/aihc"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+ak, sk, endpoint := ak_test, sk_test, endpoint_test
+resourcePoolID, JobID := RESOURCE_POOL_ID, AIJobID
+
+client, _ := aihc.NewClient(ak, sk, endpoint)
+result, err := client.DeleteJob(JobID, resourcePoolID)
+
+if err != nil {
+panic(err)
+}
+
+jsonBytes, _ := json.Marshal(result)
+fmt.Println(string(jsonBytes))
+```
+
+> 注意:
+> - 根据接口文档去填写具体的访问参数，接口链接为[删除训练任务](https://cloud.baidu.com/doc/AIHC/s/Sm56iuodq)
+
+
+
+### 查询训练任务事件
+使用以下代码可以查询训练任务事件。
+```go
+// import "github.com/baidubce/bce-sdk-go/services/aihc"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+ak, sk, endpoint := ak_test, sk_test, endpoint_test
+
+req := &v1.GetJobEventsRequest{
+Namespace:      "",
+JobFramework:   "PyTorchJob",
+StartTime:      "",
+EndTime:        "",
+JobID:          AIJobID,
+ResourcePoolID: RESOURCE_POOL_ID,
+}
+
+client, _ := aihc.NewClient(ak, sk, endpoint)
+result, err := client.GetTaskEvent(req)
+
+if err != nil {
+panic(err)
+}
+jsonBytes, _ := json.Marshal(result)
+fmt.Println(string(jsonBytes))
+```
+
+> 注意:
+> - 根据接口文档去填写具体的访问参数，接口链接为[查询训练任务事件](https://cloud.baidu.com/doc/AIHC/s/Km56iw5oj)
+
+
+### 查询训练任务日志
+使用以下代码可以查询训练任务日志。
+```go
+// import "github.com/baidubce/bce-sdk-go/services/aihc"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+ak, sk, endpoint := ak_test, sk_test, endpoint_test
+
+req := &v1.GetPodLogsRequest{
+JobID:          AIJobID,
+ResourcePoolID: RESOURCE_POOL_ID,
+PodName:        PodName,
+Namespace:      "default",
+StartTime:      "",
+EndTime:        "",
+MaxLines:       "",
+Container:      "",
+Chunk:          "",
+}
+
+client, _ := aihc.NewClient(ak, sk, endpoint)
+result, err := client.GetPodLogs(req)
+
+if err != nil {
+panic(err)
+}
+jsonBytes, _ := json.Marshal(result)
+fmt.Println(string(jsonBytes))
+```
+
+> 注意:
+> - 根据接口文档去填写具体的访问参数，接口链接为[查询训练任务日志](https://cloud.baidu.com/doc/AIHC/s/wm56ixjus)
+
+
+### 查询训练任务Pod事件
+使用以下代码可以查询训练任务Pod事件。
+```go
+// import "github.com/baidubce/bce-sdk-go/services/aihc"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+ak, sk, endpoint := ak_test, sk_test, endpoint_test
+req := &v1.GetPodEventsRequest{
+JobID:          AIJobID,
+ResourcePoolID: RESOURCE_POOL_ID,
+Namespace:      "",
+JobFramework:   "PyTorchJob",
+StartTime:      "",
+EndTime:        "",
+PodName:        PodName,
+}
+
+client, _ := aihc.NewClient(ak, sk, endpoint)
+result, err := client.GetPodEvents(req)
+
+if err != nil {
+panic(err)
+}
+jsonBytes, _ := json.Marshal(result)
+fmt.Println(string(jsonBytes))
+```
+
+> 注意:
+> - 根据接口文档去填写具体的访问参数，接口链接为[查询训练任务Pod事件](https://cloud.baidu.com/doc/AIHC/s/vm56iypch)
+
+
+
+### 查询训练任务监控
+使用以下代码可以查询训练任务监控。
+```go
+// import "github.com/baidubce/bce-sdk-go/services/aihc"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+ak, sk, endpoint := ak_test, sk_test, endpoint_test
+req := &v1.GetTaskMetricsRequest{
+StartTime:      "",
+ResourcePoolID: RESOURCE_POOL_ID,
+EndTime:        "",
+TimeStep:       "",
+MetricType:     MetricType,
+JobID:          AIJobID,
+Namespace:      "",
+RateInterval:   "",
+}
+
+client, _ := aihc.NewClient(ak, sk, endpoint)
+result, err := client.GetTaskMetrics(req)
+
+if err != nil {
+panic(err)
+}
+jsonBytes, _ := json.Marshal(result)
+fmt.Println(string(jsonBytes))
+```
+
+> 注意:
+> - 根据接口文档去填写具体的访问参数，接口链接为[查询训练任务监控](https://cloud.baidu.com/doc/AIHC/s/Um56j1bo8)
+
+
+### 查询训练任务所在节点列表
+使用以下代码可以查询训练任务所在节点列表。
+```go
+// import "github.com/baidubce/bce-sdk-go/services/aihc"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+ak, sk, endpoint := ak_test, sk_test, endpoint_test
+resourcePoolID := RESOURCE_POOL_ID
+jobID := AIJobID
+namespace := ""
+
+client, _ := aihc.NewClient(ak, sk, endpoint)
+result, err := client.GetJobNodesList(jobID, resourcePoolID, namespace)
+
+if err != nil {
+panic(err)
+}
+jsonBytes, _ := json.Marshal(result)
+fmt.Println(string(jsonBytes))
+```
+
+> 注意:
+> - 根据接口文档去填写具体的访问参数，接口链接为[查询训练任务所在节点列表](https://cloud.baidu.com/doc/AIHC/s/Mm56j2j2c)
+
+
+
+### 获取训练任务WebTerminal地址
+使用以下代码可以获取训练任务WebTerminal地址。
+```go
+// import "github.com/baidubce/bce-sdk-go/services/aihc"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+ak, sk, endpoint := ak_test, sk_test, endpoint_test
+
+req := &v1.GetWebShellURLRequest{
+JobID:                  AIJobID,
+ResourcePoolID:         RESOURCE_POOL_ID,
+PodName:                PodName,
+Namespace:              "",
+PingTimeoutSecond:      "",
+HandshakeTimeoutSecond: "",
+}
+
+client, _ := aihc.NewClient(ak, sk, endpoint)
+result, err := client.GetWebSSHUrl(req)
+
+if err != nil {
+panic(err)
+}
+jsonBytes, _ := json.Marshal(result)
+fmt.Println(string(jsonBytes))
+```
+
+> 注意:
+> - 根据接口文档去填写具体的访问参数，接口链接为[获取训练任务WebTerminal地址](https://cloud.baidu.com/doc/AIHC/s/Im56j3op4)
+
+
 ## 自定义部署
 ### 创建服务
 使用以下代码可以创建服务。
