@@ -262,15 +262,15 @@ func ModifyPasswordHpas(cli bce.Client, body *ModifyPasswordHpasReq) error {
 	return nil
 }
 
-// CreateHpasCoupon -
+// CreateReservedHpas -
 //
 // PARAMS:
 //     - cli: the client agent which can perform sending request
 //     - body:
 // RETURNS:
-//     - *api.CreateHpasCouponResp:
+//     - *api.CreateReservedHpasResp:
 //     - error: the return error if any occurs
-func CreateHpasCoupon(cli bce.Client, body *CreateHpasCouponReq) (*CreateHpasCouponResp, error) {
+func CreateReservedHpas(cli bce.Client, body *CreateReservedHpasReq) (*CreateReservedHpasResp, error) {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.POST)
 	path := "/"
@@ -294,23 +294,23 @@ func CreateHpasCoupon(cli bce.Client, body *CreateHpasCouponReq) (*CreateHpasCou
 	if resp.IsFail() {
 		return nil, resp.ServiceError()
 	}
-	res := &CreateHpasCouponResp{}
+	res := &CreateReservedHpasResp{}
 	if err := resp.ParseJsonBody(res); err != nil {
 		return nil, err
 	}
 	return res, nil
 }
 
-// DescribeCouponHpas -
+// DescribeReservedHpas -
 //
 // PARAMS:
 //     - cli: the client agent which can perform sending request
 //     - body:
 // RETURNS:
-//     - *api.ListHpasCouponByPageResp:
+//     - *api.ListReservedHpasByPageResp:
 //     - error: the return error if any occurs
-func DescribeCouponHpas(cli bce.Client, body *ListCouponHpasPageReq) (
-	*ListHpasCouponByPageResp, error) {
+func DescribeReservedHpas(cli bce.Client, body *ListReservedHpasPageReq) (
+	*ListReservedHpasByPageResp, error) {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.POST)
 	path := "/"
@@ -334,7 +334,7 @@ func DescribeCouponHpas(cli bce.Client, body *ListCouponHpasPageReq) (
 	if resp.IsFail() {
 		return nil, resp.ServiceError()
 	}
-	res := &ListHpasCouponByPageResp{}
+	res := &ListReservedHpasByPageResp{}
 	if err := resp.ParseJsonBody(res); err != nil {
 		return nil, err
 	}

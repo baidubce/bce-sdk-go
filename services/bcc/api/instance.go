@@ -260,6 +260,9 @@ func ListInstances(cli bce.Client, args *ListInstanceArgs) (*ListInstanceResult,
 		if len(args.EhcClusterId) != 0 {
 			req.SetParam("ehcClusterId", args.EhcClusterId)
 		}
+		if len(args.FuzzyInstanceName) != 0 {
+			req.SetParam("fuzzyInstanceName", args.FuzzyInstanceName)
+		}
 	}
 	if args == nil || args.MaxKeys == 0 {
 		req.SetParam("maxKeys", "1000")

@@ -142,28 +142,28 @@ func (c *Client) ModifyPasswordHpas(body *api.ModifyPasswordHpasReq) error {
 	return api.ModifyPasswordHpas(c, body)
 }
 
-// CreateHpasCoupon -
+// CreateReservedHpas -
 //
 // PARAMS:
 //     - body: body参数
 // RETURNS:
-//     - *api.CreateHpasCouponResp:
+//     - *api.CreateReservedHpasResp:
 //     - error: the return error if any occurs
-func (c *Client) CreateHpasCoupon(body *api.CreateHpasCouponReq) (
-	*api.CreateHpasCouponResp, error) {
-	return api.CreateHpasCoupon(c, body)
+func (c *Client) CreateReservedHpas(body *api.CreateReservedHpasReq) (
+	*api.CreateReservedHpasResp, error) {
+	return api.CreateReservedHpas(c, body)
 }
 
-// DescribeCouponHpas -
+// DescribeReservedHpas -
 //
 // PARAMS:
 //     - body: body参数
 // RETURNS:
-//     - *api.ListHpasCouponByPageResp:
+//     - *api.ListReservedHpasByPageResp:
 //     - error: the return error if any occurs
-func (c *Client) DescribeCouponHpas(body *api.ListCouponHpasPageReq) (
-	*api.ListHpasCouponByPageResp, error) {
-	return api.DescribeCouponHpas(c, body)
+func (c *Client) DescribeReservedHpas(body *api.ListReservedHpasPageReq) (
+	*api.ListReservedHpasByPageResp, error) {
+	return api.DescribeReservedHpas(c, body)
 }
 
 // ListHpas -

@@ -14,9 +14,13 @@
 
 package api
 
-type ImageResponse struct {
-	ImageId          string   `json:"imageId"`
-	Name             string   `json:"name"`
-	ImageType        string   `json:"imageType"`
-	SupportedAppType []string `json:"supportedAppType"`
+type CreateReservedHpasReq struct {
+	Name                string       `json:"name,omitempty"`
+	ZoneName            string       `json:"zoneName,omitempty"`
+	AppType             string       `json:"appType,omitempty"`
+	AppPerformanceLevel string       `json:"appPerformanceLevel,omitempty"`
+	BillingModel        BillingModel `json:"billingModel,omitempty"`
+	PurchaseNum         int          `json:"purchaseNum,omitempty"`
+	EhcClusterId        string       `json:"ehcClusterId,omitempty"`
+	Tags                []TagModel   `json:"tags,omitempty"`
 }

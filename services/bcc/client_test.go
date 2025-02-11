@@ -311,6 +311,15 @@ func TestListInstances(t *testing.T) {
 	fmt.Println(res)
 }
 
+func TestListInstanceByFuzzyInstanceName(t *testing.T) {
+	listArgs := &api.ListInstanceArgs{
+		FuzzyInstanceName: "g80wwjst",
+	}
+	res, err := BCC_CLIENT.ListInstances(listArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
 func TestListInstancesByVpcAndIp(t *testing.T) {
 	listArgs := &api.ListInstanceArgs{
 		VpcId:         "vpc-41avheyaawqc",

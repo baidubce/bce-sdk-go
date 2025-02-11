@@ -14,9 +14,7 @@
 
 package api
 
-type ImageResponse struct {
-	ImageId          string   `json:"imageId"`
-	Name             string   `json:"name"`
-	ImageType        string   `json:"imageType"`
-	SupportedAppType []string `json:"supportedAppType"`
+type CreateReservedHpasResp struct {
+	OrderId         string   `json:"orderId,omitempty"`
+	ReservedHpasIds []string `json:"reservedHpasIds,omitempty"`
 }

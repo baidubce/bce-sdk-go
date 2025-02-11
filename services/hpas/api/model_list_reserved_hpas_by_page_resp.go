@@ -14,9 +14,11 @@
 
 package api
 
-type ImageResponse struct {
-	ImageId          string   `json:"imageId"`
-	Name             string   `json:"name"`
-	ImageType        string   `json:"imageType"`
-	SupportedAppType []string `json:"supportedAppType"`
+type ListReservedHpasByPageResp struct {
+	OrderBy          string                 `json:"orderBy"`
+	Order            string                 `json:"order"`
+	PageNo           int32                  `json:"pageNo"`
+	PageSize         int32                  `json:"pageSize"`
+	TotalCount       int64                  `json:"totalCount"`
+	ReservedHpasList []HpasReservedResponse `json:"reservedHpasList"`
 }

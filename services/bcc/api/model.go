@@ -776,25 +776,26 @@ type CreateInstanceBySpecResult struct {
 }
 
 type ListInstanceArgs struct {
-	Marker           string
-	MaxKeys          int
-	InternalIp       string
-	DedicatedHostId  string
-	ZoneName         string
-	KeypairId        string
-	AutoRenew        bool
-	InstanceIds      string
-	InstanceNames    string
-	CdsIds           string
-	DeploySetIds     string
-	SecurityGroupIds string
-	PaymentTiming    string
-	Status           string
-	Tags             string
-	VpcId            string
-	PrivateIps       string
-	Ipv6Addresses    string
-	EhcClusterId     string
+	Marker            string
+	MaxKeys           int
+	InternalIp        string
+	DedicatedHostId   string
+	ZoneName          string
+	KeypairId         string
+	AutoRenew         bool
+	InstanceIds       string
+	InstanceNames     string
+	CdsIds            string
+	DeploySetIds      string
+	SecurityGroupIds  string
+	PaymentTiming     string
+	Status            string
+	Tags              string
+	VpcId             string
+	PrivateIps        string
+	Ipv6Addresses     string
+	EhcClusterId      string
+	FuzzyInstanceName string
 }
 
 type ListInstanceResult struct {

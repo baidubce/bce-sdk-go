@@ -140,8 +140,8 @@ func TestModifyPasswordHpas(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
-func TestCreateHpasCoupon(t *testing.T) {
-	createHpasCouponArgs := &api.CreateHpasCouponReq{
+func TestCreateReservedHpas(t *testing.T) {
+	createReservedHpasReq := &api.CreateReservedHpasReq{
 		AppType:             "llama2_7B_train",
 		AppPerformanceLevel: "10k",
 		Name:                "create_hpas_test",
@@ -149,19 +149,19 @@ func TestCreateHpasCoupon(t *testing.T) {
 		ZoneName:            "cn-bj-a",
 		Tags:                []api.TagModel{{TagKey: "test1", TagValue: "test1"}},
 	}
-	createResult, err := HPAS_CLIENT.CreateHpasCoupon(createHpasCouponArgs)
+	createResult, err := HPAS_CLIENT.CreateReservedHpas(createReservedHpasReq)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(createResult)
-	Hpas_id = createResult.CouponHpasIds[0]
+	Hpas_id = createResult.ReservedHpasIds[0]
 }
 
-func TestDescribeCouponHpas(t *testing.T) {
-	listCouponHpasPageReq := &api.ListCouponHpasPageReq{
-		CouponHpasIds: []string{"k-eZgiHDOY"},
-		PageNo:        1,
-		PageSize:      10,
+func TestDescribeReservedHpas(t *testing.T) {
+	listReservedHpasPageReq := &api.ListReservedHpasPageReq{
+		ReservedHpasIds: []string{"k-eZgiHDOY"},
+		PageNo:          1,
+		PageSize:        10,
 	}
-	describeResult, err := HPAS_CLIENT.DescribeCouponHpas(listCouponHpasPageReq)
+	describeResult, err := HPAS_CLIENT.DescribeReservedHpas(listReservedHpasPageReq)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(describeResult)
 }
