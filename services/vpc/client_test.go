@@ -405,6 +405,7 @@ func TestCreateEnhanceNatGateway(t *testing.T) {
 		Name:        "Test-SDK-NatGateway-CU",
 		VpcId:       VPCID,
 		CuNum:       "3",
+		BindEips:    []string{"100.88.8.210"},
 		Billing: &Billing{
 			PaymentTiming: PAYMENT_TIMING_POSTPAID,
 		},
@@ -1150,6 +1151,24 @@ func TestClient_UnBindDnatEips(t *testing.T) {
 		DnatEips:    []string{"100.88.14.243"},
 	}
 	err := VPC_CLIENT.UnBindDnatEips("nat-bc39ugw5ry9z", args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_EnhanceNatBindEips(t *testing.T) {
+	args := &EnhanceNatBindEipsArgs{
+		ClientToken: getClientToken(),
+		BindEips:    []string{"100.88.13.26"},
+	}
+	err := VPC_CLIENT.EnhanceNatBindEips("nat-bimk2gpe7664", args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_EnhanceNatUnBindEips(t *testing.T) {
+	args := &EnhanceNatUnBindEipsArgs{
+		ClientToken: getClientToken(),
+		BindEips:    []string{"100.88.13.26"},
+	}
+	err := VPC_CLIENT.EnhanceNatUnBindEips("nat-bimk2gpe7664", args)
 	ExpectEqual(t.Errorf, nil, err)
 }
 

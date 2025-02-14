@@ -278,12 +278,14 @@ type CreateCdsModel struct {
 	CdsSizeInGB int         `json:"cdsSizeInGB"`
 	StorageType StorageType `json:"storageType"`
 	SnapShotId  string      `json:"snapshotId,omitempty"`
+	EncryptKey  string      `json:"encryptKey,omitempty"`
 }
 
 type CreateCdsModelV3 struct {
 	CdsSizeInGB int           `json:"cdsSizeInGB"`
 	StorageType StorageTypeV3 `json:"storageType"`
 	SnapShotId  string        `json:"snapshotId,omitempty"`
+	EncryptKey  string        `json:"encryptKey,omitempty"`
 }
 
 type DiskInfo struct {

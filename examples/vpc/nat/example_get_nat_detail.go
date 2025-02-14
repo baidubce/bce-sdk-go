@@ -27,12 +27,16 @@ func GetNatDetail() {
 	fmt.Println("nat name: ", result.Name)
 	// 查询得到nat网关所属的vpc id
 	fmt.Println("nat vpcId: ", result.VpcId)
+	// 查询得到nat网关类型，增强型或者普通型
+	fmt.Println("nat type: ", result.NatType)
 	// 查询得到nat网关的大小
 	fmt.Println("nat spec: ", result.Spec)
 	// 查询得到nat网关绑定的snat EIP的IP地址列表
 	fmt.Println("nat snat eips: ", result.Eips)
 	// 查询得到nat网关绑定的dnat EIP的IP地址列表
 	fmt.Println("nat dnat eips: ", result.DnatEips)
+	// 查询得到增强型nat网关绑定的bind EIP的IP地址列表
+	fmt.Println("nat bind eips: ", result.BindEips)
 	// 查询得到nat网关的状态
 	fmt.Println("nat status: ", result.Status)
 	// 查询得到nat网关的付费方式

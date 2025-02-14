@@ -444,6 +444,7 @@ type CreateNatGatewayArgs struct {
 	CuNum           string             `json:"cuNum,omitempty"`
 	Eips            []string           `json:"eips,omitempty"`
 	DnatEips        []string           `json:"dnatEips,omitempty"`
+	BindEips        []string           `json:"bindEips,omitempty"`
 	Billing         *Billing           `json:"billing"`
 	Tags            []model.TagModel   `json:"tags,omitempty"`
 	ResourceGroupId string             `json:"resourceGroupId,omitempty"`
@@ -492,12 +493,14 @@ type ListNatGatewayResult struct {
 type NAT struct {
 	Id            string           `json:"id"`
 	Name          string           `json:"name"`
+	NatType       string           `json:"natType"`
 	VpcId         string           `json:"vpcId"`
 	Spec          string           `json:"spec,omitempty"`
 	CuNum         int              `json:"cuNum,omitempty"`
 	Status        NatStatusType    `json:"status"`
 	Eips          []string         `json:"eips"`
 	DnatEips      []string         `json:"dnatEips"`
+	BindEips      []string         `json:"bindEips"`
 	PaymentTiming string           `json:"paymentTiming"`
 	ExpiredTime   string           `json:"expiredTime"`
 	Tags          []model.TagModel `json:"tags"`
@@ -555,6 +558,12 @@ type BindDnatEipsArgs struct {
 	DnatEips    []string `json:"dnatEips"`
 }
 
+// EnhanceNatBindEipsArgs defines the structure of the input parameters for the enhanceNatBindEips api
+type EnhanceNatBindEipsArgs struct {
+	ClientToken string   `json:"-"`
+	BindEips    []string `json:"bindEips"`
+}
+
 // UnBindEipsArgs defines the structure of the input parameters for the UnBindEips api
 type UnBindEipsArgs struct {
 	ClientToken string   `json:"-"`
@@ -565,6 +574,12 @@ type UnBindEipsArgs struct {
 type UnBindDnatEipsArgs struct {
 	ClientToken string   `json:"-"`
 	DnatEips    []string `json:"dnatEips"`
+}
+
+// EnhanceNatUnBindEipsArgs defines the structure of the input parameters for the EnhanceNatUnBindEips api
+type EnhanceNatUnBindEipsArgs struct {
+	ClientToken string   `json:"-"`
+	BindEips    []string `json:"bindEips"`
 }
 
 // RenewNatGatewayArgs defines the structure of the input parameters for the RenewNatGateway api

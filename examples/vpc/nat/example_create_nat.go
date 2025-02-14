@@ -24,6 +24,8 @@ func CreateNat() {
 		Eips: []string{},
 		// 设置nat网关的dnat eip列表
 		DnatEips: []string{},
+		// 设置nat网关的bind eip列表
+		BindEips: []string{},
 		// 设置nat绑定的资源组ID，此字段选传，传则表示绑定资源组
 		ResourceGroupId: "ResourceGroupId",
 		// 设置nat网关的计费信息
