@@ -127,6 +127,12 @@ func QueryLogRecord(cli bce.Client, project string, logStore string, args *Query
 		if len(args.Marker) > 0 {
 			req.SetParam("marker", args.Marker)
 		}
+		if args.SamplePercentage > 0 {
+			req.SetParam("samplePercentage", strconv.FormatFloat(args.SamplePercentage, 'f', -1, 64))
+		}
+		if args.SampleSeed > 0 {
+			req.SetParam("sampleSeed", strconv.Itoa(args.SampleSeed))
+		}
 	}
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {

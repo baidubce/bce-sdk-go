@@ -141,13 +141,15 @@ func (c *Client) PullLogRecordV2(request PullLogRecordRequest) (*api.PullLogReco
 
 func (c *Client) QueryLogRecordV2(request QueryLogRecordRequest) (*api.QueryLogResult, error) {
 	args := &api.QueryLogRecordArgs{
-		LogStreamName: request.LogStreamName,
-		Query:         request.Query,
-		StartDateTime: api.DateTime(request.StartDateTime),
-		EndDateTime:   api.DateTime(request.EndDateTime),
-		Limit:         request.Limit,
-		Marker:        request.Marker,
-		Sort:          request.Sort,
+		LogStreamName:    request.LogStreamName,
+		Query:            request.Query,
+		StartDateTime:    api.DateTime(request.StartDateTime),
+		EndDateTime:      api.DateTime(request.EndDateTime),
+		Limit:            request.Limit,
+		Marker:           request.Marker,
+		Sort:             request.Sort,
+		SamplePercentage: request.SamplePercentage,
+		SampleSeed:       request.SampleSeed,
 	}
 	return api.QueryLogRecord(c, request.Project, request.LogStoreName, args)
 }

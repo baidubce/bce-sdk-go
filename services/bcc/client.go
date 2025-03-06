@@ -2697,3 +2697,25 @@ func (c *Client) GetSecurityGroupDetail(securityGroupId string) (*api.GetSecurit
 func (c *Client) ModifySnapshotAttribute(snapshotId string, args *api.ModifySnapshotAttributeArgs) error {
 	return api.ModifySnapshotAttribute(c, snapshotId, args)
 }
+
+func (c *Client) EnterRescueMode(body *api.EnterRescueModeReq) (
+	*api.EnterRescueModeResp, error) {
+	return api.EnterRescueMode(c, body)
+}
+
+func (c *Client) ExitRescueMode(body *api.ExitRescueModeReq) (
+	*api.ExitRescueModeResp, error) {
+	return api.ExitRescueMode(c, body)
+}
+
+func (c *Client) InstanceBindSecurityGroup(body *api.BindSgV2Req) (*api.BindSgV2Resp, error) {
+	return api.InstanceBindSecurityGroup(c, body)
+}
+
+func (c *Client) InstanceUnbindSecurityGroup(body *api.UnbindSgV2Req) (*api.UnbindSgV2Resp, error) {
+	return api.InstanceUnbindSecurityGroup(c, body)
+}
+
+func (c *Client) InstanceReplaceSecurityGroup(body *api.ReplaceSgV2Req) (*api.ReplaceSgV2Resp, error) {
+	return api.InstanceReplaceSecurityGroup(c, body)
+}

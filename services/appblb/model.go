@@ -814,7 +814,7 @@ type BlbEnterpriseSecurityGroupRuleModel struct {
 	EnterpriseSecurityGroupRuleId string `json:"enterpriseSecurityGroupRuleId"`
 	Direction                     string `json:"direction"`
 	Action                        string `json:"action"`
-	Priority                      string `json:"priority"`
+	Priority                      int    `json:"priority"`
 	Remark                        string `json:"remark"`
 	Ethertype                     string `json:"ethertype,omitempty"`
 	PortRange                     string `json:"portRange,omitempty"`

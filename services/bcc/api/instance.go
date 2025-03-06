@@ -2755,3 +2755,148 @@ func GetInstanceUserDataAttr(cli bce.Client, reqBody *bce.Body) (*InstanceUserDa
 
 	return jsonBody, nil
 }
+
+func EnterRescueMode(cli bce.Client, body *EnterRescueModeReq) (*EnterRescueModeResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.PUT)
+	req.SetUri(getEnterRescueModeUri())
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &EnterRescueModeResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func ExitRescueMode(cli bce.Client, body *ExitRescueModeReq) (*ExitRescueModeResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.PUT)
+	req.SetUri(getExitRescueModeUri())
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &ExitRescueModeResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func InstanceBindSecurityGroup(cli bce.Client, body *BindSgV2Req) (*BindSgV2Resp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.PUT)
+	req.SetUri(getBindSecurityGroupUrl())
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &BindSgV2Resp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func InstanceUnbindSecurityGroup(cli bce.Client, body *UnbindSgV2Req) (*UnbindSgV2Resp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.PUT)
+	req.SetUri(getUnbindSecurityGroupUrl())
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &UnbindSgV2Resp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func InstanceReplaceSecurityGroup(cli bce.Client, body *ReplaceSgV2Req) (*ReplaceSgV2Resp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.PUT)
+	req.SetUri(getReplaceSecurityGroupUrl())
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &ReplaceSgV2Resp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}

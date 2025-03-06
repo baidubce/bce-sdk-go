@@ -98,12 +98,17 @@ const (
 	REQUEST_RELATED_DELETE_POLICY            = "/modifyRelatedDeletePolicy"
 	REQUEST_VOLUME_PRICE_URI                 = "/volume/getPrice"
 
-	REQUEST_DESCRIBE_REGIONS_URI   = "/describeRegions"
-	REQUEST_EHC_CLUSTER_CREATE_URI = "/ehc/cluster/create"
-	REQUEST_EHC_CLUSTER_LIST_URI   = "/ehc/cluster/list"
-	REQUEST_EHC_CLUSTER_MODIFY_URI = "/ehc/cluster/modify"
-	REQUEST_EHC_CLUSTER_DELETE_URI = "/ehc/cluster/delete"
-	REQUEST_INSTANCE_USER_DATA_URI = "/attribute/getUserdata"
+	REQUEST_DESCRIBE_REGIONS_URI       = "/describeRegions"
+	REQUEST_EHC_CLUSTER_CREATE_URI     = "/ehc/cluster/create"
+	REQUEST_EHC_CLUSTER_LIST_URI       = "/ehc/cluster/list"
+	REQUEST_EHC_CLUSTER_MODIFY_URI     = "/ehc/cluster/modify"
+	REQUEST_EHC_CLUSTER_DELETE_URI     = "/ehc/cluster/delete"
+	REQUEST_INSTANCE_USER_DATA_URI     = "/attribute/getUserdata"
+	REQUEST_ENTER_RESCUE_MODE_URI      = "/rescue/mode/enter"
+	REQUEST_EXIT_RESCUE_MODE_URI       = "/rescue/mode/exit"
+	REQUEST_BIND_SECURITY_GROUP__URI   = "/securitygroup/bind"
+	REQUEST_UNBIND_SECURITY_GROUP__URI = "/securitygroup/unbind"
+	REQUEST_REPLACE_SECURITY_GROUP_URI = "/securitygroup/replace"
 )
 
 func getInstanceUri() string {
@@ -569,4 +574,24 @@ func getEhcClusterDeleteUri() string {
 
 func getInstanceUserDataUri() string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_INSTANCE_USER_DATA_URI
+}
+
+func getEnterRescueModeUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_ENTER_RESCUE_MODE_URI
+}
+
+func getExitRescueModeUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_EXIT_RESCUE_MODE_URI
+}
+
+func getBindSecurityGroupUrl() string {
+	return URI_PREFIXV2 + REQUEST_BIND_SECURITY_GROUP__URI
+}
+
+func getUnbindSecurityGroupUrl() string {
+	return URI_PREFIXV2 + REQUEST_UNBIND_SECURITY_GROUP__URI
+}
+
+func getReplaceSecurityGroupUrl() string {
+	return URI_PREFIXV2 + REQUEST_REPLACE_SECURITY_GROUP_URI
 }

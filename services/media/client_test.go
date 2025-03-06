@@ -967,12 +967,16 @@ func TestCreateImagedwmJobT(t *testing.T) {
 	target := &api.DwmTarget{}
 	target.Bucket = "go-test"
 	target.Key = "jbs-dwm.jpeg"
+	target.Quality = 90
 	imagedwm.Target = target
 	imagedwm.TaskType = "embed"
-	imagedwm.Strength = 0.7
+	strength := 0.7
+	imagedwm.Strength = &strength
 	digitalWm := &api.DigitalWm{}
 	digitalWm.TextContent = "baidu"
 	imagedwm.DigitalWm = digitalWm
+	algorithmVersion := 1
+	imagedwm.AlgorithmVersion = &algorithmVersion
 
 	response, err := MEDIA_CLIENT.CreateImagedwmJob(imagedwm)
 	ExpectEqual(t.Errorf, err, nil)
@@ -991,7 +995,10 @@ func TestCreateImagedwmJobI(t *testing.T) {
 	target.Key = "demo-dwm-i.png"
 	imagedwm.Target = target
 	imagedwm.TaskType = "embed"
-	imagedwm.Strength = 0.7
+	strength := 0.8
+	imagedwm.Strength = &strength
+	algorithmVersion := 0
+	imagedwm.AlgorithmVersion = &algorithmVersion
 	digitalWm := &api.DigitalWm{}
 	digitalWm.ImageBucket = "go-test"
 	digitalWm.ImageKey = "logo.png"
@@ -1004,7 +1011,7 @@ func TestCreateImagedwmJobI(t *testing.T) {
 }
 
 func TestGetImagedwmResult(t *testing.T) {
-	response, err := MEDIA_CLIENT.GetImagedwmResult("job-qbnrkj2fhczyh1gc")
+	response, err := MEDIA_CLIENT.GetImagedwmResult("job-rc2v7i5y6pinc58h")
 	ExpectEqual(t.Errorf, err, nil)
 	t.Logf("%+v", response)
 	t.Logf("%+v", response.Source)
@@ -1021,10 +1028,19 @@ func TestCreateImagedwmDetectJob(t *testing.T) {
 	target := &api.DwmTarget{}
 	target.Bucket = "go-test"
 	target.Key = "demo-dwm-i-di.png"
+	target.Quality = 80
 	imagedwm.Target = target
 	imagedwm.TaskType = "extract"
 
-	response, err := MEDIA_CLIENT.CreateImagedwmJob(imagedwm)
+	response, err := MEDIA_CLIENT.CreateImagedwmDetectJob(imagedwm)
 	ExpectEqual(t.Errorf, err, nil)
 	t.Logf("%+v", response)
+}
+
+func TestGetImagedwmDetectResult(t *testing.T) {
+	response, err := MEDIA_CLIENT.GetImagedwmDetectResult("job-rc2uz90cxrk3zxer")
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("response:%v", response)
+	t.Logf("%+v", response.Source)
+	t.Logf("%+v", response.Target)
 }

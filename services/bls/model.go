@@ -165,6 +165,10 @@ type QueryLogRecordRequest struct {
 	Marker string `json:"marker"`
 	// 排序字段，默认desc，按照时间倒序排序；asc，按照时间顺序排序
 	Sort string `json:"sort"`
+	// 检索时的采样百分比，选填，范围为1-100。注：该参数只对检索结果生效
+	SamplePercentage float64 `json:"samplePercentage"`
+	// 检索采样时的seed，相同seed多次查询产生相同的随机结果。注：该参数只对检索结果生效
+	SampleSeed int `json:"sampleSeed"`
 }
 
 type CreateFastQueryRequest struct {

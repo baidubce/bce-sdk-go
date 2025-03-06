@@ -2807,3 +2807,51 @@ type ModifySnapshotAttributeArgs struct {
 	Desc            string `json:"desc,omitempty"`
 	RetentionInDays int    `json:"retentionInDays,omitempty"`
 }
+
+type EnterRescueModeReq struct {
+	InstanceId string `json:"instanceId"`
+	ForceStop  bool   `json:"forceStop"`
+	Password   string `json:"password"`
+}
+
+type EnterRescueModeResp struct {
+	RequestId *string `json:"requestId"`
+}
+
+type ExitRescueModeReq struct {
+	InstanceId string `json:"instanceId"`
+}
+
+type ExitRescueModeResp struct {
+	RequestId *string `json:"requestId"`
+}
+
+type BindSgV2Req struct {
+	InstanceIds       []string `json:"instanceIds"`
+	SecurityGroupIds  []string `json:"securityGroupIds"`
+	SecurityGroupType string   `json:"securityGroupType"`
+}
+
+type BindSgV2Resp struct {
+	RequestId *string `json:"requestId"`
+}
+
+type UnbindSgV2Req struct {
+	InstanceIds       []string `json:"instanceIds"`
+	SecurityGroupIds  []string `json:"securityGroupIds"`
+	SecurityGroupType string   `json:"securityGroupType"`
+}
+
+type UnbindSgV2Resp struct {
+	RequestId *string `json:"requestId"`
+}
+
+type ReplaceSgV2Req struct {
+	InstanceIds       []string `json:"instanceIds"`
+	SecurityGroupIds  []string `json:"securityGroupIds"`
+	SecurityGroupType string   `json:"securityGroupType"`
+}
+
+type ReplaceSgV2Resp struct {
+	RequestId *string `json:"requestId"`
+}

@@ -2323,3 +2323,68 @@ func TestModifySnapshotAttribute(t *testing.T) {
 	err := BCC_CLIENT.ModifySnapshotAttribute("s-Dzmlx7Fz", args)
 	ExpectEqual(t.Errorf, err, nil)
 }
+
+func TestEnterRescueMode(t *testing.T) {
+	args := &api.EnterRescueModeReq{
+		InstanceId: "i-Qh2eC8fJ",
+		ForceStop:  true,
+		Password:   "******",
+	}
+	res, err := BCC_CLIENT.EnterRescueMode(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestExitRescueMode(t *testing.T) {
+	args := &api.ExitRescueModeReq{
+		InstanceId: "i-Qh2eC8fJ",
+	}
+	res, err := BCC_CLIENT.ExitRescueMode(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestInstanceBindSecurityGroup(t *testing.T) {
+	args := &api.BindSgV2Req{
+		InstanceIds: []string{
+			"i-LO8XGmwh",
+		},
+		SecurityGroupIds: []string{
+			"esg-ub0q1p72pbmh",
+		},
+		SecurityGroupType: "enterprise",
+	}
+	res, err := BCC_CLIENT.InstanceBindSecurityGroup(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestInstanceUnbindSecurityGroup(t *testing.T) {
+	args := &api.UnbindSgV2Req{
+		InstanceIds: []string{
+			"i-LO8XGmwh",
+		},
+		SecurityGroupIds: []string{
+			"esg-ub0q1p72pbmh",
+		},
+		SecurityGroupType: "enterprise",
+	}
+	res, err := BCC_CLIENT.InstanceUnbindSecurityGroup(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestInstanceReplaceSecurityGroup(t *testing.T) {
+	args := &api.ReplaceSgV2Req{
+		InstanceIds: []string{
+			"i-LO8XGmwh",
+		},
+		SecurityGroupIds: []string{
+			"esg-ub0q1p72pbmh",
+		},
+		SecurityGroupType: "enterprise",
+	}
+	res, err := BCC_CLIENT.InstanceReplaceSecurityGroup(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}

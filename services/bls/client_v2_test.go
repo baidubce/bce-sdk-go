@@ -377,7 +377,10 @@ func TestRecordAndStreamV2(t *testing.T) {
 	qr, err := BLS_CLIENT.QueryLogRecordV2(queryLogRecordRequest)
 	ExpectEqual(t.Errorf, err, nil)
 	ExpectEqual(t.Errorf, 1, len(qr.ResultSet.Rows))
-
+	queryLogRecordRequest.SamplePercentage = 50.0
+	queryLogRecordRequest.SampleSeed = 14
+	qr, err = BLS_CLIENT.QueryLogRecordV2(queryLogRecordRequest)
+	ExpectEqual(t.Errorf, err, nil)
 	deleteLogStoreRequest := DeleteLogStoreRequest{
 		Project:      createLogStoreRequest.Project,
 		LogStoreName: createLogStoreRequest.LogStoreName,

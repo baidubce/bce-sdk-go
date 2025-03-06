@@ -294,12 +294,22 @@ func (cli *Client) GetDwmdetectResult(jobId string) (*api.GetDwmdetectResponse, 
 	return api.GetDwmdetectResult(cli, jobId)
 }
 
-// create image digitalwatermark job or image digitalwatermark detect job
+// create image digitalwatermark
 func (cli *Client) CreateImagedwmJob(digitalWm *api.Imagedwm) (*api.CreateJobResponse, error) {
 	return api.CreateImagedwmJob(cli, digitalWm)
 }
 
-// get digitalwatermark job result or image digitalwatermark detect job result
+// get digitalwatermark job result
 func (cli *Client) GetImagedwmResult(jobId string) (*api.GetImagedwmResponse, error) {
 	return api.GetImagedwmResult(cli, jobId)
+}
+
+// create image digitalwatermark detect job
+func (cli *Client) CreateImagedwmDetectJob(digitalWm *api.Imagedwm) (*api.CreateJobResponse, error) {
+	return api.CreateImagedwmDetectJob(cli, digitalWm)
+}
+
+// get image digitalwatermark detect job result
+func (cli *Client) GetImagedwmDetectResult(jobId string) (*api.GetImagedwmResponse, error) {
+	return api.GetImagedwmDetectResult(cli, jobId)
 }
