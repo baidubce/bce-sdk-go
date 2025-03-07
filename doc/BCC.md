@@ -181,7 +181,7 @@ client, _ := bcc.NewClient(AK, SK, ENDPOINT)
 
 // 配置签名使用的HTTP请求头为`Host`
 headersToSign := map[string]struct{}{"Host": struct{}{}}
-client.Config.SignOption.HeadersToSign = HeadersToSign
+client.Config.SignOption.HeadersToSign = headersToSign
 
 // 配置签名的有效期为30秒
 client.Config.SignOption.ExpireSeconds = 30
