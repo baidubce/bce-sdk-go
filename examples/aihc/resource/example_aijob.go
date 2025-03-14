@@ -22,6 +22,7 @@ var (
 	ImageID          string
 	AIJobName        string
 	MetricType       string
+	QueueID          string
 )
 
 func GetJob() {
@@ -29,7 +30,11 @@ func GetJob() {
 	resourcePoolID, JobID := RESOURCE_POOL_ID, AIJobID
 
 	client, _ := aihc.NewClient(ak, sk, endpoint)
-	result, err := client.GetJob(JobID, resourcePoolID)
+	result, err := client.GetJob(&v1.GetAIJobOptions{
+		JobID:          JobID,
+		ResourcePoolId: resourcePoolID,
+		QueueID:        QueueID,
+	})
 
 	if err != nil {
 		panic(err)
@@ -44,7 +49,11 @@ func DeleleJob() {
 	resourcePoolID, JobID := RESOURCE_POOL_ID, AIJobID
 
 	client, _ := aihc.NewClient(ak, sk, endpoint)
-	result, err := client.DeleteJob(JobID, resourcePoolID)
+	result, err := client.DeleteJob(&v1.DeleteAIJobOptions{
+		JobID:          JobID,
+		ResourcePoolId: resourcePoolID,
+		QueueID:        QueueID,
+	})
 
 	if err != nil {
 		panic(err)
@@ -72,10 +81,13 @@ func CreateJob() {
 			},
 			EnableRDMA: false,
 		},
+		Queue:      QueueID,
 		EnableBccl: false,
 	}
 	client, _ := aihc.NewClient(ak, sk, endpoint)
-	result, err := client.CreateJob(jobConfig, resourcePoolID)
+	result, err := client.CreateJob(jobConfig, &v1.CreateAIJobOptions{
+		ResourcePoolId: resourcePoolID,
+	})
 
 	if err != nil {
 		panic(err)
@@ -94,7 +106,11 @@ func UpdateJob() {
 		Priority: "high",
 	}
 	client, _ := aihc.NewClient(ak, sk, endpoint)
-	result, err := client.UpdateJob(jobConfig, jobID, resourcePoolID)
+	result, err := client.UpdateJob(jobConfig, &v1.UpdateAIJobOptions{
+		JobID:          jobID,
+		ResourcePoolID: resourcePoolID,
+		QueueID:        QueueID,
+	})
 
 	if err != nil {
 		panic(err)
@@ -109,7 +125,11 @@ func StopJob() {
 	jobID := AIJobID
 
 	client, _ := aihc.NewClient(ak, sk, endpoint)
-	result, err := client.StopJob(jobID, resourcePoolID)
+	result, err := client.StopJob(&v1.StopAIJobOptions{
+		JobID:          jobID,
+		ResourcePoolID: resourcePoolID,
+		QueueID:        QueueID,
+	})
 	log.Infof("stop job result: %v", result)
 	if err != nil {
 		panic(err)
@@ -172,7 +192,11 @@ func GetJobNodesList() {
 	namespace := ""
 
 	client, _ := aihc.NewClient(ak, sk, endpoint)
-	result, err := client.GetJobNodesList(jobID, resourcePoolID, namespace)
+	result, err := client.GetJobNodesList(&v1.GetJobNodesListOptions{
+		JobID:          jobID,
+		ResourcePoolID: resourcePoolID,
+		Namespace:      namespace,
+	})
 
 	if err != nil {
 		panic(err)
@@ -236,6 +260,7 @@ func GetWebSSHUrl() {
 		Namespace:              "",
 		PingTimeoutSecond:      "",
 		HandshakeTimeoutSecond: "",
+		QueueID:                QueueID,
 	}
 
 	client, _ := aihc.NewClient(ak, sk, endpoint)
@@ -255,9 +280,26 @@ func ListJobs() {
 		ResourcePoolID: RESOURCE_POOL_ID,
 		PageNo:         1,
 		PageSize:       3,
+		Queue:          QueueID,
 	}
 	result, err := client.ListJobs(req)
 
+	if err != nil {
+		panic(err)
+	}
+	jsonBytes, _ := json.Marshal(result)
+	fmt.Println(string(jsonBytes))
+}
+
+func FileUpload() {
+	ak, sk, endpoint := ak_test, sk_test, endpoint_test
+	client, _ := aihc.NewClient(ak, sk, endpoint)
+	req := &v1.FileUploadRequest{
+		FilePaths:      []string{},
+		ResourcePoolID: RESOURCE_POOL_ID,
+	}
+
+	result, err := client.FileUpload(req)
 	if err != nil {
 		panic(err)
 	}

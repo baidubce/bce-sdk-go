@@ -30,6 +30,7 @@ type OpenAPIGetJobResponseResult struct {
 	Resources                   []OpenAPIResource   `json:"resources"`
 	EnableRDMA                  bool                `json:"enableRDMA"`
 	HostNetwork                 bool                `json:"hostNetwork"`
+	Privileged                  *bool               `json:"privileged,omitempty"`
 	Replicas                    int32               `json:"replicas"`
 	Envs                        []OpenAPIEnv        `json:"envs"`
 	JobFramework                string              `json:"jobFramework"`
@@ -39,6 +40,7 @@ type OpenAPIGetJobResponseResult struct {
 	EnableBcclErrorReason       string              `json:"enableBcclErrorReason"`
 	K8sUID                      string              `json:"k8sUID"`
 	K8sNamespace                string              `json:"k8sNamespace"`
+	FaultToleranceArgs          string              `json:"faultToleranceArgs,omitempty"`
 }
 
 type OpenAPIEnv struct {
@@ -150,20 +152,33 @@ type OpenAPIJobDeleteResponseResult struct {
 
 // create Job
 type OpenAPIJobCreateRequest struct {
-	Name                 string                         `json:"name"`
-	Queue                string                         `json:"queue"`
-	JobFramework         string                         `json:"jobFramework"`
-	JobSpec              OpenAPIAIJobSpec               `json:"jobSpec"`
-	FaultTolerance       bool                           `json:"faultTolerance"`
-	Labels               []OpenAPILabel                 `json:"labels"`
-	Priority             string                         `json:"priority"`
-	Datasources          []OpenAPIDatasource            `json:"datasources"`
-	FaultToleranceConfig OpenAPIJobFaultToleranceConfig `json:"faultToleranceConfig"`
+	Name           string              `json:"name"`
+	Queue          string              `json:"queue"`
+	JobFramework   string              `json:"jobFramework"`
+	JobSpec        OpenAPIAIJobSpec    `json:"jobSpec"`
+	FaultTolerance bool                `json:"faultTolerance"`
+	Labels         []OpenAPILabel      `json:"labels"`
+	Priority       string              `json:"priority"`
+	Datasources    []OpenAPIDatasource `json:"datasources"`
+	// 两者选其一
+	FaultToleranceConfig *OpenAPIJobFaultToleranceConfig `json:"faultToleranceConfig,omitempty"`
+	FaultToleranceArgs   *string                         `json:"faultToleranceArgs,omitempty"`
+	CodeSource           CodeSourceV3                    `json:"codeSource"`
 	// 创建任务告警规则对应的cprom 实例id
 
 	AlertConfig *AlertRuleReq `json:"alertConfig"` // 告警详情信息列表
 
 	EnableBccl bool `json:"enableBccl"` // 是否开启 bccl 注入
+}
+
+type CodeSourceV3 struct {
+	FilePath          string `json:"filePath"`
+	MountPath         string `json:"mountPath"`
+	ID                string `json:"id"`
+	BosObjectName     string `json:"bosObjectName"`
+	BosTemporaryToken string `json:"bosTemporaryToken"`
+	BosEndpoint       string `json:"bosEndpoint"`
+	BosBucket         string `json:"bosBucket"`
 }
 
 type OpenAPIAIJobSpec struct {
@@ -175,6 +190,7 @@ type OpenAPIAIJobSpec struct {
 	Envs        []OpenAPIEnv       `json:"envs"`
 	EnableRDMA  bool               `json:"enableRDMA"`
 	HostNetwork *bool              `json:"hostNetwork,omitempty"`
+	Privileged  *bool              `json:"privileged,omitempty"`
 }
 
 type OpenAPIImageConfig struct {
@@ -375,6 +391,7 @@ type GetWebShellURLRequest struct {
 	Namespace              string `json:"namespace"`
 	PingTimeoutSecond      string `json:"pingTimeoutSecond"`
 	HandshakeTimeoutSecond string `json:"handshakeTimeoutSecond"`
+	QueueID                string `json:"queueId"`
 }
 
 // Result 包含WebTerminalUrl字段
@@ -431,6 +448,28 @@ type User struct {
 
 type CreateNotifyRuleResp struct {
 	NotifyRuleID string `json:"notifyRuleId"` // 通知策略列表
+}
+
+// file upload
+type FileUploadRequest struct {
+	FilePaths      []string `json:"filePath"`
+	ResourcePoolID string   `json:"resourcePoolId"`
+}
+
+// FileUploadResponse 用于接收JSON响应
+type FileUploaderResponse struct {
+	RequestId string       `json:"requestId"`
+	Result    FileUploader `json:"result"`
+}
+
+type FileUploader struct {
+	FilePath string `json:"filePath"`
+	Token    string `json:"token"`
+	FileID   string `json:"fileID"`
+	AK       string `json:"ak"`
+	SK       string `json:"sk"`
+	Bucket   string `json:"bucket"`
+	Endpoint string `json:"endpoint"`
 }
 
 // k8s
@@ -516,3 +555,37 @@ const (
 	// Deprecated: It isn't being set since 2015 (74da3b14b0c0f658b3bb8d2def5094686d0e9095)
 	PodUnknown PodPhase = "Unknown"
 )
+
+type GetAIJobOptions struct {
+	JobID          string
+	ResourcePoolID string
+	QueueID        string
+}
+
+type DeleteAIJobOptions struct {
+	JobID          string
+	ResourcePoolID string
+	QueueID        string
+}
+
+type CreateAIJobOptions struct {
+	ResourcePoolID string
+}
+
+type UpdateAIJobOptions struct {
+	JobID          string
+	ResourcePoolID string
+	QueueID        string
+}
+
+type StopAIJobOptions struct {
+	JobID          string
+	ResourcePoolID string
+	QueueID        string
+}
+
+type GetJobNodesListOptions struct {
+	JobID          string
+	ResourcePoolID string
+	Namespace      string
+}

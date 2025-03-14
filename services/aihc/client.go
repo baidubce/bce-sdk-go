@@ -36,6 +36,7 @@ func NewClient(ak, sk, endpoint string) (Interface, error) {
 		return nil, err
 	}
 	clientset.inferenceClient = inferenceClient
+
 	return clientset, nil
 }
 
@@ -78,20 +79,20 @@ func (clientset *Client) ListJobs(args *resourcepoolv1.OpenAPIJobListRequest) (*
 }
 
 // aijob
-func (clientset *Client) GetJob(jobID, resourcePoolId string) (*resourcepoolv1.OpenAPIGetJobResponse, error) {
-	return clientset.resourceClient.GetJob(jobID, resourcePoolId)
+func (clientset *Client) GetJob(options *resourcepoolv1.GetAIJobOptions) (*resourcepoolv1.OpenAPIGetJobResponse, error) {
+	return clientset.resourceClient.GetJob(options)
 }
-func (clientset *Client) DeleteJob(jobID, resourcePoolId string) (*resourcepoolv1.OpenAPIJobDeleteResponse, error) {
-	return clientset.resourceClient.DeleteJob(jobID, resourcePoolId)
+func (clientset *Client) DeleteJob(options *resourcepoolv1.DeleteAIJobOptions) (*resourcepoolv1.OpenAPIJobDeleteResponse, error) {
+	return clientset.resourceClient.DeleteJob(options)
 }
-func (clientset *Client) CreateJob(args *resourcepoolv1.OpenAPIJobCreateRequest, resourcePoolId string) (*resourcepoolv1.OpenAPIJobCreateResponse, error) {
-	return clientset.resourceClient.CreateJob(args, resourcePoolId)
+func (clientset *Client) CreateJob(args *resourcepoolv1.OpenAPIJobCreateRequest, options *resourcepoolv1.CreateAIJobOptions) (*resourcepoolv1.OpenAPIJobCreateResponse, error) {
+	return clientset.resourceClient.CreateJob(args, options)
 }
-func (clientset *Client) UpdateJob(args *resourcepoolv1.OpenAPIJobUpdateRequest, jobID, resourcePoolId string) (*resourcepoolv1.OpenAPIJobUpdateResponse, error) {
-	return clientset.resourceClient.UpdateJob(args, jobID, resourcePoolId)
+func (clientset *Client) UpdateJob(args *resourcepoolv1.OpenAPIJobUpdateRequest, options *resourcepoolv1.UpdateAIJobOptions) (*resourcepoolv1.OpenAPIJobUpdateResponse, error) {
+	return clientset.resourceClient.UpdateJob(args, options)
 }
-func (clientset *Client) StopJob(jobID, resourcePoolId string) (*resourcepoolv1.OpenAPIJobStopResponse, error) {
-	return clientset.resourceClient.StopJob(jobID, resourcePoolId)
+func (clientset *Client) StopJob(options *resourcepoolv1.StopAIJobOptions) (*resourcepoolv1.OpenAPIJobStopResponse, error) {
+	return clientset.resourceClient.StopJob(options)
 }
 func (clientset *Client) GetTaskEvent(args *resourcepoolv1.GetJobEventsRequest) (*resourcepoolv1.GetJobEventsResponse, error) {
 	return clientset.resourceClient.GetTaskEvent(args)
@@ -102,14 +103,17 @@ func (clientset *Client) GetPodEvents(args *resourcepoolv1.GetPodEventsRequest) 
 func (clientset *Client) GetPodLogs(args *resourcepoolv1.GetPodLogsRequest) (*resourcepoolv1.GetPodLogResponse, error) {
 	return clientset.resourceClient.GetPodLogs(args)
 }
-func (clientset *Client) GetJobNodesList(jobID, resourcePoolId, namespace string) (*resourcepoolv1.JobNodesListResponse, error) {
-	return clientset.resourceClient.GetJobNodesList(jobID, resourcePoolId, namespace)
+func (clientset *Client) GetJobNodesList(options *resourcepoolv1.GetJobNodesListOptions) (*resourcepoolv1.JobNodesListResponse, error) {
+	return clientset.resourceClient.GetJobNodesList(options)
 }
 func (clientset *Client) GetTaskMetrics(args *resourcepoolv1.GetTaskMetricsRequest) (*resourcepoolv1.GetTaskMetricsResponse, error) {
 	return clientset.resourceClient.GetTaskMetrics(args)
 }
 func (clientset *Client) GetWebSSHUrl(args *resourcepoolv1.GetWebShellURLRequest) (*resourcepoolv1.GetWebShellURLResponse, error) {
 	return clientset.resourceClient.GetWebSSHUrl(args)
+}
+func (clientset *Client) FileUpload(args *resourcepoolv1.FileUploadRequest) (*resourcepoolv1.FileUploaderResponse, error) {
+	return clientset.resourceClient.FileUpload(args)
 }
 
 // inference

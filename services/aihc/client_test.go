@@ -283,7 +283,7 @@ func TestCreateJob(t *testing.T) {
 		Labels:               nil,
 		Priority:             "",
 		Datasources:          nil,
-		FaultToleranceConfig: v1.OpenAPIJobFaultToleranceConfig{},
+		FaultToleranceConfig: &v1.OpenAPIJobFaultToleranceConfig{},
 		AlertConfig:          nil,
 		EnableBccl:           false,
 	}, RESOURCE_POOL_ID)
