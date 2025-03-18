@@ -14,13 +14,7 @@
 
 package api
 
-type ListHpasPageReq struct {
-	HpasIds      []string `json:"hpasIds,omitempty"`
-	Name         string   `json:"name,omitempty"`
-	ZoneName     string   `json:"zoneName,omitempty"`
-	HpasStatus   string   `json:"hpasStatus,omitempty"`
-	AppType      string   `json:"appType,omitempty"`
-	ShowRdmaTopo bool     `json:"showRdmaTopo,omitempty"`
-	PageNo       int      `json:"pageNo,omitempty"`
-	PageSize     int      `json:"pageSize,omitempty"`
+type AssignIpv4Resp struct {
+	RequestId  string   `json:"requestId"`
+	PrivateIps []string `json:"privateIps"`
 }

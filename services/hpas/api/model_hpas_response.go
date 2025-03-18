@@ -34,7 +34,41 @@ type HpasResponse struct {
 	ImageName           string        `json:"imageName"`
 	CreateTime          string        `json:"createTime"`
 	Tags                []TagResponse `json:"tags"`
+	RdmaNicTopo         []RdmaNicTopo `json:"rdmaNicTopo"`
+	NicInfo             []NicInfo     `json:"nicInfo"`
 	AppImageFamily      string        `json:"appImageFamily"`
 	RdmaUnitID          string        `json:"rdmaUnitID"`
 	RdmaPodName         string        `json:"rdmaPodName"`
+}
+
+type RdmaNicTopo struct {
+	RdmaIp     string `json:"rdmaIp"`
+	SwitchName string `json:"switchName"`
+	SwitchPort string `json:"switchPort"`
+}
+
+type NicInfo struct {
+	NicId             string     `json:"nicId"`
+	NicName           string     `json:"nicName"`
+	NicType           string     `json:"nicType"`
+	SubnetId          string     `json:"subnetId"`
+	Description       string     `json:"description"`
+	HpasId            string     `json:"hpasId"`
+	NicStatus         string     `json:"nicStatus"`
+	MacAddress        string     `json:"macAddress"`
+	VpcId             string     `json:"vpcId"`
+	CreatedTime       string     `json:"createdTime"`
+	Ipv4s             []Ipv4Info `json:"ipv4s"`
+	Ipv6s             []Ipv6Info `json:"ipv6s"`
+	SecurityGroupType string     `json:"securityGroupType"`
+	SecurityGroupIds  []string   `json:"securityGroupIds"`
+}
+
+type Ipv4Info struct {
+	PrivateIP string `json:"privateIp"`
+	Primary   bool   `json:"primary"`
+}
+
+type Ipv6Info struct {
+	Ipv6Address string `json:"ipv6Address"`
 }

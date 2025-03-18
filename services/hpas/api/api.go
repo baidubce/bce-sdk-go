@@ -357,6 +357,10 @@ func ListHpas(cli bce.Client, body *ListHpasPageReq) (
 	path := "/"
 	req.SetUri(path)
 	req.SetParam("action", "DescribeInstances")
+	if body != nil && body.ShowRdmaTopo {
+		req.SetParam("showRdmaTopo", "true")
+	}
+
 
 	jsonBytes, err := json.Marshal(body)
 	if err != nil {
@@ -381,6 +385,90 @@ func ListHpas(cli bce.Client, body *ListHpasPageReq) (
 	}
 	return res, nil
 }
+
+// ListHpasByMaker -
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - body:
+// RETURNS:
+//     - *api.ListHpasByPageResp:
+//     - error: the return error if any occurs
+func ListHpasByMaker(cli bce.Client, body *ListHpasByMakerReq) (
+	*ListHpasByMakerResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "DescribeHPASInstances")
+	if body != nil && body.ShowRdmaTopo {
+		req.SetParam("showRdmaTopo", "true")
+	}
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &ListHpasByMakerResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// ListReservedHpasByMaker -
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - body:
+// RETURNS:
+//     - *api.ListHpasByPageResp:
+//     - error: the return error if any occurs
+func ListReservedHpasByMaker(cli bce.Client, body *ListReservedHpasByMakerReq) (
+	*ListReservedHpasByMakerResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "DescribeHPASReservedInstances")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &ListReservedHpasByMakerResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
 
 // ImageList - 查询镜像接口
 //
@@ -487,4 +575,162 @@ func DetachTags(cli bce.Client, body *TagsOperationRequest) error {
 		return resp.ServiceError()
 	}
 	return nil
+}
+
+// AssignPrivateIpAddresses -
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - body:
+// RETURNS:
+//     - *api.EdpResultRespAssignIpv4Resp:
+//     - error: the return error if any occurs
+func AssignPrivateIpAddresses(cli bce.Client, body *AssignIpv4Req) (
+	*AssignIpv4Resp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "AssignPrivateIpAddresses")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &AssignIpv4Resp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// AssignIpv6Addresses -
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - body:
+// RETURNS:
+//     - *api.EdpResultRespAssignIpv6Resp:
+//     - error: the return error if any occurs
+func AssignIpv6Addresses(cli bce.Client, body *AssignIpv6Req) (
+	*AssignIpv6Resp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "AssignIpv6Addresses")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &AssignIpv6Resp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// UnAssignPrivateIpAddresses -
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - body:
+// RETURNS:
+//     - *api.EdpResultRespVoid:
+//     - error: the return error if any occurs
+func UnAssignPrivateIpAddresses(cli bce.Client, body *UnAssignIpv4Req) (*BaseV3Resp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "UnassignPrivateIpAddresses")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &BaseV3Resp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// UnAssignIpv6Addresses -
+//
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - body:
+// RETURNS:
+//     - *api.EdpResultRespVoid:
+//     - error: the return error if any occurs
+func UnAssignIpv6Addresses(cli bce.Client, body *UnAssignIpv6Req) (*BaseV3Resp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "UnAssignIpv6Addresses")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &BaseV3Resp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
 }

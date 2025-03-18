@@ -426,3 +426,12 @@ type ListDownloadTaskRequest struct {
 	// 每页大小 选填， 默认为10
 	PageSize int `json:"pageSize"`
 }
+
+type BindResourceRequest struct {
+	Project      string `json:"project"`
+	UserID       string `json:"userID"`
+	LogStoreName string `json:"logStoreName"`
+	ID           string `json:"id"`
+	Scope        string `json:"scope"`
+	SubScope     string `json:"subScope"`
+}

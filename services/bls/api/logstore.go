@@ -176,3 +176,39 @@ func ListLogStore(cli bce.Client, project string, args *QueryConditions) (*ListL
 	}
 	return result, nil
 }
+
+func BindResource(cli bce.Client, body *bce.Body) error {
+	req := &bce.BceRequest{}
+	req.SetUri(BIND_PREFIX)
+	req.SetMethod(http.POST)
+	if body != nil {
+		req.SetBody(body)
+	}
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}
+
+func UnBindResource(cli bce.Client, body *bce.Body) error {
+	req := &bce.BceRequest{}
+	req.SetUri(UNBIND_PREFIX)
+	req.SetMethod(http.POST)
+	if body != nil {
+		req.SetBody(body)
+	}
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	defer func() { resp.Body().Close() }()
+	return nil
+}

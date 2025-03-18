@@ -183,7 +183,7 @@ func (c *Client) ListObjectVersions(bucket string, args *api.ListObjectsArgs) (*
 //     - error: the return error if any occurs
 func (c *Client) SimpleListObjects(bucket, prefix string, maxKeys int, marker,
 	delimiter string) (*api.ListObjectsResult, error) {
-	args := &api.ListObjectsArgs{delimiter, marker, maxKeys, prefix}
+	args := &api.ListObjectsArgs{delimiter, marker, maxKeys, prefix, ""}
 	return api.ListObjects(c, bucket, args, c.BosContext)
 }
 
@@ -1197,7 +1197,7 @@ func (c *Client) SimpleAppendObjectFromFile(bucket, object, filePath string,
 // RETURNS:
 //     - error: any error if it occurs
 func (c *Client) DeleteObject(bucket, object string) error {
-	return api.DeleteObject(c, bucket, object, "" , c.BosContext)
+	return api.DeleteObject(c, bucket, object, "", c.BosContext)
 }
 
 func (c *Client) DeleteObjectVersion(bucket, object, versionId string) error {
@@ -2126,8 +2126,8 @@ func (c *Client) ParallelCopy(srcBucketName string, srcObjectName string,
 		ContentDisposition: objectMeta.ContentDisposition,
 		Expires:            objectMeta.Expires,
 		StorageClass:       objectMeta.StorageClass,
-		ObjectTagging: args.ObjectTagging,
-		TaggingDirective: args.TaggingDirective,
+		ObjectTagging:      args.ObjectTagging,
+		TaggingDirective:   args.TaggingDirective,
 	}
 	if args != nil {
 		if len(args.StorageClass) != 0 {

@@ -369,3 +369,27 @@ func (c *Client) ListDownloadTask(request ListDownloadTaskRequest) (*api.ListDow
 	}
 	return api.ListDownloadTask(c, body)
 }
+
+func (c *Client) BindResource(request BindResourceRequest) error {
+	params, jsonErr := json.Marshal(request)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromString(string(params))
+	if err != nil {
+		return nil
+	}
+	return api.BindResource(c, body)
+}
+
+func (c *Client) UnBindResource(request BindResourceRequest) error {
+	params, jsonErr := json.Marshal(request)
+	if jsonErr != nil {
+		return jsonErr
+	}
+	body, err := bce.NewBodyFromString(string(params))
+	if err != nil {
+		return nil
+	}
+	return api.UnBindResource(c, body)
+}

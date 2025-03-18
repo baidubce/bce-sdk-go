@@ -1088,3 +1088,28 @@ func TestDownloadTaskWithProject(t *testing.T) {
 	err = BLS_CLIENT.DeleteProject(deleteProjectRequest)
 	ExpectEqual(t.Errorf, err, nil)
 }
+
+func TestBindResource(t *testing.T) {
+	createLogStoreRequest := CreateLogStoreRequest{
+		Project:      DefaultProject,
+		LogStoreName: "test_bind_resource",
+		Retention:    1,
+	}
+	err := BLS_CLIENT.CreateLogStoreV2(createLogStoreRequest)
+	ExpectEqual(t.Errorf, err, nil)
+	bindResourceRequest := BindResourceRequest{
+		Project:      DefaultProject,
+		LogStoreName: "test_bind_resource",
+		Scope:        "test_scope",
+		ID:           "test_ID",
+		SubScope:     "test_sub_scope",
+	}
+	err = BLS_CLIENT.BindResource(bindResourceRequest)
+	ExpectEqual(t.Errorf, err, nil)
+	err = BLS_CLIENT.DeleteLogStore("test_bind_resource")
+	ExpectEqual(t.Errorf, (err.(*bce.BceServiceError)).Code, "LogStoreAlreadyBind")
+	err = BLS_CLIENT.UnBindResource(bindResourceRequest)
+	ExpectEqual(t.Errorf, err, nil)
+	err = BLS_CLIENT.DeleteLogStore("test_bind_resource")
+	ExpectEqual(t.Errorf, err, nil)
+}

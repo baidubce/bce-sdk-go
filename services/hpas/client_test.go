@@ -168,13 +168,28 @@ func TestDescribeReservedHpas(t *testing.T) {
 
 func TestListHpas(t *testing.T) {
 	listHpasPageReq := &api.ListHpasPageReq{
-		HpasIds:    []string{"hpas-K1ZPbS07"},
-		Name:       "create_hpas_test",
+		HpasIds:    []string{"hpas-hS7So6Qy"},
+		Name:       "real",
 		ZoneName:   "cn-bj-a",
 		HpasStatus: "Active",
-		AppType:    "llama2_7B_train_ic5",
+		AppType:    "llama2_7B_train",
 		PageNo:     1,
 		PageSize:   10,
+	}
+	listResult, err := HPAS_CLIENT.ListHpas(listHpasPageReq)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(listResult)
+}
+
+func TestListHpasWithRdmaTopo(t *testing.T) {
+	listHpasPageReq := &api.ListHpasPageReq{
+		HpasIds:      []string{"hpas-hS7So6Qy"},
+		Name:         "real",
+		ZoneName:     "cn-bj-a",
+		HpasStatus:   "Active",
+		ShowRdmaTopo: true,
+		PageNo:       1,
+		PageSize:     10,
 	}
 	listResult, err := HPAS_CLIENT.ListHpas(listHpasPageReq)
 	ExpectEqual(t.Errorf, err, nil)
@@ -187,6 +202,108 @@ func TestImageList(t *testing.T) {
 		MaxKeys: 2,
 	}
 	resp, err := HPAS_CLIENT.ImageList(body)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestDescribeHPASInstancesByMaker(t *testing.T) {
+	listHpasByMakerReq := &api.ListHpasByMakerReq{
+		HpasIds:      []string{"hpas-hS7So6Qy"},
+		Name:         "real",
+		ZoneName:     "zoneA",
+		HpasStatus:   "active",
+		AppType:      "llama2_7B_train",
+		ShowRdmaTopo: true,
+		Marker:       "marker123",
+		MaxKeys:      10,
+	}
+
+	resp, err := HPAS_CLIENT.DescribeHPASInstancesByMaker(listHpasByMakerReq)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestListReservedHpasByMakerReq(t *testing.T) {
+	req := &api.ListReservedHpasByMakerReq{
+		ReservedHpasIds: []string{"k-fAqX67kN"},
+		Name:            "test",
+		ZoneName:        "zoneG",
+		ReservedHpasStatus: "active",
+		AppType:         "llama2_7B_train",
+		Marker:             "marker123",
+		MaxKeys:            10,
+	}
+
+	resp, err := HPAS_CLIENT.DescribeReservedHpasByMaker(req)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestAssignIpv4ReqWithPrivateIps(t *testing.T) {
+	req := &api.AssignIpv4Req{
+		HpasId:                  "hpas-hS7So6Qy",
+		PrivateIps:              []string{"172.16.0.8", "172.16.0.11"},
+		SecondaryPrivateIpCount: 2,
+	}
+
+	resp, err := HPAS_CLIENT.AssignPrivateIpAddresses(req)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestAssignIpv4ReqWithPrivateIpCount(t *testing.T) {
+	req := &api.AssignIpv4Req{
+		HpasId:                  "hpas-hS7So6Qy",
+		SecondaryPrivateIpCount: 2,
+	}
+
+	resp, err := HPAS_CLIENT.AssignPrivateIpAddresses(req)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestUnAssignIpv4Req(t *testing.T) {
+	req := &api.UnAssignIpv4Req{
+		HpasId:     "hpas-hS7So6Qy",
+		PrivateIps: []string{"172.16.0.8", "172.16.0.11"}}
+
+	resp, err := HPAS_CLIENT.UnAssignPrivateIpAddresses(req)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestAssignIpv6ReqWithIpv6Addresses(t *testing.T) {
+	req := &api.AssignIpv6Req{
+		HpasId:        "hpas-hS7So6Qy",
+		Ipv6Addresses: []string{"2400:da00:e003:0:78c::2", "2400:da00:e003:0:78c::3"},
+		Reboot:        true,
+	}
+
+	resp, err := HPAS_CLIENT.AssignIpv6Addresses(req)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestAssignIpv6ReqWithIpv6AddressCount(t *testing.T) {
+	req := &api.AssignIpv6Req{
+		HpasId:           "hpas-hS7So6Qy",
+		Ipv6AddressCount: 4,
+		Reboot:           false,
+	}
+
+	resp, err := HPAS_CLIENT.AssignIpv6Addresses(req)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestUnAssignIpv6Req(t *testing.T) {
+	req := &api.UnAssignIpv6Req{
+		HpasId:        "hpas-hS7So6Qy",
+		Ipv6Addresses: []string{"2400:da00:e003:0:78c::2", "2400:da00:e003:0:78c::3"},
+		Reboot:        true,
+	}
+
+	resp, err := HPAS_CLIENT.UnAssignIpv6Addresses(req)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(resp)
 }

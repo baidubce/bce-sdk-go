@@ -203,3 +203,74 @@ func (c *Client) AttachTags(body *api.TagsOperationRequest) error {
 func (c *Client) DetachTags(body *api.TagsOperationRequest) error {
 	return api.DetachTags(c, body)
 }
+
+// AssignPrivateIpAddresses -
+//
+// PARAMS:
+//     - body: body参数
+// RETURNS:
+//     - *api.AssignIpv4Resp:
+//     - error: the return error if any occurs
+func (c *Client) AssignPrivateIpAddresses(body *api.AssignIpv4Req) (
+	*api.AssignIpv4Resp, error) {
+	return api.AssignPrivateIpAddresses(c, body)
+}
+
+// UnAssignPrivateIpAddresses -
+//
+// PARAMS:
+//     - body: body参数
+// RETURNS:
+//     - *api.BaseV3Resp:
+//     - error: the return error if any occurs
+func (c *Client) UnAssignPrivateIpAddresses(body *api.UnAssignIpv4Req) (
+	*api.BaseV3Resp, error) {
+	return api.UnAssignPrivateIpAddresses(c, body)
+}
+
+// AssignIpv6Addresses -
+//
+// PARAMS:
+//     - body: body参数
+// RETURNS:
+//     - *api.AssignIpv6Resp:
+//     - error: the return error if any occurs
+func (c *Client) AssignIpv6Addresses(body *api.AssignIpv6Req) (
+	*api.AssignIpv6Resp, error) {
+	return api.AssignIpv6Addresses(c, body)
+}
+
+// UnAssignIpv6Addresses -
+//
+// PARAMS:
+//     - body: body参数
+// RETURNS:
+//     - *api.BaseV3Resp:
+//     - error: the return error if any occurs
+func (c *Client) UnAssignIpv6Addresses(body *api.UnAssignIpv6Req) (*api.BaseV3Resp, error) {
+	return api.UnAssignIpv6Addresses(c, body)
+}
+
+// DescribeReservedHpasByMaker -
+//
+// PARAMS:
+//     - body: body参数
+// RETURNS:
+//     - *api.ListReservedHpasByMakerResp:
+//     - error: the return error if any occurs
+func (c *Client) DescribeReservedHpasByMaker(body *api.ListReservedHpasByMakerReq) (
+	*api.ListReservedHpasByMakerResp, error) {
+	return api.ListReservedHpasByMaker(c, body)
+}
+
+// DescribeHPASInstancesByMaker:
+//
+// PARAMS:
+//     - body: body参数
+// RETURNS:
+//     - *api.ListHpasByMakerResp:
+//     - error: the return error if any occurs
+func (c *Client) DescribeHPASInstancesByMaker(body *api.ListHpasByMakerReq) (
+	*api.ListHpasByMakerResp, error) {
+	return api.ListHpasByMaker(c, body)
+}

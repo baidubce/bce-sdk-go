@@ -28,6 +28,8 @@ const (
 	LOGSHIPPER_PREFIX         = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logshipper"
 	DOWNLOAD_TASK_PREFIX      = bce.URI_PREFIX + "v2" + bce.URI_PREFIX + "logstore" + bce.URI_PREFIX + "download"
 	LIST_DOWNLOAD_TASK_PREFIX = DOWNLOAD_TASK_PREFIX + bce.URI_PREFIX + "list"
+	BIND_PREFIX               = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logstore" + bce.URI_PREFIX + "bind"
+	UNBIND_PREFIX             = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logstore" + bce.URI_PREFIX + "unbind"
 )
 
 func getProjectUri(UUID string) string {

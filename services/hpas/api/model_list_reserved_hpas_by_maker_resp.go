@@ -14,13 +14,10 @@
 
 package api
 
-type ListHpasPageReq struct {
-	HpasIds      []string `json:"hpasIds,omitempty"`
-	Name         string   `json:"name,omitempty"`
-	ZoneName     string   `json:"zoneName,omitempty"`
-	HpasStatus   string   `json:"hpasStatus,omitempty"`
-	AppType      string   `json:"appType,omitempty"`
-	ShowRdmaTopo bool     `json:"showRdmaTopo,omitempty"`
-	PageNo       int      `json:"pageNo,omitempty"`
-	PageSize     int      `json:"pageSize,omitempty"`
+type ListReservedHpasByMakerResp struct {
+	Marker           string                 `json:"marker"`
+	IsTruncated      bool                   `json:"isTruncated"`
+	NextMarker       int                    `json:"nextMarker"`
+	MaxKeys          int                    `json:"maxKeys"`
+	ReservedHpasList []HpasReservedResponse `json:"reservedHpasList"`
 }
