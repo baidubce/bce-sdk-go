@@ -14,11 +14,11 @@
 
 package api
 
-type ImageResponse struct {
-	ImageId          string   `json:"imageId"`
-	Name             string   `json:"name"`
-	ImageType        string   `json:"imageType"`
-	ImageStatus      string   `json:"imageStatus"`
-	CreateTime       string   `json:"createTime"`
-	SupportedAppType []string `json:"supportedAppType"`
+type ModifyInstancesAttributeReq struct {
+	HpasIds                    []string `json:"hpasIds,omitempty"`
+	Name                       string   `json:"name,omitempty"`
+	ApplicationName            string   `json:"applicationName,omitempty"`
+	AutoSeqSuffix              bool     `json:"autoSeqSuffix,omitempty"`
+	ForceApplicationNameUnique bool     `json:"forceApplicationNameUnique,omitempty"`
+	Reboot                     bool     `json:"reboot,omitempty"`
 }

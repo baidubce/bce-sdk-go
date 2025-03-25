@@ -14,11 +14,6 @@
 
 package api
 
-type ImageResponse struct {
-	ImageId          string   `json:"imageId"`
-	Name             string   `json:"name"`
-	ImageType        string   `json:"imageType"`
-	ImageStatus      string   `json:"imageStatus"`
-	CreateTime       string   `json:"createTime"`
-	SupportedAppType []string `json:"supportedAppType"`
+type DeleteImagesReq struct {
+	ImageIds []string `json:"imageIds"`
 }

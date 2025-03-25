@@ -73,6 +73,8 @@ func TestCreateInstance(t *testing.T) {
 		AppType:             "llama2_7B_train_ic5",
 		AppPerformanceLevel: "10k",
 		Name:                "create_hpas_test",
+		ApplicationName:     "app-name",
+		AutoSeqSuffix:       true,
 		PurchaseNum:         1,
 		ZoneName:            "cn-bj-a",
 		ImageId:             "m-Xz6svNFM",
@@ -80,6 +82,7 @@ func TestCreateInstance(t *testing.T) {
 		SecurityGroupIds:    []string{"g-9vjwstn24c2v"},
 		Password:            "71fa62c0059fa8624a4fbe110e236ab31ceede74cc7349df2f75f7ed2a279665",
 		Tags:                []api.TagModel{{TagKey: "test1", TagValue: "test1"}},
+		InternalIps:         []string{"192.168.48.12"},
 	}
 	createResult, err := HPAS_CLIENT.CreateHpas(createInstanceArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -140,6 +143,15 @@ func TestModifyPasswordHpas(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestModifyInstancesAttribute(t *testing.T) {
+	modifyInstancesAttributeArgs := &api.ModifyInstancesAttributeReq{
+		HpasIds: []string{"hpas-FRUqoSQk"},
+		Name:    "newName0324",
+	}
+	err := HPAS_CLIENT.ModifyInstancesAttribute(modifyInstancesAttributeArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestCreateReservedHpas(t *testing.T) {
 	createReservedHpasReq := &api.CreateReservedHpasReq{
 		AppType:             "llama2_7B_train",
@@ -197,11 +209,40 @@ func TestListHpasWithRdmaTopo(t *testing.T) {
 }
 
 func TestImageList(t *testing.T) {
-	body := &api.BaseMarkerV3Req{
+	body := &api.DescribeHpasImageReq{
 		Marker:  "m-11111",
 		MaxKeys: 2,
 	}
 	resp, err := HPAS_CLIENT.ImageList(body)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestCreateImage(t *testing.T) {
+	body := &api.CreateImageReq{
+		HpasId:    "hpas-1111",
+		ImageName: "name",
+	}
+	resp, err := HPAS_CLIENT.CreateImage(body)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestModifyImageAttribute(t *testing.T) {
+	body := &api.ModifyImageAttributeReq{
+		ImageId:   "m-rJhg2N26",
+		ImageName: "test_custom_image",
+	}
+	resp, err := HPAS_CLIENT.ModifyImageAttribute(body)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestDeleteImages(t *testing.T) {
+	body := &api.DeleteImagesReq{
+		ImageIds: []string{"m-11111"},
+	}
+	resp, err := HPAS_CLIENT.DeleteImages(body)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(resp)
 }
@@ -225,11 +266,11 @@ func TestDescribeHPASInstancesByMaker(t *testing.T) {
 
 func TestListReservedHpasByMakerReq(t *testing.T) {
 	req := &api.ListReservedHpasByMakerReq{
-		ReservedHpasIds: []string{"k-fAqX67kN"},
-		Name:            "test",
-		ZoneName:        "zoneG",
+		ReservedHpasIds:    []string{"k-fAqX67kN"},
+		Name:               "test",
+		ZoneName:           "zoneG",
 		ReservedHpasStatus: "active",
-		AppType:         "llama2_7B_train",
+		AppType:            "llama2_7B_train",
 		Marker:             "marker123",
 		MaxKeys:            10,
 	}

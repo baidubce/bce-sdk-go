@@ -18,6 +18,8 @@ type CreateHpasReq struct {
 	AppType             string       `json:"appType,omitempty"`
 	AppPerformanceLevel string       `json:"appPerformanceLevel,omitempty"`
 	Name                string       `json:"name,omitempty"`
+	ApplicationName     string       `json:"applicationName,omitempty"`
+	AutoSeqSuffix       bool         `json:"autoSeqSuffix,omitempty"`
 	Description         string       `json:"description,omitempty"`
 	PurchaseNum         int          `json:"purchaseNum,omitempty"`
 	ZoneName            string       `json:"zoneName,omitempty"`
@@ -26,6 +28,7 @@ type CreateHpasReq struct {
 	Password            string       `json:"password,omitempty"`
 	EhcClusterId        string       `json:"ehcClusterId,omitempty"`
 	SecurityGroupIds    []string     `json:"securityGroupIds,omitempty"`
+	InternalIps         []string     `json:"internalIps,omitempty"`
 	BillingModel        BillingModel `json:"billingModel,omitempty"`
 	Tags                []TagModel   `json:"tags,omitempty"`
 }

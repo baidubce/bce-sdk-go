@@ -74,10 +74,11 @@ func NewClient(ak, sk, endpoint string) (*Client, error) {
 // CreateHpas -
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - *api.CreateHpasResp:
-//     - error: the return error if any occurs
+//   - *api.CreateHpasResp:
+//   - error: the return error if any occurs
 func (c *Client) CreateHpas(body *api.CreateHpasReq) (*api.CreateHpasResp, error) {
 	return api.CreateHpas(c, body)
 }
@@ -85,9 +86,10 @@ func (c *Client) CreateHpas(body *api.CreateHpasReq) (*api.CreateHpasResp, error
 // DeleteHpas -
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) DeleteHpas(body *api.DeleteHpasReq) error {
 	return api.DeleteHpas(c, body)
 }
@@ -95,9 +97,10 @@ func (c *Client) DeleteHpas(body *api.DeleteHpasReq) error {
 // StopHpas -
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) StopHpas(body *api.StopHpasReq) error {
 	return api.StopHpas(c, body)
 }
@@ -105,9 +108,10 @@ func (c *Client) StopHpas(body *api.StopHpasReq) error {
 // StartHpas -
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) StartHpas(body *api.StartHpasReq) error {
 	return api.StartHpas(c, body)
 }
@@ -115,9 +119,10 @@ func (c *Client) StartHpas(body *api.StartHpasReq) error {
 // RebootHpas -
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) RebootHpas(body *api.RebootHpasReq) error {
 	return api.RebootHpas(c, body)
 }
@@ -125,9 +130,10 @@ func (c *Client) RebootHpas(body *api.RebootHpasReq) error {
 // ResetHpas -
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) ResetHpas(body *api.ResetHpasReq) error {
 	return api.ResetHpas(c, body)
 }
@@ -135,20 +141,33 @@ func (c *Client) ResetHpas(body *api.ResetHpasReq) error {
 // ModifyPasswordHpas -
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) ModifyPasswordHpas(body *api.ModifyPasswordHpasReq) error {
 	return api.ModifyPasswordHpas(c, body)
+}
+
+// ModifyInstancesAttribute:
+//
+// PARAMS:
+//   - body: body参数
+//
+// RETURNS:
+//   - error: the return error if any occurs
+func (c *Client) ModifyInstancesAttribute(body *api.ModifyInstancesAttributeReq) error {
+	return api.ModifyInstancesAttribute(c, body)
 }
 
 // CreateReservedHpas -
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - *api.CreateReservedHpasResp:
-//     - error: the return error if any occurs
+//   - *api.CreateReservedHpasResp:
+//   - error: the return error if any occurs
 func (c *Client) CreateReservedHpas(body *api.CreateReservedHpasReq) (
 	*api.CreateReservedHpasResp, error) {
 	return api.CreateReservedHpas(c, body)
@@ -157,10 +176,11 @@ func (c *Client) CreateReservedHpas(body *api.CreateReservedHpasReq) (
 // DescribeReservedHpas -
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - *api.ListReservedHpasByPageResp:
-//     - error: the return error if any occurs
+//   - *api.ListReservedHpasByPageResp:
+//   - error: the return error if any occurs
 func (c *Client) DescribeReservedHpas(body *api.ListReservedHpasPageReq) (
 	*api.ListReservedHpasByPageResp, error) {
 	return api.DescribeReservedHpas(c, body)
@@ -169,11 +189,12 @@ func (c *Client) DescribeReservedHpas(body *api.ListReservedHpasPageReq) (
 // ListHpas -
 //
 // PARAMS:
-//     - showRdmaTopo:
-//     - body: body参数
+//   - showRdmaTopo:
+//   - body: body参数
+//
 // RETURNS:
-//     - *api.ListHpasByPageResp:
-//     - error: the return error if any occurs
+//   - *api.ListHpasByPageResp:
+//   - error: the return error if any occurs
 func (c *Client) ListHpas(body *api.ListHpasPageReq) (
 	*api.ListHpasByPageResp, error) {
 	return api.ListHpas(c, body)
@@ -182,20 +203,58 @@ func (c *Client) ListHpas(body *api.ListHpasPageReq) (
 // ImageList - 查询镜像接口
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - *api.DescribeHpasImageResp:
-//     - error: the return error if any occurs
-func (c *Client) ImageList(body *api.BaseMarkerV3Req) (*api.DescribeHpasImageResp, error) {
+//   - *api.DescribeHpasImageResp:
+//   - error: the return error if any occurs
+func (c *Client) ImageList(body *api.DescribeHpasImageReq) (*api.DescribeHpasImageResp, error) {
 	return api.ImageList(c, body)
+}
+
+// ImageList - 查询镜像接口
+//
+// PARAMS:
+//   - body: body参数
+//
+// RETURNS:
+//   - *api.DescribeHpasImageResp:
+//   - error: the return error if any occurs
+func (c *Client) CreateImage(body *api.CreateImageReq) (*api.CreateImageResp, error) {
+	return api.CreateImage(c, body)
+}
+
+// ModifyImageAttribute - 修改自定义镜像
+//
+// PARAMS:
+//   - body: body参数
+//
+// RETURNS:
+//   - *api.BaseV3Resp:
+//   - error: the return error if any occurs
+func (c *Client) ModifyImageAttribute(body *api.ModifyImageAttributeReq) (*api.BaseV3Resp, error) {
+	return api.ModifyImageAttribute(c, body)
+}
+
+// DeleteImages - 删除自定义镜像
+//
+// PARAMS:
+//   - body: body参数
+//
+// RETURNS:
+//   - *api.BaseV3Resp:
+//   - error: the return error if any occurs
+func (c *Client) DeleteImages(body *api.DeleteImagesReq) (*api.BaseV3Resp, error) {
+	return api.DeleteImages(c, body)
 }
 
 // AttachTags -
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - error: the return error if any occurs
+//   - error: the return error if any occurs
 func (c *Client) AttachTags(body *api.TagsOperationRequest) error {
 	return api.AttachTags(c, body)
 }
@@ -207,10 +266,11 @@ func (c *Client) DetachTags(body *api.TagsOperationRequest) error {
 // AssignPrivateIpAddresses -
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - *api.AssignIpv4Resp:
-//     - error: the return error if any occurs
+//   - *api.AssignIpv4Resp:
+//   - error: the return error if any occurs
 func (c *Client) AssignPrivateIpAddresses(body *api.AssignIpv4Req) (
 	*api.AssignIpv4Resp, error) {
 	return api.AssignPrivateIpAddresses(c, body)
@@ -219,10 +279,11 @@ func (c *Client) AssignPrivateIpAddresses(body *api.AssignIpv4Req) (
 // UnAssignPrivateIpAddresses -
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - *api.BaseV3Resp:
-//     - error: the return error if any occurs
+//   - *api.BaseV3Resp:
+//   - error: the return error if any occurs
 func (c *Client) UnAssignPrivateIpAddresses(body *api.UnAssignIpv4Req) (
 	*api.BaseV3Resp, error) {
 	return api.UnAssignPrivateIpAddresses(c, body)
@@ -231,10 +292,11 @@ func (c *Client) UnAssignPrivateIpAddresses(body *api.UnAssignIpv4Req) (
 // AssignIpv6Addresses -
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - *api.AssignIpv6Resp:
-//     - error: the return error if any occurs
+//   - *api.AssignIpv6Resp:
+//   - error: the return error if any occurs
 func (c *Client) AssignIpv6Addresses(body *api.AssignIpv6Req) (
 	*api.AssignIpv6Resp, error) {
 	return api.AssignIpv6Addresses(c, body)
@@ -243,10 +305,11 @@ func (c *Client) AssignIpv6Addresses(body *api.AssignIpv6Req) (
 // UnAssignIpv6Addresses -
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - *api.BaseV3Resp:
-//     - error: the return error if any occurs
+//   - *api.BaseV3Resp:
+//   - error: the return error if any occurs
 func (c *Client) UnAssignIpv6Addresses(body *api.UnAssignIpv6Req) (*api.BaseV3Resp, error) {
 	return api.UnAssignIpv6Addresses(c, body)
 }
@@ -254,10 +317,11 @@ func (c *Client) UnAssignIpv6Addresses(body *api.UnAssignIpv6Req) (*api.BaseV3Re
 // DescribeReservedHpasByMaker -
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - *api.ListReservedHpasByMakerResp:
-//     - error: the return error if any occurs
+//   - *api.ListReservedHpasByMakerResp:
+//   - error: the return error if any occurs
 func (c *Client) DescribeReservedHpasByMaker(body *api.ListReservedHpasByMakerReq) (
 	*api.ListReservedHpasByMakerResp, error) {
 	return api.ListReservedHpasByMaker(c, body)
@@ -266,10 +330,11 @@ func (c *Client) DescribeReservedHpasByMaker(body *api.ListReservedHpasByMakerRe
 // DescribeHPASInstancesByMaker:
 //
 // PARAMS:
-//     - body: body参数
+//   - body: body参数
+//
 // RETURNS:
-//     - *api.ListHpasByMakerResp:
-//     - error: the return error if any occurs
+//   - *api.ListHpasByMakerResp:
+//   - error: the return error if any occurs
 func (c *Client) DescribeHPASInstancesByMaker(body *api.ListHpasByMakerReq) (
 	*api.ListHpasByMakerResp, error) {
 	return api.ListHpasByMaker(c, body)

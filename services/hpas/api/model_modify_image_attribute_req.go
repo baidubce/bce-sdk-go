@@ -14,11 +14,7 @@
 
 package api
 
-type ImageResponse struct {
-	ImageId          string   `json:"imageId"`
-	Name             string   `json:"name"`
-	ImageType        string   `json:"imageType"`
-	ImageStatus      string   `json:"imageStatus"`
-	CreateTime       string   `json:"createTime"`
-	SupportedAppType []string `json:"supportedAppType"`
+type ModifyImageAttributeReq struct {
+	ImageId   string `json:"imageId"`
+	ImageName string `json:"imageName"`
 }

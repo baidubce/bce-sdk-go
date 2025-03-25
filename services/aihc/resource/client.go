@@ -75,8 +75,11 @@ func (c *Client) ListResourcePool(args *v1.ListResourcePoolRequest) (result *v1.
 	if args == nil {
 		return nil, fmt.Errorf("args is nil")
 	}
-	if args.PageNo <= 0 || args.PageSize <= 0 {
-		return nil, fmt.Errorf("invlaid pageNo or pageSize")
+	if args.PageNo <= 0 {
+		args.PageNo = 1
+	}
+	if args.PageSize <= 0 {
+		args.PageSize = 10
 	}
 
 	result = &v1.ListResourcePoolResponse{}
@@ -136,8 +139,11 @@ func (c *Client) ListQueue(resourcePoolID string, args *v1.ListQueueRequest) (re
 	if resourcePoolID == "" {
 		return nil, fmt.Errorf("resourcePoolID is empty")
 	}
-	if args != nil && (args.PageNo <= 0 || args.PageSize <= 0) {
-		return nil, fmt.Errorf("invlaid pageNo or pageSize")
+	if args.PageNo <= 0 {
+		args.PageNo = 1
+	}
+	if args.PageSize <= 0 {
+		args.PageSize = 10
 	}
 	result = &v1.ListQueuesResponse{}
 	err = bce.NewRequestBuilder(c.GetBceClient()).

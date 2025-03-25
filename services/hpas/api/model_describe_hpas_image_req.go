@@ -14,11 +14,8 @@
 
 package api
 
-type ImageResponse struct {
-	ImageId          string   `json:"imageId"`
-	Name             string   `json:"name"`
-	ImageType        string   `json:"imageType"`
-	ImageStatus      string   `json:"imageStatus"`
-	CreateTime       string   `json:"createTime"`
-	SupportedAppType []string `json:"supportedAppType"`
+type DescribeHpasImageReq struct {
+	Marker    string `json:"marker"`
+	MaxKeys   int    `json:"maxKeys"`
+	ImageType string `json:"imageType"`
 }
