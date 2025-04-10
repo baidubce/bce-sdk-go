@@ -177,6 +177,48 @@ func ListLogStore(cli bce.Client, project string, args *QueryConditions) (*ListL
 	return result, nil
 }
 
+func ListLogStoreV2(cli bce.Client, body *bce.Body) (*ListLogStoreResult, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(LIST_LOGSTORE_PREFIX)
+	req.SetMethod(http.POST)
+	if body != nil {
+		req.SetBody(body)
+	}
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	result := &ListLogStoreResult{}
+	if err := resp.ParseJsonBody(result); err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func GetLogStoreByProjects(cli bce.Client, body *bce.Body) (*BatchLogStoreResult, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(BATCH_PREFIX)
+	req.SetMethod(http.POST)
+	if body != nil {
+		req.SetBody(body)
+	}
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	result := &BatchLogStoreResult{}
+	if err := resp.ParseJsonBody(result); err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
 func BindResource(cli bce.Client, body *bce.Body) error {
 	req := &bce.BceRequest{}
 	req.SetUri(BIND_PREFIX)

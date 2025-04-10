@@ -91,14 +91,15 @@ func (c *Client) DeleteLogStoreV2(request DeleteLogStoreRequest) error {
 }
 
 func (c *Client) ListLogStoreV2(request ListLogStoreRequest) (*api.ListLogStoreResult, error) {
-	args := &api.QueryConditions{
-		NamePattern: request.NamePattern,
-		Order:       request.Order,
-		OrderBy:     request.OrderBy,
-		PageNo:      request.PageNo,
-		PageSize:    request.PageSize,
+	params, jsonErr := json.Marshal(request)
+	if jsonErr != nil {
+		return nil, jsonErr
 	}
-	return api.ListLogStore(c, request.Project, args)
+	body, err := bce.NewBodyFromString(string(params))
+	if err != nil {
+		return nil, nil
+	}
+	return api.ListLogStoreV2(c, body)
 }
 
 func (c *Client) ListLogStreamV2(request ListLogStreamRequest) (*api.ListLogStreamResult, error) {
@@ -110,6 +111,18 @@ func (c *Client) ListLogStreamV2(request ListLogStreamRequest) (*api.ListLogStre
 		PageSize:    request.PageSize,
 	}
 	return api.ListLogStream(c, request.Project, request.LogStoreName, args)
+}
+
+func (c *Client) GetLogStoreByProjects(request BatchLogStoreRequest) (*api.BatchLogStoreResult, error) {
+	res, err := json.Marshal(request)
+	if err != nil {
+		return nil, err
+	}
+	body, err := bce.NewBodyFromString(string(res))
+	if err != nil {
+		return nil, err
+	}
+	return api.GetLogStoreByProjects(c, body)
 }
 
 func (c *Client) PushLogRecordV2(request PushLogRecordRequest) error {

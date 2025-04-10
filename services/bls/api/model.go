@@ -181,6 +181,12 @@ type ListLogStoreResult struct {
 	Result     []LogStore `json:"result"`
 }
 
+type BatchLogStoreResult struct {
+	Result  []LogStore `json:"result"`
+	Code    string     `json:"code"`
+	Success bool       `json:"success"`
+}
+
 type FastQuery struct {
 	CreationDateTime DateTime `json:"creationDateTime"`
 	LastModifiedTime DateTime `json:"lastModifiedTime"`

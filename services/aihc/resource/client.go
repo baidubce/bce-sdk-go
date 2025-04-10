@@ -6,7 +6,7 @@ import (
 
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
-	"github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+	v1 "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
 	"github.com/baidubce/bce-sdk-go/services/aihc/client"
 )
 
@@ -395,6 +395,9 @@ func (c *Client) GetPodLogs(args *v1.GetPodLogsRequest) (*v1.GetPodLogResponse, 
 		WithQueryParamFilter("namespace", args.Namespace).
 		WithQueryParamFilter("chunck", args.Chunk).
 		WithQueryParamFilter("container", args.Container).
+		WithQueryParamFilter("marker", args.Marker).
+		WithQueryParamFilter("filePath", args.FilePath).
+		WithQueryParamFilter("logSource", args.LogSource).
 		WithResult(result).
 		Do()
 	return result, err

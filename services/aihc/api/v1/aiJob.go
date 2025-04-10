@@ -41,6 +41,7 @@ type OpenAPIGetJobResponseResult struct {
 	K8sUID                      string              `json:"k8sUID"`
 	K8sNamespace                string              `json:"k8sNamespace"`
 	FaultToleranceArgs          string              `json:"faultToleranceArgs,omitempty"`
+	LogCollectionFilePatterns   []string            `json:"logCollectionFilePatterns,omitempty"`
 }
 
 type OpenAPIEnv struct {
@@ -169,6 +170,8 @@ type OpenAPIJobCreateRequest struct {
 	AlertConfig *AlertRuleReq `json:"alertConfig"` // 告警详情信息列表
 
 	EnableBccl bool `json:"enableBccl"` // 是否开启 bccl 注入
+	// 容器日志采集文件路径
+	LogCollectionFilePatterns []string `json:"logCollectionFilePatterns"`
 }
 
 type CodeSourceV3 struct {
@@ -338,6 +341,9 @@ type GetPodLogsRequest struct {
 	MaxLines       string `json:"maxLines"`
 	Container      string `json:"container"`
 	Chunk          string `json:"chunck"`
+	Marker         string `json:"marker"`
+	FilePath       string `json:"filePath"`
+	LogSource      string `json:"logSource"`
 }
 
 type GetPodLogResponse struct {
@@ -346,9 +352,10 @@ type GetPodLogResponse struct {
 }
 
 type PodLogResult struct {
-	JobID   string   `json:"jobId"`
-	PodName string   `json:"podName"`
-	Logs    []string `json:"logs"`
+	JobID      string   `json:"jobId"`
+	PodName    string   `json:"podName"`
+	Logs       []string `json:"logs"`
+	NextMarker string   `json:"nextMarker"`
 }
 
 // get task metrics

@@ -212,6 +212,28 @@ func TestCreateDomainAsDrcdnType(t *testing.T) {
 	checkClientErr(t, "CreateDomain", err)
 }
 
+// TestCreateDomainWithCacheTTL 测试使用CreateDomainWithOptions创建域名并指定缓存TTL的功能
+func TestCreateDomainWithCacheTTL(t *testing.T) {
+	var domainCreatedInfo *api.DomainCreatedInfo
+	var err error
+
+	domainCreatedInfo, err = testCli.CreateDomainWithOptions("test.com", []api.OriginPeer{
+		{
+			Peer: "1.2.3.4",
+			Host: "www.baidu.com",
+		},
+	}, CreateDomainWithCacheTTL([]api.CacheTTL{
+		{
+			Type:   "path",
+			Value:  "/test",
+			Weight: 100,
+			TTL:    86400,
+		},
+	}))
+	t.Logf("domainCreatedInfo: %v", domainCreatedInfo)
+	checkClientErr(t, "CreateDomain", err)
+}
+
 func TestDisableDomain(t *testing.T) {
 	err := testCli.DisableDomain(testAuthorityDomain)
 	checkClientErr(t, "DisableDomain", err)

@@ -151,30 +151,45 @@ func IsValidDomain(cli bce.Client, domain string) (*DomainValidInfo, error) {
 //     - domain: the specified domain
 //     - originInit: initialized data for a CDN domain
 //     - tags: bind with the specified tags
-//     - dsa: DRCDN type domain config, the rules of speed up the dynamic asserts.
+//     - dsa: DRCDN type domain config, the rules of speed up the dynamic asserts
+//     - configuredCacheTTL: true for enable cacheTTL
+//     - cacheTTL: tells CDN the caching rules of resources
 // RETURNS:
 //     - *DomainCreatedInfo: the details about created a CDN domain
 //     - error: nil if success otherwise the specific error
-func CreateDomain(cli bce.Client, domain string, originInit *OriginInit, tags []model.TagModel, dsa *DSAConfig) (*DomainCreatedInfo, error) {
+func CreateDomain(cli bce.Client, domain string,
+	originInit *OriginInit,
+	tags []model.TagModel,
+	dsa *DSAConfig,
+	configuredCacheTTL bool, cacheTTL []CacheTTL) (*DomainCreatedInfo, error) {
 	urlPath := fmt.Sprintf("/v2/domain/%s", domain)
 	respObj := &DomainCreatedInfo{}
 
-	type Request struct {
-		*OriginInit
-		Tags        []model.TagModel `json:"tags,omitempty"`
-		ProductType int              `json:"productType,omitempty"`
-		Dsa         *DSAConfig       `json:"dsa,omitempty"`
+	requestObject := map[string]interface{}{}
+	if originInit != nil {
+		if len(originInit.Origin) > 0 {
+			requestObject["origin"] = originInit.Origin
+		}
+		if len(originInit.DefaultHost) > 0 {
+			requestObject["defaultHost"] = originInit.DefaultHost
+		}
+		if len(originInit.Form) > 0 {
+			requestObject["form"] = originInit.Form
+		}
 	}
 
-	requestObject := &Request{
-		OriginInit: originInit,
-		Tags:       tags,
+	if len(tags) > 0 {
+		requestObject["tags"] = tags
 	}
 
 	// Make a request body to create DRCDN domain.
 	if dsa != nil {
-		requestObject.ProductType = 1
-		requestObject.Dsa = dsa
+		requestObject["productType"] = 1
+		requestObject["dsa"] = dsa
+	}
+
+	if configuredCacheTTL {
+		requestObject["cacheTTL"] = cacheTTL
 	}
 
 	err := httpRequest(cli, "PUT", urlPath, nil, requestObject, respObj)

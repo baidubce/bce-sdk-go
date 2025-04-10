@@ -30,6 +30,8 @@ const (
 	LIST_DOWNLOAD_TASK_PREFIX = DOWNLOAD_TASK_PREFIX + bce.URI_PREFIX + "list"
 	BIND_PREFIX               = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logstore" + bce.URI_PREFIX + "bind"
 	UNBIND_PREFIX             = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logstore" + bce.URI_PREFIX + "unbind"
+	LIST_LOGSTORE_PREFIX      = bce.URI_PREFIX + "v2" + bce.URI_PREFIX + "logstore" + bce.URI_PREFIX + "list"
+	BATCH_PREFIX              = bce.URI_PREFIX + "v1" + bce.URI_PREFIX + "logstore" + bce.URI_PREFIX + "batch"
 )
 
 func getProjectUri(UUID string) string {

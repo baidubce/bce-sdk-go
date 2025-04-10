@@ -171,6 +171,7 @@ fmt.Printf("err:%+v\n", err)
 - CreateDomainWithOriginDefaultHost：配置域名的域名级别回源Host，优先级低于源站级别回源Host
 - CreateDomainWithTags：绑定域名到标签
 - CreateDomainAsDrcdnType：将域名创建为 DRCDN 类型，必须要先开通 DRCDN 产品，关于如何开通 DRCDN 请参考教程：https://cloud.baidu.com/doc/DRCDN/s/gkh08rmki。当配置此项时， dsa 配置不能为 nil。
+- CreateDomainWithCacheTTL：创建域名的同时设置缓存过期规则。
 
 下面通过代码展示如何调用 CreateDomainWithOptions。
 

@@ -301,6 +301,22 @@ func TestLogStoreAndIndexV2WithProject(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 	ExpectEqual(t.Errorf, 1, len(lr.Result))
 
+	listLogStoreRequest.BindingResources = []BindingResource{
+		{
+			Scope: "QIANFAN",
+		},
+	}
+	lr, err = BLS_CLIENT.ListLogStoreV2(listLogStoreRequest)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, 0, len(lr.Result))
+
+	listLogStoreRequest.BindingResources = append(listLogStoreRequest.BindingResources, BindingResource{
+		Scope: "",
+	})
+	lr, err = BLS_CLIENT.ListLogStoreV2(listLogStoreRequest)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, len(lr.Result), 1)
+
 	deleteLogStoreRequest := DeleteLogStoreRequest{
 		Project:      createLogStoreRequest.Project,
 		LogStoreName: createLogStoreRequest.LogStoreName,
@@ -1100,16 +1116,71 @@ func TestBindResource(t *testing.T) {
 	bindResourceRequest := BindResourceRequest{
 		Project:      DefaultProject,
 		LogStoreName: "test_bind_resource",
-		Scope:        "test_scope",
+		Scope:        "test_scope_2",
 		ID:           "test_ID",
 		SubScope:     "test_sub_scope",
 	}
 	err = BLS_CLIENT.BindResource(bindResourceRequest)
+
+	listRequest := ListLogStoreRequest{
+		BindingResources: []BindingResource{{Scope: "test_scope"}},
+	}
+	resp, err := BLS_CLIENT.ListLogStoreV2(listRequest)
+	ExpectEqual(t.Errorf, 1, len(resp.Result))
+
 	ExpectEqual(t.Errorf, err, nil)
 	err = BLS_CLIENT.DeleteLogStore("test_bind_resource")
 	ExpectEqual(t.Errorf, (err.(*bce.BceServiceError)).Code, "LogStoreAlreadyBind")
 	err = BLS_CLIENT.UnBindResource(bindResourceRequest)
 	ExpectEqual(t.Errorf, err, nil)
 	err = BLS_CLIENT.DeleteLogStore("test_bind_resource")
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestGetLogStoreByProjects(t *testing.T) {
+	// Create test project
+	createProjectRequest := CreateProjectRequest{
+		Name: "sdk-project-test",
+	}
+	err := BLS_CLIENT.CreateProject(createProjectRequest)
+	ExpectEqual(t.Errorf, err, nil)
+
+	// Create test log store
+	createLogStoreRequest := CreateLogStoreRequest{
+		Project:      createProjectRequest.Name,
+		LogStoreName: "test-logstore",
+		Retention:    7,
+	}
+	err = BLS_CLIENT.CreateLogStoreV2(createLogStoreRequest)
+	ExpectEqual(t.Errorf, err, nil)
+
+	// Test GetLogStoreByProjects
+	batchRequest := BatchLogStoreRequest{
+		LogStores: []BaseLogStore{
+			{
+				Project:      createProjectRequest.Name,
+				LogStoreName: createLogStoreRequest.LogStoreName,
+			},
+		},
+	}
+	result, err := BLS_CLIENT.GetLogStoreByProjects(batchRequest)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, true, result.Success)
+	ExpectEqual(t.Errorf, 1, len(result.Result))
+	ExpectEqual(t.Errorf, createLogStoreRequest.LogStoreName, result.Result[0].LogStoreName)
+	ExpectEqual(t.Errorf, createProjectRequest.Name, result.Result[0].Project)
+
+	// Clean up
+	deleteLogStoreRequest := DeleteLogStoreRequest{
+		Project:      createProjectRequest.Name,
+		LogStoreName: createLogStoreRequest.LogStoreName,
+	}
+	err = BLS_CLIENT.DeleteLogStoreV2(deleteLogStoreRequest)
+	ExpectEqual(t.Errorf, err, nil)
+
+	deleteProjectRequest := DeleteProjectRequest{
+		UUID: createProjectRequest.Name,
+	}
+	err = BLS_CLIENT.DeleteProject(deleteProjectRequest)
 	ExpectEqual(t.Errorf, err, nil)
 }

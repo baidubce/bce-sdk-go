@@ -97,6 +97,8 @@ type ListLogStoreRequest struct {
 	PageNo int `json:"pageNo"`
 	// 每页大小 选填， 默认为10
 	PageSize int `json:"pageSize"`
+	// 根据绑定云产品过滤，多个绑定过滤条件是"或"关系，默认为空
+	BindingResources []BindingResource `json:"bindingResources"`
 }
 
 type ListLogStreamRequest struct {
@@ -114,6 +116,15 @@ type ListLogStreamRequest struct {
 	PageNo int `json:"pageNo"`
 	// 每页大小 选填， 默认为10
 	PageSize int `json:"pageSize"`
+}
+
+type BatchLogStoreRequest struct {
+	LogStores []BaseLogStore `json:"logStores"`
+}
+
+type BaseLogStore struct {
+	LogStoreName string `json:"logStoreName"`
+	Project      string `json:"project"`
 }
 
 type PushLogRecordRequest struct {
@@ -434,4 +445,8 @@ type BindResourceRequest struct {
 	ID           string `json:"id"`
 	Scope        string `json:"scope"`
 	SubScope     string `json:"subScope"`
+}
+
+type BindingResource struct {
+	Scope string `json:"scope"`
 }

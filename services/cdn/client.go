@@ -149,6 +149,24 @@ func CreateDomainWithForm(form string) CreateDomainOption {
 	}
 }
 
+// CreateDomainWithCacheTTL configure the caching rules for resources.
+//
+// If you don't call CreateDomainWithCacheTTL,
+// the server will create a CDN Domain with default cacheTTL:
+// files have extensions .php/.jsp/.asp cache 0 seconds, otherwise cache 30 days.
+//
+// If you want to disable all the cacheTTL rules, you may do a call likes:
+// CreateDomainWithCacheTTL(nil)
+func CreateDomainWithCacheTTL(cacheTTL []api.CacheTTL) CreateDomainOption {
+	return func(o interface{}) {
+		cfg, ok := o.(*createDomainOption)
+		if ok {
+			cfg.configuredCacheTTL = true
+			cfg.cacheTTL = cacheTTL
+		}
+	}
+}
+
 // CreateDomainAsDrcdnType configure the target product type as `DRCDN`, posting DRCDN rules by
 // dsa argument which can not be nil value.
 // Please be sure you are activated DRCDN first, then you can create DRCDN domain successfully.
@@ -168,10 +186,12 @@ func CreateDomainAsDrcdnType(dsa *api.DSAConfig) CreateDomainOption {
 }
 
 type createDomainOption struct {
-	tags        []model.TagModel
-	defaultHost string
-	form        string
-	dsa         *api.DSAConfig
+	tags               []model.TagModel
+	defaultHost        string
+	form               string
+	dsa                *api.DSAConfig
+	cacheTTL           []api.CacheTTL
+	configuredCacheTTL bool
 
 	errMsg string
 }
@@ -187,7 +207,7 @@ type createDomainOption struct {
 //   - *DomainCreatedInfo: the details about created a CDN domain
 //   - error: nil if success otherwise the specific error
 func (cli *Client) CreateDomain(domain string, originInit *api.OriginInit) (*api.DomainCreatedInfo, error) {
-	return api.CreateDomain(cli, domain, originInit, nil, nil)
+	return api.CreateDomain(cli, domain, originInit, nil, nil, false, nil)
 }
 
 // CreateDomainWithOptions - create a BCE CDN domain with optional configurations.
@@ -214,7 +234,7 @@ func (cli *Client) CreateDomainWithOptions(domain string, origins []api.OriginPe
 		DefaultHost: cfg.defaultHost,
 		Form:        cfg.form,
 	}
-	return api.CreateDomain(cli, domain, originInit, cfg.tags, cfg.dsa)
+	return api.CreateDomain(cli, domain, originInit, cfg.tags, cfg.dsa, cfg.configuredCacheTTL, cfg.cacheTTL)
 }
 
 // EnableDomain - enable a specified domain
