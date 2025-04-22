@@ -614,6 +614,18 @@ type DescribePolicysResult struct {
 	DescribeResultMeta
 }
 
+type UpdatePolicysArgs struct {
+	ClientToken string            `json:"-"`
+	Port        int               `json:"port"`
+	Type        string            `json:"type"`
+	PolicyList  []PolicyForUpdate `json:"policyList"`
+}
+
+type PolicyForUpdate struct {
+	PolicyId    string `json:"policyId"`
+	Priority    int    `json:"priority,omitempty"`
+	Description string `json:"description,omitempty"`
+}
 type DeletePolicysArgs struct {
 	ClientToken  string   `json:"-"`
 	Port         uint16   `json:"port"`

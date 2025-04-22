@@ -1550,6 +1550,7 @@ type ListCDSVolumeArgs struct {
 	ChargeFilter string `json:"chargeFilter"`
 	UsageFilter  string `json:"usageFilter"`
 	Name         string `json:"name"`
+	VolumeIds    string `json:"volumeIds"`
 }
 
 type AutoRenewCDSVolumeArgs struct {
@@ -1984,6 +1985,10 @@ type CreateDeploySetResp struct {
 
 type CreateDeploySetResult struct {
 	DeploySetId string `json:"deploySetIds"`
+}
+
+type ListDeploySetArgs struct {
+	DeploymentSetIdList string `json:"deploymentSetIds,omitempty"`
 }
 
 type ListDeploySetsResult struct {

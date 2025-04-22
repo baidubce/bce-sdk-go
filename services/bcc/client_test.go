@@ -1036,6 +1036,16 @@ func TestListDeploySets(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
+func TestListDeploySetsWithId(t *testing.T) {
+	args := &api.ListDeploySetArgs{
+		DeploymentSetIdList: "dset-nEWXKjRV,dset-sgIIXrss",
+	}
+
+	rep, err := BCC_CLIENT.ListDeploySetsWithId(args)
+	fmt.Println(rep)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 func TestModifyDeploySet(t *testing.T) {
 	testDeploySetName := "testName"
 	testDeployDesc := "goDesc"
@@ -1903,6 +1913,7 @@ func TestListCDSVolumeV3New(t *testing.T) {
 		ChargeFilter: "postpay",
 		Name:         "cdsTest",
 		UsageFilter:  "data",
+		VolumeIds:    "v-21bmeYvH,v-31bmeYvH",
 	}
 
 	result, err := BCC_CLIENT.ListCDSVolumeV3(args)

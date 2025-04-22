@@ -156,6 +156,9 @@ func ListCDSVolume(cli bce.Client, queryArgs *ListCDSVolumeArgs) (*ListCDSVolume
 		if len(queryArgs.Name) != 0 {
 			req.SetParam("name", queryArgs.Name)
 		}
+		if len(queryArgs.VolumeIds) != 0 {
+			req.SetParam("volumeIds", queryArgs.VolumeIds)
+		}
 	}
 
 	if queryArgs == nil || queryArgs.MaxKeys == 0 {

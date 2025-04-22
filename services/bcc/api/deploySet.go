@@ -92,6 +92,42 @@ func ListDeploySets(cli bce.Client) (*ListDeploySetsResult, error) {
 	return jsonBody, nil
 }
 
+// ListDeploySetsWithId - list deploy sets with id
+// PARAMS:
+//     - cli: the client agent which can perform sending request
+//     - clientToken: idempotent token,  an ASCII string no longer than 64 bits
+//	   - queryArgs: the query arguments
+// RETURNS:
+//     - *ListDeploySetsResult: the result of list all deploy sets
+//     - error: nil if success otherwise the specific error
+func ListDeploySetsWithId(cli bce.Client, queryArgs *ListDeploySetArgs) (*ListDeploySetsResult, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getDeploySetListUri())
+	req.SetMethod(http.GET)
+
+	if queryArgs != nil {
+		if len(queryArgs.DeploymentSetIdList) != 0 {
+			req.SetParam("deploymentSetIds", queryArgs.DeploymentSetIdList)
+		}
+	}
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	jsonBody := &ListDeploySetsResult{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
 // ModifyDeploySet - modify the deploy set atrribute
 //
 // PARAMS:

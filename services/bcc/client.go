@@ -1553,6 +1553,15 @@ func (c *Client) ListDeploySets() (*api.ListDeploySetsResult, error) {
 	return api.ListDeploySets(c)
 }
 
+// ListDeploySetsWithId - list deploy sets with ids
+//
+// RETURNS:
+//   - *ListDeploySetsResult: the result of list all deploy sets
+//   - error: nil if success otherwise the specific error
+func (c *Client) ListDeploySetsWithId(args *api.ListDeploySetArgs) (*api.ListDeploySetsResult, error) {
+	return api.ListDeploySetsWithId(c, args)
+}
+
 // ModifyDeploySet - modify the deploy set
 //
 // PARAMS:

@@ -586,6 +586,27 @@ func (c *Client) DescribePolicys(blbId string, args *DescribePolicysArgs) (*Desc
 	return result, err
 }
 
+// UpdatePolicys - update  policy
+//
+// PARAMS:
+//   - blbId: LoadBalancer's ID
+//   - args: parameters to update policy
+//
+// RETURNS:
+//   - error: nil if ok otherwise the specific error
+func (c *Client) UpdatePolicys(blbId string, args *UpdatePolicysArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getPolicysUrl(blbId)).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithQueryParam("batchupdate", "").
+		WithBody(args).
+		Do()
+}
+
 // DeletePolicys - delete a policy
 //
 // PARAMS:
