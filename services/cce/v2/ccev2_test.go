@@ -11,7 +11,6 @@ import (
 	"time"
 
 	bccapi "github.com/baidubce/bce-sdk-go/services/bcc/api"
-	"github.com/baidubce/bce-sdk-go/services/cce/v2/model"
 	"github.com/baidubce/bce-sdk-go/services/cce/v2/types"
 	"github.com/baidubce/bce-sdk-go/util/log"
 )
@@ -429,7 +428,7 @@ func TestClient_UpdateInstanceGroupClusterAutoscalerSpec(t *testing.T) {
 func TestClient_GetKubeConfig(t *testing.T) {
 	args := &GetKubeConfigArgs{
 		ClusterID:      CCE_CLUSTER_ID,
-		KubeConfigType: model.KubeConfigTypeVPC,
+		KubeConfigType: KubeConfigTypeVPC,
 	}
 
 	resp, err := CCE_CLIENT.GetKubeConfig(args)
