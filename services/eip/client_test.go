@@ -483,3 +483,49 @@ func TestClient_UpdateEipBpAutoReleaseTime(t *testing.T) {
 func getClientToken() string {
 	return util.NewUUID()
 }
+
+func TestClient_ListDdos(t *testing.T) {
+	listDdosRequest := &ListDdosRequest{
+		Ips:     "",
+		Type:    "",
+		Marker:  "",
+		MaxKeys: int32(0),
+	}
+	result := &ListDdosResponse{}
+	result, err := EIP_CLIENT.ListDdos(listDdosRequest)
+	data, e := json.Marshal(result)
+	if e != nil {
+		fmt.Println("json marshal failed!")
+	}
+	fmt.Printf("%s", data)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_ListDdosAttackRecord(t *testing.T) {
+	listDdosAttackRecordRequest := &ListDdosAttackRecordRequest{
+		Ip:        "106.12.124.185",
+		StartTime: "",
+		Marker:    "",
+		MaxKeys:   int32(0),
+	}
+	result := &ListDdosAttackRecordResponse{}
+	result, err := EIP_CLIENT.ListDdosAttackRecord(listDdosAttackRecordRequest)
+	data, e := json.Marshal(result)
+	if e != nil {
+		fmt.Println("json marshal failed!")
+	}
+	fmt.Printf("%s", data)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_ModifyDdosThreshold(t *testing.T) {
+	modifyDdosThresholdRequest := &ModifyDdosThresholdRequest{
+		Ip:            "106.12.124.185",
+		ClientToken:   "",
+		ThresholdType: "manual",
+		IpCleanMbps:   int64(200),
+		IpCleanPps:    int64(102400),
+	}
+	err := EIP_CLIENT.ModifyDdosThreshold(modifyDdosThresholdRequest)
+	ExpectEqual(t.Errorf, nil, err)
+}

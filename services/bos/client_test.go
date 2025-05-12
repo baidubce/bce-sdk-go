@@ -23,8 +23,9 @@ var (
 
 // For security reason, ak/sk should not hard write here.
 type Conf struct {
-	AK string
-	SK string
+	AK       string
+	SK       string
+	ENDPOINT string
 }
 
 // init client with your ak/sk written in config.json
@@ -42,7 +43,7 @@ func init() {
 	decoder := json.NewDecoder(fp)
 	confObj := &Conf{}
 	decoder.Decode(confObj)
-	BOS_CLIENT, _ = NewClient(confObj.AK, confObj.SK, "")
+	BOS_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.ENDPOINT)
 	//log.SetLogHandler(log.STDERR | log.FILE)
 	//log.SetRotateType(log.ROTATE_SIZE)
 	log.SetLogLevel(log.WARN)
@@ -196,10 +197,10 @@ func TestPutBucketAclFromString(t *testing.T) {
 }
 func TestPutBucketAclFromStruct(t *testing.T) {
 	args := &api.PutBucketAclArgs{
-		[]api.GrantType{
-			api.GrantType{
+		AccessControlList: []api.GrantType{
+			{
 				Grantee: []api.GranteeType{
-					api.GranteeType{"e13b12d0131b4c8bae959df4969387b8"},
+					{Id: "e13b12d0131b4c8bae959df4969387b8"},
 				},
 				Permission: []string{
 					"FULL_CONTROL",
@@ -409,7 +410,7 @@ func TestPutBucketReplicationFromStruct(t *testing.T) {
 		Id:               "abc",
 		Status:           "enabled",
 		Resource:         []string{"gosdk-unittest-bucket/films"},
-		Destination:      &api.BucketReplicationDescriptor{"bos-rd-su-test", "COLD"},
+		Destination:      &api.BucketReplicationDescriptor{Bucket: "bos-rd-su-test", StorageClass: "COLD"},
 		ReplicateDeletes: "disabled",
 	}
 	err := BOS_CLIENT.PutBucketReplicationFromStruct(EXISTS_BUCKET, args, "")
@@ -481,7 +482,7 @@ func TestPutBucketStaticWebsiteFromString(t *testing.T) {
 }
 func TestPutBucketStaticWebsiteFromStruct(t *testing.T) {
 	BOS_CLIENT.DeleteBucketStaticWebsite(EXISTS_BUCKET)
-	obj := &api.PutBucketStaticWebsiteArgs{"index.html", "blank.html"}
+	obj := &api.PutBucketStaticWebsiteArgs{Index: "index.html", NotFound: "blank.html"}
 	err := BOS_CLIENT.PutBucketStaticWebsiteFromStruct(EXISTS_BUCKET, obj)
 	ExpectEqual(t.Errorf, err, nil)
 	res, err := BOS_CLIENT.GetBucketStaticWebsite(EXISTS_BUCKET)
@@ -577,8 +578,8 @@ func TestPutBucketCorsFromString(t *testing.T) {
 }
 func TestPutBucketCorsFromStruct(t *testing.T) {
 	obj := &api.PutBucketCorsArgs{
-		[]api.BucketCORSType{
-			api.BucketCORSType{
+		CorsConfiguration: []api.BucketCORSType{
+			{
 				AllowedOrigins: []string{"https://www.baidu.com"},
 				AllowedMethods: []string{"GET"},
 				MaxAgeSeconds:  1200,
@@ -766,14 +767,17 @@ func TestBasicGetObjectToFile(t *testing.T) {
 }
 
 /*
-func TestGetObjectMeta(t *testing.T) {
-	res, err := BOS_CLIENT.GetObjectMeta(EXISTS_BUCKET, "test-put-object")
-	ExpectEqual(t.Errorf, err, nil)
-	t.Logf("get object meta result: %+v", res)
-}
+	func TestGetObjectMeta(t *testing.T) {
+		res, err := BOS_CLIENT.GetObjectMeta(EXISTS_BUCKET, "test-put-object")
+		ExpectEqual(t.Errorf, err, nil)
+		t.Logf("get object meta result: %+v", res)
+	}
 */
 func TestFetchObject(t *testing.T) {
-	args := &api.FetchObjectArgs{api.FETCH_MODE_ASYNC, api.STORAGE_CLASS_COLD}
+	args := &api.FetchObjectArgs{
+		FetchMode:    api.FETCH_MODE_ASYNC,
+		StorageClass: api.STORAGE_CLASS_COLD,
+	}
 	res, err := BOS_CLIENT.FetchObject(EXISTS_BUCKET, "test-fetch-object",
 		"https://cloud.baidu.com/doc/BOS/API.html", args)
 	ExpectEqual(t.Errorf, err, nil)
@@ -842,8 +846,11 @@ func TestDeleteMultipleObjectsFromString(t *testing.T) {
 	t.Logf("%+v", res)
 }
 func TestDeleteMultipleObjectsFromStruct(t *testing.T) {
-	multiDeleteObj := &api.DeleteMultipleObjectsArgs{[]api.DeleteObjectArgs{
-		api.DeleteObjectArgs{"1"}, api.DeleteObjectArgs{"test-fetch-object"}}}
+	multiDeleteObj := &api.DeleteMultipleObjectsArgs{
+		Objects: []api.DeleteObjectArgs{
+			{Key: "1"}, {Key: "test-fetch-object"},
+		},
+	}
 	res, err := BOS_CLIENT.DeleteMultipleObjectsFromStruct(EXISTS_BUCKET, multiDeleteObj)
 	ExpectEqual(t.Errorf, err, nil)
 	t.Logf("%+v", res)
@@ -1026,10 +1033,10 @@ func TestPutObjectAclFromString(t *testing.T) {
 }
 func TestPutObjectAclFromStruct(t *testing.T) {
 	aclObj := &api.PutObjectAclArgs{
-		[]api.GrantType{
-			api.GrantType{
+		AccessControlList: []api.GrantType{
+			{
 				Grantee: []api.GranteeType{
-					api.GranteeType{"e13b12d0131b4c8bae959df4969387b8"},
+					{Id: "e13b12d0131b4c8bae959df4969387b8"},
 				},
 				Permission: []string{
 					"READ",

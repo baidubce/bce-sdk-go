@@ -39,6 +39,10 @@ const (
 	REQUEST_REFUND_EIP_GROUP_URL = "/eipgroup/refund"
 
 	REQUEST_EIP_BP_URL = "/eipbp"
+
+	CONSTANT_DDOS = "ddos"
+
+	CONSTANT_RECORD = "record"
 )
 
 // Client of EIP service is a kind of BceClient, so derived from BceClient
@@ -111,4 +115,16 @@ func getEipBpUrl() string {
 
 func getEipBpUrlWithId(id string) string {
 	return URI_PREFIX + REQUEST_EIP_BP_URL + "/" + id
+}
+
+func getListDdosUri(version string) string {
+	return bce.URI_PREFIX + version + bce.URI_PREFIX + CONSTANT_DDOS
+}
+
+func getListDdosAttackRecordUri(version string, ip string) string {
+	return bce.URI_PREFIX + version + bce.URI_PREFIX + CONSTANT_DDOS + bce.URI_PREFIX + ip + bce.URI_PREFIX + CONSTANT_RECORD
+}
+
+func getModifyDdosThresholdUri(version string, ip string) string {
+	return bce.URI_PREFIX + version + bce.URI_PREFIX + CONSTANT_DDOS + bce.URI_PREFIX + ip
 }

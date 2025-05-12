@@ -1402,6 +1402,8 @@ type VolumeModel struct {
 	EnableAutoRenew    bool                     `json:"enableAutoRenew"`
 	AutoRenewTime      int                      `json:"autoRenewTime"`
 	Encrypted          bool                     `json:"encrypted"`
+	EncryptKey         string                   `json:"encryptKey"`
+	EncryptKeySpec     string                   `json:"encryptKeySpec"`
 	ClusterId          string                   `json:"clusterId"`
 	RoleName           string                   `json:"roleName"`
 	CreatedFrom        string                   `json:"createdFrom"`

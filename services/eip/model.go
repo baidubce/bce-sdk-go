@@ -398,3 +398,59 @@ type UpdateEipBpNameArgs struct {
 	Name        string `json:"name"`
 	ClientToken string `json:"-"`
 }
+
+type DdosModel struct {
+	Ip               string `json:"ip,omitempty"`
+	Status           string `json:"status,omitempty"`
+	BindInstanceType string `json:"bindInstanceType,omitempty"`
+	BindInstanceId   string `json:"bindInstanceId,omitempty"`
+	IpCleanMbps      int64  `json:"ipCleanMbps,omitempty"`
+	IpCleanPps       int64  `json:"ipCleanPps,omitempty"`
+	ThresholdType    string `json:"thresholdType,omitempty"`
+	MaximumThreshold int64  `json:"maximumThreshold,omitempty"`
+}
+
+type ListDdosRequest struct {
+	Ips     string `json:"-"`
+	Type    string `json:"-"`
+	Marker  string `json:"-"`
+	MaxKeys int32  `json:"-"`
+}
+
+type ListDdosResponse struct {
+	DdosList    *[]DdosModel `json:"ddosList,omitempty"`
+	Marker      string       `json:"marker,omitempty"`
+	IsTruncated bool         `json:"isTruncated,omitempty"`
+	NextMarker  string       `json:"nextMarker,omitempty"`
+	MaxKeys     int32        `json:"maxKeys,omitempty"`
+}
+
+type DdosAttackRecordModel struct {
+	Ip             string   `json:"ip,omitempty"`
+	StartTime      string   `json:"startTime,omitempty"`
+	EndTime        string   `json:"endTime,omitempty"`
+	AttackType     []string `json:"attackType,omitempty"`
+	AttackPeakMbps int64    `json:"attackPeakMbps,omitempty"`
+	AttackPeakPps  int64    `json:"attackPeakPps,omitempty"`
+	AttackPeakQps  int64    `json:"attackPeakQps,omitempty"`
+	AttackStatus   string   `json:"attackStatus,omitempty"`
+}
+
+type ListDdosAttackRecordRequest struct {
+	Ip        string `json:"-"`
+	StartTime string `json:"-"`
+	Marker    string `json:"-"`
+	MaxKeys   int32  `json:"-"`
+}
+
+type ListDdosAttackRecordResponse struct {
+	AttackRecordList *[]DdosAttackRecordModel `json:"attackRecordList,omitempty"`
+}
+
+type ModifyDdosThresholdRequest struct {
+	Ip            string `json:"-"`
+	ClientToken   string `json:"-"`
+	ThresholdType string `json:"thresholdType"`
+	IpCleanMbps   int64  `json:"ipCleanMbps"`
+	IpCleanPps    int64  `json:"ipCleanPps"`
+}

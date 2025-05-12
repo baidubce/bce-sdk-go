@@ -2385,6 +2385,13 @@ func TestInstanceUnbindSecurityGroup(t *testing.T) {
 	fmt.Println(res)
 }
 
+func TestGetVolumeDetailWithEncryptKey(t *testing.T) {
+	res, err := BCC_CLIENT.GetCDSVolumeDetail("v-mQ13dsx3")
+	fmt.Println(res.Volume)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+
 func TestInstanceReplaceSecurityGroup(t *testing.T) {
 	args := &api.ReplaceSgV2Req{
 		InstanceIds: []string{
