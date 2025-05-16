@@ -1,6 +1,7 @@
 package bec
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/baidubce/bce-sdk-go/services/bec/api"
@@ -28,17 +29,24 @@ func TestUpdateDeploySet(t *testing.T) {
 	err := CLIENT.UpdateDeploySet("dset-y4tumnel", getReq)
 	ExpectEqual(t.Errorf, nil, err)
 }
+
 func TestGetDeploySetList(t *testing.T) {
 	getReq := &api.ListRequest{}
 	res, err := CLIENT.GetDeploySetList(getReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
+	jsonRes := TransJsonData(res)
+	fmt.Printf("result = %v", jsonRes)
 }
+
 func TestGetDeploySetDetail(t *testing.T) {
-	res, err := CLIENT.GetDeploySetDetail("dset-y4tumnel")
+	res, err := CLIENT.GetDeploySetDetail("dset-1j7eswxx")
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
+	jsonRes := TransJsonData(res)
+	fmt.Printf("result = %v", jsonRes)
 }
+
 func TestUpdateVmInstanceDeploySet(t *testing.T) {
 	getReq := &api.UpdateVmDeploySetArgs{
 		InstanceId:      "vm-dstkrmda-cn-langfang-ct-4thbz",

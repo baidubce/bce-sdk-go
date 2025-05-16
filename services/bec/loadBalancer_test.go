@@ -1,14 +1,15 @@
 package bec
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/baidubce/bce-sdk-go/services/bec/api"
 )
 
-//////////////////////////////////////////////
+// ////////////////////////////////////////////
 // Loadbalancer API
-//////////////////////////////////////////////
+// ////////////////////////////////////////////
 func TestCreateBlb(t *testing.T) {
 	getReq := &api.CreateBlbArgs{
 		BlbName:     "gosdk-test",
@@ -34,6 +35,26 @@ func TestCreateBlbVpc(t *testing.T) {
 	t.Logf("%+v", res)
 }
 
+func TestCreateBlbVpcTripleTag(t *testing.T) {
+	cReq := &api.CreateBlbArgs{
+		BlbName:             "gosdk-test1-zyc-del",
+		RegionId:            "cn-huhehaote-ix",
+		LbType:              "vm",
+		NetworkType:         "vpc",
+		SubnetId:            "sbn-6s0hyohf3gdl",
+		VpcId:               "vpc-jlhljrppmtqn",
+		SubServiceProviders: []string{"cm"},
+		NeedPublicIp:        true,
+		Tags: &[]api.Tag{api.Tag{TagKey: "bec-zyc-key",
+			TagValue: "bec-zyc-key-val"}},
+	}
+	res, err := CLIENT.CreateBlb(cReq)
+	ExpectEqual(t.Errorf, nil, err)
+	t.Logf("%+v", res)
+	jsonRes := TransJsonData(res)
+	fmt.Printf("result = %v", jsonRes)
+}
+
 func TestDeleteBlb(t *testing.T) {
 	res, err := CLIENT.DeleteBlb("xxxx")
 	ExpectEqual(t.Errorf, nil, err)
@@ -45,12 +66,16 @@ func TestGetBlbList(t *testing.T) {
 		"", "", 1, 100)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
+	jsonRes := TransJsonData(res)
+	fmt.Printf("result = %v", jsonRes)
 }
 
 func TestGetBlbDetail(t *testing.T) {
-	res, err := CLIENT.GetBlbDetail("applb-cn-hangzhou-cm-wkfdcbin")
+	res, err := CLIENT.GetBlbDetail("applb-cn-huhehaote-ix-udmtylek")
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
+	jsonRes := TransJsonData(res)
+	fmt.Printf("result = %v", jsonRes)
 }
 
 func TestUpdateBlb(t *testing.T) {

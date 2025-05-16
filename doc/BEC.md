@@ -1384,8 +1384,276 @@ if err != nil {
 > - 详细的参数配置及限制条件，可以参考BEC API 文档[删除IP组成员](https://cloud.baidu.com/doc/BEC/s/Hl4qftd63)
 
 
+## VPC相关
+### 创建VPC
+通过以下代码，可以创建VPC
+```go
+req := &api.CreateVpcRequest{
+    Name:        "vpc-del-gosdk-fin",
+    RegionId:    "cn-nanning-cm",
+    Cidr:        "192.168.32.0/24",
+    Description: "gogogo",
+    Tags: &[]api.Tag{api.Tag{TagKey: "bec-key",
+    TagValue: "bec-key-val"}},
+}
+res, err := CLIENT.CreateVpc(req)
+if err != nil {
+    fmt.Println("create vpc failed:", err)
+} else {
+    fmt.Println("create vpc success")
+}
+```
+
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[创建VPC](https://cloud.baidu.com/doc/BEC/s/hkw5qgxhn)
+
+### 更新VPC
+通过以下代码，可以更新VPC
+```go
+req := &api.UpdateVpcRequest{
+    Name:        "vpc-gosdk-4",
+    Description: "vpc-gosdk-3-desc-4",
+}
+res, err := CLIENT.UpdateVpc("vpc-07szdxxm4iu5", req)
+if err != nil {
+    fmt.Println("update vpc failed:", err)
+} else {
+    fmt.Println("update vpc success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[更新VPC](https://cloud.baidu.com/doc/BEC/s/fkw5uz75o)
+
+### 获取VPC列表
+通过以下代码，可以获取VPC列表
+```go
+req := &api.ListRequest{}
+res, err := CLIENT.GetVpcList(req)
+if err != nil {
+    fmt.Println("get vpc list failed:", err)
+} else {
+    fmt.Println("get vpc list success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[获取VPC列表](https://cloud.baidu.com/doc/BEC/s/ikw5ss20r)
+
+### 获取VPC详情
+通过以下代码，可以获取VPC详情
+```go
+res, err := CLIENT.GetVpcDetail("vpc-07szdxxm4iu5")
+if err != nil {
+    fmt.Println("get vpc detail failed:", err)
+} else {
+    fmt.Println("get vpc detail success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[获取VPC详情](https://cloud.baidu.com/doc/BEC/s/Hkw5u5883)
+
+### 删除VPC
+通过以下代码，可以删除VPC
+```go
+res, err := CLIENT.DeleteVpc("vpc-orznxxpwed71")
+if err != nil {
+    fmt.Println("delete vpc failed:", err)
+} else {
+    fmt.Println("delete vpc success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[删除VPC](https://cloud.baidu.com/doc/BEC/s/Ukw5ujjhu)
 
 
+## VPC子网相关
+### 创建子网
+通过以下代码，可以创建子网
+```go
+req := &api.CreateSubnetRequest{
+    Name:        "sb-gosdk-del-3",
+    VpcId:       "vpc-07szd7om4iu5",
+    Cidr:        "192.168.31.0/27",
+    Description: "gogogosbn-3",
+    Tags: &[]api.Tag{api.Tag{TagKey: "bec-key",
+    TagValue: "bec-key-val"}},
+}
+res, err := CLIENT.CreateSubnet(req)
+if err != nil {
+    fmt.Println("create subnet failed:", err)
+} else {
+    fmt.Println("create subnet success")
+}
+```
+
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[创建子网](https://cloud.baidu.com/doc/BEC/s/5kw5y3oq4)
+
+### 更新子网
+通过以下代码，可以更新子网
+```go
+req := &api.UpdateSubnetRequest{
+    Name:        "sb-gosdk-3",
+    Description: "sb-gosdk-3-desc",
+}
+err := CLIENT.UpdateSubnet("sbn-21zcxxfnjrsy", req)
+if err != nil {
+    fmt.Println("update subnet failed:", err)
+} else {
+    fmt.Println("update subnet success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[更新子网](https://cloud.baidu.com/doc/BEC/s/lkw61nhkb)
+
+### 获取子网列表
+通过以下代码，可以获取子网列表
+```go
+req := &api.ListRequest{}
+res, err := CLIENT.GetSubnetList(req)
+if err != nil {
+    fmt.Println("get subnet list failed:", err)
+} else {
+    fmt.Println("get subnet list success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[获取子网列表](https://cloud.baidu.com/doc/BEC/s/7kw5yxcfa)
+
+### 获取子网详情
+通过以下代码，可以获取子网详情
+```go
+res, err := CLIENT.GetSubnetDetail("sbn-21zcxxfnjrsy")
+if err != nil {
+    fmt.Println("get subnet detail failed:", err)
+} else {
+    fmt.Println("get subnet detail success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[获取子网详情](https://cloud.baidu.com/doc/BEC/s/hkw5zey8n)
+
+### 删除子网
+通过以下代码，可以删除子网
+```go
+err := CLIENT.DeleteSubnet("sbn-qg4kuxxncddc")
+if err != nil {
+    fmt.Println("delete subnet failed:", err)
+} else {
+    fmt.Println("delete subnet success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[删除子网](https://cloud.baidu.com/doc/BEC/s/ckw61uxau)
+
+## 路由表相关
+### 更新路由表
+通过以下代码，可以更新路由表
+```go
+req := &api.UpdateRouteTableRequest{
+    TableId:   "rtb-g1gbmxxxnyt0",
+    TableName: "default-table-gosdk-3-desc",
+}
+res, err := CLIENT.UpdateRouteTable("rtb-g1gbxxfxnyt0", req)
+if err != nil {
+    fmt.Println("update route table failed:", err)
+} else {
+    fmt.Println("update route table success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[更新路由表](https://cloud.baidu.com/doc/BEC/s/akxfrc3ao)
+
+### 获取路由表列表
+通过以下代码，可以获取路由表列表
+```go
+req := &api.ListRequest{}
+res, err := CLIENT.GetRouteTableList(req)
+if err != nil {
+    fmt.Println("get route table list failed:", err)
+} else {
+    fmt.Println("get route table list success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[获取路由表列表](https://cloud.baidu.com/doc/BEC/s/Tkxem3zan)
+
+### 获取路由表详情
+通过以下代码，可以获取路由表详情
+```go
+res, err := CLIENT.GetRouteTableDetail("rtb-g1gbmjfxnyt0")
+if err != nil {
+    fmt.Println("get route table detail failed:", err)
+} else {
+    fmt.Println("get route table detail success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[获取路由表详情](https://cloud.baidu.com/doc/BEC/s/jkxfry5og)
+
+### 创建路由规则
+通过以下代码，可以创建路由规则
+```go
+req := &api.CreateRouteRuleRequest{
+    TableId:            "rtb-g1gxxjfxnyt0",
+    IpVersion:          4,
+    SourceAddress:      "192.168.1.0/24",
+    DestinationAddress: "192.168.31.0/24",
+    Nexthop:            "vm-5cvfvvqr-cn-nanning-cm-o5sx3",
+    RouteType:          "CUSTOM",
+    Description:        "rtb-rule-gosdk",
+}
+res, err := CLIENT.CreateRouteRule(req)
+if err != nil {
+    fmt.Println("create route rule failed:", err)
+} else {
+    fmt.Println("create route rule success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[创建路由规则](https://cloud.baidu.com/doc/BEC/s/okxe2q2zc)
+
+### 获取路由表规则列表
+通过以下代码，可以获取路由表规则列表
+```go
+req := &api.ListRequest{}
+res, err := CLIENT.GetRouteRuleList("rtb-g1gbmxxxnyt0", req)
+if err != nil {
+    fmt.Println("get route rule list failed:", err)
+} else {
+    fmt.Println("get route rule list success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[获取路由表规则列表](https://cloud.baidu.com/doc/BEC/s/pkxfsoihb)
+
+### 删除路由规则
+通过以下代码，可以删除路由规则
+```go
+res, err := CLIENT.DeleteRouteRule("rtr-gg98tnxxhib7")
+if err != nil {
+    fmt.Println("delete route rule failed:", err)
+} else {
+    fmt.Println("delete route rule success")
+}
+```
+> **提示：**
+>
+> - 详细的参数配置及限制条件，可以参考BEC API 文档[删除路由表规则](https://cloud.baidu.com/doc/BEC/s/mkxeljtzt)
 
 
 ## 客户端异常
@@ -1397,6 +1665,19 @@ if err != nil {
 当BEC服务端出现异常时，BEC服务端会返回给用户相应的错误信息，以便定位问题。常见服务端异常可参见[BEC错误返回](https://cloud.baidu.com/doc/BEC/s/5k4106ncs)
 
 # 版本变更记录
+
+## v0.9.227 [2025-05-12]
+
+更新内容
+
+- 更新虚机相关的参数，创建接口等支持Tag、预付费自动续费、自定义脚本、GPU驱动安装
+
+新增内容
+
+- 创建、更新、列表、查询、删除VPC实例
+- 创建、更新、列表、查询、删除子网实例
+- 更新、列表、查询路由表实例
+- 创建、列表、查询路由表规则
 
 ## 更新日期 [2022-08-25]
 

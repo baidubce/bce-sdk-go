@@ -168,6 +168,7 @@ func TestCreateSpecialInstanceBySpec(t *testing.T) {
 
 func TestCreateInstanceBySpec(t *testing.T) {
 	DeploySetIds := []string{"DeploySetId"}
+	EniIds := []string{"eniShortId"}
 	createInstanceBySpecArgs := &api.CreateInstanceBySpecArgs{
 		ImageId:   "ImageId",
 		Spec:      "bcc.l3.c16m64",
@@ -178,6 +179,7 @@ func TestCreateInstanceBySpec(t *testing.T) {
 			PaymentTiming: api.PaymentTimingPostPaid,
 		},
 		DeployIdList: DeploySetIds,
+		EniIds:		  EniIds,
 		EhcClusterId: "ehc-bk4hM1N3",
 	}
 	createResult, err := BCC_CLIENT.CreateInstanceBySpec(createInstanceBySpecArgs)
@@ -188,6 +190,7 @@ func TestCreateInstanceBySpec(t *testing.T) {
 
 func TestCreateInstanceBySpecV2(t *testing.T) {
 	DeploySetIds := []string{"DeploySetId"}
+	EniIds := []string{"eniShortId"}
 	EnableHt := true
 	createInstanceBySpecArgs := &api.CreateInstanceBySpecArgsV2{
 		ImageId:   "ImageId",
@@ -199,6 +202,7 @@ func TestCreateInstanceBySpecV2(t *testing.T) {
 			PaymentTiming: api.PaymentTimingPostPaid,
 		},
 		DeployIdList: DeploySetIds,
+		EniIds:		  EniIds,
 		EnableHt:     &EnableHt,
 		EhcClusterId: "ehcClusterId",
 	}

@@ -556,6 +556,7 @@ type CreateInstanceBySpecArgs struct {
 	EnterpriseSecurityGroupId  string           `json:"enterpriseSecurityGroupId,omitempty"`
 	SecurityGroupIds           []string         `json:"securityGroupIds,omitempty"`
 	EnterpriseSecurityGroupIds []string         `json:"enterpriseSecurityGroupIds,omitempty"`
+	EniIds                     []string         `json:"eniIds,omitempty"`
 	RelationTag                bool             `json:"relationTag,omitempty"`
 	Tags                       []model.TagModel `json:"tags,omitempty"`
 	KeypairId                  string           `json:"keypairId"`
@@ -610,6 +611,7 @@ type CreateInstanceBySpecArgsV2 struct {
 	EnterpriseSecurityGroupId  string           `json:"enterpriseSecurityGroupId,omitempty"`
 	SecurityGroupIds           []string         `json:"securityGroupIds,omitempty"`
 	EnterpriseSecurityGroupIds []string         `json:"enterpriseSecurityGroupIds,omitempty"`
+	EniIds                     []string         `json:"eniIds,omitempty"`
 	RelationTag                *bool            `json:"relationTag"`
 	Tags                       []model.TagModel `json:"tags,omitempty"`
 	KeypairId                  string           `json:"keypairId"`
@@ -2168,6 +2170,7 @@ type BccFlavor struct {
 	NicIpv6Quota       int      `json:"nicIpv6Quota"`
 	EniQuota           int      `json:"eniQuota"`
 	EriQuota           int      `json:"eriQuota"`
+	VolumeCount        int      `json:"volumeCount"`
 	RdmaType           string   `json:"rdmaType"`
 	RdmaNetCardCount   int      `json:"rdmaNetCardCount"`
 	RdmaNetBandwidth   int      `json:"rdmaNetBandwidth"`
@@ -2206,6 +2209,7 @@ type EbcFlavor struct {
 	NicIpv6Quota       int      `json:"nicIpv6Quota"`
 	EniQuota           int      `json:"eniQuota"`
 	EriQuota           int      `json:"eriQuota"`
+	VolumeCount        int      `json:"volumeCount"`
 	RdmaType           string   `json:"rdmaType"`
 	RdmaNetCardCount   int      `json:"rdmaNetCardCount"`
 	RdmaNetBandwidth   int      `json:"rdmaNetBandwidth"`

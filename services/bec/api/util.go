@@ -57,6 +57,12 @@ const (
 	REQUEST_VM_INSTANCE_URL = URI_PREFIX + "/vm/instance"
 
 	REQUEST_NODE_URL = URI_PREFIX + "/node"
+
+	REQUEST_VPC_URL = URI_PREFIX + "/vpc"
+
+	REQUEST_SUBNET_URL = URI_PREFIX + "/vpc" + "/subnet"
+
+	REQUEST_ROUTE_URL = URI_PREFIX + "/route"
 )
 
 /*
@@ -175,4 +181,16 @@ func GetVmInstanceURI() string {
 
 func GetNodeInfoURI() string {
 	return REQUEST_NODE_URL
+}
+
+func GetVpcURI() string {
+	return REQUEST_VPC_URL
+}
+
+func GetSubnetURI() string {
+	return REQUEST_SUBNET_URL
+}
+
+func GetRouteURI() string {
+	return REQUEST_ROUTE_URL
 }

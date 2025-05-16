@@ -1,6 +1,7 @@
 package bec
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/baidubce/bce-sdk-go/services/bec/api"
@@ -24,12 +25,29 @@ func TestCreateAppBlb(t *testing.T) {
 	t.Logf("%+v", res)
 }
 
+func TestCreateAppBlbTriple(t *testing.T) {
+	getReq := &api.CreateAppBlbRequest{
+		Name:                "zyc_test_applb-gosdk-2",
+		Desc:                "zyc-test",
+		RegionId:            "cn-huhehaote-ix",
+		NeedPublicIp:        true,
+		SubnetId:            "sbn-6s0hyohf3gdl",
+		VpcId:               "vpc-jlhljrppmtqn",
+		SubServiceProviders: []string{"cm"},
+	}
+	res, err := CLIENT.CreateAppBlb("testCreateAppBlb-zyc-gosdk-2", getReq)
+	ExpectEqual(t.Errorf, nil, err)
+	t.Logf("%+v", res)
+	jsonRes := TransJsonData(res)
+	fmt.Printf("result = %v", jsonRes)
+}
+
 func TestUpdateAppBlb(t *testing.T) {
 	getReq := &api.ModifyBecBlbRequest{
-		Name: "wcw_test_applb",
-		Desc: "wcw-test1",
+		Name: "wcw_test_applb-zyc-gosdk-3",
+		Desc: "wcw-test1-gosdk-3",
 	}
-	err := CLIENT.UpdateAppBlb("testUpdateAppBlb", "lb-zo8wibx1", getReq)
+	err := CLIENT.UpdateAppBlb("testUpdateAppBlb3", "applb-cn-huhehaote-ix-cwzpidw2", getReq)
 	ExpectEqual(t.Errorf, nil, err)
 }
 
@@ -38,16 +56,19 @@ func TestGetAppBlbList(t *testing.T) {
 	res, err := CLIENT.GetAppBlbList(getReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
+	jsonRes := TransJsonData(res)
+	fmt.Printf("result = %v", jsonRes)
 }
-func TestGetAppBlbDetails(t *testing.T) {
 
-	res, err := CLIENT.GetAppBlbDetails("applb-cn-hangzhou-cm-h9nh3vpe")
+func TestGetAppBlbDetails(t *testing.T) {
+	res, err := CLIENT.GetAppBlbDetails("applb-cn-huhehaote-ix-cwzpidw2")
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
+	jsonRes := TransJsonData(res)
+	fmt.Printf("result = %v", jsonRes)
 }
 
 func TestDeleteAppBlbInstance(t *testing.T) {
-
 	err := CLIENT.DeleteAppBlbInstance("applb-cn-hangzhou-cm-h9nh3vpe", "")
 	ExpectEqual(t.Errorf, nil, err)
 }

@@ -500,6 +500,8 @@ const (
 	DiskTypeRBDSSD           DiskType = "RBD_SSD"
 	DiskTypeHDDPASSTHROUGH4T DiskType = "HDD_PASSTHROUGH_4T"
 	DiskTypeSSDPASSTHROUGH4T DiskType = "SSD_PASSTHROUGH_4T"
+	DiskTypeHDDPASSTHROUGH   DiskType = "HDD_PASSTHROUGH"
+	DiskTypeSSDPASSTHROUGH   DiskType = "SSD_PASSTHROUGH"
 )
 
 type VolumeConfig struct {
@@ -530,6 +532,7 @@ type KeyConfig struct {
 
 type CreateVmServiceArgs struct {
 	ServiceName       string                `json:"serviceName,omitempty"`
+	ServiceId         string                `json:"serviceId,omitempty"`
 	VmName            string                `json:"vmName,omitempty"`
 	NeedPublicIp      bool                  `json:"needPublicIp,omitempty"`
 	Bandwidth         int                   `json:"bandwidth,omitempty"`
@@ -554,6 +557,17 @@ type CreateVmServiceArgs struct {
 	Gpu               *GpuRequest           `json:"gpu,omitempty"`
 	AdminPass         string                `json:"adminPass,omitempty"`
 	TemplateId        string                `json:"templateId,omitempty"`
+	HostnameGenMethod HostnameGenMethod     `json:"hostnameGenMethod,omitempty"`
+	ActionType        ActionType            `json:"actionType,omitempty"`
+	DirectPay         bool                  `json:"directPay"` // 预付费支付方式(直接扣款), 业务默认为true; 注意 注意: 预付费且直接扣款时需要手动赋值true
+	Reservation       *Reservation          `json:"reservation,omitempty"`
+	BackUrl           string                `json:"backUrl,omitempty"`
+	AutoRenew         *AutoRenew            `json:"autoRenew,omitempty"`
+	CudaVersion       string                `json:"cudaVersion,omitempty"`
+	CudnnVersion      string                `json:"cudnnVersion,omitempty"`
+	DriverVersion     string                `json:"driverVersion,omitempty"`
+	UserData          string                `json:"userData,omitempty"`
+	Tags              *[]Tag                `json:"tags,omitempty"`
 }
 
 type ImageDetail struct {
@@ -637,6 +651,7 @@ type VmServiceBriefVo struct {
 	CreateTime       string               `json:"createTime"`
 	TotalGpu         int                  `json:"totalGpu"`
 	Instances        []VmInstanceIdVo     `json:"instances"`
+	Tags             *[]Tag               `json:"tags,omitempty"`
 }
 
 type CreateVmServiceResult struct {
@@ -1070,10 +1085,12 @@ type ListRequest struct {
 	OrderBy         string          `json:"orderBy,omitempty"`
 	Status          string          `json:"status,omitempty"`
 	Region          string          `json:"region,omitempty"`
-	OsName          string          `json:"osName,omitempty"`
-	ServiceId       string          `json:"serviceId,omitempty"`
 	City            string          `json:"city,omitempty"`
 	ServiceProvider ServiceProvider `json:"serviceProvider,omitempty"`
+	RegionId        string          `json:"regionId,omitempty"`
+	OsName          string          `json:"osName,omitempty"`
+	ServiceId       string          `json:"serviceId,omitempty"`
+	VpcId           string          `json:"vpcId,omitempty"`
 }
 
 type KeyPair struct {
@@ -1208,9 +1225,10 @@ type VmInstanceBriefVo struct {
 	CreateTime       string          `json:"createTime"`
 	SecurityGroups   []SecurityGroup `json:"securityGroups"`
 	Vpc              Vpc             `json:"vpc"`
-	deploysetList    []DeploySetVo   `json:"deploysetList"`
+	DeploysetList    []DeploySetVo   `json:"deploysetList"`
 	Hostname         string          `json:"hostname"`
 	Dns              string          `json:"dns"`
+	Tags             *[]Tag          `json:"tags,omitempty"`
 }
 
 type DeploySetVo struct {
@@ -1251,6 +1269,10 @@ type ReinstallVmInstanceArg struct {
 	ImageType     ImageType  `json:"imageType,omitempty"`
 	ResetDataDisk bool       `json:"resetDataDisk,omitempty"`
 	KeyConfig     *KeyConfig `json:"keyConfig,omitempty"`
+	CudaVersion   string     `json:"cudaVersion,omitempty"`
+	CudnnVersion  string     `json:"cudnnVersion,omitempty"`
+	DriverVersion string     `json:"driverVersion,omitempty"`
+	UserData      string     `json:"userData,omitempty"`
 }
 
 type ReinstallVmInstanceResult struct {
@@ -1751,3 +1773,223 @@ type DeleteAppBlbPoliciesRequest struct {
 	Port         int      `json:"port,omitempty"`
 	PolicyIdList []string `json:"policyIdList,omitempty"`
 }
+
+type ActionType string
+
+const (
+	ActionTypeNew     ActionType = "NEW"
+	ActionTypeUpgrade ActionType = "UPGRADE"
+	ActionTypeUpdate  ActionType = "UPDATE"
+	ActionTypeRenew   ActionType = "RENEW"
+)
+
+type HostnameGenMethod string
+
+const (
+	HostnameGenMethodRandom HostnameGenMethod = "random"
+	HostnameGenMethodCustom HostnameGenMethod = "custom"
+)
+
+type Reservation struct {
+	Length   int    `json:"length,omitempty"`
+	TimeUnit string `json:"timeUnit,omitempty"`
+}
+
+type AutoRenew struct {
+	Length   int    `json:"length,omitempty"`
+	TimeUnit string `json:"timeUnit,omitempty"`
+}
+
+/* vpc start */
+
+type CreateVpcRequest struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	RegionId    string `json:"regionId"`
+	Cidr        string `json:"cidr"`
+	Tags        *[]Tag `json:"tags"`
+}
+
+type VpcCommonResult struct {
+	Details map[string]interface{} `json:"details"`
+	Result  bool                   `json:"result"`
+	Action  string                 `json:"action"`
+}
+
+type UpdateVpcRequest struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+type GetVpcDetailResponse struct {
+	Vpc VpcDetail `json:"vpc"`
+}
+
+type VpcDetail struct {
+	VpcId           string `json:"vpcId"`
+	Name            string `json:"name"`
+	Description     string `json:"description"`
+	Cidr            string `json:"cidr"`
+	Region          string `json:"region"`
+	ServiceProvider string `json:"serviceProvider"`
+	City            string `json:"city"`
+	RegionId        string `json:"regionId"`
+	IsDefault       bool   `json:"isDefault"`
+	CreatedTime     string `json:"createdTime"`
+}
+
+type LogicPageVpcResult struct {
+	OrderBy    string      `json:"orderBy"`
+	Order      string      `json:"order"`
+	PageNo     int         `json:"pageNo"`
+	PageSize   int         `json:"pageSize"`
+	TotalCount int         `json:"totalCount"`
+	Result     []VpcDetail `json:"result"`
+}
+
+/* vpc end */
+
+/* subnet start */
+
+type CreateSubnetRequest struct {
+	Name        string `json:"name"`
+	VpcId       string `json:"vpcId"`
+	Description string `json:"description"`
+	Cidr        string `json:"cidr"`
+	Tags        *[]Tag `json:"tags"`
+}
+
+type SubnetCommonResult struct {
+	Details map[string]interface{} `json:"details"`
+	Result  bool                   `json:"result"`
+	Action  string                 `json:"action"`
+}
+
+type UpdateSubnetRequest struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+type GetSubnetDetailResponse struct {
+	Subnet SubnetDetail `json:"subnet"`
+}
+
+type SubnetDetail struct {
+	SubnetId    string `json:"subnetId"`
+	Name        string `json:"name"`
+	Cidr        string `json:"cidr"`
+	Description string `json:"description"`
+	AvailableIp int    `json:"availableIp,omitempty"`
+	UsedIp      int    `json:"usedIp,omitempty"`
+	VpcId       string `json:"vpcId"`
+	RegionId    string `json:"regionId"`
+	IsDefault   bool   `json:"isDefault"`
+	CreatedTime string `json:"createdTime"`
+}
+
+type LogicPageSubnetResult struct {
+	OrderBy    string         `json:"orderBy"`
+	Order      string         `json:"order"`
+	PageNo     int            `json:"pageNo"`
+	PageSize   int            `json:"pageSize"`
+	TotalCount int            `json:"totalCount"`
+	Result     []SubnetDetail `json:"result"`
+}
+
+/* subnet end */
+
+/* route start */
+
+type UpdateRouteTableRequest struct {
+	TableId   string `json:"tableId"`
+	TableName string `json:"tableName"`
+}
+
+type UpdateRouteTableResult struct {
+	Details UpdateRouteTableResponse `json:"details"`
+	Result  bool                     `json:"result"`
+	Action  string                   `json:"action"`
+}
+
+type RouteCommonResult struct {
+	Details map[string]interface{} `json:"details"`
+	Result  bool                   `json:"result"`
+	Action  string                 `json:"action"`
+}
+
+type UpdateRouteTableResponse struct {
+	TableName    string `json:"tableName"`
+	RouteTableId string `json:"routeTableId"`
+}
+
+type GetRouteTableDetailResult struct {
+	Details RouteTableDetail `json:"details"`
+	Result  bool             `json:"result"`
+	Action  string           `json:"action"`
+}
+
+type RouteTableDetail struct {
+	RouteTableVo RouteTableDetailView `json:"routeTableVo"`
+}
+
+type LogicPageRouteTableResult struct {
+	OrderBy    string                 `json:"orderBy"`
+	Order      string                 `json:"order"`
+	PageNo     int                    `json:"pageNo"`
+	PageSize   int                    `json:"pageSize"`
+	TotalCount int                    `json:"totalCount"`
+	Result     []RouteTableDetailView `json:"result"`
+}
+
+type RouteTableDetailView struct {
+	TableId         string `json:"tableId"`
+	Name            string `json:"name"`
+	Status          string `json:"status"`
+	VpcId           string `json:"vpcId"`
+	VpcName         string `json:"vpcName"`
+	VpcCidr         string `json:"vpcCidr,omitempty"`
+	City            string `json:"city"`
+	ServiceProvider string `json:"serviceProvider"`
+	Region          string `json:"region"`
+	RegionId        string `json:"regionId"`
+	RuleCount       int    `json:"ruleCount"`
+}
+
+type CreateRouteRuleRequest struct {
+	TableId            string `json:"tableId"`
+	IpVersion          int    `json:"ipVersion"`
+	SourceAddress      string `json:"sourceAddress"`
+	DestinationAddress string `json:"destinationAddress"`
+	Nexthop            string `json:"nexthop"`
+	RouteType          string `json:"routeType"`
+	Description        string `json:"description"`
+}
+
+type CreateRouteRuleResult struct {
+	Details RouteRuleView `json:"details"`
+	Result  bool          `json:"result"`
+	Action  string        `json:"action"`
+}
+
+type RouteRuleView struct {
+	RuleId             string `json:"ruleId"`
+	Status             string `json:"status,omitempty"`
+	TableId            string `json:"tableId"`
+	IpVersion          int    `json:"ipVersion"`
+	SourceAddress      string `json:"sourceAddress"`
+	DestinationAddress string `json:"destinationAddress"`
+	RouteType          string `json:"routeType"`
+	Nexthop            string `json:"nexthop"`
+	Description        string `json:"description"`
+}
+
+type LogicPageRouteRuleResult struct {
+	OrderBy    string          `json:"orderBy"`
+	Order      string          `json:"order"`
+	PageNo     int             `json:"pageNo"`
+	PageSize   int             `json:"pageSize"`
+	TotalCount int             `json:"totalCount"`
+	Result     []RouteRuleView `json:"result"`
+}
+
+/* route end */

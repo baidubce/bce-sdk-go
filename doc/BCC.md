@@ -291,6 +291,7 @@ args := &api.CreateInstanceArgsV2{
     SecurityGroupIds      []string          securityGroupIds
     // 设置创建BCC使用的企业安全组列表，不允许同时设置企业安全组和普通安全组
     EnterpriseSecurityGroupIds      []string           enterpriseSecurityGroupIds
+	
     // 设置需要创建GPU卡信息
     GpuCard               string           "gpuCard"
     // 设置需要创建FPGA卡信息
@@ -439,6 +440,8 @@ createInstanceBySpecArgs := &api.CreateInstanceBySpecArgsV2{
     SecurityGroupIds      []string          securityGroupIds
     // 设置创建BCC使用的企业安全组列表，不允许同时设置企业安全组和普通安全组
     EnterpriseSecurityGroupIds      []string           enterpriseSecurityGroupIds
+    // 设置创建BCC使用的弹性网卡短id列表
+    EniIds                []string         eniIds
     // 设置按月付费或者按年付费 月是"month",年是"year"
     AutoRenewTimeUnit     string           "autoRenewTimeUnit"
     // 设置自动续费的时间 按月是1-9 按年是 1-3
