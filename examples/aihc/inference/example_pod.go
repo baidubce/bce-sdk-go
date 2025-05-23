@@ -3,18 +3,17 @@ package inference
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/services/aihc/inference"
-	"github.com/baidubce/bce-sdk-go/services/aihc/inference/api"
+
+	api "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 )
 
 func ListPod() {
-	ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
-	region := "bj"
+	ak, sk, endpoint := "Your ak", "Your sk", "aihc.bj.baidubce.com"
 
-	client, _ := inference.NewClient(ak, sk, endpoint)
+	client, _ := api.NewClient(ak, sk, endpoint)
 	result, err := client.ListPod(&api.ListPodArgs{
-		AppId: "",
-	}, region)
+		ServiceId: "",
+	})
 
 	if err != nil {
 		panic(err)
@@ -25,15 +24,14 @@ func ListPod() {
 }
 
 func BlockPod() {
-	ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
-	region := "bj"
+	ak, sk, endpoint := "Your ak", "Your sk", "aihc.bj.baidubce.com"
 
-	client, _ := inference.NewClient(ak, sk, endpoint)
+	client, _ := api.NewClient(ak, sk, endpoint)
 	result, err := client.BlockPod(&api.BlockPodArgs{
-		AppId: "",
-		InsID: "",
-		Block: true,
-	}, region)
+		ServiceId:  "",
+		InstanceId: "",
+		Block:      true,
+	})
 
 	if err != nil {
 		panic(err)
@@ -44,19 +42,32 @@ func BlockPod() {
 }
 
 func DeletePod() {
-	ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
-	region := "bj"
+	ak, sk, endpoint := "Your ak", "Your sk", "aihc.bj.baidubce.com"
 
-	client, _ := inference.NewClient(ak, sk, endpoint)
+	client, _ := api.NewClient(ak, sk, endpoint)
 	result, err := client.DeletePod(&api.DeletePodArgs{
-		AppId: "",
-		InsID: "",
-	}, region)
+		ServiceId:  "",
+		InstanceId: "",
+	})
 
 	if err != nil {
 		panic(err)
 	}
 
+	jsonBytes, _ := json.Marshal(result)
+	fmt.Println(string(jsonBytes))
+}
+
+func ListPodGroups() {
+	ak, sk, endpoint := "Your ak", "Your sk", "aihc.bj.baidubce.com"
+
+	client, _ := api.NewClient(ak, sk, endpoint)
+	result, err := client.ListPodGroups(&api.ListPodGroupsArgs{
+		ServiceId: "",
+	})
+	if err != nil {
+		panic(err)
+	}
 	jsonBytes, _ := json.Marshal(result)
 	fmt.Println(string(jsonBytes))
 }

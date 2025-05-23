@@ -75,6 +75,7 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 
 func TestClient_CreateEip(t *testing.T) {
 	args := &CreateEipArgs{
+		IpVersion:       "ipv6",
 		Name:            "sdk-eip",
 		BandWidthInMbps: 1,
 		Billing: &Billing{
@@ -164,7 +165,10 @@ func TestClient_PurchaseReservedEip(t *testing.T) {
 }
 
 func TestClient_ListEip(t *testing.T) {
-	args := &ListEipArgs{}
+	args := &ListEipArgs{
+		IpVersion: "ipv6",                 // 指定EIP IP类型
+		EipIds:    []string{"xxx", "xxx"}, // 指定EIP短ID列表
+	}
 	result, err := EIP_CLIENT.ListEip(args)
 	if err != nil {
 		fmt.Println(err)
@@ -278,8 +282,9 @@ func TestClient_CreateEipGroup(t *testing.T) {
 			PaymentTiming: "Postpaid",
 			BillingMethod: "ByBandwidth",
 		},
-		EipCount:  2,
-		RouteType: "BGP",
+		EipCount:   2,
+		Eipv6Count: 1,
+		RouteType:  "BGP",
 		//Continuous: true,
 		Tags: []model.TagModel{
 			{
@@ -309,8 +314,9 @@ func TestClient_ResizeEipGroupBandWidth(t *testing.T) {
 
 func TestClient_EipGroupAddEipCount(t *testing.T) {
 	args := &GroupAddEipCountArgs{
-		EipAddCount: 1,
-		ClientToken: getClientToken(),
+		EipAddCount:   1,
+		Eipv6AddCount: 1,
+		ClientToken:   getClientToken(),
 	}
 	EIP_CLIENT.EipGroupAddEipCount("eg-2b1ef0db", args)
 }
@@ -333,7 +339,10 @@ func TestClient_RenameEipGroup(t *testing.T) {
 }
 
 func TestClient_ListEipGroup(t *testing.T) {
-	result, err := EIP_CLIENT.ListEipGroup(nil)
+	args := &ListEipGroupArgs{
+		Id: "eg-xxx",
+	}
+	result, err := EIP_CLIENT.ListEipGroup(args)
 	if err != nil {
 		fmt.Println(err)
 	} else {

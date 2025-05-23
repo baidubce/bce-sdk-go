@@ -730,6 +730,7 @@ func TestRollbackCDSVolume(t *testing.T) {
 
 func TestPurchaseReservedCDSVolume(t *testing.T) {
 	args := &api.PurchaseReservedCSDVolumeArgs{
+		InstanceId: "instanceId",
 		Billing: &api.Billing{
 			Reservation: &api.Reservation{
 				ReservationLength:   1,
@@ -1281,6 +1282,12 @@ func TestCancelBidOrder(t *testing.T) {
 
 func TestInstancePurchaseReserved(t *testing.T) {
 	purchaseReservedArgs := &api.PurchaseReservedArgs{
+		CdsCustomPeriod: []api.CdsCustomPeriod{
+			{
+				VolumeId: "volumeId",
+				Period: 2,
+			},
+		},
 		Billing: api.Billing{
 			PaymentTiming: api.PaymentTimingPrePaid,
 			Reservation: &api.Reservation{

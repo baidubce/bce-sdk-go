@@ -172,6 +172,7 @@ type InstanceModel struct {
 	ImageType              string                 `json:"imageType"`
 	CpuThreadConfig        string                 `json:"cpuThreadConfig"`
 	NumaConfig             string                 `json:"numaConfig"`
+	Application            string                 `json:"application"`
 }
 
 type DeploySetSimpleModel struct {
@@ -1075,10 +1076,16 @@ type SimpleFlavor struct {
 	MemoryCapacityInGB int    `json:"memoryCapacityInGB"`
 }
 
+type CdsCustomPeriod struct {
+	Period   int    `json:"period"`
+	VolumeId string `json:"volumeId"`
+}
+
 type PurchaseReservedArgs struct {
-	RelatedRenewFlag string  `json:"relatedRenewFlag"`
-	Billing          Billing `json:"billing"`
-	ClientToken      string  `json:"-"`
+	RelatedRenewFlag string            `json:"relatedRenewFlag"`
+	Billing          Billing           `json:"billing"`
+	CdsCustomPeriod  []CdsCustomPeriod `json:"cdsCustomPeriod"`
+	ClientToken      string            `json:"-"`
 }
 
 const (
@@ -1340,6 +1347,7 @@ type DetachVolumeArgs struct {
 
 type PurchaseReservedCSDVolumeArgs struct {
 	Billing     *Billing `json:"billing"`
+	InstanceId  string   `json:"instanceId"`
 	ClientToken string   `json:"-"`
 }
 
@@ -1645,11 +1653,12 @@ type CreateSecurityGroupArgs struct {
 }
 
 type ListSecurityGroupArgs struct {
-	Marker          string
-	MaxKeys         int
-	InstanceId      string
-	VpcId           string
-	SecurityGroupId string
+	Marker            string
+	MaxKeys           int
+	InstanceId        string
+	VpcId             string
+	SecurityGroupId   string
+	SecurityGroupIds  string
 }
 
 type CreateSecurityGroupResult struct {

@@ -658,15 +658,14 @@ fmt.Println(string(jsonBytes))
 ### 创建服务
 使用以下代码可以创建服务。
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/aihc"
-// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
 region := "bj"
 
-client, _ := aihc.NewClient(ak, sk, endpoint)
-result, err := client.CreateApp(&v1.CreateAppArgs{
-    AppName: "", //这里参数自己按照接口文档填写即可
-}, region, nil)
+client, _ := v2.NewClient(ak, sk, endpoint)
+result, err := client.CreateService(&v1.CreateServiceArgs{
+    ServiceName: "", //这里参数自己按照接口文档填写即可
+}, clientToken)
 
 if err != nil {
     panic(err)
@@ -679,16 +678,15 @@ if err != nil {
 ### 查询服务列表
 使用以下代码可以查询服务列表。
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/aihc"
-// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
 region := "bj"
 
-client, _ := aihc.NewClient(ak, sk, endpoint)
-result, err := client.ListApp(&v1.ListAppArgs{
+client, _ := v2.NewClient(ak, sk, endpoint)
+result, err := client.ListService(&v1.ListServiceArgs{
     PageSize: 10,
     PageNo:   1,
-}, region, nil)
+})
 if err != nil {
     panic(err)
 }
@@ -701,15 +699,14 @@ if err != nil {
 使用以下代码可以查询服务状态。
 
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/aihc"
-// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
 region := "bj"
 
-client, _ := aihc.NewClient(ak, sk, endpoint)
-result, err := client.ListAppStats(&v1.ListAppStatsArgs{
-    AppIds: []string{"ap-test"},
-}, region)
+client, _ := v2.NewClient(ak, sk, endpoint)
+result, err := client.ListServiceStats(&v1.ListServiceStatsArgs{
+    ServiceIds: []string{"ap-test"},
+})
 if err != nil {
     panic(err)
 }
@@ -722,15 +719,14 @@ if err != nil {
 使用以下代码可以查询服务详情。
 
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/aihc"
-// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
 region := "bj"
 
-client, _ := aihc.NewClient(ak, sk, endpoint)
-result, err := client.AppDetails(&v1.AppDetailsArgs{
-    AppId: "ap-test",
-}, region)
+client, _ := v2.NewClient(ak, sk, endpoint)
+result, err := client.ServiceDetails(&v1.ServiceDetailsArgs{
+    ServiceId: "ap-test",
+})
 if err != nil {
     panic(err)
 }
@@ -743,13 +739,12 @@ if err != nil {
 使用以下代码可以更新服务。
 
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/aihc"
-// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
 region := "bj"
 
-client, _ := aihc.NewClient(ak, sk, endpoint)
-result, err := client.UpdateApp(&v1.UpdateAppArgs{}, region)
+client, _ := v2.NewClient(ak, sk, endpoint)
+result, err := client.UpdateService(&v1.UpdateServiceArgs{})
 if err != nil {
     panic(err)
 }
@@ -762,16 +757,15 @@ if err != nil {
 使用以下代码可以扩缩容实例。
 
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/aihc"
-// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
 region := "bj"
 
-client, _ := aihc.NewClient(ak, sk, endpoint)
-result, err := client.ScaleApp(&v1.ScaleAppArgs{
-    AppId:    "ap-test",
+client, _ := v2.NewClient(ak, sk, endpoint)
+result, err := client.ScaleService(&v1.ScaleServiceArgs{
+    ServiceId:    "ap-test",
     InsCount: 1,
-}, region)
+})
 if err != nil {
     panic(err)
 }
@@ -784,16 +778,15 @@ if err != nil {
 使用以下代码可以配置公网访问。
 
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/aihc"
-// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
 region := "bj"
 
-client, _ := aihc.NewClient(ak, sk, endpoint)
+client, _ := v2.NewClient(ak, sk, endpoint)
 result, err := client.PubAccess(&v1.PubAccessArgs{
-    AppId:        "ap-test",
+    ServiceId:        "ap-test",
     PublicAccess: false,
-}, region)
+})
 if err != nil {
     panic(err)
 }
@@ -806,15 +799,14 @@ if err != nil {
 使用以下代码可以查询服务变更记录。
 
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/aihc"
-// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
 region := "bj"
 
-client, _ := aihc.NewClient(ak, sk, endpoint)
+client, _ := v2.NewClient(ak, sk, endpoint)
 result, err := client.ListChange(&v1.ListChangeArgs{
-    AppId: "ap-test",
-}, region)
+    ServiceId: "ap-test",
+})
 if err != nil {
     panic(err)
 }
@@ -827,15 +819,14 @@ if err != nil {
 使用以下代码可以查询服务变更记录详情。
 
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/aihc"
-// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
 region := "bj"
 
-client, _ := aihc.NewClient(ak, sk, endpoint)
+client, _ := v2.NewClient(ak, sk, endpoint)
 result, err := client.ChangeDetail(&v1.ChangeDetailArgs{
     ChangeId: "ch-test",
-}, region)
+})
 if err != nil {
     panic(err)
 }
@@ -848,15 +839,14 @@ if err != nil {
 使用以下代码可以删除服务。
 
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/aihc"
-// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
 region := "bj"
 
-client, _ := aihc.NewClient(ak, sk, endpoint)
-result, err := client.DeleteApp(&v1.DeleteAppArgs{
-    AppId: "ap-test",
-}, region)
+client, _ := v2.NewClient(ak, sk, endpoint)
+result, err := client.DeleteService(&v1.DeleteServiceArgs{
+    ServiceId: "ap-test",
+})
 if err != nil {
     panic(err)
 }
@@ -869,15 +859,14 @@ if err != nil {
 使用以下代码可以查询实例列表。
 
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/aihc"
-// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
 region := "bj"
 
-client, _ := aihc.NewClient(ak, sk, endpoint)
+client, _ := v2.NewClient(ak, sk, endpoint)
 result, err := client.ListPod(&v1.ListPodArgs{
-    AppId: "ap-test",
-}, region)
+    ServiceId: "ap-test",
+})
 if err != nil {
     panic(err)
 }
@@ -890,17 +879,16 @@ if err != nil {
 使用以下代码可以实例摘流。
 
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/aihc"
-// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
 region := "bj"
 
-client, _ := aihc.NewClient(ak, sk, endpoint)
+client, _ := v2.NewClient(ak, sk, endpoint)
 result, err := client.BlockPod(&v1.BlockPodArgs{
-    AppId: "ap-test",
+    ServiceId: "ap-test",
     InsID: "ins-test",
     Block: true,
-}, region)
+})
 if err != nil {
     panic(err)
 }
@@ -913,16 +901,32 @@ if err != nil {
 使用以下代码可以删除实例重建。
 
 ```go
-// import "github.com/baidubce/bce-sdk-go/services/aihc"
-// import "github.com/baidubce/bce-sdk-go/services/aihc/api"
+// import "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
 region := "bj"
 
-client, _ := aihc.NewClient(ak, sk, endpoint)
+client, _ := v2.NewClient(ak, sk, endpoint)
 result, err := client.DeletePod(&v1.DeletePodArgs{
-    AppId: "ap-test",
+    ServiceId: "ap-test",
     InsID: "ins-test",
-}, region)
+})
+if err != nil {
+    panic(err)
+}
+```
+
+### 查询实例组列表
+使用以下代码可以查询实例组列表。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
+ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
+region := "bj"
+
+client, _ := v2.NewClient(ak, sk, endpoint)
+result, err := client.ListPodGroups(&v1.ListPodGroupsArgs{
+    ServiceId: "ap-test",
+})
 if err != nil {
     panic(err)
 }
@@ -930,49 +934,6 @@ if err != nil {
 
 > 注意:
 > - 根据接口文档去填写具体的访问参数，接口链接为[删除实例重建](https://cloud.baidu.com/doc/AIHC/s/Rm2eg9dtl#%E5%88%A0%E9%99%A4%E5%AE%9E%E4%BE%8B%E9%87%8D%E5%BB%BA)
-
-### 查询资源池列表
-使用以下代码可以查询资源池列表。
-
-```go
-// import "github.com/baidubce/bce-sdk-go/services/aihc"
-// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
-ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
-region := "bj"
-
-client, _ := ai h c.NewClient(ak, sk, endpoint)
-result, err := client.ListBriefResPool(&v1.ListBriefResPoolArgs{
-    PageNo:   1,
-    PageSize: 10,
-}, region)
-if err != nil {
-    panic(err)
-}
-```
-
-> 注意:
-> - 根据接口文档去填写具体的访问参数，接口链接为[查询资源池列表](https://cloud.baidu.com/doc/AIHC/s/Rm2eg9dtl#%E6%9F%A5%E8%AF%A2%E8%B5%84%E6%BA%90%E6%B1%A0%E5%88%97%E8%A1%A8)
-
-### 查询资源池详情
-使用以下代码可以查询资源池详情。
-
-```go
-// import "github.com/baidubce/bce-sdk-go/services/aihc"
-// import "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
-ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
-region := "bj"
-
-client, _ := aihc.NewClient(ak, sk, endpoint)
-result, err := client.ResPoolDetail(&v1.ResPoolDetailArgs{
-    ResPoolId: "id-test",
-}, region)
-if err != nil {
-    panic(err)
-}
-```
-
-> 注意:
-> - 根据接口文档去填写具体的访问参数，接口链接为[查询资源池详情](https://cloud.baidu.com/doc/AIHC/s/Rm2eg9dtl#%E6%9F%A5%E8%AF%A2%E8%B5%84%E6%BA%90%E6%B1%A0%E8%AF%A6%E6%83%85)
 
 # 错误处理
 
@@ -987,8 +948,8 @@ BceServiceError | 百舸服务返回的错误
 
 ```
 // AihcClient 为已创建的Aihc Client对象
-args := &v1.ListAppArgs{}
-result, err := client.ListApp(args)
+args := &v1.ListServiceArgs{}
+result, err := client.ListService(args)
 if err != nil {
 	switch realErr := err.(type) {
 	case *bce.BceClientError:

@@ -3,18 +3,19 @@ package inference
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/services/aihc/inference"
-	"github.com/baidubce/bce-sdk-go/services/aihc/inference/api"
+
+	api "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 )
 
-func CreateApp() {
-	ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
-	region := "bj"
-
-	client, _ := inference.NewClient(ak, sk, endpoint)
-	result, err := client.CreateApp(&api.CreateAppArgs{
-		AppName: "",
-	}, region, nil)
+func CreateService() {
+	ak, sk, endpoint := "Your ak", "Your sk", "aihc.bj.baidubce.com"
+	client, _ := api.NewClient(ak, sk, endpoint)
+	createServiceArgs, err := ReadJson("you_create_json_file")
+	if err != nil {
+		panic(err)
+		return
+	}
+	result, err := client.CreateService(createServiceArgs, "your clientToken")
 
 	if err != nil {
 		panic(err)
@@ -24,15 +25,13 @@ func CreateApp() {
 	fmt.Println(string(jsonBytes))
 }
 
-func ListApp() {
-	ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
-	region := "bj"
-
-	client, _ := inference.NewClient(ak, sk, endpoint)
-	result, err := client.ListApp(&api.ListAppArgs{
-		PageSize: 10,
-		PageNo:   1,
-	}, region, nil)
+func ListService() {
+	ak, sk, endpoint := "Your ak", "Your sk", "aihc.bj.baidubce.com"
+	client, _ := api.NewClient(ak, sk, endpoint)
+	result, err := client.ListService(&api.ListServiceArgs{
+		PageSize:   10,
+		PageNumber: 1,
+	})
 	if err != nil {
 		panic(err)
 	}
@@ -41,31 +40,13 @@ func ListApp() {
 	fmt.Println(string(jsonBytes))
 }
 
-func ListAppStats() {
-	ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
-	region := "bj"
+func ListServiceStats() {
+	ak, sk, endpoint := "Your ak", "Your sk", "aihc.bj.baidubce.com"
 
-	client, _ := inference.NewClient(ak, sk, endpoint)
-	result, err := client.ListAppStats(&api.ListAppStatsArgs{
-		AppIds: []string{""},
-	}, region)
-
-	if err != nil {
-		panic(err)
-	}
-
-	jsonBytes, _ := json.Marshal(result)
-	fmt.Println(string(jsonBytes))
-}
-
-func AppDetails() {
-	ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
-	region := "bj"
-
-	client, _ := inference.NewClient(ak, sk, endpoint)
-	result, err := client.AppDetails(&api.AppDetailsArgs{
-		AppId: "",
-	}, region)
+	client, _ := api.NewClient(ak, sk, endpoint)
+	result, err := client.ListServiceStats(&api.ListServiceStatsArgs{
+		ServiceId: "",
+	})
 
 	if err != nil {
 		panic(err)
@@ -75,12 +56,13 @@ func AppDetails() {
 	fmt.Println(string(jsonBytes))
 }
 
-func UpdateApp() {
-	ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
-	region := "bj"
+func ServiceDetails() {
+	ak, sk, endpoint := "Your ak", "Your sk", "aihc.bj.baidubce.com"
 
-	client, _ := inference.NewClient(ak, sk, endpoint)
-	result, err := client.UpdateApp(&api.UpdateAppArgs{}, region)
+	client, _ := api.NewClient(ak, sk, endpoint)
+	result, err := client.ServiceDetails(&api.ServiceDetailsArgs{
+		ServiceId: "",
+	})
 
 	if err != nil {
 		panic(err)
@@ -90,15 +72,37 @@ func UpdateApp() {
 	fmt.Println(string(jsonBytes))
 }
 
-func ScaleApp() {
-	ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
-	region := "bj"
+func UpdateService() {
+	ak, sk, endpoint := "Your ak", "Your sk", "aihc.bj.baidubce.com"
 
-	client, _ := inference.NewClient(ak, sk, endpoint)
-	result, err := client.ScaleApp(&api.ScaleAppArgs{
-		AppId:    "",
-		InsCount: 1,
-	}, region)
+	client, _ := api.NewClient(ak, sk, endpoint)
+	updateServiceArgs, err := ReadJson("you_update_json_file")
+	if err != nil {
+		panic(err)
+		return
+	}
+	result, err := client.UpdateService(&api.UpdateServiceArgs{
+		ServiceId:   "",
+		ServiceConf: *updateServiceArgs,
+		Description: "your description",
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	jsonBytes, _ := json.Marshal(result)
+	fmt.Println(string(jsonBytes))
+}
+
+func ScaleService() {
+	ak, sk, endpoint := "Your ak", "Your sk", "aihc.bj.baidubce.com"
+
+	client, _ := api.NewClient(ak, sk, endpoint)
+	result, err := client.ScaleService(&api.ScaleServiceArgs{
+		ServiceId:     "",
+		InstanceCount: 1,
+	})
 
 	if err != nil {
 		panic(err)
@@ -109,14 +113,13 @@ func ScaleApp() {
 }
 
 func PubAccess() {
-	ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
-	region := "bj"
+	ak, sk, endpoint := "Your ak", "Your sk", "aihc.bj.baidubce.com"
 
-	client, _ := inference.NewClient(ak, sk, endpoint)
+	client, _ := api.NewClient(ak, sk, endpoint)
 	result, err := client.PubAccess(&api.PubAccessArgs{
-		AppId:        "",
+		ServiceId:    "",
 		PublicAccess: false,
-	}, region)
+	})
 
 	if err != nil {
 		panic(err)
@@ -127,13 +130,12 @@ func PubAccess() {
 }
 
 func ListChange() {
-	ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
-	region := "bj"
+	ak, sk, endpoint := "Your ak", "Your sk", "aihc.bj.baidubce.com"
 
-	client, _ := inference.NewClient(ak, sk, endpoint)
+	client, _ := api.NewClient(ak, sk, endpoint)
 	result, err := client.ListChange(&api.ListChangeArgs{
-		AppId: "",
-	}, region)
+		ServiceId: "",
+	})
 
 	if err != nil {
 		panic(err)
@@ -144,13 +146,12 @@ func ListChange() {
 }
 
 func ChangeDetail() {
-	ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
-	region := "bj"
+	ak, sk, endpoint := "Your ak", "Your sk", "aihc.bj.baidubce.com"
 
-	client, _ := inference.NewClient(ak, sk, endpoint)
+	client, _ := api.NewClient(ak, sk, endpoint)
 	result, err := client.ChangeDetail(&api.ChangeDetailArgs{
 		ChangeId: "",
-	}, region)
+	})
 
 	if err != nil {
 		panic(err)
@@ -160,14 +161,13 @@ func ChangeDetail() {
 	fmt.Println(string(jsonBytes))
 }
 
-func DeleteApp() {
-	ak, sk, endpoint := "Your ak", "Your sk", "aihc.baidubce.com"
-	region := "bj"
+func DeleteService() {
+	ak, sk, endpoint := "Your ak", "Your sk", "aihc.bj.baidubce.com"
 
-	client, _ := inference.NewClient(ak, sk, endpoint)
-	result, err := client.DeleteApp(&api.DeleteAppArgs{
-		AppId: "",
-	}, region)
+	client, _ := api.NewClient(ak, sk, endpoint)
+	result, err := client.DeleteService(&api.DeleteServiceArgs{
+		ServiceId: "",
+	})
 
 	if err != nil {
 		panic(err)

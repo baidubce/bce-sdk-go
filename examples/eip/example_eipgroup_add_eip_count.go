@@ -26,7 +26,8 @@ func EipGroupAddEipCount() {
 	// 增加EIP数量的eipgroup id
 	id := "eg-xxxxxxxx"
 	groupAddEipCountArgs := &EIP.GroupAddEipCountArgs{
-		EipAddCount: 1,
+		EipAddCount:   1,
+		Eipv6AddCount: 2,
 	}
 	err := eipClient.EipGroupAddEipCount(id, groupAddEipCountArgs)
 	if err != nil {

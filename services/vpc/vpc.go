@@ -72,6 +72,7 @@ func (c *Client) ListVPC(args *ListVPCArgs) (*ListVPCResult, error) {
 		WithMethod(http.GET).
 		WithResult(result).
 		WithQueryParamFilter("marker", args.Marker).
+		WithQueryParamFilter("vpcIds", args.VpcIds).
 		WithQueryParamFilter("isDefault", args.IsDefault)
 	if args.MaxKeys != 0 {
 		builder.WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys))

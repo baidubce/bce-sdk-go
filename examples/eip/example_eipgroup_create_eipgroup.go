@@ -27,7 +27,8 @@ func CreateEipGroup() {
 
 	createEipGroupArgs := &EIP.CreateEipGroupArgs{
 		Name:            "test-eipgroup-go", // 共享带宽名称
-		EipCount:        5,                  // 共享带宽的IP数量
+		EipCount:        2,                  // 共享带宽的ipv4数量
+		Eipv6Count:      1,                  // 共享带宽的ipv6数量
 		BandWidthInMbps: 100,                // 共享带宽的带宽
 		Billing: &EIP.Billing{
 			PaymentTiming: "Prepaid", // 后付费

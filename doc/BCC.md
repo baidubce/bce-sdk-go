@@ -1578,6 +1578,12 @@ if err != nil {
 对BCC虚机的续费操作，可以延长过期时长，以下代码可以对实例及关联产品进行续费
 ```go
 args := &api.PurchaseReservedArgs{
+	CdsCustomPeriod: []api.CdsCustomPeriod{
+        {
+          VolumeId: "volumeId",
+          Period: 2,
+		}
+    },
     Billing: api.Billing{
         PaymentTiming: api.PaymentTimingPrePaid,
         Reservation: &api.Reservation{
@@ -2408,6 +2414,7 @@ if err != nil {
 
 ```go
 args := &api.PurchaseReservedCSDVolumeArgs{
+	InstanceId: "instanceId",
     Billing: &api.Billing{
         PaymentTiming: api.PaymentTimingPrePaid,
         Reservation: &api.Reservation{

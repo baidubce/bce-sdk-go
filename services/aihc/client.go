@@ -3,8 +3,7 @@ package aihc
 import (
 	resourcepoolv1 "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
 	"github.com/baidubce/bce-sdk-go/services/aihc/client"
-	"github.com/baidubce/bce-sdk-go/services/aihc/inference"
-	inferenceapi "github.com/baidubce/bce-sdk-go/services/aihc/inference/api"
+	inference "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 	"github.com/baidubce/bce-sdk-go/services/aihc/resource"
 )
 
@@ -117,70 +116,57 @@ func (clientset *Client) FileUpload(args *resourcepoolv1.FileUploadRequest) (*re
 }
 
 // inference
-func (clientset *Client) CreateApp(args *inferenceapi.CreateAppArgs, region string, extraInfo map[string]string) (*inferenceapi.CreateAppResult, error) {
-	return clientset.inferenceClient.CreateApp(args, region, extraInfo)
+func (clientset *Client) CreateService(args *inference.ServiceConf, clientToken string) (*inference.CreateServiceResult, error) {
+	return clientset.inferenceClient.CreateService(args, clientToken)
 }
-func (clientset *Client) ListApp(args *inferenceapi.ListAppArgs, region string, extraInfo map[string]string) (*inferenceapi.ListAppResult, error) {
-	return clientset.inferenceClient.ListApp(args, region, extraInfo)
-}
-
-func (clientset *Client) ListAppStats(args *inferenceapi.ListAppStatsArgs, region string) (*inferenceapi.ListAppStatsResult, error) {
-	return clientset.inferenceClient.ListAppStats(args, region)
+func (clientset *Client) ListService(args *inference.ListServiceArgs) (*inference.ListServiceResult, error) {
+	return clientset.inferenceClient.ListService(args)
 }
 
-func (clientset *Client) AppDetails(args *inferenceapi.AppDetailsArgs,
-	region string) (*inferenceapi.AppDetailsResult, error) {
-	return clientset.inferenceClient.AppDetails(args, region)
+func (clientset *Client) ListServiceStats(args *inference.ListServiceStatsArgs) (*inference.ListServiceStatsResult, error) {
+	return clientset.inferenceClient.ListServiceStats(args)
 }
 
-func (clientset *Client) UpdateApp(args *inferenceapi.UpdateAppArgs,
-	region string) (*inferenceapi.UpdateAppResult, error) {
-	return clientset.inferenceClient.UpdateApp(args, region)
+func (clientset *Client) ServiceDetails(args *inference.ServiceDetailsArgs) (*inference.ServiceDetailsResult, error) {
+	return clientset.inferenceClient.ServiceDetails(args)
 }
 
-func (clientset *Client) ScaleApp(args *inferenceapi.ScaleAppArgs,
-	region string) (*inferenceapi.ScaleAppResult, error) {
-	return clientset.inferenceClient.ScaleApp(args, region)
+func (clientset *Client) UpdateService(args *inference.UpdateServiceArgs) (*inference.UpdateServiceResult, error) {
+	return clientset.inferenceClient.UpdateService(args)
 }
 
-func (clientset *Client) PubAccess(args *inferenceapi.PubAccessArgs,
-	region string) (*inferenceapi.PubAccessResult, error) {
-	return clientset.inferenceClient.PubAccess(args, region)
+func (clientset *Client) ScaleService(args *inference.ScaleServiceArgs) (*inference.ScaleServiceResult, error) {
+	return clientset.inferenceClient.ScaleService(args)
 }
 
-func (clientset *Client) ListChange(args *inferenceapi.ListChangeArgs,
-	region string) (*inferenceapi.ListChangeResult, error) {
-	return clientset.inferenceClient.ListChange(args, region)
+func (clientset *Client) PubAccess(args *inference.PubAccessArgs) (*inference.PubAccessResult, error) {
+	return clientset.inferenceClient.PubAccess(args)
 }
 
-func (clientset *Client) ChangeDetail(args *inferenceapi.ChangeDetailArgs, region string) (*inferenceapi.ChangeDetailResult, error) {
-	return clientset.inferenceClient.ChangeDetail(args, region)
+func (clientset *Client) ListChange(args *inference.ListChangeArgs) (*inference.ListChangeResult, error) {
+	return clientset.inferenceClient.ListChange(args)
 }
 
-func (clientset *Client) DeleteApp(args *inferenceapi.DeleteAppArgs,
-	region string) (*inferenceapi.DeleteAppResult, error) {
-	return clientset.inferenceClient.DeleteApp(args, region)
+func (clientset *Client) ChangeDetail(args *inference.ChangeDetailArgs) (*inference.ChangeDetailResult, error) {
+	return clientset.inferenceClient.ChangeDetail(args)
 }
 
-func (clientset *Client) ListPod(args *inferenceapi.ListPodArgs,
-	region string) (*inferenceapi.ListPodResult, error) {
-	return clientset.inferenceClient.ListPod(args, region)
+func (clientset *Client) DeleteService(args *inference.DeleteServiceArgs) (*inference.DeleteServiceResult, error) {
+	return clientset.inferenceClient.DeleteService(args)
 }
 
-func (clientset *Client) BlockPod(args *inferenceapi.BlockPodArgs,
-	region string) (*inferenceapi.BlockPodResult, error) {
-	return clientset.inferenceClient.BlockPod(args, region)
+func (clientset *Client) ListPod(args *inference.ListPodArgs) (*inference.ListPodResult, error) {
+	return clientset.inferenceClient.ListPod(args)
 }
 
-func (clientset *Client) DeletePod(args *inferenceapi.DeletePodArgs,
-	region string) (*inferenceapi.DeletePodResult, error) {
-	return clientset.inferenceClient.DeletePod(args, region)
+func (clientset *Client) BlockPod(args *inference.BlockPodArgs) (*inference.BlockPodResult, error) {
+	return clientset.inferenceClient.BlockPod(args)
 }
 
-func (clientset *Client) ListBriefResPool(args *inferenceapi.ListBriefResPoolArgs, region string) (*inferenceapi.ListBriefResPoolResult, error) {
-	return clientset.inferenceClient.ListBriefResPool(args, region)
+func (clientset *Client) DeletePod(args *inference.DeletePodArgs) (*inference.DeletePodResult, error) {
+	return clientset.inferenceClient.DeletePod(args)
 }
 
-func (clientset *Client) ResPoolDetail(args *inferenceapi.ResPoolDetailArgs, region string) (*inferenceapi.ResPoolDetailResult, error) {
-	return clientset.inferenceClient.ResPoolDetail(args, region)
+func (clientset *Client) ListPodGroups(args *inference.ListPodGroupsArgs) (*inference.ListPodGroupsResult, error) {
+	return clientset.inferenceClient.ListPodGroups(args)
 }

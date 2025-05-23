@@ -29,6 +29,7 @@ func CreateEip() {
 		BillingMethod: "ByBandwidth", //按带宽计费
 	}
 	args := &EIP.CreateEipArgs{
+		IpVersion:       "ipv6",     // EIP IP类型
 		Name:            "test-eip", //EIP名称
 		BandWidthInMbps: 10,         //带宽，单位Mbps
 		Billing:         billing,    //订单信息

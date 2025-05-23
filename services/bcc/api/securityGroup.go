@@ -103,6 +103,9 @@ func ListSecurityGroup(cli bce.Client, queryArgs *ListSecurityGroupArgs) (*ListS
         if len(queryArgs.SecurityGroupId) != 0{
             req.SetParam("securityGroupId", queryArgs.SecurityGroupId)
         }
+        if len(queryArgs.SecurityGroupIds) != 0{
+            req.SetParam("securityGroupIds", queryArgs.SecurityGroupIds)
+        }
 	}
 
 	if queryArgs == nil || queryArgs.MaxKeys == 0 {

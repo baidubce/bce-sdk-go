@@ -31,6 +31,7 @@ type Billing struct {
 }
 
 type CreateEipArgs struct {
+	IpVersion         string           `json:"ipVersion,omitempty"`
 	Name              string           `json:"name,omitempty"`
 	BandWidthInMbps   int              `json:"bandwidthInMbps"`
 	Billing           *Billing         `json:"billing"`
@@ -78,12 +79,14 @@ type BindEipArgs struct {
 }
 
 type ListEipArgs struct {
+	IpVersion    string
 	Eip          string
 	InstanceType string
 	InstanceId   string
+	Status       string
+	EipIds       []string
 	Marker       string
 	MaxKeys      int
-	Status       string
 }
 
 type ListEipResult struct {
@@ -231,7 +234,8 @@ type EipTpDetail struct {
 
 type CreateEipGroupArgs struct {
 	Name            string           `json:"name,omitempty"`
-	EipCount        int              `json:"eipCount"`
+	EipCount        int              `json:"eipCount,omitempty"`
+	Eipv6Count      int              `json:"eipv6Count,omitempty"`
 	BandWidthInMbps int              `json:"bandwidthInMbps"`
 	Billing         *Billing         `json:"billing"`
 	Tags            []model.TagModel `json:"tags,omitempty"`
@@ -252,8 +256,9 @@ type ResizeEipGroupArgs struct {
 }
 
 type GroupAddEipCountArgs struct {
-	EipAddCount int    `json:"eipAddCount"`
-	ClientToken string `json:"-"`
+	EipAddCount   int    `json:"eipAddCount"`
+	Eipv6AddCount int    `json:"eipv6AddCount"`
+	ClientToken   string `json:"-"`
 }
 
 type ReleaseEipGroupIpsArgs struct {
@@ -299,6 +304,7 @@ type EipGroupModel struct {
 	Region                    string           `json:"region"`
 	RouteType                 string           `json:"routeType"`
 	Eips                      []EipModel       `json:"eips"`
+	Eipv6s                    []EipModel       `json:"eipv6s"`
 	Tags                      []model.TagModel `json:"tags"`
 }
 

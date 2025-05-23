@@ -131,7 +131,7 @@ type CreateVPCResult struct {
 type ListVPCArgs struct {
 	Marker  string
 	MaxKeys int
-
+	VpcIds  string
 	// IsDefault is a string type,
 	// so we can identify if it has been setted when the value is false.
 	// NOTE: it can be only true or false.
@@ -227,6 +227,7 @@ type ListSubnetArgs struct {
 	VpcId      string
 	ZoneName   string
 	SubnetType SubnetType
+	SubnetIds  string
 }
 
 // ListSubnetResult defines the structure of the output parameters for the ListSubnet api
