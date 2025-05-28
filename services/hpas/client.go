@@ -339,3 +339,16 @@ func (c *Client) DescribeHPASInstancesByMaker(body *api.ListHpasByMakerReq) (
 	*api.ListHpasByMakerResp, error) {
 	return api.ListHpasByMaker(c, body)
 }
+
+// DescribeHpasVncUrl -
+//
+// PARAMS:
+//   - body: body参数
+//
+// RETURNS:
+//   - *api.DescribeHpasVncUrlResp:
+//   - error: the return error if any occurs
+func (c *Client) DescribeHpasVncUrl(body *api.DescribeHpasVncUrlReq) (
+	*api.DescribeHpasVncUrlResp, error) {
+	return api.DescribeHpasVncUrl(c, body)
+}

@@ -909,3 +909,34 @@ func UnAssignIpv6Addresses(cli bce.Client, body *UnAssignIpv6Req) (*BaseV3Resp, 
 	}
 	return res, nil
 }
+
+func DescribeHpasVncUrl(cli bce.Client, body *DescribeHpasVncUrlReq)(*DescribeHpasVncUrlResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "DescribeHpasVncUrl")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &DescribeHpasVncUrlResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}

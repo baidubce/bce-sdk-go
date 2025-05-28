@@ -1633,6 +1633,7 @@ type SecurityGroupRuleVo struct {
 	Ethertype           string `json:"ethertype"`
 	PortRange           string `json:"portRange"`
 	SecurityGroupUuid   string `json:"securityGroupUuid"`
+	SourceGroupId       string `json:"sourceGroupId"`
 	SourceIp            string `json:"sourceIp"`
 	DestGroupId         string `json:"destGroupId"`
 	DestIp              string `json:"destIp"`
@@ -1653,12 +1654,12 @@ type CreateSecurityGroupArgs struct {
 }
 
 type ListSecurityGroupArgs struct {
-	Marker            string
-	MaxKeys           int
-	InstanceId        string
-	VpcId             string
-	SecurityGroupId   string
-	SecurityGroupIds  string
+	Marker           string
+	MaxKeys          int
+	InstanceId       string
+	VpcId            string
+	SecurityGroupId  string
+	SecurityGroupIds string
 }
 
 type CreateSecurityGroupResult struct {

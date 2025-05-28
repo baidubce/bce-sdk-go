@@ -378,3 +378,12 @@ func TestDetachTags(t *testing.T) {
 	err := HPAS_CLIENT.DetachTags(attachTagsArgs)
 	ExpectEqual(t.Errorf, err, nil)
 }
+
+func TestDescribeHpasVncUrl(t *testing.T)  {
+	req := &api.DescribeHpasVncUrlReq{
+        HpasId: "hpas-xxxxxxx",
+    }
+    resp, err := HPAS_CLIENT.DescribeHpasVncUrl(req)
+    ExpectEqual(t.Errorf, err, nil)
+    fmt.Println(resp)
+}

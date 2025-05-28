@@ -859,10 +859,12 @@ type AttachInstancesToInstanceGroupArgs struct {
 }
 
 type AttachInstancesToInstanceGroupRequest struct {
-	Incluster                 bool                        `json:"inCluster"`
-	UseInstanceGroupConfig    bool                        `json:"useInstanceGroupConfig"`
-	ExistedInstances          []*InstanceSet              `json:"existedInstances"`
-	ExistedInstancesInCluster []*ExistedInstanceInCluster `json:"existedInstancesInCluster"`
+	Incluster                          bool                        `json:"inCluster"`
+	UseInstanceGroupConfig             bool                        `json:"useInstanceGroupConfig"`
+	UseInstanceGroupConfigWithDiskInfo bool                        `json:"useInstanceGroupConfigWithDiskInfo"`
+	InstallGpuDriver                   bool                        `json:"installGpuDriver"`
+	ExistedInstances                   []*InstanceSet              `json:"existedInstances"`
+	ExistedInstancesInCluster          []*ExistedInstanceInCluster `json:"existedInstancesInCluster"`
 }
 
 type AttachInstancesToInstanceGroupResponse struct {

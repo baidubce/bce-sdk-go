@@ -43,9 +43,13 @@ type EnterpriseSecurityGroupRule struct {
 	Direction                     string `json:"direction"`
 	Ethertype                     string `json:"ethertype"`
 	PortRange                     string `json:"portRange"`
+	SourcePortRange               string `json:"sourcePortRange"`
 	Protocol                      string `json:"protocol"`
 	SourceIp                      string `json:"sourceIp"`
 	DestIp                        string `json:"destIp"`
+	LocalIp                       string `json:"localIp"`
+	RemoteIpSet                   string `json:"remoteIpSet"`
+	RemoteIpGroup                 string `json:"remoteIpGroup"`
 	Action                        string `json:"action"`
 	Priority                      int    `json:"priority"`
 	CreatedTime                   string `json:"createdTime"`

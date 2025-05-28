@@ -384,6 +384,7 @@ type AclRule struct {
 	SourcePort           string               `json:"sourcePort"`
 	DestinationPort      string               `json:"destinationPort"`
 	Position             int                  `json:"position"`
+	IpVersion            int                  `json:"ipVersion"`
 	Direction            AclRuleDirectionType `json:"direction"`
 	Action               AclRuleActionType    `json:"action"`
 }

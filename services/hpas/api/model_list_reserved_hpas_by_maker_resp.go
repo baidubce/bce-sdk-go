@@ -17,7 +17,7 @@ package api
 type ListReservedHpasByMakerResp struct {
 	Marker           string                 `json:"marker"`
 	IsTruncated      bool                   `json:"isTruncated"`
-	NextMarker       int                    `json:"nextMarker"`
+	NextMarker       string                    `json:"nextMarker"`
 	MaxKeys          int                    `json:"maxKeys"`
 	ReservedHpasList []HpasReservedResponse `json:"reservedHpasList"`
 }
