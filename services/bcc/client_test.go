@@ -179,7 +179,7 @@ func TestCreateInstanceBySpec(t *testing.T) {
 			PaymentTiming: api.PaymentTimingPostPaid,
 		},
 		DeployIdList: DeploySetIds,
-		EniIds:		  EniIds,
+		EniIds:       EniIds,
 		EhcClusterId: "ehc-bk4hM1N3",
 	}
 	createResult, err := BCC_CLIENT.CreateInstanceBySpec(createInstanceBySpecArgs)
@@ -202,7 +202,7 @@ func TestCreateInstanceBySpecV2(t *testing.T) {
 			PaymentTiming: api.PaymentTimingPostPaid,
 		},
 		DeployIdList: DeploySetIds,
-		EniIds:		  EniIds,
+		EniIds:       EniIds,
 		EnableHt:     &EnableHt,
 		EhcClusterId: "ehcClusterId",
 	}
@@ -1285,7 +1285,7 @@ func TestInstancePurchaseReserved(t *testing.T) {
 		CdsCustomPeriod: []api.CdsCustomPeriod{
 			{
 				VolumeId: "volumeId",
-				Period: 2,
+				Period:   2,
 			},
 		},
 		Billing: api.Billing{
@@ -2402,7 +2402,6 @@ func TestGetVolumeDetailWithEncryptKey(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
-
 func TestInstanceReplaceSecurityGroup(t *testing.T) {
 	args := &api.ReplaceSgV2Req{
 		InstanceIds: []string{
@@ -2414,6 +2413,148 @@ func TestInstanceReplaceSecurityGroup(t *testing.T) {
 		SecurityGroupType: "enterprise",
 	}
 	res, err := BCC_CLIENT.InstanceReplaceSecurityGroup(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestAuthorizeServerEvent(t *testing.T) {
+	args := &api.AuthorizeServerEventReq{
+		ServerEventId: "event-testAuth",
+		ExecuteTime:   "2023-03-15T14:20:00Z",
+	}
+	res, err := BCC_CLIENT.AuthorizeServerEvent(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestCreateAuthorizeRule(t *testing.T) {
+	EnableRule := 0
+	args := &api.CreateInstUserOpAuthorizeRuleReq{
+		RuleName:            "go-test",
+		EnableRule:          &EnableRule,
+		ServerEventCategory: "PlannedMaintenanceEvent",
+		EffectiveScope:      "Tags",
+		Tags: []api.Tag{
+			{
+				TagKey:   "test1",
+				TagValue: "test1",
+			},
+		},
+		AuthorizeMaintenanceOperations: []string{
+			"Reboot",
+		},
+	}
+	res, err := BCC_CLIENT.CreateAuthorizeRule(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestModifyInstUserOpAuthorizeRuleAttribute(t *testing.T) {
+	EnableRule := 0
+	args := &api.ModifyInstUserOpAuthorizeRuleReq{
+		RuleName:       "go-test1",
+		EnableRule:     &EnableRule,
+		RuleId:         "rule-zmSz3IpP",
+		EffectiveScope: "Tags",
+		Tags: []api.Tag{
+			{
+				TagKey:   "测试标签",
+				TagValue: "111",
+			},
+		},
+		AuthorizeMaintenanceOperations: []string{
+			"Reboot",
+		},
+	}
+	res, err := BCC_CLIENT.ModifyInstUserOpAuthorizeRuleAttribute(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestDeleteInstUserOpAuthorizeRule(t *testing.T) {
+	args := &api.DeleteInstUserOpAuthorizeRuleReq{
+		RuleId: "rule-zmSz3IpP",
+	}
+
+	res, err := BCC_CLIENT.DeleteInstUserOpAuthorizeRule(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestDescribeAuthorizeRules(t *testing.T) {
+	args := &api.DescribeInstUserOpAuthorizeRuleReq{
+		MaxKeys: 3,
+		Marker:  "rule-rzAGQNS6",
+		RuleIds: []string{
+			"rule-rzAGQNS6",
+		},
+		RuleNames: []string{
+			"dcdcd",
+		},
+	}
+
+	res, err := BCC_CLIENT.DescribeAuthorizeRules(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestDescribePlannedEvents(t *testing.T) {
+	args := &api.DescribeServerEventReq{
+		MaxKeys:                  100,
+		ServerEventLogTimeFilter: "EventCreate",
+		PeriodEndTime:            "2026-03-15T14:20:00Z",
+	}
+
+	res, err := BCC_CLIENT.DescribePlannedEvents(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestDescribePlannedEventRecords(t *testing.T) {
+	args := &api.DescribeServerEventRecordReq{
+		MaxKeys: 100,
+		InstanceIds: []string{
+			"i-3qYj7kXl",
+		},
+	}
+
+	res, err := BCC_CLIENT.DescribePlannedEventRecords(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestCheckUnplannedMaintenanceEvent(t *testing.T) {
+	args := &api.CheckUnplannedEventReq{
+		ServerEventId:                 "event-FbPmWQKT",
+		CheckResult:                   "Pass",
+		AuthorizeMaintenanceOperation: "Reboot",
+	}
+
+	res, err := BCC_CLIENT.CheckUnplannedMaintenanceEvent(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestDescribeDescribeUnplannedEvents(t *testing.T) {
+	args := &api.DescribeServerEventReq{
+		MaxKeys:           100,
+		ServerEventStatus: "Processing",
+	}
+
+	res, err := BCC_CLIENT.DescribeUnplannedEvents(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestDescribeDescribeUnplannedEventRecords(t *testing.T) {
+	args := &api.DescribeServerEventRecordReq{
+		MaxKeys: 100,
+		InstanceIds: []string{
+			"i-zVj6rlGh",
+		},
+	}
+
+	res, err := BCC_CLIENT.DescribeUnplannedEventRecords(args)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(res)
 }

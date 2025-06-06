@@ -2728,3 +2728,52 @@ func (c *Client) InstanceUnbindSecurityGroup(body *api.UnbindSgV2Req) (*api.Unbi
 func (c *Client) InstanceReplaceSecurityGroup(body *api.ReplaceSgV2Req) (*api.ReplaceSgV2Resp, error) {
 	return api.InstanceReplaceSecurityGroup(c, body)
 }
+
+func (c *Client) AuthorizeServerEvent(body *api.AuthorizeServerEventReq) (*api.AuthorizeServerEventResp, error) {
+	return api.AuthorizeServerEvent(c, body)
+}
+
+func (c *Client) CreateAuthorizeRule(body *api.CreateInstUserOpAuthorizeRuleReq) (
+	*api.CreateInstUserOpAuthorizeRuleResp, error) {
+	return api.CreateAuthorizeRuleV3Resp(c, body)
+}
+
+func (c *Client) ModifyInstUserOpAuthorizeRuleAttribute(
+	body *api.ModifyInstUserOpAuthorizeRuleReq) (*api.BaseResp, error) {
+	return api.ModifyInstUserOpAuthorizeRuleAttribute(c, body)
+}
+
+func (c *Client) DeleteInstUserOpAuthorizeRule(body *api.DeleteInstUserOpAuthorizeRuleReq) (
+	*api.BaseResp, error) {
+	return api.DeleteInstUserOpAuthorizeRule(c, body)
+}
+
+func (c *Client) DescribeAuthorizeRules(body *api.DescribeInstUserOpAuthorizeRuleReq) (
+	*api.DescribeInstUserOpAuthorizeRuleV3Resp, error) {
+	return api.DescribeAuthorizeRules(c, body)
+}
+
+func (c *Client) DescribePlannedEvents(body *api.DescribeServerEventReq) (
+	*api.DescribePlannedEventsResp, error) {
+	return api.DescribePlannedEvents(c, body)
+}
+
+func (c *Client) DescribePlannedEventRecords(body *api.DescribeServerEventRecordReq) (
+	*api.DescribePlannedEventsResp, error) {
+	return api.DescribePlannedEventRecords(c, body)
+}
+
+func (c *Client) CheckUnplannedMaintenanceEvent(body *api.CheckUnplannedEventReq) (
+	*api.BaseResp, error) {
+	return api.CheckUnplannedMaintenanceEvent(c, body)
+}
+
+func (c *Client) DescribeUnplannedEvents(body *api.DescribeServerEventReq) (
+	*api.DescribeUnplannedEventsResp, error) {
+	return api.DescribeUnplannedEvents(c, body)
+}
+
+func (c *Client) DescribeUnplannedEventRecords(body *api.DescribeServerEventRecordReq) (
+	*api.DescribeUnplannedEventsResp, error) {
+	return api.DescribeUnplannedEventRecords(c, body)
+}

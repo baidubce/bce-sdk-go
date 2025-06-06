@@ -529,6 +529,8 @@ type DnatRuleArgs struct {
 	Protocol         string `json:"protocol,omitempty"`
 	PublicPort       string `json:"publicPort,omitempty"`
 	PrivatePort      string `json:"privatePort,omitempty"`
+	PublicPortRange  string `json:"publicPortRange,omitempty"`
+	PrivatePortRange string `json:"privatePortRange,omitempty"`
 }
 
 type DnatRule struct {
@@ -540,6 +542,8 @@ type DnatRule struct {
 	PublicPort       int    `json:"publicPort"`
 	PrivatePort      int    `json:"privatePort"`
 	Status           string `json:"status"`
+	PublicPortRange  string `json:"publicPortRange"`
+	PrivatePortRange string `json:"privatePortRange"`
 }
 
 // UpdateNatGatewayArgs defines the structure of the input parameters for the UpdateNatGateway api
@@ -640,6 +644,8 @@ type CreateNatGatewayDnatRuleArgs struct {
 	Protocol         string `json:"protocol,omitempty"`
 	PublicPort       string `json:"publicPort,omitempty"`
 	PrivatePort      string `json:"privatePort,omitempty"`
+	PublicPortRange  string `json:"publicPortRange,omitempty"`
+	PrivatePortRange string `json:"privatePortRange,omitempty"`
 }
 
 type BatchCreateNatGatewayDnatRuleArgs struct {
@@ -655,6 +661,8 @@ type UpdateNatGatewayDnatRuleArgs struct {
 	Protocol         string `json:"protocol,omitempty"`
 	PublicPort       string `json:"publicPort,omitempty"`
 	PrivatePort      string `json:"privatePort,omitempty"`
+	PublicPortRange  string `json:"publicPortRange,omitempty"`
+	PrivatePortRange string `json:"privatePortRange,omitempty"`
 }
 
 type ListNatGatewaDnatRuleArgs struct {

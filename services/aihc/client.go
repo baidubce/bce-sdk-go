@@ -3,6 +3,7 @@ package aihc
 import (
 	resourcepoolv1 "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
 	"github.com/baidubce/bce-sdk-go/services/aihc/client"
+	"github.com/baidubce/bce-sdk-go/services/aihc/dev"
 	inference "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 	"github.com/baidubce/bce-sdk-go/services/aihc/resource"
 )
@@ -10,11 +11,13 @@ import (
 type Interface interface {
 	resource.Interface
 	inference.Interface
+	dev.Interface
 }
 
 type Client struct {
 	resourceClient  *resource.Client
 	inferenceClient *inference.Client
+	devClient       *dev.Client
 	GlobalClient    *client.Client
 }
 
@@ -26,15 +29,18 @@ func NewClient(ak, sk, endpoint string) (Interface, error) {
 	}
 	clientset.resourceClient = resourceClient
 
-	inferenceEndpoint := endpoint
-	if client.IsRegionedEndpoint(inferenceEndpoint) {
-		inferenceEndpoint = client.DEFAULT_GLOBAL_ENDPOINT
-	}
-	inferenceClient, err := inference.NewClient(ak, sk, inferenceEndpoint)
+	inferenceClient, err := inference.NewClient(ak, sk, endpoint)
 	if err != nil {
 		return nil, err
 	}
 	clientset.inferenceClient = inferenceClient
+
+	// 开发机 client
+	devClient, err := dev.NewClient(ak, sk, endpoint)
+	if err != nil {
+		return nil, err
+	}
+	clientset.devClient = devClient
 
 	return clientset, nil
 }
@@ -169,4 +175,48 @@ func (clientset *Client) DeletePod(args *inference.DeletePodArgs) (*inference.De
 
 func (clientset *Client) ListPodGroups(args *inference.ListPodGroupsArgs) (*inference.ListPodGroupsResult, error) {
 	return clientset.inferenceClient.ListPodGroups(args)
+}
+
+func (clientset *Client) CreateDevInstance(args *dev.CreateDevInstanceArgs) (*dev.CreateDevInstanceResult, error) {
+	return clientset.devClient.CreateDevInstance(args)
+}
+
+func (clientset *Client) UpdateDevInstance(args *dev.CreateDevInstanceArgs) (*dev.CreateDevInstanceResult, error) {
+	return clientset.devClient.UpdateDevInstance(args)
+}
+
+func (clientset *Client) ListDevInstance(args *dev.ListDevInstanceArgs) (*dev.ListDevInstanceResult, error) {
+	return clientset.devClient.ListDevInstance(args)
+}
+
+func (clientset *Client) QueryDevInstanceDetail(args *dev.QueryDevInstanceDetailArgs) (*dev.QueryDevInstanceDetailResult, error) {
+	return clientset.devClient.QueryDevInstanceDetail(args)
+}
+
+func (clientset *Client) DeleteDevInstance(args *dev.DeleteDevInstanceArgs) (*dev.DeleteDevInstanceResult, error) {
+	return clientset.devClient.DeleteDevInstance(args)
+}
+
+func (clientset *Client) StopDevInstance(args *dev.StopDevInstanceArgs) (*dev.StopDevInstanceResult, error) {
+	return clientset.devClient.StopDevInstance(args)
+}
+
+func (clientset *Client) StartDevInstance(args *dev.StartDevInstanceArgs) (*dev.StartDevInstanceResult, error) {
+	return clientset.devClient.StartDevInstance(args)
+}
+
+func (clientset *Client) TimedStopDevInstance(args *dev.TimedStopDevInstanceArgs) (*dev.TimedStopDevInstanceResult, error) {
+	return clientset.devClient.TimedStopDevInstance(args)
+}
+
+func (clientset *Client) ListDevInstanceEvent(args *dev.ListDevInstanceEventArgs) (*dev.ListDevInstanceEventResult, error) {
+	return clientset.devClient.ListDevInstanceEvent(args)
+}
+
+func (clientset *Client) CreateDevInstanceImagePackJob(args *dev.CreateDevInstanceImagePackJobArgs) (*dev.CreateDevInstanceImagePackJobResult, error) {
+	return clientset.devClient.CreateDevInstanceImagePackJob(args)
+}
+
+func (clientset *Client) DevInstanceImagePackJobDetail(args *dev.DevInstanceImagePackJobDetailArgs) (*dev.DevInstanceImagePackJobDetailResult, error) {
+	return clientset.devClient.DevInstanceImagePackJobDetail(args)
 }

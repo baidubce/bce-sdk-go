@@ -2876,3 +2876,184 @@ type ReplaceSgV2Req struct {
 type ReplaceSgV2Resp struct {
 	RequestId *string `json:"requestId"`
 }
+
+type AuthorizeServerEventReq struct {
+	ServerEventId                 string `json:"serverEventId,omitempty"`
+	InstanceId                    string `json:"instanceId,omitempty"`
+	AuthorizeMaintenanceOperation string `json:"authorizeMaintenanceOperation,omitempty"`
+	ExecuteTime                   string `json:"executeTime,omitempty"`
+}
+
+type AuthorizeServerEventResp struct {
+	RequestId                                    string   `json:"requestId"`
+	AssociatedPlannedMaintenanceServerEventIds   *string  `json:"associatedPlannedMaintenanceServerEventIds"`
+	AssociatedUnplannedMaintenanceServerEventIds []string `json:"associatedUnplannedMaintenanceServerEventIds"`
+}
+
+type CreateInstUserOpAuthorizeRuleReq struct {
+	EnableRule                     *int     `json:"enableRule,omitempty"`
+	AuthorizeMaintenanceOperations []string `json:"authorizeMaintenanceOperations,omitempty"`
+	Tags                           []Tag    `json:"tags,omitempty"`
+	EffectiveScope                 string   `json:"effectiveScope,omitempty"`
+	RuleName                       string   `json:"ruleName,omitempty"`
+	ServerEventCategory            string   `json:"serverEventCategory,omitempty"`
+}
+
+type CreateInstUserOpAuthorizeRuleResp struct {
+	RequestId string `json:"requestId"`
+	RuleId    string `json:"ruleId"`
+}
+
+type ModifyInstUserOpAuthorizeRuleReq struct {
+	EnableRule                     *int     `json:"enableRule,omitempty"`
+	AuthorizeMaintenanceOperations []string `json:"authorizeMaintenanceOperations,omitempty"`
+	Tags                           []Tag    `json:"tags,omitempty"`
+	EffectiveScope                 string   `json:"effectiveScope,omitempty"`
+	RuleName                       string   `json:"ruleName,omitempty"`
+	RuleId                         string   `json:"ruleId,omitempty"`
+}
+
+type BaseResp struct {
+	RequestId string `json:"requestId"`
+}
+
+type DeleteInstUserOpAuthorizeRuleReq struct {
+	RuleId string `json:"ruleId"`
+}
+
+type DescribeInstUserOpAuthorizeRuleReq struct {
+	Marker    string   `json:"marker,omitempty"`
+	MaxKeys   int      `json:"maxKeys,omitempty"`
+	RuleIds   []string `json:"ruleIds,omitempty"`
+	RuleNames []string `json:"ruleNames,omitempty"`
+}
+
+type DescribeInstUserOpAuthorizeRuleV3Resp struct {
+	RequestId   string                            `json:"requestId"`
+	IsTruncated bool                              `json:"isTruncated"`
+	Marker      string                            `json:"marker"`
+	MaxKeys     int                               `json:"maxKeys"`
+	NextMarker  string                            `json:"nextMarker"`
+	RuleList    []InstUserOpAuthorizeRuleResponse `json:"ruleList"`
+}
+
+type InstUserOpAuthorizeRuleResponse struct {
+	RuleId                         string   `json:"ruleId"`
+	RuleName                       string   `json:"ruleName"`
+	ServerEventCategory            string   `json:"serverEventCategory"`
+	EffectiveScope                 string   `json:"effectiveScope"`
+	Status                         string   `json:"status"`
+	Tags                           []Tag    `json:"tags"`
+	AuthorizeMaintenanceOperations []string `json:"authorizeMaintenanceOperations"`
+	CreateTime                     string   `json:"createTime"`
+}
+
+type PlannedEventResponse struct {
+	ServerEventId                                string                    `json:"serverEventId"`
+	ServerEventType                              string                    `json:"serverEventType"`
+	ServerEventStatus                            string                    `json:"serverEventStatus"`
+	InstanceId                                   string                    `json:"instanceId"`
+	ProductCategory                              string                    `json:"productCategory"`
+	InstanceSpec                                 string                    `json:"instanceSpec"`
+	InstanceName                                 string                    `json:"instanceName"`
+	PrivateIp                                    string                    `json:"privateIp"`
+	Tags                                         []Tag                     `json:"tags"`
+	ServerEventCreatedTime                       string                    `json:"serverEventCreatedTime"`
+	ServerEventEndedTime                         string                    `json:"serverEventEndedTime"`
+	MaintenanceOptions                           []string                  `json:"maintenanceOptions"`
+	SupportMaintenanceOptions                    []string                  `json:"supportMaintenanceOptions"`
+	AuthorizedMaintenanceOperation               string                    `json:"authorizedMaintenanceOperation"`
+	AssociatedPlannedMaintenanceServerEventIds   []string                  `json:"associatedPlannedMaintenanceServerEventIds"`
+	AssociatedUnplannedMaintenanceServerEventIds []string                  `json:"associatedUnplannedMaintenanceServerEventIds"`
+	ExecuteTime                                  string                    `json:"executeTime"`
+	ServerEventLogs                              []OperationRecordResponse `json:"serverEventLogs"`
+	Risks                                        []IssueResponse           `json:"risks"`
+}
+
+type OperationRecordResponse struct {
+	Name        string `json:"name"`
+	Operator    string `json:"operator"`
+	OperateTime string `json:"operateTime"`
+}
+
+type IssueResponse struct {
+	IssueName        string `json:"issueName"`
+	IssueAlias       string `json:"issueAlias"`
+	IssueEffect      string `json:"issueEffect"`
+	IssueDescription string `json:"issueDescription"`
+	IssueOccurTime   string `json:"issueOccurTime"`
+	IssueSource      string `json:"issueSource"`
+}
+
+type DescribeServerEventReq struct {
+	Marker                   string   `json:"marker,omitempty"`
+	MaxKeys                  int      `json:"maxKeys,omitempty"`
+	ServerEventIds           []string `json:"serverEventIds,omitempty"`
+	InstanceIds              []string `json:"instanceIds,omitempty"`
+	ProductCategory          string   `json:"productCategory,omitempty"`
+	ServerEventType          string   `json:"serverEventType,omitempty"`
+	ServerEventLogTimeFilter string   `json:"serverEventLogTimeFilter,omitempty"`
+	PeriodStartTime          string   `json:"periodStartTime,omitempty"`
+	PeriodEndTime            string   `json:"periodEndTime,omitempty"`
+	ServerEventStatus        string   `json:"serverEventStatus,omitempty"`
+}
+
+type DescribePlannedEventsResp struct {
+	RequestId                string                 `json:"requestId"`
+	IsTruncated              bool                   `json:"isTruncated"`
+	Marker                   string                 `json:"marker"`
+	MaxKeys                  int                    `json:"maxKeys"`
+	NextMarker               string                 `json:"nextMarker"`
+	PlannedMaintenanceEvents []PlannedEventResponse `json:"plannedMaintenanceEvents"`
+}
+
+type DescribeServerEventRecordReq struct {
+	Marker                   string   `json:"marker,omitempty"`
+	MaxKeys                  int      `json:"maxKeys,omitempty"`
+	ServerEventIds           []string `json:"serverEventIds,omitempty"`
+	InstanceIds              []string `json:"instanceIds,omitempty"`
+	ProductCategory          string   `json:"productCategory,omitempty"`
+	ServerEventType          string   `json:"serverEventType,omitempty"`
+	ServerEventLogTimeFilter string   `json:"serverEventLogTimeFilter,omitempty"`
+	PeriodStartTime          string   `json:"periodStartTime,omitempty"`
+	PeriodEndTime            string   `json:"periodEndTime,omitempty"`
+}
+
+type CheckUnplannedEventReq struct {
+	ServerEventId                 string `json:"serverEventId"`
+	CheckResult                   string `json:"checkResult"`
+	IssueEffect                   string `json:"issueEffect"`
+	IssueDescription              string `json:"issueDescription"`
+	AuthorizeMaintenanceOperation string `json:"authorizeMaintenanceOperation"`
+}
+
+type UnplannedEventResponse struct {
+	ServerEventId                                string                    `json:"serverEventId"`
+	ServerEventType                              string                    `json:"serverEventType"`
+	ServerEventStatus                            string                    `json:"serverEventStatus"`
+	InstanceId                                   string                    `json:"instanceId"`
+	ProductCategory                              string                    `json:"productCategory"`
+	InstanceSpec                                 string                    `json:"instanceSpec"`
+	InstanceName                                 string                    `json:"instanceName"`
+	PrivateIp                                    string                    `json:"privateIp"`
+	Tags                                         []Tag                     `json:"tags"`
+	ServerEventCreatedTime                       string                    `json:"serverEventCreatedTime"`
+	ServerEventEndedTime                         string                    `json:"serverEventEndedTime"`
+	MaintenanceOptions                           []string                  `json:"maintenanceOptions"`
+	SupportMaintenanceOptions                    []string                  `json:"supportMaintenanceOptions"`
+	AuthorizedMaintenanceOperation               string                    `json:"authorizedMaintenanceOperation"`
+	AssociatedPlannedMaintenanceServerEventIds   []string                  `json:"associatedPlannedMaintenanceServerEventIds"`
+	AssociatedUnplannedMaintenanceServerEventIds []string                  `json:"associatedUnplannedMaintenanceServerEventIds"`
+	ExecuteTime                                  string                    `json:"executeTime"`
+	ServerEventLogs                              []OperationRecordResponse `json:"serverEventLogs"`
+	Failures                                     []IssueResponse           `json:"failures"`
+}
+
+type DescribeUnplannedEventsResp struct {
+	RequestId                  string                   `json:"requestId"`
+	IsTruncated                bool                     `json:"isTruncated"`
+	Marker                     string                   `json:"marker"`
+	MaxKeys                    int                      `json:"maxKeys"`
+	NextMarker                 string                   `json:"nextMarker"`
+	UnplannedMaintenanceEvents []UnplannedEventResponse `json:"unplannedMaintenanceEvents"`
+}

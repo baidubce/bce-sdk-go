@@ -4054,6 +4054,270 @@ if res, err := client.DescribeRegions(queryArgs); err != nil {
 }
 ```
 
+## 服务器事件中心
+### 授权事件
+以下代码可以查询授权事件
+```go
+args := &AuthorizeServerEventReq{
+    // 授权事件ID
+    ServerEventId: "eventId",
+	// 授权操作类型
+    AuthorizeMaintenanceOperation: "Repair"
+}
+if res, err := client.AuthorizeServerEvent(args); err != nil {
+    fmt.Println("DescribeAuthorizedEvents failed: ", err)
+} else {
+    fmt.Println("DescribeAuthorizedEvents success: ", res)
+}
+```
+
+### 创建预授权规则
+以下代码可以查询授权事件
+```go
+EnableRule := 1
+args := &CreateInstUserOpAuthorizeRuleReq{
+    // 预授权规则名称
+    RuleName: "ruleName",
+    // 预授权任务类型
+    ServerEventCategory: "ruleDescription",
+    // 授权范围，AllInstance：所有实例；Tags：指定标签下实例
+    EffectiveScope: "MaintenanceOperation",
+    // 预授权标签
+    Tags: []api.Tag{
+       {
+          TagKey:   "TagKey",
+          TagValue: "TagValue",
+       },
+    },
+    // 预授权操作类型
+    AuthorizeMaintenanceOperations: []string{
+        "Reboot",
+    },
+    // 是否启用立即启用预授权
+    EnableRule: &EnableRule,
+}
+if res, err := client.CreateAuthorizeRule(args); err != nil {
+    fmt.Println("CreateAuthorizeRule failed: ", err)
+} else {
+    fmt.Println("CreateAuthorizeRule success: ", res)
+}
+```
+
+### 修改预授权规则
+```go
+ EnableRule := 0
+ args := &api.ModifyInstUserOpAuthorizeRuleReq{
+     // 预授权规则名称
+	 RuleName:       "ruleName",
+     // 是否启用立即启用预授权
+	 EnableRule:     &EnableRule,
+	 // 预授权规则ID
+     RuleId:         "ruleId",
+	 // 授权范围，AllInstance：所有实例；Tags：指定标签下实例
+     EffectiveScope: "MaintenanceOperation", 
+	 // 预授权标签
+     Tags: []api.Tag{
+         {
+             TagKey:   "TagKey",
+             TagValue: "TagValue",
+         },
+     },
+     // 预授权操作类型
+     AuthorizeMaintenanceOperations: []string{
+         "Reboot",
+     },
+ }
+ res, err := BCC_CLIENT.ModifyInstUserOpAuthorizeRuleAttribute(args)
+ ExpectEqual(t.Errorf, err, nil)
+ fmt.Println(res)
+```
+
+### 删除预授权规则
+```go
+args := &api.DeleteInstUserOpAuthorizeRuleReq{
+    // 预授权规则ID
+    RuleId: "ruleId",
+}
+res, err := BCC_CLIENT.DeleteInstUserOpAuthorizeRule(args)
+ExpectEqual(t.Errorf, err, nil)
+fmt.Println(res)
+```
+
+### 查询预授权规则
+```go
+args := &api.DescribeInstUserOpAuthorizeRuleReq{
+    // 每页包含的最大数量，最大数量通常不超过100，缺省为10
+    MaxKeys: 3,
+    // 批量获取列表的查询的起始位置，是一个由系统生成的字符串,可选参数
+    Marker:  "ruleId",
+	// 待查询的规则ID
+    RuleIds: []string{
+        "ruleId",
+    },
+	// 待查询的规则名称
+    RuleNames: []string{
+        "ruleName",
+    },
+}
+res, err := BCC_CLIENT.DescribeAuthorizeRules(args)
+ExpectEqual(t.Errorf, err, nil)
+fmt.Println(res)
+```
+
+### 查询预期内事件
+```go
+args := &DescribeServerEventReq{
+    // 查询的起始位置，是一个由系统生成的字符串,可选参数
+    Marker: "marker",
+    // 每页包含的最大数量，最大数量通常不超过100，缺省为10
+    MaxKeys: 3,
+    // 待查询的事件ID
+    ServerEventIds: []string{
+        "eventId",
+    },
+	// 虚机的短id列表
+    InstanceIds: []string{
+        "instanceId",
+    },
+	// 故障实例产品类型
+    ProductCategory: "ProductCategory",
+	// 待查询的事件类型
+	ServerEventType: "ServerEventType",
+	// 待查询的事件日志时间
+    ServerEventLogTimeFilter: "ServerEventLogTimeFilter",
+    // ServerEventLogTimeFilter类型开始时间, 若为空则只按照periodEndTime限制
+	PeriodStartTime: "PeriodStartTime",
+	// ServerEventLogTimeFilter类型结束时间, 若为空则只按照periodStartTime限制
+    PeriodEndTime: "PeriodEndTime",
+	// 待查询的事件状态
+    ServerEventStatus: "ServerEventStatus",
+}
+if res, err := client.DescribePlannedEvents(args); err != nil {
+    fmt.Println("DescribeServerEvents failed: ", err)
+} else {
+    fmt.Println
+```
+
+### 查询预期内事件记录
+```go
+args := &DescribeServerEventRecordReq{
+    // 查询的起始位置，是一个由系统生成的字符串,可选参数
+    Marker: "marker",
+    // 每页包含的最大数量，最大数量通常不超过100，缺省为10
+    MaxKeys: 3,
+    // 待查询的事件ID
+    ServerEventIds: []string{
+        "eventId",
+    },
+	// 虚机的短id列表
+    InstanceIds: []string{
+        "instanceId",
+    },
+	// 故障实例产品类型
+    ProductCategory: "ProductCategory",
+	// 待查询的事件类型
+	ServerEventType: "ServerEventType",
+	// 待查询的事件日志时间
+    ServerEventLogTimeFilter: "ServerEventLogTimeFilter",
+    // ServerEventLogTimeFilter类型开始时间, 若为空则只按照periodEndTime限制
+	PeriodStartTime: "PeriodStartTime",
+	// ServerEventLogTimeFilter类型结束时间, 若为空则只按照periodStartTime限制
+    PeriodEndTime: "PeriodEndTime",
+}
+if res, err := client.DescribePlannedEventRecords(args); err != nil {
+    fmt.Println("DescribeServerEvents failed: ", err)
+} else {
+    fmt.Println
+```
+
+### 验收非预期事件
+```go
+args := &CheckUnplannedEventReq{
+    // 验收的事件ID
+    ServerEventId: "eventId",
+	// 验收结果
+    CheckResult: "CheckResult",
+	// 故障影响, 验收结果为Reject时必传
+    IssueEffect: "IssueEffect",
+    // 故障描述, 验收结果为Reject时必传
+    IssueDescription: "IssueDescription",
+    // 授权的运维操作, 故障验收为Reject时必传
+	AuthorizeMaintenanceOperation: "AuthorizeMaintenanceOperation",
+	
+}
+if res, err := client.CheckUnplannedMaintenanceEvent(args); err != nil {
+    fmt.Println("AcceptServerEvent failed: ", err)
+} else {
+    fmt.Println("AcceptServerEvent success: ", res)
+}
+```
+
+### 查询非预期事件
+```go
+args := &DescribeServerEventReq{
+	  // 查询的起始位置，是一个由系统生成的字符串,可选参数
+      Marker: "marker",
+      // 每页包含的最大数量，最大数量通常不超过100，缺省为10
+      MaxKeys: 3,
+      // 待查询的事件ID
+      ServerEventIds: []string{
+        "eventId",
+      },
+      // 虚机的短id列表
+      InstanceIds: []string{
+        "instanceId",
+      },
+      // 故障实例产品类型
+      ProductCategory: "ProductCategory",
+      // 待查询的事件类型
+      ServerEventType: "ServerEventType",
+      // 待查询的事件日志时间
+      ServerEventLogTimeFilter: "ServerEventLogTimeFilter",
+      // ServerEventLogTimeFilter类型开始时间, 若为空则只按照periodEndTime限制
+      PeriodStartTime: "PeriodStartTime",
+      // ServerEventLogTimeFilter类型结束时间, 若为空则只按照periodStartTime限制
+      PeriodEndTime: "PeriodEndTime",
+      // 待查询的事件状态
+      ServerEventStatus: "ServerEventStatus",
+   }
+   if res, err := client.DescribeUnplannedEvents(args); err != nil {
+	   fmt.Println("DescribeServerEvents failed: ", err)
+   } else {
+	   fmt.Println
+```
+
+### 查询非预期内事件记录
+```go
+args := &DescribeServerEventRecordReq{
+    // 查询的起始位置，是一个由系统生成的字符串,可选参数
+    Marker: "marker",
+    // 每页包含的最大数量，最大数量通常不超过100，缺省为10
+    MaxKeys: 3,
+    // 待查询的事件ID
+    ServerEventIds: []string{
+        "eventId",
+    },
+	// 虚机的短id列表
+    InstanceIds: []string{
+        "instanceId",
+    },
+	// 故障实例产品类型
+    ProductCategory: "ProductCategory",
+	// 待查询的事件类型
+	ServerEventType: "ServerEventType",
+	// 待查询的事件日志时间
+    ServerEventLogTimeFilter: "ServerEventLogTimeFilter",
+    // ServerEventLogTimeFilter类型开始时间, 若为空则只按照periodEndTime限制
+	PeriodStartTime: "PeriodStartTime",
+	// ServerEventLogTimeFilter类型结束时间, 若为空则只按照periodStartTime限制
+    PeriodEndTime: "PeriodEndTime",
+}
+if res, err := client.DescribeUnplannedEventRecords(args); err != nil {
+    fmt.Println("DescribeServerEvents failed: ", err)
+} else {
+    fmt.Println
+```
+
 # 错误处理
 
 GO语言以error类型标识错误，BCC支持两种错误见下表：

@@ -555,11 +555,12 @@ func DeleteRecycledInstance(cli bce.Client, instanceId string) error {
 // DescribeRegions - list all region's endpoint information.
 //
 // PARAMS:
-//     - cli: the client agent which can perform sending request
-//     - reqBody: http request body
+//   - cli: the client agent which can perform sending request
+//   - reqBody: http request body
+//
 // RETURNS:
-//     - *DescribeRegionsResult: results of list all region's endpoint information
-//     - error: nil if success otherwise the specific error
+//   - *DescribeRegionsResult: results of list all region's endpoint information
+//   - error: nil if success otherwise the specific error
 func DescribeRegions(cli bce.Client, reqBody *bce.Body) (*DescribeRegionsResult, error) {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -2895,6 +2896,315 @@ func InstanceReplaceSecurityGroup(cli bce.Client, body *ReplaceSgV2Req) (*Replac
 		return nil, resp.ServiceError()
 	}
 	res := &ReplaceSgV2Resp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func AuthorizeServerEvent(cli bce.Client, body *AuthorizeServerEventReq) (*AuthorizeServerEventResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri("/")
+	req.SetParam("action", "AuthorizeServerEvent")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &AuthorizeServerEventResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func CreateAuthorizeRuleV3Resp(cli bce.Client, body *CreateInstUserOpAuthorizeRuleReq) (
+	*CreateInstUserOpAuthorizeRuleResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri("/")
+	req.SetParam("action", "CreateAuthorizeRule")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &CreateInstUserOpAuthorizeRuleResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func ModifyInstUserOpAuthorizeRuleAttribute(cli bce.Client,
+	body *ModifyInstUserOpAuthorizeRuleReq) (*BaseResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri("/")
+	req.SetParam("action", "ModifyInstUserOpAuthorizeRuleAttribute")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &BaseResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func DeleteInstUserOpAuthorizeRule(cli bce.Client, body *DeleteInstUserOpAuthorizeRuleReq) (
+	*BaseResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri("/")
+	req.SetParam("action", "DeleteInstUserOpAuthorizeRule")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &BaseResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func DescribeAuthorizeRules(cli bce.Client, body *DescribeInstUserOpAuthorizeRuleReq) (
+	*DescribeInstUserOpAuthorizeRuleV3Resp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri("/")
+	req.SetParam("action", "DescribeAuthorizeRules")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &DescribeInstUserOpAuthorizeRuleV3Resp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func DescribePlannedEvents(cli bce.Client, body *DescribeServerEventReq) (
+	*DescribePlannedEventsResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri("/")
+	req.SetParam("action", "DescribePlannedEvents")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &DescribePlannedEventsResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func DescribePlannedEventRecords(cli bce.Client, body *DescribeServerEventRecordReq) (
+	*DescribePlannedEventsResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri("/")
+	req.SetParam("action", "DescribePlannedEventRecords")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &DescribePlannedEventsResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func CheckUnplannedMaintenanceEvent(cli bce.Client, body *CheckUnplannedEventReq) (
+	*BaseResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri("/")
+	req.SetParam("action", "CheckUnplannedEvent")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &BaseResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func DescribeUnplannedEvents(cli bce.Client, body *DescribeServerEventReq) (
+	*DescribeUnplannedEventsResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri("/")
+	req.SetParam("action", "DescribeUnplannedEvents")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &DescribeUnplannedEventsResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func DescribeUnplannedEventRecords(cli bce.Client, body *DescribeServerEventRecordReq) (
+	*DescribeUnplannedEventsResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri("/")
+	req.SetParam("action", "DescribeUnplannedEventRecords")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &DescribeUnplannedEventsResp{}
 	if err := resp.ParseJsonBody(res); err != nil {
 		return nil, err
 	}
