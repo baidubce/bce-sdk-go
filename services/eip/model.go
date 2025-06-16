@@ -112,7 +112,10 @@ type EipModel struct {
 	BillingMethod   string           `json:"billingMethod"`
 	CreateTime      string           `json:"createTime"`
 	ExpireTime      string           `json:"expireTime"`
+	Region          string           `json:"region"`
+	RouteType       string           `json:"routeType"`
 	Tags            []model.TagModel `json:"tags"`
+	DeleteProtect   bool             `json:"deleteProtect"`
 }
 
 type ListRecycleEipArgs struct {

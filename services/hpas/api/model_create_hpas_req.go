@@ -27,6 +27,7 @@ type CreateHpasReq struct {
 	SubnetId            string       `json:"subnetId,omitempty"`
 	Password            string       `json:"password,omitempty"`
 	EhcClusterId        string       `json:"ehcClusterId,omitempty"`
+	SecurityGroupType   string       `json:"securityGroupType,omitempty"`
 	SecurityGroupIds    []string     `json:"securityGroupIds,omitempty"`
 	InternalIps         []string     `json:"internalIps,omitempty"`
 	BillingModel        BillingModel `json:"billingModel,omitempty"`

@@ -3,13 +3,14 @@ package hpas
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/services/hpas/api"
-	"github.com/baidubce/bce-sdk-go/util/log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"testing"
+
+	"github.com/baidubce/bce-sdk-go/services/hpas/api"
+	"github.com/baidubce/bce-sdk-go/util/log"
 )
 
 var (
@@ -150,6 +151,29 @@ func TestModifyInstancesAttribute(t *testing.T) {
 	}
 	err := HPAS_CLIENT.ModifyInstancesAttribute(modifyInstancesAttributeArgs)
 	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestClient_ModifyInstancesSubnet(t *testing.T) {
+	modifyInstancesSubnetArgs := &api.ModifyInstancesSubnetRequest{
+		HpasIds:  []string{"hpas-FRUqoSQk"},
+		SubnetId: "sbn-s2haxxwvw8yi",
+	}
+	resp, err := HPAS_CLIENT.ModifyInstancesSubnet(modifyInstancesSubnetArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestClient_ModifyInstanceVpc(t *testing.T) {
+	modifyInstanceVpcArgs := &api.ModifyInstanceVpcRequest{
+		HpasId:            "hpasId",
+		SubnetId:          "subnetId",
+		PrivateIp:         "privateIp",
+		SecurityGroupType: "securityGroupType",
+		SecurityGroupIds:  nil,
+	}
+	resp, err := HPAS_CLIENT.ModifyInstanceVpc(modifyInstanceVpcArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
 }
 
 func TestCreateReservedHpas(t *testing.T) {
@@ -379,11 +403,44 @@ func TestDetachTags(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 }
 
-func TestDescribeHpasVncUrl(t *testing.T)  {
+func TestDescribeHpasVncUrl(t *testing.T) {
 	req := &api.DescribeHpasVncUrlReq{
-        HpasId: "hpas-xxxxxxx",
-    }
-    resp, err := HPAS_CLIENT.DescribeHpasVncUrl(req)
-    ExpectEqual(t.Errorf, err, nil)
-    fmt.Println(resp)
+		HpasId: "hpas-xxxxxxx",
+	}
+	resp, err := HPAS_CLIENT.DescribeHpasVncUrl(req)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestAttachSecurityGroups(t *testing.T) {
+	req := &api.SecurityGroupsReq{
+		HpasIds:           []string{"hpas-xxxxxxx"},
+		SecurityGroupIds:  []string{"sg-xxxxxxx"},
+		SecurityGroupType: "normal",
+	}
+	resp, err := HPAS_CLIENT.AttachSecurityGroups(req)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestReplaceSecurityGroups(t *testing.T) {
+	req := &api.SecurityGroupsReq{
+		HpasIds:           []string{"hpas-xxxxxxx"},
+		SecurityGroupIds:  []string{"sg-xxxxxxx"},
+		SecurityGroupType: "normal",
+	}
+	resp, err := HPAS_CLIENT.ReplaceSecurityGroups(req)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestDetachSecurityGroups(t *testing.T) {
+	req := &api.SecurityGroupsReq{
+		HpasIds:           []string{"hpas-xxxxxxx"},
+		SecurityGroupIds:  []string{"sg-xxxxxxx"},
+		SecurityGroupType: "normal",
+	}
+	resp, err := HPAS_CLIENT.DetachSecurityGroups(req)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
 }

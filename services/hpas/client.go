@@ -33,7 +33,8 @@ type Client struct {
 	*bce.BceClient
 
 	// Fileds that used in parallel operation for BOS service
-	MaxParallel   int64
+	MaxParallel int64
+
 	MultipartSize int64
 }
 
@@ -66,8 +67,8 @@ func NewClient(ak, sk, endpoint string) (*Client, error) {
 		ConnectionTimeoutInMillis: bce.DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS}
 	v1Signer := &auth.BceV1Signer{}
 
-	client := &Client{bce.NewBceClient(defaultConf, v1Signer),
-		DEFAULT_MAX_PARALLEL, DEFAULT_MULTIPART_SIZE}
+	client := &Client{BceClient: bce.NewBceClient(defaultConf, v1Signer),
+		MaxParallel: DEFAULT_MAX_PARALLEL, MultipartSize: DEFAULT_MULTIPART_SIZE}
 	return client, nil
 }
 
@@ -158,6 +159,30 @@ func (c *Client) ModifyPasswordHpas(body *api.ModifyPasswordHpasReq) error {
 //   - error: the return error if any occurs
 func (c *Client) ModifyInstancesAttribute(body *api.ModifyInstancesAttributeReq) error {
 	return api.ModifyInstancesAttribute(c, body)
+}
+
+// ModifyInstancesSubnet - 修改实例的子网
+//
+// PARAMS:
+//   - body: body参数
+//
+// RETURNS:
+//   - *api.BaseV3Resp:
+//   - error: the return error if any occurs
+func (c *Client) ModifyInstancesSubnet(body *api.ModifyInstancesSubnetRequest) (*api.BaseV3Resp, error) {
+	return api.ModifyInstancesSubnet(c, body)
+}
+
+// ModifyInstanceVpc - 修改实例的vpc
+//
+// PARAMS:
+//   - body: body参数
+//
+// RETURNS:
+//   - *api.BaseV3Resp:
+//   - error: the return error if any occurs
+func (c *Client) ModifyInstanceVpc(body *api.ModifyInstanceVpcRequest) (*api.BaseV3Resp, error) {
+	return api.ModifyInstanceVpc(c, body)
 }
 
 // CreateReservedHpas -
@@ -351,4 +376,40 @@ func (c *Client) DescribeHPASInstancesByMaker(body *api.ListHpasByMakerReq) (
 func (c *Client) DescribeHpasVncUrl(body *api.DescribeHpasVncUrlReq) (
 	*api.DescribeHpasVncUrlResp, error) {
 	return api.DescribeHpasVncUrl(c, body)
+}
+
+// AttachSecurityGroups -
+//
+// PARAMS:
+//   - body: body参数
+//
+// RETURNS:
+//   - *api.BaseV3Resp:
+//   - error: the return error if any occurs
+func (c *Client) AttachSecurityGroups(body *api.SecurityGroupsReq) (*api.BaseV3Resp, error) {
+	return api.AttachSecurityGroups(c, body)
+}
+
+// DescribeHpasVncUrl -
+//
+// PARAMS:
+//   - body: body参数
+//
+// RETURNS:
+//   - *api.BaseV3Resp:
+//   - error: the return error if any occurs
+func (c *Client) ReplaceSecurityGroups(body *api.SecurityGroupsReq) (*api.BaseV3Resp, error) {
+	return api.ReplaceSecurityGroups(c, body)
+}
+
+// DescribeHpasVncUrl -
+//
+// PARAMS:
+//   - body: body参数
+//
+// RETURNS:
+//   - *api.BaseV3Resp:
+//   - error: the return error if any occurs
+func (c *Client) DetachSecurityGroups(body *api.SecurityGroupsReq) (*api.BaseV3Resp, error) {
+	return api.DetachSecurityGroups(c, body)
 }

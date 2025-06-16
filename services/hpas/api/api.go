@@ -15,6 +15,7 @@ package api
 
 import (
 	"encoding/json"
+
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
 )
@@ -870,6 +871,84 @@ func UnAssignPrivateIpAddresses(cli bce.Client, body *UnAssignIpv4Req) (*BaseV3R
 	return res, nil
 }
 
+// ModifyInstancesSubnet -
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - body:
+//
+// RETURNS:
+//   - error: the return error if any occurs
+func ModifyInstancesSubnet(cli bce.Client, body *ModifyInstancesSubnetRequest) (*BaseV3Resp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "ModifyInstancesSubnet")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &BaseV3Resp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// ModifyInstanceVpc -
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - body:
+//
+// RETURNS:
+//   - error: the return error if any occurs
+func ModifyInstanceVpc(cli bce.Client, body *ModifyInstanceVpcRequest) (*BaseV3Resp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "ModifyInstanceVPC")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &BaseV3Resp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
 // UnAssignIpv6Addresses -
 //
 // PARAMS:
@@ -910,7 +989,7 @@ func UnAssignIpv6Addresses(cli bce.Client, body *UnAssignIpv6Req) (*BaseV3Resp, 
 	return res, nil
 }
 
-func DescribeHpasVncUrl(cli bce.Client, body *DescribeHpasVncUrlReq)(*DescribeHpasVncUrlResp, error) {
+func DescribeHpasVncUrl(cli bce.Client, body *DescribeHpasVncUrlReq) (*DescribeHpasVncUrlResp, error) {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.POST)
 	path := "/"
@@ -935,6 +1014,123 @@ func DescribeHpasVncUrl(cli bce.Client, body *DescribeHpasVncUrlReq)(*DescribeHp
 		return nil, resp.ServiceError()
 	}
 	res := &DescribeHpasVncUrlResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// AttachSecurityGroups - 加入安全组
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - body:
+//
+// RETURNS:
+//   - error: the return error if any occurs
+func AttachSecurityGroups(cli bce.Client, body *SecurityGroupsReq) (*BaseV3Resp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "AttachSecurityGroups")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &BaseV3Resp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// ReplaceSecurityGroups - 变更安全组
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - body:
+//
+// RETURNS:
+//   - error: the return error if any occurs
+func ReplaceSecurityGroups(cli bce.Client, body *SecurityGroupsReq) (*BaseV3Resp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "ModifySecurityGroups")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &BaseV3Resp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// DetachSecurityGroups - 移除安全组
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - body:
+//
+// RETURNS:
+//   - error: the return error if any occurs
+func DetachSecurityGroups(cli bce.Client, body *SecurityGroupsReq) (*BaseV3Resp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "DetachSecurityGroups")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &BaseV3Resp{}
 	if err := resp.ParseJsonBody(res); err != nil {
 		return nil, err
 	}
