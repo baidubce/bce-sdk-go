@@ -603,3 +603,76 @@ type Alarm struct {
 	} `json:"actions,omitempty"`
 	AlertMetrics []AlertMetric `json:"alertMetrics,omitempty"`
 }
+
+type EventAlarmListQuery struct {
+	AccountID   string `json:"accountId,omitempty"`
+	ServiceName string `json:"serviceName,omitempty"`
+	PageNo      int    `json:"pageNo,omitempty"`
+	PageSize    int    `json:"pageSize,omitempty"`
+	Region      string `json:"region,omitempty"`
+	PolicyName  string `json:"policyName,omitempty"`
+	ResourceID  string `json:"resourceId,omitempty"`
+	StartTime   string `json:"startTime,omitempty"`
+	EndTime     string `json:"endTime,omitempty"`
+	Ascending   bool   `json:"ascending,omitempty"`
+}
+
+type EventAlarmListResponse struct {
+	Content       []EventDataHistory `json:"content,omitempty"`
+	PageNumber    int                `json:"pageNumber,omitempty"`
+	PageSize      int                `json:"pageSize,omitempty"`
+	PageElements  int                `json:"pageElements,omitempty"`
+	Last          bool               `json:"last,omitempty"`
+	First         bool               `json:"first,omitempty"`
+	TotalPages    int                `json:"totalPages,omitempty"`
+	TotalElements int64              `json:"totalElements,omitempty"`
+}
+
+type EventDataHistory struct {
+	ServiceName string `json:"serviceName,omitempty"`
+	PolicyName  string `json:"policyName,omitempty"`
+	Content     string `json:"content,omitempty"`
+	Timestamp   int64  `json:"timestamp,omitempty"`
+	Region      string `json:"region,omitempty"`
+}
+
+type PlatformEventAlarmListQuery struct {
+	AccountID   string `json:"accountId,omitempty"`
+	PageNo      int    `json:"pageNo,omitempty"`
+	PageSize    int    `json:"pageSize,omitempty"`
+	ServiceName string `json:"serviceName,omitempty"`
+	StartTime   string `json:"startTime,omitempty"`
+	EndTime     string `json:"endTime,omitempty"`
+	Region      string `json:"region,omitempty"`
+	EventLevel  string `json:"eventLevel,omitempty"`
+	EventName   string `json:"eventName,omitempty"`
+	EventAlias  string `json:"eventAlias,omitempty"`
+	EventID     string `json:"eventId,omitempty"`
+	Ascending   bool   `json:"ascending,omitempty"`
+}
+
+type PlatformEventAlarmListResponse struct {
+	Content       []PlatformEventAlarmData `json:"content,omitempty"`
+	PageNumber    int                      `json:"pageNumber,omitempty"`
+	PageSize      int                      `json:"pageSize,omitempty"`
+	PageElements  int                      `json:"pageElements,omitempty"`
+	Last          bool                     `json:"last,omitempty"`
+	First         bool                     `json:"first,omitempty"`
+	TotalPages    int                      `json:"totalPages,omitempty"`
+	TotalElements int64                    `json:"totalElements,omitempty"`
+}
+
+type PlatformEventAlarmData struct {
+	UserID      string `json:"userId,omitempty"`
+	EventSource string `json:"eventSource,omitempty"`
+	EventName   string `json:"eventName,omitempty"`
+	Timestamp   string `json:"timestamp,omitempty"`
+	EventID     string `json:"eventId,omitempty"`
+	Region      string `json:"region,omitempty"`
+	AZ          string `json:"az,omitempty"`
+	EventLevel  string `json:"eventLevel,omitempty"`
+	EventAlias  string `json:"eventAlias,omitempty"`
+	EventStatus string `json:"eventStatus,omitempty"`
+	Content     string `json:"content,omitempty"`
+	PolicyName  string `json:"policyName,omitempty"`
+}

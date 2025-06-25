@@ -81,7 +81,8 @@ func TestCreateInstance(t *testing.T) {
 		ImageId:             "m-Xz6svNFM",
 		SubnetId:            "sbn-s2haxxwvw8yi",
 		SecurityGroupIds:    []string{"g-9vjwstn24c2v"},
-		Password:            "71fa62c0059fa8624a4fbe110e236ab31ceede74cc7349df2f75f7ed2a279665",
+		Password:            "7**************************************************************5",
+		KeypairId:           "k-dadadad",
 		Tags:                []api.TagModel{{TagKey: "test1", TagValue: "test1"}},
 		InternalIps:         []string{"192.168.48.12"},
 	}

@@ -26,6 +26,7 @@ type CreateHpasReq struct {
 	ImageId             string       `json:"imageId,omitempty"`
 	SubnetId            string       `json:"subnetId,omitempty"`
 	Password            string       `json:"password,omitempty"`
+	KeypairId           string       `json:"keypairId,omitempty"`
 	EhcClusterId        string       `json:"ehcClusterId,omitempty"`
 	SecurityGroupType   string       `json:"securityGroupType,omitempty"`
 	SecurityGroupIds    []string     `json:"securityGroupIds,omitempty"`

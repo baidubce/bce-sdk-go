@@ -50,9 +50,11 @@ const (
 	ApplicationDimensionTableDeletePath = "/csm/api/v1/userId/%s/application/dimensionMap/delete"
 	ApplicationDimensionTableUpdatePath = "/csm/api/v1/userId/%s/application/dimensionMap/update"
 
-	EventCloudListPath    = "/event-api/v1/bce-event/list"
-	EventPlatformListPath = "/event-api/v1/platform-event/list"
-	EventPolicyPath       = "/event-api/v1/accounts/%s/services/%s/alarm-policies"
+	EventCloudListPath         = "/event-api/v1/bce-event/list"
+	EventPlatformListPath      = "/event-api/v1/platform-event/list"
+	EventPolicyPath            = "/event-api/v1/accounts/%s/services/%s/alarm-policies"
+	EventAlarmListPath         = "/event-api/v1/accounts/%s/services/%s/alarm-histories"
+	PlatformEventAlarmListPath = "/event-api/v1/event/alarm/list"
 
 	InstanceGroupPath     = "/csm/api/v1/userId/%s/instance-group"
 	InstanceGroupIdPath   = "/csm/api/v1/userId/%s/instance-group/%s"
@@ -4339,6 +4341,81 @@ func (c *Client) GetAlarmDetail(req *model.AlarmDetailQuery) (*model.AlarmDetail
 		WithQueryParam("alarmId", req.AlarmID).
 		WithMethod(http.GET).
 		WithResult(result).
+		Do()
+	return result, err
+}
+
+func (c *Client) GetEventAlarmList(req *model.EventAlarmListQuery) (*model.EventAlarmListResponse, error) {
+	if req == nil {
+		return nil, errors.New("req should not be empty")
+	}
+	if len(req.AccountID) <= 0 {
+		return nil, errors.New("accountId should not be empty")
+	}
+	if len(req.ServiceName) <= 0 {
+		req.ServiceName = "BCE_ALL"
+	}
+
+	if req.PageNo <= 0 {
+		req.PageNo = 1
+	}
+	if req.PageSize <= 0 {
+		req.PageSize = 10
+	}
+
+	result := &model.EventAlarmListResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(fmt.Sprintf(EventAlarmListPath, req.AccountID, req.ServiceName)).
+		WithQueryParam("pageNo", strconv.Itoa(req.PageNo)).
+		WithQueryParam("pageSize", strconv.Itoa(req.PageSize)).
+		WithQueryParam("region", req.Region).
+		WithQueryParam("policyName", req.PolicyName).
+		WithQueryParam("resourceId", req.ResourceID).
+		WithQueryParam("startTime", req.StartTime).
+		WithQueryParam("endTime", req.EndTime).
+		WithQueryParam("ascending", strconv.FormatBool(req.Ascending)).
+		WithMethod(http.GET).WithResult(result).
+		Do()
+	return result, err
+}
+
+func (c Client) GetPlatformEventAlarmList(req *model.PlatformEventAlarmListQuery) (*model.PlatformEventAlarmListResponse, error) {
+	if req == nil {
+		return nil, errors.New("req should not be empty")
+	}
+	if len(req.AccountID) <= 0 {
+		return nil, errors.New("accountId should not be empty")
+	}
+	if len(req.StartTime) <= 0 {
+		return nil, errors.New("stat time should not be empty")
+	}
+	if len(req.EndTime) <= 0 {
+		return nil, errors.New("end time should not be empty")
+	}
+
+	if req.PageNo <= 0 {
+		req.PageNo = 1
+	}
+	if req.PageSize <= 0 {
+		req.PageSize = 10
+	}
+
+	result := &model.PlatformEventAlarmListResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(PlatformEventAlarmListPath).
+		WithQueryParam("accountId", req.AccountID).
+		WithQueryParam("pageNo", strconv.Itoa(req.PageNo)).
+		WithQueryParam("pageSize", strconv.Itoa(req.PageSize)).
+		WithQueryParam("serviceName", req.ServiceName).
+		WithQueryParam("region", req.Region).
+		WithQueryParam("startTime", req.StartTime).
+		WithQueryParam("endTime", req.EndTime).
+		WithQueryParam("eventLevel", req.EventLevel).
+		WithQueryParam("eventName", req.EventName).
+		WithQueryParam("eventAlias", req.EventAlias).
+		WithQueryParam("eventId", req.EventId).
+		WithQueryParam("ascending", strconv.FormatBool(req.Ascending)).
+		WithMethod(http.GET).WithResult(result).
 		Do()
 	return result, err
 }

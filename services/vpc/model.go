@@ -1032,6 +1032,7 @@ type VpcDhcpInfo struct {
 }
 
 type DhcpOptions struct {
+	DomainName        string `json:"domainName"`
 	DomainNameServers string `json:"domainNameServers"`
 }
 

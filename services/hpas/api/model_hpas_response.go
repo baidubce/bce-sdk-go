@@ -39,6 +39,8 @@ type HpasResponse struct {
 	AppImageFamily      string        `json:"appImageFamily"`
 	RdmaUnitID          string        `json:"rdmaUnitID"`
 	RdmaPodName         string        `json:"rdmaPodName"`
+	KeypairId           string        `json:"keypairId"`
+	KeypairName         string        `json:"keypairName"`
 }
 
 type RdmaNicTopo struct {
