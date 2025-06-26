@@ -4413,7 +4413,7 @@ func (c Client) GetPlatformEventAlarmList(req *model.PlatformEventAlarmListQuery
 		WithQueryParam("eventLevel", req.EventLevel).
 		WithQueryParam("eventName", req.EventName).
 		WithQueryParam("eventAlias", req.EventAlias).
-		WithQueryParam("eventId", req.EventId).
+		WithQueryParam("eventId", req.EventID).
 		WithQueryParam("ascending", strconv.FormatBool(req.Ascending)).
 		WithMethod(http.GET).WithResult(result).
 		Do()

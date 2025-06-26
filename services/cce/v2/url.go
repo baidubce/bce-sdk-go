@@ -96,6 +96,9 @@ const (
 	BACKUP_Task_URL          = "/backuptasks"
 	BACKUP_Schedule_Task_URL = "/backupScheduleRules"
 	BACKUP_RESTORE_Task_URL  = "/restoreTasks"
+
+	// 修改节点缩容保护状态
+	REQUEST_INSTANCE_SCALEDOWN_PROTECTION_URL = "/instanceScaleDown"
 )
 
 var _ Interface = &Client{}
@@ -186,6 +189,10 @@ func getAttachInstancesToInstanceGroupURI(clusterID string, instanceGroupID stri
 
 func getInstanceGroupReplicasURI(clusterID, instanceGroupID string) string {
 	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_INSTANCEGROUP_URL + "/" + instanceGroupID + REQUEST_INSTANCEGROUP_REPLICAS_URL
+}
+
+func getInstanceScaleDownURI(clusterID string) string {
+	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_INSTANCE_SCALEDOWN_PROTECTION_URL
 }
 
 func getNetCheckContainerNetworkCIDRURI() string {

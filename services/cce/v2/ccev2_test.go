@@ -843,3 +843,51 @@ func TestClient_CreateScaleDownInstanceGroupTask(t *testing.T) {
 		})
 	}
 }
+
+// TestClient_UpdateInstanceScaleDownProtection 修改节点缩容保护状态
+func TestClient_UpdateInstanceScaleDownProtection(t *testing.T) {
+	type fields struct {
+		ak, sk, endpoint string
+	}
+	type args struct {
+		arg *UpdateInstanceScaleDownProtectionArgs
+	}
+
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		{
+			name: "关闭缩容保护",
+			fields: fields{
+				ak:       "",
+				sk:       "",
+				endpoint: "",
+			},
+			args: args{
+				arg: &UpdateInstanceScaleDownProtectionArgs{
+					ClusterID:         "",
+					InstanceIDs:       []string{""},
+					ScaleDownDisabled: false,
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c, err := NewClient(tt.fields.ak, tt.fields.sk, tt.fields.endpoint)
+			if err != nil {
+				t.Fatalf("failed init client, error: %v", err)
+			}
+
+			resp, err := c.UpdateInstanceScaleDownProtection(tt.args.arg)
+			if err != nil {
+				t.Errorf("UpdateInstanceScaleDownProtection error: %v", err)
+				return
+			}
+			t.Logf("Request ID: %s, failed instances: %v", resp.RequestID, resp.FailedInstances)
+		})
+	}
+}

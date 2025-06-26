@@ -47,6 +47,9 @@ type Interface interface {
 
 	GetInstanceCRD(args *GetInstanceCRDArgs) (*GetInstanceCRDResponse, error)
 	UpdateInstanceCRD(args *UpdateInstanceCRDRequest) (*CommonResponse, error)
+
+	// 修改节点缩容保护状态
+	UpdateInstanceScaleDownProtection(args *UpdateInstanceScaleDownProtectionArgs) (*UpdateInstanceScaleDownProtectionResponse, error)
 }
 
 // CreateClusterArgs 为后续支持clientToken预留空间
@@ -1032,4 +1035,22 @@ type UpdateAddonArgs struct {
 type UpdateClusterForbidDeleteResponse struct {
 	Success      bool `json:"success"`
 	ForbidDelete bool `json:"forbidDelete"`
+}
+
+// UpdateInstanceScaleDownProtectionArgs 修改节点缩容保护状态的请求参数
+type UpdateInstanceScaleDownProtectionArgs struct {
+	ClusterID         string   `json:"-"`
+	InstanceIDs       []string `json:"instanceIDs"`
+	ScaleDownDisabled bool     `json:"scaleDownDisabled"`
+}
+
+// UpdateInstanceScaleDownProtectionResponse 修改节点缩容保护状态的响应
+type UpdateInstanceScaleDownProtectionResponse struct {
+	RequestID       string           `json:"requestID"`
+	FailedInstances []FailedInstance `json:"failedInstances"`
+}
+
+type FailedInstance struct {
+	InstanceID string `json:"instanceID"`
+	Reason     string `json:"reason"`
 }

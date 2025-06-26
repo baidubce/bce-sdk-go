@@ -850,3 +850,25 @@ func (c *Client) UpdateAddon(args *UpdateAddonArgs) (*CommonAddonResponse, error
 
 	return result, err
 }
+
+// UpdateInstanceScaleDownProtection 修改节点缩容保护状态
+func (c *Client) UpdateInstanceScaleDownProtection(args *UpdateInstanceScaleDownProtectionArgs) (*UpdateInstanceScaleDownProtectionResponse, error) {
+	if args == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+	if args.ClusterID == "" {
+		return nil, fmt.Errorf("clusterID is empty")
+	}
+	if len(args.InstanceIDs) == 0 {
+		return nil, fmt.Errorf("instanceIDs is empty")
+	}
+
+	result := &UpdateInstanceScaleDownProtectionResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getInstanceScaleDownURI(args.ClusterID)).
+		WithBody(args).
+		WithResult(result).
+		Do()
+	return result, err
+}
