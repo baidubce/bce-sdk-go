@@ -1,6 +1,7 @@
 package cfc
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -26,6 +27,11 @@ var (
 	zipFilePython   string
 	zipFileNodejs01 string
 	zipFileNodejs02 string
+	LayerName01     string
+	LayerName02     string
+	LayerVersionBRN string
+	ServiceName01   string
+	ServiceName02   string
 )
 
 const (
@@ -68,6 +74,12 @@ func init() {
 	AliasName01 = fmt.Sprintf("sdktest-alias01-%s", time.Now().Format("2006-01-02T150405"))
 	AliasName02 = fmt.Sprintf("sdktest-alias02-%s", time.Now().Format("2006-01-02T150405"))
 
+	LayerName01 = fmt.Sprintf("sdktest-layer01-%s", time.Now().Format("2006-01-02T150405"))
+	LayerName02 = fmt.Sprintf("sdktest-layer02-%s", time.Now().Format("2006-01-02T150405"))
+
+	ServiceName01 = fmt.Sprintf("sdktest-service01-%s", time.Now().Format("2006-01-02T150405"))
+	ServiceName02 = fmt.Sprintf("sdktest-service02-%s", time.Now().Format("2006-01-02T150405"))
+
 	CfcClient, err = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	if err != nil {
 		panic(err)
@@ -94,7 +106,7 @@ func TestCreateFunction(t *testing.T) {
 			Code:         &api.CodeFile{ZipFile: codeFile},
 			FunctionName: FunctionName01,
 			Handler:      "index.handler",
-			Runtime:      "python2",
+			Runtime:      "python3",
 			MemorySize:   128,
 			Timeout:      3,
 			Description:  "Description",
@@ -103,7 +115,7 @@ func TestCreateFunction(t *testing.T) {
 			Code:         &api.CodeFile{ZipFile: codeFile2},
 			FunctionName: FunctionName02,
 			Handler:      "index.handler",
-			Runtime:      "nodejs8.5",
+			Runtime:      "python3",
 			MemorySize:   256,
 			Timeout:      3,
 			Description:  "Description",
@@ -124,9 +136,9 @@ func TestCreateFunction(t *testing.T) {
 func TestCreateFunctionByBlueprint(t *testing.T) {
 	cases := []api.CreateFunctionByBlueprintArgs{
 		{
-			FunctionName: "f2",
+			FunctionName: "f2-1",
 			ServiceName:  "default",
-			BlueprintID:  "6b850453-00f2-473f-8f9c-b88e1705d9e6",
+			BlueprintID:  "dd4372ef-0a8c-43b6-8c77-723da09ce439",
 			Environment: &api.Environment{
 				Variables: map[string]string{
 					"k1": "v1",
@@ -271,7 +283,7 @@ func TestUpdateFunctionConfiguration(t *testing.T) {
 		Timeout:      5,
 		Description:  "wooo cool",
 		Handler:      "index.handler",
-		Runtime:      "nodejs8.5",
+		Runtime:      "nodejs12",
 		Environment: &api.Environment{
 			Variables: map[string]string{
 				"name": "Test",
@@ -321,7 +333,7 @@ func TestPublishVersion(t *testing.T) {
 
 func TestListVersionsByFunction(t *testing.T) {
 	res, err := CfcClient.ListVersionsByFunction(&api.ListVersionsByFunctionArgs{
-		FunctionName: "testHelloWorld",
+		FunctionName: FunctionName02,
 	})
 	if err != nil {
 		t.Fatalf("err (%v)", err)
@@ -744,4 +756,217 @@ func TestGetExecutionHistory(t *testing.T) {
 	for _, e := range res.Events {
 		t.Logf("event %+v", e)
 	}
+}
+
+// Layer related tests
+func TestPublishLayer(t *testing.T) {
+	codeFile, err := ioutil.ReadFile(zipFilePython)
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	base64CodeFile := base64.StdEncoding.EncodeToString(codeFile)
+
+	cases := []api.PublishLayerVersionInput{
+		{
+			LayerName:   LayerName01,
+			Description: "Test layer for SDK testing",
+			Content: &api.LayerVersionContentInput{
+				ZipFile: base64CodeFile,
+			},
+			CompatibleRuntimes: []string{"python3", "python3.10"},
+		},
+		{
+			LayerName:   LayerName02,
+			Description: "Another test layer for SDK testing",
+			Content: &api.LayerVersionContentInput{
+				ZipFile: base64CodeFile,
+			},
+			CompatibleRuntimes: []string{"python3"},
+		},
+	}
+
+	for _, args := range cases {
+		res, err := CfcClient.PublishLayer(&args)
+		if err != nil {
+			t.Fatalf("err (%v)", err)
+		}
+		resStr, err := json.MarshalIndent(res, "", "	")
+		if logSuccess && err == nil {
+			t.Logf("res %s ", resStr)
+		}
+	}
+}
+
+func TestGetLayerVersion(t *testing.T) {
+	args := &api.GetLayerVersionArgs{
+		LayerName:     LayerName01,
+		VersionNumber: "1",
+	}
+	res, err := CfcClient.GetLayerVersion(args)
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	resStr, err := json.MarshalIndent(res, "", "	")
+	if logSuccess && err == nil {
+		t.Logf("res %s ", resStr)
+	}
+}
+
+func TestListLayers(t *testing.T) {
+	args := &api.ListLayerVersionsInput{
+		LayerName: LayerName01,
+		ListCondition: &api.ListCondition{
+			PageNo:   1,
+			PageSize: 10,
+		},
+	}
+	res, err := CfcClient.ListLayers(args)
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	resStr, err := json.MarshalIndent(res, "", "	")
+	if logSuccess && err == nil {
+		t.Logf("res %s ", resStr)
+	}
+}
+
+func TestListLayers2(t *testing.T) {
+	args := &api.ListLayerVersionsInput{
+		ListCondition: &api.ListCondition{
+			PageNo:   1,
+			PageSize: 10,
+		},
+	}
+	res, err := CfcClient.ListLayers(args)
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	resStr, err := json.MarshalIndent(res, "", "	")
+	if logSuccess && err == nil {
+		t.Logf("res %s ", resStr)
+	}
+}
+
+func TestDeleteLayerVersion(t *testing.T) {
+	args := &api.DeleteLayerVersionArgs{
+		LayerName:     LayerName02,
+		VersionNumber: "1",
+	}
+	err := CfcClient.DeleteLayerVersion(args)
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+}
+
+func TestDeleteLayer(t *testing.T) {
+	args := &api.DeleteLayerArgs{
+		LayerName: LayerName01,
+	}
+	err := CfcClient.DeleteLayer(args)
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+}
+
+// Service related tests
+func TestCreateService(t *testing.T) {
+	args := &api.CreateServiceArgs{
+		ServiceName: "test-service",
+		ServiceDesc: stringPtr("Test service description from SDK"),
+	}
+	res, err := CfcClient.CreateService(args)
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	resStr, err := json.MarshalIndent(res, "", "	")
+	if logSuccess && err == nil {
+		t.Logf("res %s ", resStr)
+	}
+}
+
+func TestGetService(t *testing.T) {
+	// Use an existing service from the list
+	res, err := CfcClient.GetService(&api.GetServiceArgs{
+		ServiceName: "default", // Use the default service that always exists
+	})
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	resStr, err := json.MarshalIndent(res, "", "	")
+	if logSuccess && err == nil {
+		t.Logf("res %s ", resStr)
+	}
+}
+
+func TestUpdateService(t *testing.T) {
+	// Use an existing service for update test
+	args := &api.UpdateServiceArgs{
+		ServiceName: "default", // Use the default service
+		ServiceDesc: stringPtr("Updated test service description from SDK"),
+	}
+	res, err := CfcClient.UpdateService(args)
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	resStr, err := json.MarshalIndent(res, "", "	")
+	if logSuccess && err == nil {
+		t.Logf("res %s ", resStr)
+	}
+}
+
+func TestListServices(t *testing.T) {
+
+	res, err := CfcClient.ListServices()
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	resStr, err := json.MarshalIndent(res.Services, "", "	")
+	if logSuccess && err == nil {
+		t.Logf("res %s ", resStr)
+	}
+
+	// Test the direct Services slice
+	if logSuccess {
+		t.Logf("Found %d services", len(res.Services))
+		for i, service := range res.Services {
+			t.Logf("Service %d: %+v", i, service)
+		}
+	}
+}
+
+func TestDeleteService(t *testing.T) {
+	// Test delete with a non-essential service (one of the test services)
+	// First get the list to find a test service to delete
+	listRes, err := CfcClient.ListServices()
+	if err != nil {
+		t.Fatalf("Failed to list services: %v", err)
+	}
+
+	// Find a test service (not the default one) to delete
+	var serviceToDelete string
+	for _, service := range listRes.Services {
+		if service.ServiceName != "default" && len(service.ServiceName) > 10 {
+			serviceToDelete = service.ServiceName
+			break
+		}
+	}
+
+	if serviceToDelete == "" {
+		t.Skip("No test service found to delete")
+		return
+	}
+
+	t.Logf("Deleting service: %s", serviceToDelete)
+	err = CfcClient.DeleteService(&api.DeleteServiceArgs{
+		ServiceName: serviceToDelete,
+	})
+	if err != nil {
+		t.Fatalf("err (%v)", err)
+	}
+	t.Logf("Successfully deleted service: %s", serviceToDelete)
+}
+
+// Helper function to create string pointer
+func stringPtr(s string) *string {
+	return &s
 }

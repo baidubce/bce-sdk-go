@@ -2729,6 +2729,18 @@ func (c *Client) InstanceReplaceSecurityGroup(body *api.ReplaceSgV2Req) (*api.Re
 	return api.InstanceReplaceSecurityGroup(c, body)
 }
 
+func (c *Client) CreateSnapshotShare(body *api.CreateSnapshotShareReq) (*api.CreateSnapshotShareResp, error) {
+	return api.CreateSnapshotShare(c, body)
+}
+
+func (c *Client) CancelSnapshotShare(body *api.CancelSnapshotShareReq) (*api.CancelSnapshotShareResp, error) {
+	return api.CancelSnapshotShare(c, body)
+}
+
+func (c *Client) ListSnapshotShare(body *api.ListSnapshotShareByMarkerV2Req) (*api.ListSnapshotShareByMarkerV2Resp, error) {
+	return api.ListSnapshotShare(c, body)
+}
+
 func (c *Client) AuthorizeServerEvent(body *api.AuthorizeServerEventReq) (*api.AuthorizeServerEventResp, error) {
 	return api.AuthorizeServerEvent(c, body)
 }

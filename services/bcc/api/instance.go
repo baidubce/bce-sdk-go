@@ -2902,6 +2902,93 @@ func InstanceReplaceSecurityGroup(cli bce.Client, body *ReplaceSgV2Req) (*Replac
 	return res, nil
 }
 
+func CreateSnapshotShare(cli bce.Client, body *CreateSnapshotShareReq) (*CreateSnapshotShareResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri(getSnapshotShareUrl())
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &CreateSnapshotShareResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func CancelSnapshotShare(cli bce.Client, body *CancelSnapshotShareReq) (*CancelSnapshotShareResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri(getSnapshotUnShareUrl())
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &CancelSnapshotShareResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func ListSnapshotShare(cli bce.Client, body *ListSnapshotShareByMarkerV2Req) (*ListSnapshotShareByMarkerV2Resp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri(getSnapshotShareListUrl())
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &ListSnapshotShareByMarkerV2Resp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
 func AuthorizeServerEvent(cli bce.Client, body *AuthorizeServerEventReq) (*AuthorizeServerEventResp, error) {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.POST)

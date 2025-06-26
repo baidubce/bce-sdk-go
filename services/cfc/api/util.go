@@ -29,6 +29,10 @@ const (
 	RegularExecutionName = `^[a-zA-Z_0-9]{1}[a-zA-Z0-9_-]{0,63}$`
 	FlowType             = "FDL"
 
+	// Layer and Service validation patterns
+	RegularLayerName   = `^[a-zA-Z0-9-_]+$`
+	RegularServiceName = `^[a-zA-Z0-9-_]+$`
+
 	MemoryBase     = 128
 	minMemoryLimit = 128
 	maxMemoryLimit = 3008
@@ -114,6 +118,31 @@ func getTriggerUri() string {
 	return fmt.Sprintf("/v1/console/relation")
 }
 
+func layerVersionUri(layerName string) string {
+	return fmt.Sprintf("/v1/layers/%s/versions", layerName)
+}
+
+func getLayerVersionUri(layerName string, versionNum string) string {
+	return fmt.Sprintf("/v1/layers/%s/versions/%s", layerName, versionNum)
+}
+
+func listLayersUri() string {
+	return "/v1/layers"
+}
+
+func deleteLayerUri(layerName string) string {
+	// 格式化字符串，拼接 /v1/layers/ 和 layerName
+	return fmt.Sprintf("/v1/layers/%s", layerName)
+}
+
+func getServiceUri() string {
+	return "/v2/service/detail"
+}
+
+func serviceUri() string {
+	return "/v2/service"
+}
+
 func validateFunctionName(name string) bool {
 	res, err := regexp.MatchString(RegularFunctionName, name)
 	if err != nil {
@@ -182,6 +211,33 @@ func validateQualifier(qualifier string) bool {
 		return true
 	}
 	res, err = regexp.MatchString(RegularVersion, qualifier)
+	if err != nil {
+		return false
+	}
+	return res
+}
+
+// validateLayerName validates layer name format
+func validateLayerName(name string) bool {
+	res, err := regexp.MatchString(RegularLayerName, name)
+	if err != nil {
+		return false
+	}
+	return res
+}
+
+// validateServiceName validates service name format
+func validateServiceName(name string) bool {
+	res, err := regexp.MatchString(RegularServiceName, name)
+	if err != nil {
+		return false
+	}
+	return res
+}
+
+// validateVersionNumber validates layer version number (should be positive integer)
+func validateVersionNumber(versionNum string) bool {
+	res, err := regexp.MatchString(`^[1-9]\d*$`, versionNum)
 	if err != nil {
 		return false
 	}

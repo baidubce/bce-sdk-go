@@ -21,6 +21,15 @@ const (
 	QualifierInvalid          = "the qualifier is not the function's version or alias"
 	PaginateInvalid           = "the pagination must greater than 0"
 	EventSourceTypeNotSupport = "the event source type: %s not support"
+
+	// Layer related error constants
+	layerNameInvalid     = "the layer name %s must match " + RegularLayerName
+	layerVersionInvalid  = "the layer version number %s must be a positive integer"
+	layerContentInvalid  = "the layer content is required and must contain either ZipFile or ZipFileBytes or BosBucket/BosObject"
+	layerRuntimesInvalid = "the compatible runtimes field is required and cannot be empty"
+
+	// Service related error constants
+	serviceNameInvalid = "the service name %s must match " + RegularServiceName
 )
 
 const (

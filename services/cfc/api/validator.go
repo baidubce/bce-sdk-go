@@ -313,7 +313,7 @@ func (args ListEventSourceArgs) Validate() error {
 		return fmt.Errorf(requiredIllegal, "FunctionName")
 	}
 	// 先检查是否满足brn规则 再看是不是function name
-	if !validateFunctionBRN(args.FunctionName) || !validateFunctionName(args.FunctionName) {
+	if !validateFunctionBRN(args.FunctionName) {
 		return fmt.Errorf(requiredIllegal, "FunctionName")
 	}
 
@@ -349,12 +349,10 @@ func (args UpdateEventSourceArgs) Validate() error {
 	if args.UUID == "" {
 		return fmt.Errorf(requiredIllegal, "UUID")
 	}
-	if args.FuncEventSource.Type != TypeEventSourceDatahubTopic || args.FuncEventSource.Type != TypeEventSourceBms {
-		return nil
-	} else {
+	if args.FuncEventSource.Type != TypeEventSourceDatahubTopic && args.FuncEventSource.Type != TypeEventSourceBms {
 		return fmt.Errorf(EventSourceTypeNotSupport, args.FuncEventSource.Type)
 	}
-
+	return nil
 }
 
 func (args DeleteEventSourceArgs) Validate() error {
@@ -411,6 +409,115 @@ func (args CreateFunctionByBlueprintArgs) Validate() error {
 	}
 	if !validateFunctionName(args.FunctionName) {
 		return fmt.Errorf(functionNameInvalid, args.FunctionName)
+	}
+	return nil
+}
+
+func (args PublishLayerVersionInput) Validate() error {
+	if args.LayerName == "" {
+		return fmt.Errorf(requiredIllegal, "LayerName")
+	}
+	if !validateLayerName(args.LayerName) {
+		return fmt.Errorf(layerNameInvalid, args.LayerName)
+	}
+	if len(args.CompatibleRuntimes) == 0 {
+		return fmt.Errorf(layerRuntimesInvalid)
+	}
+	if args.Content == nil {
+		return fmt.Errorf(layerContentInvalid)
+	}
+	// Check if Content has valid data
+	if args.Content != nil {
+		hasZipFile := len(args.Content.ZipFile) > 0
+		hasBosFile := args.Content.BosBucket != "" && args.Content.BosObject != ""
+		if !hasZipFile && !hasBosFile {
+			return fmt.Errorf(layerContentInvalid)
+		}
+	}
+	return nil
+}
+
+// GetLayerVersionArgs validation
+func (args GetLayerVersionArgs) Validate() error {
+	if args.LayerName == "" {
+		return fmt.Errorf(requiredIllegal, "LayerName")
+	}
+	if !validateLayerName(args.LayerName) {
+		return fmt.Errorf(layerNameInvalid, args.LayerName)
+	}
+	if args.VersionNumber == "" {
+		return fmt.Errorf(requiredIllegal, "VersionNumber")
+	}
+	if !validateVersionNumber(args.VersionNumber) {
+		return fmt.Errorf(layerVersionInvalid, args.VersionNumber)
+	}
+	return nil
+}
+
+// ListLayerVersionsInput validation
+func (args ListLayerVersionsInput) Validate() error {
+	if args.LayerName != "" && !validateLayerName(args.LayerName) {
+		return fmt.Errorf(layerNameInvalid, args.LayerName)
+	}
+	return nil
+}
+
+// DeleteLayerVersionArgs validation
+func (args DeleteLayerVersionArgs) Validate() error {
+	if args.LayerName == "" {
+		return fmt.Errorf(requiredIllegal, "LayerName")
+	}
+	if !validateLayerName(args.LayerName) {
+		return fmt.Errorf(layerNameInvalid, args.LayerName)
+	}
+	if args.VersionNumber == "" {
+		return fmt.Errorf(requiredIllegal, "VersionNumber")
+	}
+	if !validateVersionNumber(args.VersionNumber) {
+		return fmt.Errorf(layerVersionInvalid, args.VersionNumber)
+	}
+	return nil
+}
+
+// DeleteLayerArgs validation
+func (args DeleteLayerArgs) Validate() error {
+	if args.LayerName == "" {
+		return fmt.Errorf(requiredIllegal, "LayerName")
+	}
+	if !validateLayerName(args.LayerName) {
+		return fmt.Errorf(layerNameInvalid, args.LayerName)
+	}
+	return nil
+}
+
+// Service validation
+func (args CreateServiceArgs) Validate() error {
+	if args.ServiceName == "" {
+		return fmt.Errorf(requiredIllegal, "ServiceName")
+	}
+	if !validateServiceName(args.ServiceName) {
+		return fmt.Errorf(serviceNameInvalid, args.ServiceName)
+	}
+	return nil
+}
+
+func (args DeleteServiceArgs) Validate() error {
+	if args.ServiceName == "" {
+		return fmt.Errorf(requiredIllegal, "ServiceName")
+	}
+	return nil
+}
+
+func (args UpdateServiceArgs) Validate() error {
+	if args.ServiceName == "" {
+		return fmt.Errorf(requiredIllegal, "ServiceName")
+	}
+	return nil
+}
+
+func (args GetServiceArgs) Validate() error {
+	if args.ServiceName == "" {
+		return fmt.Errorf(requiredIllegal, "ServiceName")
 	}
 	return nil
 }

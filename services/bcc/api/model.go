@@ -2877,6 +2877,55 @@ type ReplaceSgV2Resp struct {
 	RequestId *string `json:"requestId"`
 }
 
+type CreateSnapshotShareReq struct {
+	SnapshotId string   `json:"snapshotId"`
+	AccountIds []string `json:"accountIds"`
+}
+
+type CreateSnapshotShareResp struct {
+	SnapshotId string `json:"snapshotId"`
+}
+
+type CancelSnapshotShareReq struct {
+	SourceSnapshotId string   `json:"sourceSnapshotId"`
+	AccountIds       []string `json:"accountIds"`
+	ShareSnapshotId  string   `json:"shareSnapshotId"`
+}
+
+type CancelSnapshotShareResp struct {
+	SourceSnapshotId string `json:"sourceSnapshotId"`
+	ShareSnapshotId  string `json:"shareSnapshotId"`
+}
+
+type ListSnapshotShareByMarkerV2Req struct {
+	Marker  string `json:"marker"`
+	MaxKeys int    `json:"maxKeys"`
+}
+
+type SnapshotShareUO struct {
+	SourceSnapshotId   string `json:"sourceSnapshotId"`
+	SourceSnapshotUuid string `json:"sourceSnapshotUuid"`
+	SnapshotId         string `json:"snapshotId"`
+	SourceAccountId    string `json:"sourceAccountId"`
+	AccountId          string `json:"accountId"`
+	SnapshotType       string `json:"snapshotType"`
+	Name               string `json:"name"`
+	SizeInGB           int    `json:"sizeInGB"`
+	ShareTime          string `json:"shareTime"`
+	Desc               string `json:"desc"`
+	ShareStatus        string `json:"shareStatus"`
+	EncryptKey         string `json:"encryptKey"`
+	IsSourceDeleted    bool   `json:"isSourceDeleted"`
+}
+
+type ListSnapshotShareByMarkerV2Resp struct {
+	IsTruncated bool              `json:"isTruncated"`
+	Marker      string            `json:"marker"`
+	MaxKeys     int               `json:"maxKeys"`
+	NextMarker  string            `json:"nextMarker"`
+	Result      []SnapshotShareUO `json:"result"`
+}
+
 type AuthorizeServerEventReq struct {
 	ServerEventId                 string `json:"serverEventId,omitempty"`
 	InstanceId                    string `json:"instanceId,omitempty"`

@@ -53,35 +53,84 @@ const (
 )
 
 type Function struct {
-	Uid          string       `json:"Uid"`
-	Description  string       `json:"Description"`
-	FunctionBrn  string       `json:"FunctionBrn"`
-	Region       string       `json:"Region"`
-	Timeout      int          `json:"Timeout"`
-	VersionDesc  string       `json:"VersionDesc"`
-	UpdatedAt    time.Time    `json:"UpdatedAt"`
-	LastModified time.Time    `json:"LastModified"`
-	CodeSha256   string       `json:"CodeSha256"`
-	CodeSize     int32        `json:"CodeSize"`
-	FunctionArn  string       `json:"FunctionArn"`
-	FunctionName string       `json:"FunctionName"`
-	Handler      string       `json:"Handler"`
-	Version      string       `json:"Version"`
-	Runtime      string       `json:"Runtime"`
-	MemorySize   int          `json:"MemorySize"`
-	Environment  *Environment `json:"Environment"`
-	CommitID     string       `json:"CommitID"`
-	CodeID       string       `json:"CodeID"`
-	Role         string       `json:"Role"`
-	VpcConfig    *VpcConfig   `json:"VpcConfig"`
-	LogType      string       `json:"LogType"`
-	LogBosDir    string       `json:"LogBosDir"`
-	SourceTag    string       `json:"SourceTag"`
+	Uid                string             `json:"Uid"`
+	Description        string             `json:"Description"`
+	FunctionBrn        string             `json:"FunctionBrn"`
+	Region             string             `json:"Region"`
+	Timeout            int                `json:"Timeout"`
+	VersionDesc        string             `json:"VersionDesc"`
+	UpdatedAt          time.Time          `json:"UpdatedAt"`
+	LastModified       time.Time          `json:"LastModified"`
+	BlueprintTag       string             `json:"BlueprintTag"`
+	CodeSha256         string             `json:"CodeSha256"`
+	CodeSize           int32              `json:"CodeSize"`
+	FunctionArn        string             `json:"FunctionArn"`
+	FunctionName       string             `json:"FunctionName"`
+	ServiceName        string             `json:"ServiceName"`
+	Handler            string             `json:"Handler"`
+	Version            string             `json:"Version"`
+	Runtime            string             `json:"Runtime"`
+	MemorySize         int                `json:"MemorySize"`
+	Environment        *Environment       `json:"Environment"`
+	CommitID           string             `json:"CommitID"`
+	CodeID             string             `json:"CodeID"`
+	Role               string             `json:"Role"`
+	VpcConfig          *VpcConfig         `json:"VpcConfig"`
+	LogType            string             `json:"LogType"`
+	LogBosDir          string             `json:"LogBosDir"`
+	BlsLogSet          string             `json:"BlsLogSet"`
+	SourceTag          string             `json:"SourceTag"`
+	DeadLetterTopic    string             `json:"DeadLetterTopic"`
+	LayerList          []*LayerSample     `json:"Layers"`
+	PodConcurrentQuota int                `json:"PodConcurrentQuota"`
+	AsyncInvokeConfig  *AsyncInvokeConfig `json:"AsyncInvokeConfig"`
+	CFSConfig          *CFSConfig         `json:"CFSConfig"`
+}
+
+type LayerSample struct {
+	Brn         string                     `json:"Brn,omitempty"`
+	CodeSize    int64                      `json:"CodeSize,omitempty"`
+	Description string                     `json:"Description,omitempty"`
+	Version     int64                      `json:"Version,omitempty"`
+	LayerName   string                     `json:"LayerName,omitempty"`
+	Content     *LayerVersionContentOutput `json:"Content,omitempty"`
+}
+
+type LayerVersionContentOutput struct {
+	CodeSha256 string `json:"CodeSha256,omitempty"`
+	CodeSize   int64  `json:"CodeSize,omitempty"`
+	Location   string `json:"Location,omitempty"`
+}
+
+type AsyncInvokeConfig struct {
+	MaxRetryIntervalInSeconds *int64             `json:"MaxRetryIntervalInSeconds"` // 消息最大保留时间
+	MaxRetryAttempts          *int               `json:"MaxRetryAttempts"`          // 最大失败重试次数
+	OnSuccess                 *DestinationConfig `json:"OnSuccess"`                 // 异步调用成功触发目标服务
+	OnFailure                 *DestinationConfig `json:"OnFailure"`                 // 异步调用失败触发目标服务
+}
+
+type DestinationConfig struct {
+	Type        string `json:"Type"`        // 触发目标服务类型，kafka of cfc
+	Destination string `json:"Destination"` // 目标服务，topic or 函数brn
+}
+type CFSConfig struct {
+	FsName     *string `json:"FsName"`     // 文件系统名称
+	FsId       *string `json:"FsId"`       // 文件系统id
+	SubnetID   *string `json:"SubnetID"`   // 子网ID
+	Domain     *string `json:"Domain"`     // 挂载域名
+	RemotePath *string `json:"RemotePath"` // CFS侧挂载路径
+	LocalPath  *string `json:"LocalPath"`  // 本地目标路径
+	Ovip       *string `json:"Ovip"`       // domain对应的外部虚拟ip
+	VpcId      *string `json:"VpcId"`      // VPC Id
+}
+type Destination struct {
+	Destination string `json:"destination,omitempty"`
 }
 
 // functionInfo
 type FunctionInfo struct {
 	Code          *CodeStorage `json:"Code"`
+	Publish       bool         `json:"Publish"`
 	Configuration *Function    `json:"Configuration"`
 }
 
@@ -165,18 +214,29 @@ type ListFunctionsResult struct {
 }
 
 type CreateFunctionArgs struct {
-	Code         *CodeFile
-	FunctionName string
-	Handler      string
-	Runtime      string
-	MemorySize   int
-	Timeout      int
-	Description  string
-	Environment  *Environment
-	VpcConfig    *VpcConfig
-	LogType      string
-	LogBosDir    string
-	ServiceName  string
+	Code               *CodeFile
+	Publish            bool
+	FunctionName       string
+	Handler            string
+	Runtime            string
+	MemorySize         int
+	Timeout            int
+	Description        string
+	Environment        *Environment
+	VpcConfig          *VpcConfig
+	LogType            string
+	LogBosDir          string
+	BlsLogSet          string
+	ServiceName        string
+	Region             string
+	Version            string
+	VersionDesc        string
+	DeadLetterTopic    string
+	LayerList          []*LayerSample
+	PodConcurrentQuota int
+	AsyncInvokeConfig  *AsyncInvokeConfig
+	CFSConfig          *CFSConfig
+	SourceTag          string
 }
 
 type CreateFunctionByBlueprintArgs struct {
@@ -433,7 +493,7 @@ type FuncEventSource struct {
 
 	State                string    `json:"State"`                  // 消息触发器状态，开启或关闭，与aws兼容
 	LastProcessingResult string    `json:"LastProcessingResult"`   // 最新一次触发器的执行结果
-	LastModified         time.Time `json:"LastModified，omitempty"` // 上次修改时间
+	LastModified         time.Time `json:"LastModified,omitempty"` // 上次修改时间
 }
 
 type DatahubConfig struct {
@@ -519,4 +579,146 @@ type GetExecutionHistoryArgs struct {
 	FlowName      string `json:"name"`
 	ExecutionName string `json:"type"`
 	Limit         int    `json:"limit"`
+}
+
+type PublishLayerVersionInput struct {
+	CompatibleRuntimes []string                  `json:"CompatibleRuntimes,omitempty"`
+	Content            *LayerVersionContentInput `json:"Content" valid:"required"`
+	Description        string                    `json:"Description,omitempty" valid:"optional,runelength(0|256)"`
+	LayerName          string                    `json:"LayerName" valid:"required,matches(^[a-zA-Z0-9-_]+$),runelength(0|140)"`
+	LicenseInfo        string                    `json:"LicenseInfo,omitempty" valid:"optional,runelength(0|512)"`
+	SourceTag          string                    `json:"SourceTag,omitempty" valid:"optional,runelength(0|128)"`
+	Version            int64                     `json:"Version,omitempty" valid:"optional"`
+}
+
+type LayerVersionContentInput struct {
+	BosBucket string `json:"BosBucket,omitempty"`
+	BosObject string `json:"BosObject,omitempty"`
+	ZipFile   string `json:"ZipFile,omitempty"`
+}
+
+type GetLayerVersionOutput struct {
+	CompatibleRuntimes []string                   `json:"CompatibleRuntimes,omitempty"`
+	Content            *LayerVersionContentOutput `json:"Content,omitempty"`
+	CreatedDate        string                     `json:"CreatedDate,omitempty"`
+	Description        string                     `json:"Description,omitempty"`
+	LayerBrn           string                     `json:"LayerBrn,omitempty"`
+	LayerVersionBrn    string                     `json:"LayerVersionBrn,omitempty"`
+	LicenseInfo        string                     `json:"LicenseInfo,omitempty"`
+	Version            int64                      `json:"Version,omitempty"`
+}
+
+type PublishLayerVersionOutput struct {
+	CompatibleRuntimes []string                   `json:"CompatibleRuntimes,omitempty"`
+	Content            *LayerVersionContentOutput `json:"Content,omitempty"`
+	CreatedDate        string                     `json:"CreatedDate,omitempty"`
+	Description        string                     `json:"Description,omitempty"`
+	LayerBrn           string                     `json:"LayerBrn,omitempty"`
+	LayerVersionBrn    string                     `json:"LayerVersionBrn,omitempty"`
+	LicenseInfo        string                     `json:"LicenseInfo,omitempty"`
+	Version            int64                      `json:"Version,omitempty"`
+}
+
+type GetLayerVersionArgs struct {
+	find          string
+	Brn           string
+	LayerName     string
+	VersionNumber string
+}
+
+type ListLayerVersionsInput struct {
+	CompatibleRuntime string `json:"CompatibleRuntime,omitempty"`
+	LayerName         string `json:"LayerName" valid:"required"`
+	*ListCondition
+}
+
+type ListCondition struct {
+	PageNo   int64 `json:"PageNo,omitempty"`
+	PageSize int64 `json:"PageSize,omitempty"`
+	Marker   int64 `json:"Marker,omitempty"`
+	MaxItems int64 `json:"MaxItems,omitempty"`
+}
+
+type ListLayersOutput struct {
+	Layers     []*LayersListItem `json:"Layers,omitempty"`
+	NextMarker string            `json:"NextMarker,omitempty"`
+	Total      int64             `json:"Total,omitempty"`
+	PageNo     int64             `json:"PageNo"`
+	PageSize   int64             `json:"PageSize"`
+}
+
+type LayersListItem struct {
+	LatestMatchingVersion *LayerVersionsListItem `json:"LatestMatchingVersion,omitempty"`
+	LayerBrn              string                 `json:"LayerBrn,omitempty"`
+	LayerName             string                 `json:"LayerName,omitempty"`
+}
+
+type LayerVersionsListItem struct {
+	CompatibleRuntimes []string `json:"CompatibleRuntimes,omitempty"`
+	CreatedDate        string   `json:"CreatedDate,omitempty"`
+	Description        string   `json:"Description,omitempty"`
+	LayerVersionBrn    string   `json:"LayerVersionBrn,omitempty"`
+	LicenseInfo        string   `json:"LicenseInfo,omitempty"`
+	Version            int64    `json:"Version,omitempty"`
+}
+
+type DeleteLayerVersionArgs struct {
+	LayerName     string
+	VersionNumber string
+}
+
+type DeleteLayerArgs struct {
+	LayerName string
+}
+
+type Service struct {
+	Uid           string                 `json:"Uid,omitempty"`
+	ServiceName   string                 `json:"ServiceName" valid:"optional,matches(^[a-zA-Z0-9-_]+$),runelength(1|50)"`
+	ServiceDesc   *string                `json:"ServiceDesc,omitempty"`
+	ServiceConf   string                 `json:"ServiceConf,omitempty"`
+	ServiceConfig map[string]interface{} `json:"ServiceConfig,omitempty"`
+	Region        string                 `json:"Region,omitempty"`
+	Status        int                    `json:"Status,omitempty"`
+	UpdatedAt     time.Time              `json:"UpdatedAt,omitempty"`
+	CreatedAt     time.Time              `json:"CreatedAt,omitempty"`
+}
+
+// ServiceWithFun represents a service with function count information
+type ServiceWithFun struct {
+	Service
+	FuncCount int `json:"FuncCount,omitempty"`
+}
+
+type GetServiceArgs struct {
+	ServiceName string `json:"ServiceName"`
+}
+
+type GetServiceResult Service
+
+type CreateServiceArgs struct {
+	ServiceName string  `json:"ServiceName"`
+	ServiceDesc *string `json:"ServiceDesc,omitempty"`
+	ServiceConf string  `json:"ServiceConf,omitempty"`
+	Region      string  `json:"Region,omitempty"`
+}
+
+type CreateServiceResult Service
+
+type UpdateServiceArgs struct {
+	ServiceName string  `json:"ServiceName"`
+	ServiceDesc *string `json:"ServiceDesc,omitempty"`
+	ServiceConf string  `json:"ServiceConf,omitempty"`
+	Region      string  `json:"Region,omitempty"`
+}
+
+type UpdateServiceResult Service
+
+type DeleteServiceArgs struct {
+	ServiceName string `json:"ServiceName"`
+}
+
+type DeleteServiceResult Service
+
+type ListServicesResult struct {
+	Services []*Service `json:"Services"`
 }

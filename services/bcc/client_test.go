@@ -2417,6 +2417,41 @@ func TestInstanceReplaceSecurityGroup(t *testing.T) {
 	fmt.Println(res)
 }
 
+func TestCreateSnapshotShare(t *testing.T) {
+	args := &api.CreateSnapshotShareReq{
+		SnapshotId: "SnapshotId",
+		AccountIds: []string{
+			"accountId",
+		},
+	}
+	res, err := BCC_CLIENT.CreateSnapshotShare(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestCancelSnapshotShare(t *testing.T) {
+	args := &api.CancelSnapshotShareReq{
+		SourceSnapshotId: "SourceSnapshotId",
+		AccountIds: []string{
+			"accountId",
+		},
+		ShareSnapshotId: "ShareSnapshotId",
+	}
+	res, err := BCC_CLIENT.CancelSnapshotShare(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestListSnapshotShare(t *testing.T) {
+	args := &api.ListSnapshotShareByMarkerV2Req{
+		Marker:  "share-xxx",
+		MaxKeys: 10,
+	}
+	res, err := BCC_CLIENT.ListSnapshotShare(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
 func TestAuthorizeServerEvent(t *testing.T) {
 	args := &api.AuthorizeServerEventReq{
 		ServerEventId: "event-testAuth",

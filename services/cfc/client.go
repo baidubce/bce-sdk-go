@@ -402,7 +402,6 @@ func (c *Client) CreateEventSource(args *api.CreateEventSourceArgs) (*api.Create
 //   - error: nil if success otherwise the specific error
 func (c *Client) DeleteEventSource(args *api.DeleteEventSourceArgs) error {
 	return api.DeleteEventSource(c, args)
-
 }
 
 // StartExecution - start an execution of a workflow
@@ -522,4 +521,128 @@ func (c *Client) DescribeFlow(flowName string) (*api.Flow, error) {
 //   - error: nil if success otherwise the specific error
 func (c *Client) DeleteFlow(flowName string) error {
 	return api.DeleteFlow(c, flowName)
+}
+
+// PublishLayer - publish a layer
+//
+// PARAMS:
+//   - layerName: name of the layer to publish
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) PublishLayer(args *api.PublishLayerVersionInput) (*api.PublishLayerVersionOutput, error) {
+	return api.PublishLayerVersion(c, args)
+}
+
+// GetLayerVersion - get a layer version
+//
+// PARAMS:
+//   - args: args to get a layer version
+//
+// RETURNS:
+//   - *api.GetLayerVersionOutput: layer version information
+//   - error: nil if success otherwise the specific error
+func (c *Client) GetLayerVersion(args *api.GetLayerVersionArgs) (*api.GetLayerVersionOutput, error) {
+	return api.GetLayerVersion(c, args)
+}
+
+// GetLayerVersionByBrn - get a layer version by brn
+//
+// PARAMS:
+//   - args: args to get a layer version by brn
+//
+// RETURNS:
+//   - *api.GetLayerVersionOutput: layer version information
+func (c *Client) GetLayerVersionByBrn(args *api.GetLayerVersionArgs) (*api.GetLayerVersionOutput, error) {
+	return api.GetLayerVersionByBrn(c, args)
+}
+
+// ListLayers - list all layers
+//
+// PARAMS:
+//   - args: args to list all layers
+//
+// RETURNS:
+//   - *api.ListLayersOutput: list of all layers
+//   - error: nil if success otherwise the specific error
+func (c *Client) ListLayers(args *api.ListLayerVersionsInput) (*api.ListLayersOutput, error) {
+	return api.ListLayers(c, args)
+}
+
+// DeleteLayerVersion - delete a layer version
+//
+// PARAMS:
+//   - args: args to delete a layer version
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) DeleteLayerVersion(args *api.DeleteLayerVersionArgs) error {
+	return api.DeleteLayerVersion(c, args)
+}
+
+// DeleteLayer - delete a layer
+//
+// PARAMS:
+//   - args: args to delete a layer
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) DeleteLayer(args *api.DeleteLayerArgs) error {
+	return api.DeleteLayer(c, args)
+}
+
+// ListServices - list all services
+//
+// RETURNS:
+//   - *api.ListServicesResult: result containing slice of services
+//   - error: nil if success otherwise the specific error
+func (c *Client) ListServices() (*api.ListServicesResult, error) {
+	return api.ListServices(c)
+}
+
+// CreateService - create a service
+//
+// PARAMS:
+//   - args: args to create a service
+//
+// RETURNS:
+//   - *api.Service: the created service information
+//   - error: nil if success otherwise the specific error
+func (c *Client) CreateService(args *api.CreateServiceArgs) (*api.CreateServiceResult, error) {
+	return api.CreateService(c, args)
+}
+
+// UpdateService - update a service
+//
+// PARAMS:
+//   - args: args to update a service
+//
+// RETURNS:
+//   - *api.Service: the updated service information
+//   - error: nil if success otherwise the specific error
+func (c *Client) UpdateService(args *api.UpdateServiceArgs) (*api.UpdateServiceResult, error) {
+	return api.UpdateService(c, args)
+}
+
+// DeleteService - delete a service
+//
+// PARAMS:
+//   - DeleteServiceArgs: args of the service to delete
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) DeleteService(args *api.DeleteServiceArgs) error {
+	return api.DeleteService(c, args)
+}
+
+// GetService - get a service
+//
+// PARAMS:
+//   - GetServiceArgs: args of the service to get
+//
+// RETURNS:
+//   - *api.Service: the service information
+//   - error: nil if success otherwise the specific error
+func (c *Client) GetService(args *api.GetServiceArgs) (*api.GetServiceResult, error) {
+	return api.GetService(c, args)
 }

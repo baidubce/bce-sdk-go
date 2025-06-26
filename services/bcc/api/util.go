@@ -595,3 +595,15 @@ func getUnbindSecurityGroupUrl() string {
 func getReplaceSecurityGroupUrl() string {
 	return URI_PREFIXV2 + REQUEST_REPLACE_SECURITY_GROUP_URI
 }
+
+func getSnapshotShareUrl() string {
+	return URI_PREFIXV2 + "/snapshot/share"
+}
+
+func getSnapshotUnShareUrl() string {
+	return URI_PREFIXV2 + "/snapshot/unShare"
+}
+
+func getSnapshotShareListUrl() string {
+	return URI_PREFIXV2 + "/snapshot/snapshotShare/list"
+}
