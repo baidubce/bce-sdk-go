@@ -81,7 +81,7 @@ type OpenAPIPod struct {
 }
 
 type OpenAPIDatasource struct {
-	// Type 数据源类型 dataset/pfsl1/pfsl2/emptydir/hostpath
+	// Type 数据源类型 dataset/pfsl1/pfsl2/emptydir/hostpath/cfs
 	Type string `json:"type"`
 	// SourcePath为源路径，存储类型为pfs时，代表用户传入的pfs路径；存储类型为hostPath时，代表节点上的本地路径
 	SourcePath string `json:"sourcePath,omitempty"`
@@ -118,6 +118,9 @@ type AIJobDatasourceOptions struct {
 	// Medium emptydir 介质
 	PfsL2MountTargetID []string `json:"pfsL2MountTargetId,omitempty"`
 	PfsL2HostMountPath string   `json:"pfsL2HostMountPath,omitempty"`
+	//cfs 挂载点信息
+	CfsInstanceID string `json:"cfsInstanceId"`
+	CfsMountPoint string `json:"cfsMountPoint"`
 }
 
 type OpenAPIDatasourceOptions struct {

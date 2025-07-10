@@ -23,6 +23,10 @@ var (
 	AIJobName        string
 	MetricType       string
 	QueueID          string
+	DataSourceType   string
+	SourcePath       string
+	MountPath        string
+	DataSourceName   string
 )
 
 func GetJob() {
@@ -32,7 +36,7 @@ func GetJob() {
 	client, _ := aihc.NewClient(ak, sk, endpoint)
 	result, err := client.GetJob(&v1.GetAIJobOptions{
 		JobID:          JobID,
-		ResourcePoolId: resourcePoolID,
+		ResourcePoolID: resourcePoolID,
 		QueueID:        QueueID,
 	})
 
@@ -51,7 +55,7 @@ func DeleleJob() {
 	client, _ := aihc.NewClient(ak, sk, endpoint)
 	result, err := client.DeleteJob(&v1.DeleteAIJobOptions{
 		JobID:          JobID,
-		ResourcePoolId: resourcePoolID,
+		ResourcePoolID: resourcePoolID,
 		QueueID:        QueueID,
 	})
 
@@ -69,6 +73,15 @@ func CreateJob() {
 
 	jobConfig := &v1.OpenAPIJobCreateRequest{
 		Name: AIJobName,
+		Datasources: []v1.OpenAPIDatasource{
+			{
+				Type:       DataSourceType,
+				SourcePath: SourcePath,
+				MountPath:  MountPath,
+				Name:       DataSourceName,
+				Options:    v1.AIJobDatasourceOptions{},
+			},
+		},
 		JobSpec: v1.OpenAPIAIJobSpec{
 			Command:  `echo "hello sdk"; sleep infinity`,
 			Replicas: 1,
@@ -86,7 +99,7 @@ func CreateJob() {
 	}
 	client, _ := aihc.NewClient(ak, sk, endpoint)
 	result, err := client.CreateJob(jobConfig, &v1.CreateAIJobOptions{
-		ResourcePoolId: resourcePoolID,
+		ResourcePoolID: resourcePoolID,
 	})
 
 	if err != nil {

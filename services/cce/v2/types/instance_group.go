@@ -36,6 +36,8 @@ type InstanceGroupSpec struct {
 	Replicas int `json:"replicas" `
 
 	ClusterAutoscalerSpec *ClusterAutoscalerSpec `json:"clusterAutoscalerSpec,omitempty" `
+
+	SecurityGroups []SecurityGroupV2 `json:"securityGroups,omitempty" `
 }
 
 type InstanceTemplate struct {

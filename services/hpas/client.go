@@ -413,3 +413,7 @@ func (c *Client) ReplaceSecurityGroups(body *api.SecurityGroupsReq) (*api.BaseV3
 func (c *Client) DetachSecurityGroups(body *api.SecurityGroupsReq) (*api.BaseV3Resp, error) {
 	return api.DetachSecurityGroups(c, body)
 }
+
+func (c *Client) DescribeInstanceInventoryQuantity(body *api.DescribeInstanceInventoryQuantityReq) (*api.DescribeInstanceInventoryQuantityResp, error) {
+	return api.DescribeInstanceInventoryQuantity(c, body)
+}

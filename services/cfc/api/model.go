@@ -232,7 +232,7 @@ type CreateFunctionArgs struct {
 	Version            string
 	VersionDesc        string
 	DeadLetterTopic    string
-	LayerList          []*LayerSample
+	LayerList          []*LayerSample `json:"Layers,omitempty"`
 	PodConcurrentQuota int
 	AsyncInvokeConfig  *AsyncInvokeConfig
 	CFSConfig          *CFSConfig
@@ -632,11 +632,23 @@ type ListLayerVersionsInput struct {
 	*ListCondition
 }
 
+type ListLayerVersionsOutput struct {
+	LayerVersions []*LayerVersionsListItem
+	NextMarker    string
+	Total         int64
+	PageNo        int64 `json:"pageNo"`
+	PageSize      int64 `json:"pageSize"`
+}
 type ListCondition struct {
 	PageNo   int64 `json:"PageNo,omitempty"`
 	PageSize int64 `json:"PageSize,omitempty"`
 	Marker   int64 `json:"Marker,omitempty"`
 	MaxItems int64 `json:"MaxItems,omitempty"`
+}
+
+type ListLayerInput struct {
+	CompatibleRuntime string `json:"CompatibleRuntime,omitempty"`
+	*ListCondition
 }
 
 type ListLayersOutput struct {

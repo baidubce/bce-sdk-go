@@ -108,9 +108,10 @@ type ResizeLoadBalancerArgs struct {
 }
 
 type ChangeToPostpaidArgs struct {
-	ClientToken      string `json:"-"`
-	BillingMethod    string `json:"billingMethod,omitempty"`
-	PerformanceLevel string `json:"performanceLevel,omitempty"`
+	ClientToken          string `json:"-"`
+	BillingMethod        string `json:"billingMethod,omitempty"`
+	PerformanceLevel     string `json:"performanceLevel,omitempty"`
+	EffectiveImmediately *bool  `json:"effectiveImmediately,omitempty"`
 }
 
 type ChangeToPrepaidArgs struct {
@@ -216,6 +217,8 @@ type CreateUDPListenerArgs struct {
 	ListenerPort               uint16 `json:"listenerPort"`
 	BackendPort                uint16 `json:"backendPort"`
 	Scheduler                  string `json:"scheduler"`
+	HealthCheckType            string `json:"healthCheckType,omitempty"`
+	HealthCheckPort            int    `json:"healthCheckPort,omitempty"`
 	UdpSessionTimeout          int    `json:"udpSessionTimeout,omitempty"`
 	HealthCheckString          string `json:"healthCheckString"`
 	HealthCheckTimeoutInSecond int    `json:"healthCheckTimeoutInSecond,omitempty"`
@@ -320,6 +323,8 @@ type UpdateUDPListenerArgs struct {
 	ListenerPort               uint16 `json:"-"`
 	BackendPort                uint16 `json:"backendPort,omitempty"`
 	Scheduler                  string `json:"scheduler,omitempty"`
+	HealthCheckType            string `json:"healthCheckType,omitempty"`
+	HealthCheckPort            int    `json:"healthCheckPort,omitempty"`
 	UdpSessionTimeout          int    `json:"udpSessionTimeout,omitempty"`
 	HealthCheckTimeoutInSecond int    `json:"healthCheckTimeoutInSecond,omitempty"`
 	HealthCheckInterval        int    `json:"healthCheckInterval,omitempty"`
@@ -413,6 +418,8 @@ type UDPListenerModel struct {
 	ListenerPort               uint16 `json:"listenerPort"`
 	BackendPort                uint16 `json:"backendPort"`
 	Scheduler                  string `json:"scheduler"`
+	HealthCheckType            string `json:"healthCheckType"`
+	HealthCheckPort            int    `json:"healthCheckPort"`
 	UdpSessionTimeout          int    `json:"udpSessionTimeout"`
 	HealthCheckTimeoutInSecond int    `json:"healthCheckTimeoutInSecond"`
 	HealthCheckInterval        int    `json:"healthCheckInterval"`

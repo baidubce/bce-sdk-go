@@ -128,9 +128,10 @@ func TestRebootHpas(t *testing.T) {
 
 func TestResetHpas(t *testing.T) {
 	resetHpasArgs := &api.ResetHpasReq{
-		HpasIds:  []string{"hpas-YuZJjrZ1"},
-		ImageId:  "m-Xz6svNFM",
-		Password: "71fa62c0059fa8624a4fbe110e236ab31ceede74cc7349df2f75f7ed2a279665",
+		HpasIds:   []string{"hpas-YuZJjrZ1"},
+		ImageId:   "m-Xz6svNFM",
+		Password:  "71fa62c0059fa8624a4fbe110e236ab31ceede74cc7349df2f75f7ed2a279665",
+		KeypairId: "k-dadadad",
 	}
 	err := HPAS_CLIENT.ResetHpas(resetHpasArgs)
 	ExpectEqual(t.Errorf, err, nil)
@@ -442,6 +443,17 @@ func TestDetachSecurityGroups(t *testing.T) {
 		SecurityGroupType: "normal",
 	}
 	resp, err := HPAS_CLIENT.DetachSecurityGroups(req)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestDescribeInstanceInventoryQuantity(t *testing.T) {
+	req := &api.DescribeInstanceInventoryQuantityReq{
+		ZoneName: "cn-bj-a",
+		AppType:  "llama2_7B_train",
+		AppPerformanceLevel: "10k",
+	}
+	resp, err := HPAS_CLIENT.DescribeInstanceInventoryQuantity(req)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(resp)
 }

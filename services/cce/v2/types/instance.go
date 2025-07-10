@@ -50,6 +50,8 @@ type InstanceSpec struct {
 	// VPC 相关配置
 	VPCConfig VPCConfig `json:"vpcConfig,omitempty"`
 
+	HPASOption *HPASOption `json:"hpasOption,omitempty"`
+
 	// 集群规格相关配置
 	InstanceResource InstanceResource `json:"instanceResource,omitempty"`
 
@@ -112,6 +114,12 @@ type VPCConfig struct {
 	SecurityGroupType string `json:"securityGroupType"`
 
 	SecurityGroups []SecurityGroupV2 `json:"securityGroups"`
+}
+
+// HPASOption 定义 HPAS 配置
+type HPASOption struct {
+	AppType             string `json:"appType,omitempty"`
+	AppPerformanceLevel string `json:"appPerformanceLevel,omitempty"`
 }
 
 // SecurityGroup 定义 Instance 安全组配置
@@ -332,6 +340,9 @@ const (
 
 	// MachineTypeEBC 机器类型 EBC
 	MachineTypeEBC MachineType = "EBC"
+
+	// MachineTypeHPAS 机器类型 HPAS
+	MachineTypeHPAS MachineType = "HPAS"
 )
 
 // CDSConfig clone from BCC

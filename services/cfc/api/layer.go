@@ -56,7 +56,7 @@ func GetLayerVersionByBrn(cli bce.Client, args *GetLayerVersionArgs) (*GetLayerV
 	return GetLayerVersion(cli, args)
 }
 
-func ListLayers(cli bce.Client, args *ListLayerVersionsInput) (*ListLayersOutput, error) {
+func ListLayers(cli bce.Client, args *ListLayerInput) (*ListLayersOutput, error) {
 	op := &Operation{
 		HTTPUri:    listLayersUri(),
 		HTTPMethod: GET,
@@ -79,6 +79,34 @@ func ListLayers(cli bce.Client, args *ListLayerVersionsInput) (*ListLayersOutput
 		return nil, err
 	}
 	if value, ok := result.Result.(*ListLayersOutput); ok {
+		return value, nil
+	}
+	return nil, nil
+}
+
+func ListLayerVersions(cli bce.Client, args *ListLayerVersionsInput) (*ListLayerVersionsOutput, error) {
+	op := &Operation{
+		HTTPUri:    layerVersionUri(args.LayerName),
+		HTTPMethod: GET,
+	}
+	request := &cfcRequest{
+		Args: args,
+		Params: map[string]interface{}{
+			"CompatibleRuntime": args.CompatibleRuntime,
+			"Marker":            args.Marker,
+			"MaxItems":          args.MaxItems,
+			"PageNo":            args.PageNo,
+			"PageSize":          args.PageSize,
+		},
+	}
+	result := &cfcResult{
+		Result: &ListLayerVersionsOutput{},
+	}
+	err := caller(cli, op, request, result)
+	if err != nil {
+		return nil, err
+	}
+	if value, ok := result.Result.(*ListLayerVersionsOutput); ok {
 		return value, nil
 	}
 	return nil, nil

@@ -455,6 +455,10 @@ func (args GetLayerVersionArgs) Validate() error {
 }
 
 // ListLayerVersionsInput validation
+func (args ListLayerInput) Validate() error {
+	return nil
+}
+
 func (args ListLayerVersionsInput) Validate() error {
 	if args.LayerName != "" && !validateLayerName(args.LayerName) {
 		return fmt.Errorf(layerNameInvalid, args.LayerName)

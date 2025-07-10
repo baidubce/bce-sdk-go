@@ -812,15 +812,15 @@ func TestGetLayerVersion(t *testing.T) {
 	}
 }
 
-func TestListLayers(t *testing.T) {
+func TestListLayerVersions(t *testing.T) {
 	args := &api.ListLayerVersionsInput{
-		LayerName: LayerName01,
+		LayerName: "sdktest-layer01-2025-06-17T205914",
 		ListCondition: &api.ListCondition{
 			PageNo:   1,
 			PageSize: 10,
 		},
 	}
-	res, err := CfcClient.ListLayers(args)
+	res, err := CfcClient.ListLayerVersions(args)
 	if err != nil {
 		t.Fatalf("err (%v)", err)
 	}
@@ -830,8 +830,8 @@ func TestListLayers(t *testing.T) {
 	}
 }
 
-func TestListLayers2(t *testing.T) {
-	args := &api.ListLayerVersionsInput{
+func TestListLayers(t *testing.T) {
+	args := &api.ListLayerInput{
 		ListCondition: &api.ListCondition{
 			PageNo:   1,
 			PageSize: 10,

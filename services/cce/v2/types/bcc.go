@@ -18,6 +18,8 @@ const (
 	InstanceTypeBBC bccapi.InstanceType = "BBC"
 	// InstanceTypeBBCGPU BBC GPU 类型
 	InstanceTypeBBCGPU bccapi.InstanceType = "BBC_GPU"
+	// InstanceTypeHPAS HPAS 类型
+	InstanceTypeHPAS bccapi.InstanceType = "HPAS"
 )
 
 // SecurityGroupRule 安全组规则

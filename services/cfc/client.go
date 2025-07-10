@@ -565,8 +565,20 @@ func (c *Client) GetLayerVersionByBrn(args *api.GetLayerVersionArgs) (*api.GetLa
 // RETURNS:
 //   - *api.ListLayersOutput: list of all layers
 //   - error: nil if success otherwise the specific error
-func (c *Client) ListLayers(args *api.ListLayerVersionsInput) (*api.ListLayersOutput, error) {
+func (c *Client) ListLayers(args *api.ListLayerInput) (*api.ListLayersOutput, error) {
 	return api.ListLayers(c, args)
+}
+
+// ListLayers - list all layers
+//
+// PARAMS:
+//   - args: args to list all layers
+//
+// RETURNS:
+//   - *api.ListLayerVersionsOutput: list of all layers
+//   - error: nil if success otherwise the specific error
+func (c *Client) ListLayerVersions(args *api.ListLayerVersionsInput) (*api.ListLayerVersionsOutput, error) {
+	return api.ListLayerVersions(c, args)
 }
 
 // DeleteLayerVersion - delete a layer version

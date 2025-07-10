@@ -18,6 +18,7 @@ var (
 
 	RESOURCE_POOL_ID string
 	QUEUE_NAME       string
+	QUEUE_ID         string
 	AIJobID          string
 )
 
@@ -236,7 +237,11 @@ func TestListJobs(t *testing.T) {
 
 func TestGetAIJob(t *testing.T) {
 	testName := "TestGetAIJob"
-	result, err := AIHC_CLIENT.GetJob(AIJobID, RESOURCE_POOL_ID)
+	result, err := AIHC_CLIENT.GetJob(&v1.GetAIJobOptions{
+		JobID:          AIJobID,
+		ResourcePoolID: RESOURCE_POOL_ID,
+		QueueID:        QUEUE_ID,
+	})
 	if !ExpectEqual(t.Errorf, err, nil, testName) {
 		t.Errorf("GetAIJob failed: %v", err)
 		return
@@ -256,7 +261,11 @@ func TestGetAIJob(t *testing.T) {
 
 func TestDeleteJob(t *testing.T) {
 	testName := "TestDeleteJob"
-	result, err := AIHC_CLIENT.DeleteJob(AIJobID, RESOURCE_POOL_ID)
+	result, err := AIHC_CLIENT.DeleteJob(&v1.DeleteAIJobOptions{
+		JobID:          AIJobID,
+		ResourcePoolID: RESOURCE_POOL_ID,
+		QueueID:        QUEUE_ID,
+	})
 	if !ExpectEqual(t.Errorf, err, nil, testName) {
 		return
 	}
@@ -286,7 +295,7 @@ func TestCreateJob(t *testing.T) {
 		FaultToleranceConfig: &v1.OpenAPIJobFaultToleranceConfig{},
 		AlertConfig:          nil,
 		EnableBccl:           false,
-	}, RESOURCE_POOL_ID)
+	}, &v1.CreateAIJobOptions{ResourcePoolID: RESOURCE_POOL_ID})
 	if !ExpectEqual(t.Errorf, err, nil, testName) {
 		return
 	}
@@ -306,7 +315,11 @@ func TestUpadateJob(t *testing.T) {
 	testName := "TestUpdateJob"
 	result, err := AIHC_CLIENT.UpdateJob(&v1.OpenAPIJobUpdateRequest{
 		Priority: "",
-	}, AIJobID, RESOURCE_POOL_ID)
+	}, &v1.UpdateAIJobOptions{
+		JobID:          AIJobID,
+		ResourcePoolID: RESOURCE_POOL_ID,
+		QueueID:        QUEUE_ID,
+	})
 	if !ExpectEqual(t.Errorf, err, nil, testName) {
 		return
 	}
@@ -324,7 +337,11 @@ func TestUpadateJob(t *testing.T) {
 
 func TestStopJob(t *testing.T) {
 	testName := "TestStopJob"
-	result, err := AIHC_CLIENT.StopJob(AIJobID, RESOURCE_POOL_ID)
+	result, err := AIHC_CLIENT.StopJob(&v1.StopAIJobOptions{
+		JobID:          AIJobID,
+		ResourcePoolID: RESOURCE_POOL_ID,
+		QueueID:        QUEUE_ID,
+	})
 	if !ExpectEqual(t.Errorf, err, nil, testName) {
 		return
 	}
@@ -422,7 +439,11 @@ func TestGetPodLogs(t *testing.T) {
 
 func TestGetJobNodesList(t *testing.T) {
 	testName := "TestGetJobNodesList"
-	result, err := AIHC_CLIENT.GetJobNodesList(AIJobID, RESOURCE_POOL_ID, "")
+	result, err := AIHC_CLIENT.GetJobNodesList(&v1.GetJobNodesListOptions{
+		JobID:          AIJobID,
+		ResourcePoolID: RESOURCE_POOL_ID,
+		Namespace:      "",
+	})
 	if !ExpectEqual(t.Errorf, err, nil, testName) {
 		return
 	}
