@@ -101,7 +101,7 @@ func TestDoesBucketExist(t *testing.T) {
 	exist, err := BOS_CLIENT.DoesBucketExist(EXISTS_BUCKET)
 	ExpectEqual(t.Errorf, exist, true)
 	ExpectEqual(t.Errorf, err, nil)
-	exist, err = BOS_CLIENT.DoesBucketExist("xxx")
+	exist, _ = BOS_CLIENT.DoesBucketExist("xxx")
 	ExpectEqual(t.Errorf, exist, false)
 }
 func TestPutBucket(t *testing.T) {

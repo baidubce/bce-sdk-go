@@ -159,7 +159,7 @@ type ResultSet struct {
 
 type QueryLogResult struct {
 	ResultSet       *ResultSet       `json:"resultSet"`
-	DataSetScanInfo *DataSetScanInfo `json:"dataScanInfo"`
+	DataSetScanInfo *DataSetScanInfo `json:"datasetScanInfo"`
 	NextMarker      string           `json:"nextMarker"`
 }
 
