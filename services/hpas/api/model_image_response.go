@@ -21,4 +21,6 @@ type ImageResponse struct {
 	ImageStatus      string   `json:"imageStatus"`
 	CreateTime       string   `json:"createTime"`
 	SupportedAppType []string `json:"supportedAppType"`
+	ImageSizeInGB    int 	  `json:"imageSizeInGB"`
+	MinDiskInGB  	 int 	  `json:"minDiskInGB"`
 }

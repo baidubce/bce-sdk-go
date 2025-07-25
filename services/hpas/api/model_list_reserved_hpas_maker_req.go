@@ -20,6 +20,7 @@ type ListReservedHpasByMakerReq struct {
 	ZoneName           string   `json:"zoneName,omitempty"`
 	ReservedHpasStatus string   `json:"reservedHpasStatus,omitempty"`
 	AppType            string   `json:"appType,omitempty"`
+	HpasId             string   `json:"hpasId,omitempty"`
 	Marker             string   `json:"marker,omitempty"`
 	MaxKeys            int      `json:"maxKeys,omitempty"`
 }

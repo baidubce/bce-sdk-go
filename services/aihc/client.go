@@ -2,7 +2,9 @@ package aihc
 
 import (
 	resourcepoolv1 "github.com/baidubce/bce-sdk-go/services/aihc/api/v1"
+	v2 "github.com/baidubce/bce-sdk-go/services/aihc/api/v2"
 	"github.com/baidubce/bce-sdk-go/services/aihc/client"
+	"github.com/baidubce/bce-sdk-go/services/aihc/dataset"
 	"github.com/baidubce/bce-sdk-go/services/aihc/dev"
 	inference "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 	"github.com/baidubce/bce-sdk-go/services/aihc/resource"
@@ -11,6 +13,7 @@ import (
 type Interface interface {
 	resource.Interface
 	inference.Interface
+	dataset.Interface
 	dev.Interface
 }
 
@@ -18,6 +21,7 @@ type Client struct {
 	resourceClient  *resource.Client
 	inferenceClient *inference.Client
 	devClient       *dev.Client
+	datasetClient   *dataset.Client
 	GlobalClient    *client.Client
 }
 
@@ -42,6 +46,12 @@ func NewClient(ak, sk, endpoint string) (Interface, error) {
 	}
 	clientset.devClient = devClient
 
+	datasetClient, err := dataset.NewClient(ak, sk, endpoint)
+	if err != nil {
+		return nil, err
+	}
+	clientset.datasetClient = datasetClient
+
 	return clientset, nil
 }
 
@@ -59,6 +69,13 @@ func NewClientWithSTS(ak, sk, sessionToken, endpoint string) (Interface, error) 
 		return nil, err
 	}
 	clientset.inferenceClient = inferenceClient
+
+	datasetClient, err := dataset.NewClientWithSTS(ak, sk, sessionToken, endpoint)
+	if err != nil {
+		return nil, err
+	}
+	clientset.datasetClient = datasetClient
+
 	return clientset, nil
 }
 
@@ -219,4 +236,41 @@ func (clientset *Client) CreateDevInstanceImagePackJob(args *dev.CreateDevInstan
 
 func (clientset *Client) DevInstanceImagePackJobDetail(args *dev.DevInstanceImagePackJobDetailArgs) (*dev.DevInstanceImagePackJobDetailResult, error) {
 	return clientset.devClient.DevInstanceImagePackJobDetail(args)
+}
+
+// dataset
+func (clientset *Client) CreateDataset(req *v2.CreateDatasetRequest) (*v2.CreateDatasetResponse, error) {
+	return clientset.datasetClient.CreateDataset(req)
+}
+
+func (clientset *Client) DeleteDataset(datasetId string) (*v2.DeleteDatasetResponse, error) {
+	return clientset.datasetClient.DeleteDataset(datasetId)
+}
+
+func (clientset *Client) ModifyDataset(datasetId string, req *v2.ModifyDatasetRequest) (*v2.ModifyDatasetResponse, error) {
+	return clientset.datasetClient.ModifyDataset(datasetId, req)
+}
+
+func (clientset *Client) DescribeDataset(datasetId string) (*v2.DescribeDatasetResponse, error) {
+	return clientset.datasetClient.DescribeDataset(datasetId)
+}
+
+func (clientset *Client) DescribeDatasets(options *v2.DescribeDatasetsOptions) (*v2.DescribeDatasetsResponse, error) {
+	return clientset.datasetClient.DescribeDatasets(options)
+}
+
+func (clientset *Client) CreateDatasetVersion(datasetId string, req *v2.CreateDatasetVersionRequest) (*v2.CreateDatasetVersionResponse, error) {
+	return clientset.datasetClient.CreateDatasetVersion(datasetId, req)
+}
+
+func (clientset *Client) DeleteDatasetVersion(datasetId, versionId string) (*v2.DeleteDatasetVersionResponse, error) {
+	return clientset.datasetClient.DeleteDatasetVersion(datasetId, versionId)
+}
+
+func (clientset *Client) DescribeDatasetVersion(datasetId, versionId string) (*v2.DescribeDatasetVersionResponse, error) {
+	return clientset.datasetClient.DescribeDatasetVersion(datasetId, versionId)
+}
+
+func (clientset *Client) DescribeDatasetVersions(datasetId string, options *v2.DescribeDatasetVersionsOptions) (*v2.DescribeDatasetVersionsResponse, error) {
+	return clientset.datasetClient.DescribeDatasetVersions(datasetId, options)
 }

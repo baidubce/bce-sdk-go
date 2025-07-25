@@ -298,6 +298,7 @@ func TestListReservedHpasByMakerReq(t *testing.T) {
 		ReservedHpasStatus: "active",
 		AppType:            "llama2_7B_train",
 		Marker:             "marker123",
+		HpasId:             "hpas-hS7So6Qy",
 		MaxKeys:            10,
 	}
 
@@ -449,8 +450,8 @@ func TestDetachSecurityGroups(t *testing.T) {
 
 func TestDescribeInstanceInventoryQuantity(t *testing.T) {
 	req := &api.DescribeInstanceInventoryQuantityReq{
-		ZoneName: "cn-bj-a",
-		AppType:  "llama2_7B_train",
+		ZoneName:            "cn-bj-a",
+		AppType:             "llama2_7B_train",
 		AppPerformanceLevel: "10k",
 	}
 	resp, err := HPAS_CLIENT.DescribeInstanceInventoryQuantity(req)
