@@ -1247,7 +1247,7 @@ type Vpc struct {
 	Name        string `json:"name"`
 	Cidr        string `json:"cidr"`
 	Description string `json:"description"`
-	subnet      Subnet `json:"subnet"`
+	Subnet      Subnet `json:"subnet"`
 }
 
 type Subnet struct {

@@ -92,8 +92,8 @@ type Target struct {
 	DigitalWmAlgVersion  int       `json:"digitalWmAlgVersion,omitempty"`
 	DigitalWmStrength    float64   `json:"digitalWmStrength,omitempty"`
 	JobCfg               *JobCfg   `json:"jobCfg,omitempty"`
+	MetaData             string    `json:"metaData,omitempty"`
 }
-
 type JobCfg struct {
 	Notification string `json:"notification,omitempty"`
 }

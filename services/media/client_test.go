@@ -18,8 +18,9 @@ var (
 )
 
 type Conf struct {
-	AK string
-	SK string
+	AK       string
+	SK       string
+	Endpoint string
 }
 
 func init() {
@@ -34,7 +35,7 @@ func init() {
 	confObj := &Conf{}
 	decoder.Decode(confObj)
 
-	MEDIA_CLIENT, _ = NewClient(confObj.AK, confObj.SK, "")
+	MEDIA_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
 }
 
@@ -216,6 +217,27 @@ func TestCreateJobWithNotify(t *testing.T) {
 	cfg := &api.JobCfg{}
 	cfg.Notification = "http://hello.lyq.com:80/job"
 	target.JobCfg = cfg
+	args.Target = target
+
+	jobResponse, err := MEDIA_CLIENT.CreateJobCustomize(args)
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", jobResponse)
+}
+
+func TestCreateJobMetaDate(t *testing.T) {
+	args := &api.CreateJobArgs{}
+	args.PipelineName = "normal"
+	source := &api.Source{Clips: &[]api.SourceClip{{
+		SourceKey: "123123.mp4",
+	}}}
+	args.Source = source
+	target := &api.Target{}
+	targetKey := "metadata123123.mp4"
+	target.TargetKey = targetKey
+	presetName := "mct.video_mp4_640x360_600kbps"
+	target.PresetName = presetName
+	data := "{\"test\":\"hello\",\"data\":1}"
+	target.MetaData = data
 	args.Target = target
 
 	jobResponse, err := MEDIA_CLIENT.CreateJobCustomize(args)
