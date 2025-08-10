@@ -2593,3 +2593,28 @@ func TestDescribeDescribeUnplannedEventRecords(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(res)
 }
+
+func TestListTask(t *testing.T) {
+	args := &api.ListTaskByMarkerV2Req{
+		StartTime: "2025-08-01T10:52:07Z",
+		TaskIds: []string{
+			"t-taskId",
+		},
+	}
+
+	res, err := BCC_CLIENT.ListTask(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestGetTaskDetail(t *testing.T) {
+	args := &api.GetTaskDetailReq{
+		TaskIds: []string{
+			"t-taskId",
+		},
+	}
+
+	res, err := BCC_CLIENT.GetTask(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}

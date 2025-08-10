@@ -62,3 +62,113 @@ func (c *Client) ResourceMonthBill(month string, beginTime string, endTime strin
 
 	return result, err
 }
+
+// ResourceChargeItemBill - get user's resource charge item bill
+//
+// PARAMS:
+//   - request: open api request body, see https://cloud.baidu.com/doc/Finance/s/qlfuqsf02
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) ResourceChargeItemBill(request ResourceChargeItemBillRequest) (*ResourceChargeItemBillResponse, error) {
+
+	if request.PageNo <= 0 {
+		request.PageNo = 1
+	}
+	if request.PageSize <= 0 || request.PageSize > 100 {
+		request.PageSize = 100
+	}
+	result := &ResourceChargeItemBillResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getBillingPrefix() + URI_RESOURCE_CHARGE_ITEM_BILL).
+		WithBody(request).
+		WithResult(result).
+		Do()
+	return result, err
+}
+
+// ShareBill - get user's share bill
+//
+// PARAMS:
+//   - request: open api request param, see https://cloud.baidu.com/doc/Finance/s/vmck88hhv
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) ShareBill(request ShareBillRequest) (*ShareBillResponse, error) {
+	result := &ShareBillResponse{}
+	if request.PageNo <= 0 {
+		request.PageNo = 1
+	}
+	if request.PageSize <= 0 || request.PageSize > 100 {
+		request.PageSize = 100
+	}
+
+	httpRequest := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getBillingPrefix()+URI_SHARE_BILL).
+		WithQueryParam("month", request.Month).
+		WithQueryParam("startDay", request.StartDay).
+		WithQueryParam("endDay", request.EndDay).
+		WithQueryParam("showDeductPrice", strconv.FormatBool(request.ShowDeductPrice)).
+		WithQueryParam("showControversial", strconv.FormatBool(request.ShowControversial)).
+		WithQueryParam("showTags", strconv.FormatBool(request.ShowTags)).
+		WithQueryParam("needSplitConfiguration", strconv.FormatBool(request.NeedSplitConfiguration)).
+		WithQueryParam("pageNo", strconv.Itoa(request.PageNo)).
+		WithQueryParam("pageSize", strconv.Itoa(request.PageSize))
+
+	if request.StartDay != "" {
+		httpRequest = httpRequest.WithQueryParam("productType", request.ProductType)
+	}
+	if request.ServiceType != "" {
+		httpRequest = httpRequest.WithQueryParam("serviceType", request.ServiceType)
+	}
+	if request.QueryAccountId != "" {
+		httpRequest = httpRequest.WithQueryParam("queryAccountId", request.QueryAccountId)
+	}
+	if request.DisplaySystemUnit != "" {
+		httpRequest = httpRequest.WithQueryParam("displaySystemUnit", request.DisplaySystemUnit)
+	}
+	err := httpRequest.WithResult(result).Do()
+
+	return result, err
+}
+
+// CostSplitBill - get user's cost split bill
+//
+// PARAMS:
+//   - request: open api request param, see https://cloud.baidu.com/doc/Finance/s/Umck9e681
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) CostSplitBill(request CostSplitBillRequest) (*ShareBillResponse, error) {
+	result := &ShareBillResponse{}
+	if request.PageNo <= 0 {
+		request.PageNo = 1
+	}
+	if request.PageSize <= 0 || request.PageSize > 100 {
+		request.PageSize = 100
+	}
+
+	httpRequest := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getBillingPrefix()+URI_COST_SPLIT_BILL).
+		WithQueryParam("month", request.Month).
+		WithQueryParam("startDay", request.StartDay).
+		WithQueryParam("endDay", request.EndDay).
+		WithQueryParam("showTags", strconv.FormatBool(request.ShowTags)).
+		WithQueryParam("needSplitConfiguration", strconv.FormatBool(request.NeedSplitConfiguration)).
+		WithQueryParam("pageNo", strconv.Itoa(request.PageNo)).
+		WithQueryParam("pageSize", strconv.Itoa(request.PageSize))
+	if request.ServiceType != "" {
+		httpRequest = httpRequest.WithQueryParam("serviceType", request.ServiceType)
+	}
+	if request.InstanceId != "" {
+		httpRequest = httpRequest.WithQueryParam("instanceId", request.InstanceId)
+	}
+	if request.QueryAccountId != "" {
+		httpRequest = httpRequest.WithQueryParam("queryAccountId", request.QueryAccountId)
+	}
+	err := httpRequest.WithResult(result).Do()
+	return result, err
+}

@@ -24,10 +24,67 @@ import (
 
 func TestResourceMonthBill(t *testing.T) {
 	log.SetLogLevel(log.DEBUG)
-	client, _ := NewClient("ak", "sk", "endpoint")
+	client := getClient()
 	bill, err := client.ResourceMonthBill("2024-02", "", "", "postpay", "", "", 1, 10)
 	if err != nil {
 		log.Error(err)
 	}
 	log.Info(json.Marshal(bill))
+}
+
+func TestResourceChargeItemBill(t *testing.T) {
+	log.SetLogLevel(log.DEBUG)
+	client := getClient()
+	request := ResourceChargeItemBillRequest{
+		BillMonth:              "2025-06",
+		QueryAccountId:         "accountId",
+		PageNo:                 1,
+		PageSize:               2,
+		NeedSplitConfiguration: true,
+	}
+	bill, err := client.ResourceChargeItemBill(request)
+	if err != nil {
+		log.Error(err)
+	}
+	log.Info(json.Marshal(bill))
+}
+
+func TestShareBill(t *testing.T) {
+	log.SetLogLevel(log.DEBUG)
+	client := getClient()
+	request := ShareBillRequest{
+		Month:                  "2025-06",
+		QueryAccountId:         "accountId",
+		PageNo:                 1,
+		PageSize:               5,
+		NeedSplitConfiguration: true,
+	}
+	bill, err := client.ShareBill(request)
+	if err != nil {
+		log.Error(err)
+	}
+	log.Info(json.Marshal(bill))
+}
+
+func TestCostSplitBill(t *testing.T) {
+	log.SetLogLevel(log.DEBUG)
+	client := getClient()
+	request := CostSplitBillRequest{
+		Month:                  "2025-06",
+		QueryAccountId:         "accountId",
+		PageNo:                 1,
+		PageSize:               100,
+		NeedSplitConfiguration: true,
+		ServiceType:            "BLB",
+	}
+	bill, err := client.CostSplitBill(request)
+	if err != nil {
+		log.Error(err)
+	}
+	log.Info(json.Marshal(bill))
+}
+
+func getClient() *Client {
+	client, _ := NewClient("ak", "sk", "endpoint")
+	return client
 }

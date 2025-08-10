@@ -3297,3 +3297,69 @@ func DescribeUnplannedEventRecords(cli bce.Client, body *DescribeServerEventReco
 	}
 	return res, nil
 }
+
+func GetTaskDetail(cli bce.Client, body *GetTaskDetailReq) (
+	*GetTaskDetailResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri(getTaskDetailUrl())
+	if body.MaxKeys == 0 {
+		body.MaxKeys = 100
+	}
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &GetTaskDetailResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func ListTask(cli bce.Client, body *ListTaskByMarkerV2Req) (
+	*ListTaskByMarkerV2Resp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri(listTasklUrl())
+	if body.MaxKeys == 0 {
+		body.MaxKeys = 100
+	}
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &ListTaskByMarkerV2Resp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}

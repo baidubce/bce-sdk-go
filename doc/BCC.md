@@ -4318,6 +4318,42 @@ if res, err := client.DescribeUnplannedEventRecords(args); err != nil {
     fmt.Println
 ```
 
+### 查询任务详情
+```go
+args := &GetTaskDetailReq{
+        // 每页包含的最大数量，最大数量不超过100，缺省为100
+        MaxKeys: 100,
+        // 任务的短id列表
+        TaskIds: []string{
+            "t-taskId",
+        },
+}
+if res, err := client.GetTask(args); err != nil {
+    fmt.Println("GetTask failed: ", err)
+} else {
+    fmt.Println("GetTask success: ", res)
+}
+```
+
+### 查询任务列表
+```go
+args := &ListTaskByMarkerV2Req{
+        // 任务开始时间，格式为：2025-08-01T10:52:07Z
+        StartTime: "2025-08-01T10:52:07Z",
+        // 每页包含的最大数量，最大数量不超过100，缺省为100
+        MaxKeys: 100, 
+        // 任务的短id列表
+        TaskIds: []string{
+            "t-EuuKWYD0",
+        },
+}
+if res, err := client.ListTask(args); err != nil {
+    fmt.Println("ListTask failed: ", err)
+} else {
+    fmt.Println("ListTask success: ", res)
+}
+```
+
 # 错误处理
 
 GO语言以error类型标识错误，BCC支持两种错误见下表：

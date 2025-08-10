@@ -2741,6 +2741,16 @@ func (c *Client) ListSnapshotShare(body *api.ListSnapshotShareByMarkerV2Req) (*a
 	return api.ListSnapshotShare(c, body)
 }
 
+func (c *Client) GetTask(body *api.GetTaskDetailReq) (
+	*api.GetTaskDetailResp, error) {
+	return api.GetTaskDetail(c, body)
+}
+
+func (c *Client) ListTask(body *api.ListTaskByMarkerV2Req) (
+	*api.ListTaskByMarkerV2Resp, error) {
+	return api.ListTask(c, body)
+}
+
 func (c *Client) AuthorizeServerEvent(body *api.AuthorizeServerEventReq) (*api.AuthorizeServerEventResp, error) {
 	return api.AuthorizeServerEvent(c, body)
 }

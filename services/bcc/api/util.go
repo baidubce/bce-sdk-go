@@ -607,3 +607,11 @@ func getSnapshotUnShareUrl() string {
 func getSnapshotShareListUrl() string {
 	return URI_PREFIXV2 + "/snapshot/snapshotShare/list"
 }
+
+func getTaskDetailUrl() string {
+	return URI_PREFIXV2 + "/task/detail"
+}
+
+func listTasklUrl() string {
+	return URI_PREFIXV2 + "/task/list"
+}

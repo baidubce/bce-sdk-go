@@ -20,9 +20,12 @@ import (
 )
 
 const (
-	DEFAULT_ENDPOINT        = "http://billing.baidubce.com"
-	VERSION                 = "v1"
-	URI_RESOURCE_MONTH_BILL = "/bill/resource/month"
+	DEFAULT_ENDPOINT              = "http://billing.baidubce.com"
+	VERSION                       = "v1"
+	URI_RESOURCE_MONTH_BILL       = "/bill/resource/month"
+	URI_RESOURCE_CHARGE_ITEM_BILL = "/bill/resource/chargeitem"
+	URI_SHARE_BILL                = "/bill/share/bill"
+	URI_COST_SPLIT_BILL           = "/bill/cost/split/bill/list"
 )
 
 type Client struct {

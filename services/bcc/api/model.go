@@ -2926,6 +2926,64 @@ type ListSnapshotShareByMarkerV2Resp struct {
 	Result      []SnapshotShareUO `json:"result"`
 }
 
+type ListTaskByMarkerV2Req struct {
+	Marker      string   `json:"marker,omitempty"`
+	MaxKeys     int      `json:"maxKeys"`
+	TaskIds     []string `json:"taskIds,omitempty"`
+	TaskAction  string   `json:"taskAction,omitempty"`
+	TaskStatus  string   `json:"taskStatus,omitempty"`
+	StartTime   string   `json:"startTime,omitempty"`
+	EndTime     string   `json:"endTime,omitempty"`
+	ResourceIds []string `json:"resourceIds,omitempty"`
+}
+
+type ListTaskByMarkerV2Resp struct {
+	IsTruncated bool        `json:"isTruncated"`
+	Marker      string      `json:"marker"`
+	MaxKeys     int         `json:"maxKeys"`
+	NextMarker  string      `json:"nextMarker"`
+	Tasks       []TaskModel `json:"tasks"`
+}
+
+type TaskModel struct {
+	TaskId       string `json:"taskId"`
+	TaskAction   string `json:"taskAction"`
+	TaskStatus   string `json:"taskStatus"`
+	CreatedTime  string `json:"createdTime"`
+	FinishedTime string `json:"finishedTime"`
+	TotalCount   int    `json:"totalCount"`
+	SuccessCount int    `json:"successCount"`
+	FailedCount  int    `json:"failedCount"`
+}
+
+type TaskDetailModel struct {
+	TaskId               string              `json:"taskId"`
+	TaskAction           string              `json:"taskAction"`
+	TaskStatus           string              `json:"taskStatus"`
+	CreatedTime          string              `json:"createdTime"`
+	FinishedTime         string              `json:"finishedTime"`
+	TotalCount           int                 `json:"totalCount"`
+	SuccessCount         int                 `json:"successCount"`
+	FailedCount          int                 `json:"failedCount"`
+	OperationProgressSet []OperationProgress `json:"operationProgressSet"`
+}
+
+type OperationProgress struct {
+	ResourceId      string `json:"resourceId"`
+	OperationStatus string `json:"operationStatus"`
+	Code            string `json:"code"`
+	ErrorMessage    string `json:"errorMessage"`
+}
+
+type GetTaskDetailReq struct {
+	TaskIds []string `json:"taskIds"`
+	MaxKeys int      `json:"maxKeys"`
+}
+
+type GetTaskDetailResp struct {
+	Tasks       []TaskDetailModel `json:"tasks"`
+}
+
 type AuthorizeServerEventReq struct {
 	ServerEventId                 string `json:"serverEventId,omitempty"`
 	InstanceId                    string `json:"instanceId,omitempty"`
