@@ -448,6 +448,17 @@ func TestDetachSecurityGroups(t *testing.T) {
 	fmt.Println(resp)
 }
 
+func TestDescribeHpasSpecs(t *testing.T) {
+	req := &api.DescribeHpasSpecsReq{
+		ZoneName: "cn-bj-a",
+		AppType:  "llama2_7B_train",
+		AppPerformanceLevel: "10k",
+	}
+	resp, err := HPAS_CLIENT.DescribeHpasSpecs(req)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
 func TestDescribeInstanceInventoryQuantity(t *testing.T) {
 	req := &api.DescribeInstanceInventoryQuantityReq{
 		ZoneName:            "cn-bj-a",

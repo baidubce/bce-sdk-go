@@ -520,3 +520,25 @@ func (c *Client) GetEipTp(id string) (*EipTpDetail, error) {
 
 	return result, err
 }
+
+// EipPostpayToPrepay - EIP post to pre with the specific parameters
+//
+// PARAMS:
+//   - eip: the specific EIP
+//   - args: the arguments to change an eip
+//   - clientToken: the specific client token
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) EipPostpayToPrepay(eip string, args *EipToPrepayRequest) error {
+	if args == nil {
+		return fmt.Errorf("please set postpay to prepay eip argments")
+	}
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getEipUriWithEip(eip)).
+		WithQueryParam("action", "TO_PREPAY").
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithBody(args).
+		Do()
+}

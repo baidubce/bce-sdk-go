@@ -707,7 +707,7 @@ type UpdateVmServiceArgs struct {
 	UpdateBecVmForm
 	ServiceName     string                `json:"serviceName,omitempty"`
 	DeployInstances *[]DeploymentInstance `json:"deployInstances,omitempty"`
-	ReplicaTemplate ReplicaTemplate       `json:"replicaTemplate,omitempty"`
+	ReplicaTemplate *ReplicaTemplate      `json:"replicaTemplate,omitempty"`
 }
 type ReplicaTemplate struct {
 	Type       string `json:"type,omitempty"`

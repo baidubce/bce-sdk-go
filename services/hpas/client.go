@@ -414,6 +414,18 @@ func (c *Client) DetachSecurityGroups(body *api.SecurityGroupsReq) (*api.BaseV3R
 	return api.DetachSecurityGroups(c, body)
 }
 
+// DescribeHpasSpecs -
+//
+// PARAMS:
+//   - body: body参数
+//
+// RETURNS:
+//   - *api.BaseV3Resp:
+//   - error: the return error if any occurs
+func (c *Client) DescribeHpasSpecs(body *api.DescribeHpasSpecsReq) (*api.DescribeHpasSpecsResp, error) {
+	return api.DescribeHpasSpecs(c, body)
+}
+
 func (c *Client) DescribeInstanceInventoryQuantity(body *api.DescribeInstanceInventoryQuantityReq) (*api.DescribeInstanceInventoryQuantityResp, error) {
 	return api.DescribeInstanceInventoryQuantity(c, body)
 }

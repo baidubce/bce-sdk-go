@@ -538,3 +538,12 @@ func TestClient_ModifyDdosThreshold(t *testing.T) {
 	err := EIP_CLIENT.ModifyDdosThreshold(modifyDdosThresholdRequest)
 	ExpectEqual(t.Errorf, nil, err)
 }
+
+func TestClient_EipPostpayToPrepay(t *testing.T) {
+	eipToPrepayRequest := &EipToPrepayRequest{
+		BandWidth:      50,
+		PurchaseLength: 1,
+	}
+	err := EIP_CLIENT.EipPostpayToPrepay(EIP_ADDRESS, eipToPrepayRequest)
+	ExpectEqual(t.Errorf, nil, err)
+}

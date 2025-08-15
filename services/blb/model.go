@@ -585,7 +585,7 @@ type AddBackendServersArgs struct {
 
 type BackendServerModel struct {
 	InstanceId string `json:"instanceId"`
-	Weight     int    `json:"weight"`
+	Weight     *int   `json:"weight"`
 	PrivateIp  string `json:"privateIp,omitempty"`
 }
 

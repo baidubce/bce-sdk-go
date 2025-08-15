@@ -42,7 +42,7 @@ type AppRsPortModel struct {
 
 type AppBackendServer struct {
 	InstanceId string           `json:"instanceId,omitempty"`
-	Weight     int              `json:"weight,omitempty"`
+	Weight     *int             `json:"weight"`
 	PrivateIp  string           `json:"privateIp,omitempty"`
 	PortList   []AppRsPortModel `json:"portList,omitempty"`
 }

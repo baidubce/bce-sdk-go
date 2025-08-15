@@ -100,7 +100,49 @@ func (c *Client) GetVmInstanceList(args *api.ListRequest) (*api.LogicPageVmInsta
 
 	return result, err
 }
+// GetNodeVmInstanceList - get vm instance list filtered by region, service provider, city, and optional keyword
+//
+// PARAMS:
+//   - region: region where the VM instances are deployed (e.g. "NORTH_CHINA")
+//   - serviceProvider: service provider for the VM instances (e.g. "TRIPLE_LINE")
+//   - city: deployment city (e.g. "BAODING1")
+//   - listRequest: search keyword and type (e.g. keywordType = "vmName", keyword = "wj")
+//
+// RETURNS:
+//   - *api.GetNodeVmInstanceListResult: the result containing filtered VM instance list
+//   - error: nil if success, otherwise the specific error encountered
+func (c *Client) GetNodeVmInstanceList(region string, serviceProvider string, city string, 
+	listRequest *api.ListRequest) (*api.GetNodeVmInstanceListResult, error) {
+	if region == "" {
+		return nil, fmt.Errorf("please set region")
+	}
+	if serviceProvider == "" {
+		return nil, fmt.Errorf("please set serviceProvider")
+	}
+	if city == "" {
+		return nil, fmt.Errorf("please set city")
+	}
+	if listRequest == nil {
+		return nil, fmt.Errorf("please set listRequest")
+	}
 
+	params := make(map[string]string)
+	if listRequest.KeywordType != "" {
+		params["keywordType"] = listRequest.KeywordType
+	}
+	if listRequest.Keyword != "" {
+		params["keyword"] = listRequest.Keyword
+	}
+	result := &api.GetNodeVmInstanceListResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(api.GetVmInstanceURI() + "/regions/" + region + "/sps/" + serviceProvider + "/cities/" + city).
+		WithQueryParams(params).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
 // GetVirtualMachine - get vm with the specific parameters
 //
 // PARAMS:

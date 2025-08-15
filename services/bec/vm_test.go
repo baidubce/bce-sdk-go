@@ -17,6 +17,22 @@ func TestCreateVmServiceOnly(t *testing.T) {
 	t.Logf("%+v", res)
 }
 
+func TestBecNodeVmInstanceList(t *testing.T) {
+	// 构造请求参数
+	listRequest := &api.ListRequest{
+		KeywordType: "vmName", // 可选值: instanceId, vmId, serviceId, vmName, instanceName, instanceIp, internalIp, publicIp
+		Keyword:     "wj",
+	}
+
+	// 区域、运营商、城市参数
+	region := "NORTH_CHINA"
+	serviceProvider := "TRIPLE_LINE"
+	city := "BAODING1"
+
+	res, err := CLIENT.GetNodeVmInstanceList(region, serviceProvider, city, listRequest)
+	ExpectEqual(t.Errorf, nil, err)
+	t.Logf("getBecNodeVmInstanceList response: %+v", res)
+}
 func TestCreateVmService(t *testing.T) {
 	getReq := &api.CreateVmServiceArgs{KeyConfig: &api.KeyConfig{
 		Type:             "bccKeyPair",
@@ -27,14 +43,14 @@ func TestCreateVmService(t *testing.T) {
 			NetworkType: "classic"}}, DisableIntranet: false, NeedPublicIp: true, NeedIpv6PublicIp: false, SecurityGroupIds: []string{"sg-219mosrn"},
 		DnsConfig: &api.DnsConfig{
 			DnsType: "DEFAULT",
-		}, Cpu: 2, Memory: 4, PaymentMethod: "postpay"}
+		}, Cpu: 1, Memory: 2, PaymentMethod: "postpay"}
 	res, err := CLIENT.CreateVmService(getReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
 
 func TestCreateVmServicePostPayTag(t *testing.T) {
-	createReq := &api.CreateVmServiceArgs{ServiceName: "zyc-postpay-del-gosdk-userdata-49", VmName: "zyc-postpay-del-gosdk-userdata-49",
+	createReq := &api.CreateVmServiceArgs{ServiceName: "zyc-postpay-del-gosdk-userdata-52", VmName: "zyc-postpay-del-gosdk-userdata-52",
 		AdminPass: "vWdUKxsdx$xBE8v%*",
 		ImageId:   "m-uCGlYurQ", Bandwidth: 100, ImageType: api.ImageTypeBec,
 		SystemVolume: &api.SystemVolumeConfig{SizeInGB: 40, VolumeType: api.DiskTypeNVME, Name: "sys"},
@@ -44,20 +60,12 @@ func TestCreateVmServicePostPayTag(t *testing.T) {
 			RegionId:    "cn-nanning-cm",
 			Replicas:    1,
 			NetworkType: "vpc"}}, DisableIntranet: false, NeedPublicIp: false, NeedIpv6PublicIp: false,
-		SecurityGroupIds: []string{"sg-219mosrn"},
-		Reservation: &api.Reservation{
-			TimeUnit: "month",
-		},
-		AutoRenew: &api.AutoRenew{
-			Length:   4,
-			TimeUnit: "month",
-		},
+		SecurityGroupIds:  []string{"sg-219mosrn"},
 		HostnameGenMethod: api.HostnameGenMethodRandom,
-		DirectPay:         true,
 		ActionType:        api.ActionTypeNew,
 		DnsConfig: &api.DnsConfig{
 			DnsType: "DEFAULT",
-		}, Cpu: 1, Memory: 4, PaymentMethod: "postpay", Tags: &[]api.Tag{api.Tag{TagKey: "bec-zyc-key",
+		}, Cpu: 1, Memory: 2, PaymentMethod: "postpay", Tags: &[]api.Tag{api.Tag{TagKey: "bec-zyc-key",
 			TagValue: "bec-zyc-key-val"}}, DeploysetIdList: []string{"dset-1j7ewwjb"},
 		UserData: "dXNlcl9pbmplY3RlZF9kYXRhOiBJeUV2WW1sdUwzTm9DbVZqYUc4Z0lsZGxiR052YldVZ2RH" +
 			"OGdRbUZwWkhVZ1FVa2dRMnh2ZFdRdUlpQjhJSFJsWlNBdmNtOXZkQzkxYzJWeVJHRjBZVVpwYkdVMA=="}
@@ -70,7 +78,7 @@ func TestCreateVmServicePostPayTag(t *testing.T) {
 }
 
 func TestCreateVmServicePrepay(t *testing.T) {
-	createReq := &api.CreateVmServiceArgs{ServiceName: "zyc-test-del-gosdk-prepay-23", VmName: "zyc-test-del-gosdk-prepay-23",
+	createReq := &api.CreateVmServiceArgs{ServiceName: "zyc-test-del-gosdk-prepay-129", VmName: "zyc-test-del-gosdk-prepay-129",
 		AdminPass: "vWdUKxsdx$xBE8v%*",
 		ImageId:   "m-uCGlYurQ", Bandwidth: 100, ImageType: api.ImageTypeBec,
 		SystemVolume: &api.SystemVolumeConfig{SizeInGB: 40, VolumeType: api.DiskTypeNVME, Name: "sys"},
@@ -93,7 +101,7 @@ func TestCreateVmServicePrepay(t *testing.T) {
 		DnsConfig: &api.DnsConfig{
 			DnsType: "DEFAULT",
 		},
-		Cpu: 1, Memory: 4,
+		Cpu: 1, Memory: 2,
 		PaymentMethod: "prepay",
 		Tags: &[]api.Tag{api.Tag{TagKey: "bec-zyc-key",
 			TagValue: "bec-zyc-key-val"}},
@@ -104,6 +112,8 @@ func TestCreateVmServicePrepay(t *testing.T) {
 	req := TransJsonData(createReq)
 	fmt.Println("req=" + req)
 	res, err := CLIENT.CreateVmService(createReq)
+	resStr := TransJsonData(res)
+	fmt.Println("resStr=" + resStr)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 }
@@ -190,7 +200,7 @@ func TestUpdateVmService(t *testing.T) {
 				Replicas:    1,
 				NetworkType: "vpc",
 			},
-		}, ReplicaTemplate: api.ReplicaTemplate{
+		}, ReplicaTemplate: &api.ReplicaTemplate{
 			Type:       "template",
 			TemplateId: "tmpl-gc4maqay",
 		},

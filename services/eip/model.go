@@ -463,3 +463,9 @@ type ModifyDdosThresholdRequest struct {
 	IpCleanMbps   int64  `json:"ipCleanMbps"`
 	IpCleanPps    int64  `json:"ipCleanPps"`
 }
+
+type EipToPrepayRequest struct {
+	BandWidth      int32  `json:"bandWidth"`
+	PurchaseLength int32  `json:"purchaseLength"`
+	ClientToken    string `json:"-"`
+}
