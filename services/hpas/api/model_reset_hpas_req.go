@@ -15,8 +15,10 @@
 package api
 
 type ResetHpasReq struct {
-	HpasIds   []string `json:"hpasIds,omitempty"`
-	ImageId   string   `json:"imageId,omitempty"`
-	Password  string   `json:"password,omitempty"`
-	KeypairId string   `json:"keypairId,omitempty"`
+	HpasIds           []string `json:"hpasIds,omitempty"`
+	ImageId           string   `json:"imageId,omitempty"`
+	Password          string   `json:"password,omitempty"`
+	KeypairId         string   `json:"keypairId,omitempty"`
+	UserData          string   `json:"userData,omitempty"`
+	CleanLastUserData bool     `json:"cleanLastUserData,omitempty"`
 }

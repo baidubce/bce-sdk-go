@@ -23,4 +23,6 @@ type ListHpasByMakerReq struct {
 	ShowRdmaTopo bool     `json:"showRdmaTopo,omitempty"`
 	Marker       string   `json:"marker,omitempty"`
 	MaxKeys      int      `json:"maxKeys,omitempty"`
+	VpcId		 string   `json:"vpcId,omitempty"`
+	PrivateIps	 []string `json:"privateIps,omitempty"`
 }

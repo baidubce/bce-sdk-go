@@ -282,33 +282,116 @@ func TestDeleteJob(t *testing.T) {
 }
 
 func TestCreateJob(t *testing.T) {
-	testName := "TestCreateJob"
-	result, err := AIHC_CLIENT.CreateJob(&v1.OpenAPIJobCreateRequest{
-		Name:                 "",
-		Queue:                "",
-		JobFramework:         "",
-		JobSpec:              v1.OpenAPIAIJobSpec{},
+	// 测试用例结构体：包含测试名称、输入参数、预期结果检查函数
+	type testCase struct {
+		name        string
+		jobReq      *v1.OpenAPIJobCreateRequest
+		opts        *v1.CreateAIJobOptions
+		checkResult func(t *testing.T, result *v1.OpenAPIJobCreateResponse, err error)
+	}
+
+	// 基础请求参数（可复用）
+	baseJobReq := &v1.OpenAPIJobCreateRequest{
+		Name:         "test",
+		Queue:        "default",
+		JobFramework: "",
+		JobSpec: v1.OpenAPIAIJobSpec{
+			Command:  "sleep 2000",
+			Image:    "",
+			Replicas: 1,
+		},
 		FaultTolerance:       false,
-		Labels:               nil,
+		Labels:               []v1.OpenAPILabel{{Key: "key", Value: "value"}},
 		Priority:             "",
 		Datasources:          nil,
 		FaultToleranceConfig: &v1.OpenAPIJobFaultToleranceConfig{},
 		AlertConfig:          nil,
 		EnableBccl:           false,
-	}, &v1.CreateAIJobOptions{ResourcePoolID: RESOURCE_POOL_ID})
-	if !ExpectEqual(t.Errorf, err, nil, testName) {
-		return
 	}
-	if result == nil {
-		t.Error("Result should not be nil")
-		return
+
+	baseOpts := &v1.CreateAIJobOptions{
+		ResourcePoolID: "",
+		Username:       "",
 	}
-	// 使用 t.Logf 输出详细信息
-	resultJSON, err := json.MarshalIndent(result, "", "    ")
-	if !ExpectEqual(t.Errorf, err, nil, testName) {
-		return
+
+	// 测试用例集合（覆盖正常场景和异常场景）
+	testCases := []testCase{
+		{
+			name:   "normal_case",
+			jobReq: baseJobReq,
+			opts:   baseOpts,
+			checkResult: func(t *testing.T, result *v1.OpenAPIJobCreateResponse, err error) {
+				t.Helper() // 标记为辅助函数，错误定位更准确
+
+				// 检查无错误
+				if err != nil {
+					t.Fatalf("预期无错误，实际错误: %v", err)
+				}
+
+				// 检查结果非空且包含必要字段
+				if result == nil {
+					t.Fatal("返回结果不应为nil")
+				}
+				if result.Result.JobID == "" {
+					t.Error("返回结果缺少JobID")
+				}
+
+				// 输出格式化结果（便于调试）
+				resultJSON, err := json.MarshalIndent(result, "", "    ")
+				if err != nil {
+					t.Errorf("序列化结果失败: %v", err)
+					return
+				}
+				t.Logf("创建任务成功，详情:\n%s", resultJSON)
+			},
+		},
+		{
+			name:   "invalid_resource_pool",
+			jobReq: baseJobReq,
+			opts: &v1.CreateAIJobOptions{
+				ResourcePoolID: "invalid-pool", // 无效资源池ID
+				Username:       "",
+			},
+			checkResult: func(t *testing.T, result *v1.OpenAPIJobCreateResponse, err error) {
+				t.Helper()
+
+				// 预期应返回错误
+				if err == nil {
+					t.Fatal("预期有错误，实际无错误")
+				}
+				t.Logf("捕获预期错误: %v", err) // 记录预期错误，便于确认错误类型是否正确
+			},
+		},
+		{
+			name: "empty_job_name",
+			jobReq: func() *v1.OpenAPIJobCreateRequest {
+				req := *baseJobReq
+				req.Name = "" // 空任务名称（非法参数）
+				return &req
+			}(),
+			opts: baseOpts,
+			checkResult: func(t *testing.T, result *v1.OpenAPIJobCreateResponse, err error) {
+				t.Helper()
+				if err == nil {
+					t.Fatal("任务名称为空时应返回错误")
+				}
+			},
+		},
 	}
-	t.Logf("CreateAIJob success:\n%s", string(resultJSON))
+
+	// 执行所有测试用例
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			// 为每个子测试创建独立的客户端实例（避免测试间状态污染）
+			client := AIHC_CLIENT // 若有必要可在此处初始化新实例
+
+			// 调用被测试方法
+			result, err := client.CreateJob(tc.jobReq, tc.opts)
+
+			// 执行结果检查
+			tc.checkResult(t, result, err)
+		})
+	}
 }
 
 func TestUpadateJob(t *testing.T) {

@@ -15,6 +15,7 @@
 package api
 
 type CreateHpasResp struct {
-	OrderId string   `json:"orderId"`
-	HpasIds []string `json:"hpasIds"`
+	OrderId       string   `json:"orderId"`
+	HpasIds       []string `json:"hpasIds"`
+	CouponHpasIds []string `json:"couponHpasIds"`
 }

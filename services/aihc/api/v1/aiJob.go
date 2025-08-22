@@ -174,7 +174,10 @@ type OpenAPIJobCreateRequest struct {
 
 	EnableBccl bool `json:"enableBccl"` // 是否开启 bccl 注入
 	// 容器日志采集文件路径
-	LogCollectionFilePatterns []string `json:"logCollectionFilePatterns"`
+	LogCollectionFilePatterns  []string `json:"logCollectionFilePatterns"`
+	RequiredNodeAffinity       []string `json:"requiredNodeAffinity"`
+	PreferredNodeAffinity      []string `json:"preferredNodeAffinity"`
+	RunningTimeoutStopTimeUnit string   `json:"runningTimeoutStopTimeUnit"` // 最大运行时长，1m、1h、1d, 分别表示 1分、1时、1天
 }
 
 type CodeSourceV3 struct {
@@ -580,6 +583,9 @@ type DeleteAIJobOptions struct {
 
 type CreateAIJobOptions struct {
 	ResourcePoolID string
+
+	// 用于 bhcmp 资源池，用户可自定义任务创建人，选填
+	Username string `json:"username"`
 }
 
 type UpdateAIJobOptions struct {

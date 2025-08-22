@@ -1,5 +1,18 @@
 发行说明:记录每次SDK更新的说明,最新版本的SDK包含以前所有版本的更新内容。
 ---------------------------------------------------------------------
+【版本:v0.9.241】
+涉及产品:AIHC
+    AIHC 创建训练任务新增自定义创建人Query参数，用于bhcmp资源池
+    AIHC 新增 v2 接口，支持资源池列表、概览、队列列表、详情查询
+    AIHC 创建训练任务支持节点亲和性配置
+设计产品:HPAS
+    HPAS支持数据注入
+    HPAS支持同时购买
+    HPAS支持指定vpcId、privateIps查询
+涉及产品:BOS
+    自定义meta的header转小写去重
+    config增加NoVerifySSL, RetryPolicy, HTTPClient参数, 允许用户自定义
+    支持通过Copy Update设置对象元数据
 【版本:v0.9.240】
 涉及产品:BLB
     APPBLB IP成员权重零值问题修复

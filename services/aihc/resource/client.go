@@ -218,6 +218,8 @@ func (c *Client) CreateJob(job *v1.OpenAPIJobCreateRequest, options *v1.CreateAI
 	}
 	resourcePoolId := options.ResourcePoolID
 
+	username := options.Username
+
 	if job == nil {
 		return nil, fmt.Errorf("job is empty")
 	}
@@ -238,6 +240,7 @@ func (c *Client) CreateJob(job *v1.OpenAPIJobCreateRequest, options *v1.CreateAI
 		WithBody(job).
 		WithQueryParamFilter("resourcePoolId", resourcePoolId).
 		WithQueryParamFilter("queueID", queueID).
+		WithQueryParamFilter("username", username).
 		WithResult(result).
 		Do()
 	return result, err

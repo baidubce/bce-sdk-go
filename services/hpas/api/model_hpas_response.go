@@ -41,6 +41,7 @@ type HpasResponse struct {
 	RdmaPodName         string        `json:"rdmaPodName"`
 	KeypairId           string        `json:"keypairId"`
 	KeypairName         string        `json:"keypairName"`
+	UserData            string        `json:"userData"`
 }
 
 type RdmaNicTopo struct {
