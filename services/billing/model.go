@@ -83,7 +83,7 @@ type ResourceMonthBill struct {
 	PricingUnit                     string  `json:"pricingUnit"`
 	CatalogUnitPrice                string  `json:"catalogUnitPrice"`
 	DiscountUnit                    string  `json:"discountUnit"`
-	Tex                             string  `json:"tex"`
+	Tex                             float64 `json:"tex"`
 	OriginPrice                     float64 `json:"originPrice"`
 	CatalogPrice                    float64 `json:"catalogPrice"`
 	FinancePrice                    float64 `json:"financePrice"`

@@ -7,6 +7,8 @@
     事件通知配置参数补齐
 涉及产品:AIHC
     AIHC v2 接口添加 version
+涉及产品:BILLING
+    修复资源月账单TEX字段序列化bug
 【版本:v0.9.241】
 涉及产品:AIHC
     AIHC 创建训练任务新增自定义创建人Query参数，用于bhcmp资源池
