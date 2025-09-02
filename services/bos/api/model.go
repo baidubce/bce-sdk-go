@@ -698,14 +698,19 @@ type PutBucketNotificationReq struct {
 	Notifications []PutBucketNotificationSt `json:"notifications"`
 }
 
+type EncryptionKey struct {
+	Key string `json:"key"`
+}
+
 type PutBucketNotificationSt struct {
-	Id        string                        `json:"id"`
-	Name      string                        `json:"name"`
-	AppId     string                        `json:"appId"`
-	Status    string                        `json:"status"`
-	Resources []string                      `json:"resources"`
-	Events    []string                      `json:"events"`
-	Apps      []PutBucketNotificationAppsSt `json:"apps"`
+	Id         string                        `json:"id"`
+	Name       string                        `json:"name"`
+	AppId      string                        `json:"appId"`
+	Status     string                        `json:"status"`
+	Encryption EncryptionKey                 `json:"encryption"`
+	Resources  []string                      `json:"resources"`
+	Events     []string                      `json:"events"`
+	Apps       []PutBucketNotificationAppsSt `json:"apps"`
 }
 
 type PutBucketNotificationAppsSt struct {

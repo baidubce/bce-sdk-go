@@ -231,6 +231,9 @@ func NewClientWithConfig(config *BosClientConfiguration) (*Client, error) {
 	if len(endpoint) == 0 {
 		endpoint = DEFAULT_SERVICE_DOMAIN
 	}
+	if config.retryPolicy == nil {
+		config.retryPolicy = bce.DEFAULT_RETRY_POLICY
+	}
 	defaultSignOptions := &auth.SignOptions{
 		HeadersToSign: auth.DEFAULT_HEADERS_TO_SIGN,
 		ExpireSeconds: auth.DEFAULT_EXPIRE_SECONDS}

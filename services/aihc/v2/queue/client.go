@@ -33,6 +33,7 @@ func (c *Client) DescribeResourceQueue(queueID string) (*v2.DescribeResourceQueu
 	err := bce.NewRequestBuilder(c.DefaultClient).
 		WithMethod(http.GET).
 		WithURL("/").
+		WithHeader("version", "v2").
 		WithQueryParamFilter("action", string(v2.ResourceQueueActionDescribeResourceQueue)).
 		WithQueryParamFilter("queueId", queueID).
 		WithResult(result).
@@ -60,6 +61,7 @@ func (c *Client) DescribeResourceQueues(describeResourceQueuesRequest *v2.Descri
 	err := bce.NewRequestBuilder(c.DefaultClient).
 		WithMethod(http.GET).
 		WithURL("/").
+		WithHeader("version", "v2").
 		WithQueryParamFilter("action", string(v2.ResourceQueueActionDescribeResourceQueues)).
 		WithQueryParamFilter("resourcePoolId", string(describeResourceQueuesRequest.ResourcePoolID)).
 		WithQueryParamFilter("keywordType", string(describeResourceQueuesRequest.KeywordType)).

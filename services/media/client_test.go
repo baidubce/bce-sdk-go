@@ -258,6 +258,13 @@ func TestGetTranscodingJob(t *testing.T) {
 	t.Logf("%+v", getTranscodingJobResponse.Target.JobCfg.Notification)
 }
 
+func TestGetTranscodingJobOutput(t *testing.T) {
+	getTranscodingJobResponse, err := MEDIA_CLIENT.GetTranscodingJob("job-rgwn1ijwmkmwca5i")
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("%+v", getTranscodingJobResponse)
+	t.Logf("%+v", getTranscodingJobResponse.JobOutputInfo)
+}
+
 func TestListPresets(t *testing.T) {
 	listPresetsResponse, err := MEDIA_CLIENT.ListPresets()
 	ExpectEqual(t.Errorf, err, nil)

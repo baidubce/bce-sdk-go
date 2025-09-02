@@ -1,5 +1,7 @@
 package api
 
+import "encoding/json"
+
 // create pipline args
 type CreatePiplineArgs struct {
 	PipelineName string               `json:"pipelineName"`
@@ -153,19 +155,40 @@ type Job struct {
 }
 
 type GetTranscodingJobResponse struct {
-	JobID        string `json:"jobId"`
-	PipelineName string `json:"pipelineName"`
-	Source       Source `json:"source"`
-	Target       Target `json:"target"`
-	JobStatus    string `json:"jobStatus"`
-	StartTime    string `json:"startTime"`
-	EndTime      string `json:"endTime"`
-	Error        Error  `json:"error"`
+	JobID         string        `json:"jobId"`
+	PipelineName  string        `json:"pipelineName"`
+	Source        Source        `json:"source"`
+	Target        Target        `json:"target"`
+	JobStatus     string        `json:"jobStatus"`
+	StartTime     string        `json:"startTime"`
+	EndTime       string        `json:"endTime"`
+	Error         Error         `json:"error"`
+	JobOutputInfo JobOutputInfo `json:"output"`
 }
 
 type Error struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
+}
+
+type JobOutputInfo struct {
+	JobOutputInfoVideo JobOutputInfoVideo `json:"video"`
+	JobOutputInfoAudio JobOutputInfoAudio `json:"audio"`
+	BitRateInKBps      json.Number        `json:"bitRateInKBps"`
+}
+
+type JobOutputInfoVideo struct {
+	DurationInSeconds int     `json:"durationInSeconds"`
+	SizeInKiloByte    float64 `json:"sizeInKiloByte"`
+	WidthInPixel      int     `json:"widthInPixel"`
+	HeightInPixel     int     `json:"heightInPixel"`
+	FrameRate         int     `json:"frameRate"`
+	Mp4MoovSize       int     `json:"mp4MoovSize"`
+}
+
+type JobOutputInfoAudio struct {
+	SampleRateInHz int `json:"sampleRateInHz"`
+	Channels       int `json:"channels"`
 }
 
 type ListPresetsResponse struct {

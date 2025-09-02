@@ -33,6 +33,7 @@ func (c *Client) DescribeResourcePool(resourcePoolId string) (*v2.DescribeResour
 	err := bce.NewRequestBuilder(c.DefaultClient).
 		WithMethod(http.GET).
 		WithURL("/").
+		WithHeader("version", "v2").
 		WithQueryParamFilter("action", string(v2.ResourcePoolActionDescribeResourcePool)).
 		WithQueryParamFilter("resourcePoolId", resourcePoolId).
 		WithResult(result).
@@ -66,6 +67,7 @@ func (c *Client) DescribeResourcePools(describeResourcePoolsRequest *v2.Describe
 	err := bce.NewRequestBuilder(c.DefaultClient).
 		WithMethod(http.GET).
 		WithURL("/").
+		WithHeader("version", "v2").
 		WithQueryParamFilter("action", string(v2.ResourcePoolActionDescribeResourcePools)).
 		WithQueryParamFilter("resourcePoolType", string(describeResourcePoolsRequest.ResourcePoolType)).
 		WithQueryParamFilter("keywordType", string(describeResourcePoolsRequest.KeywordType)).
@@ -84,6 +86,7 @@ func (c *Client) DescribeResourcePoolOverview() (*v2.DescribeResourcePoolOvervie
 	err := bce.NewRequestBuilder(c.DefaultClient).
 		WithMethod(http.GET).
 		WithURL("/").
+		WithHeader("version", "v2").
 		WithQueryParamFilter("action", string(v2.ResourcePoolActionDescribeResourcePoolOverview)).
 		WithResult(result).
 		Do()
