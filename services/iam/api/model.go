@@ -67,8 +67,8 @@ type LoginProfileModel struct {
 	EnabledLogin      bool   `json:"enabledLogin"`
 	EnabledLoginMfa   bool   `json:"enabledLoginMfa"`
 	LoginMfaType      string `json:"loginMfaType,omitempty"`
-	ThirdPartyType    bool   `json:"thirdPartyType,omitempty"`
-	ThirdPartyAccount bool   `json:"thirdPartyAccount,omitempty"`
+	ThirdPartyType    string `json:"thirdPartyType,omitempty"`
+	ThirdPartyAccount string `json:"thirdPartyAccount,omitempty"`
 }
 
 type UpdateUserLoginProfileArgs LoginProfileModel

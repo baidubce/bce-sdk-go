@@ -88,6 +88,8 @@ type EtChannelResult struct {
 	Networks            []string `json:"networks"`
 	BGPAsn              string   `json:"bgpAsn"`
 	BGPKey              string   `json:"bgpKey"`
+	BGPStatus           string   `json:"bgpStatus"`
+	Ipv6BGPStatus       string   `json:"ipv6BgpStatus"`
 	CustomerAddress     string   `json:"customerAddress"`
 	RouteType           string   `json:"routeType"`
 	VlanId              string   `json:"vlanId"`
