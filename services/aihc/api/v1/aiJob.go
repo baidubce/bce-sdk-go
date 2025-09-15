@@ -350,6 +350,7 @@ type GetPodLogsRequest struct {
 	Marker         string `json:"marker"`
 	FilePath       string `json:"filePath"`
 	LogSource      string `json:"logSource"`
+	QueueID        string `json:"queueId"`
 }
 
 type GetPodLogResponse struct {
@@ -467,6 +468,7 @@ type CreateNotifyRuleResp struct {
 type FileUploadRequest struct {
 	FilePaths      []string `json:"filePath"`
 	ResourcePoolID string   `json:"resourcePoolId"`
+	QueueID        string   `json:"queueID"`
 }
 
 // FileUploadResponse 用于接收JSON响应

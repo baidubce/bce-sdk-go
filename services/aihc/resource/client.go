@@ -401,6 +401,7 @@ func (c *Client) GetPodLogs(args *v1.GetPodLogsRequest) (*v1.GetPodLogResponse, 
 		WithQueryParamFilter("marker", args.Marker).
 		WithQueryParamFilter("filePath", args.FilePath).
 		WithQueryParamFilter("logSource", args.LogSource).
+		WithQueryParamFilter("queueID", args.QueueID).
 		WithResult(result).
 		Do()
 	return result, err
@@ -489,6 +490,7 @@ func (c *Client) FileUpload(args *v1.FileUploadRequest) (*v1.FileUploaderRespons
 		WithMethod(http.GET).
 		WithURL(getFileUploadUri()).
 		WithQueryParamFilter("resourcePoolId", args.ResourcePoolID).
+		WithQueryParamFilter("queueID", args.QueueID).
 		WithResult(resp).Do()
 	if err != nil {
 		return resp, fmt.Errorf("upload file error: %w", err)

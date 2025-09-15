@@ -310,6 +310,7 @@ func FileUpload() {
 	req := &v1.FileUploadRequest{
 		FilePaths:      []string{},
 		ResourcePoolID: RESOURCE_POOL_ID,
+		QueueID:        QueueID,
 	}
 
 	result, err := client.FileUpload(req)
