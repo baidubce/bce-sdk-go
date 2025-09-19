@@ -116,6 +116,28 @@ func CreateCDSVolumeV3(cli bce.Client, args *CreateCDSVolumeV3Args) (*CreateCDSV
 	return jsonBody, nil
 }
 
+func ListVolumeChangeProgress(cli bce.Client, volumeId string) (*ListVolumeChangeProgressResp, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getVolumeProgressUri(volumeId))
+	req.SetMethod(http.GET)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &ListVolumeChangeProgressResp{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
+}
+
 // ListCDSVolume - list all cds volumes with the given parameters
 //
 // PARAMS:

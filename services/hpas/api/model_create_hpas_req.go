@@ -35,4 +35,6 @@ type CreateHpasReq struct {
 	Tags                []TagModel               `json:"tags,omitempty"`
 	UserData            string                   `json:"userData,omitempty"`
 	ReservedInstance    *CreateCombinedCouponReq `json:"reservedInstance,omitempty"`
+	RootDiskSizeInGb    int                      `json:"rootDiskSizeInGb,omitempty"`
+	RootDiskStorageType string                   `json:"rootDiskStorageType,omitempty"`
 }

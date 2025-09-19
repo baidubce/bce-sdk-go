@@ -666,6 +666,7 @@ type SnapshotModel struct {
 	EncryptEnable       bool   `json:"encryptEnable"`
 	EncryptType         string `json:"encryptType"`
 	EncryptKey          string `json:"encryptKey"`
+	Progress            string `json:"progress"`
 }
 
 type BackupDetailResult struct {

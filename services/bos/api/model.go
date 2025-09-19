@@ -374,6 +374,9 @@ type CopyObjectResult struct {
 	LastModified string `json:"lastModified"`
 	ETag         string `json:"eTag"`
 	VersionId    string `json:"versionId"`
+	Code         string `json:"code,omitempty"`
+	Message      string `json:"message,omitempty"`
+	RequestId    string `json:"requestId,omitempty"`
 }
 
 type SetObjectMetaArgs struct {

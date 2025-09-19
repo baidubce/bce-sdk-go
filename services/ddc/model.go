@@ -491,6 +491,7 @@ type SnapshotModel struct {
 	SnapshotEndTime     string `json:"snapshotEndTime"`
 	DownloadUrl         string `json:"downloadUrl"`
 	DownloadExpires     string `json:"downloadExpires"`
+	Progress            string `json:"progress"`
 }
 
 type BackupDetailResult struct {

@@ -1419,6 +1419,7 @@ type VolumeModel struct {
 	CreatedFrom        string                   `json:"createdFrom"`
 	ReleaseTime        string                   `json:"releaseTime"`
 	VolumeId           string                   `json:"volumeId"`
+	ProductCategory    string                   `json:"productCategory"`
 }
 
 type VolumeModelV3 struct {
@@ -1487,6 +1488,18 @@ type CreateCDSVolumeArgs struct {
 
 type AutoSnapshotPolicy struct {
 	AutoSnapshotPolicyId string `json:"autoSnapshotPolicyId"`
+}
+
+type ListVolumeChangeProgressReq struct {
+	VolumeIds []string `json:"volumeIds"`
+}
+
+type ListVolumeChangeProgressResp struct {
+	VolumeChangeProgressUO []VolumeChangeProgressUO `json:"result"`
+}
+
+type VolumeChangeProgressUO struct {
+	Progress int `json:"progress"`
 }
 
 type CreateCDSVolumeV3Args struct {
@@ -1871,6 +1884,7 @@ type SnapshotModel struct {
 	TemplateId   string         `json:"templateId"`
 	InsnapId     string         `json:"insnapId"`
 	Encrypted    bool           `json:"encrypted"`
+	Progress     string         `json:"progress"`
 }
 
 type ListSnapshotResult struct {
