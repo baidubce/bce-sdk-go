@@ -138,8 +138,10 @@ func (c *timeoutConn) Read(b []byte) (n int, err error) {
 	} else {
 		err = c.SetReadDeadline(time.Now().Add(*c.readTimeout))
 	}
-	for _, fn := range c.dialer.postRead {
-		fn(n, err)
+	if c.dialer != nil {
+		for _, fn := range c.dialer.postRead {
+			fn(n, err)
+		}
 	}
 	return n, err
 }
@@ -159,8 +161,10 @@ func (c *timeoutConn) Write(b []byte) (n int, err error) {
 	} else {
 		err = c.SetWriteDeadline(time.Now().Add(*c.writeTimeout))
 	}
-	for _, fn := range c.dialer.postWrite {
-		fn(n, err)
+	if c.dialer != nil {
+		for _, fn := range c.dialer.postWrite {
+			fn(n, err)
+		}
 	}
 	return n, err
 }
