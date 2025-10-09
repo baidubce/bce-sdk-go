@@ -96,7 +96,7 @@ func TestCreateVmServiceInstanceTripleLine(t *testing.T) {
 }
 
 func TestGetVmInstanceList(t *testing.T) {
-	getReq := &api.ListRequest{ServiceId: "s-m5qrjnvr"}
+	getReq := &api.ListRequest{ServiceId: "s-img3b4zz"}
 	res, err := CLIENT.GetVmInstanceList(getReq)
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
@@ -120,8 +120,8 @@ func TestGetVmInstanceListDeploySet(t *testing.T) {
 	fmt.Printf("result = %v", jsonRes)
 }
 
-func TestGetVirtualMachine(t *testing.T) {
-	res, err := CLIENT.GetVirtualMachine("vm-m5qrjnvr-cn-nanning-cm-vhbaz")
+func TestGetVirtualMachineDetail(t *testing.T) {
+	res, err := CLIENT.GetVirtualMachine("vm-nmjqmm8l-cn-nanning-cm-zj1wd")
 	ExpectEqual(t.Errorf, nil, err)
 	t.Logf("%+v", res)
 	jsonRes := TransJsonData(res)

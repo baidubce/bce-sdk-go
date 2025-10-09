@@ -706,20 +706,28 @@ type EncryptionKey struct {
 }
 
 type PutBucketNotificationSt struct {
-	Id         string                        `json:"id"`
-	Name       string                        `json:"name"`
-	AppId      string                        `json:"appId"`
-	Status     string                        `json:"status"`
-	Encryption EncryptionKey                 `json:"encryption"`
-	Resources  []string                      `json:"resources"`
-	Events     []string                      `json:"events"`
-	Apps       []PutBucketNotificationAppsSt `json:"apps"`
+	Id          string                        `json:"id"`
+	Name        string                        `json:"name"`
+	AppId       string                        `json:"appId"`
+	Status      string                        `json:"status"`
+	Encryption  EncryptionKey                 `json:"encryption"`
+	Resources   []string                      `json:"resources"`
+	Events      []string                      `json:"events"`
+	Apps        []PutBucketNotificationAppsSt `json:"apps"`
+	ContentType NotificationContentTypeSt     `json:"contentType"`
 }
 
 type PutBucketNotificationAppsSt struct {
 	Id       string `json:"id"`
 	EventUrl string `json:"eventUrl"`
 	XVars    string `json:"xVars"`
+	Cfc      string `json:"cfc"`
+	XParams  string `json:"xParams"`
+}
+
+type NotificationContentTypeSt struct {
+	Extensions []string `json:"extensions"`
+	MimeTypes  []string `json:"mimeTypes"`
 }
 
 type MirrorConfigurationRule struct {

@@ -70,6 +70,7 @@ type BosClientConfiguration struct {
 	PathStyleEnable       bool
 	DisableKeepAlives     bool
 	NoVerifySSL           bool
+	ExclusiveHTTPClient   bool
 	retryPolicy           bce.RetryPolicy
 	DialTimeout           *time.Duration // timeout of building a connection
 	KeepAlive             *time.Duration // interval between keep-alive probes for an active connection
@@ -80,18 +81,21 @@ type BosClientConfiguration struct {
 	ResponseHeaderTimeout *time.Duration // http.Transport.ResponseHeaderTimeout
 	HTTPClientTimeout     *time.Duration // http.Client.Timeout
 	HTTPClient            *http.Client   // customized http client to send request
+	UploadRatelimit       *int64         // the limit of upload rate, unit:KB/s
+	DownloadRatelimit     *int64         // the limit of download rate, unit:KB/s
 }
 
 func NewBosClientConfig(ak, sk, endpoint string) *BosClientConfiguration {
 	return &BosClientConfiguration{
-		Ak:                ak,
-		Sk:                sk,
-		Endpoint:          endpoint,
-		RedirectDisabled:  false,
-		PathStyleEnable:   false,
-		DisableKeepAlives: false,
-		NoVerifySSL:       false,
-		retryPolicy:       bce.DEFAULT_RETRY_POLICY,
+		Ak:                  ak,
+		Sk:                  sk,
+		Endpoint:            endpoint,
+		RedirectDisabled:    false,
+		PathStyleEnable:     false,
+		DisableKeepAlives:   false,
+		NoVerifySSL:         false,
+		ExclusiveHTTPClient: true,
+		retryPolicy:         bce.DEFAULT_RETRY_POLICY,
 	}
 }
 
@@ -180,6 +184,21 @@ func (cfg *BosClientConfiguration) WithHttpClient(val http.Client) *BosClientCon
 	return cfg
 }
 
+func (cfg *BosClientConfiguration) WithUploadRateLimit(val int64) *BosClientConfiguration {
+	cfg.UploadRatelimit = &val
+	return cfg
+}
+
+func (cfg *BosClientConfiguration) WithDownloadRateLimit(val int64) *BosClientConfiguration {
+	cfg.DownloadRatelimit = &val
+	return cfg
+}
+
+func (cfg *BosClientConfiguration) WithExclusiveHTTPClient(val bool) *BosClientConfiguration {
+	cfg.ExclusiveHTTPClient = val
+	return cfg
+}
+
 // NewClient make the BOS service client with default configuration.
 // Use `cli.Config.xxx` to access the config or change it to non-default value.
 func NewClient(ak, sk, endpoint string) (*Client, error) {
@@ -218,6 +237,7 @@ func NewStsClient(ak, sk, endpoint string, expiration int) (*Client, error) {
 
 func NewClientWithConfig(config *BosClientConfiguration) (*Client, error) {
 	var credentials *auth.BceCredentials
+	var bceClient *bce.BceClient
 	var err error
 	ak, sk, endpoint := config.Ak, config.Sk, config.Endpoint
 	if len(ak) == 0 && len(sk) == 0 { // to support public-read-write request
@@ -257,14 +277,23 @@ func NewClientWithConfig(config *BosClientConfiguration) (*Client, error) {
 		ResponseHeaderTimeout:     config.ResponseHeaderTimeout,
 		HTTPClientTimeout:         config.HTTPClientTimeout,
 		HTTPClient:                config.HTTPClient,
+		UploadRatelimit:           config.UploadRatelimit,
+		DownloadRatelimit:         config.DownloadRatelimit,
+	}
+	if config.HTTPClientTimeout != nil {
+		defaultConf.ConnectionTimeoutInMillis = int(config.HTTPClientTimeout.Milliseconds())
 	}
 	v1Signer := &auth.BceV1Signer{}
 	defaultContext := &api.BosContext{
 		PathStyleEnable: config.PathStyleEnable,
 	}
-	client := &Client{bce.NewBceClientWithTimeout(defaultConf, v1Signer),
-		DEFAULT_MAX_PARALLEL, DEFAULT_MULTIPART_SIZE, defaultContext}
-	return client, nil
+	if config.ExclusiveHTTPClient || config.HTTPClient != nil ||
+		config.UploadRatelimit != nil || config.DownloadRatelimit != nil {
+		bceClient = bce.NewBceClientWithExclusiveHTTPClient(defaultConf, v1Signer)
+	} else {
+		bceClient = bce.NewBceClientWithTimeout(defaultConf, v1Signer)
+	}
+	return &Client{bceClient, DEFAULT_MAX_PARALLEL, DEFAULT_MULTIPART_SIZE, defaultContext}, nil
 }
 
 // ListBuckets - list all buckets

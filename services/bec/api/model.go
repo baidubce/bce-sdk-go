@@ -1104,6 +1104,7 @@ type VmInstanceDetailsVo struct {
 	DataStorage    int                `json:"dataStorage"`
 	DataVolumeList []VolumeConfig     `json:"dataVolumeList"`
 	SystemVolume   SystemVolumeConfig `json:"systemVolume"`
+	NetworkConfig  NetworkConfig      `json:"networkConfig"`
 	BccKeyPairList []KeyPair          `json:"bccKeyPairList"`
 	RackId         string             `json:"rackId,omitempty"`
 	HostId         string             `json:"hostId,omitempty"`
@@ -1228,6 +1229,7 @@ type VmInstanceBriefVo struct {
 	DeploysetList    []DeploySetVo   `json:"deploysetList"`
 	Hostname         string          `json:"hostname"`
 	Dns              string          `json:"dns"`
+	UserData         string          `json:"userData"`
 	Tags             *[]Tag          `json:"tags,omitempty"`
 }
 
