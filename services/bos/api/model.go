@@ -714,7 +714,13 @@ type PutBucketNotificationSt struct {
 	Resources   []string                      `json:"resources"`
 	Events      []string                      `json:"events"`
 	Apps        []PutBucketNotificationAppsSt `json:"apps"`
-	ContentType NotificationContentTypeSt     `json:"contentType"`
+	ContentType NotificationContentTypeSt     `json:"contentType,omitempty"`
+	Quota       NotificationQuotaSt           `json:"quota,omitempty"`
+}
+
+type NotificationQuotaSt struct {
+	QuotaDay int64   `json:"quotaDay,omitempty"`
+	QuotaSec float64 `json:"quotaSec,omitempty"`
 }
 
 type PutBucketNotificationAppsSt struct {
@@ -726,8 +732,8 @@ type PutBucketNotificationAppsSt struct {
 }
 
 type NotificationContentTypeSt struct {
-	Extensions []string `json:"extensions"`
-	MimeTypes  []string `json:"mimeTypes"`
+	Extensions []string `json:"extensions,omitempty"`
+	MimeTypes  []string `json:"mimeTypes,omitempty"`
 }
 
 type MirrorConfigurationRule struct {

@@ -28,6 +28,7 @@ import (
 	_ "github.com/baidubce/bce-sdk-go/services/bbc"
 	_ "github.com/baidubce/bce-sdk-go/services/bcc"
 	_ "github.com/baidubce/bce-sdk-go/services/bcm"
+	_ "github.com/baidubce/bce-sdk-go/services/bct"
 	_ "github.com/baidubce/bce-sdk-go/services/bec"
 	_ "github.com/baidubce/bce-sdk-go/services/bie"
 	_ "github.com/baidubce/bce-sdk-go/services/billing"
