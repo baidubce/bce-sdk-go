@@ -2214,7 +2214,7 @@ type EbcFlavorGroup struct {
 type EbcFlavor struct {
 	CpuCount           int      `json:"cpuCount"`
 	MemoryCapacityInGB int      `json:"memoryCapacityInGB"`
-	EphemeralDiskInGb  int      `json:"ephemeralDiskInGb"`
+	EphemeralDiskInGb  string   `json:"ephemeralDiskInGb"`
 	EphemeralDiskCount string   `json:"ephemeralDiskCount"`
 	EphemeralDiskType  string   `json:"ephemeralDiskType"`
 	GpuCardType        string   `json:"gpuCardType"`
@@ -2995,7 +2995,7 @@ type GetTaskDetailReq struct {
 }
 
 type GetTaskDetailResp struct {
-	Tasks       []TaskDetailModel `json:"tasks"`
+	Tasks []TaskDetailModel `json:"tasks"`
 }
 
 type AuthorizeServerEventReq struct {
