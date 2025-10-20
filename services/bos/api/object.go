@@ -37,6 +37,7 @@ import (
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
 	"github.com/baidubce/bce-sdk-go/util"
+	"github.com/baidubce/bce-sdk-go/util/log"
 )
 
 // PutObject - put the object from the string or the stream
@@ -1059,6 +1060,10 @@ func GeneratePresignedUrlInternal(conf *bce.BceClientConfiguration, signer auth.
 	// Set basic arguments
 	if len(method) == 0 {
 		method = http.GET
+	}
+	if method == http.GET && len(strings.TrimSpace(object)) == 0 {
+		log.Warnf("objectKey is empty, cannot generate presigned url.")
+		return ""
 	}
 	req.SetMethod(method)
 	req.SetEndpoint(conf.Endpoint)

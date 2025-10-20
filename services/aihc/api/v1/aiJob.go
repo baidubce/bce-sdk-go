@@ -178,6 +178,7 @@ type OpenAPIJobCreateRequest struct {
 	RequiredNodeAffinity       []string `json:"requiredNodeAffinity"`
 	PreferredNodeAffinity      []string `json:"preferredNodeAffinity"`
 	RunningTimeoutStopTimeUnit string   `json:"runningTimeoutStopTimeUnit"` // 最大运行时长，1m、1h、1d, 分别表示 1分、1时、1天
+	RetentionPeriod            string   `json:"retentionPeriod"`            // 任务保存时间，格式1m, 1h, 1d, 分别表示 1分、1时、1天
 }
 
 type CodeSourceV3 struct {
