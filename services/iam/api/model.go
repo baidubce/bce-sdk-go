@@ -75,7 +75,10 @@ type UpdateUserLoginProfileArgs LoginProfileModel
 
 type UpdateUserLoginProfileResult LoginProfileModel
 
-type GetUserLoginProfileResult LoginProfileModel
+type GetUserLoginProfileResult struct {
+	LoginProfileModel
+	PasswordExpireDate time.Time `json:"passwordExpireDate,omitempty"`
+}
 
 type GroupModel struct {
 	Id          string    `json:"id"`

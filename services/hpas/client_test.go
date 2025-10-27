@@ -37,6 +37,7 @@ func init() {
 	decoder := json.NewDecoder(fp)
 	confObj := &Conf{}
 	decoder.Decode(confObj)
+	fmt.Println(confObj)
 
 	HPAS_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
@@ -314,6 +315,31 @@ func TestListReservedHpasByMakerReq(t *testing.T) {
 	}
 
 	resp, err := HPAS_CLIENT.DescribeReservedHpasByMaker(req)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestClient_ModifyReservedHpasName(t *testing.T) {
+	modifyReservedHpasNameArgs := &api.ModifyReservedHpasNameReq{
+		ReservedInstanceIds: []string{"k-xx13SR5s"},
+		Name:                "name",
+	}
+	resp, err := HPAS_CLIENT.ModifyReservedHpasName(modifyReservedHpasNameArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+func TestClient_ModifyReservedHpas(t *testing.T) {
+	modifyReservedHpasArgs := &api.ModifyReservedHpasReq{
+		ModifyReservedHpasList: []api.ModifyReservedHpasModel{
+			{
+				ReservedInstanceId: "k-xx13SR5s",
+				ZoneName:           "cn-bj-g",
+				EhcClusterId:       "ehc-ARLMSBZs",
+			},
+		},
+	}
+	resp, err := HPAS_CLIENT.ModifyReservedHpas(modifyReservedHpasArgs)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(resp)
 }

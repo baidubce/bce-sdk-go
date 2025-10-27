@@ -29,4 +29,6 @@ type HpasReservedResponse struct {
 	HpasId              string        `json:"hpasId"`
 	HpasName            string        `json:"hpasName"`
 	DeductInstance      bool          `json:"deductInstance,omitempty"`
+	EhcClusterId        string        `json:"ehcClusterId"`
+	EhcClusterName      string        `json:"ehcClusterName"`
 }

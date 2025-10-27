@@ -305,6 +305,86 @@ func ModifyInstancesAttribute(cli bce.Client, body *ModifyInstancesAttributeReq)
 	return nil
 }
 
+// ModifyReservedHpasName
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - body:
+//
+// RETURNS:
+//   - *api.BaseV3Resp:
+//   - error: the return error if any occurs
+func ModifyReservedHpasName(cli bce.Client, body *ModifyReservedHpasNameReq) (*BaseV3Resp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.PUT)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "ModifyReservedInstancesName")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &BaseV3Resp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// ModifyReservedHpas
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - body:
+//
+// RETURNS:
+//   - *api.ModifyReservedHpasResp:
+//   - error: the return error if any occurs
+func ModifyReservedHpas(cli bce.Client, body *ModifyReservedHpasReq) (*ModifyReservedHpasResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "ModifyReservedInstances")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &ModifyReservedHpasResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
 // CreateReservedHpas -
 //
 // PARAMS:
