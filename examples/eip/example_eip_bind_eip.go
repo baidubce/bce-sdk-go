@@ -30,6 +30,7 @@ func BindEip() {
 	bindEipArgs := &EIP.BindEipArgs{
 		InstanceId:   "lb-xxxxxxxx", //实例ID
 		InstanceType: "BLB",         //实例类型
+		InstanceIp:   "x.x.x.x",     //实例中需要绑定EIP的IP
 	}
 
 	err := eipClient.BindEip(eip, bindEipArgs)

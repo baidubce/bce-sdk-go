@@ -2,14 +2,9 @@ package etgatewayexamples
 
 import (
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/services/etGateway"
-	"github.com/baidubce/bce-sdk-go/util"
-)
 
-// getClientToken 生成一个长度为32位的随机字符串作为客户端token。
-func getClientToken() string {
-	return util.NewUUID()
-}
+	"github.com/baidubce/bce-sdk-go/services/etGateway"
+)
 
 // CreateHealthCheck 函数用于创建健康检查
 func CreateHealthCheck() {

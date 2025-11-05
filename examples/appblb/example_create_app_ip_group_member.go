@@ -27,6 +27,7 @@ func CreateAppIpGroupMember() {
 		panic(err)
 	}
 	blbID := "Your BlbID" //LB实例ID
+	weight := 100
 	args := &appblb.CreateAppIpGroupMemberArgs{
 		AppIpGroupMemberWriteOpArgs: appblb.AppIpGroupMemberWriteOpArgs{
 			IpGroupId: "ip_group-4daxxxxx", // IP组ID
@@ -34,7 +35,7 @@ func CreateAppIpGroupMember() {
 				{
 					Ip:     "127.0.0.1", // IP
 					Port:   80,          // 端口
-					Weight: 100,         // 权重
+					Weight: &weight,     // 权重
 				},
 			},
 		},

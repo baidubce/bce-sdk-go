@@ -1,8 +1,6 @@
 package havipexample
 
 import (
-	"fmt"
-
 	"github.com/baidubce/bce-sdk-go/services/havip"
 )
 
@@ -14,10 +12,9 @@ func UpdateHaVip() {
 		HaVipId: "havip_id",   // 高可用虚拟IP的ID
 		Name:    "havip_name", // 高可用虚拟IP的名称
 	}
-	response, err := HAVIP_CLIENT.UpdateHaVip(updateHaVipArgs) // 更新高可用虚拟IP
+	err := HAVIP_CLIENT.UpdateHaVip(updateHaVipArgs) // 更新高可用虚拟IP
 
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(response)
 }

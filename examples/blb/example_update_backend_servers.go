@@ -26,11 +26,12 @@ func UpdateBackendServers() {
 	}
 
 	blbID := "Your BlbID" //LB实例ID
+	weigth := 100
 	args := &blb.UpdateBackendServersArgs{
 		BackendServerList: []blb.BackendServerModel{
 			{
 				InstanceId: "i-J54*****", // 服务器ID
-				Weight:     50,           // 权重
+				Weight:     &weigth,      // 权重
 			},
 		},
 	}

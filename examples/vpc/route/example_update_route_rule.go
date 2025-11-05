@@ -24,5 +24,5 @@ func UpdateRouteRule() {
 		fmt.Println("Route rule updated fail")
 	}
 
-	fmt.Println("Route rule %s updated successfully", args.RouteRuleId)
+	fmt.Printf("Route rule %s updated successfully\n", args.RouteRuleId)
 }

@@ -1494,45 +1494,6 @@ func (c *Client) GetObjectToFileWithContext(ctx context.Context, bucket, object,
 	return nil
 }
 
-// SetObjectMeta - set the given object metadata
-//
-// PARAMS:
-//   - bucket: the name of the bucket
-//   - object: the name of the object
-//   - args: new object meta value for changing
-//   - options: option func to set various requeset headers
-//
-// RETURNS:
-//   - error: any error if it occurs
-func (c *Client) SetObjectMeta(bucket, object string, args *api.SetObjectMetaArgs,
-	options ...api.Option) error {
-	cpArgs := &api.CopyObjectArgs{
-		ObjectMeta:        args.ObjectMeta,
-		ObjectExpires:     args.ObjectExpires,
-		MetadataDirective: api.METADATA_DIRECTIVE_UPDATE,
-	}
-	source := fmt.Sprintf("/%s/%s", bucket, object)
-	_, err := api.CopyObject(c, bucket, object, source, cpArgs, c.BosContext, options...)
-	return err
-}
-
-// SetObjectMetaWithContext - support to cancel request by context.Context
-func (c *Client) SetObjectMetaWithContext(ctx context.Context, bucket, object string,
-	args *api.SetObjectMetaArgs, options ...api.Option) error {
-	cpArgs := &api.CopyObjectArgs{
-		ObjectMeta:        args.ObjectMeta,
-		ObjectExpires:     args.ObjectExpires,
-		MetadataDirective: api.METADATA_DIRECTIVE_UPDATE,
-	}
-	source := fmt.Sprintf("/%s/%s", bucket, object)
-	bosContext := &api.BosContext{
-		PathStyleEnable: c.BosContext.PathStyleEnable,
-		Ctx:             ctx,
-	}
-	_, err := api.CopyObject(c, bucket, object, source, cpArgs, bosContext, options...)
-	return err
-}
-
 // GetObjectMeta - get the given object metadata
 //
 // PARAMS:
@@ -2653,8 +2614,13 @@ func (c *Client) ParallelUpload(bucket string, object string, filename string, c
 	}
 
 	completeArgs := &api.CompleteMultipartUploadArgs{
-		Parts:         partEtags,
-		ObjectExpires: args.ObjectExpires,
+		Parts: partEtags,
+	}
+
+	if args != nil {
+		if args.ObjectExpires > 0 {
+			completeArgs.ObjectExpires = args.ObjectExpires
+		}
 	}
 
 	completeMultipartUploadResult, err := c.CompleteMultipartUploadFromStruct(bucket, object, initiateMultipartUploadResult.UploadId, completeArgs)
@@ -2694,6 +2660,10 @@ func (c *Client) parallelPartUpload(bucket string, object string, filename strin
 		partSize = (fileSize + MAX_PART_NUMBER + 1) / MAX_PART_NUMBER
 		partSize = (partSize + MULTIPART_ALIGN - 1) / MULTIPART_ALIGN * MULTIPART_ALIGN
 		partNum = (fileSize + partSize - 1) / partSize
+	}
+	// 文件大小为 0 时，至少执行一次 UploadPart
+	if partNum == 0 {
+		partNum = 1
 	}
 
 	parallelChan := make(chan int, c.MaxParallel)
@@ -2863,6 +2833,9 @@ func (c *Client) ParallelCopy(srcBucketName string, srcObjectName string,
 		completeArgs.ContentCrc32cFlag = args.ContentCrc32cFlag
 		if args.ObjectExpires > 0 {
 			completeArgs.ObjectExpires = args.ObjectExpires
+		}
+		if len(args.ContentCrc64ECMA) > 0 {
+			completeArgs.ContentCrc64ECMA = args.ContentCrc64ECMA
 		}
 	}
 

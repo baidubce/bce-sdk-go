@@ -27,13 +27,14 @@ func UpdateBLBRs() {
 		panic(err)
 	}
 	blbID := "Your BlbID" //LB实例ID
+	weigth := 50
 	args := &appblb.UpdateBlbRsArgs{
 		BlbRsWriteOpArgs: appblb.BlbRsWriteOpArgs{
 			SgId: "sg-328xxxxx", // 服务器组ID
 			BackendServerList: []appblb.AppBackendServer{
 				{
 					InstanceId: "i-J54*****", // 服务器ID
-					Weight:     50,           // 权重
+					Weight:     &weigth,      // 权重
 				},
 			},
 		},

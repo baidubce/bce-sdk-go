@@ -5,12 +5,8 @@ import (
 	"fmt"
 
 	"github.com/baidubce/bce-sdk-go/services/eni"
-	"github.com/baidubce/bce-sdk-go/util"
 )
 
-func getClientToken() string {
-	return util.NewUUID()
-}
 func GetEniDetail() {
 	// 初始化AK/SK/Endpoint
 	ak, sk, endpoint := "Your AK", "Your SK", "Your Endpoint"
@@ -20,7 +16,7 @@ func GetEniDetail() {
 	if err != nil {
 		panic(err)
 	}
-	r, err := json.Marshal(response)
+	r, _ := json.Marshal(response)
 	fmt.Println(string(r))
 
 }

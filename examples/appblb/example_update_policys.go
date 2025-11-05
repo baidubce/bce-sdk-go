@@ -32,7 +32,7 @@ func UpdatePolicys() {
 		Port: 80,
 		Type: "HTTP",
 		PolicyList: []appblb.PolicyForUpdate{
-			appblb.PolicyForUpdate{
+			{
 				PolicyId:    "Your policy id",
 				Priority:    100,
 				Description: "policy description for update",

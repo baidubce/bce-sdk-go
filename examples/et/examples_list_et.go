@@ -4,13 +4,7 @@ import (
 	"fmt"
 
 	"github.com/baidubce/bce-sdk-go/services/et"
-	"github.com/baidubce/bce-sdk-go/util"
 )
-
-// getClientToken 生成一个长度为32位的随机字符串作为客户端token。
-func getClientToken() string {
-	return util.NewUUID()
-}
 
 // ListEtDcphy
 func ListEtDcphy() {
@@ -20,10 +14,10 @@ func ListEtDcphy() {
 		return
 	}
 
-	args := &ListEtDcphyArgs {
-		Marker:     "",          // 批量获取列表的查询的起始位置
-		MaxKeys:    1000,        // 每页包含的最大数量，最大数量不超过1000，缺省值为1000
-		Status:     "",          // 专线状态
+	args := &et.ListEtDcphyArgs{
+		Marker:  "",   // 批量获取列表的查询的起始位置
+		MaxKeys: 1000, // 每页包含的最大数量，最大数量不超过1000，缺省值为1000
+		Status:  "",   // 专线状态
 	}
 
 	response, err := client.ListEtDcphy(args)

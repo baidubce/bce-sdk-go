@@ -27,11 +27,12 @@ func AddBackendServers() {
 		panic(err)
 	}
 	blbID := "Your BlbID" //LB实例ID
+	weigth := 100
 	args := &blb.AddBackendServersArgs{
 		BackendServerList: []blb.BackendServerModel{
 			{
 				InstanceId: "i-J54*****", //服务器ID
-				Weight:     100,          //权重
+				Weight:     &weigth,      //权重
 			},
 		},
 	}

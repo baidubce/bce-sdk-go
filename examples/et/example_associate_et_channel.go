@@ -2,13 +2,9 @@ package etexamples
 
 import (
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/services/et"
-	"github.com/baidubce/bce-sdk-go/util"
-)
 
-func getClientToken() string {
-	return util.NewUUID()
-}
+	"github.com/baidubce/bce-sdk-go/services/et"
+)
 
 // AssociateEtChannel
 func AssociateEtChannel() {

@@ -2,14 +2,9 @@ package ldexample
 
 import (
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/services/localDns"
-	"github.com/baidubce/bce-sdk-go/util"
-)
 
-// getClientToken 生成一个长度为32位的随机字符串作为客户端token
-func getClientToken() string {
-	return util.NewUUID()
-}
+	"github.com/baidubce/bce-sdk-go/services/localDns"
+)
 
 func ListRecord() {
 

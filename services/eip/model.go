@@ -75,6 +75,7 @@ type ResizeEipArgs struct {
 type BindEipArgs struct {
 	InstanceType string `json:"instanceType"`
 	InstanceId   string `json:"instanceId"`
+	InstanceIp   string `json:"instanceIp,omitempty"`
 	ClientToken  string `json:"-"`
 }
 
@@ -116,6 +117,7 @@ type EipModel struct {
 	RouteType       string           `json:"routeType"`
 	Tags            []model.TagModel `json:"tags"`
 	DeleteProtect   bool             `json:"deleteProtect"`
+	BwShortId       string           `json:"bwShortId"`
 }
 
 type ListRecycleEipArgs struct {

@@ -4,13 +4,7 @@ import (
 	"fmt"
 
 	"github.com/baidubce/bce-sdk-go/services/et"
-	"github.com/baidubce/bce-sdk-go/util"
 )
-
-// getClientToken 生成一个长度为32位的随机字符串作为客户端token。
-func getClientToken() string {
-	return util.NewUUID()
-}
 
 // ListEtDcphyDetail
 func ListEtDcphyDetail() {
@@ -20,11 +14,9 @@ func ListEtDcphyDetail() {
 		return
 	}
 
-	args := &ListEtDcphyDetailArgs {
-		DcphyId:     "Your Et Id",          // 专线ID
-	}
+	dcphyId := "Your Et Id" // 专线ID
 
-	response, err := client.ListEtDcphyDetail(args)
+	response, err := client.ListEtDcphyDetail(dcphyId)
 	if err != nil {
 		fmt.Printf("Failed to get et's detail, err: %v.\n", err)
 		return

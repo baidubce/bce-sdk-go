@@ -140,6 +140,7 @@ func TestClient_BindEip(t *testing.T) {
 	args := &BindEipArgs{
 		InstanceType: "BCC",
 		InstanceId:   BCC_TEST_ID,
+		InstanceIp:   "x.x.x.x",
 		ClientToken:  getClientToken(),
 	}
 	err := EIP_CLIENT.BindEip(EIP_ADDRESS, args)

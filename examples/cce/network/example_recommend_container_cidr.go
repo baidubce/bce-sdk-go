@@ -19,7 +19,7 @@ func RecommendContainerCIDR() {
 	args := &ccev2.RecommendContainerCIDRArgs{
 		ClusterMaxNodeNum: 2,
 		IPVersion:         "ipv4",
-		K8SVersion:        types.K8S_1_16_8,
+		K8SVersion:        types.K8S_1_26_9,
 		MaxPodsPerNode:    32,
 		PrivateNetCIDRs:   []ccev2.PrivateNetString{ccev2.PrivateIPv4Net172},
 		VPCCIDR:           "Your VPC CIDR",

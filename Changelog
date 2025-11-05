@@ -1,5 +1,16 @@
 发行说明:记录每次SDK更新的说明,最新版本的SDK包含以前所有版本的更新内容。
 ---------------------------------------------------------------------
+【版本:v0.9.251】
+涉及产品: BOS
+    删除基于copy请求的SetObjectMeta接口
+    object为“v1”时不允许生成预签名URL
+    ParallelUpload上传空文件问题修复
+    BucketAcl字段补齐
+涉及产品: EIP
+    eip列表接口返回支持BwShortId
+    绑定eip接口入参支持InstanceIp
+涉及产品: IAM
+    GetUserResult 添加LastLoginTime字段，表示子用户最后登录时间
 【版本:v0.9.250】
 涉及产品: IAM
     LoginProfileModel新增PasswordExpireDate字段，表示子用户密码过期时间

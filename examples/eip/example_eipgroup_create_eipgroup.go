@@ -44,6 +44,7 @@ func CreateEipGroup() {
 			},
 		},
 		ResourceGroupId: "RESG-Xnuw3joXLcy", //资源组ID
+		RouteType:       "BGP",              // 线路类型
 	}
 	eipGroupResult, err := eipClient.CreateEipGroup(createEipGroupArgs)
 	if err != nil {

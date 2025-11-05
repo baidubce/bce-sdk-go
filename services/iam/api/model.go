@@ -31,7 +31,10 @@ type CreateUserArgs struct {
 
 type CreateUserResult UserModel
 
-type GetUserResult UserModel
+type GetUserResult struct {
+	UserModel
+	LastLoginTime time.Time `json:"lastLoginTime,omitempty"`
+}
 
 type UpdateUserArgs struct {
 	Name        string `json:"name,omitempty"`

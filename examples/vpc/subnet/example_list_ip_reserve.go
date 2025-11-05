@@ -29,6 +29,6 @@ func ListIpreserve() {
 	// 输出子网ID和保留IP范围信息
 	for _, IpReserve := range result.IpReserves {
 		fmt.Printf("IP Range: %s, Description: %s\n", IpReserve.IpCidr, IpReserve.SubnetId)
-		fmt.Println("isTruncated %d", result.IsTruncated)
+		fmt.Println("isTruncated:", result.IsTruncated)
 	}
 }

@@ -352,10 +352,11 @@ func TestClient_DescribeAllListeners(t *testing.T) {
 }
 
 func TestClient_AddBackendServers(t *testing.T) {
+	weigth := 30
 	createArgs := &AddBackendServersArgs{
 		ClientToken: getClientToken(),
 		BackendServerList: []BackendServerModel{
-			{InstanceId: INSTANCE_ID, Weight: 30},
+			{InstanceId: INSTANCE_ID, Weight: &weigth},
 		},
 	}
 	err := BLB_CLIENT.AddBackendServers(BLB_ID, createArgs)
@@ -363,10 +364,11 @@ func TestClient_AddBackendServers(t *testing.T) {
 }
 
 func TestClient_UpdateBackendServers(t *testing.T) {
+	weigth := 50
 	updateArgs := &UpdateBackendServersArgs{
 		ClientToken: getClientToken(),
 		BackendServerList: []BackendServerModel{
-			{InstanceId: INSTANCE_ID, Weight: 50},
+			{InstanceId: INSTANCE_ID, Weight: &weigth},
 		},
 	}
 	err := BLB_CLIENT.UpdateBackendServers(BLB_ID, updateArgs)

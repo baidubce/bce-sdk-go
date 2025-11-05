@@ -23,6 +23,7 @@ import (
 	_ "github.com/baidubce/bce-sdk-go/bce"
 	_ "github.com/baidubce/bce-sdk-go/http"
 	_ "github.com/baidubce/bce-sdk-go/model"
+	_ "github.com/baidubce/bce-sdk-go/rate"
 	_ "github.com/baidubce/bce-sdk-go/services/appblb"
 	_ "github.com/baidubce/bce-sdk-go/services/as"
 	_ "github.com/baidubce/bce-sdk-go/services/bbc"

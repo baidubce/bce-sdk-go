@@ -1,8 +1,6 @@
 package havipexample
 
 import (
-	"fmt"
-
 	"github.com/baidubce/bce-sdk-go/services/havip"
 )
 
@@ -13,10 +11,9 @@ func DeleteHaVip() {
 	deleteHaVipArgs := &havip.DeleteHaVipArgs{
 		HaVipId: "havip_id", // 高可用虚拟IP的ID
 	}
-	response, err := HAVIP_CLIENT.DeleteHaVip(deleteHaVipArgs) // 删除havip
+	err := HAVIP_CLIENT.DeleteHaVip(deleteHaVipArgs) // 删除havip
 
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(response)
 }

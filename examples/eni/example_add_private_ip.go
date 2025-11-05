@@ -25,6 +25,6 @@ func AddPrivateIp() {
 	if err != nil {
 		panic(err)
 	}
-	r, err := json.Marshal(response)
+	r, _ := json.Marshal(response)
 	fmt.Println(string(r))
 }

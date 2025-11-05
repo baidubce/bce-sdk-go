@@ -197,12 +197,13 @@ func TestClient_DeleteAppServerGroupPort(t *testing.T) {
 }
 
 func TestClient_CreateBlbRs(t *testing.T) {
+	weigth := 30
 	createArgs := &CreateBlbRsArgs{
 		BlbRsWriteOpArgs: BlbRsWriteOpArgs{
 			ClientToken: getClientToken(),
 			SgId:        APPBLB_SERVERGROUP_ID,
 			BackendServerList: []AppBackendServer{
-				{InstanceId: INSTANCE_ID, Weight: 30},
+				{InstanceId: INSTANCE_ID, Weight: &weigth},
 			},
 		},
 	}
@@ -211,12 +212,13 @@ func TestClient_CreateBlbRs(t *testing.T) {
 }
 
 func TestClient_UpdateBlbRs(t *testing.T) {
+	weigth := 50
 	updateArgs := &UpdateBlbRsArgs{
 		BlbRsWriteOpArgs: BlbRsWriteOpArgs{
 			ClientToken: getClientToken(),
 			SgId:        APPBLB_SERVERGROUP_ID,
 			BackendServerList: []AppBackendServer{
-				{InstanceId: INSTANCE_ID, Weight: 50},
+				{InstanceId: INSTANCE_ID, Weight: &weigth},
 			},
 		},
 	}

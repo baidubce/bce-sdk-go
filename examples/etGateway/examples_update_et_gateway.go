@@ -2,17 +2,12 @@ package etgatewayexamples
 
 import (
 	"fmt"
+
 	"github.com/baidubce/bce-sdk-go/services/etGateway"
-	"github.com/baidubce/bce-sdk-go/util"
 )
 
-// getClientToken 生成一个长度为32位的随机字符串作为客户端token。
-func getClientToken() string {
-	return util.NewUUID()
-}
-
 // updateEtGateway 更新etGateway的函数
-func updateEtGateway() {
+func UpdateEtGateway() {
 	client, err := etGateway.NewClient("Your AK", "Your SK", "Your endpoint") // 初始化ak、sk和endpoint
 	if err != nil {
 		fmt.Printf("Failed to new et gateway client, err: %v.\n", err)

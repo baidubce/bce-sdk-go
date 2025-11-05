@@ -27,13 +27,14 @@ func CreateBLBRs() {
 		panic(err)
 	}
 	blbID := "Your BlbID" //LB实例ID
+	weight := 100
 	args := &appblb.CreateBlbRsArgs{
 		BlbRsWriteOpArgs: appblb.BlbRsWriteOpArgs{
 			SgId: "sg-328xxxxx", // 服务器组ID
 			BackendServerList: []appblb.AppBackendServer{
 				{
 					InstanceId: "i-J54*****", // 服务器ID
-					Weight:     100,          // 权重
+					Weight:     &weight,      // 权重
 				},
 			},
 		},

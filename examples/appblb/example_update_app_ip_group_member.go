@@ -27,6 +27,7 @@ func UpdateAppIpGroupMember() {
 		panic(err)
 	}
 	blbID := "Your BlbID" //LB实例ID
+	weigth := 100
 	args := &appblb.UpdateAppIpGroupMemberArgs{
 		AppIpGroupMemberWriteOpArgs: appblb.AppIpGroupMemberWriteOpArgs{
 			IpGroupId: "ip_group-4dadxxxx", // IP组ID
@@ -34,7 +35,7 @@ func UpdateAppIpGroupMember() {
 				{
 					MemberId: "ip_member-1cb8xxxx", // IP成员ID
 					Port:     80,                   // 端口
-					Weight:   100,                  // 权重
+					Weight:   &weigth,              // 权重
 				},
 			},
 		},
