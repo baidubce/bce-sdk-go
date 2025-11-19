@@ -438,13 +438,25 @@ func (c *Client) DetachSecurityGroups(body *api.SecurityGroupsReq) (*api.BaseV3R
 	return api.DetachSecurityGroups(c, body)
 }
 
+// RenewHPASInstances -
+//
+// PARAMS:
+//   - body: body参数
+//
+// RETURNS:
+//   - *api.RenewHpasResp:
+//   - error: the return error if any occurs
+func (c *Client) RenewHpasInstances(body *api.RenewHpasReq) (*api.RenewHpasResp, error) {
+	return api.RenewHpasInstances(c, body)
+}
+
 // DescribeHpasSpecs -
 //
 // PARAMS:
 //   - body: body参数
 //
 // RETURNS:
-//   - *api.BaseV3Resp:
+//   - *api.DescribeHpasSpecsResp:
 //   - error: the return error if any occurs
 func (c *Client) DescribeHpasSpecs(body *api.DescribeHpasSpecsReq) (*api.DescribeHpasSpecsResp, error) {
 	return api.DescribeHpasSpecs(c, body)

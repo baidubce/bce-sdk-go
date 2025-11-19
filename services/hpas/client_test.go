@@ -463,6 +463,45 @@ func TestAttachSecurityGroups(t *testing.T) {
 	fmt.Println(resp)
 }
 
+func TestCreatePreInstance(t *testing.T) {
+	createInstanceArgs := &api.CreateHpasReq{
+		AppType:             "unixbench_indexscore",
+		AppPerformanceLevel: "1.6k",
+		Name:                "create_hpas_test",
+		ApplicationName:     "app-name",
+		AutoSeqSuffix:       true,
+		PurchaseNum:         1,
+		ZoneName:            "cn-bj-a",
+		ImageId:             "m-JtPe0qoJ",
+		SubnetId:            "sbn-mmbsnu0kccsm",
+		RootDiskSizeInGb:    400,
+		RootDiskStorageType: "enhanced_ssd_pl1",
+		SecurityGroupIds:    []string{"g-ktj27g1f7wuy"},
+		KeypairId:           "k-GY5hmntP",
+		BillingModel: api.BillingModel{
+			ChargeType: "Prepaid",
+			Period:     1,
+			PeriodUnit: "Month",
+		},
+	}
+	createResult, err := HPAS_CLIENT.CreateHpas(createInstanceArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	Hpas_id = createResult.HpasIds[0]
+	fmt.Println(Hpas_id)
+}
+
+func TestRenewHpasInstances(t *testing.T) {
+	req := &api.RenewHpasReq{
+		HpasIds:    []string{"hpas-mDyozAkj"},
+		Period:     1,
+		PeriodUnit: "Month",
+	}
+	resp, err := HPAS_CLIENT.RenewHpasInstances(req)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+
+
 func TestReplaceSecurityGroups(t *testing.T) {
 	req := &api.SecurityGroupsReq{
 		HpasIds:           []string{"hpas-xxxxxxx"},

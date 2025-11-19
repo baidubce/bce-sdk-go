@@ -22,6 +22,7 @@ type UserModel struct {
 	CreateTime  time.Time `json:"createTime"`
 	Description string    `json:"description"`
 	Enabled     bool      `json:"enabled"`
+	Contact     string    `json:"contact"`
 }
 
 type CreateUserArgs struct {
@@ -39,6 +40,8 @@ type GetUserResult struct {
 type UpdateUserArgs struct {
 	Name        string `json:"name,omitempty"`
 	Description string `json:"description,omitempty"`
+	Contact     string `json:"contact,omitempty"`
+	Enabled     bool   `json:"enabled,omitempty"`
 }
 
 type UpdateUserResult UserModel

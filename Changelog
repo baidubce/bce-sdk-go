@@ -1,5 +1,13 @@
 发行说明:记录每次SDK更新的说明,最新版本的SDK包含以前所有版本的更新内容。
 ---------------------------------------------------------------------
+【版本:v0.9.252】
+涉及产品: BOS
+    put/copy object接口增加CannedAcl参数
+涉及产品: IAM
+    userModel增加contact字段，表示联系人信息，更新用户接口可修改该字段
+    UpdateUserArgs增加Enabled字段，更新用户状态
+涉及产品: HPAS
+     新增HPAS实例续费接口
 【版本:v0.9.251】
 涉及产品: BOS
     删除基于copy请求的SetObjectMeta接口

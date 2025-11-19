@@ -1248,6 +1248,36 @@ func DescribeHpasSpecs(cli bce.Client, body *DescribeHpasSpecsReq) (*DescribeHpa
 	return res, nil
 }
 
+func RenewHpasInstances(cli bce.Client, body *RenewHpasReq) (*RenewHpasResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "RenewHPASInstances")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &RenewHpasResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
 
 func DescribeInstanceInventoryQuantity(cli bce.Client, body *DescribeInstanceInventoryQuantityReq) (*DescribeInstanceInventoryQuantityResp, error){
 	req := &bce.BceRequest{}
