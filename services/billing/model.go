@@ -86,6 +86,7 @@ type ResourceMonthBill struct {
 	Tex                             float64 `json:"tex"`
 	OriginPrice                     float64 `json:"originPrice"`
 	CatalogPrice                    float64 `json:"catalogPrice"`
+	PromotionPrice                  float64 `json:"promotionPrice"`
 	FinancePrice                    float64 `json:"financePrice"`
 	Cash                            float64 `json:"cash"`
 	Rebate                          float64 `json:"rebate"`
@@ -100,6 +101,7 @@ type ResourceMonthBill struct {
 	DiscountPrice                   float64 `json:"discountPrice"`
 	SysGold                         float64 `json:"sysGold"`
 	DeductPrice                     float64 `json:"deductPrice"`
+	DeductPromotionPrice            float64 `json:"deductPromotionPrice"`
 	DeductCash                      float64 `json:"deductCash"`
 	DeductRebate                    float64 `json:"deductRebate"`
 	DeductCreditCost                float64 `json:"deductCreditCost"`
@@ -144,6 +146,7 @@ type ResourceChargeItemBill struct {
 	Amount                    string            `json:"amount"`
 	AmountUnit                string            `json:"amountUnit"`
 	DiscountAmount            string            `json:"discountAmount"`
+	PromotionPrice            float64           `json:"promotionPrice"`
 	OriginPrice               float64           `json:"originPrice"`
 	CatalogPrice              float64           `json:"catalogPrice"`
 	FinancePrice              float64           `json:"financePrice"`
@@ -210,6 +213,7 @@ type ShareBill struct {
 	SysGoldPrice                         float64           `json:"sysGoldPrice"`
 	SharePrice                           float64           `json:"sharePrice"`
 	ShareFinancePrice                    float64           `json:"shareFinancePrice"`
+	SharePromotionPrice                  float64           `json:"sharePromotionPrice"`
 	ShareCatalogPrice                    float64           `json:"shareCatalogPrice"`
 	ShareCouponPrice                     float64           `json:"shareCouponPrice"`
 	ShareDiscountCouponPrice             float64           `json:"shareDiscountCouponPrice"`
@@ -217,6 +221,7 @@ type ShareBill struct {
 	ShareDiscountPrice                   float64           `json:"shareDiscountPrice"`
 	ShareSysGoldPrice                    float64           `json:"shareSysGoldPrice"`
 	DeductShareFinancePrice              float64           `json:"deductShareFinancePrice"`
+	DeductSharePromotionPrice            float64           `json:"deductSharePromotionPrice"`
 	DeductShareCouponPrice               float64           `json:"deductShareCouponPrice"`
 	DeductShareDiscountCouponPrice       float64           `json:"deductShareDiscountCouponPrice"`
 	DeductShareCashEquivalentCouponPrice float64           `json:"deductShareCashEquivalentCouponPrice"`

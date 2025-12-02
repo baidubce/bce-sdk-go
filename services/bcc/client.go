@@ -525,18 +525,18 @@ func (c *Client) StopInstance(instanceId string, forceStop bool) error {
 //
 // RETURNS:
 //   - error: nil if success otherwise the specific error
-func (c *Client) RebootInstance(instanceId string, forceStop bool) error {
+func (c *Client) RebootInstance(instanceId string, forceStop bool) (*api.BatchOperationResp, error) {
 	args := &api.StopInstanceArgs{
 		ForceStop: forceStop,
 	}
 
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
-		return jsonErr
+		return nil, jsonErr
 	}
 	body, err := bce.NewBodyFromBytes(jsonBytes)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	return api.RebootInstance(c, instanceId, body)
@@ -563,20 +563,20 @@ func (c *Client) RecoveryInstance(args *api.RecoveryInstanceArgs) error {
 //
 // RETURNS:
 //   - error: nil if success otherwise the specific error
-func (c *Client) ChangeInstancePass(instanceId string, args *api.ChangeInstancePassArgs) error {
+func (c *Client) ChangeInstancePass(instanceId string, args *api.ChangeInstancePassArgs) (*api.BatchOperationResp, error) {
 	cryptedPass, err := api.Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.AdminPass)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	args.AdminPass = cryptedPass
 
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
-		return jsonErr
+		return nil, jsonErr
 	}
 	body, err := bce.NewBodyFromBytes(jsonBytes)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	return api.ChangeInstancePass(c, instanceId, body)
@@ -1972,11 +1972,11 @@ func (c *Client) ImportKeypair(args *api.ImportKeypairArgs) (*api.KeypairResult,
 	return api.ImportKeypair(c, args)
 }
 
-func (c *Client) AttachKeypair(args *api.AttackKeypairArgs) error {
+func (c *Client) AttachKeypair(args *api.AttackKeypairArgs) (*api.BatchOperationResp, error) {
 	return api.AttachKeypair(c, args)
 }
 
-func (c *Client) DetachKeypair(args *api.DetachKeypairArgs) error {
+func (c *Client) DetachKeypair(args *api.DetachKeypairArgs) (*api.BatchOperationResp, error) {
 	return api.DetachKeypair(c, args)
 }
 
@@ -2163,14 +2163,14 @@ func (c *Client) BatchDeleteInstanceWithRelateResource(args *api.BatchDeleteInst
 //
 // RETURNS:
 //   - error: nil if success otherwise the specific error
-func (c *Client) BatchStartInstance(args *api.BatchStartInstanceArgs) error {
+func (c *Client) BatchStartInstance(args *api.BatchStartInstanceArgs) (*api.BatchOperationResp, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
-		return jsonErr
+		return nil, jsonErr
 	}
 	body, err := bce.NewBodyFromBytes(jsonBytes)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	return api.BatchStartInstance(c, body)
@@ -2183,14 +2183,14 @@ func (c *Client) BatchStartInstance(args *api.BatchStartInstanceArgs) error {
 //
 // RETURNS:
 //   - error: nil if success otherwise the specific error
-func (c *Client) BatchStopInstance(args *api.BatchStopInstanceArgs) error {
+func (c *Client) BatchStopInstance(args *api.BatchStopInstanceArgs) (*api.BatchOperationResp, error) {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {
-		return jsonErr
+		return nil, jsonErr
 	}
 	body, err := bce.NewBodyFromBytes(jsonBytes)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	return api.BatchStopInstance(c, body)
 }

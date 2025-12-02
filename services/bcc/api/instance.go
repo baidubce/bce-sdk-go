@@ -753,7 +753,7 @@ func StopInstance(cli bce.Client, instanceId string, reqBody *bce.Body) error {
 //
 // RETURNS:
 //   - error: nil if success otherwise the specific error
-func RebootInstance(cli bce.Client, instanceId string, reqBody *bce.Body) error {
+func RebootInstance(cli bce.Client, instanceId string, reqBody *bce.Body) (*BatchOperationResp, error) {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getInstanceUriWithId(instanceId))
@@ -764,14 +764,18 @@ func RebootInstance(cli bce.Client, instanceId string, reqBody *bce.Body) error 
 	// Send request and get response
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
-		return err
+		return nil, err
 	}
 	if resp.IsFail() {
-		return resp.ServiceError()
+		return nil, resp.ServiceError()
 	}
 
-	defer func() { resp.Body().Close() }()
-	return nil
+	jsonBody := &BatchOperationResp{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
 }
 
 func RecoveryInstance(cli bce.Client, reqBody *bce.Body) error {
@@ -803,7 +807,7 @@ func RecoveryInstance(cli bce.Client, reqBody *bce.Body) error {
 //
 // RETURNS:
 //   - error: nil if success otherwise the specific error
-func ChangeInstancePass(cli bce.Client, instanceId string, reqBody *bce.Body) error {
+func ChangeInstancePass(cli bce.Client, instanceId string, reqBody *bce.Body) (*BatchOperationResp, error) {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getInstanceUriWithId(instanceId))
@@ -814,14 +818,18 @@ func ChangeInstancePass(cli bce.Client, instanceId string, reqBody *bce.Body) er
 	// Send request and get response
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
-		return err
+		return nil, err
 	}
 	if resp.IsFail() {
-		return resp.ServiceError()
+		return nil, resp.ServiceError()
 	}
 
-	defer func() { resp.Body().Close() }()
-	return nil
+	jsonBody := &BatchOperationResp{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
 }
 
 // ModifyDeletionProtection - Modify deletion protection of specified instance
@@ -2059,7 +2067,7 @@ func BatchDeleteInstanceWithRelatedResource(cli bce.Client, reqBody *bce.Body) e
 //
 // RETURNS:
 //   - error: nil if success otherwise the specific error
-func BatchStartInstance(cli bce.Client, reqBody *bce.Body) error {
+func BatchStartInstance(cli bce.Client, reqBody *bce.Body) (*BatchOperationResp, error) {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getBatchStartInstanceUri())
@@ -2070,14 +2078,18 @@ func BatchStartInstance(cli bce.Client, reqBody *bce.Body) error {
 	// Send request and get response
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
-		return err
+		return nil, err
 	}
 	if resp.IsFail() {
-		return resp.ServiceError()
+		return nil, resp.ServiceError()
 	}
 
-	defer func() { _ = resp.Body().Close() }()
-	return nil
+	jsonBody := &BatchOperationResp{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
 }
 
 // BatchStopInstance - batch stop specified instance
@@ -2088,7 +2100,7 @@ func BatchStartInstance(cli bce.Client, reqBody *bce.Body) error {
 //
 // RETURNS:
 //   - error: nil if success otherwise the specific error
-func BatchStopInstance(cli bce.Client, reqBody *bce.Body) error {
+func BatchStopInstance(cli bce.Client, reqBody *bce.Body) (*BatchOperationResp, error) {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getBatchStopInstanceUri())
@@ -2099,14 +2111,18 @@ func BatchStopInstance(cli bce.Client, reqBody *bce.Body) error {
 	// Send request and get response
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
-		return err
+		return nil, err
 	}
 	if resp.IsFail() {
-		return resp.ServiceError()
+		return nil, resp.ServiceError()
 	}
 
-	defer func() { resp.Body().Close() }()
-	return nil
+	jsonBody := &BatchOperationResp{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
 }
 
 // ListInstanceTypes - list all instances type with the specified parameters

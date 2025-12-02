@@ -47,7 +47,7 @@ func init() {
 	BCC_CLIENT, _ = NewClient(confObj.AK, confObj.SK, confObj.Endpoint)
 	log.SetLogLevel(log.WARN)
 	// log.SetLogLevel(log.DEBUG)
-	BCC_TestBccId = "i-nOKDVvyq"
+	BCC_TestBccId = "i-vwguVFqW"
 	BCC_TestCdsId = "cds_id"
 	BCC_TestImageId = "m-Q0ezqMIa"
 }
@@ -342,10 +342,11 @@ func TestListRecycleInstances(t *testing.T) {
 }
 
 func TestGetInstanceDetail(t *testing.T) {
-	res, err := BCC_CLIENT.GetInstanceDetail("i-JVXcfQ6M")
+	res, err := BCC_CLIENT.GetInstanceDetail("i-vwguVFqW")
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(res.Instance.NetEthQueueCount)
 	fmt.Println(res)
+	fmt.Println(res.Instance.Status)
 }
 
 func TestGetInstanceDetailWithDeploySetAndFailed(t *testing.T) {
@@ -389,8 +390,9 @@ func TestStartInstance(t *testing.T) {
 }
 
 func TestRebootInstance(t *testing.T) {
-	err := BCC_CLIENT.RebootInstance(BCC_TestBccId, true)
+	res, err := BCC_CLIENT.RebootInstance(BCC_TestBccId, true)
 	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
 }
 
 func TestRebuildInstance(t *testing.T) {
@@ -415,8 +417,9 @@ func TestChangeInstancePass(t *testing.T) {
 	changeArgs := &api.ChangeInstancePassArgs{
 		AdminPass: "321zaq#@!",
 	}
-	err := BCC_CLIENT.ChangeInstancePass(BCC_TestBccId, changeArgs)
+	res, err := BCC_CLIENT.ChangeInstancePass(BCC_TestBccId, changeArgs)
 	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
 }
 
 func TestModifyInstanceAttribute(t *testing.T) {
@@ -1420,9 +1423,10 @@ func TestAttachKeypair(t *testing.T) {
 		KeypairId:   "KeypairId",
 		InstanceIds: []string{"InstanceId"},
 	}
-	if err := BCC_CLIENT.AttachKeypair(args); err != nil {
+	if res, err := BCC_CLIENT.AttachKeypair(args); err != nil {
 		fmt.Println("Get specific instance eni failed: ", err)
 	} else {
+		fmt.Println(res)
 		fmt.Println("Get specific instance eni success")
 	}
 }
@@ -1432,9 +1436,10 @@ func TestDetachKeypair(t *testing.T) {
 		KeypairId:   "KeypairId",
 		InstanceIds: []string{"InstanceId"},
 	}
-	if err := BCC_CLIENT.DetachKeypair(args); err != nil {
+	if res, err := BCC_CLIENT.DetachKeypair(args); err != nil {
 		fmt.Println("Get specific instance eni failed: ", err)
 	} else {
+		fmt.Println(res)
 		fmt.Println("Get specific instance eni success")
 	}
 }
@@ -1601,20 +1606,22 @@ func TestBatchDeleteInstanceWithRelateResource(t *testing.T) {
 
 func TestBatchStartInstance(t *testing.T) {
 	args := &api.BatchStartInstanceArgs{
-		InstanceIds: []string{"i-gRYyYyjx", "i-GGc7Buqd"},
+		InstanceIds: []string{"i-o4nZ3AsW", "i-mbrPgC9A"},
 	}
-	err := BCC_CLIENT.BatchStartInstance(args)
+	res, err := BCC_CLIENT.BatchStartInstance(args)
 	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
 }
 
 func TestBatchStopInstance(t *testing.T) {
 	args := &api.BatchStopInstanceArgs{
 		ForceStop:        true,
 		StopWithNoCharge: false,
-		InstanceIds:      []string{"i-gRYyYyjx", "i-GGc7Buqd"},
+		InstanceIds:      []string{"i-o4nZ3AsW", "i-mbrPgC9A"},
 	}
-	err := BCC_CLIENT.BatchStopInstance(args)
+	res, err := BCC_CLIENT.BatchStopInstance(args)
 	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
 }
 
 func TestListInstanceTypes(t *testing.T) {

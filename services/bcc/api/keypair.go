@@ -98,7 +98,7 @@ func ImportKeypair(cli bce.Client, args *ImportKeypairArgs) (*KeypairResult, err
 	return jsonBody, nil
 }
 
-func AttachKeypair(cli bce.Client, args *AttackKeypairArgs) error {
+func AttachKeypair(cli bce.Client, args *AttackKeypairArgs) (*BatchOperationResp, error) {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getKeypairWithId(args.KeypairId))
@@ -107,26 +107,31 @@ func AttachKeypair(cli bce.Client, args *AttackKeypairArgs) error {
 
 	jsonBytes, err := json.Marshal(args)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	body, err := bce.NewBodyFromBytes(jsonBytes)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	req.SetBody(body)
 
 	// Send request and get response
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
-		return err
+		return nil, err
 	}
 	if resp.IsFail() {
-		return resp.ServiceError()
+		return nil, resp.ServiceError()
 	}
-	return nil
+
+	jsonBody := &BatchOperationResp{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
 }
 
-func DetachKeypair(cli bce.Client, args *DetachKeypairArgs) error {
+func DetachKeypair(cli bce.Client, args *DetachKeypairArgs) (*BatchOperationResp, error) {
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getKeypairWithId(args.KeypairId))
@@ -135,23 +140,28 @@ func DetachKeypair(cli bce.Client, args *DetachKeypairArgs) error {
 
 	jsonBytes, err := json.Marshal(args)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	body, err := bce.NewBodyFromBytes(jsonBytes)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	req.SetBody(body)
 
 	// Send request and get response
 	resp := &bce.BceResponse{}
 	if err := cli.SendRequest(req, resp); err != nil {
-		return err
+		return nil, err
 	}
 	if resp.IsFail() {
-		return resp.ServiceError()
+		return nil, resp.ServiceError()
 	}
-	return nil
+
+	jsonBody := &BatchOperationResp{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+	return jsonBody, nil
 }
 
 func DeleteKeypair(cli bce.Client, args *DeleteKeypairArgs) error {

@@ -34,4 +34,7 @@ type HpasSpec struct {
 	EphemeralDiskType   string `json:"ephemeralDiskType,omitempty"`
 	NicIpv4Quota        int    `json:"nicIpv4Quota,omitempty"`
 	NicIpv6Quota        int    `json:"nicIpv6Quota,omitempty"`
+	CpuCount        	int    `json:"cpuCount,omitempty"`
+	MemoryCapacityInGB  int	   `json:"memoryCapacityInGB,omitempty"`
+	GpuCardCount        int    `json:"gpuCardCount,omitempty"`
 }

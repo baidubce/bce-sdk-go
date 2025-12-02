@@ -3178,3 +3178,8 @@ type DescribeUnplannedEventsResp struct {
 	NextMarker                 string                   `json:"nextMarker"`
 	UnplannedMaintenanceEvents []UnplannedEventResponse `json:"unplannedMaintenanceEvents"`
 }
+
+type BatchOperationResp struct {
+	RequestId            string   `json:"requestId"`
+	FailedInstanceIdList []string `json:"failedInstanceIdList"`
+}

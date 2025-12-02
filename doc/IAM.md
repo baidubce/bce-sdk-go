@@ -251,8 +251,10 @@ ExpireSeconds | int   | 签名字符串的有效期
 
 ```go
     name := "test-user-sdk-go"
+	enabled := false
 	args := &api.UpdateUserArgs{
 		Description: "newDescription",
+		Enabled:     &enabled,
 	}
 
 	result, err := client.UpdateUser(name, args)

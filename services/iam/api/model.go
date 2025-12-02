@@ -41,7 +41,7 @@ type UpdateUserArgs struct {
 	Name        string `json:"name,omitempty"`
 	Description string `json:"description,omitempty"`
 	Contact     string `json:"contact,omitempty"`
-	Enabled     bool   `json:"enabled,omitempty"`
+	Enabled     *bool  `json:"enabled,omitempty"`
 }
 
 type UpdateUserResult UserModel
