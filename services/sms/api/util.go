@@ -27,6 +27,7 @@ const (
 	REQUEST_URI_QUOTA      = "/sms/v3/quota"
 	REQUEST_URI_BLACK      = "/sms/v3/blacklist"
 	REQUEST_URI_STATISTICS = "/sms/v3/summary"
+	REQUEST_URI_PREPAY     = "/sms/v3/prepay/"
 	CLIENT_TOKEN           = "clientToken"
 )
 

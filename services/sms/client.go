@@ -233,3 +233,15 @@ func (c *Client) GetMobileBlack(args *api.GetMobileBlackArgs) (*api.GetMobileBla
 func (c *Client) ListStatistics(args *api.ListStatisticsArgs) (*api.ListStatisticsResponse, error) {
 	return api.ListStatistics(c, args)
 }
+
+// GetPrepaidPackages - get a list of sms prepaid packages data
+//
+// PARAMS:
+//   - args: the arguments to get sms prepaid packages data
+//
+// RETURNS:
+//   - error: the return error if any occurs
+//   - *api.GetPrepaidPackageResponse: the result of getting prepaid packages data
+func (c *Client) GetPrepaidPackages(args *api.GetPrepaidPackageArgs) (*api.GetPrepaidPackageResponse, error) {
+	return api.GetPrepaidPackages(c, args)
+}

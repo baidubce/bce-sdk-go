@@ -50,6 +50,7 @@ type Interface interface {
 
 	// 修改节点缩容保护状态
 	UpdateInstanceScaleDownProtection(args *UpdateInstanceScaleDownProtectionArgs) (*UpdateInstanceScaleDownProtectionResponse, error)
+	UpdateInstanceGroupConfigure(args *UpdateInstanceGroupConfigure) (*UpdateInstanceGroupConfigureResponse, error)
 }
 
 // CreateClusterArgs 为后续支持clientToken预留空间
@@ -643,11 +644,27 @@ type InstanceGroupSpec struct {
 	UpdatePolicy UpdatePolicy      `json:"updatePolicy,omitempty"`
 	CleanPolicy  CleanPolicy       `json:"cleanPolicy,omitempty"`
 
-	InstanceTemplate InstanceTemplate `json:"instanceTemplate"`
-	Replicas         int              `json:"replicas"`
-
+	InstanceTemplate      InstanceTemplate       `json:"instanceTemplate"`
+	InstanceTemplates     []InstanceTemplate     `json:"instanceTemplates"`
+	Replicas              int                    `json:"replicas"`
+	DefaultSecurityGroups []SecurityGroupV2      `json:"securityGroups,omitempty" gorm:"-"`
 	ClusterAutoscalerSpec *ClusterAutoscalerSpec `json:"clusterAutoscalerSpec,omitempty"`
 }
+
+type SecurityGroupV2 struct {
+	Name string            `json:"name"`
+	Type SecurityGroupType `json:"type"`
+	ID   string            `json:"id"`
+}
+
+type SecurityGroupType string
+
+const (
+	SecurityGroupTypeNormal             SecurityGroupType = "normal"
+	SecurityGroupTypeEnterprise         SecurityGroupType = "enterprise"
+	SecurityGroupTypeNormalIDPrefix     string            = "g-"
+	SecurityGroupTypeEnterpriseIDPrefix string            = "esg-"
+)
 
 type ShrinkPolicy string
 type UpdatePolicy string
@@ -754,7 +771,17 @@ type UpdateAutoscalerArgs struct {
 	AutoscalerConfig ClusterAutoscalerConfig
 }
 
+type UpdateInstanceGroupConfigure struct {
+	PasswordNeedUpdate bool `json:"passwordNeedUpdate"`
+	SyncMeta           bool `json:"syncMeta"`
+	types.InstanceGroupSpec
+}
+
 type UpdateAutoscalerResponse struct {
+	CommonResponse
+}
+
+type UpdateInstanceGroupConfigureResponse struct {
 	CommonResponse
 }
 

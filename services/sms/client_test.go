@@ -28,10 +28,7 @@ type Conf struct {
 
 func init() {
 	_, f, _, _ := runtime.Caller(0)
-	for i := 0; i < 7; i++ {
-		f = filepath.Dir(f)
-	}
-	conf := filepath.Join(f, "/config.json")
+	conf := filepath.Join(filepath.Dir(f), "config.json")
 	fmt.Println(conf)
 	fp, err := os.Open(conf)
 	if err != nil {
@@ -233,4 +230,30 @@ func TestListStatistics(t *testing.T) {
 	})
 	ExpectEqual(t.Errorf, nil, res)
 	t.Logf("test4: %v", err)
+}
+
+func TestGetPrepaidPackages(t *testing.T) {
+	res, err := SMS_CLIENT.GetPrepaidPackages(&api.GetPrepaidPackageArgs{
+		UserID: "userid",
+	})
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("test1: %#v", res)
+
+	res, err = SMS_CLIENT.GetPrepaidPackages(&api.GetPrepaidPackageArgs{
+		UserID:   "userid",
+		PageNo:   "1",
+		PageSize: "5",
+	})
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("test2: %#v", res)
+
+	res, err = SMS_CLIENT.GetPrepaidPackages(&api.GetPrepaidPackageArgs{
+		UserID:        "userid",
+		CountryType:   "domestic",
+		PackageStatus: "EXPIRED",
+		PageNo:        "1",
+		PageSize:      "5",
+	})
+	ExpectEqual(t.Errorf, err, nil)
+	t.Logf("test3: %#v", res)
 }

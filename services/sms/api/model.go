@@ -254,3 +254,29 @@ type StatisticsResult struct {
 	IllegalWordCount          string `json:"illegalWordCount"`
 	AnomalyCount              string `json:"anomalyCount"`
 }
+
+// GetPrepaidPackageArgs defines the request data structure of PrepaidPackages
+type GetPrepaidPackageArgs struct {
+	UserID        string `json:"userId"`
+	CountryType   string `json:"countryType"`   // available values: "domestic", "international"， "global"
+	PackageStatus string `json:"packageStatus"` // available values: "RUNNING", "EXPIRED", "USED_UP", "DESTROYED"
+	PageNo        string `json:"pageNo"`
+	PageSize      string `json:"pageSize"`
+}
+
+// GetPrepaidPackageResponse defines the response data structure of PrepaidPackages
+type GetPrepaidPackageResponse struct {
+	PrepaidPackages []PrepaidPackage `json:"prepaidPackages"`
+	TotalCount      int              `json:"totalCount"`
+}
+
+type PrepaidPackage struct {
+	PackageId         string  `json:"packageId"`
+	Name              string  `json:"name"`
+	CountryType       string  `json:"countryType"`
+	Capacity          float64 `json:"capacity"`
+	RemainingCapacity float64 `json:"remainingCapacity"`
+	PackageStatus     string  `json:"packageStatus"`
+	PurchaseDate      string  `json:"purchaseDate"`
+	ExpireDate        string  `json:"expireDate"`
+}

@@ -99,25 +99,29 @@ type ListEipResult struct {
 }
 
 type EipModel struct {
-	Name            string           `json:"name"`
-	Eip             string           `json:"eip"`
-	EipId           string           `json:"eipId"`
-	Status          string           `json:"status"`
-	EipInstanceType string           `json:"eipInstanceType"`
-	InstanceType    string           `json:"instanceType"`
-	InstanceId      string           `json:"instanceId"`
-	ShareGroupId    string           `json:"shareGroupId"`
-	ClusterId       string           `json:"clusterId"`
-	BandWidthInMbps int              `json:"bandwidthInMbps"`
-	PaymentTiming   string           `json:"paymentTiming"`
-	BillingMethod   string           `json:"billingMethod"`
-	CreateTime      string           `json:"createTime"`
-	ExpireTime      string           `json:"expireTime"`
-	Region          string           `json:"region"`
-	RouteType       string           `json:"routeType"`
-	Tags            []model.TagModel `json:"tags"`
-	DeleteProtect   bool             `json:"deleteProtect"`
-	BwShortId       string           `json:"bwShortId"`
+	Name                 string           `json:"name"`
+	Eip                  string           `json:"eip"`
+	EipId                string           `json:"eipId"`
+	Status               string           `json:"status"`
+	EipInstanceType      string           `json:"eipInstanceType"`
+	InstanceType         string           `json:"instanceType"`
+	InstanceId           string           `json:"instanceId"`
+	ShareGroupId         string           `json:"shareGroupId"`
+	ClusterId            string           `json:"clusterId"`
+	BandWidthInMbps      int              `json:"bandwidthInMbps"`
+	PaymentTiming        string           `json:"paymentTiming"`
+	BillingMethod        string           `json:"billingMethod"`
+	CreateTime           string           `json:"createTime"`
+	ExpireTime           string           `json:"expireTime"`
+	Region               string           `json:"region"`
+	RouteType            string           `json:"routeType"`
+	Tags                 []model.TagModel `json:"tags"`
+	DeleteProtect        bool             `json:"deleteProtect"`
+	BwShortId            string           `json:"bwShortId"`
+	NativeGroup          *bool            `json:"nativeGroup"`
+	OriginalBandwidth    *int             `json:"originalBandwidth"`
+	OriginProductType    *string          `json:"originProductType"`
+	OriginSubProductType *string          `json:"originSubProductType"`
 }
 
 type ListRecycleEipArgs struct {

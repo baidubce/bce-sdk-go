@@ -41,6 +41,8 @@ const (
 
 	REQUEST_INSTANCEGROUP_REPLICAS_URL = "/replicas"
 
+	REQUEST_INSTANCEGROUP_CONFIGURE_URL = "/configure"
+
 	REQUEST_INSTANCEGROUP_SCALE_UP_URL = "/scaleup"
 
 	REQUEST_INSTANCEGROUP_SCALE_DOWN_URL = "/scaledown"
@@ -120,6 +122,7 @@ func NewClient(ak, sk, endPoint string) (*Client, error) {
 }
 
 func getClusterURI() string {
+	// Get cluster URI prefix
 	return URI_PREFIX + REQUEST_CLUSTER_URL
 }
 
@@ -221,6 +224,10 @@ func getQuotaNodeURI(clusterID string) string {
 
 func getAutoscalerURI(clusterID string) string {
 	return URI_PREFIX + REQUEST_AUTOSCALER + "/" + clusterID
+}
+
+func getUpdateInstanceGroupConfigureResponseURI(clusterID, instanceGroupID string) string {
+	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_INSTANCEGROUP_URL + "/" + instanceGroupID + REQUEST_INSTANCEGROUP_CONFIGURE_URL
 }
 
 func getKubeconfigURI(clusterID string, kubeConfigType KubeConfigType) string {

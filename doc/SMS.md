@@ -214,7 +214,7 @@ ExpireSeconds | int   | 签名字符串的有效期
 	fmt.Printf("send sms success. %s", result)
 ```
 > **提示：**
-> - 详细的参数配置及限制条件，可以参考SMS API 文档[短信下发](https://cloud.baidu.com/doc/SMS/s/Yjwvxrwzb#%E7%9F%AD%E4%BF%A1%E4%B8%8B%E5%8F%91)
+> - 详细的参数配置及限制条件，可以参考SMS API 文档[短信下发](https://cloud.baidu.com/doc/SMS/s/Ykdtz1h96)
 
 ## 签名
 ### 申请签名
@@ -242,7 +242,7 @@ ExpireSeconds | int   | 签名字符串的有效期
 	fmt.Printf("create signature success. %s", result)
 ```
 > **提示：**
-> - 详细参数配置及限制条件，可以参考SMS API 文档[申请签名](https://cloud.baidu.com/doc/SMS/s/Yjwvxrwzb)
+> - 详细参数配置及限制条件，可以参考SMS API 文档[申请签名](https://cloud.baidu.com/doc/SMS/s/Pkdtz1os3)
 
 ### 获取签名详情
 通过以下代码，可以获取一个SMS签名详情
@@ -257,7 +257,7 @@ ExpireSeconds | int   | 签名字符串的有效期
 	fmt.Printf("get signature success. %s", result)
 ```
 > **提示：**
-> - 详细参数配置及限制条件，可以参考SMS API 文档[获取签名详情](https://cloud.baidu.com/doc/SMS/s/Yjwvxrwzb)
+> - 详细参数配置及限制条件，可以参考SMS API 文档[获取签名详情](https://cloud.baidu.com/doc/SMS/s/Pkdtz1os3)
 
 ### 变更签名申请
 通过以下代码，可以变更一个SMS签名申请
@@ -285,7 +285,7 @@ ExpireSeconds | int   | 签名字符串的有效期
 	fmt.Printf("modify signature success.")
 ```
 > **提示：**
-> - 详细参数配置及限制条件，可以参考SMS API 文档[变更签名申请](https://cloud.baidu.com/doc/SMS/s/Yjwvxrwzb)
+> - 详细参数配置及限制条件，可以参考SMS API 文档[变更签名申请](https://cloud.baidu.com/doc/SMS/s/Pkdtz1os3)
 
 ### 删除签名
 通过以下代码，可以删除一个SMS签名
@@ -300,7 +300,7 @@ ExpireSeconds | int   | 签名字符串的有效期
 ```
 
 > **提示：**
-> - 详细参数配置及限制条件，可以参考SMS API 文档[删除签名](https://cloud.baidu.com/doc/SMS/s/Yjwvxrwzb)
+> - 详细参数配置及限制条件，可以参考SMS API 文档[删除签名](https://cloud.baidu.com/doc/SMS/s/Pkdtz1os3)
 
 ## 模板
 ### 申请模板
@@ -320,7 +320,7 @@ ExpireSeconds | int   | 签名字符串的有效期
 	fmt.Printf("create template success. %s", result)
 ```
 > **提示：**
-> - 详细参数配置及限制条件，可以参考SMS API 文档[申请模板](https://cloud.baidu.com/doc/SMS/s/Yjwvxrwzb)
+> - 详细参数配置及限制条件，可以参考SMS API 文档[申请模板](https://cloud.baidu.com/doc/SMS/s/jkdtz1vy6)
 
 ### 获取模板详情
 通过以下代码，可以获取一个sms模板详情
@@ -334,7 +334,7 @@ ExpireSeconds | int   | 签名字符串的有效期
 ```
 
 > **提示：**
-> - 详细参数配置及限制条件，可以参考SMS API 文档[获取模板详情](https://cloud.baidu.com/doc/SMS/s/Yjwvxrwzb)
+> - 详细参数配置及限制条件，可以参考SMS API 文档[获取模板详情](https://cloud.baidu.com/doc/SMS/s/jkdtz1vy6)
 
 ### 变更模板
 通过以下代码，可以变更一个sms模板申请
@@ -355,7 +355,7 @@ ExpireSeconds | int   | 签名字符串的有效期
 ```
 
 > **提示：**
-> - 详细参数配置及限制条件，可以参考SMS API 文档[变更模板](https://cloud.baidu.com/doc/SMS/s/Yjwvxrwzb)
+> - 详细参数配置及限制条件，可以参考SMS API 文档[变更模板](https://cloud.baidu.com/doc/SMS/s/jkdtz1vy6)
 
 ### 删除模板
 通过以下代码，可以删除一个模板
@@ -369,7 +369,7 @@ ExpireSeconds | int   | 签名字符串的有效期
 ```
 
 > **提示：**
-> - 详细参数配置及限制条件，可以参考SMS API 文档[删除模板](https://cloud.baidu.com/doc/SMS/s/Yjwvxrwzb)
+> - 详细参数配置及限制条件，可以参考SMS API 文档[删除模板](https://cloud.baidu.com/doc/SMS/s/jkdtz1vy6)
 
 ## 配额频控
 ### 查看配额和频控
@@ -383,7 +383,7 @@ ExpireSeconds | int   | 签名字符串的有效期
 	fmt.Printf("query quota or rate limit success. %s", result)
 ```
 > **提示：**
-> - 详细参数配置及限制条件，可以参考SMS API 文档[查看配额和频控](https://cloud.baidu.com/doc/SMS/s/Yjwvxrwzb)
+> - 详细参数配置及限制条件，可以参考SMS API 文档[查看配额和频控](https://cloud.baidu.com/doc/SMS/s/Wkdtzv7t9)
 
 ### 变更配额或频控
 通过以下代码，可以变更配额或频控
@@ -402,7 +402,7 @@ ExpireSeconds | int   | 签名字符串的有效期
 	fmt.Printf("update quota or rate limit success")
 ```
 > **提示：**
-> - 详细参数配置及限制条件，可以参考SMS API 文档[变更配额和频控](https://cloud.baidu.com/doc/SMS/s/Yjwvxrwzb)
+> - 详细参数配置及限制条件，可以参考SMS API 文档[变更配额和频控](https://cloud.baidu.com/doc/SMS/s/Wkdtzv7t9)
 
 ## 手机号黑名单
 ### 创建手机号黑名单
@@ -454,7 +454,42 @@ ExpireSeconds | int   | 签名字符串的有效期
 ```
 
 > **提示：**
-> - 详细参数配置及限制条件，可以参考SMS API 文档[手机号黑名单](https://cloud.baidu.com/doc/SMS/s/Yjwvxrwzb)
+> - 详细参数配置及限制条件，可以参考SMS API 文档[手机号黑名单](https://cloud.baidu.com/doc/SMS/s/wlk8bli1z)
+
+## 业务统计
+### 获取下发短信的业务统计信息
+通过以下代码，可以查询短信的业务统计信息
+```go
+	err := client.ListStatistics(&api.ListStatisticsArgs{
+            SmsType:               "normal", 
+            StartTime:             "2023-10-01",
+            EndTime:               "2023-11-01",
+	})
+	if err != nil {
+		fmt.Printf("ListStatistics error, %s", err)
+		return
+	}
+	fmt.Printf("ListStatistics success")
+```
+> **提示：**
+> - 详细参数配置及限制条件，可以参考SMS API 文档[业务统计](https://cloud.baidu.com/doc/SMS/s/8lohz4ey0)
+
+
+## 量包查询
+### 获取商户短信流量包查询
+通过以下代码，可以查询商户短信流量包详情
+```go
+	err := client.GetPrepaidPackages(&api.GetPrepaidPackageArgs{
+            UserID:                "your_userid",
+	})
+	if err != nil {
+		fmt.Printf("GetPrepaidPackages error, %s", err)
+		return
+	}
+	fmt.Printf("GetPrepaidPackages success")
+```
+> **提示：**
+> - 详细参数配置及限制条件，可以参考SMS API 文档[量包查询](https://cloud.baidu.com/doc/SMS/s/Yjwvxrwzb)
 
 
 
@@ -506,3 +541,7 @@ if err != nil {
 ## v0.9.32 [2023-07-20]
 - 配额频控查询增加申请信息字段
 - 增加手机号黑名单增、删、查接口
+- 业务统计
+
+## v0.9.255 [2025-12-10]
+- 量包查询
