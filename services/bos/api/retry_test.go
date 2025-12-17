@@ -4,34 +4,11 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"reflect"
-	"runtime"
 	"testing"
 	"time"
 
 	"github.com/baidubce/bce-sdk-go/bce"
 )
-
-func Equal(expected, actual interface{}) bool {
-	actualType := reflect.TypeOf(actual)
-	if actualType == nil {
-		return false
-	}
-	expectedValue := reflect.ValueOf(expected)
-	if expectedValue.IsValid() && expectedValue.Type().ConvertibleTo(actualType) {
-		return reflect.DeepEqual(expectedValue.Convert(actualType).Interface(), actual)
-	}
-	return false
-}
-
-func ExpectEqual(t *testing.T, exp interface{}, act interface{}) bool {
-	if !Equal(exp, act) {
-		_, file, line, _ := runtime.Caller(1)
-		t.Errorf("%s:%d: missmatch, expect %v but %v", file, line, exp, act)
-		return false
-	}
-	return true
-}
 
 func TestBosRetryPolicyShouldRetry(t *testing.T) {
 	retry_policy := NewBosRetryPolicy(3, 20000, 300)

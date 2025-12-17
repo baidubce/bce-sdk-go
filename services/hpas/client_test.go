@@ -231,7 +231,7 @@ func TestListHpas(t *testing.T) {
 
 func TestListHpasWithRdmaTopo(t *testing.T) {
 	listHpasPageReq := &api.ListHpasPageReq{
-		HpasIds:      []string{"hpas-hS7So6Qy"},
+		HpasIds:      []string{"hpas-Gw8dTmsL"},
 		Name:         "real",
 		ZoneName:     "cn-bj-a",
 		HpasStatus:   "Active",

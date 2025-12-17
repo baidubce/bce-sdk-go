@@ -586,6 +586,7 @@ type CreateInstanceBySpecArgs struct {
 	EhcClusterId               string           `json:"ehcClusterId,omitempty"`
 	CpuThreadConfig            string           `json:"cpuThreadConfig"`
 	NumaConfig                 string           `json:"numaConfig"`
+	KeepImageLogin             bool             `json:"keepImageLogin"`
 }
 
 type CreateInstanceBySpecArgsV2 struct {
@@ -985,6 +986,7 @@ type RebuildInstanceArgs struct {
 	DataPartitionType string `json:"dataPartitionType,omitempty"`
 	UserData          string `json:"userData,omitempty"`
 	CleanLastUserData *bool  `json:"cleanLastUserData"`
+	KeepImageLogin    bool   `json:"keepImageLogin"`
 }
 
 type RebuildInstanceArgsV2 struct {
@@ -999,6 +1001,7 @@ type RebuildInstanceArgsV2 struct {
 	DataPartitionType string `json:"dataPartitionType,omitempty"`
 	UserData          string `json:"userData,omitempty"`
 	CleanLastUserData *bool  `json:"cleanLastUserData"`
+	KeepImageLogin    bool   `json:"keepImageLogin"`
 }
 
 type StopInstanceArgs struct {
@@ -2090,6 +2093,7 @@ type RebuildBatchInstanceArgs struct {
 	DataPartitionType string   `json:"dataPartitionType,omitempty"`
 	UserData          string   `json:"userData,omitempty"`
 	CleanLastUserData *bool    `json:"cleanLastUserData"`
+	KeepImageLogin    bool     `json:"keepImageLogin"`
 }
 
 type RebuildBatchInstanceArgsV2 struct {

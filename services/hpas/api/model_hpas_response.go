@@ -46,9 +46,11 @@ type HpasResponse struct {
 }
 
 type RdmaNicTopo struct {
-	RdmaIp     string `json:"rdmaIp"`
-	SwitchName string `json:"switchName"`
-	SwitchPort string `json:"switchPort"`
+	RdmaIp      string `json:"rdmaIp"`
+	SwitchName  string `json:"switchName"`
+	SwitchPort  string `json:"switchPort"`
+	RdmaMac     string `json:"rdmaMac"`
+	RdmaGateway string `json:"rdmaGateway"`
 }
 
 type VolumeInfo struct {

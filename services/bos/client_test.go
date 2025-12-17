@@ -3,7 +3,7 @@ package bos
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
+	net_http "net/http"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/baidubce/bce-sdk-go/bce"
+	"github.com/baidubce/bce-sdk-go/http"
 	"github.com/baidubce/bce-sdk-go/services/bos/api"
 	"github.com/baidubce/bce-sdk-go/util/log"
 )
@@ -77,6 +78,82 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 	}
 	return true
 }
+
+type ErrorTypeTransport struct {
+}
+
+func (ett *ErrorTypeTransport) RoundTrip(*net_http.Request) (*net_http.Response, error) {
+	return &net_http.Response{}, nil
+}
+
+func TestNewBosClient(t *testing.T) {
+	//case1: NewClient(ak, sk, endpoint)
+	ak, sk, endpoint := "test-ak", "test-sk", "test-endpoint"
+	_, err := NewClient(ak, sk, endpoint)
+	ExpectEqual(t.Errorf, nil, err)
+	// case2: NewClientWithConfig
+	config := &BosClientConfiguration{
+		Ak:       ak,
+		Sk:       sk,
+		Endpoint: endpoint,
+	}
+	_, err = NewClientWithConfig(config)
+	ExpectEqual(t.Errorf, nil, err)
+	// case3: NewConfigWithXX
+	http_client := &net_http.Client{}
+	retry_policy := &bce.BackOffRetryPolicy{}
+	config1 := config.WithAk("test-ak1").
+		WithSk("test-sk1").
+		WithEndpoint("test-endpoint1").
+		WithDialTimeout(100).
+		WithDisableKeepAlives(true).
+		WithDownloadRateLimit(4096000).
+		WithExclusiveHTTPClient(true).
+		WithHttpClient(*http_client).
+		WithHttpClientTimeout(100).
+		WithIdleConnectionTimeout(100).
+		WithKeepAlive(100).
+		WithNoVerifySSL(true).
+		WithPathStyleEnable(true).
+		WithReadTimeout(100).
+		WithRedirectDisabled(true).
+		WithResponseHeaderTimeout(100).
+		WithRetryPolicy(retry_policy).
+		WithTLSHandshakeTimeout(100).
+		WithUploadRateLimit(8192000).
+		WithWriteTimeout(100)
+	ExpectEqual(t.Errorf, "test-ak1", config.Ak)
+	ExpectEqual(t.Errorf, "test-sk1", config.Sk)
+	ExpectEqual(t.Errorf, "test-endpoint1", config.Endpoint)
+	ExpectEqual(t.Errorf, 100, *(config.DialTimeout))
+	ExpectEqual(t.Errorf, true, config.DisableKeepAlives)
+	ExpectEqual(t.Errorf, 4096000, *(config.DownloadRatelimit))
+	ExpectEqual(t.Errorf, true, config.ExclusiveHTTPClient)
+	ExpectEqual(t.Errorf, http_client, config.HTTPClient)
+	ExpectEqual(t.Errorf, 100, *(config.HTTPClientTimeout))
+	ExpectEqual(t.Errorf, 100, *(config.IdleConnectionTimeout))
+	ExpectEqual(t.Errorf, 100, *(config.KeepAlive))
+	ExpectEqual(t.Errorf, true, config.NoVerifySSL)
+	ExpectEqual(t.Errorf, true, config.PathStyleEnable)
+	ExpectEqual(t.Errorf, 100, *(config.ReadTimeout))
+	ExpectEqual(t.Errorf, true, config.RedirectDisabled)
+	ExpectEqual(t.Errorf, 100, *(config.ResponseHeaderTimeout))
+	ExpectEqual(t.Errorf, retry_policy, config.retryPolicy)
+	ExpectEqual(t.Errorf, 100, *(config.TLSHandshakeTimeout))
+	ExpectEqual(t.Errorf, 8192000, *(config.UploadRatelimit))
+	ExpectEqual(t.Errorf, 100, *(config.WriteTimeOut))
+	_, err = NewClientWithConfig(config1)
+	ExpectEqual(t.Errorf, nil, err)
+
+	// error http transport
+	config2 := config.WithHttpClient(net_http.Client{
+		Timeout:   1000,
+		Transport: &ErrorTypeTransport{},
+	})
+	_, err = NewClientWithConfig(config2)
+	ExpectEqual(t.Errorf, http.UnknownHTTPTransport, fmt.Errorf("%s", err))
+}
+
 func TestListBuckets(t *testing.T) {
 	res, err := BOS_CLIENT.ListBuckets()
 	ExpectEqual(t.Errorf, err, nil)
@@ -920,22 +997,22 @@ func TestDownloadSuperFile(t *testing.T) {
 
 func TestGeneratePresignedUrl(t *testing.T) {
 	url := BOS_CLIENT.BasicGeneratePresignedUrl(EXISTS_BUCKET, EXISTS_OBJECT, 100)
-	resp, err := http.Get(url)
+	resp, err := net_http.Get(url)
 	ExpectEqual(t.Errorf, err, nil)
 	ExpectEqual(t.Errorf, resp.StatusCode, 200)
 	params := map[string]string{"responseContentType": "text"}
 	url = BOS_CLIENT.GeneratePresignedUrl(EXISTS_BUCKET, EXISTS_OBJECT, 1000, "HEAD", nil, params)
-	resp, err = http.Head(url)
+	resp, err = net_http.Head(url)
 	ExpectEqual(t.Errorf, err, nil)
 	ExpectEqual(t.Errorf, resp.StatusCode, 200)
 	BOS_CLIENT.Config.Endpoint = "10.180.112.31"
 	url = BOS_CLIENT.GeneratePresignedUrl(EXISTS_BUCKET, EXISTS_OBJECT, 100, "HEAD", nil, params)
-	resp, err = http.Head(url)
+	resp, err = net_http.Head(url)
 	ExpectEqual(t.Errorf, err, nil)
 	ExpectEqual(t.Errorf, resp.StatusCode, 200)
 	BOS_CLIENT.Config.Endpoint = "10.180.112.31:80"
 	url = BOS_CLIENT.GeneratePresignedUrl(EXISTS_BUCKET, EXISTS_OBJECT, 100, "HEAD", nil, params)
-	resp, err = http.Head(url)
+	resp, err = net_http.Head(url)
 	ExpectEqual(t.Errorf, err, nil)
 	ExpectEqual(t.Errorf, resp.StatusCode, 200)
 }

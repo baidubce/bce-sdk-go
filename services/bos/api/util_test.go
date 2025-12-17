@@ -1,6 +1,20 @@
 package api
 
-import "testing"
+import (
+	"runtime"
+	"testing"
+
+	"github.com/baidubce/bce-sdk-go/util"
+)
+
+func ExpectEqual(t *testing.T, exp interface{}, act interface{}) bool {
+	if !util.Equal(exp, act) {
+		_, file, line, _ := runtime.Caller(1)
+		t.Errorf("%s:%d: missmatch, expect %v but %v", file, line, exp, act)
+		return false
+	}
+	return true
+}
 
 func TestUtil(t *testing.T) {
 	_, ok := VALID_RESTORE_TIER[RESTORE_TIER_STANDARD]
