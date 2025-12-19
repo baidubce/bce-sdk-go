@@ -118,10 +118,10 @@ type EipModel struct {
 	Tags                 []model.TagModel `json:"tags"`
 	DeleteProtect        bool             `json:"deleteProtect"`
 	BwShortId            string           `json:"bwShortId"`
-	NativeGroup          *bool            `json:"nativeGroup"`
-	OriginalBandwidth    *int             `json:"originalBandwidth"`
-	OriginProductType    *string          `json:"originProductType"`
-	OriginSubProductType *string          `json:"originSubProductType"`
+	NativeGroup          *bool            `json:"nativeGroup,omitempty"`
+	OriginalBandwidth    *int             `json:"originalBandwidth,omitempty"`
+	OriginProductType    *string          `json:"originProductType,omitempty"`
+	OriginSubProductType *string          `json:"originSubProductType,omitempty"`
 }
 
 type ListRecycleEipArgs struct {

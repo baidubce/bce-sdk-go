@@ -1,5 +1,12 @@
 发行说明:记录每次SDK更新的说明,最新版本的SDK包含以前所有版本的更新内容。
 ---------------------------------------------------------------------
+【版本:v0.9.256】
+涉及产品: VPC
+    查询NAT列表，支持ipVersion字段标识
+涉及产品: EIP
+    EIPGROUP详情原生EIP非原生EIP字段信息支持omitempty
+涉及产品: IAM
+    增加UpdateUserLoginProfileV2函数支持布尔类型参数不设置值
 【版本:v0.9.255】
 涉及产品: BCC
     添加keepImageLogin参数

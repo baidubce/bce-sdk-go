@@ -125,7 +125,8 @@ func TestUpdateGetDeleteUserLoginProfile(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 
 	updateArgs := &api.UpdateUserLoginProfileArgs{
-		Password:        "xxxxxx",
+		EnabledLogin:    true,
+		Password:        "Test12343e",
 		EnabledLoginMfa: true,
 		LoginMfaType:    "PHONE",
 	}
@@ -135,6 +136,50 @@ func TestUpdateGetDeleteUserLoginProfile(t *testing.T) {
 	t.Logf(string(jsonRes))
 	ExpectEqual(t.Errorf, updateRes.EnabledLoginMfa, true)
 	ExpectEqual(t.Errorf, updateRes.LoginMfaType, "PHONE")
+
+	getRes, err := IAM_CLIENT.GetUserLoginProfile(name)
+	ExpectEqual(t.Errorf, err, nil)
+	jsonRes, _ = json.Marshal(getRes)
+	t.Logf(string(jsonRes))
+	ExpectEqual(t.Errorf, updateRes.EnabledLoginMfa, true)
+	ExpectEqual(t.Errorf, updateRes.LoginMfaType, "PHONE")
+
+	err = IAM_CLIENT.DeleteUser(name)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestUpdateUserLoginProfileV2(t *testing.T) {
+	name := "test-user-sdk-go-login-profile-v2"
+	args := &api.CreateUserArgs{
+		Name: name,
+	}
+	_, err := IAM_CLIENT.CreateUser(args)
+	ExpectEqual(t.Errorf, err, nil)
+
+	enableLogin := true
+	enableLoginMfa := true
+	updateArgs := &api.UpdateUserLoginProfileArgsV2{
+		EnabledLogin:    &enableLogin,
+		Password:        "Test12343e",
+		EnabledLoginMfa: &enableLoginMfa,
+		LoginMfaType:    "PHONE",
+	}
+	updateRes, err := IAM_CLIENT.UpdateUserLoginProfileV2(name, updateArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	jsonRes, _ := json.Marshal(updateRes)
+	t.Logf(string(jsonRes))
+	ExpectEqual(t.Errorf, updateRes.EnabledLoginMfa, true)
+	ExpectEqual(t.Errorf, updateRes.LoginMfaType, "PHONE")
+
+	updatePWArgs := &api.UpdateUserLoginProfileArgsV2{
+		Password: "Test12343ef",
+	}
+	updatePWRes, err := IAM_CLIENT.UpdateUserLoginProfileV2(name, updatePWArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	jsonPWRes, _ := json.Marshal(updatePWRes)
+	t.Logf(string(jsonPWRes))
+	ExpectEqual(t.Errorf, updatePWRes.EnabledLoginMfa, true)
+	ExpectEqual(t.Errorf, updatePWRes.LoginMfaType, "PHONE")
 
 	getRes, err := IAM_CLIENT.GetUserLoginProfile(name)
 	ExpectEqual(t.Errorf, err, nil)

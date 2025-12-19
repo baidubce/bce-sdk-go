@@ -77,7 +77,19 @@ type LoginProfileModel struct {
 	ThirdPartyAccount string `json:"thirdPartyAccount,omitempty"`
 }
 
+type LoginProfileModelV2 struct {
+	Password          string `json:"password,omitempty"`
+	NeedResetPassword *bool  `json:"needResetPassword,omitempty"`
+	EnabledLogin      *bool  `json:"enabledLogin,omitempty"`
+	EnabledLoginMfa   *bool  `json:"enabledLoginMfa,omitempty"`
+	LoginMfaType      string `json:"loginMfaType,omitempty"`
+	ThirdPartyType    string `json:"thirdPartyType,omitempty"`
+	ThirdPartyAccount string `json:"thirdPartyAccount,omitempty"`
+}
+
 type UpdateUserLoginProfileArgs LoginProfileModel
+
+type UpdateUserLoginProfileArgsV2 LoginProfileModelV2
 
 type UpdateUserLoginProfileResult LoginProfileModel
 

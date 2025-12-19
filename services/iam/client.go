@@ -99,6 +99,15 @@ func (c *Client) UpdateUserLoginProfile(name string, args *api.UpdateUserLoginPr
 	return api.UpdateUserLoginProfile(c, name, body)
 }
 
+func (c *Client) UpdateUserLoginProfileV2(name string, args *api.UpdateUserLoginProfileArgsV2) (
+	*api.UpdateUserLoginProfileResult, error) {
+	body, err := NewBodyFromStruct(args)
+	if err != nil {
+		return nil, err
+	}
+	return api.UpdateUserLoginProfile(c, name, body)
+}
+
 func (c *Client) GetUserLoginProfile(name string) (*api.GetUserLoginProfileResult, error) {
 	return api.GetUserLoginProfile(c, name)
 }

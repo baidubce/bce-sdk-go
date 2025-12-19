@@ -38,5 +38,6 @@ func ListNat() {
 		fmt.Println("nat status: ", nat.Status)
 		fmt.Println("nat paymentTiming: ", nat.PaymentTiming)
 		fmt.Println("nat expireTime: ", nat.ExpiredTime)
+		fmt.Println("nat ipVerion: ", *nat.IpVersion)
 	}
 }

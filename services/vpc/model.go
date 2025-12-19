@@ -506,6 +506,7 @@ type NAT struct {
 	PaymentTiming string           `json:"paymentTiming"`
 	ExpiredTime   string           `json:"expiredTime"`
 	Tags          []model.TagModel `json:"tags"`
+	IpVersion     *string          `json:"ipVersion,omitempty"`
 }
 
 type SnatRule struct {
