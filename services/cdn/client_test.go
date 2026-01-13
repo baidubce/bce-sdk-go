@@ -749,6 +749,167 @@ func TestSetCacheUrlArgs(t *testing.T) {
 	checkClientErr(t, "SetCacheUrlArgs", err)
 }
 
+func TestSetOriginConfig(t *testing.T) {
+	err := testCli.SetOriginConfig(testAuthorityDomain, []api.OriginItem{
+		// 示例：DOMAIN 类型源站配置
+		//{
+		//	Addr:             "test1.com",
+		//	Type:             "DOMAIN",
+		//	Host:             "test1.baidu.com",
+		//	UpstreamProtocol: "http",
+		//	Weight:           10,
+		//	Backup:           true,
+		//},
+
+		// 示例：IP 类型源站配置
+		//{
+		//	Addr:             "220.181.38.148",
+		//	Type:             "IP",
+		//	Host:             "test2.baidu.com",
+		//	UpstreamProtocol: "*",
+		//	Weight:           10,
+		//	Backup:           true,
+		//},
+
+		// 示例：BUCKET 类型源站配置
+		//{
+		//	Type:             "BUCKET",
+		//	Host:             "zyb-charge.bj.bcebos.com",
+		//	UpstreamProtocol: "https",
+		//	Addr:             "zyb-charge.bj.bcebos.com",
+		//	Backup:           false,
+		//},
+
+		// 示例：第三方对象存储 类型源站配置
+		{
+			Type:             "DOMAIN",
+			Addr:             "zyb-charge.bj.bcebos.com",
+			Host:             "zyb-charge.bj.bcebos.com",
+			UpstreamProtocol: "https",
+			Backup:           false,
+			ThirdBucketAuth: &api.ThirdBucketAuth{
+				AuthType: "aws_v4",
+				Enabled:  true,
+				Ak:       "xxx",
+				Sk:       "xxx",
+				Bucket:   "mybucket",
+				Region:   "us-east-1",
+				Service:  "s3",
+			},
+		},
+	})
+
+	checkClientErr(t, "SetOriginConfig", err)
+}
+
+func TestGetOriginConfig(t *testing.T) {
+	originConfig, err := testCli.GetOriginConfig(testAuthorityDomain)
+
+	data, _ := json.Marshal(originConfig)
+	t.Logf("originConfig: %s", data)
+	checkClientErr(t, "GetOriginConfig", err)
+}
+
+func TestSetPageRulesOriginConfig(t *testing.T) {
+	if !testConfigOk {
+		t.Skip("TestMain terminated, please check testing config")
+	}
+
+	// 文档示例：条件源站（pageRules_originConfig）
+	// 结构：[] { matchRules: [...], config: { originConfig: [...] } }
+	payload := `
+[
+  {
+    "matchRules": [
+      {
+        "matchType": "VALUE",
+        "matchPath": "path",
+        "matchValue": ["/123/"]
+      }
+    ],
+    "config": {
+      "originConfig": [
+        {
+          "type": "DOMAIN",
+          "addr": "video.test.com",
+          "httpPort": 8088
+        }
+      ]
+    }
+  }
+]`
+
+	var rules []api.PageRuleOriginConfig
+	if err := json.Unmarshal([]byte(payload), &rules); err != nil {
+		t.Fatalf("json.Unmarshal(origin page rules) error: %v", err)
+	}
+
+	// 可选：把实际要发的结构体 pretty print 出来，方便对照文档
+	if b, err := json.MarshalIndent(rules, "", "  "); err == nil {
+		t.Logf("pageRules_originConfig request:\n%s", string(b))
+	}
+
+	err := testCli.SetPageRulesOriginConfig(testAuthorityDomain, rules)
+	checkClientErr(t, "SetPageRulesOriginConfig", err)
+}
+
+func TestSetPageRulesCacheFullUrl_IgnoreUrlArgs(t *testing.T) {
+	if !testConfigOk {
+		t.Skip("TestMain terminated, please check testing config")
+	}
+
+	// 文档示例：条件配置忽略参数（pageRules_cacheFullUrl）
+	// 结构：[] { matchRules: [...], config: { ignoreUrlArgs: [...] } }
+	payload := `
+[
+  {
+    "matchRules": [
+      {
+        "matchType": "REGEX",
+        "matchPath": "url",
+        "matchValue": [".*\\.txt"]
+      }
+    ],
+    "config": {
+      "ignoreUrlArgs": ["a"]
+    }
+  }
+]`
+
+	var rules []api.PageRuleCacheFullUrl
+	if err := json.Unmarshal([]byte(payload), &rules); err != nil {
+		t.Fatalf("json.Unmarshal(cacheFullUrl page rules) error: %v", err)
+	}
+
+	// 可选：pretty print
+	if b, err := json.MarshalIndent(rules, "", "  "); err == nil {
+		t.Logf("pageRules_cacheFullUrl request:\n%s", string(b))
+	}
+
+	err := testCli.SetPageRulesCacheFullUrl(testAuthorityDomain, rules)
+	checkClientErr(t, "SetPageRulesCacheFullUrl", err)
+}
+
+func TestGetPageRulesOriginConfig(t *testing.T) {
+	// GET pageRules_originConfig
+	rules, err := testCli.GetPageRulesOriginConfig(testAuthorityDomain)
+
+	data, _ := json.Marshal(rules)
+	t.Logf("pageRules_originConfig: %s", string(data))
+
+	checkClientErr(t, "GetPageRulesOriginConfig", err)
+}
+
+func TestGetPageRulesCacheFullUrl(t *testing.T) {
+	// GET pageRules_cacheFullUrl
+	rules, err := testCli.GetPageRulesCacheFullUrl(testAuthorityDomain)
+
+	data, _ := json.Marshal(rules)
+	t.Logf("pageRules_cacheFullUrl: %s", string(data))
+
+	checkClientErr(t, "GetPageRulesCacheFullUrl", err)
+}
+
 func TestGetCacheUrlArgs(t *testing.T) {
 	cacheUrlArgs, err := testCli.GetCacheUrlArgs(testAuthorityDomain)
 

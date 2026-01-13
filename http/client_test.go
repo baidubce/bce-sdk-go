@@ -1,19 +1,13 @@
 package http
 
 import (
-	"bytes"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"runtime"
 	"testing"
 
 	"github.com/baidubce/bce-sdk-go/util"
-)
-
-var (
-	roundTripperOpts408 = []MockRoundTripperOption{setStatusCode(http.StatusRequestTimeout), setStatusMsg(http.StatusText(http.StatusRequestTimeout))}
 )
 
 func ExpectEqual(t *testing.T, exp interface{}, act interface{}) bool {
@@ -23,64 +17,6 @@ func ExpectEqual(t *testing.T, exp interface{}, act interface{}) bool {
 		return false
 	}
 	return true
-}
-
-type MockRoundTripperOption func(*MockRoundTripper)
-
-type MockRoundTripper struct {
-	http.Transport
-	Err        error
-	StatusCode int
-	StatusMsg  string
-	RespBody   string
-}
-
-func setHTTPClientDoError(err error) MockRoundTripperOption {
-	return func(m *MockRoundTripper) {
-		m.Err = err
-	}
-}
-
-func setStatusCode(statusCode int) MockRoundTripperOption {
-	return func(m *MockRoundTripper) {
-		m.StatusCode = statusCode
-	}
-}
-
-func setStatusMsg(statusMsg string) MockRoundTripperOption {
-	return func(m *MockRoundTripper) {
-		m.StatusMsg = statusMsg
-	}
-}
-
-func setRespBody(respBody string) MockRoundTripperOption {
-	return func(m *MockRoundTripper) {
-		m.RespBody = respBody
-	}
-}
-
-func (m *MockRoundTripper) RoundTrip(request *http.Request) (*http.Response, error) {
-	if m.Err != nil {
-		return nil, m.Err
-	}
-
-	resp := &http.Response{
-		StatusCode: m.StatusCode,
-		Status:     m.StatusMsg,
-		Body:       io.NopCloser(bytes.NewBufferString(m.RespBody)),
-		Header:     make(http.Header),
-	}
-	return resp, nil
-}
-
-func NewMockHTTPClient(options ...MockRoundTripperOption) *http.Client {
-	mockRoundTripper := &MockRoundTripper{}
-	for _, option := range options {
-		option(mockRoundTripper)
-	}
-	return &http.Client{
-		Transport: mockRoundTripper,
-	}
 }
 
 type ErrorTypeTransport struct {
@@ -99,7 +35,7 @@ func TestInitWithSpecifiedClient(t *testing.T) {
 		Transport: &ErrorTypeTransport{},
 	}
 	err := InitWithSpecifiedClient(testHTTPClient)
-	ExpectEqual(t, UnknownHTTPTransport, err)
+	ExpectEqual(t, nil, err)
 	ExpectEqual(t, nilTranport, transport)
 	// case2:default http client
 	transport = nil
@@ -123,23 +59,23 @@ func TestInitWithSpecifiedClient(t *testing.T) {
 	// case5: mock http transport
 	testHTTPClient3 := &http.Client{
 		Timeout:   10 * 1000,
-		Transport: &MockRoundTripper{},
+		Transport: &util.MockRoundTripper{},
 	}
 	err = InitWithSpecifiedClient(testHTTPClient3)
 	ExpectEqual(t, nilTranport, transport)
-	ExpectEqual(t, UnknownHTTPTransport, err)
+	ExpectEqual(t, nil, err)
 }
 
 func TestExecute(t *testing.T) {
 	var nilClient *http.Client = nil
 	transport = nil
 	// mock http client
-	options := []MockRoundTripperOption{
-		setRespBody("respBody"),
-		setStatusCode(200),
-		setStatusMsg("200 OK"),
+	options := []util.MockRoundTripperOption{
+		util.SetRespBody("respBody"),
+		util.SetStatusCode(200),
+		util.SetStatusMsg("200 OK"),
 	}
-	mockHttpClient := NewMockHTTPClient(options...)
+	mockHttpClient := util.NewMockHTTPClient(options...)
 	ExpectEqual(t, false, util.Equal(nil, mockHttpClient))
 
 	// case1: response is ok
@@ -154,10 +90,10 @@ func TestExecute(t *testing.T) {
 
 	// case2: http client do error
 	ioErr := fmt.Errorf("IO error.")
-	roundTripperOptions := []MockRoundTripperOption{
-		setHTTPClientDoError(ioErr),
+	roundTripperOptions := []util.MockRoundTripperOption{
+		util.SetHTTPClientDoError(ioErr),
 	}
-	mockHttpClient1 := NewMockHTTPClient(roundTripperOptions...)
+	mockHttpClient1 := util.NewMockHTTPClient(roundTripperOptions...)
 	ExpectEqual(t, false, util.Equal(nilClient, mockHttpClient1))
 
 	request.SetHTTPClient(mockHttpClient1)
@@ -170,8 +106,8 @@ func TestExecute(t *testing.T) {
 	ExpectEqual(t, urlError.Error(), err.Error())
 
 	// case2: reaponse 408
-	roundTripperOptions = roundTripperOpts408
-	mockHttpClient2 := NewMockHTTPClient(roundTripperOptions...)
+	roundTripperOptions = util.RoundTripperOpts408
+	mockHttpClient2 := util.NewMockHTTPClient(roundTripperOptions...)
 	ExpectEqual(t, false, util.Equal(nil, mockHttpClient2))
 
 	request.SetMethod(http.MethodPut)

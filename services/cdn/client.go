@@ -997,6 +997,63 @@ func (cli *Client) SetCacheUrlArgs(domain string, cacheFullUrl *api.CacheUrlArgs
 	return api.SetCacheUrlArgs(cli, domain, cacheFullUrl)
 }
 
+// SetOriginConfig - set the origin configuration for a domain.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/lm65xd0qj
+//
+// PARAMS:
+//   - domain: the specified domain
+//   - originConfig: the origin configuration
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (cli *Client) SetOriginConfig(domain string, originConfig []api.OriginItem) error {
+	return api.SetOriginConfig(cli, domain, originConfig)
+}
+
+// GetOriginConfig - get the origin configuration for a domain.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Xm67bmndn
+func (cli *Client) GetOriginConfig(domain string) ([]api.OriginItem, error) {
+	return api.GetOriginConfig(cli, domain)
+}
+
+// SetPageRulesOriginConfig - set conditional origin configuration for a domain.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Smioffn1a
+//
+// PARAMS:
+//   - domain: the specified domain
+//   - rules: conditional origin rules
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (cli *Client) SetPageRulesOriginConfig(domain string, rules []api.PageRuleOriginConfig) error {
+	return api.SetPageRulesOriginConfig(cli, domain, rules)
+}
+
+// GetPageRulesOriginConfig - get conditional origin configuration rules for a domain.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Smioffn1a
+func (cli *Client) GetPageRulesOriginConfig(domain string) ([]api.PageRuleOriginConfig, error) {
+	return api.GetPageRulesOriginConfig(cli, domain)
+}
+
+// SetPageRulesCacheFullUrl - set conditional cache param filter rules for a domain.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Smioffn1a
+//
+// PARAMS:
+//   - domain: the specified domain
+//   - rules: conditional cache-url-args rules
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (cli *Client) SetPageRulesCacheFullUrl(domain string, rules []api.PageRuleCacheFullUrl) error {
+	return api.SetPageRulesCacheFullUrl(cli, domain, rules)
+}
+
+// GetPageRulesCacheFullUrl - get conditional cache-url-args rules for a domain.
+// For details, please refer https://cloud.baidu.com/doc/CDN/s/Smioffn1a
+func (cli *Client) GetPageRulesCacheFullUrl(domain string) ([]api.PageRuleCacheFullUrl, error) {
+	return api.GetPageRulesCacheFullUrl(cli, domain)
+}
+
 // GetCacheUrlArgs - get the cached rules
 // For details, please refer https://cloud.baidu.com/doc/CDN/s/sjxzhsb6h
 //

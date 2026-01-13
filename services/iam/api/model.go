@@ -23,6 +23,7 @@ type UserModel struct {
 	Description string    `json:"description"`
 	Enabled     bool      `json:"enabled"`
 	Contact     string    `json:"contact"`
+	JoinTime    time.Time `json:"joinTime"`
 }
 
 type CreateUserArgs struct {
@@ -153,6 +154,7 @@ type PolicyModel struct {
 	Name        string    `json:"name"`
 	Type        string    `json:"type"`
 	CreateTime  time.Time `json:"createTime"`
+	AttachTime  time.Time `json:"attachTime"`
 	Description string    `json:"description"`
 	Document    string    `json:"document"`
 }
