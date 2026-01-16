@@ -95,6 +95,9 @@ type InstanceSpec struct {
 	IsOpenHostnameDomain bool `json:"isOpenHostnameDomain,omitempty"`
 
 	ResourceGroupID string `json:"resourceGroupID,omitempty"`
+
+	// ehc 集群信息
+	EhcClusterID string `json:"ehcClusterId,omitempty"`
 }
 
 // VPCConfig 定义 Instance VPC
@@ -163,7 +166,7 @@ type InstanceResource struct {
 	RootDiskType bccapi.StorageType `json:"rootDiskType,omitempty"`
 	RootDiskSize int                `json:"rootDiskSize,omitempty"` // unit: GB
 
-	EphemeralDiskList []EphemeralDisk `json:"ephemeralDiskList,omitempty"`
+	EphemeralDiskList []EphemeralDiskConfig `json:"ephemeralDiskList,omitempty"`
 
 	// GPU 机器必须指定, 其他机器不用
 	LocalDiskSize int `json:"localDiskSize,omitempty"` // unit: GB
@@ -176,9 +179,12 @@ type InstanceResource struct {
 	GPUCount int     `json:"gpuCount,omitempty"`
 }
 
-type EphemeralDisk struct {
+type EphemeralDiskConfig struct {
+	Path        string      `json:"diskPath,omitempty"`
 	StorageType StorageType `json:"storageType,omitempty"`
 	SizeInGB    int         `json:"sizeInGB,omitempty"`
+	DataDevice  string      `json:"dataDevice,omitempty"`
+	NeedFormat  bool        `json:"needFormat,omitempty"`
 }
 
 // StorageType 存储类型
