@@ -512,8 +512,11 @@ type SlowLogDownloadTaskListResult struct {
 }
 
 type SlowLogDownloadDetail struct {
-	Slowlogs []SlowlogDetail `json:"slowlogs"`
+	Url             string `json:"url"`
+	DownloadExpires string `json:"downloadExpires"`
+	dataBackupType  string `json:"databackuptype"`
 }
+
 type Slowlog struct {
 	SlowlogId          string `json:"slowlogId"`
 	SlowlogSizeInBytes int    `json:"slowlogSizeInBytes"`
@@ -521,10 +524,10 @@ type Slowlog struct {
 	SlowlogEndTime     string `json:"slowlogEndTime"`
 }
 
-type SlowlogDetail struct {
-	Url             string `json:"url"`
-	DownloadExpires string `json:"downloadExpires"`
-}
+// type SlowlogDetail struct {
+// 	Url             string `json:"url"`
+// 	DownloadExpires string `json:"downloadExpires"`
+// }
 
 type MaintainTimeArgs struct {
 	MaintainStartTime string `json:"maintainStartTime"`
