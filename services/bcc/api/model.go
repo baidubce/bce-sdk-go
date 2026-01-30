@@ -113,6 +113,7 @@ type InstanceModel struct {
 	Spec                   string                 `json:"spec"`
 	Description            string                 `json:"desc"`
 	Status                 InstanceStatus         `json:"status"`
+	ChargeStatus           string                 `json:"chargeStatus"`
 	PaymentTiming          string                 `json:"paymentTiming"`
 	CreationTime           string                 `json:"createTime"`
 	ExpireTime             string                 `json:"expireTime"`
@@ -1490,6 +1491,7 @@ type CreateCDSVolumeArgs struct {
 	ClientToken        string               `json:"-"`
 	ChargeType         string               `json:"chargeType"`
 	CdsExtraIo         int                  `json:"cdsExtraIo"`
+	ShareSnapshotId    string               `json:"shareSnapshotId"`
 	RelationTag        *bool                `json:"relationTag"`
 }
 
@@ -1561,6 +1563,7 @@ type AttachVolumeArgs struct {
 
 type ResizeCSDVolumeArgs struct {
 	NewCdsSizeInGB int         `json:"newCdsSizeInGB,omitempty"`
+	NewExtraIO     *int        `json:"newExtraIO,omitempty"`
 	NewVolumeType  StorageType `json:"newVolumeType,omitempty"`
 	ClientToken    string      `json:"-"`
 }
@@ -1727,6 +1730,15 @@ const (
 
 	// ImageTypeBBCCustom BBC 自定义
 	ImageTypeBBCCustom ImageType = "BbcCustom"
+
+	// ImageTypeEbcTotal Ebc 全部镜像
+	ImageTypeEbcTotal ImageType = "EbcTotal"
+
+	// ImageTypeEbcCustom Ebc 自定义镜像
+	ImageTypeEbcCustom ImageType = "EbcCustom"
+
+	// ImageTypeEbcSystem Ebc 系统镜像
+	ImageTypeEbcSystem ImageType = "EbcSystem"
 )
 
 type ImageStatus string

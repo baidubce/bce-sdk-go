@@ -19,6 +19,7 @@ package et
 type GetEtChannelArgs struct {
 	ClientToken string `json:"clientToken,omitempty"`
 	EtId        string `json:"etId"`
+	EtChannelId string `json:"etChannelId,omitempty"`
 }
 
 type RecommitEtChannelArgs struct {
@@ -99,6 +100,9 @@ type EtChannelResult struct {
 	BaiduIpv6Address    string   `json:"baiduIpv6Address"`
 	Ipv6Networks        []string `json:"ipv6Networks"`
 	CustomerIpv6Address string   `json:"CustomerIpv6Address"`
+	SendInterval        int32    `json:"sendInterval"`
+	ReceivInterval      int32    `json:"receivInterval"`
+	DetectMultiplier    int32    `json:"detectMultiplier"`
 	Tags                []Tag    `json:"tags"`
 }
 
@@ -285,4 +289,28 @@ type DisAssociateEtChannelArgs struct {
 	EtId           string `json:"etId"`
 	EtChannelId    string `json:"etChannelId"`
 	ExtraChannelId string `json:"extraChannelId"`
+}
+
+type CreateEtChannelBfdRequest struct {
+	EtId             *string `json:"-"`
+	EtChannelId      *string `json:"-"`
+	ClientToken      *string `json:"-"`
+	SendInterval     *int32  `json:"sendInterval,omitempty"`
+	ReceivInterval   *int32  `json:"receivInterval,omitempty"`
+	DetectMultiplier *int32  `json:"detectMultiplier,omitempty"`
+}
+
+type UpdateEtChannelBfdRequest struct {
+	EtId             *string `json:"-"`
+	EtChannelId      *string `json:"-"`
+	ClientToken      *string `json:"-"`
+	SendInterval     *int32  `json:"sendInterval,omitempty"`
+	ReceivInterval   *int32  `json:"receivInterval,omitempty"`
+	DetectMultiplier *int32  `json:"detectMultiplier,omitempty"`
+}
+
+type DeleteEtChannelBfdRequest struct {
+	EtId        *string `json:"-"`
+	EtChannelId *string `json:"-"`
+	ClientToken *string `json:"-"`
 }

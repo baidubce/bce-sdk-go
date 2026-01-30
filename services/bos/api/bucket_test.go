@@ -739,6 +739,46 @@ func TestGetBucketLifecycle(t *testing.T) {
 	jsonDecoder := json.NewDecoder(bytes.NewBufferString(errorJsonBody))
 	ExpectEqual(t, jsonDecoder.Decode(result5), err)
 	ExpectEqual(t, nil, res)
+	//case6: compex lifecycle
+	respBody6 := `{
+		"rule": [
+			{
+				"id": "rule-id", "status": "enabled",
+				"ExpiredObjectDeleteMarker" :"true",
+				"resource": [ "bucket/prefix/*" ],
+				"condition": {
+					"time": { "dateGreaterThan": "$(lastModified)+P3D" },
+					"objectSize":{ "minSize":1024, "maxSize":2048 },
+					"tag": { "key1":"value1", "key2":"value2" }
+				},
+				"action": { "name": "DeleteObject" },
+				"not":{
+					"resource": "bucket/prefix/prefix1*",
+					"tag": { "key3":"value3" }
+				}
+			},
+			{
+				"id": "rule-id2", "status": "enabled",
+				"resource": [ "bucket/*" ],
+				"condition": {
+					"time": { "dateGreaterThan": "$(lastModified)+P5D" },
+					"tag": { "key1":"value1",  "key2":"value2" }
+				},
+				"action": { "name": "NonCurrentVersionDeleteObject" }
+			}
+		]
+	}`
+	AttachMockHttpClientOk(t, client, &respBody6)
+	res, err = GetBucketLifecycle(client, bucket, nil)
+	ExpectEqual(t, nil, err)
+	ExpectEqual(t, 2, len(res.Rule))
+	ExpectEqual(t, "true", res.Rule[0].ExpiredObjectDeleteMarker)
+	ExpectEqual(t, 1024, res.Rule[0].Condition.ObjectSize.MinSize)
+	ExpectEqual(t, 2048, res.Rule[0].Condition.ObjectSize.MaxSize)
+	ExpectEqual(t, 2, len(res.Rule[0].Condition.Tag))
+	ExpectEqual(t, "value1", res.Rule[0].Condition.Tag["key1"])
+	ExpectEqual(t, "bucket/prefix/prefix1*", res.Rule[0].Not.Resource)
+	ExpectEqual(t, "value3", res.Rule[0].Not.Tag["key3"])
 }
 
 func TestDeleteBucketLifecycle(t *testing.T) {

@@ -22,6 +22,11 @@ import (
 
 	"github.com/baidubce/bce-sdk-go/bce"
 	"github.com/baidubce/bce-sdk-go/http"
+	"github.com/baidubce/bce-sdk-go/util"
+)
+
+const (
+	VERSION_V1 = "v1"
 )
 
 // GetEtChannel - get an et channel
@@ -42,6 +47,7 @@ func (c *Client) GetEtChannel(args *GetEtChannelArgs) (*GetEtChannelsResult, err
 		WithURL(getURLForEtChannel(args.EtId)).
 		WithMethod(http.GET).
 		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithQueryParamFilter("etChannelId", args.EtChannelId).
 		WithResult(result).
 		Do()
 
@@ -409,4 +415,93 @@ func (c *Client) DisAssociateEtChannel(args *DisAssociateEtChannelArgs) error {
 		WithQueryParam("disassociate", "").
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		Do()
+}
+
+/*
+CreateEtChannelBfd createEtChannelBfd
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param etId
+	@param etChannelId
+	@return Api
+*/
+func (c *Client) CreateEtChannelBfd(request *CreateEtChannelBfdRequest) error {
+	if request.EtId == nil {
+		return fmt.Errorf("etId is required and must be specified")
+	}
+	if request.EtChannelId == nil {
+		return fmt.Errorf("etChannelId is required and must be specified")
+	}
+	if request.SendInterval == nil {
+		return fmt.Errorf("SendInterval is required and must be specified")
+	}
+	if request.ReceivInterval == nil {
+		return fmt.Errorf("ReceivInterval is required and must be specified")
+	}
+	if request.DetectMultiplier == nil {
+		return fmt.Errorf("DetectMultiplier is required and must be specified")
+	}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getCreateEtChannelBfdUri(VERSION_V1, util.StringValue(request.EtId), util.StringValue(request.EtChannelId))).
+		WithQueryParamFilter("clientToken", util.StringValue(request.ClientToken)).
+		WithBody(request).
+		Do()
+	return err
+}
+
+/*
+DeleteEtChannelBfd deleteEtChannelBfd
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param etId
+	@param etChannelId
+	@return Api
+*/
+func (c *Client) DeleteEtChannelBfd(request *DeleteEtChannelBfdRequest) error {
+	if request.EtId == nil {
+		return fmt.Errorf("etId is required and must be specified")
+	}
+	if request.EtChannelId == nil {
+		return fmt.Errorf("etChannelId is required and must be specified")
+	}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(getDeleteEtChannelBfdUri(VERSION_V1, util.StringValue(request.EtId), util.StringValue(request.EtChannelId))).
+		WithQueryParamFilter("clientToken", util.StringValue(request.ClientToken)).
+		Do()
+	return err
+}
+
+/*
+UpdateEtChannelBfd updateEtChannelBfd
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param etId
+	@param etChannelId
+	@return Api
+*/
+func (c *Client) UpdateEtChannelBfd(request *UpdateEtChannelBfdRequest) error {
+	if request.EtId == nil {
+		return fmt.Errorf("etId is required and must be specified")
+	}
+	if request.EtChannelId == nil {
+		return fmt.Errorf("etChannelId is required and must be specified")
+	}
+	if request.SendInterval == nil {
+		return fmt.Errorf("SendInterval is required and must be specified")
+	}
+	if request.ReceivInterval == nil {
+		return fmt.Errorf("ReceivInterval is required and must be specified")
+	}
+	if request.DetectMultiplier == nil {
+		return fmt.Errorf("DetectMultiplier is required and must be specified")
+	}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getUpdateEtChannelBfdUri(VERSION_V1, util.StringValue(request.EtId), util.StringValue(request.EtChannelId))).
+		WithQueryParamFilter("clientToken", util.StringValue(request.ClientToken)).
+		WithBody(request).
+		Do()
+	return err
 }

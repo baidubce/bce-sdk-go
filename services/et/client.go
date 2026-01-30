@@ -31,6 +31,10 @@ const (
 	REQUEST_ET_CHANNEL_URL            = "/channel"
 	REQUEST_ET_CHANNEL_ROUTE_URL      = "/route"
 	REQUEST_ET_CHANNEL_ROUTE_RULE_URL = "/rule"
+
+	CONSTANT_ET      = "et"
+	CONSTANT_CHANNEL = "channel"
+	CONSTANT_BFD     = "bfd"
 )
 
 // Client of ET service is a kind of BceClient, so derived from BceClient
@@ -75,4 +79,14 @@ func getURLForEtChannelRouteRule(etId string, etChannelId string) string {
 
 func getURLForEtChannelRouteRuleId(etId string, etChannelId string, routeRuleId string) string {
 	return getURLForEtChannelRouteRule(etId, etChannelId) + "/" + routeRuleId
+}
+
+func getCreateEtChannelBfdUri(version string, etId string, etChannelId string) string {
+	return bce.URI_PREFIX + version + bce.URI_PREFIX + CONSTANT_ET + bce.URI_PREFIX + etId + bce.URI_PREFIX + CONSTANT_CHANNEL + bce.URI_PREFIX + etChannelId + bce.URI_PREFIX + CONSTANT_BFD
+}
+func getDeleteEtChannelBfdUri(version string, etId string, etChannelId string) string {
+	return bce.URI_PREFIX + version + bce.URI_PREFIX + CONSTANT_ET + bce.URI_PREFIX + etId + bce.URI_PREFIX + CONSTANT_CHANNEL + bce.URI_PREFIX + etChannelId + bce.URI_PREFIX + CONSTANT_BFD
+}
+func getUpdateEtChannelBfdUri(version string, etId string, etChannelId string) string {
+	return bce.URI_PREFIX + version + bce.URI_PREFIX + CONSTANT_ET + bce.URI_PREFIX + etId + bce.URI_PREFIX + CONSTANT_CHANNEL + bce.URI_PREFIX + etChannelId + bce.URI_PREFIX + CONSTANT_BFD
 }

@@ -380,10 +380,42 @@ func TestClient_CreateEtChannelWithTag(t *testing.T) {
 func TestClient_GetEtChannelWithTag(t *testing.T) {
 	args := &GetEtChannelArgs{
 		ClientToken: getClientToken(),
-		EtId:        "dcphy-axibreesn6af",
+		EtId:        "dcphy-xxxxxxxxxxx",
+		EtChannelId: "dedicatedconn-xxxxxxxxxxx",
 	}
 	result, err := EtClient.GetEtChannel(args)
 	ExpectEqual(t.Errorf, nil, err)
 	r, err := json.Marshal(result)
 	log.Debug(string(r))
+}
+
+func TestClient_CreateEtChannelBfd(t *testing.T) {
+	createEtChannelBfdRequest := &CreateEtChannelBfdRequest{
+		EtId:             util.PtrString("dcphy-xxxxxxxxxxx"),
+		EtChannelId:      util.PtrString("dedicatedconn-xxxxxxxxxxx"),
+		SendInterval:     util.PtrInt32(int32(300)),
+		ReceivInterval:   util.PtrInt32(int32(300)),
+		DetectMultiplier: util.PtrInt32(int32(7)),
+	}
+	err := EtClient.CreateEtChannelBfd(createEtChannelBfdRequest)
+	ExpectEqual(t.Errorf, nil, err)
+}
+func TestClient_DeleteEtChannelBfd(t *testing.T) {
+	deleteEtChannelBfdRequest := &DeleteEtChannelBfdRequest{
+		EtId:        util.PtrString("dcphy-xxxxxxxxxxx"),
+		EtChannelId: util.PtrString("dedicatedconn-xxxxxxxxxxx"),
+	}
+	err := EtClient.DeleteEtChannelBfd(deleteEtChannelBfdRequest)
+	ExpectEqual(t.Errorf, nil, err)
+}
+func TestClient_UpdateEtChannelBfd(t *testing.T) {
+	updateEtChannelBfdRequest := &UpdateEtChannelBfdRequest{
+		EtId:             util.PtrString("dcphy-xxxxxxxxxxx"),
+		EtChannelId:      util.PtrString("dedicatedconn-xxxxxxxxxxx"),
+		SendInterval:     util.PtrInt32(int32(301)),
+		ReceivInterval:   util.PtrInt32(int32(301)),
+		DetectMultiplier: util.PtrInt32(int32(8)),
+	}
+	err := EtClient.UpdateEtChannelBfd(updateEtChannelBfdRequest)
+	ExpectEqual(t.Errorf, nil, err)
 }
