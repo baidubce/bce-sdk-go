@@ -17,30 +17,26 @@ package eipexamples
 import (
 	"encoding/json"
 	"fmt"
+
 	EIP "github.com/baidubce/bce-sdk-go/services/eip"
 )
 
-func ListEip() {
+func GetEipTpPrice() {
 	Init()
 
-	listEipArgs := &EIP.ListEipArgs{
-		IpVersion:    "ipv6",     // 指定 EIP IP类型
-		Eip:          "",         // 指定EIP
-		InstanceType: "",         // 指定实例类型
-		InstanceId:   "",         // 指定实例ID
-		Name:         "test-eip", // 指定EIP名称
-		Status:       "",         // 指定EIP状态
-		EipIds:       []string{}, // 指定EIP短ID列表
-		Marker:       "",         // 分页查询起始位置标识符
-		MaxKeys:      1000,       // 分页查询每页最大数量
+	getEipTpPriceArgs := &EIP.GetEipTpPriceArgs{
+		ReservationLength: 1,
+		Capacity:          "10G",
+		DeductPolicy:      "FullTimeDurationPackage",
+		PackageType:       "WebOutBytes",
 	}
-	listEipResult, err := eipClient.ListEip(listEipArgs)
-
+	
+	priceResult, err := eipClient.GetEipTpPrice(getEipTpPriceArgs)
 	if err != nil {
 		panic(err)
 	}
 
-	jsonData, err := json.MarshalIndent(listEipResult, "", "    ")
+	jsonData, err := json.MarshalIndent(priceResult, "", "    ")
 	if err != nil {
 		panic(err)
 	}

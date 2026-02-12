@@ -2579,8 +2579,8 @@ func TestCheckUnplannedMaintenanceEvent(t *testing.T) {
 
 func TestDescribeDescribeUnplannedEvents(t *testing.T) {
 	args := &api.DescribeServerEventReq{
-		MaxKeys:           100,
-		ServerEventStatus: "Processing",
+		MaxKeys:        100,
+		ServerEventIds: []string{"event-EAzVgf8R"},
 	}
 
 	res, err := BCC_CLIENT.DescribeUnplannedEvents(args)
@@ -2624,4 +2624,41 @@ func TestGetTaskDetail(t *testing.T) {
 	res, err := BCC_CLIENT.GetTask(args)
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(res)
+}
+
+func TestGetDiagnosticSchemas(t *testing.T) {
+	res, err := BCC_CLIENT.GetDiagnosticSchemas()
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestListDiagnosticReport(t *testing.T) {
+	args := &api.ListDiagnosticReq{}
+
+	res, err := BCC_CLIENT.ListDiagnosticReport(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestCreateDiagnostic(t *testing.T) {
+	args := &api.CreateDiagnosticReq{
+		MetricSetId:  "MetricSetId",
+		InstanceType: "bcc",
+		InstanceId:   "InstanceId",
+		Pid:          "1",
+		Duration:     180,
+	}
+
+	res, err := BCC_CLIENT.CreateDiagnostic(args)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
+func TestDeleteDiagnosticReport(t *testing.T) {
+	args := &api.DeleteDiagnosticReportReq{
+		ReportIds: []string{"reportIds"},
+	}
+
+	err := BCC_CLIENT.DeleteDiagnosticReport(args)
+	ExpectEqual(t.Errorf, err, nil)
 }

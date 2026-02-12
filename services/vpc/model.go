@@ -151,6 +151,7 @@ type VPC struct {
 	VPCID         string           `json:"vpcId"`
 	Name          string           `json:"name"`
 	Cidr          string           `json:"cidr"`
+	Ipv6Cidr      string           `json:"ipv6Cidr"`
 	CreatedTime   string           `json:"createdTime"`
 	Description   string           `json:"description"`
 	IsDefault     bool             `json:"isDefault"`
@@ -197,7 +198,7 @@ type UpdateVPCArgs struct {
 	ClientToken   string   `json:"-"`
 	Name          string   `json:"name"`
 	Description   string   `json:"description,omitempty"`
-	EnableIpv6    bool     `json:"enableIpv6"`
+	EnableIpv6    *bool    `json:"enableIpv6,omitempty"`
 	SecondaryCidr []string `json:"secondaryCidr,omitempty"`
 }
 
@@ -249,7 +250,7 @@ type UpdateSubnetArgs struct {
 	ClientToken string `json:"-"`
 	Name        string `json:"name"`
 	Description string `json:"description,omitempty"`
-	EnableIpv6  bool   `json:"enableIpv6"`
+	EnableIpv6  *bool  `json:"enableIpv6,omitempty"`
 }
 
 // CreateIpreserveArgs - arguments for creating a reserved CIDR
@@ -273,11 +274,11 @@ type ListIpeserveArgs struct {
 	MaxKeys  int    `json:"maxKeys,omitempty"`
 }
 
-type ipReserve struct {
+type IpReserve struct {
 	IpReserveId string `json:"ipReserveId"`
 	SubnetId    string `json:"subnetId"`
 	IpCidr      string `json:"ipCidr"`
-	IpVersion   int32  `json:"ipVersion"`
+	IpVersion   string `json:"ipVersion"`
 	Description string `json:"description"`
 	CreatedTime string `json:"createdTime"`
 	UpdatedTime string `json:"updatedTime"`
@@ -285,7 +286,7 @@ type ipReserve struct {
 
 // ListIpeserveResult - result of listing reserved CIDRs
 type ListIpeserveResult struct {
-	IpReserves  []ipReserve `json:"ipReserves"`
+	IpReserves  []IpReserve `json:"ipReserves"`
 	Marker      string      `json:"marker,omitempty"`
 	IsTruncated bool        `json:"isTruncated"`
 	NextMarker  string      `json:"nextMarker,omitempty"`
@@ -775,6 +776,29 @@ type UpdatePeerConnDeleteProtectArgs struct {
 	ClientToken   string `json:"-"`
 }
 
+// GetResourceIpArgs defines the structure of the input parameters for the GetResourceIp api
+type GetResourceIpArgs struct {
+	VpcId        string
+	SubnetId     string
+	ResourceType string
+	PageNo       int
+	PageSize     int
+}
+
+// ResourceIp defines the structure of resource IP information
+type ResourceIp struct {
+	Ip           string `json:"ip"`
+	ResourceType string `json:"resourceType"`
+}
+
+// GetResourceIpResult defines the structure of the output parameters for the GetResourceIp api
+type GetResourceIpResult struct {
+	Result     []ResourceIp `json:"result"`
+	PageNo     int          `json:"pageNo"`
+	PageSize   int          `json:"pageSize"`
+	TotalCount int          `json:"totalCount"`
+}
+
 /*
 Get VpcPrivateIpAddressedInfo args
 
@@ -786,14 +810,14 @@ Get VpcPrivateIpAddressedInfo args
 */
 type GetVpcPrivateIpArgs struct {
 	VpcId              string   `json:"vpcId"`
-	PrivateIpAddresses []string `json:"privateIpAddresses",omitempty`
+	PrivateIpAddresses []string `json:"privateIpAddresses,omitempty"`
 	PrivateIpRange     string   `json:"privateIpRange,omitempty"`
 }
 
 type VpcPrivateIpAddress struct {
 	PrivateIpAddress     string `json:"privateIpAddress"`
 	Cidr                 string `json:"cidr"`
-	PrivateIpAddressType string `json:"privateIpAddressType`
+	PrivateIpAddressType string `json:"privateIpAddressType"`
 	CreatedTime          string `json:"createdTime"`
 }
 

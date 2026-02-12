@@ -3188,6 +3188,11 @@ type UnplannedEventResponse struct {
 	ExecuteTime                                  string                    `json:"executeTime"`
 	ServerEventLogs                              []OperationRecordResponse `json:"serverEventLogs"`
 	Failures                                     []IssueResponse           `json:"failures"`
+	IssueDiskInfos                               []IssueDiskInfo           `json:"issueDiskInfos"`
+}
+
+type IssueDiskInfo struct {
+	IssueDiskSn string `json:"issueDiskSn"`
 }
 
 type DescribeUnplannedEventsResp struct {
@@ -3202,4 +3207,67 @@ type DescribeUnplannedEventsResp struct {
 type BatchOperationResp struct {
 	RequestId            string   `json:"requestId"`
 	FailedInstanceIdList []string `json:"failedInstanceIdList"`
+}
+
+type GetDiagnosticSchemasResp struct {
+	MetricSetList []MetricSet `json:"metricSetList"`
+}
+
+type MetricSet struct {
+	MetricSetId   string `json:"metricSetId"`
+	MetricSetName string `json:"metricSetName"`
+	Description   string `json:"description"`
+	SupportText   string `json:"supportText"`
+}
+
+type ListDiagnosticReq struct {
+	MaxKeys      int    `json:"maxKeys"`
+	ReportId     string `json:"reportId"`
+	InstanceType string `json:"instanceType"`
+	InstanceId   string `json:"instanceId"`
+	Status       string `json:"status"`
+	Severity     string `json:"severity"`
+}
+
+type ListDiagnosticReportResp struct {
+	IsTruncated       bool              `json:"isTruncated"`
+	Marker            string            `json:"marker"`
+	MaxKeys           int               `json:"maxKeys"`
+	NextMarker        string            `json:"nextMarker"`
+	DiagnosticReports []ExecutionRecord `json:"diagnosticReports"`
+}
+
+type ExecutionRecord struct {
+	ReportId     string  `json:"reportId"`
+	InstanceType string  `json:"instanceType"`
+	InstanceId   string  `json:"instanceId"`
+	MetricSetId  string  `json:"metricSetId"`
+	CreatedTime  string  `json:"createdTime"`
+	Status       string  `json:"status"`
+	Result       string  `json:"result"`
+	Issues       []Issue `json:"issues"`
+}
+
+type Issue struct {
+	MetricCategory string `json:"metricCategory"`
+	MetricItem     string `json:"metricItem"`
+	SeverityResult string `json:"severityResult"`
+	Advice         string `json:"advice"`
+}
+
+type CreateDiagnosticReq struct {
+	MetricSetId  string `json:"metricSetId"`
+	InstanceType string `json:"instanceType"`
+	InstanceId   string `json:"instanceId"`
+	Pid          string `json:"pid"`
+	Duration     int    `json:"duration"`
+}
+
+type CreateDiagnosticResp struct {
+	RequestId string `json:"requestId"`
+	ReportId  string `json:"reportId"`
+}
+
+type DeleteDiagnosticReportReq struct {
+	ReportIds []string `json:"reportIds"`
 }

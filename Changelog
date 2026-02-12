@@ -1,5 +1,24 @@
 发行说明:记录每次SDK更新的说明,最新版本的SDK包含以前所有版本的更新内容。
 ---------------------------------------------------------------------
+【版本:v0.9.260】
+涉及产品: EIP
+    申请EIP接口中的CreateEipArgs新增deleteProtect字段
+    查询EIP列表接口中ListEipArgs新增Name字段
+    新增更新EIP释放保护开关接口
+    查询用户带宽包列表信息 - 查询条件新增type字段
+    新增带宽包询价接口
+涉及产品: VPC
+    新增GetResourceIp接口，查询VPC内产品占用IP
+    VPC结构体新增Ipv6Cidr字段
+    UpdateVPCArgs/UpdateSubnetArgs的EnableIpv6改为指针类型，解决零值问题
+    更新子网接口 EnableIpv6字段修改为指针类型
+    查询预留网段列表接口 ipReserve结构体可导出
+    查询预留网段列表接口IpVersion字段类型改为string
+涉及产品: BCC
+    增加自助诊断接口
+    非预期事件查询增加磁盘信息返回
+涉及产品: BOS
+    新增bce body的构造方法
 【版本:v0.9.259】
 涉及产品: ET
     新增专线通道支持BFD功能

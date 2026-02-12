@@ -93,6 +93,18 @@ func TestNewBody(t *testing.T) {
 	ExpectEqual(t, nil, err)
 	ExpectEqual(t, len(data6), body61.Size())
 	ExpectEqual(t, md5Str6, body61.ContentMD5())
+
+	// case6: NewBodyFromReader/ NewBodyFromReaderV2
+	dataStr := "data string"
+	dataReader := bytes.NewReader([]byte(dataStr))
+	body62, err := NewBodyFromReader(dataReader, int64(len(dataStr)))
+	trasferBody62, _ := body62.Stream().(*TeeReadNopCloser)
+	ExpectEqual(t, nil, err)
+	ExpectEqual(t, nil, trasferBody62)
+	body63, err := NewBodyFromReaderV2(dataReader, int64(len(dataStr)))
+	_, ok := body63.Stream().(*TeeReadNopCloser)
+	ExpectEqual(t, nil, err)
+	ExpectEqual(t, true, ok)
 }
 
 func TestBodyMethod(t *testing.T) {

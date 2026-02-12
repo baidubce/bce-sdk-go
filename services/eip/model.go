@@ -42,6 +42,7 @@ type CreateEipArgs struct {
 	RouteType         string           `json:"routeType,omitempty"`
 	Idc               string           `json:"idc,omitempty"`
 	ClientToken       string           `json:"-"`
+	DeleteProtect     *bool            `json:"deleteProtect,omitempty"`
 }
 
 type BatchCreateEipArgs struct {
@@ -88,6 +89,7 @@ type ListEipArgs struct {
 	EipIds       []string
 	Marker       string
 	MaxKeys      int
+	Name         string
 }
 
 type ListEipResult struct {
@@ -211,6 +213,17 @@ type CreateEipTpArgs struct {
 
 type CreateEipTpResult struct {
 	Id string `json:"id,omitempty"`
+}
+
+type GetEipTpPriceArgs struct {
+	ReservationLength int    `json:"reservationLength"`
+	Capacity          string `json:"capacity"`
+	DeductPolicy      string `json:"deductPolicy,omitempty"`
+	PackageType       string `json:"packageType,omitempty"`
+}
+
+type GetEipTpPriceResult struct {
+	Price string `json:"price"`
 }
 
 type ListEipTpArgs struct {
@@ -414,6 +427,16 @@ type UpdateEipBpNameArgs struct {
 	ClientToken string `json:"-"`
 }
 
+type GetEipBpPriceArgs struct {
+	BandwidthInMbps *int32  `json:"bandwidthInMbps,omitempty"`
+	Count           *int32  `json:"count,omitempty"`
+	Type            *string `json:"type,omitempty"`
+}
+
+type GetEipBpPriceResult struct {
+	Prices *map[string]string `json:"prices,omitempty"`
+}
+
 type DdosModel struct {
 	Ip               string `json:"ip,omitempty"`
 	Status           string `json:"status,omitempty"`
@@ -474,4 +497,9 @@ type EipToPrepayRequest struct {
 	BandWidth      int32  `json:"bandWidth"`
 	PurchaseLength int32  `json:"purchaseLength"`
 	ClientToken    string `json:"-"`
+}
+
+type UpdateEipDeleteProtectArgs struct {
+	DeleteProtect *bool  `json:"deleteProtect,omitempty"`
+	ClientToken   string `json:"-"`
 }

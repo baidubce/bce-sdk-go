@@ -620,3 +620,19 @@ func getTaskDetailUrl() string {
 func listTasklUrl() string {
 	return URI_PREFIXV2 + "/task/list"
 }
+
+func getDiagnosticSchemasUrl() string {
+	return URI_PREFIXV2 + "/instance/diagnosticReport/schemas"
+}
+
+func listDiagnosticReportUrl() string {
+	return URI_PREFIXV2 + "/instance/diagnosticReport/list"
+}
+
+func createDiagnosticUrl() string {
+	return URI_PREFIXV2 + "/instance/diagnosticReport/create"
+}
+
+func deleteDiagnosticReportUrl() string {
+	return URI_PREFIXV2 + "/instance/diagnosticReport/delete"
+}

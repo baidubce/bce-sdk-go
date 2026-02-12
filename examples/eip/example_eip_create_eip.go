@@ -28,6 +28,7 @@ func CreateEip() {
 		PaymentTiming: "Postpaid",    //后付费
 		BillingMethod: "ByBandwidth", //按带宽计费
 	}
+	deleteProtect := true
 	args := &EIP.CreateEipArgs{
 		IpVersion:       "ipv6",     // EIP IP类型
 		Name:            "test-eip", //EIP名称
@@ -41,6 +42,7 @@ func CreateEip() {
 		},
 		ResourceGroupId: "RESG-Xnuw3joXLcy", //资源组ID
 		RouteType:       "BGP",              // 线路类型
+		DeleteProtect:   &deleteProtect,
 	}
 	resp, err := eipClient.CreateEip(args)
 

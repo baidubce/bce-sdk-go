@@ -4,6 +4,7 @@ package bos
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -1783,6 +1784,47 @@ func TestGetObjectMeta(t *testing.T) {
 	ExpectEqual(t.Errorf, optionError, err)
 	ExpectEqual(t.Errorf, nil, res)
 }
+func TestSelectObject(t *testing.T) {
+	// mock bos client
+	respBody := `<Records message>
+	……
+	<Continuation Message>
+	……
+	<Records message>
+	<Continuation Message>
+	<End message>  `
+	ak, sk, endpoint := "ak", "sk", "192.168.1.1"
+	client, err := NewMockBosClient(ak, sk, endpoint, respBody)
+	ExpectEqual(t.Errorf, nil, err)
+	args := &api.SelectObjectArgs{}
+	reqBody := `{
+		"selectRequest": {
+			"expression": "c2VsZWN0IGNvdW50KCopIGZyb20gbxkl2JqZWN0IHdoZXJlIF80ID4gNDU=",
+			"expressionType": "SQL",
+			"inputSerialization": {
+				"compressionType": "NONE",
+				"json": {
+					"type": "DOCUMENT"
+				}
+			},
+			"outputSerialization": {
+				"json": {
+					"recordDelimiter": "Cg=="
+				}
+			},
+			"requestProgress": {
+				"enabled": false
+			}
+		}
+	}`
+	ExpectEqual(t.Errorf, nil, json.Unmarshal([]byte(reqBody), args))
+	res, err := client.SelectObject(EXISTS_BUCKET, "test-object", args)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, true, res.Body != nil)
+	res, err = client.SelectObjectWithContext(context.Background(), EXISTS_BUCKET, "test-object", args)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, true, res.Body != nil)
+}
 func TestFetchObject(t *testing.T) {
 	asyncResp := `{
 		"code": "success",
@@ -1800,6 +1842,13 @@ func TestFetchObject(t *testing.T) {
 		StorageClass: api.STORAGE_CLASS_COLD,
 	}
 	res, err := client.FetchObject(EXISTS_BUCKET, "test-fetch-object", "https://cloud.baidu.com/doc/BOS/API.html", args)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res.Code, "success")
+	ExpectEqual(t.Errorf, res.Message, "success")
+	ExpectEqual(t.Errorf, res.RequestId, "4db2b34d-654d-4d8a-b49b-3049ca786409")
+	ExpectEqual(t.Errorf, res.JobId, "fo-9a98f238d56a33b4eb6664fede20b747")
+	t.Logf("result: %+v", res)
+	res, err = client.FetchObjectWithContext(context.Background(), EXISTS_BUCKET, "test-fetch-object", "https://cloud.baidu.com/doc/BOS/API.html", args)
 	ExpectEqual(t.Errorf, err, nil)
 	ExpectEqual(t.Errorf, res.Code, "success")
 	ExpectEqual(t.Errorf, res.Message, "success")
@@ -1852,6 +1901,10 @@ func TestAppendObject(t *testing.T) {
 	ExpectEqual(t.Errorf, res.ContentCrc32c, "43574823532456")
 	ExpectEqual(t.Errorf, res.ContentCrc64ECMA, "12759301844125077625")
 	t.Logf("%+v", res)
+	body01, _ := bce.NewBodyFromString("aaaaaaaaaaa")
+	res, err = client.AppendObjectWithContext(context.Background(), EXISTS_BUCKET, "test-append-object", body01, args)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, int64(12345), res.NextAppendOffset)
 
 	//SimpleAppendObject
 	body1, _ := bce.NewBodyFromString("bbbbbbbbbbb")
@@ -2100,6 +2153,92 @@ func TestUploadPartCopy(t *testing.T) {
 		"52454655-5345-4420-4259-204e47494e58", 500), err)
 	ExpectEqual(t.Errorf, res, nil)
 }
+func TestCompleteMultipartUpload(t *testing.T) {
+	reqBody := `{
+		"parts":[
+			{ "partNumber":1, "eTag":"a54357aff0632cce46d942af68356b38" },
+			{ "partNumber":2, "eTag":"0c78aef83f66abc1fa1e8477f296d394" },
+			{ "partNumber":3, "eTag":"acbd18db4cc2f85cedef654fccc4a4d8" }
+		]
+	}`
+	respBody := `{
+		"location":"http://bj.bcebos.com/BucketName/ObjectName",
+		"bucket":"BucketName",
+		"key":"object",
+		"eTag":"3858f62230ac3c915f300c664312c11f"
+	}`
+	//mock bos client
+	ak, sk, endpoint := "ak", "sk", "192.168.1.1"
+	client, err := NewMockBosClient(ak, sk, endpoint, respBody)
+	ExpectEqual(t.Errorf, nil, err)
+	body, err := bce.NewBodyFromStringV2(reqBody, false)
+	ExpectEqual(t.Errorf, nil, err)
+	uploadId := "3858f62230ac3c915f300c664312c11f"
+	res, err := client.CompleteMultipartUpload(EXISTS_BUCKET, "test-object", uploadId, body, nil)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, "BucketName", res.Bucket)
+	args := &api.CompleteMultipartUploadArgs{}
+	ExpectEqual(t.Errorf, nil, json.Unmarshal([]byte(reqBody), args))
+	res, err = client.CompleteMultipartUploadFromStruct(EXISTS_BUCKET, "test-object", uploadId, args)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, "BucketName", res.Bucket)
+}
+func TestAbortMultipartUpload(t *testing.T) {
+	//mock bos client
+	ak, sk, endpoint := "ak", "sk", "192.168.1.1"
+	client, err := NewMockBosClient(ak, sk, endpoint, "")
+	ExpectEqual(t.Errorf, nil, err)
+
+	uploadId := "3858f62230ac3c915f300c664312c11f"
+	ExpectEqual(t.Errorf, nil, client.AbortMultipartUpload(EXISTS_BUCKET, EXISTS_OBJECT, uploadId))
+}
+func TestListParts(t *testing.T) {
+	respBody := `{
+		"bucket":"BucketName",
+		"key":"object",
+		"uploadId":"a44cc9bab11cbd156984767aad637851",
+		"initiated":"2010-11-10T20:48:33Z",
+		"owner":{ "id":"75aa570f8e7faeebf76c078efc7c6caea54ba06a", "displayName":"someName" },
+		"storageClass":"STANDARD",
+		"partNumberMarker":1,
+		"nextPartNumberMarker":3,
+		"maxParts":2,
+		"isTruncated":true,
+		"parts":[
+			{
+				"partNumber":2,
+				"lastModified":"2010-11-10T20:48:34Z",
+				"ETag":"7778aef83f66abc1fa1e8477f296d394",
+				"size":10485760
+			},
+			{
+				"partNumber":3,
+				"lastModified":"2010-11-10T20:48:33Z",
+				"ETag":"aaaa18db4cc2f85cedef654fccc4a4x8",
+				"size":10485760
+			}
+		]
+	}`
+	//mock bos client
+	ak, sk, endpoint := "ak", "sk", "192.168.1.1"
+	client, err := NewMockBosClient(ak, sk, endpoint, respBody)
+	ExpectEqual(t.Errorf, nil, err)
+
+	uploadId := "a44cc9bab11bdc157676984aad851637"
+	args := &api.ListPartsArgs{
+		MaxParts:         10,
+		PartNumberMarker: "part-number-marker",
+	}
+	res, err := client.ListParts(EXISTS_BUCKET, EXISTS_OBJECT, uploadId, args)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, 2, len(res.Parts))
+	res, err = client.ListPartsWithContext(context.Background(), EXISTS_BUCKET, EXISTS_OBJECT, uploadId, args)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, 2, len(res.Parts))
+	res, err = client.BasicListParts(EXISTS_BUCKET, EXISTS_OBJECT, uploadId)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, 2, len(res.Parts))
+}
 func TestListMultipartUploads(t *testing.T) {
 	respBody := `{
 		"bucket": "bucket",
@@ -2157,6 +2296,11 @@ func TestListMultipartUploads(t *testing.T) {
 	ExpectEqual(t.Errorf, len(res.Uploads), 3)
 	t.Logf("%+v", res)
 
+	res, err = client.ListMultipartUploadsWithContext(context.Background(), EXISTS_BUCKET, args)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res.Bucket, "bucket")
+	ExpectEqual(t.Errorf, res.NextKeyMarker, "my-movie.m2ts")
+
 	//BasicListMultipartUploads
 	res, err = client.BasicListMultipartUploads(EXISTS_BUCKET)
 	ExpectEqual(t.Errorf, err, nil)
@@ -2170,14 +2314,21 @@ func TestListMultipartUploads(t *testing.T) {
 	t.Logf("%+v", res)
 }
 func TestUploadSuperFile(t *testing.T) {
+	options := []util.MockRoundTripperOption{
+		util.SetStatusCode(200),
+		util.SetStatusMsg("200 OK"),
+		util.AddHeaders(map[string]string{
+			my_http.ETAG: "b54357faf0632cce46e942fa68356b38",
+		}),
+	}
 	//mock bos client
 	ak, sk, endpoint := "ak", "sk", "192.168.1.1"
 	client, err := NewMockBosClient(ak, sk, endpoint, "")
 	ExpectEqual(t.Errorf, nil, err)
-	// not exist
+	// case1: not exist
 	err = client.UploadSuperFile(EXISTS_BUCKET, "super-object", "test-object", "")
 	ExpectEqual(t.Errorf, err.Error(), "open test-object: no such file or directory")
-	// small file
+	// case2: small file
 	fileName := "/tmp/test-upload-super-file-" + strconv.FormatInt(time.Now().UnixMicro(), 10)
 	file, err := os.Create(fileName)
 	ExpectEqual(t.Errorf, nil, err)
@@ -2189,15 +2340,51 @@ func TestUploadSuperFile(t *testing.T) {
 	ExpectEqual(t.Errorf, err.Error(), "EOF")
 	t.Logf("%+v", err)
 	os.Remove(fileName)
+	// case3: ok
+	respBody1 := `{ "bucket": "BucketName", "key":"ObjectName", "uploadId": "a44cc9bab11cbd156984767aad637851" }`
+	respBody2 := `{
+		"location":"http://bj.bcebos.com/BucketName/ObjectName",
+		"bucket":"BucketName",
+		"key":"object",
+		"eTag":"3858f62230ac3c915f300c664312c11f"
+	}`
+	options3 := append(options, util.AppendRespBody([]string{respBody1, respBody2}))
+	client3, err := NewMockBosClient(ak, sk, endpoint, "", options3...)
+	ExpectEqual(t.Errorf, nil, err)
+	err = client3.UploadSuperFile(EXISTS_BUCKET, "super-object", currentFileName(), "")
+	ExpectEqual(t.Errorf, nil, err)
+
+	options4 := append(options, util.AppendRespBody([]string{respBody1, ""}))
+	client4, err := NewMockBosClient(ak, sk, endpoint, "", options4...)
+	ExpectEqual(t.Errorf, nil, err)
+	err = client4.UploadSuperFile(EXISTS_BUCKET, "super-object", currentFileName(), "")
+	ExpectEqual(t.Errorf, "EOF", err.Error())
 }
 func TestDownloadSuperFile(t *testing.T) {
 	//mock bos client
+	options := []util.MockRoundTripperOption{
+		util.SetStatusCode(200),
+		util.SetStatusMsg("200 OK"),
+		util.AddHeaders(map[string]string{
+			http.CanonicalHeaderKey(my_http.BCE_VERSION_ID):                    "AKyQ9DRhhoY=",
+			http.CanonicalHeaderKey(my_http.CACHE_CONTROL):                     "private",
+			http.CanonicalHeaderKey(my_http.CONTENT_DISPOSITION):               "attachment; filename=\"download.txt\"",
+			http.CanonicalHeaderKey(my_http.CONTENT_LENGTH):                    "1234567",
+			http.CanonicalHeaderKey(my_http.CONTENT_TYPE):                      "application/octet-stream",
+			http.CanonicalHeaderKey(my_http.BCE_USER_METADATA_PREFIX) + "Key1": "Value1",
+			http.CanonicalHeaderKey(my_http.BCE_USER_METADATA_PREFIX) + "Key2": "Value2",
+			http.CanonicalHeaderKey(my_http.BCE_STORAGE_CLASS):                 api.STORAGE_CLASS_ARCHIVE,
+			http.CanonicalHeaderKey(my_http.CONTENT_MD5):                       "Zh+ACfqOVqnQ6UoKZEOX1w==",
+			http.CanonicalHeaderKey(my_http.LAST_MODIFIED):                     "Wed, 17 Dec 2025 06:25:34 GMT",
+			http.CanonicalHeaderKey(my_http.BCE_CONTENT_CRC32):                 "1922069637",
+			http.CanonicalHeaderKey(my_http.BCE_CONTENT_CRC64ECMA):             "12759301844125077625",
+		}),
+	}
 	ak, sk, endpoint := "ak", "sk", "192.168.1.1"
-	client, err := NewMockBosClient(ak, sk, endpoint, "")
+	options1 := append(options, util.AppendRespBody([]string{"test data"}))
+	client1, err := NewMockBosClient(ak, sk, endpoint, "", options1...)
 	ExpectEqual(t.Errorf, nil, err)
-	err = client.DownloadSuperFile(EXISTS_BUCKET, "super-object", "/dev/null")
-	ExpectEqual(t.Errorf, err, nil)
-	err = client.DownloadSuperFile(EXISTS_BUCKET, "not-exist", "/tmp/not-exist")
+	err = client1.DownloadSuperFile(EXISTS_BUCKET, "super-object", "/dev/null")
 	ExpectEqual(t.Errorf, err, nil)
 	t.Logf("%+v", err)
 }
@@ -2311,6 +2498,9 @@ func TestPutObjectAclFromFile(t *testing.T) {
 	err = client.PutObjectAclFromFile(EXISTS_BUCKET, EXISTS_OBJECT, fname)
 	os.Remove(fname)
 	ExpectEqual(t.Errorf, err, nil)
+
+	err = client.PutObjectAclFromFile(EXISTS_BUCKET, EXISTS_OBJECT, fname)
+	ExpectEqual(t.Errorf, err.Error(), fmt.Sprintf("open %s: no such file or directory", fname))
 }
 func TestPutObjectAclFromString(t *testing.T) {
 	acl := `{
@@ -2321,8 +2511,7 @@ func TestPutObjectAclFromString(t *testing.T) {
             }],
             "permission":["FULL_CONTROL"]
         }
-    ]
-}`
+    ]}`
 	// mock bos client
 	ak, sk, endpoint := "ak", "sk", "192.168.1.1"
 	client, err := NewMockBosClient(ak, sk, endpoint, "")
@@ -2352,12 +2541,52 @@ func TestPutObjectAclFromStruct(t *testing.T) {
 	err = client.PutObjectAclFromStruct(EXISTS_BUCKET, EXISTS_OBJECT, aclObj)
 	ExpectEqual(t.Errorf, err, nil)
 }
+func TestGetObjectAcl(t *testing.T) {
+	respBody := `{
+		"accessControlList":[
+			{
+				"grantee":[{
+					"id":"e13b12d0131b4c8bae959df4969387b8"
+				}],
+				"permission":["FULL_CONTROL"]
+			},
+			{
+				"grantee":[{
+					"id":"8c47a952db4444c5a097b41be3f24c94"
+				}],
+				"permission":["READ"]
+			}
+		]
+	}`
+	// mock bos client
+	ak, sk, endpoint := "ak", "sk", "bj.bcebos.com"
+	client, err := NewMockBosClient(ak, sk, endpoint, respBody)
+	ExpectEqual(t.Errorf, nil, err)
+	res, err := client.GetObjectAcl(EXISTS_BUCKET, EXISTS_OBJECT)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, 2, len(res.AccessControlList))
+}
 func TestDeleteObjectAcl(t *testing.T) {
 	// mock bos client
 	ak, sk, endpoint := "ak", "sk", "bj.bcebos.com"
 	client, err := NewMockBosClient(ak, sk, endpoint, "")
 	ExpectEqual(t.Errorf, nil, err)
 	err = client.DeleteObjectAcl(EXISTS_BUCKET, EXISTS_OBJECT)
+	ExpectEqual(t.Errorf, err, nil)
+}
+func TestRestoreObject(t *testing.T) {
+	// mock bos client
+	ak, sk, endpoint := "ak", "sk", "bj.bcebos.com"
+	client, err := NewMockBosClient(ak, sk, endpoint, "")
+	ExpectEqual(t.Errorf, nil, err)
+	// case1: invalid restore tier
+	err = client.RestoreObject(EXISTS_BUCKET, EXISTS_OBJECT, 3, "restore_tier")
+	ExpectEqual(t.Errorf, errors.New("invalid restore tier"), err)
+	//case2: invalid restore days
+	err = client.RestoreObject(EXISTS_BUCKET, EXISTS_OBJECT, 0, api.RESTORE_TIER_EXPEDITED)
+	ExpectEqual(t.Errorf, errors.New("invalid restore days"), err)
+	// case3: ok
+	err = client.RestoreObject(EXISTS_BUCKET, EXISTS_OBJECT, 3, api.RESTORE_TIER_EXPEDITED)
 	ExpectEqual(t.Errorf, err, nil)
 }
 func TestBucketTrashPut(t *testing.T) {
@@ -2480,38 +2709,83 @@ func TestBucketNotificationDelete(t *testing.T) {
 
 func TestParallelUpload(t *testing.T) {
 	// mock bos client
-	respBody := []string{`{
-		"bucket": "BucketName",
-		"key":"ObjectName",
-		"uploadId": "a44cc9bab11cbd156984767aad637851"
-	    }`,
-	}
+	respBody1 := `{ "bucket": "BucketName", "key":"ObjectName", "uploadId": "a44cc9bab11cbd156984767aad637851" }`
+	respBody3 := `{
+		"location":"http://bj.bcebos.com/BucketName/ObjectName",
+		"bucket":"BucketName",
+		"key":"object",
+		"eTag":"3858f62230ac3c915f300c664312c11f"
+	}`
+
 	options := []util.MockRoundTripperOption{
 		util.SetStatusCode(200),
 		util.SetStatusMsg("200 OK"),
-		util.AppendRespBody(respBody),
 		util.AddHeaders(map[string]string{
 			my_http.ETAG: "b54357faf0632cce46e942fa68356b38",
 			http.CanonicalHeaderKey(my_http.BCE_CONTENT_CRC32C): "723497213897532",
 		}),
 	}
-	ak, sk, endpoint := "ak", "sk", "bj.bcebos.com"
-	client, err := NewMockBosClient(ak, sk, endpoint, "", options...)
-	ExpectEqual(t.Errorf, nil, err)
-
-	// init error
 	args := &api.InitiateMultipartUploadArgs{
-		StorageClass: "adkfiueruiger",
+		ObjectExpires: 3,
+		IfMatch:       "if-match",
+		IfNoneMatch:   "IfNoneMatch",
 	}
-	res, err := client.ParallelUpload(EXISTS_BUCKET, "test_multiupload", "test_object", "", args)
+
+	// case1: ok
+	options1 := append(options, util.AppendRespBody([]string{respBody1, respBody3}))
+	ak, sk, endpoint := "ak", "sk", "bj.bcebos.com"
+	client1, err := NewMockBosClient(ak, sk, endpoint, "", options1...)
+	ExpectEqual(t.Errorf, nil, err)
+	res, err := client1.ParallelUpload(EXISTS_BUCKET, "test_multiupload", currentFileName(), "", args)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, "BucketName", res.Bucket)
+
+	// case2: init error
+	options2 := append(options, util.AppendRespBody([]string{""}))
+	client2, err := NewMockBosClient(ak, sk, endpoint, "", options2...)
+	ExpectEqual(t.Errorf, nil, err)
+	res, err = client2.ParallelUpload(EXISTS_BUCKET, "test_multiupload", currentFileName(), "", args)
+	ExpectEqual(t.Errorf, "EOF", err.Error())
 	ExpectEqual(t.Errorf, nil, res)
-	ExpectEqual(t.Errorf, bce.NewBceClientError("invalid storage class value: "+args.StorageClass), err)
-	// parallelPartUpload error
-	args.StorageClass = api.STORAGE_CLASS_ARCHIVE
-	fileName := "xxxxxxxxxxx"
-	res, err = client.ParallelUpload(EXISTS_BUCKET, "test_multiupload", fileName, "", args)
+
+	// case3: ParallelUpload error
+	options3 := append(options, util.AppendRespBody([]string{respBody1, ""}))
+	client3, err := NewMockBosClient(ak, sk, endpoint, "", options3...)
+	ExpectEqual(t.Errorf, nil, err)
+	res, err = client3.ParallelUpload(EXISTS_BUCKET, "test_multiupload", "fileName", "", args)
 	ExpectEqual(t.Errorf, nil, res)
-	ExpectEqual(t.Errorf, fmt.Sprintf("open %s: no such file or directory", fileName), err.Error())
+	ExpectEqual(t.Errorf, fmt.Sprintf("open %s: no such file or directory", "fileName"), err.Error())
+
+	// case4: complete error
+	options4 := append(options, util.AppendRespBody([]string{respBody1, ""}))
+	client4, err := NewMockBosClient(ak, sk, endpoint, "", options4...)
+	ExpectEqual(t.Errorf, nil, err)
+	res, err = client4.ParallelUpload(EXISTS_BUCKET, "test_multiupload", currentFileName(), "", args)
+	ExpectEqual(t.Errorf, "EOF", err.Error())
+	ExpectEqual(t.Errorf, nil, res)
+
+	// case5: parallelPartUpload
+	options5 := append(options, util.AppendRespBody([]string{""}))
+	client5, err := NewMockBosClient(ak, sk, endpoint, "", options5...)
+	ExpectEqual(t.Errorf, nil, err)
+	uploadId := "a44cc9bab11cbd156984767aad637851"
+	uploadInfo, err := client5.parallelPartUpload(EXISTS_BUCKET, EXISTS_OBJECT, currentFileName(), uploadId)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, 1, len(uploadInfo))
+
+	// case6:
+	options6 := append(options, util.AppendRespBody([]string{""}))
+	client6, err := NewMockBosClient(ak, sk, endpoint, "", options6...)
+	ExpectEqual(t.Errorf, nil, err)
+	content6, err := bce.NewBodyFromStringV2("str string", false)
+	ExpectEqual(t.Errorf, nil, err)
+	parallelChan := make(chan int, 1)
+	errChan := make(chan error, 1)
+	resultChan := make(chan api.UploadInfoType, 1)
+	parallelChan <- 1
+	client6.singlePartUpload(EXISTS_BUCKET, EXISTS_OBJECT, uploadId, 1, content6, parallelChan, errChan, resultChan)
+	result7 := <-resultChan
+	ExpectEqual(t.Errorf, "b54357faf0632cce46e942fa68356b38", result7.ETag)
 }
 
 func TestParallelUpload_CompleteOk(t *testing.T) {
@@ -2590,16 +2864,101 @@ func TestParallelUpload_CompleteError(t *testing.T) {
 }
 
 func TestParallelCopy(t *testing.T) {
+	respBody1 := `{ "bucket": "BucketName", "key":"ObjectName", "uploadId": "a44cc9bab11cbd156984767aad637851" }`
+	respBody2 := `{ "lastModified":"2016-05-12T09:14:32Z", "eTag":"67b92a7c2a9b9c1809a6ae3295dcc127" }`
+	respBody3 := `{
+		"location":"http://bj.bcebos.com/BucketName/ObjectName",
+		"bucket":"BucketName",
+		"key":"object",
+		"eTag":"3858f62230ac3c915f300c664312c11f"
+	}`
 	// mock bos client
+	options := []util.MockRoundTripperOption{
+		util.SetStatusCode(200),
+		util.SetStatusMsg("200 OK"),
+		util.AddHeaders(map[string]string{
+			http.CanonicalHeaderKey(my_http.BCE_VERSION_ID):                    "AKyQ9DRhhoY=",
+			http.CanonicalHeaderKey(my_http.CACHE_CONTROL):                     "private",
+			http.CanonicalHeaderKey(my_http.CONTENT_DISPOSITION):               "attachment; filename=\"download.txt\"",
+			http.CanonicalHeaderKey(my_http.CONTENT_LENGTH):                    "1234567",
+			http.CanonicalHeaderKey(my_http.CONTENT_TYPE):                      "application/octet-stream",
+			http.CanonicalHeaderKey(my_http.BCE_USER_METADATA_PREFIX) + "Key1": "Value1",
+			http.CanonicalHeaderKey(my_http.BCE_USER_METADATA_PREFIX) + "Key2": "Value2",
+			http.CanonicalHeaderKey(my_http.BCE_STORAGE_CLASS):                 api.STORAGE_CLASS_ARCHIVE,
+			http.CanonicalHeaderKey(my_http.CONTENT_MD5):                       "Zh+ACfqOVqnQ6UoKZEOX1w==",
+			http.CanonicalHeaderKey(my_http.LAST_MODIFIED):                     "Wed, 17 Dec 2025 06:25:34 GMT",
+			http.CanonicalHeaderKey(my_http.BCE_CONTENT_CRC32):                 "1922069637",
+			http.CanonicalHeaderKey(my_http.BCE_CONTENT_CRC64ECMA):             "12759301844125077625",
+		}),
+	}
+	// case1: ok
+	options1 := append(options, util.AppendRespBody([]string{"", respBody1, respBody2, respBody3}))
 	ak, sk, endpoint := "ak", "sk", "bj.bcebos.com"
-	client, err := NewMockBosClient(ak, sk, endpoint, "")
+	client, err := NewMockBosClient(ak, sk, endpoint, "", options1...)
 	ExpectEqual(t.Errorf, nil, err)
 	args := api.MultiCopyObjectArgs{
-		StorageClass: api.STORAGE_CLASS_COLD,
+		StorageClass:     api.STORAGE_CLASS_COLD,
+		ObjectTagging:    "k1=v1&k2=v2",
+		TaggingDirective: api.METADATA_DIRECTIVE_COPY,
+		CannedAcl:        api.CANNED_ACL_PRIVATE,
+		GrantRead:        []string{"id1"},
+		GrantFullControl: []string{"id2"},
 	}
 	res, err := client.ParallelCopy(EXISTS_BUCKET, "test_multiupload", EXISTS_BUCKET, "test_multiupload_copy", &args, nil)
-	ExpectEqual(t.Errorf, err.Error(), "EOF")
-	t.Logf("%v,%v", res, err)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, "BucketName", res.Bucket)
+
+	// case2: get object meta fail
+	options2 := util.RoundTripperOpts404
+	client2, err := NewMockBosClient(ak, sk, endpoint, "", options2...)
+	ExpectEqual(t.Errorf, nil, err)
+	res, err = client2.ParallelCopy(EXISTS_BUCKET, "test_multiupload", EXISTS_BUCKET, "test_multiupload_copy", &args, nil)
+	ExpectEqual(t.Errorf, bceServiceErro404.Error(), err.Error())
+	ExpectEqual(t.Errorf, nil, res)
+
+	// case3: init fail
+	options3 := options
+	client3, err := NewMockBosClient(ak, sk, endpoint, "", options3...)
+	ExpectEqual(t.Errorf, nil, err)
+	res, err = client3.ParallelCopy(EXISTS_BUCKET, "test_multiupload", EXISTS_BUCKET, "test_multiupload_copy", &args, nil)
+	ExpectEqual(t.Errorf, "EOF", err.Error())
+	ExpectEqual(t.Errorf, nil, res)
+
+	// case4: upload part copy fail
+	options4 := append(options, util.AppendRespBody([]string{"", respBody1, ""}))
+	client4, err := NewMockBosClient(ak, sk, endpoint, "", options4...)
+	ExpectEqual(t.Errorf, nil, err)
+	res, err = client4.ParallelCopy(EXISTS_BUCKET, "test_multiupload", EXISTS_BUCKET, "test_multiupload_copy", &args, nil)
+	ExpectEqual(t.Errorf, "EOF", err.Error())
+	ExpectEqual(t.Errorf, nil, res)
+
+	//case5: complete fail
+	options5 := append(options, util.AppendRespBody([]string{"", respBody1, respBody2, ""}))
+	client5, err := NewMockBosClient(ak, sk, endpoint, "", options5...)
+	ExpectEqual(t.Errorf, nil, err)
+	res, err = client5.ParallelCopy(EXISTS_BUCKET, "test_multiupload", EXISTS_BUCKET, "test_multiupload_copy", &args, nil)
+	ExpectEqual(t.Errorf, "EOF", err.Error())
+	ExpectEqual(t.Errorf, nil, res)
+
+	// case6: parallelPartCopy
+	options6 := append(options, util.AppendRespBody([]string{"", respBody2}))
+	client6, err := NewMockBosClient(ak, sk, endpoint, "", options6...)
+	ExpectEqual(t.Errorf, nil, err)
+	metaRes, err := client6.GetObjectMeta(EXISTS_BUCKET, EXISTS_OBJECT)
+	ExpectEqual(t.Errorf, nil, err)
+	uploadId := "a44cc9bab11cbd156984767aad637851"
+	uploadInfo, err := client6.parallelPartCopy(*metaRes, "source", EXISTS_BUCKET, EXISTS_OBJECT, uploadId)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, 1, len(uploadInfo))
+
+	// case7: singlePartCopy
+	parallelChan := make(chan int, 1)
+	errChan := make(chan error, 1)
+	resultChan := make(chan api.UploadInfoType, 1)
+	parallelChan <- 1
+	client6.singlePartCopy("source", EXISTS_BUCKET, EXISTS_OBJECT, uploadId, 1, nil, parallelChan, errChan, resultChan)
+	result7 := <-resultChan
+	ExpectEqual(t.Errorf, "67b92a7c2a9b9c1809a6ae3295dcc127", result7.ETag)
 }
 
 func TestBucketTagPut(t *testing.T) {
@@ -2787,4 +3146,227 @@ func TestNewClientWithConfig_EmptyEndpoint(t *testing.T) {
 	if client == nil {
 		t.Fatal("Expected client to be created")
 	}
+}
+
+func TestPutObjectTag(t *testing.T) {
+	//mock bos client
+	ak, sk, endpoint := "ak", "sk", "bj.bcebos.com"
+	client, err := NewMockBosClient(ak, sk, endpoint, "")
+	ExpectEqual(t.Errorf, nil, err)
+	putObjectTagArgs := &api.PutObjectTagArgs{
+		ObjectTags: []api.ObjectTags{
+			{
+				TagInfo: []api.ObjectTag{
+					{Key: "key1", Value: "value1"},
+					{Key: "key2", Value: "value2"},
+				},
+			},
+		},
+	}
+	err = client.PutObjectTag(EXISTS_BUCKET, EXISTS_OBJECT, putObjectTagArgs)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestGetObjectTag(t *testing.T) {
+	respBody := `{
+		"tagSet": [{
+			"tagInfo": { 
+				"key9": "value9", "key8": "value8", "key10": "value10", "key3": "value3", "key2": "value2",
+				"key1": "value1", "key0": "value0", "key6": "value6", "key5": "value5", "key4": "value4"
+			}
+		}]
+	}`
+	//mock bos client
+	ak, sk, endpoint := "ak", "sk", "bj.bcebos.com"
+	client, err := NewMockBosClient(ak, sk, endpoint, respBody)
+	ExpectEqual(t.Errorf, nil, err)
+	res, err := client.GetObjectTag(EXISTS_BUCKET, EXISTS_OBJECT)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, 10, len(res))
+}
+
+func TestDeleteObjectTag(t *testing.T) {
+	//mock bos client
+	ak, sk, endpoint := "ak", "sk", "bj.bcebos.com"
+	client, err := NewMockBosClient(ak, sk, endpoint, "")
+	ExpectEqual(t.Errorf, nil, err)
+	err = client.DeleteObjectTag(EXISTS_BUCKET, EXISTS_OBJECT)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestBosShareLinkGet(t *testing.T) {
+	respBody := `{"shareUrl":"url","linkExpireTime":180,"shareCode":"111111"}`
+	//mock bos client
+	ak, sk, endpoint := "ak", "sk", "bj.bcebos.com"
+	client, err := NewMockBosClient(ak, sk, endpoint, respBody)
+	ExpectEqual(t.Errorf, nil, err)
+
+	res, err := client.BosShareLinkGet(EXISTS_BUCKET, "prefix", "111111", 180)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, respBody, res)
+}
+
+func TestPutBucketVersioning(t *testing.T) {
+	//mock bos client
+	ak, sk, endpoint := "ak", "sk", "bj.bcebos.com"
+	client, err := NewMockBosClient(ak, sk, endpoint, "")
+	ExpectEqual(t.Errorf, nil, err)
+
+	args := &api.BucketVersioningArgs{Status: "enabled"}
+	err = client.PutBucketVersioning(EXISTS_BUCKET, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestGetBucketVersioning(t *testing.T) {
+	respBody := `{"status": "enabled"}`
+	//mock bos client
+	ak, sk, endpoint := "ak", "sk", "bj.bcebos.com"
+	client, err := NewMockBosClient(ak, sk, endpoint, respBody)
+	ExpectEqual(t.Errorf, nil, err)
+
+	res, err := client.GetBucketVersioning(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, "enabled", res.Status)
+}
+
+func TestBucketInventory(t *testing.T) {
+	//mock bos client
+	ak, sk, endpoint := "ak", "sk", "bj.bcebos.com"
+	client, err := NewMockBosClient(ak, sk, endpoint, "")
+	ExpectEqual(t.Errorf, nil, err)
+
+	argsJsonStr := `{
+		"inventoryRuleList":[
+			{
+				"id": "inventory-configuration-ID1", 
+				"status": "enabled", 
+				"resource": [ "bucket/prefix/*" ], 
+				"schedule": "Weekly", 
+				"destination": { "targetBucket": "destBucketName", "targetPrefix": "destination-prefix", "format": "CSV" }
+			}, 
+			{
+				"id": "inventory-configuration-ID2", 
+				"status": "enabled", 
+				"resource": [ "bucket/prefix2/*" ], 
+				"schedule": "Monthly", 
+				"monthlyDate": 15,
+				"destination": { "targetBucket": "destBucketName", "targetPrefix": "destination-prefix-another", "format": "CSV" }
+			}
+		]
+	}`
+
+	listRes := &api.ListBucketInventoryResult{}
+	ExpectEqual(t.Errorf, nil, json.Unmarshal([]byte(argsJsonStr), listRes))
+	ExpectEqual(t.Errorf, 2, len(listRes.RuleList))
+	args := &api.PutBucketInventoryArgs{Rule: listRes.RuleList[0]}
+
+	// put bucket inventory
+	err = client.PutBucketInventory(EXISTS_BUCKET, args)
+	ExpectEqual(t.Errorf, nil, err)
+
+	// get bucket inventory
+	jsonStr, err := json.Marshal(args.Rule)
+	ExpectEqual(t.Errorf, nil, err)
+	singleRuleStr := string(jsonStr)
+	client1, err := NewMockBosClient(ak, sk, endpoint, singleRuleStr)
+	ExpectEqual(t.Errorf, nil, err)
+
+	getRes, err := client1.GetBucketInventory(EXISTS_BUCKET, "id")
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, "inventory-configuration-ID1", getRes.Rule.Id)
+
+	// list bucket inventory
+	client2, err := NewMockBosClient(ak, sk, endpoint, argsJsonStr)
+	ExpectEqual(t.Errorf, nil, err)
+	res1, err := client2.ListBucketInventory(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, 2, len(res1.RuleList))
+
+	// delete bucket inventory
+	client3, err := NewMockBosClient(ak, sk, endpoint, "")
+	ExpectEqual(t.Errorf, nil, err)
+	err = client3.DeleteBucketInventory(EXISTS_BUCKET, "id")
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestBucketRequestPayment(t *testing.T) {
+	//mock bos client
+	ak, sk, endpoint := "ak", "sk", "bj.bcebos.com"
+	client, err := NewMockBosClient(ak, sk, endpoint, "")
+	ExpectEqual(t.Errorf, nil, err)
+	args := &api.RequestPaymentArgs{RequestPayment: "Requester"}
+	//PutBucketRequestPayment
+	err = client.PutBucketRequestPayment(EXISTS_BUCKET, args)
+	ExpectEqual(t.Errorf, nil, err)
+	//GetBucketRequestPayment
+	respBody1 := `{"requestPayment": "Requester"}`
+	client1, err := NewMockBosClient(ak, sk, endpoint, respBody1)
+	ExpectEqual(t.Errorf, nil, err)
+	res, err := client1.GetBucketRequestPayment(EXISTS_BUCKET, nil)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, "Requester", res.RequestPayment)
+}
+
+func TestBucketObjectLock(t *testing.T) {
+	//mock bos client
+	ak, sk, endpoint := "ak", "sk", "bj.bcebos.com"
+	client, err := NewMockBosClient(ak, sk, endpoint, "")
+	ExpectEqual(t.Errorf, nil, err)
+	// InitBucketObjectLock
+	args := &api.InitBucketObjectLockArgs{
+		RetentionDays: 10,
+	}
+	err = client.InitBucketObjectLock(EXISTS_BUCKET, args, nil)
+	ExpectEqual(t.Errorf, nil, err)
+	//GetBucketObjectLock
+	respBody1 := `{
+		"lockStatus": "IN_PROGRESS",
+		"createDate": 1569317168,
+		"expirationDate": 1569403568,
+		"retentionDays": 3
+	}`
+	client1, err := NewMockBosClient(ak, sk, endpoint, respBody1)
+	ExpectEqual(t.Errorf, nil, err)
+	res, err := client1.GetBucketObjectLock(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, 1569317168, res.CreateDate)
+	ExpectEqual(t.Errorf, 1569403568, res.ExpirationDate)
+	ExpectEqual(t.Errorf, "IN_PROGRESS", res.LockStatus)
+	ExpectEqual(t.Errorf, 3, res.RetentionDays)
+	//DeleteBucketObjectLock
+	err = client.DeleteBucketObjectLock(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, nil, err)
+	//CompleteBucketObjectLock
+	err = client.CompleteBucketObjectLock(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, nil, err)
+	//ExtendBucketObjectLock
+	extArgs := &api.ExtendBucketObjectLockArgs{ExtendRetentionDays: 1}
+	err = client.ExtendBucketObjectLock(EXISTS_BUCKET, extArgs)
+	ExpectEqual(t.Errorf, nil, err)
+}
+func TestBucketQuota(t *testing.T) {
+	//mock bos client
+	ak, sk, endpoint := "ak", "sk", "bj.bcebos.com"
+	client, err := NewMockBosClient(ak, sk, endpoint, "")
+	ExpectEqual(t.Errorf, nil, err)
+	args := &api.BucketQuotaArgs{
+		MaxObjectCount:       100,
+		MaxCapacityMegaBytes: 99999999,
+	}
+	//put bucket quota
+	err = client.PutBucketQuota(EXISTS_BUCKET, args)
+	ExpectEqual(t.Errorf, nil, err)
+
+	//get bucket quota
+	respBody1 := `{ "maxObjectCount": 50,  "maxCapacityMegaBytes"  : 12334424 }`
+	client1, err := NewMockBosClient(ak, sk, endpoint, respBody1)
+	ExpectEqual(t.Errorf, nil, err)
+	res, err := client1.GetBucketQuota(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, 50, res.MaxObjectCount)
+	ExpectEqual(t.Errorf, 12334424, res.MaxCapacityMegaBytes)
+
+	// delete bucket quota
+	err = client.DeleteBucketQuota(EXISTS_BUCKET)
+	ExpectEqual(t.Errorf, nil, err)
 }

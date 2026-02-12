@@ -2799,3 +2799,27 @@ func (c *Client) DescribeUnplannedEventRecords(body *api.DescribeServerEventReco
 	*api.DescribeUnplannedEventsResp, error) {
 	return api.DescribeUnplannedEventRecords(c, body)
 }
+
+func (c *Client) GetDiagnosticSchemas() (*api.GetDiagnosticSchemasResp, error) {
+	return api.GetDiagnosticSchemas(c)
+}
+
+func (c *Client) ListDiagnosticReport(body *api.ListDiagnosticReq) (
+	*api.ListDiagnosticReportResp, error) {
+	if body.InstanceType == "" {
+		body.InstanceType = "bcc"
+	}
+	return api.ListDiagnosticReport(c, body)
+}
+
+func (c *Client) CreateDiagnostic(body *api.CreateDiagnosticReq) (
+	*api.CreateDiagnosticResp, error) {
+	if body.InstanceType == "" {
+		body.InstanceType = "bcc"
+	}
+	return api.CreateDiagnostic(c, body)
+}
+
+func (c *Client) DeleteDiagnosticReport(body *api.DeleteDiagnosticReportReq) error {
+	return api.DeleteDiagnosticReport(c, body)
+}

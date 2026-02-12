@@ -27,10 +27,10 @@ import (
 // CreateSubnet - create a new subnet with the specified parameters
 //
 // PARAMS:
-//     - args: the arguments to create subnet
+//   - args: the arguments to create subnet
 // RETURNS:
-//     - *CreateSubnetResult: the ID of the subnet newly created
-//     - error: nil if success otherwise the specific error
+//   - *CreateSubnetResult: the ID of the subnet newly created
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateSubnet(args *CreateSubnetArgs) (*CreateSubnetResult, error) {
 	if args == nil {
 		return nil, fmt.Errorf("CreateSubnetArgs cannot be nil.")
@@ -51,11 +51,11 @@ func (c *Client) CreateSubnet(args *CreateSubnetArgs) (*CreateSubnetResult, erro
 // ListSubnets - list all subnets with the specified parameters
 //
 // PARAMS:
-//     - args: the arguments to list subnets
-//     - :
+//   - args: the arguments to list subnets
+//   - :
 // RETURNS:
-//     - *ListSubnetResult: the result of all subnets
-//     - error: nil if success otherwise the specific error
+//   - *ListSubnetResult: the result of all subnets
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListSubnets(args *ListSubnetArgs) (*ListSubnetResult, error) {
 	if args == nil {
 		args = &ListSubnetArgs{}
@@ -85,10 +85,10 @@ func (c *Client) ListSubnets(args *ListSubnetArgs) (*ListSubnetResult, error) {
 // GetSubnetDetail - get details of the given subnet
 //
 // PARAMS:
-//     - subnetId: the id of the specified subnet
+//   - subnetId: the id of the specified subnet
 // RETURNS:
-//     - *GetSubnetDetailResult: the result of the given subnet details
-//     - error: nil if success otherwise the specific error
+//   - *GetSubnetDetailResult: the result of the given subnet details
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetSubnetDetail(subnetId string) (*GetSubnetDetailResult, error) {
 	if subnetId == "" {
 		return nil, fmt.Errorf("The subnetId cannot be blank.")
@@ -107,10 +107,10 @@ func (c *Client) GetSubnetDetail(subnetId string) (*GetSubnetDetailResult, error
 // UpdateSubnet - update the given subnet
 //
 // PARAMS:
-//     - subnetId: the id of the given subnet
-//     - args: the arguments to update subnet
+//   - subnetId: the id of the given subnet
+//   - args: the arguments to update subnet
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateSubnet(subnetId string, args *UpdateSubnetArgs) error {
 	if subnetId == "" {
 		return fmt.Errorf("The subnetId cannot be blank.")
@@ -131,10 +131,10 @@ func (c *Client) UpdateSubnet(subnetId string, args *UpdateSubnetArgs) error {
 // DeleteSubnet - delete the given subnet
 //
 // PARAMS:
-//     - subnetId: the id of the specified subnet
-//     - clientToken: the idempotent token
+//   - subnetId: the id of the specified subnet
+//   - clientToken: the idempotent token
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteSubnet(subnetId string, clientToken string) error {
 	if subnetId == "" {
 		return fmt.Errorf("The subnetId cannot be blank.")
@@ -150,14 +150,14 @@ func (c *Client) DeleteSubnet(subnetId string, clientToken string) error {
 // CreateReservedCIDR - delete the given ReservedCIDR
 //
 // PARAMS:
-//     - ipReserveId: the id of the reserved subnet
-//     - clientToken: the idempotent token
+//   - ipReserveId: the id of the reserved subnet
+//   - clientToken: the idempotent token
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateIpreserve(args *CreateIpreserveArgs) (*CreateIpreserveResult, error) {
-    if args.SubnetId == "" {
-        return nil, fmt.Errorf("SubnetId cannot be nil.")
-    }
+	if args.SubnetId == "" {
+		return nil, fmt.Errorf("SubnetId cannot be nil.")
+	}
 
 	if args.IpCidr == "" {
 		return nil, fmt.Errorf("ipCidr cannot be blank.")
@@ -167,63 +167,63 @@ func (c *Client) CreateIpreserve(args *CreateIpreserveArgs) (*CreateIpreserveRes
 		return nil, fmt.Errorf("wrong ipVersion.")
 	}
 
-    result := &CreateIpreserveResult{}
-    err := bce.NewRequestBuilder(c).
-        WithURL(getURLForIpreserve()).
-        WithMethod(http.POST).
-        WithBody(args).
-        WithQueryParamFilter("clientToken", args.ClientToken).
-        WithResult(result).
-        Do()
+	result := &CreateIpreserveResult{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForIpreserve()).
+		WithMethod(http.POST).
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithResult(result).
+		Do()
 
-    return result, err
+	return result, err
 }
 
 // DeleteIpreserve - delete the given ReservedCIDR
 //
 // PARAMS:
-//     - ipReserveId: the id of the reserved subnet
-//     - clientToken: the idempotent token
+//   - ipReserveId: the id of the reserved subnet
+//   - clientToken: the idempotent token
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteIpreserve(ipReserveId, clientToken string) error {
-    if ipReserveId == "" {
-        return fmt.Errorf("The ipReserveId cannot be blank.")
-    }
+	if ipReserveId == "" {
+		return fmt.Errorf("The ipReserveId cannot be blank.")
+	}
 
-    return bce.NewRequestBuilder(c).
-        WithURL(getURLForDeleteIpreserve(ipReserveId)).
-        WithMethod(http.DELETE).
-        WithQueryParamFilter("clientToken", clientToken).
-        Do()
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForDeleteIpreserve(ipReserveId)).
+		WithMethod(http.DELETE).
+		WithQueryParamFilter("clientToken", clientToken).
+		Do()
 }
 
 // ListIpreserve - list all reserved CIDRs with the specified parameters
 //
 // PARAMS:
-//     - args: the arguments to list reserved CIDRs
+//   - args: the arguments to list reserved CIDRs
 // RETURNS:
-//     - *ListReservedCIDRResult: the result of all reserved CIDRs
-//     - error: nil if success otherwise the specific error
+//   - *ListReservedCIDRResult: the result of all reserved CIDRs
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListIpreserve(args *ListIpeserveArgs) (*ListIpeserveResult, error) {
-    if args == nil {
-        args = &ListIpeserveArgs{}
-    }
-    if args.MaxKeys < 0 || args.MaxKeys > 1000 {
-        return nil, fmt.Errorf("The field maxKeys is out of range [0, 1000]")
-    } else if args.MaxKeys == 0 {
-        args.MaxKeys = 1000
-    }
+	if args == nil {
+		args = &ListIpeserveArgs{}
+	}
+	if args.MaxKeys < 0 || args.MaxKeys > 1000 {
+		return nil, fmt.Errorf("The field maxKeys is out of range [0, 1000]")
+	} else if args.MaxKeys == 0 {
+		args.MaxKeys = 1000
+	}
 
-    result := &ListIpeserveResult{}
-    err := bce.NewRequestBuilder(c).
-        WithURL(getURLForIpreserve()).
-        WithMethod(http.GET).
-        WithQueryParamFilter("marker", args.Marker).
-        WithQueryParamFilter("subnetId", args.SubnetId).
-        WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
-        WithResult(result).
-        Do()
+	result := &ListIpeserveResult{}
+	err := bce.NewRequestBuilder(c).
+		WithURL(getURLForIpreserve()).
+		WithMethod(http.GET).
+		WithQueryParamFilter("marker", args.Marker).
+		WithQueryParamFilter("subnetId", args.SubnetId).
+		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithResult(result).
+		Do()
 
-    return result, err
+	return result, err
 }

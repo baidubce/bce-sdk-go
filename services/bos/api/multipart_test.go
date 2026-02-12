@@ -1,7 +1,9 @@
 package api
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"hash/crc32"
 	"hash/crc64"
@@ -60,6 +62,76 @@ func NewMockBosClient() (*bce.BceClient, error) {
 		ConnectionTimeoutInMillis: bce.DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS,
 	}
 	return bce.NewBceClientWithExclusiveHTTPClient(config, &auth.BceV1Signer{})
+}
+
+func TestInitiateMultipartUpload(t *testing.T) {
+	//mock bce client
+	client, err := NewMockBosClient()
+	ExpectEqual(t, nil, err)
+	// prepare parameter
+	bucket := "test-bucket"
+	object := "test-object"
+	respBody := `{ "bucket": "BucketName", "key":"ObjectName", "uploadId": "a44cc9bab11cbd156984767aad637851" }`
+	args := &InitiateMultipartUploadArgs{}
+	AttachMockHttpClientOk(t, client, &respBody)
+
+	// case1: invalid storage class
+	args.StorageClass = "storage-class"
+	res, err := InitiateMultipartUpload(client, bucket, object, "", args, nil)
+	expectErr1 := bce.NewBceClientError("invalid storage class value: " + args.StorageClass)
+	ExpectEqual(t, expectErr1, err)
+	ExpectEqual(t, nil, res)
+	args.StorageClass = STORAGE_CLASS_STANDARD
+
+	// case2: invalid acl
+	args.CannedAcl = "canned-acl"
+	res, err = InitiateMultipartUpload(client, bucket, object, "", args, nil)
+	expectErr2 := bce.NewBceClientError("invalid canned acl value: " + args.CannedAcl)
+	ExpectEqual(t, expectErr2, err)
+	ExpectEqual(t, nil, res)
+	args.CannedAcl = CANNED_ACL_PRIVATE
+
+	// case3: handle options error
+	res, err = InitiateMultipartUpload(client, bucket, object, "", args, nil, ErrorOption)
+	ExpectEqual(t, optionError, err)
+	ExpectEqual(t, nil, res)
+
+	// case4: send request error
+	err4 := fmt.Errorf("IO Error")
+	AttachMockHttpClientError(t, client, err4)
+	res, err = InitiateMultipartUpload(client, bucket, object, "", args, nil)
+	CheckMockHttpClientError(t, client.Config.Endpoint, "/"+bucket+"/"+object, "uploads", "Post", err4, err)
+	ExpectEqual(t, nil, res)
+
+	//case5: resp is fail
+	options5 := util.RoundTripperOpts404
+	mockHttpClient5 := util.NewMockHTTPClient(options5...)
+	ExpectEqual(t, true, mockHttpClient5 != nil)
+	client.HTTPClient = mockHttpClient5
+	res, err = InitiateMultipartUpload(client, bucket, object, "", args, nil)
+	ExpectEqual(t, bceServiceErro404, err)
+	ExpectEqual(t, nil, res)
+
+	//case5: parse json body fail
+	AttachMockHttpClientJsonBodyError(t, client)
+	res, err = InitiateMultipartUpload(client, bucket, object, "", args, nil)
+	result5 := &InitiateMultipartUploadResult{}
+	jsonDecoder := json.NewDecoder(bytes.NewBufferString(errorJsonBody))
+	ExpectEqual(t, jsonDecoder.Decode(result5), err)
+	ExpectEqual(t, nil, res)
+
+	// case6: all is ok
+	args.ObjectExpires = 3
+	args.CopySource = "copy-source"
+	args.GrantRead = []string{"id1", "id2"}
+	args.GrantFullControl = []string{"id3", "id3"}
+	args.ObjectTagging = "key1=value1&key2=value2"
+	AttachMockHttpClientOk(t, client, &respBody)
+	res, err = InitiateMultipartUpload(client, bucket, object, "", args, nil)
+	ExpectEqual(t, nil, err)
+	ExpectEqual(t, "a44cc9bab11cbd156984767aad637851", res.UploadId)
+	ExpectEqual(t, "ObjectName", res.Key)
+	ExpectEqual(t, "BucketName", res.Bucket)
 }
 
 func TestUploadPart(t *testing.T) {
@@ -276,6 +348,90 @@ func TestUploadPartFromBytes(t *testing.T) {
 	ExpectEqual(t, "", etag)
 }
 
+func TestUploadPartCopy(t *testing.T) {
+	//mock bce client
+	client, err := NewMockBosClient()
+	ExpectEqual(t, nil, err)
+	// prepare parameters
+	bucket := "test-bucket"
+	object := "test-object"
+	uploadId := "a44cc9bab11bdc157676984aad851637"
+	source := "copy-source"
+	partNumber := 1
+	args := &UploadPartCopyArgs{}
+
+	// case1: source is empty
+	res, err := UploadPartCopy(client, bucket, object, "", uploadId, partNumber, args, nil)
+	ExpectEqual(t, bce.NewBceClientError("upload part copy source should not be empty"), err)
+	ExpectEqual(t, nil, res)
+
+	// case2: invalid TRAFFIC_LIMIT
+	args.TrafficLimit = TRAFFIC_LIMIT_MAX + 1
+	res, err = UploadPartCopy(client, bucket, object, source, uploadId, partNumber, args, nil)
+	ExpectEqual(t, trafficLimitInvalidError(args.TrafficLimit), err)
+	ExpectEqual(t, nil, res)
+	args.TrafficLimit = TRAFFIC_LIMIT_MAX - 1
+
+	// case3: handle options error
+	res, err = UploadPartCopy(client, bucket, object, source, uploadId, partNumber, args, nil, ErrorOption)
+	ExpectEqual(t, optionError, err)
+	ExpectEqual(t, nil, res)
+
+	//case4: send request error
+	err4 := fmt.Errorf("IO Error")
+	AttachMockHttpClientError(t, client, err4)
+	res, err = UploadPartCopy(client, bucket, object, source, uploadId, partNumber, args, nil)
+	ExpectEqual(t, true, err != nil)
+	ExpectEqual(t, nil, res)
+
+	// case5: resp is fail
+	options5 := util.RoundTripperOpts404
+	mockHttpClient5 := util.NewMockHTTPClient(options5...)
+	ExpectEqual(t, true, mockHttpClient5 != nil)
+	client.HTTPClient = mockHttpClient5
+	res, err = UploadPartCopy(client, bucket, object, source, uploadId, partNumber, args, nil)
+	ExpectEqual(t, bceServiceErro404, err)
+	ExpectEqual(t, nil, res)
+
+	//case6: parse json body fail
+	AttachMockHttpClientJsonBodyError(t, client)
+	res, err = UploadPartCopy(client, bucket, object, source, uploadId, partNumber, args, nil)
+	result5 := &CopyObjectResult{}
+	jsonDecoder := json.NewDecoder(bytes.NewBufferString(errorJsonBody))
+	ExpectEqual(t, jsonDecoder.Decode(result5), err)
+	ExpectEqual(t, nil, res)
+
+	// case7: resp body is fail content
+	respBody7 := `{
+		"code":"InternalError",
+		"message":"We encountered an internal error. Please try again.",
+		"requestId":"52454655-5345-4420-4259-204e47494e58"
+	}`
+	options7 := []util.MockRoundTripperOption{
+		util.SetStatusCode(http.StatusOK),
+		util.SetStatusMsg(http.StatusText(http.StatusOK)),
+		util.AddHeaders(map[string]string{
+			my_http.BCE_REQUEST_ID: "9b2cf535f27731c974343645a3985328",
+		}),
+		util.SetRespBody(respBody7),
+	}
+	mockHttpClient7 := util.NewMockHTTPClient(options7...)
+	ExpectEqual(t, true, mockHttpClient7 != nil)
+	client.HTTPClient = mockHttpClient7
+	res, err = UploadPartCopy(client, bucket, object, source, uploadId, partNumber, args, nil)
+	ExpectEqual(t, bce.NewBceServiceError("InternalError", "We encountered an internal error. Please try again.",
+		"9b2cf535f27731c974343645a3985328", 500), err)
+	ExpectEqual(t, nil, res)
+
+	// case8: all is ok
+	respBody8 := `{ "lastModified":"2016-05-12T09:14:32Z", "eTag":"67b92a7c2a9b9c1809a6ae3295dcc127" }`
+	AttachMockHttpClientOk(t, client, &respBody8)
+	res, err = UploadPartCopy(client, bucket, object, source, uploadId, partNumber, args, nil)
+	ExpectEqual(t, nil, err)
+	ExpectEqual(t, "2016-05-12T09:14:32Z", res.LastModified)
+	ExpectEqual(t, "67b92a7c2a9b9c1809a6ae3295dcc127", res.ETag)
+}
+
 func TestCompleteMultipartUpload(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
@@ -417,4 +573,191 @@ func TestCompleteMultipartUpload(t *testing.T) {
 	ExpectEqual(t, crc32cMisMatchError(args7.ContentCrc32c, "ContentCrc32c"), err)
 	ExpectEqual(t, "http://bj.bcebos.com/BucketName/ObjectName", res.Location)
 	ExpectEqual(t, "3858f62230ac3c915f300c664312c11f", res.ETag)
+}
+
+func TestAbortMultipartUpload(t *testing.T) {
+	//mock bce client
+	client, err := NewMockBosClient()
+	ExpectEqual(t, nil, err)
+	// prepare parameters
+	bucket := "test-bucket"
+	object := "test-object"
+	uploadId := "a44cc9bab11bdc157676984aad851637"
+
+	// case1: handle options error
+	err = AbortMultipartUpload(client, bucket, object, uploadId, nil, ErrorOption)
+	ExpectEqual(t, optionError, err)
+
+	// case2: send request fail
+	err2 := fmt.Errorf("IO Error")
+	AttachMockHttpClientError(t, client, err2)
+	err = AbortMultipartUpload(client, bucket, object, uploadId, nil, ErrorOption)
+	ExpectEqual(t, true, err != nil)
+
+	// case3: resp is fail
+	options3 := util.RoundTripperOpts404
+	mockHttpClient3 := util.NewMockHTTPClient(options3...)
+	ExpectEqual(t, true, mockHttpClient3 != nil)
+	client.HTTPClient = mockHttpClient3
+	err = AbortMultipartUpload(client, bucket, object, uploadId, nil)
+	ExpectEqual(t, bceServiceErro404, err)
+
+	// case4: all is ok
+	AttachMockHttpClientOk(t, client, nil)
+	err = AbortMultipartUpload(client, bucket, object, uploadId, nil)
+	ExpectEqual(t, nil, err)
+}
+
+func TestListParts(t *testing.T) {
+	//mock bce client
+	client, err := NewMockBosClient()
+	ExpectEqual(t, nil, err)
+	// prepare parameters
+	bucket := "test-bucket"
+	object := "test-object"
+	uploadId := "a44cc9bab11bdc157676984aad851637"
+	args := &ListPartsArgs{
+		MaxParts:         10,
+		PartNumberMarker: "part-number-marker",
+	}
+
+	// case1: handle options error
+	res, err := ListParts(client, bucket, object, uploadId, args, nil, ErrorOption)
+	ExpectEqual(t, optionError, err)
+	ExpectEqual(t, nil, res)
+
+	// case2: send request error
+	err2 := fmt.Errorf("IO Error")
+	AttachMockHttpClientError(t, client, err2)
+	res, err = ListParts(client, bucket, object, uploadId, args, nil)
+	ExpectEqual(t, true, err != nil)
+	ExpectEqual(t, nil, res)
+
+	// case3: resp is fail
+	options3 := util.RoundTripperOpts404
+	mockHttpClient3 := util.NewMockHTTPClient(options3...)
+	ExpectEqual(t, true, mockHttpClient3 != nil)
+	client.HTTPClient = mockHttpClient3
+	res, err = ListParts(client, bucket, object, uploadId, args, nil)
+	ExpectEqual(t, bceServiceErro404.Error(), err.Error())
+	ExpectEqual(t, nil, res)
+
+	//case4: parse json body fail
+	AttachMockHttpClientJsonBodyError(t, client)
+	res, err = ListParts(client, bucket, object, uploadId, args, nil)
+	result5 := &ListPartsResult{}
+	jsonDecoder := json.NewDecoder(bytes.NewBufferString(errorJsonBody))
+	ExpectEqual(t, jsonDecoder.Decode(result5), err)
+	ExpectEqual(t, nil, res)
+
+	// case5: all is ok
+	respBody5 := `{
+		"bucket":"BucketName",
+		"key":"object",
+		"uploadId":"a44cc9bab11cbd156984767aad637851",
+		"initiated":"2010-11-10T20:48:33Z",
+		"owner":{ "id":"75aa570f8e7faeebf76c078efc7c6caea54ba06a", "displayName":"someName" },
+		"storageClass":"STANDARD",
+		"partNumberMarker":1,
+		"nextPartNumberMarker":3,
+		"maxParts":2,
+		"isTruncated":true,
+		"parts":[
+			{
+				"partNumber":2,
+				"lastModified":"2010-11-10T20:48:34Z",
+				"ETag":"7778aef83f66abc1fa1e8477f296d394",
+				"size":10485760
+			},
+			{
+				"partNumber":3,
+				"lastModified":"2010-11-10T20:48:33Z",
+				"ETag":"aaaa18db4cc2f85cedef654fccc4a4x8",
+				"size":10485760
+			}
+		]
+	}`
+	AttachMockHttpClientOk(t, client, &respBody5)
+	res, err = ListParts(client, bucket, object, uploadId, args, nil)
+	ExpectEqual(t, nil, err)
+	ExpectEqual(t, 2, len(res.Parts))
+}
+
+func TestListMultipartUploads(t *testing.T) {
+	//mock bce client
+	client, err := NewMockBosClient()
+	ExpectEqual(t, nil, err)
+	// prepare parameters
+	bucket := "test-bucket"
+	args := &ListMultipartUploadsArgs{
+		Delimiter:  "/",
+		KeyMarker:  "key-marker",
+		MaxUploads: 10,
+		Prefix:     "prefix",
+	}
+
+	// case1: handle options error
+	res, err := ListMultipartUploads(client, bucket, args, nil, ErrorOption)
+	ExpectEqual(t, optionError, err)
+	ExpectEqual(t, nil, res)
+
+	// case2: send request error
+	err2 := fmt.Errorf("IO Error")
+	AttachMockHttpClientError(t, client, err2)
+	res, err = ListMultipartUploads(client, bucket, args, nil)
+	ExpectEqual(t, true, err != nil)
+	ExpectEqual(t, nil, res)
+
+	// case3: resp is fail
+	options3 := util.RoundTripperOpts404
+	mockHttpClient3 := util.NewMockHTTPClient(options3...)
+	ExpectEqual(t, true, mockHttpClient3 != nil)
+	client.HTTPClient = mockHttpClient3
+	res, err = ListMultipartUploads(client, bucket, args, nil)
+	ExpectEqual(t, bceServiceErro404.Error(), err.Error())
+	ExpectEqual(t, nil, res)
+
+	//case4: parse json body fail
+	AttachMockHttpClientJsonBodyError(t, client)
+	res, err = ListMultipartUploads(client, bucket, args, nil)
+	result4 := &ListMultipartUploadsResult{}
+	jsonDecoder := json.NewDecoder(bytes.NewBufferString(errorJsonBody))
+	ExpectEqual(t, jsonDecoder.Decode(result4), err)
+	ExpectEqual(t, nil, res)
+
+	// case5: all is ok
+	respBody5 := `{
+		"bucket": "bucket",
+		"keyMarker": "",
+		"nextKeyMarker": "my-movie.m2ts",
+		"nextUploadMarker": "c41cc9aad11cbd637851767bab156984",
+		"maxUploads": 3,
+		"isTruncated": true,
+		"uploads": [
+			{
+				"key": "my-divisor",
+				"uploadId": "a44cc9bab11bdc157676984aad851637",
+				"owner": {
+					"id": "75aa57f09aa0c8caeab4aeebf76c078efc7c6caea54ba06a",
+					"displayName": "OwnerDisplayName"
+				},
+				"initiated": "2010-11-10T20:48:33Z",
+				"storageClass": "STANDARD_IA"
+			},
+			{
+				"key": "my-movie",
+				"uploadId": "b44cc9bab11cbd156984767aad637851",
+				"owner": {
+					"id": "b1d16700c70b0b05597d7acd6a3f92be",
+					"displayName": "OwnerDisplayName"
+				},
+				"initiated": "2010-11-10T20:48:33Z",
+				"storageClass": "STANDARD"
+			}
+		]
+	}`
+	AttachMockHttpClientOk(t, client, &respBody5)
+	res, err = ListMultipartUploads(client, bucket, args, nil)
+	ExpectEqual(t, nil, err)
+	ExpectEqual(t, 2, len(res.Uploads))
 }

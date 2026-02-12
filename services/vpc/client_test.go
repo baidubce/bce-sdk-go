@@ -189,27 +189,28 @@ func TestShutdownRelay(t *testing.T) {
 }
 
 func TestUpdateVPC(t *testing.T) {
-	args := &UpdateVPCArgs{
-		Name:        "TestSDK-VPC-update",
-		Description: "vpc update",
-		EnableIpv6:  false,
-		SecondaryCidr: []string{
+	enableIpv6 := true      // 定义IPv6启用标志
+	args := &UpdateVPCArgs{ // 构造更新VPC的参数
+		Name:        "TestSDK-VPC-update", // 设置新的VPC名称
+		Description: "vpc update",         // 设置新的VPC描述
+		EnableIpv6:  &enableIpv6,          // 使用指针类型设置IPv6启用状态
+		SecondaryCidr: []string{ // 设置次要CIDR块
 			"172.16.0.0/16",
 		},
-		ClientToken: getClientToken(),
+		ClientToken: getClientToken(), // 获取客户端令牌
 	}
-	err := VPC_CLIENT.UpdateVPC(VPCID, args)
-	ExpectEqual(t.Errorf, nil, err)
+	err := VPC_CLIENT.UpdateVPC(VPCID, args) // 调用更新VPC接口
+	ExpectEqual(t.Errorf, nil, err)          // 验证无错误返回
 
-	result, err := VPC_CLIENT.GetVPCDetail(VPCID)
-	ExpectEqual(t.Errorf, nil, err)
-	ExpectEqual(t.Errorf, "TestSDK-VPC-update", result.VPC.Name)
-	ExpectEqual(t.Errorf, "vpc update", result.VPC.Description)
+	result, err := VPC_CLIENT.GetVPCDetail(VPCID)                // 获取更新后的VPC详情
+	ExpectEqual(t.Errorf, nil, err)                              // 验证无错误返回
+	ExpectEqual(t.Errorf, "TestSDK-VPC-update", result.VPC.Name) // 验证名称已更新
+	ExpectEqual(t.Errorf, "vpc update", result.VPC.Description)  // 验证描述已更新
 }
 
 func TestGetPrivateIpAddressInfo(t *testing.T) {
 	args := &GetVpcPrivateIpArgs{
-		VpcId:              "vpc-2pa2x0bjt26i",
+		VpcId:              "vpc-90akjp09ehwx",
 		PrivateIpAddresses: []string{"192.168.0.1,192.168.0.2"},
 		PrivateIpRange:     "192.168.0.0-192.168.0.45",
 	}
@@ -218,6 +219,29 @@ func TestGetPrivateIpAddressInfo(t *testing.T) {
 	r, err := json.Marshal(result)
 	fmt.Println(string(r))
 }
+
+// TestGetResourceIp - 测试查询VPC内产品占用IP接口
+func TestGetResourceIp(t *testing.T) {
+	VPCID = "vpc-90akjp09ehwx"
+	// 测试基本查询
+	args := &GetResourceIpArgs{
+		VpcId:        VPCID,
+		PageNo:       1,
+		PageSize:     10,
+		ResourceType: "vpn",
+	}
+	result, err := VPC_CLIENT.GetResourceIp(args)
+	ExpectEqual(t.Errorf, nil, err)
+
+	if result != nil {
+		fmt.Printf("Total Count: %d\n", result.TotalCount)
+		fmt.Printf("Page: %d, PageSize: %d\n", result.PageNo, result.PageSize)
+
+		r, _ := json.Marshal(result)
+		fmt.Println("GetResourceIp result:", string(r))
+	}
+}
+
 func TestCreateSubnet(t *testing.T) {
 	args := &CreateSubnetArgs{
 		Name:        "TestSDK-Subnet",
@@ -267,11 +291,12 @@ func TestGetSubnetDetail(t *testing.T) {
 }
 
 func TestUpdateSubnet(t *testing.T) {
+	enableIpv6 := true
 	args := &UpdateSubnetArgs{
 		ClientToken: getClientToken(),
 		Name:        "TestSDK-Subnet-update",
 		Description: "subnet update",
-		EnableIpv6:  true,
+		EnableIpv6:  &enableIpv6,
 	}
 	err := VPC_CLIENT.UpdateSubnet(SubnetID, args)
 	ExpectEqual(t.Errorf, nil, err)

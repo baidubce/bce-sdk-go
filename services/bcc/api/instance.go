@@ -407,7 +407,7 @@ func GetInstanceDetailWithDeploySet(cli bce.Client, instanceId string, isDeployS
 	req := &bce.BceRequest{}
 	req.SetUri(getInstanceUriWithId(instanceId))
 	req.SetMethod(http.GET)
-	if isDeploySet == true {
+	if isDeploySet {
 		req.SetParam("isDeploySet", "true")
 	}
 	// Send request and get response
@@ -433,10 +433,10 @@ func GetInstanceDetailWithDeploySetAndFailed(cli bce.Client, instanceId string,
 	req := &bce.BceRequest{}
 	req.SetUri(getInstanceUriWithId(instanceId))
 	req.SetMethod(http.GET)
-	if isDeploySet == true {
+	if isDeploySet {
 		req.SetParam("isDeploySet", "true")
 	}
-	if containsFailed == true {
+	if containsFailed {
 		req.SetParam("containsFailed", "true")
 	} else {
 		req.SetParam("containsFailed", "false")
@@ -1945,7 +1945,6 @@ func BatchCreateAutoRenewRules(cli bce.Client, reqBody *bce.Body) error {
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
-	//print(resp)
 
 	defer func() { resp.Body().Close() }()
 	return nil
@@ -1974,7 +1973,6 @@ func BatchDeleteAutoRenewRules(cli bce.Client, reqBody *bce.Body) error {
 	if resp.IsFail() {
 		return resp.ServiceError()
 	}
-	//print(resp)
 
 	defer func() { resp.Body().Close() }()
 	return nil
@@ -2240,7 +2238,6 @@ func BatchResizeInstance(cli bce.Client, reqBody *bce.Body) (*BatchResizeInstanc
 }
 
 func GetInstanceDeleteProgress(cli bce.Client, reqBody *bce.Body) (map[string]interface{}, error) {
-
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(getInstanceDeleteProgress())
@@ -2341,7 +2338,6 @@ func BatchChangeInstanceToPostpay(cli bce.Client, reqBody *bce.Body) (*BatchChan
 }
 
 func ListInstanceRoles(cli bce.Client) (*ListInstanceRolesResult, error) {
-
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(listInstanceRoles())
@@ -2364,7 +2360,6 @@ func ListInstanceRoles(cli bce.Client) (*ListInstanceRolesResult, error) {
 }
 
 func BindInstanceRole(cli bce.Client, reqBody *bce.Body) (*BindInstanceRoleResult, error) {
-
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(postInstanceRole())
@@ -2390,7 +2385,6 @@ func BindInstanceRole(cli bce.Client, reqBody *bce.Body) (*BindInstanceRoleResul
 }
 
 func UnBindInstanceRole(cli bce.Client, reqBody *bce.Body) (*UnBindInstanceRoleResult, error) {
-
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(postInstanceRole())
@@ -2416,7 +2410,6 @@ func UnBindInstanceRole(cli bce.Client, reqBody *bce.Body) (*UnBindInstanceRoleR
 }
 
 func DeleteIpv6(cli bce.Client, reqBody *bce.Body) error {
-
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(deleteIpv6())
@@ -2436,7 +2429,6 @@ func DeleteIpv6(cli bce.Client, reqBody *bce.Body) error {
 }
 
 func AddIpv6(cli bce.Client, reqBody *bce.Body) (*AddIpv6Result, error) {
-
 	// Build the request
 	req := &bce.BceRequest{}
 	req.SetUri(addIpv6())
@@ -3378,4 +3370,116 @@ func ListTask(cli bce.Client, body *ListTaskByMarkerV2Req) (
 		return nil, err
 	}
 	return res, nil
+}
+
+func GetDiagnosticSchemas(cli bce.Client) (*GetDiagnosticSchemasResp, error) {
+	req := &bce.BceRequest{}
+	req.SetUri(getDiagnosticSchemasUrl())
+	req.SetMethod(http.GET)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &GetDiagnosticSchemasResp{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
+func ListDiagnosticReport(cli bce.Client, body *ListDiagnosticReq) (
+	*ListDiagnosticReportResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri(listDiagnosticReportUrl())
+	if body.MaxKeys == 0 {
+		body.MaxKeys = 100
+	}
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &ListDiagnosticReportResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func CreateDiagnostic(cli bce.Client, body *CreateDiagnosticReq) (
+	*CreateDiagnosticResp, error) {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri(createDiagnosticUrl())
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &CreateDiagnosticResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func DeleteDiagnosticReport(cli bce.Client, body *DeleteDiagnosticReportReq) error {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri(deleteDiagnosticReportUrl())
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+
+	defer func() { resp.Body().Close() }()
+	return nil
 }

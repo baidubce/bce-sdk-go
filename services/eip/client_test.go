@@ -74,6 +74,7 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 }
 
 func TestClient_CreateEip(t *testing.T) {
+	deleteProtect := true
 	args := &CreateEipArgs{
 		IpVersion:       "ipv6",
 		Name:            "sdk-eip",
@@ -88,6 +89,7 @@ func TestClient_CreateEip(t *testing.T) {
 				TagValue: "tagV",
 			},
 		},
+		DeleteProtect:   &deleteProtect,
 		ResourceGroupId: "RESG-Xnuw3joXLcy",
 		ClientToken:     getClientToken(),
 	}
@@ -167,7 +169,8 @@ func TestClient_PurchaseReservedEip(t *testing.T) {
 
 func TestClient_ListEip(t *testing.T) {
 	args := &ListEipArgs{
-		IpVersion: "ipv6",                 // 指定EIP IP类型
+		IpVersion: "ipv6", // 指定EIP IP类型
+		Name:      "sdk-eip",
 		EipIds:    []string{"xxx", "xxx"}, // 指定EIP短ID列表
 	}
 	result, err := EIP_CLIENT.ListEip(args)
@@ -490,6 +493,16 @@ func TestClient_UpdateEipBpAutoReleaseTime(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
+func TestClient_GetEipBpPrice(t *testing.T) {
+	args := &GetEipBpPriceArgs{
+		BandwidthInMbps: util.PtrInt32(1),
+		Count:           util.PtrInt32(10),
+		Type:            util.PtrString("BandwidthPackage"),
+	}
+	_, err := EIP_CLIENT.GetEipBpPrice(args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
 func getClientToken() string {
 	return util.NewUUID()
 }
@@ -546,5 +559,15 @@ func TestClient_EipPostpayToPrepay(t *testing.T) {
 		PurchaseLength: 1,
 	}
 	err := EIP_CLIENT.EipPostpayToPrepay(EIP_ADDRESS, eipToPrepayRequest)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_UpdateEipDeleteProtect(t *testing.T) {
+	deleteProtect := true
+	args := &UpdateEipDeleteProtectArgs{
+		DeleteProtect: &deleteProtect,
+		ClientToken:   "",
+	}
+	err := EIP_CLIENT.UpdateEipDeleteProtect(EIP_ADDRESS, args)
 	ExpectEqual(t.Errorf, nil, err)
 }

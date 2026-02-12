@@ -13,13 +13,7 @@ import (
 	"github.com/baidubce/bce-sdk-go/bce"
 	my_http "github.com/baidubce/bce-sdk-go/http"
 	"github.com/baidubce/bce-sdk-go/util"
-	"github.com/baidubce/bce-sdk-go/util/log"
 )
-
-func init() {
-	log.SetLogLevel(log.WARN)
-	log.SetLogHandler(log.STDOUT)
-}
 
 func TestAddCrc64Check(t *testing.T) {
 	// new bce client

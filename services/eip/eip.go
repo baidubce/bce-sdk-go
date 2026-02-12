@@ -203,6 +203,7 @@ func (c *Client) ListEip(args *ListEipArgs) (*ListEipResult, error) {
 		WithQueryParamFilter("eip", args.Eip).
 		WithQueryParamFilter("instanceType", args.InstanceType).
 		WithQueryParamFilter("instanceId", args.InstanceId).
+		WithQueryParamFilter("name", args.Name).
 		WithQueryParamFilter("status", args.Status).
 		WithQueryParamFilter("marker", args.Marker).
 		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys))
@@ -468,6 +469,35 @@ func (c *Client) CreateEipTp(args *CreateEipTpArgs) (*CreateEipTpResult, error) 
 	return result, err
 }
 
+// GetEipTpPrice - get the price of creating an EIP TP with the specific parameters
+//
+// PARAMS:
+//   - args: the arguments to get eiptp price
+//
+// RETURNS:
+//   - *GetEipTpPriceResult: the eiptp price
+//   - error: nil if success otherwise the specific error
+func (c *Client) GetEipTpPrice(args *GetEipTpPriceArgs) (*GetEipTpPriceResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("please set get eip tp price arguments")
+	}
+	if args.ReservationLength <= 0 {
+		return nil, fmt.Errorf("please set valid reservationLength (1, 6, or 12)")
+	}
+	if len(args.Capacity) == 0 {
+		return nil, fmt.Errorf("please set capacity argument")
+	}
+	result := &GetEipTpPriceResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getEipTpUri() + "/price").
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
 // ListEipTp - list all EIP TPs with the specific parameters
 //
 // PARAMS:
@@ -538,6 +568,27 @@ func (c *Client) EipPostpayToPrepay(eip string, args *EipToPrepayRequest) error 
 		WithMethod(http.PUT).
 		WithURL(getEipUriWithEip(eip)).
 		WithQueryParam("action", "TO_PREPAY").
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		WithBody(args).
+		Do()
+}
+
+// UpdateEipDeleteProtect - update EIP delete protection switch
+//
+// PARAMS:
+//   - eip: the specific EIP
+//   - args: the arguments to update delete protection
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) UpdateEipDeleteProtect(eip string, args *UpdateEipDeleteProtectArgs) error {
+	if args == nil {
+		return fmt.Errorf("please set update eip delete protect arguments")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getUpdateEipDeleteProtectUri(eip)).
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		WithBody(args).
 		Do()
