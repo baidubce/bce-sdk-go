@@ -25,10 +25,12 @@ func CreateSSLListener() {
 
 	blbID := "Your BlbID" // blb实例ID
 	createSSLListenerArgs := &blb.CreateSSLListenerArgs{
-		ListenerPort: 8082,                          // 监听端口
-		BackendPort:  8082,                          // 后端端口
-		Scheduler:    "RoundRobin",                  // 调度算法
-		CertIds:      []string{"cert-xxxxxxxxxxxx"}, //证书ID列表
+		ListenerPort:      8082,                          // 监听端口
+		BackendPort:       8082,                          // 后端端口
+		Scheduler:         "RoundRobin",                  // 调度算法
+		CertIds:           []string{"cert-xxxxxxxxxxxx"}, // 证书ID列表
+		HealthCheckType:   "TCP",                         // 健康检查协议类型
+		TcpSessionTimeout: 900,                           // TCP会话超时时间（秒）
 	}
 
 	// 创建blb ssl监听器

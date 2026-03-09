@@ -30,6 +30,25 @@ type Interface interface {
 	CheckHealthRegistry(instanceID string, args *RegistryRequestArgs) error
 	UpdateRegistry(instanceID, registryID string, args *RegistryRequestArgs) (*RegistryResponse, error)
 	DeleteRegistry(instanceID, registryID string) error
+	ListProjects(instanceID string, args *ListProjectsArgs) (*ListProjectsResponse, error)
+	CreateProject(instanceID string, args *CreateProjectArgs) (*ProjectResponse, error)
+	GetProjectDetail(instanceID, projectName string) (*ProjectResponse, error)
+	DeleteProject(instanceID, projectName string) error
+	BatchDeleteProjects(instanceID string, args *BatchDeleteProjectsArgs) error
+	ListRepositories(instanceID, projectName string, args *ListRepositoriesArgs) (*ListRepositoriesResponse, error)
+	GetRepositoryDetail(instanceID, projectName, repositoryName string) (*RepositoryResponse, error)
+	UpdateRepository(instanceID, projectName, repositoryName string, args *UpdateRepositoryArgs) (*RepositoryResponse, error)
+	DeleteRepository(instanceID, projectName, repositoryName string) error
+	BatchDeleteRepositories(instanceID, projectName string, args *BatchDeleteRepositoriesArgs) error
+	ListTags(instanceID, projectName, repositoryName string, args *ListTagsArgs) (*ListTagsResponse, error)
+	GetTagDetail(instanceID, projectName, repositoryName, tagName string) (*ImageTag, error)
+	DeleteTag(instanceID, projectName, repositoryName, tagName string) error
+	BatchDeleteTags(instanceID, projectName, repositoryName string, args *BatchDeleteTagsArgs) error
+	ListRobots(instanceID string, args *ListRobotsArgs) (*ListRobotsResponse, error)
+	CreateRobot(instanceID string, args *CreateRobotArgs) (*RobotResponse, error)
+	UpdateRobot(instanceID, robotID string, args *UpdateRobotArgs) error
+	DeleteRobot(instanceID, robotID string) error
+	RefreshRobotSecret(instanceID, robotID string, args *RefreshRobotSecretArgs) (*RobotTokenResponse, error)
 	ListBuildRepositoryTask(instanceID, projectName, repositoryName string, args *ListBuildRepositoryTaskArgs) (*ListBuildRepositoryTaskResponse, error)
 	CreateBuildRepositoryTask(instanceID, projectName, repositoryName string, args *BuildRepositoryTaskArgs) (*BuildRepositoryTaskResponse, error)
 	GetBuildRepositoryTask(instanceID, projectName, repositoryName, imageBuildID string) (*BuildRepositoryTaskResult, error)
@@ -466,6 +485,419 @@ func (c *Client) DeleteRegistry(instanceID, registryID string) error {
 		Do()
 
 	return err
+}
+
+// ListProjects - list namespaces (projects) of instance
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - ListProjectsArgs: parameters required to list project information
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - ListProjectsResponse: the result of list project
+func (c *Client) ListProjects(instanceID string, args *ListProjectsArgs) (*ListProjectsResponse, error) {
+	result := &ListProjectsResponse{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithQueryParamFilter("projectName", args.ProjectName).
+		WithQueryParamFilter("pageNo", strconv.Itoa(args.PageNo)).
+		WithQueryParamFilter("pageSize", strconv.Itoa(args.PageSize)).
+		WithURL(getProjectURI(instanceID)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// CreateProject - create namespace (project) of instance
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - CreateProjectArgs: parameters required to create project
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - ProjectResponse: the result of create project
+func (c *Client) CreateProject(instanceID string, args *CreateProjectArgs) (*ProjectResponse, error) {
+	result := &ProjectResponse{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getProjectURI(instanceID)).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// GetProjectDetail - get a specific namespace (project) detail info
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - projectName: the specific project name
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - ProjectResponse: the result of get project detail
+func (c *Client) GetProjectDetail(instanceID, projectName string) (*ProjectResponse, error) {
+	result := &ProjectResponse{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getProjectNameURI(instanceID, projectName)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// DeleteProject - delete a specific namespace (project)
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - projectName: the specific project name
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) DeleteProject(instanceID, projectName string) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(getProjectNameURI(instanceID, projectName)).
+		Do()
+
+	return err
+}
+
+// BatchDeleteProjects - batch delete namespaces (projects)
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - BatchDeleteProjectsArgs: parameters required to batch delete projects
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) BatchDeleteProjects(instanceID string, args *BatchDeleteProjectsArgs) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(getProjectURI(instanceID)).
+		WithBody(args).
+		Do()
+
+	return err
+}
+
+// ListRepositories - list repositories of namespace (project)
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - projectName: the specific project name
+//   - ListRepositoriesArgs: parameters required to list repository information
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - ListRepositoriesResponse: the result of list repository
+func (c *Client) ListRepositories(instanceID, projectName string, args *ListRepositoriesArgs) (*ListRepositoriesResponse, error) {
+	result := &ListRepositoriesResponse{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithQueryParamFilter("repositoryName", args.RepositoryName).
+		WithQueryParamFilter("pageNo", strconv.Itoa(args.PageNo)).
+		WithQueryParamFilter("pageSize", strconv.Itoa(args.PageSize)).
+		WithURL(getRepositoriesURI(instanceID, projectName)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// GetRepositoryDetail - get a specific repository detail info
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - projectName: the specific project name
+//   - repositoryName: the specific repository name
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - RepositoryResponse: the result of get repository detail
+func (c *Client) GetRepositoryDetail(instanceID, projectName, repositoryName string) (*RepositoryResponse, error) {
+	result := &RepositoryResponse{}
+	encodedRepositoryName := base64.RawURLEncoding.EncodeToString([]byte(repositoryName))
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getRepositoryURI(instanceID, projectName, encodedRepositoryName)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// UpdateRepository - update a specific repository info
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - projectName: the specific project name
+//   - repositoryName: the specific repository name
+//   - UpdateRepositoryArgs: parameters required to update repository info
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - RepositoryResponse: the result of update repository
+func (c *Client) UpdateRepository(instanceID, projectName, repositoryName string, args *UpdateRepositoryArgs) (*RepositoryResponse, error) {
+	result := &RepositoryResponse{}
+	encodedRepositoryName := base64.RawURLEncoding.EncodeToString([]byte(repositoryName))
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getRepositoryURI(instanceID, projectName, encodedRepositoryName)).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// DeleteRepository - delete a specific repository
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - projectName: the specific project name
+//   - repositoryName: the specific repository name
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) DeleteRepository(instanceID, projectName, repositoryName string) error {
+	encodedRepositoryName := base64.RawURLEncoding.EncodeToString([]byte(repositoryName))
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(getRepositoryURI(instanceID, projectName, encodedRepositoryName)).
+		Do()
+
+	return err
+}
+
+// BatchDeleteRepositories - batch delete repositories
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - projectName: the specific project name
+//   - BatchDeleteRepositoriesArgs: parameters required to batch delete repositories
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) BatchDeleteRepositories(instanceID, projectName string, args *BatchDeleteRepositoriesArgs) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(getRepositoriesURI(instanceID, projectName)).
+		WithBody(args).
+		Do()
+
+	return err
+}
+
+// ListTags - list tags of a specific repository
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - projectName: the specific project name
+//   - repositoryName: the specific repository name
+//   - ListTagsArgs: parameters required to list tag information
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - ListTagsResponse: the result of list tag
+func (c *Client) ListTags(instanceID, projectName, repositoryName string, args *ListTagsArgs) (*ListTagsResponse, error) {
+	result := &ListTagsResponse{}
+	encodedRepositoryName := base64.RawURLEncoding.EncodeToString([]byte(repositoryName))
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithQueryParamFilter("tagName", args.TagName).
+		WithQueryParamFilter("pageNo", strconv.Itoa(args.PageNo)).
+		WithQueryParamFilter("pageSize", strconv.Itoa(args.PageSize)).
+		WithURL(getTagsURI(instanceID, projectName, encodedRepositoryName)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// GetTagDetail - get a specific tag detail info
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - projectName: the specific project name
+//   - repositoryName: the specific repository name
+//   - tagName: the specific tag name
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - ImageTag: the result of get tag detail
+func (c *Client) GetTagDetail(instanceID, projectName, repositoryName, tagName string) (*ImageTag, error) {
+	result := &ImageTag{}
+	encodedRepositoryName := base64.RawURLEncoding.EncodeToString([]byte(repositoryName))
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getTagURI(instanceID, projectName, encodedRepositoryName, tagName)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// DeleteTag - delete a specific tag
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - projectName: the specific project name
+//   - repositoryName: the specific repository name
+//   - tagName: the specific tag name
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) DeleteTag(instanceID, projectName, repositoryName, tagName string) error {
+	encodedRepositoryName := base64.RawURLEncoding.EncodeToString([]byte(repositoryName))
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(getTagURI(instanceID, projectName, encodedRepositoryName, tagName)).
+		Do()
+
+	return err
+}
+
+// BatchDeleteTags - batch delete tags
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - projectName: the specific project name
+//   - repositoryName: the specific repository name
+//   - BatchDeleteTagsArgs: parameters required to batch delete tags
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) BatchDeleteTags(instanceID, projectName, repositoryName string, args *BatchDeleteTagsArgs) error {
+	encodedRepositoryName := base64.RawURLEncoding.EncodeToString([]byte(repositoryName))
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(getTagsURI(instanceID, projectName, encodedRepositoryName)).
+		WithBody(args).
+		Do()
+
+	return err
+}
+
+// ListRobots - list robot accounts of instance
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - ListRobotsArgs: parameters required to list robot information
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - ListRobotsResponse: the result of list robot
+func (c *Client) ListRobots(instanceID string, args *ListRobotsArgs) (*ListRobotsResponse, error) {
+	result := &ListRobotsResponse{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithQueryParamFilter("status", args.Status).
+		WithQueryParamFilter("pageNo", strconv.Itoa(args.PageNo)).
+		WithQueryParamFilter("pageSize", strconv.Itoa(args.PageSize)).
+		WithURL(getRobotListURI(instanceID)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// CreateRobot - create robot account of instance
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - CreateRobotArgs: parameters required to create robot
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - RobotResponse: the result of create robot
+func (c *Client) CreateRobot(instanceID string, args *CreateRobotArgs) (*RobotResponse, error) {
+	result := &RobotResponse{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getRobotListURI(instanceID)).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// UpdateRobot - update a specific robot account
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - robotID: the specific robot ID
+//   - UpdateRobotArgs: parameters required to update robot
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) UpdateRobot(instanceID, robotID string, args *UpdateRobotArgs) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getRobotURI(instanceID, robotID)).
+		WithBody(args).
+		Do()
+
+	return err
+}
+
+// DeleteRobot - delete a specific robot account
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - robotID: the specific robot ID
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) DeleteRobot(instanceID, robotID string) error {
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.DELETE).
+		WithURL(getRobotURI(instanceID, robotID)).
+		Do()
+
+	return err
+}
+
+// RefreshRobotSecret - refresh robot secret token
+//
+// PARAMS:
+//   - instanceID: the specific instance ID
+//   - robotID: the specific robot ID
+//   - RefreshRobotSecretArgs: optional parameters to set secret
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+//   - RobotTokenResponse: the result of refresh robot token
+func (c *Client) RefreshRobotSecret(instanceID, robotID string, args *RefreshRobotSecretArgs) (*RobotTokenResponse, error) {
+	result := &RobotTokenResponse{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getRobotSecretURI(instanceID, robotID)).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
 }
 
 // ListBuildRepositoryTask - list the build task info

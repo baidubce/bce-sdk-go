@@ -80,10 +80,6 @@ func (c *Client) CreateUDPListener(blbId string, args *CreateUDPListenerArgs) er
 		return fmt.Errorf("unset scheduler")
 	}
 
-	if len(args.HealthCheckString) == 0 {
-		return fmt.Errorf("unset healthCheckString")
-	}
-
 	return bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
 		WithURL(getUDPListenerUri(blbId)).

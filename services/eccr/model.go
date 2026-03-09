@@ -391,3 +391,181 @@ type BuildRepositoryTaskResponse struct {
 type BatchDeleteBuildRepositoryTaskArgs struct {
 	Items []string `json:"items"`
 }
+
+type ListProjectsArgs struct {
+	ProjectName string `json:"projectName"`
+	PageNo      int    `json:"pageNo"`
+	PageSize    int    `json:"pageSize"`
+}
+
+type ProjectResponse struct {
+	ChartCount   int64  `json:"chartCount"`
+	CreationTime string `json:"creationTime"`
+	ProjectName  string `json:"projectName"`
+	ProjectID    int64  `json:"projectId"`
+	RepoCount    int64  `json:"repoCount"`
+	UpdateTime   string `json:"updateTime"`
+	AutoScan     string `json:"autoScan"`
+	Public       string `json:"public"`
+}
+
+type ListProjectsResponse struct {
+	PageInfo `json:",inline"`
+	Projects []*ProjectResponse `json:"projects"`
+}
+
+type CreateProjectArgs struct {
+	ProjectName string `json:"projectName"`
+	Public      string `json:"public,omitempty"`
+}
+
+type BatchDeleteProjectsArgs struct {
+	Items []string `json:"items"`
+}
+
+type ListRepositoriesArgs struct {
+	RepositoryName string `json:"repositoryName"`
+	PageNo         int    `json:"pageNo"`
+	PageSize       int    `json:"pageSize"`
+}
+
+type RepositoryResponse struct {
+	TagCount              int64  `json:"tagCount"`
+	CreationTime          string `json:"creationTime"`
+	Description           string `json:"description"`
+	RepositoryName        string `json:"repositoryName"`
+	PullCount             int64  `json:"pullCount"`
+	UpdateTime            string `json:"updateTime"`
+	RepositoryPath        string `json:"repositoryPath"`
+	PrivateRepositoryPath string `json:"privateRepositoryPath"`
+	ProjectName           string `json:"projectName"`
+}
+
+type ListRepositoriesResponse struct {
+	PageInfo `json:",inline"`
+	Items    []*RepositoryResponse `json:"items"`
+}
+
+type UpdateRepositoryArgs struct {
+	Description string `json:"description"`
+}
+
+type BatchDeleteRepositoriesArgs struct {
+	Items []string `json:"items"`
+}
+
+type ListTagsArgs struct {
+	TagName  string `json:"tagName"`
+	PageNo   int    `json:"pageNo"`
+	PageSize int    `json:"pageSize"`
+}
+
+type TagScanOverview struct {
+	ScanStatus string `json:"scanStatus"`
+	StartTime  string `json:"startTime"`
+	EndTime    string `json:"endTime"`
+	ReportID   string `json:"reportId"`
+	Severity   string `json:"severity"`
+}
+
+type ImageTag struct {
+	TagName           string           `json:"tagName"`
+	Digest            string           `json:"digest"`
+	ProjectID         int64            `json:"projectId"`
+	PullTime          string           `json:"pullTime"`
+	PushTime          string           `json:"pushTime"`
+	RepositoryID      int64            `json:"repositoryId"`
+	Architecture      string           `json:"architecture"`
+	OS                string           `json:"os"`
+	Author            string           `json:"author"`
+	Type              string           `json:"type"`
+	Size              int64            `json:"size"`
+	ScanOverview      *TagScanOverview `json:"scanOverview"`
+	AcceleratorStatus string           `json:"acceleratorStatus"`
+	Immutabled        bool             `json:"immutabled"`
+	PreventStatus     bool             `json:"preventStatus"`
+}
+
+type ListTagsResponse struct {
+	PageInfo `json:",inline"`
+	Items    []*ImageTag `json:"items"`
+}
+
+type BatchDeleteTagsArgs struct {
+	Items []string `json:"items"`
+}
+
+type ListRobotsArgs struct {
+	Status   string `json:"status"`
+	PageNo   int    `json:"pageNo"`
+	PageSize int    `json:"pageSize"`
+}
+
+type RobotAccess struct {
+	Action   string `json:"action"`
+	Resource string `json:"resource"`
+}
+
+type RobotPermission struct {
+	Kind      string        `json:"kind"`
+	Namespace string        `json:"namespace"`
+	Access    []RobotAccess `json:"access"`
+}
+
+type Robot struct {
+	ID           int64             `json:"id"`
+	Name         string            `json:"name"`
+	Level        string            `json:"level"`
+	Disable      bool              `json:"disable"`
+	Description  string            `json:"description"`
+	Duration     int               `json:"duration"`
+	ExpiresAt    int64             `json:"expiresAt"`
+	CreationTime string            `json:"creationTime"`
+	UpdateTime   string            `json:"updateTime"`
+	Editable     bool              `json:"editable"`
+	Permissions  []RobotPermission `json:"permissions"`
+}
+
+type ListRobotsResponse struct {
+	PageInfo `json:",inline"`
+	Robots   []*Robot `json:"robots"`
+}
+
+type CreateRobotArgs struct {
+	Name        string            `json:"name"`
+	Description string            `json:"description,omitempty"`
+	Duration    int               `json:"duration"`
+	Disable     bool              `json:"disable"`
+	Permissions []RobotPermission `json:"permissions"`
+	Secret      string            `json:"secret,omitempty"`
+}
+
+type UpdateRobotArgs struct {
+	Description string            `json:"description,omitempty"`
+	Duration    int               `json:"duration,omitempty"`
+	Disable     bool              `json:"disable,omitempty"`
+	Permissions []RobotPermission `json:"permissions,omitempty"`
+}
+
+type RobotResponse struct {
+	ID           int64             `json:"id"`
+	Name         string            `json:"name"`
+	Level        string            `json:"level"`
+	Disable      bool              `json:"disable"`
+	Description  string            `json:"description"`
+	Duration     int               `json:"duration"`
+	ExpiresAt    int64             `json:"expiresAt"`
+	CreationTime string            `json:"creationTime"`
+	UpdateTime   string            `json:"updateTime"`
+	Editable     bool              `json:"editable"`
+	Permissions  []RobotPermission `json:"permissions"`
+	Secret       string            `json:"secret,omitempty"`
+}
+
+type RobotTokenResponse struct {
+	Secret string `json:"secret"`
+}
+
+type RefreshRobotSecretArgs struct {
+	Secret string `json:"secret,omitempty"`
+}

@@ -21,6 +21,7 @@ func GetRouteTableDetail() {
 	}
 
 	// print result
+	fmt.Println("result of route table name: ", result.Name)
 	fmt.Println("result of route table id: ", result.RouteTableId)
 	fmt.Println("result of vpc id: ", result.VpcId)
 

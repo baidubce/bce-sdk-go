@@ -12,30 +12,30 @@
  * permissions
  * and limitations under the License.
  */
+
 package blbexamples
 
 import (
 	"github.com/baidubce/bce-sdk-go/services/blb"
 )
 
-func CreateHTTPSListener() {
+func CreateHTTPListener() {
 	ak, sk, endpoint := "Your AK", "Your SK", "Your Endpoint"
 
 	blbClient, _ := blb.NewClient(ak, sk, endpoint) // 初始化client
 
 	blbID := "Your BlbID" // blb实例ID
-	createHTTPSListenerArgs := &blb.CreateHTTPSListenerArgs{
-		ListenerPort: 8081,                          // 监听端口
-		BackendPort:  8081,                          // 后端端口
-		Scheduler:    "RoundRobin",                  // 调度算法
-		CertIds:      []string{"cert-xxxxxxxxxxxx"}, // 证书ID列表
+	createHTTPListenerArgs := &blb.CreateHTTPListenerArgs{
+		ListenerPort: 8080,         // 监听端口
+		BackendPort:  8080,         // 后端端口
+		Scheduler:    "RoundRobin", // 调度算法
 		AdditionalAttributes: &blb.AdditionalAttributesModel{
 			GzipJson: "on", // 开启gzip压缩JSON
 		},
 	}
 
-	// 创建blb https监听器
-	if err := blbClient.CreateHTTPSListener(blbID, createHTTPSListenerArgs); err != nil {
+	// 创建blb http监听器
+	if err := blbClient.CreateHTTPListener(blbID, createHTTPListenerArgs); err != nil {
 		panic(err)
 	}
 }

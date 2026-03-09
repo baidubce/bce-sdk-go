@@ -1,5 +1,38 @@
 发行说明:记录每次SDK更新的说明,最新版本的SDK包含以前所有版本的更新内容。
 ---------------------------------------------------------------------
+【版本:v0.9.261】
+涉及产品: CCR
+    新增命名空间、镜像仓库、镜像版本、机器人账号等模块管理接口
+涉及产品: AIHC
+    开发机新增环境变量、工作目录以及启动命令功能参数
+涉及产品:VPC
+    主备切换接口中Query参数修改为switchRouteHA;
+    查询路由表接口响应中支持name字段;
+    EnterpriseSecurityGroup增添updatetime字段;
+    删除企业安全组规则增添clientToken参数字段;
+    更新企业安全组规则增添clientToken参数字段，sourcePortRange字段，localIp，remoteIpSet，remoteIpGroup字段；
+    UpdateEniArgs字段Name和Description写为指针类型EniInstance添加InstanceType字段。
+涉及产品:BLB
+    更新普通型blb实例接口支持AllocateIpv6字段;
+    CreateTCPListenerArg 新增HealthCheckType字段;
+    CreateUDPListener移除HealthCheckString的强制校验;
+    CreateHTTPListener新增AdditionalAttributes字段;
+    CreateHTTPSListener新增AddtionalAttributes字段;
+    CreateSSLListenerArgs 新增 HealthCheckType和TcpSessionTimeout字段;
+    DescribeTCPListeners 接口 返回TCPListenerModel新增 HealthCheckType 字段;
+    DescribeHTTPSListeners HTTPSListenerModel新增 AdditionalAttributes字段;
+    DescribeSSLListeners 接口返回 SSLListenerModel新增HealthCheckType字段;
+    DescribeAllListeners 接口 AllListenerModel 新增 AdditionalAttributesModel字段;
+    UpdateTCPListener 接口 UpdateTCPListenerArgs 新增 HealthCheckType字段;
+    UpdateHTTPListener接口 UpdateHTTPListenerArgs 新增 AdditionalAttributes字段;
+    UpdateHTTPSListener 接口 UpdateHTTPSListenerArgs新增 AdditionalAttributes字段;
+    UpdateSSLListener 接口 UpdateSSLListenerArgs新增HealthCheckType字段;
+    完善应用型lb的创建时支持的参数;增加list和detail的响应参数。
+涉及产品: BLS
+    创建日志集接口新增支持冷热存储以及索引等参数
+    更新日志集接口新增支持冷热存储等参数
+涉及产品: BCC
+    创建虚机支持额外IO参数
 【版本:v0.9.260】
 涉及产品: EIP
     申请EIP接口中的CreateEipArgs新增deleteProtect字段

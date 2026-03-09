@@ -25,9 +25,10 @@ func CreateTCPListener() {
 
 	blbID := "Your BlbID" // blb实例ID
 	createTCPListenerArgs := &blb.CreateTCPListenerArgs{
-		ListenerPort: 80,           // 监听端口
-		BackendPort:  80,           // 后端端口
-		Scheduler:    "RoundRobin", // 调度算法
+		ListenerPort:    80,           // 监听端口
+		BackendPort:     80,           // 后端端口
+		Scheduler:       "RoundRobin", // 调度算法
+		HealthCheckType: "TCP",        // 健康检查协议类型
 	}
 
 	// 创建blb tcp监听器

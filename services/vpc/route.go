@@ -105,7 +105,7 @@ func (c *Client) SwitchRoute(routeRuleId, clientToken string) error {
 		WithURL(getURLForRouteRuleId(routeRuleId)).
 		WithMethod(http.PUT).
 		WithQueryParamFilter("clientToken", clientToken).
-		WithQueryParamFilter("action", "switchRouteHA").
+		WithQueryParamFilter("switchRouteHA", "").
 		Do()
 }
 
@@ -144,10 +144,11 @@ func (c *Client) GetRouteRuleDetail(args *GetRouteRuleArgs) (*GetRouteRuleResult
 // UpdateRouteRule - update the given route rule
 //
 // PARAMS:
-//     - routeRuleId: the id of the specific route rule
-//     - args: the arguments to update route rule
+//   - routeRuleId: the id of the specific route rule
+//   - args: the arguments to update route rule
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateRouteRule(args *UpdateRouteRuleArgs) error {
 	if args.RouteRuleId == "" {
 		return errors.New("The RouteRuleId cannot be blank.")

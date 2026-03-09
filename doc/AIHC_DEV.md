@@ -239,6 +239,11 @@ result, err := client.CreateDevInstance(&dev.CreateDevInstanceArgs{
                 CPUNodeAffinity: true,
                 Priority:        "high",
             },
+            StartCmd: "echo 1",
+			Envs: map[string]string{
+				"ENV1": "123",
+			},
+			WorkspaceDir: "/root/workspace/111",
             VolumnConfs: []*VolumnConf{
                 {
                     VolumnType: "cds",
@@ -338,6 +343,11 @@ result, err := client.UpdateDevInstance(&dev.CreateDevInstanceArgs{
                 CPUNodeAffinity: true,
                 Priority:        "high",
             },
+            StartCmd: "echo 1",
+			Envs: map[string]string{
+				"ENV1": "123",
+			},
+			WorkspaceDir: "/root/workspace/111",
             VolumnConfs: []*VolumnConf{
                 {
                     VolumnType: "cds",

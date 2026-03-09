@@ -57,8 +57,17 @@ type CreateLogStoreRequest struct {
 	LogStoreName string `json:"logStoreName"`
 	// 日志集存储周期，必填
 	Retention int `json:"retention"`
+	// Retention期限大于7天时可开启日志沉降，开启后可配置标准存储天数后的日期自动沉降为低频存储，低频存储费用低，默认为false，不开启
+	EnableHotRetention bool `json:"enableHotRetention"`
+	// EnableHotRetention为true才生效，HotRetention需要小于Retention，不能等于, HotRetention-Retention为低频存储的天数
+	HotRetention int32 `json:"hotRetention"`
 	// 日志集标签，选填，默认没有标签
 	Tags []model.TagModel `json:"tags"`
+	// 日志集初始shard数量，默认为1，最大值为50
+	ShardCount int `json:"shardCount"`
+	// 是否关闭shard自动分裂，默认为false， 不关闭
+	DisableShardAutoSplit bool             `json:"disableShardAutoSplit"`
+	Index                 *api.IndexFields `json:"index,omitempty"`
 }
 
 type UpdateLogStoreRequest struct {
@@ -68,6 +77,16 @@ type UpdateLogStoreRequest struct {
 	LogStoreName string `json:"logStoreName"`
 	// 日志集存储周期，必填
 	Retention int `json:"retention"`
+	// Retention期限大于7天时可开启日志沉降，开启后可配置标准存储天数后的日期自动沉降为低频存储，低频存储费用低，默认为false，不开启
+	EnableHotRetention bool `json:"enableHotRetention"`
+	// EnableHotRetention为true才生效，HotRetention需要小于Retention，不能等于, HotRetention-Retention为低频存储的天数
+	HotRetention int32 `json:"hotRetention"`
+	// 日志集标签，选填，默认没有标签
+	Tags []model.TagModel `json:"tags"`
+	// 日志集初始shard数量，默认为1，最大值为50
+	ShardCount int `json:"shardCount"`
+	// 是否关闭shard自动分裂，默认为false， 不关闭
+	DisableShardAutoSplit bool `json:"disableShardAutoSplit"`
 }
 
 type DescribeLogStoreRequest struct {

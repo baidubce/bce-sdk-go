@@ -306,6 +306,7 @@ type RouteRule struct {
 
 // GetRouteTableResult defines the structure of the output parameters for the GetRouteTableDetail api
 type GetRouteTableResult struct {
+	Name         string      `json:"name"`
 	RouteTableId string      `json:"routeTableId"`
 	VpcId        string      `json:"vpcId"`
 	RouteRules   []RouteRule `json:"routeRules"`

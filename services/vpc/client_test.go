@@ -1355,3 +1355,18 @@ func TestGetIpGroupDetail(t *testing.T) {
 	r, _ := json.Marshal(result)
 	fmt.Println(string(r))
 }
+
+// TestGetRouteRuleDetail - 测试查询路由规则列表接口
+func TestGetRouteRuleDetail(t *testing.T) {
+	VPCID = ""
+	args := &GetRouteRuleArgs{
+		RouteTableId: RouteTableID,
+		VpcId:        VPCID,
+		Marker:       "",
+		MaxKeys:      100,
+	}
+	result, err := VPC_CLIENT.GetRouteRuleDetail(args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, _ := json.Marshal(result)
+	fmt.Println("GetRouteRuleDetail result:", string(r))
+}

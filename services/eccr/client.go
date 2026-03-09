@@ -26,6 +26,10 @@ const (
 	REQUEST_PROJECT_URL = "/projects"
 
 	REQUEST_IMAGEBUILD_URL = "/imagebuilds"
+
+	REQUEST_TAG_URL = "/tags"
+
+	REQUEST_ROBOT_URL = "/robots"
 )
 
 // Client ccr enterprise interface.Interface
@@ -98,6 +102,46 @@ func getInstanceRegistryIDURI(instanceID, registryID string) string {
 
 func getCheckHealthRegistryURI(instanceID string) string {
 	return URI_PREFIX + REQUEST_INSTANCE_URL + "/" + instanceID + REQUEST_REGISTRY_URL + "/ping"
+}
+
+func getProjectURI(instanceID string) string {
+	return URI_PREFIX + REQUEST_INSTANCE_URL + "/" + instanceID + REQUEST_PROJECT_URL
+}
+
+func getProjectNameURI(instanceID, projectName string) string {
+	return URI_PREFIX + REQUEST_INSTANCE_URL + "/" + instanceID + REQUEST_PROJECT_URL + "/" + projectName
+}
+
+func getRepositoriesURI(instanceID, projectName string) string {
+	return URI_PREFIX + REQUEST_INSTANCE_URL + "/" + instanceID + REQUEST_PROJECT_URL + "/" + projectName +
+		REQUEST_REPOSITORIES_URL
+}
+
+func getRepositoryURI(instanceID, projectName, repositoryName string) string {
+	return URI_PREFIX + REQUEST_INSTANCE_URL + "/" + instanceID + REQUEST_PROJECT_URL + "/" + projectName +
+		REQUEST_REPOSITORIES_URL + "/" + repositoryName
+}
+
+func getTagsURI(instanceID, projectName, repositoryName string) string {
+	return URI_PREFIX + REQUEST_INSTANCE_URL + "/" + instanceID + REQUEST_PROJECT_URL + "/" + projectName +
+		REQUEST_REPOSITORIES_URL + "/" + repositoryName + REQUEST_TAG_URL
+}
+
+func getTagURI(instanceID, projectName, repositoryName, tagName string) string {
+	return URI_PREFIX + REQUEST_INSTANCE_URL + "/" + instanceID + REQUEST_PROJECT_URL + "/" + projectName +
+		REQUEST_REPOSITORIES_URL + "/" + repositoryName + REQUEST_TAG_URL + "/" + tagName
+}
+
+func getRobotListURI(instanceID string) string {
+	return URI_PREFIX + REQUEST_INSTANCE_URL + "/" + instanceID + REQUEST_ROBOT_URL
+}
+
+func getRobotURI(instanceID, robotID string) string {
+	return URI_PREFIX + REQUEST_INSTANCE_URL + "/" + instanceID + REQUEST_ROBOT_URL + "/" + robotID
+}
+
+func getRobotSecretURI(instanceID, robotID string) string {
+	return URI_PREFIX + REQUEST_INSTANCE_URL + "/" + instanceID + REQUEST_ROBOT_URL + "/" + robotID + "/secret"
 }
 
 func getImageBuildURI(instanceID, projectName, repositoryName string) string {

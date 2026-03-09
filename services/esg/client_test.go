@@ -17,14 +17,15 @@ package esg
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/model"
-	"github.com/baidubce/bce-sdk-go/util"
-	"github.com/baidubce/bce-sdk-go/util/log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"testing"
+
+	"github.com/baidubce/bce-sdk-go/model"
+	"github.com/baidubce/bce-sdk-go/util"
+	"github.com/baidubce/bce-sdk-go/util/log"
 )
 
 var (
@@ -44,10 +45,7 @@ func init() {
 	log.SetLogLevel(log.DEBUG)
 	_, f, _, _ := runtime.Caller(0)
 	// Get the directory of GOPATH, the config file should be under the directory.
-	for i := 0; i < 7; i++ {
-		f = filepath.Dir(f)
-	}
-	conf := filepath.Join(f, "config.json")
+	conf := filepath.Join(filepath.Dir(f), "config.json")
 	fp, err := os.Open(conf)
 	if err != nil {
 		log.Fatal("config json file of ak/sk not given:", conf)
@@ -143,7 +141,7 @@ func TestClient_ListEsgs(t *testing.T) {
 
 func TestClient_DeleteEsg(t *testing.T) {
 	args := &DeleteEsgArgs{
-		EnterpriseSecurityGroupId: "esg-s91awqpw73un",
+		EnterpriseSecurityGroupId: "esg-m1d9rydd9b5r",
 		ClientToken:               getClientToken(),
 	}
 	err := ESG_CLIENT.DeleteEsg(args)
@@ -164,7 +162,7 @@ func TestClient_CreateEsgRules(t *testing.T) {
 				SourceIp:  "all",
 			},
 		},
-		EnterpriseSecurityGroupId: "esg-v99qnxx7uh83",
+		EnterpriseSecurityGroupId: "esg-w1zq3dbdxjqa",
 		ClientToken:               getClientToken(),
 	}
 	err := ESG_CLIENT.CreateEsgRules(args)
@@ -173,18 +171,31 @@ func TestClient_CreateEsgRules(t *testing.T) {
 
 func TestClient_DeleteEsgRule(t *testing.T) {
 	args := &DeleteEsgRuleArgs{
-		EnterpriseSecurityGroupRuleId: "esgr-ak7b51zzgptc",
+		EnterpriseSecurityGroupRuleId: "esgr-km7fthvfek4r",
+		ClientToken:                   getClientToken(), // Added: clientToken support for idempotency
 	}
 	err := ESG_CLIENT.DeleteEsgRule(args)
 	ExpectEqual(t.Errorf, nil, err)
 }
 
 func TestClient_UpdateEsgRule(t *testing.T) {
+	// Important: Use pointer types to avoid Go zero-value issue
+	// - Unset string fields default to "", which will be sent to server and clear the field
+	// - Use pointer types (nil) with omitempty tag, unset fields won't appear in JSON
+	remark := "go sdk test update"
+	priority := 900
+	sourcePortRange := "8000-9000"
+	localIp := "10.0.0.1"
+	RemoteIpSet := "ips-wzz7s2sjvsaq"
+
 	args := &UpdateEsgRuleArgs{
-		Priority:                      900,
-		Remark:                        "go sdk test update",
+		EnterpriseSecurityGroupRuleId: "esgr-g14jsiu5umt5",
+		Remark:                        &remark,          // Use pointer to update only this field
+		Priority:                      &priority,        // Use pointer to update only this field
+		SourcePortRange:               &sourcePortRange, // New field: source port range
+		LocalIp:                       &localIp,         // New field: local IP
+		RemoteIpSet:                   &RemoteIpSet,
 		ClientToken:                   getClientToken(),
-		EnterpriseSecurityGroupRuleId: "esgr-ahm3xxi11s20",
 	}
 	err := ESG_CLIENT.UpdateEsgRule(args)
 	ExpectEqual(t.Errorf, nil, err)

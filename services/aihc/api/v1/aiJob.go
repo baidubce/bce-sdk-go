@@ -81,6 +81,8 @@ type OpenAPIPod struct {
 }
 
 type OpenAPIDatasource struct {
+	//数据集ID
+	ID string `json:"id"`
 	// Type 数据源类型 dataset/pfsl1/pfsl2/emptydir/hostpath/cfs
 	Type string `json:"type"`
 	// SourcePath为源路径，存储类型为pfs时，代表用户传入的pfs路径；存储类型为hostPath时，代表节点上的本地路径

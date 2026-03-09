@@ -26,8 +26,9 @@ func UpdateTCPListener() {
 
 	blbID := "Your BlbID" // blb实例ID
 	updateTCPListenerArgs := &blb.UpdateTCPListenerArgs{
-		ListenerPort: 80,           // 监听端口
-		Scheduler:    "RoundRobin", // 调度算法
+		ListenerPort:    80,           // 监听端口
+		Scheduler:       "RoundRobin", // 调度算法
+		HealthCheckType: "TCP",        // 健康检查协议类型
 	}
 
 	// 更新blb tcp监听器

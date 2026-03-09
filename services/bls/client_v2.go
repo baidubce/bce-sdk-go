@@ -53,10 +53,15 @@ func (c *Client) ListProject(request ListProjectRequest) (*api.ListProjectResult
 
 func (c *Client) CreateLogStoreV2(request CreateLogStoreRequest) error {
 	params, jsonErr := json.Marshal(&api.LogStore{
-		Project:      request.Project,
-		LogStoreName: request.LogStoreName,
-		Retention:    request.Retention,
-		Tags:         request.Tags,
+		Project:               request.Project,
+		LogStoreName:          request.LogStoreName,
+		Retention:             request.Retention,
+		Tags:                  request.Tags,
+		EnableHotRetention:    request.EnableHotRetention,
+		HotRetention:          request.HotRetention,
+		ShardCount:            request.ShardCount,
+		DisableShardAutoSplit: request.DisableShardAutoSplit,
+		Index:                 request.Index,
 	})
 	if jsonErr != nil {
 		return jsonErr
@@ -70,7 +75,12 @@ func (c *Client) CreateLogStoreV2(request CreateLogStoreRequest) error {
 
 func (c *Client) UpdateLogStoreV2(request UpdateLogStoreRequest) error {
 	param, jsonErr := json.Marshal(&api.LogStore{
-		Retention: request.Retention,
+		Retention:             request.Retention,
+		Tags:                  request.Tags,
+		EnableHotRetention:    request.EnableHotRetention,
+		HotRetention:          request.HotRetention,
+		ShardCount:            request.ShardCount,
+		DisableShardAutoSplit: request.DisableShardAutoSplit,
 	})
 	if jsonErr != nil {
 		return jsonErr

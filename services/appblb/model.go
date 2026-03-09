@@ -245,10 +245,11 @@ type CreateLoadBalanceResult struct {
 }
 
 type UpdateLoadBalancerArgs struct {
-	ClientToken string `json:"-"`
-	Name        string `json:"name,omitempty"`
-	Description string `json:"desc,omitempty"`
-	AllowDelete *bool  `json:"allowDelete,omitempty"`
+	ClientToken  string `json:"-"`
+	Name         string `json:"name,omitempty"`
+	Description  string `json:"desc,omitempty"`
+	AllowDelete  *bool  `json:"allowDelete,omitempty"`
+	AllocateIpv6 *bool  `json:"allocateIpv6,omitempty"`
 }
 
 type DescribeLoadBalancersArgs struct {
@@ -278,6 +279,10 @@ type AppBLBModel struct {
 	AllowDelete            bool             `json:"allowDelete"`
 	Layer4ClusterExclusive bool             `json:"layer4ClusterExclusive"`
 	Layer7ClusterExclusive bool             `json:"layer7ClusterExclusive"`
+	PublicIpv6             string           `json:"publicIpv6"`
+	EipV6RouteType         string           `json:"eipV6RouteType"`
+	PaymentTiming          string           `json:"paymentTiming"`
+	BillingMethod          string           `json:"billingMethod"`
 }
 
 type DescribeLoadBalancersResult struct {
@@ -326,6 +331,9 @@ type DescribeLoadBalancerDetailResult struct {
 	ExpireTime             string           `json:"expireTime"`
 	AllowDelete            bool             `json:"allowDelete"`
 	VpcId                  string           `json:"vpcId"`
+	BillingMethod          string           `json:"billingMethod"`
+	PublicIpv6             string           `json:"publicIpv6"`
+	EipV6RouteType         string           `json:"eipV6RouteType"`
 }
 
 type CreateAppTCPListenerArgs struct {

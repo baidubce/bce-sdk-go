@@ -27,6 +27,9 @@ func UpdateHTTPListener() {
 	updateHTTPListenerArgs := &blb.UpdateHTTPListenerArgs{
 		ListenerPort: 8080,         // 监听端口
 		Scheduler:    "RoundRobin", // 调度算法
+		AdditionalAttributes: &blb.AdditionalAttributesModel{
+			GzipJson: "off", // 关闭gzip压缩JSON
+		},
 	}
 
 	// 更新blb http监听器

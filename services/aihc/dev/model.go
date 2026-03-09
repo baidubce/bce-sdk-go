@@ -119,13 +119,16 @@ type CreateDevInstanceArgs struct {
 }
 
 type DevInstanceConf struct {
-	ResourcePool *ResourcePool `json:"resourcePool" validate:"required"`
-	Resources    *Resources    `json:"resources" validate:"required"`
-	Image        *Image        `json:"image" validate:"required"`
-	Access       *Access       `json:"access"`
-	ScheduleConf *ScheduleConf `json:"scheduleConf"`
-	VolumnConfs  []*VolumnConf `json:"volumnConfs" validate:"required"`
-	UpdatedAt    int32         `json:"updatedAt"`
+	ResourcePool *ResourcePool     `json:"resourcePool" validate:"required"`
+	Resources    *Resources        `json:"resources" validate:"required"`
+	Image        *Image            `json:"image" validate:"required"`
+	Access       *Access           `json:"access"`
+	ScheduleConf *ScheduleConf     `json:"scheduleConf"`
+	WorkspaceDir string            `json:"workspaceDir"`
+	Envs         map[string]string `json:"envs"`
+	StartCmd     string            `json:"startCmd"`
+	VolumnConfs  []*VolumnConf     `json:"volumnConfs" validate:"required"`
+	UpdatedAt    int32             `json:"updatedAt"`
 }
 
 type VolumnConf struct {

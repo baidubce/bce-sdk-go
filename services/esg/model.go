@@ -35,6 +35,7 @@ type EnterpriseSecurityGroup struct {
 	Rules       []EnterpriseSecurityGroupRule `json:"rules"`
 	Tags        []model.TagModel              `json:"tags"`
 	CreatedTime string                        `json:"createdTime"`
+	UpdatedTime string                        `json:"updatedTime"`
 }
 
 type EnterpriseSecurityGroupRule struct {
@@ -77,22 +78,27 @@ type DeleteEsgArgs struct {
 
 type CreateEsgRuleArgs struct {
 	ClientToken               string                        `json:"-"`
-	EnterpriseSecurityGroupId string                        `json:"enterpriseSecurityGroupId"`
+	EnterpriseSecurityGroupId string                        `json:"-"`
 	Rules                     []EnterpriseSecurityGroupRule `json:"rules"`
 }
 
 type DeleteEsgRuleArgs struct {
 	EnterpriseSecurityGroupRuleId string
+	ClientToken                   string
 }
 
 type UpdateEsgRuleArgs struct {
 	ClientToken                   string
-	EnterpriseSecurityGroupRuleId string `json:"-"`
-	Remark                        string `json:"remark"`
-	PortRange                     string `json:"portRange"`
-	Protocol                      string `json:"protocol"`
-	SourceIp                      string `json:"sourceIp"`
-	DestIp                        string `json:"destIp"`
-	Action                        string `json:"action"`
-	Priority                      int    `json:"priority"`
+	EnterpriseSecurityGroupRuleId string  `json:"-"`
+	Remark                        *string `json:"remark,omitempty"`
+	PortRange                     *string `json:"portRange,omitempty"`
+	SourcePortRange               *string `json:"sourcePortRange,omitempty"`
+	Protocol                      *string `json:"protocol,omitempty"`
+	SourceIp                      *string `json:"sourceIp,omitempty"`
+	DestIp                        *string `json:"destIp,omitempty"`
+	LocalIp                       *string `json:"localIp,omitempty"`
+	RemoteIpSet                   *string `json:"remoteIpSet,omitempty"`
+	RemoteIpGroup                 *string `json:"remoteIpGroup,omitempty"`
+	Action                        *string `json:"action,omitempty"`
+	Priority                      *int    `json:"priority,omitempty"`
 }

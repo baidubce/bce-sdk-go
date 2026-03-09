@@ -37,3 +37,28 @@ func UpdateLoadBalancer() {
         panic(err)
     }
 }
+
+// UpdateLoadBalancerWithIPv6 更新BLB并配置IPv6
+func UpdateLoadBalancerWithIPv6() {
+    ak, sk, endpoint := "Your AK", "Your SK", "Your endpoint"
+
+    BlbClient, _ := blb.NewClient(ak, sk, endpoint) // 初始化client
+    
+    BlbID := "blb id"                      // blb ID
+    allocateIpv6 := true                   // 为true时分配IPv6地址
+    allowDelete := false                   // 是否允许删除
+    
+    updateBlbArgs := &blb.UpdateLoadBalancerArgs{
+        ClientToken:  "client token",      // token
+        Name:         "Test-BLB-IPv6",     // blb名称 
+        Description:  "blb with ipv6",     // blb描述
+        AllocateIpv6: &allocateIpv6,       // 分配IPv6地址
+        AllowDelete:  &allowDelete,        // 是否允许删除
+    }
+
+    err := BlbClient.UpdateLoadBalancer(BlbID, updateBlbArgs) // 更新blb
+
+    if err != nil {
+        panic(err)
+    }
+}

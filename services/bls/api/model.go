@@ -69,12 +69,17 @@ type LogStream struct {
 }
 
 type LogStore struct {
-	CreationDateTime DateTime         `json:"creationDateTime"`
-	LastModifiedTime DateTime         `json:"lastModifiedTime"`
-	Project          string           `json:"project"`
-	LogStoreName     string           `json:"logStoreName"`
-	Retention        int              `json:"retention"`
-	Tags             []model.TagModel `json:"tags,omitempty"`
+	CreationDateTime      DateTime         `json:"creationDateTime"`
+	LastModifiedTime      DateTime         `json:"lastModifiedTime"`
+	Project               string           `json:"project"`
+	LogStoreName          string           `json:"logStoreName"`
+	Retention             int              `json:"retention"`
+	EnableHotRetention    bool             `json:"enableHotRetention"`
+	HotRetention          int32            `json:"hotRetention"`
+	Tags                  []model.TagModel `json:"tags,omitempty"`
+	ShardCount            int              `json:"shardCount"`
+	DisableShardAutoSplit bool             `json:"disableShardAutoSplit"`
+	Index                 *IndexFields     `json:"index,omitempty"`
 }
 
 type LogShipper struct {

@@ -56,9 +56,13 @@ func TestProject(t *testing.T) {
 
 func TestLogStoreAndIndexV2(t *testing.T) {
 	createLogStoreRequest := CreateLogStoreRequest{
-		Project:      DefaultProject,
-		LogStoreName: "sdk-logstore-test",
-		Retention:    1,
+		Project:               DefaultProject,
+		LogStoreName:          "sdk-logstore-test",
+		Retention:             10,
+		EnableHotRetention:    true,
+		HotRetention:          7,
+		DisableShardAutoSplit: true,
+		ShardCount:            3,
 	}
 	err := BLS_CLIENT.CreateLogStoreV2(createLogStoreRequest)
 	ExpectEqual(t.Errorf, err, nil)
@@ -160,9 +164,13 @@ func TestLogStoreAndIndexV2(t *testing.T) {
 
 	// test logstore api
 	updateLogStoreRequest := UpdateLogStoreRequest{
-		Project:      createLogStoreRequest.Project,
-		LogStoreName: createLogStoreRequest.LogStoreName,
-		Retention:    2,
+		Project:               createLogStoreRequest.Project,
+		LogStoreName:          createLogStoreRequest.LogStoreName,
+		Retention:             12,
+		EnableHotRetention:    true,
+		HotRetention:          8,
+		DisableShardAutoSplit: true,
+		ShardCount:            2,
 	}
 	err = BLS_CLIENT.UpdateLogStoreV2(updateLogStoreRequest)
 	ExpectEqual(t.Errorf, err, nil)

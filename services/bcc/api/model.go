@@ -72,6 +72,7 @@ const (
 	StorageTypeLocalNVME     StorageType = "local-nvme"
 	StorageTypeEnhancedPl1   StorageType = "enhanced_ssd_pl1"
 	StorageTypeEnhancedPl2   StorageType = "enhanced_ssd_pl2"
+	ElasticEphemeralDisk     StorageType = "elastic_ephemeral_disk"
 )
 
 type StorageTypeV3 string
@@ -282,6 +283,7 @@ type CreateCdsModel struct {
 	SnapShotId         string      `json:"snapshotId,omitempty"`
 	EncryptKey         string      `json:"encryptKey,omitempty"`
 	DeleteWithInstance bool        `json:"deleteWithInstance,omitempty"`
+	CdsExtraIo         int         `json:"cdsExtraIo,omitempty"`
 }
 
 type CreateCdsModelV3 struct {

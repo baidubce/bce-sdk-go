@@ -126,6 +126,7 @@ func (c *Client) DeleteEsgRule(args *DeleteEsgRuleArgs) error {
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForEsgRuleId(args.EnterpriseSecurityGroupRuleId)).
 		WithMethod(http.DELETE).
+		WithQueryParamFilter("clientToken", args.ClientToken).
 		Do()
 }
 
@@ -144,5 +145,6 @@ func (c *Client) UpdateEsgRule(args *UpdateEsgRuleArgs) error {
 		WithURL(getURLForEsgRuleId(args.EnterpriseSecurityGroupRuleId)).
 		WithMethod(http.PUT).
 		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
 		Do()
 }

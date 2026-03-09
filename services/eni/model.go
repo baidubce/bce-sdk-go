@@ -35,10 +35,10 @@ type CreateEniResult struct {
 }
 
 type UpdateEniArgs struct {
-	EniId       string `json:"-"`
-	ClientToken string `json:"-"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	EniId       string  `json:"-"`
+	ClientToken string  `json:"-"`
+	Name        *string `json:"name,omitempty"`
+	Description *string `json:"description,omitempty"`
 }
 
 type DeleteEniArgs struct {
@@ -125,9 +125,10 @@ type BatchAddPrivateIpResult struct {
 }
 
 type EniInstance struct {
-	EniId       string `json:"-"`
-	InstanceId  string `json:"instanceId"`
-	ClientToken string `json:"-"`
+	EniId        string  `json:"-"`
+	InstanceId   *string `json:"instanceId"`
+	InstanceType *string `json:"instanceType,omitempty"`
+	ClientToken  string  `json:"-"`
 }
 
 type BindEniPublicIpArgs struct {
