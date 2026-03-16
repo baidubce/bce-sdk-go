@@ -20,8 +20,15 @@ type InstanceSpec struct {
 	CCEInstanceID string `json:"cceInstanceID,omitempty"`
 	InstanceName  string `json:"instanceName"`
 
+	// 多模板标识，配合 instanceTemplates 使用
+	InstanceTemplateID string `json:"instanceTemplateID,omitempty"`
+
 	RuntimeType    RuntimeType `json:"runtimeType,omitempty"`
 	RuntimeVersion string      `json:"runtimeVersion,omitempty"`
+
+	// Kata 容器
+	KataType    KataType `json:"kataType,omitempty"`
+	KataVersion string   `json:"kataVersion,omitempty"`
 
 	ClusterID   string      `json:"clusterID,omitempty"`
 	ClusterRole ClusterRole `json:"clusterRole,omitempty"`
@@ -29,12 +36,19 @@ type InstanceSpec struct {
 	InstanceGroupID   string `json:"instanceGroupID,omitempty"`
 	InstanceGroupName string `json:"instanceGroupName,omitempty"`
 
+	// IAM 角色
+	IAMRole *IAMRole `json:"iamRole,omitempty"`
+
 	// 初始化 DelProvider 使用
 	MasterType MasterType `json:"masterType,omitempty"`
 
 	// 是否为已有实例
 	Existed       bool          `json:"existed,omitempty"`
 	ExistedOption ExistedOption `json:"existedOption,omitempty"`
+
+	// 部署集
+	DeploySetID  string   `json:"deploySetID,omitempty"`
+	DeploySetIDs []string `json:"deploySetIDs,omitempty"`
 
 	// BCC, BBC, 裸金属
 	MachineType MachineType `json:"machineType,omitempty"`
@@ -50,7 +64,10 @@ type InstanceSpec struct {
 	// VPC 相关配置
 	VPCConfig VPCConfig `json:"vpcConfig,omitempty"`
 
-	HPASOption *HPASOption `json:"hpasOption,omitempty"`
+	HPASOption        *HPASOption        `json:"hpasOption,omitempty"`
+	BECOption         *BECOption         `json:"becOption,omitempty"`
+	AIInfraOption     *AIInfraOption     `json:"aiInfraOption,omitempty"`
+	UltraServerOption *UltraServerOption `json:"ultraServerOption,omitempty"`
 
 	// 集群规格相关配置
 	InstanceResource InstanceResource `json:"instanceResource,omitempty"`
@@ -61,6 +78,9 @@ type InstanceSpec struct {
 
 	// 实例自定义数据, 支持安装驱动
 	UserData string `json:"userData,omitempty"`
+
+	// 是否开启 GPU 驱动检查
+	CheckGPUDriver bool `json:"checkGPUDriver,omitempty"`
 
 	// EIP
 	NeedEIP   bool       `json:"needEIP,omitempty"`
@@ -90,7 +110,7 @@ type InstanceSpec struct {
 
 	CCEInstancePriority int `json:"cceInstancePriority,omitempty"`
 
-	AutoSnapshotID string `json:"autoSnapshotID,omitempty"` // 自动快照策略   ID
+	AutoSnapshotID string `json:"autoSnapshotID,omitempty"` // 自动快照策略 ID
 
 	IsOpenHostnameDomain bool `json:"isOpenHostnameDomain,omitempty"`
 
@@ -98,6 +118,14 @@ type InstanceSpec struct {
 
 	// ehc 集群信息
 	EhcClusterID string `json:"ehcClusterId,omitempty"`
+
+	// NVIDIA Container Toolkit 组件版本
+	NvidiaContainerToolkitVersion string `json:"nvidiaContainerToolkitVersion,omitempty"`
+	// XPU Container Toolkit 组件版本
+	XPUContainerToolkitVersion string `json:"xpuContainerToolkitVersion,omitempty"`
+
+	// 节点缩容保护
+	ScaleDownDisabled bool `json:"scaleDownDisabled,omitempty"`
 }
 
 // VPCConfig 定义 Instance VPC
@@ -117,6 +145,9 @@ type VPCConfig struct {
 	SecurityGroupType string `json:"securityGroupType"`
 
 	SecurityGroups []SecurityGroupV2 `json:"securityGroups"`
+
+	// 可选子网 ID 列表，支持多子网创建节点
+	OptionalSubnetIDs []string `json:"optionalSubnetIDs,omitempty"`
 }
 
 // HPASOption 定义 HPAS 配置
@@ -177,6 +208,11 @@ type InstanceResource struct {
 	// Only necessary when InstanceType = GPU
 	GPUType  GPUType `json:"gpuType,omitempty"`
 	GPUCount int     `json:"gpuCount,omitempty"`
+
+	// 调整每物理核的线程数（vCPU），取值范围：1、2，默认为 2
+	CPUThreadConfig string `json:"cpuThreadConfig,omitempty"`
+	// 调整 CPU 的 NUMA 配置
+	NUMAConfig string `json:"numaConfig,omitempty"`
 }
 
 type EphemeralDiskConfig struct {
@@ -239,10 +275,12 @@ type InstancePreChargingOption struct {
 
 // DeleteOption 删除节点选项
 type DeleteOption struct {
-	MoveOut           bool `json:"moveOut,omitempty"`
-	DeleteResource    bool `json:"deleteResource,omitempty"`
-	DeleteCDSSnapshot bool `json:"deleteCDSSnapshot,omitempty"`
-	DrainNode         bool `json:"drainNode,omitempty"`
+	MoveOut             bool `json:"moveOut,omitempty"`
+	DeleteResource      bool `json:"deleteResource,omitempty"`
+	DeleteCDSSnapshot   bool `json:"deleteCDSSnapshot,omitempty"`
+	DrainNode           bool `json:"drainNode,omitempty"`
+	Rebuild             bool `json:"rebuild,omitempty"`
+	BatchRefundResource bool `json:"batchRefundResource,omitempty"`
 }
 
 // BBCOption BBC 相关配置
@@ -307,6 +345,36 @@ type DeployCustomConfig struct {
 
 	// PostUserScriptFailedAutoCordon 部署后执行脚本失败自动封锁节点
 	PostUserScriptFailedAutoCordon bool `json:"postUserScriptFailedAutoCordon,omitempty"`
+
+	// Kata 容器配置
+	KataConfig *KataConfig `json:"kataConfig,omitempty"`
+
+	// 容器内使用的 DNS 解析配置文件，默认 /etc/resolv.conf
+	ResolvConf *string `json:"resolvConf,omitempty"`
+	// 设置允许使用的非安全的 sysctl 或 sysctl 通配符
+	AllowedUnsafeSysctls string `json:"allowedUnsafeSysctls,omitempty"`
+	// 串行拉取镜像，默认 true
+	SerializeImagePulls *bool `json:"serializeImagePulls,omitempty"`
+
+	// 硬性驱逐门限
+	EvictionHard map[string]string `json:"evictionHard,omitempty"`
+	// 软性驱逐阈值
+	EvictionSoft map[string]string `json:"evictionSoft,omitempty"`
+	// 驱逐宽限期，需已设置 evictionSoft
+	EvictionSoftGracePeriod map[string]string `json:"evictionSoftGracePeriod,omitempty"`
+
+	// 容器的日志文件个数上限，默认 5
+	ContainerLogMaxFiles *int32 `json:"containerLogMaxFiles,omitempty"`
+	// 容器日志文件轮换生成新文件的最大阈值
+	ContainerLogMaxSize string `json:"containerLogMaxSize,omitempty"`
+
+	// 实验性特性的特性开关组
+	FeatureGates map[string]bool `json:"featureGates,omitempty"`
+
+	// kubelet 无鉴权只读端口
+	ReadOnlyPort *int32 `json:"readOnlyPort,omitempty"`
+	// CPU CFS 配额周期值，默认 100ms
+	CPUCFSQuotaPeriod *int32 `json:"cpuCFSQuotaPeriod,omitempty"`
 }
 
 // DockerConfig docker相关配置
@@ -349,6 +417,9 @@ const (
 
 	// MachineTypeHPAS 机器类型 HPAS
 	MachineTypeHPAS MachineType = "HPAS"
+
+	// MachineTypeBEC 机器类型 BEC
+	MachineTypeBEC MachineType = "BEC"
 )
 
 // CDSConfig clone from BCC
@@ -527,3 +598,33 @@ const (
 	// BidModeCustomPrice 用户自定义出价
 	BidModeCustomPrice BidMode = "CUSTOM_BID"
 )
+
+// BECOption BEC 相关配置
+type BECOption struct {
+	BECRegion          string `json:"becRegion,omitempty"`
+	BECCity            string `json:"becCity,omitempty"`
+	BECServiceProvider string `json:"becServiceProvider,omitempty"`
+}
+
+// AIInfraOption AI 基础设施选项
+type AIInfraOption struct {
+	ServerLessRelayIP string `json:"serverLessRelayIP,omitempty"`
+	ServerLessRelayPW string `json:"serverLessRelayPW,omitempty"`
+	HostsFile         string `json:"hostsFile,omitempty"`
+	TemplateID        string `json:"templateID,omitempty"`
+	ClusterName       string `json:"clusterName,omitempty"`
+}
+
+// UltraServerOption 超级服务器选项
+type UltraServerOption struct {
+	UltraServerID string `json:"ultraServerID,omitempty"`
+}
+
+// KataType Kata 容器类型
+type KataType string
+
+// KataConfig Kata 容器配置
+type KataConfig struct {
+	KataType    KataType `json:"kataType,omitempty"`
+	KataVersion string   `json:"kataVersion,omitempty"`
+}

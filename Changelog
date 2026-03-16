@@ -1,5 +1,11 @@
 发行说明:记录每次SDK更新的说明,最新版本的SDK包含以前所有版本的更新内容。
 ---------------------------------------------------------------------
+【版本:v0.9.262】
+涉及产品: CCE
+    节点组配置参数新增：IAM角色绑定，自愈规则配置，IG安全组类型，自定义节点名称开关/规则字段;
+    节点配置参数新增：Kata 容器支持，实例级IAM角色，部署集，GPU驱动检查，GPU工具版本，缩容保护字段;
+    ListInstanceGroups: 新增 keywordType/keyword/autoscalerEnabled/chargingType 查询参数
+    CreateScaleUpInstanceGroupTask: 支持 upReplicas 增量扩容参数
 【版本:v0.9.261】
 涉及产品: CCR
     新增命名空间、镜像仓库、镜像版本、机器人账号等模块管理接口

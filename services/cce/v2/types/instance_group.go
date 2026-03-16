@@ -37,7 +37,14 @@ type InstanceGroupSpec struct {
 
 	ClusterAutoscalerSpec *ClusterAutoscalerSpec `json:"clusterAutoscalerSpec,omitempty" `
 
-	SecurityGroups []SecurityGroupV2 `json:"securityGroups,omitempty" `
+	IAMRole            *IAMRole            `json:"iamRole,omitempty" `
+	RemedyRulesBinding *RemedyRulesBinding `json:"remedyRulesBinding,omitempty" `
+
+	SecurityGroups    []SecurityGroupV2 `json:"securityGroups,omitempty" `
+	SecurityGroupType string            `json:"securityGroupType,omitempty" `
+
+	CustomNodeNameEnabled bool   `json:"customNodeNameEnabled,omitempty" `
+	CustomNodeNameRule    string `json:"customNodeNameRule,omitempty" `
 }
 
 type InstanceTemplate struct {
@@ -94,3 +101,15 @@ const (
 	LabelSelectorOpExists       LabelSelectorOperator = "Exists"
 	LabelSelectorOpDoesNotExist LabelSelectorOperator = "DoesNotExist"
 )
+
+// IAMRole 定义 IAM 角色
+type IAMRole struct {
+	RoleName string `json:"roleName,omitempty"`
+	RoleID   string `json:"roleID,omitempty"`
+}
+
+// RemedyRulesBinding 定义修复规则绑定
+type RemedyRulesBinding struct {
+	RemedyRuleID         string `json:"remedyRuleID,omitempty"`
+	EnableCheckANDRemedy bool   `json:"enableCheckANDRemedy,omitempty"`
+}

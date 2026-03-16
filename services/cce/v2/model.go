@@ -647,8 +647,16 @@ type InstanceGroupSpec struct {
 	InstanceTemplate      InstanceTemplate       `json:"instanceTemplate"`
 	InstanceTemplates     []InstanceTemplate     `json:"instanceTemplates"`
 	Replicas              int                    `json:"replicas"`
-	DefaultSecurityGroups []SecurityGroupV2      `json:"securityGroups,omitempty" gorm:"-"`
 	ClusterAutoscalerSpec *ClusterAutoscalerSpec `json:"clusterAutoscalerSpec,omitempty"`
+
+	IAMRole            *types.IAMRole            `json:"iamRole,omitempty"`
+	RemedyRulesBinding *types.RemedyRulesBinding `json:"remedyRulesBinding,omitempty"`
+
+	DefaultSecurityGroups []SecurityGroupV2 `json:"securityGroups,omitempty" gorm:"-"`
+	SecurityGroupType     string            `json:"securityGroupType,omitempty"`
+
+	CustomNodeNameEnabled bool   `json:"customNodeNameEnabled,omitempty"`
+	CustomNodeNameRule    string `json:"customNodeNameRule,omitempty"`
 }
 
 type SecurityGroupV2 struct {
@@ -834,8 +842,12 @@ type ClusterAutoscalerInstanceGroup struct {
 }
 
 type InstanceGroupListOption struct {
-	PageNo   int
-	PageSize int
+	PageNo            int
+	PageSize          int
+	KeywordType       string
+	Keyword           string
+	AutoscalerEnabled string
+	ChargingType      string
 }
 
 type CreateInstanceGroupArgs struct {
@@ -940,7 +952,8 @@ func CheckKubeConfigType(kubeConfigType string) error {
 type CreateScaleUpInstanceGroupTaskArgs struct {
 	ClusterID       string
 	InstanceGroupID string
-	TargetReplicas  int
+	TargetReplicas  int // 扩容到目标副本数（upToReplicas）
+	UpReplicas      int // 扩容的增量数量（upReplicas），与 TargetReplicas 二选一
 }
 
 type CreateScaleDownInstanceGroupTaskArgs struct {

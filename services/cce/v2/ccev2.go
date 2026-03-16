@@ -378,6 +378,10 @@ func (c *Client) ListInstanceGroups(args *ListInstanceGroupsArgs) (*ListInstance
 		WithMethod(http.GET).
 		WithQueryParamFilter("pageNo", strconv.Itoa(args.ListOption.PageNo)).
 		WithQueryParamFilter("pageSize", strconv.Itoa(args.ListOption.PageSize)).
+		WithQueryParamFilter("keywordType", args.ListOption.KeywordType).
+		WithQueryParamFilter("keyword", args.ListOption.Keyword).
+		WithQueryParamFilter("autoscalerEnabled", args.ListOption.AutoscalerEnabled).
+		WithQueryParamFilter("chargingType", args.ListOption.ChargingType).
 		WithURL(getInstanceGroupListURI(args.ClusterID)).
 		WithResult(result).
 		Do()
@@ -620,17 +624,23 @@ func (c *Client) CreateScaleUpInstanceGroupTask(args *CreateScaleUpInstanceGroup
 	if args.InstanceGroupID == "" {
 		return nil, fmt.Errorf("instanceGroupID is empty")
 	}
-	if args.TargetReplicas <= 0 {
-		return nil, fmt.Errorf("target replicas should be positive")
+	if args.TargetReplicas <= 0 && args.UpReplicas <= 0 {
+		return nil, fmt.Errorf("target replicas or up replicas should be positive")
+	}
+
+	builder := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getScaleUpInstanceGroupURI(args.ClusterID, args.InstanceGroupID))
+
+	if args.TargetReplicas > 0 {
+		builder.WithQueryParamFilter("upToReplicas", strconv.Itoa(args.TargetReplicas))
+	}
+	if args.UpReplicas > 0 {
+		builder.WithQueryParamFilter("upReplicas", strconv.Itoa(args.UpReplicas))
 	}
 
 	result := &CreateTaskResp{}
-	err := bce.NewRequestBuilder(c).
-		WithMethod(http.PUT).
-		WithURL(getScaleUpInstanceGroupURI(args.ClusterID, args.InstanceGroupID)).
-		WithQueryParamFilter("upToReplicas", strconv.Itoa(args.TargetReplicas)).
-		WithResult(result).
-		Do()
+	err := builder.WithResult(result).Do()
 	return result, err
 }
 
