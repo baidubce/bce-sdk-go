@@ -116,6 +116,7 @@ func (c *Client) UpdatePeerConn(peerConnId string, args *UpdatePeerConnArgs) err
 		WithURL(getURLForPeerConnId(peerConnId)).
 		WithMethod(http.PUT).
 		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
 		Do()
 }
 
@@ -255,6 +256,23 @@ func (c *Client) ClosePeerConnSyncDNS(peerConnId string, args *PeerConnSyncDNSAr
 		WithQueryParam("close", "").
 		WithQueryParamFilter("role", string(args.Role)).
 		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
+}
+
+// RefundPeerConn - refund the specific prepaid peer connection
+//
+// PARAMS:
+//   - peerConnId: the id of the specific peer connection
+//   - clientToken: the idempotent token
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) RefundPeerConn(peerConnId, clientToken string) error {
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForPeerConnId(peerConnId)).
+		WithMethod(http.PUT).
+		WithQueryParam("refund", "").
+		WithQueryParamFilter("clientToken", clientToken).
 		Do()
 }
 

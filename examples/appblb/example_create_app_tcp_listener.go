@@ -25,8 +25,10 @@ func CreateAppTCPListener() {
 
 	blbID := "Your BlbID" // blb实例ID
 	createAppTCPListenerArgs := &appblb.CreateAppTCPListenerArgs{
-		ListenerPort: 80,           // 监听端口
-		Scheduler:    "RoundRobin", // 调度算法
+		ListenerPort:      80,             // 监听端口
+		Scheduler:         "RoundRobin",   // 调度算法
+		TcpSessionTimeout: 900,            // TCP连接超时时间（秒）
+		Description:       "tcp listener", // 描述信息
 	}
 
 	// 创建appblb tcp监听器

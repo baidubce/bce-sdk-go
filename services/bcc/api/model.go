@@ -2139,11 +2139,13 @@ type ChangeToPrepaidResponse struct {
 }
 
 type BindTagsRequest struct {
-	ChangeTags []model.TagModel `json:"changeTags"`
+	ChangeTags               []model.TagModel `json:"changeTags"`
+	AttachRelatedResourceTag bool             `json:"attachRelatedResourceTag"`
 }
 
 type UnBindTagsRequest struct {
-	ChangeTags []model.TagModel `json:"changeTags"`
+	ChangeTags               []model.TagModel `json:"changeTags"`
+	AttachRelatedResourceTag bool             `json:"attachRelatedResourceTag"`
 }
 
 type ReservedTagsRequest struct {
@@ -3272,4 +3274,9 @@ type CreateDiagnosticResp struct {
 
 type DeleteDiagnosticReportReq struct {
 	ReportIds []string `json:"reportIds"`
+}
+
+type BatchRebootInstanceReq struct {
+	InstanceIds []string `json:"instanceIds"`
+	ForceStop   bool     `json:"forceStop"`
 }

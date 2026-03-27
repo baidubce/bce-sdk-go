@@ -17,13 +17,15 @@ func UpdateIPv6GatewayRateLimitRule() {
 
 	rateLimitRuleID := "Your rateLimitRule's id"
 
+	ingressBandwidth := 10
+	egressBandwidth := 10
 	args := &vpc.UpdateIPv6GatewayRateLimitRuleArgs{
 		// 客户端Token，用于请求的幂等性
 		ClientToken: "-",
-		// 设置限速的入向带宽
-		IngressBandwidthInMbps: 10,
-		// 设置限速的出向带宽
-		EgressBandwidthInMbps: 10,
+		// 设置限速的入向带宽（使用指针类型，nil表示不更新该字段）
+		IngressBandwidthInMbps: &ingressBandwidth,
+		// 设置限速的出向带宽（使用指针类型，nil表示不更新该字段）
+		EgressBandwidthInMbps: &egressBandwidth,
 	}
 	if err := ipv6gatewayClient.UpdateIPv6GatewayRateLimitRule(ipv6gatewayID, rateLimitRuleID, args); err != nil {
 		fmt.Println("update ipv6 gateway rate limit rule error: ", err)

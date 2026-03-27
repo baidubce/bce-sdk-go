@@ -17,14 +17,15 @@ package endpoint
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/model"
-	"github.com/baidubce/bce-sdk-go/util"
-	"github.com/baidubce/bce-sdk-go/util/log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"testing"
+
+	"github.com/baidubce/bce-sdk-go/model"
+	"github.com/baidubce/bce-sdk-go/util"
+	"github.com/baidubce/bce-sdk-go/util/log"
 )
 
 var (
@@ -127,6 +128,7 @@ func TestClient_CreateEndpoint(t *testing.T) {
 				TagValue: "tagValue",
 			},
 		},
+		// ResourceGroupId: "RESG-UoMgbkuLNjj", // 可选: 资源组ID
 		ClientToken: getClientToken(),
 	}
 	result, err := ENDPOINT_CLIENT.CreateEndpoint(args)
@@ -141,6 +143,7 @@ func TestClient_DeleteEndpoint(t *testing.T) {
 }
 
 func TestClient_UpdateEndpoint(t *testing.T) {
+	// 测试同时更新name和description
 	args := &UpdateEndpointArgs{
 		ClientToken: getClientToken(),
 		Name:        "go-sdk-2",
@@ -148,6 +151,15 @@ func TestClient_UpdateEndpoint(t *testing.T) {
 	}
 	err := ENDPOINT_CLIENT.UpdateEndpoint("endpoint-3c7e02cb", args)
 	ExpectEqual(t.Errorf, nil, err)
+
+	// 测试仅更新name，不修改description
+	// argsNameOnly := &UpdateEndpointArgs{
+	// 	ClientToken: getClientToken(),
+	// 	Name:        "go-sdk-name-only",
+	// 	// Description不设置，服务端将保持原值
+	// }
+	// err = ENDPOINT_CLIENT.UpdateEndpoint("endpoint-3c7e02cb", argsNameOnly)
+	// ExpectEqual(t.Errorf, nil, err)
 }
 
 func TestClient_ListEndpoints(t *testing.T) {

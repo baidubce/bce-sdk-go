@@ -600,14 +600,14 @@ if err != nil {
 通过以下代码，更新指定LoadBalancer下的TCP监听器参数，所有请求参数中指定的域都会被更新，未指定的域保持不变，监听器通过端口指定
 ```go
 args := &appblb.UpdateAppTCPListenerArgs{
-    UpdateAppListenerArgs: appblb.UpdateAppListenerArgs{
         // 要更新的监听器端口号
         ListenerPort: 90, 
         // 更新负载均衡的算法
         Scheduler:    "Hash", 
         // 更新tcp链接超时时间
         TcpSessionTimeout: 2000,
-    },
+		// 更新描述信息
+        Description: "updated tcp listener",
 }
 err := client.UpdateAppTCPListener(BLBID, args)
 if err != nil {
@@ -656,12 +656,14 @@ if err != nil {
 通过以下代码，更新指定LoadBalancer下的UDP监听器参数，所有请求参数中指定的域都会被更新，未指定的域保持不变，监听器通过端口指定
 ```go
 args := &appblb.UpdateAppUDPListenerArgs{
-    UpdateAppListenerArgs: appblb.UpdateAppListenerArgs{
         // 要更新的监听器端口号
         ListenerPort: 80, 
         // 更新负载均衡的算法
         Scheduler:    "Hash",
-    },
+		// 更新udp链接超时时间
+		UdpSessionTimeout: 90,
+        // 更新描述信息
+        Description: "updated udp listener", 
 }
 err := client.UpdateAppUDPListener(BLBID, args)
 if err != nil {

@@ -37,4 +37,5 @@ type HpasSpec struct {
 	CpuCount        	int    `json:"cpuCount,omitempty"`
 	MemoryCapacityInGB  int	   `json:"memoryCapacityInGB,omitempty"`
 	GpuCardCount        int    `json:"gpuCardCount,omitempty"`
+	EnableJumboFrame    bool   `json:"enableJumboFrame,omitempty"`
 }

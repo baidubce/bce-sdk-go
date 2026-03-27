@@ -1,11 +1,62 @@
 发行说明:记录每次SDK更新的说明,最新版本的SDK包含以前所有版本的更新内容。
 ---------------------------------------------------------------------
+【版本:v0.9.263】
+涉及产品: HPAS
+    实例创建、查询、修改支持Jumbo功能
+涉及产品: BCC
+    实例关联操作标签
+    查询可关机不计费列表支持传多个实例id
+    支持批量重启
+涉及产品: BLB
+    应用型BLB监听器相关接口新增description、additionalAttributes字段;
+    UserServiceAddAuth添加对service参数为空时检验;
+涉及产品: IPV6GATEWAY
+    修复IPv6网关相关接口DELETE操作错误携带Body的问题;
+    CreateIPv6GatewayArgs新增ResourceGroupId和DeleteProtect字段;
+    ListIPv6GatewayResult新增DeleteProtect字段;
+    UpdateIPv6GatewayRateLimitRuleArgs的IngressBandwidthInMbps和EgressBandwidthInMbps改为指针类型,解决零值歧义问题;
+    新增UpdateIPv6GatewayDeleteProtect接口,支持更新IPv6网关释放保护开关
+涉及产品: EIP
+    新增创建EIP资源转移接口
+    新增取消EIP资源转移接口
+    新增接受EIP资源转移接口
+    新增拒绝EIP资源转移接口
+    新增查询EIP资源转移列表接口
+涉及产品: privateZone(localDns)
+    ListRecord接口新增Rr,Type,Value,SearchMode查询参数
+涉及产品: BOS
+    三步上传的封装函数默认设置x-bce-content-crc32
+    生成预签名url检查对object参数有效性
+涉及产品: VPN
+    IPsecVPN隧道接口新增cgwId参数
+涉及产品: CLOUDFLOW
+    新增cloudflow open api
+涉及产品: BEC
+    默认EndPonit更正
+涉及产品：PEERCONN
+    创建对等连接接口入参新增deleteProtect字段
+    更新对等连接接口入参新增clientToken字段
+    新增预付费对等连接退订接口
+涉及产品：VPC
+    创建专线网关接口增加resourceGroupId参数
+    查询详情专线网关接口增加enableIpv6、ipv6LocalCidrs和healthCheckPort参数
+    查询专线网关列表：EtGateway模型增加enableIpv6、ipv6LocalCidrs和tags字段
+    更新专线网关接口增加enableIpv6、ipv6LocalCidrs参数
+    model.go下UpdateIpGroupArgs、UpdateIpSetArgsName/Description 改为 *string + omitempty
+    template.go - DeleteIpSet、DeleteIpGroup 移除 WithBody(args)
+    新增参数模版接口示例文件
+    创建网络探测：1.将DestPort类型从string改为int 2. 修正错误提示信息
+    更新网络探测：1.将DestPort类型从string改为int
+涉及产品: ENDPOINT
+    CreateEndpointArgs新增ResourceGroupId字段，支持创建服务网卡时指定资源组;
+    UpdateEndpointArgs的Name和Description字段添加omitempty tag，解决零值误传问题，避免未设置字段被误更新为空字符串;
 【版本:v0.9.262】
 涉及产品: CCE
     节点组配置参数新增：IAM角色绑定，自愈规则配置，IG安全组类型，自定义节点名称开关/规则字段;
     节点配置参数新增：Kata 容器支持，实例级IAM角色，部署集，GPU驱动检查，GPU工具版本，缩容保护字段;
     ListInstanceGroups: 新增 keywordType/keyword/autoscalerEnabled/chargingType 查询参数
     CreateScaleUpInstanceGroupTask: 支持 upReplicas 增量扩容参数
+    新增节点组查询升级工作流接口，新增节点组查询可升级组件接口，新增节点组更新升级工作流接口，新增节点组创建升级工作流接口
 【版本:v0.9.261】
 涉及产品: CCR
     新增命名空间、镜像仓库、镜像版本、机器人账号等模块管理接口

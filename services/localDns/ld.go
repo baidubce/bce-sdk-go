@@ -15,6 +15,7 @@ package localDns
 
 import (
 	"encoding/json"
+	"errors"
 	"strconv"
 	"strings"
 )
@@ -320,42 +321,34 @@ func ListPrivateZone(cli bce.Client, marker string, maxKeys int) (
 // PARAMS:
 //     - cli: the client agent which can perform sending request
 //     - zoneId: Zone的ID
-//     - marker: 批量获取列表的查询的起始位置，是一个由系统生成的字符串
-//     - maxKeys: 每页包含的最大数量，最大数量通常不超过1000。缺省值为1000
-//     - sourceType: 记录类型，可选值
+//     - request: ListRecordRequest
 // RETURNS:
 //     - *api.ListRecordResponse:
 //     - error: the return error if any occurs
-func ListRecord(cli bce.Client, zoneId string, marker string, maxKeys int,
-	sourceType string) (*ListRecordResponse, error) {
-	req := &bce.BceRequest{}
-	req.SetMethod(http.GET)
+func ListRecord(cli bce.Client, zoneId string, request *ListRecordRequest) (*ListRecordResponse, error) {
+	if zoneId == "" {
+		return nil, errors.New("zoneId can not be empty")
+	}
+	if request == nil {
+		return nil, errors.New("request can not be nil")
+	}
+	if request.MaxKeys == 0 {
+		request.MaxKeys = 1000
+	}
+	result := &ListRecordResponse{}
 	path := "/v1/privatezone/[zoneId]/record"
 	path = strings.Replace(path, "[zoneId]", zoneId, -1)
-	req.SetUri(path)
-
-	if "" != sourceType {
-		req.SetParam("sourceType", sourceType)
-	}
-	if "" != marker {
-		req.SetParam("marker", marker)
-	}
-	if 0 != maxKeys {
-		req.SetParam("maxKeys", strconv.Itoa(maxKeys))
-	}
-
-	resp := &bce.BceResponse{}
-	if err := cli.SendRequest(req, resp); err != nil {
-		return nil, err
-	}
-	if resp.IsFail() {
-		return nil, resp.ServiceError()
-	}
-	res := &ListRecordResponse{}
-	if err := resp.ParseJsonBody(res); err != nil {
-		return nil, err
-	}
-	return res, nil
+	bceReq := bce.NewRequestBuilder(cli).
+		WithMethod(http.GET).
+		WithURL(path).
+		WithQueryParamFilter("marker", request.Marker).
+		WithQueryParamFilter("maxKeys", strconv.Itoa(request.MaxKeys)).
+		WithQueryParamFilter("rr", request.Rr).
+		WithQueryParamFilter("searchMode", request.SearchMode).
+		WithQueryParamFilter("type", request.Type).
+		WithQueryParamFilter("value", request.Value).
+		WithResult(result)
+	return result, bceReq.Do()
 }
 
 // UnbindVpc -

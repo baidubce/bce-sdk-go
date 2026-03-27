@@ -16,6 +16,7 @@ package endpointexamples
 
 import (
 	"fmt"
+
 	"github.com/baidubce/bce-sdk-go/model"
 
 	"github.com/baidubce/bce-sdk-go/services/endpoint"
@@ -41,6 +42,7 @@ func CreateEndpoint() {
 				TagValue: "tagValue",
 			},
 		},
+		// ResourceGroupId: "RESG-UoMgbkuLNjj", // 可选: 资源组ID
 	}
 	result, err := client.CreateEndpoint(args) // 创建endpoint
 	if err != nil {

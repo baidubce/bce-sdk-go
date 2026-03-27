@@ -1248,6 +1248,33 @@ func DescribeHpasSpecs(cli bce.Client, body *DescribeHpasSpecsReq) (*DescribeHpa
 	return res, nil
 }
 
+func ModifyHpasJumbo(cli bce.Client, body *ModifyJumboReq) error {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "ModifyHpasJumbo")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	return nil
+}
+
 func RenewHpasInstances(cli bce.Client, body *RenewHpasReq) (*RenewHpasResp, error) {
 	req := &bce.BceRequest{}
 	req.SetMethod(http.POST)

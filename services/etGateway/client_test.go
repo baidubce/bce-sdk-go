@@ -117,11 +117,12 @@ func TestClient_GetEtGatewayDetail(t *testing.T) {
 }
 
 func TestClient_UpdateEtGateway(t *testing.T) {
+	description := "test update et gateway"
 	args := &UpdateEtGatewayArgs{
 		ClientToken: getClientToken(),
 		EtGatewayId: "dcgw-mx3annmentbu",
 		Name:        "aaa",
-		Description: "test",
+		Description: &description,
 	}
 	err := EtGateway_CLIENT.UpdateEtGateway(args)
 	ExpectEqual(t.Errorf, nil, err)

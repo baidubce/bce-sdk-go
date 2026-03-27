@@ -123,6 +123,7 @@ type VpnConn struct {
 	LocalIp       string      `json:"localIp"`
 	SecretKey     string      `json:"secretKey"`
 	LocalSubnets  []string    `json:"localSubnets"`
+	CgwId         string      `json:"cgwId"`
 	RemoteIp      string      `json:"remoteIp"`
 	RemoteSubnets []string    `json:"remoteSubnets"`
 	Description   string      `json:"description"`
@@ -177,6 +178,7 @@ type CreateVpnConnArgs struct {
 	LocalIp           string             `json:"localIp"`
 	SecretKey         string             `json:"secretKey"`
 	LocalSubnets      []string           `json:"localSubnets"`
+	CgwId             string             `json:"cgwId"`
 	RemoteIp          string             `json:"remoteIp"`
 	RemoteSubnets     []string           `json:"remoteSubnets"`
 	Description       string             `json:"description,omitempty"`

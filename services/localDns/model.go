@@ -147,4 +147,8 @@ type ListRecordRequest struct {
 	SourceType string
 	Marker     string
 	MaxKeys    int
+	Rr         string
+	Type       string
+	Value      string
+	SearchMode string
 }

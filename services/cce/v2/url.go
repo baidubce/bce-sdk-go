@@ -49,6 +49,8 @@ const (
 
 	REQUEST_INSTANCEGROUP_ATTACH_INSTANCE_URL = "/attachInstances"
 
+	REQUEST_INSTANCEGROUP_COMPONENT_UPGRADE_VERSIONS_URL = "/component_upgrade_versions"
+
 	REQUEST_QUOTA_URL = "/quota"
 
 	REQUEST_NODE_URL = "/node"
@@ -74,6 +76,8 @@ const (
 	REQUEST_EVENT_URL = "/event"
 
 	REQUEST_SYNC_URL = "/sync"
+
+	REQUEST_WORKFLOW_URL = "/workflow"
 
 	REQUEST_RBAC_URL = "/rbac"
 
@@ -186,6 +190,10 @@ func getScaleDownInstanceGroupURI(clusterID, instanceGroupID string) string {
 	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_INSTANCEGROUP_URL + "/" + instanceGroupID + REQUEST_INSTANCEGROUP_SCALE_DOWN_URL
 }
 
+func getInstanceGroupUpgradeComponentVersionsURI(clusterID, instanceGroupID string) string {
+	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_INSTANCEGROUP_URL + "/" + instanceGroupID + REQUEST_INSTANCEGROUP_COMPONENT_UPGRADE_VERSIONS_URL
+}
+
 func getAttachInstancesToInstanceGroupURI(clusterID string, instanceGroupID string) string {
 	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_INSTANCEGROUP_URL + "/" + instanceGroupID + REQUEST_INSTANCEGROUP_ATTACH_INSTANCE_URL
 }
@@ -240,6 +248,14 @@ func getTaskWithIDURI(taskType types.TaskType, taskID string) string {
 
 func getTaskListURI(taskType types.TaskType) string {
 	return URI_PREFIX + REQUEST_TASK_LIST_URL + "/" + string(taskType)
+}
+
+func getClusterWorkflowURI(clusterID string) string {
+	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_WORKFLOW_URL
+}
+
+func getClusterWorkflowWithIDURI(clusterID, workflowID string) string {
+	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_WORKFLOW_URL + "/" + workflowID
 }
 
 func genGetInstanceCRDURI(clusterID, cceInstanceID string) string {

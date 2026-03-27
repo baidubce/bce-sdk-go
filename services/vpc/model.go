@@ -703,6 +703,7 @@ type CreatePeerConnArgs struct {
 	Billing         *Billing         `json:"billing"`
 	Tags            []model.TagModel `json:"tags,omitempty"`
 	ResourceGroupId string           `json:"resourceGroupId,omitempty"`
+	DeleteProtect   *bool            `json:"deleteProtect,omitempty"`
 }
 
 // CreatePeerConnResult defines the structure of the output parameters for the CreatePeerConn api
@@ -749,6 +750,7 @@ type PeerConn struct {
 
 // UpdatePeerConnArgs defines the structure of the input parameters for the UpdatePeerConn api
 type UpdatePeerConnArgs struct {
+	ClientToken string `json:"-"`
 	LocalIfId   string `json:"localIfId"`
 	Description string `json:"description,omitempty"`
 	LocalIfName string `json:"localIfName,omitempty"`
@@ -854,17 +856,17 @@ type NetworkTopologyResult struct {
 
 type CreateProbeArgs struct {
 	ClientToken string   `json:"-"`
-	Name        string   `json:"name"`
-	VpcId       string   `json:"vpcId"`
-	SubnetId    string   `json:"subnetId"`
-	Protocol    string   `json:"protocol"`
-	Frequency   int      `json:"frequency"`
-	DestIp      string   `json:"destIp"`
-	DestPort    string   `json:"destPort"`
+	Name        *string  `json:"name,omitempty"`
+	VpcId       *string  `json:"vpcId,omitempty"`
+	SubnetId    *string  `json:"subnetId,omitempty"`
+	Protocol    *string  `json:"protocol,omitempty"`
+	Frequency   *int     `json:"frequency,omitempty"`
+	DestIp      *string  `json:"destIp,omitempty"`
+	DestPort    *int     `json:"destPort,omitempty"`
 	SourceIps   []string `json:"sourceIps"`
-	SourceIpNum int      `json:"sourceIpNum,omitempty"`
-	Description string   `json:"description,omitempty"`
-	Payload     string   `json:"payload,omitempty"`
+	SourceIpNum *int     `json:"sourceIpNum,omitempty"`
+	Description *string  `json:"description,omitempty"`
+	Payload     *string  `json:"payload,omitempty"`
 }
 
 type CreateProbeResult struct {
@@ -872,13 +874,13 @@ type CreateProbeResult struct {
 }
 
 type UpdateProbeArgs struct {
-	ClientToken string `json:"-"`
-	Name        string `json:"name,omitempty"`
-	Frequency   int    `json:"frequency,omitempty"`
-	DestIp      string `json:"destIp,omitempty"`
-	DestPort    string `json:"destPort,omitempty"`
-	Description string `json:"description,omitempty"`
-	Payload     string `json:"payload,omitempty"`
+	ClientToken string  `json:"-"`
+	Name        *string `json:"name,omitempty"`
+	Frequency   *int    `json:"frequency,omitempty"`
+	DestIp      *string `json:"destIp,omitempty"`
+	DestPort    *int    `json:"destPort,omitempty"`
+	Description *string `json:"description,omitempty"`
+	Payload     *string `json:"payload,omitempty"`
 }
 
 type UpdateProbeResult struct {
@@ -926,6 +928,8 @@ type CreateIPv6GatewayArgs struct {
 	BandwidthInMbps int              `json:"bandwidthInMbps"`
 	Billing         *Billing         `json:"billing"`
 	Tags            []model.TagModel `json:"tags,omitempty"`
+	ResourceGroupId string           `json:"resourceGroupId,omitempty"`
+	DeleteProtect   *bool            `json:"deleteProtect,omitempty"`
 }
 
 // CreateIPv6GatewayResult defines the structure of the output parameters for the CreateIPv6Gateway api
@@ -951,6 +955,7 @@ type ListIPv6GatewayResult struct {
 	VpcId           string           `json:"vpcId"`
 	EgressOnlyRules []EgressOnlyRule `json:"egressOnlyRules"`
 	RateLimitRules  []RateLimitRule  `json:"rateLimitRules"`
+	DeleteProtect   bool             `json:"deleteProtect"`
 }
 
 type EgressOnlyRule struct {
@@ -1038,8 +1043,14 @@ type ListIPv6GatewayRateLimitRuleResult struct {
 // UpdateIPv6GatewayRateLimitRuleArgs defines the structure of the input parameters for the UpdateIPv6GatewayRateLimitRule api
 type UpdateIPv6GatewayRateLimitRuleArgs struct {
 	ClientToken            string `json:"-"`
-	IngressBandwidthInMbps int    `json:"ingressBandwidthInMbps"`
-	EgressBandwidthInMbps  int    `json:"egressBandwidthInMbps"`
+	IngressBandwidthInMbps *int   `json:"ingressBandwidthInMbps,omitempty"`
+	EgressBandwidthInMbps  *int   `json:"egressBandwidthInMbps,omitempty"`
+}
+
+// UpdateIPv6GatewayDeleteProtectArgs defines the structure of the input parameters for the UpdateIPv6GatewayDeleteProtect api
+type UpdateIPv6GatewayDeleteProtectArgs struct {
+	ClientToken   string `json:"-"`
+	DeleteProtect bool   `json:"deleteProtect"`
 }
 
 type CreateVpcDhcpArgs struct {
@@ -1118,9 +1129,9 @@ type DeleteIpAddressArgs struct {
 }
 
 type UpdateIpSetArgs struct {
-	ClientToken string `json:"-"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	ClientToken string  `json:"-"`
+	Name        *string `json:"name,omitempty"`
+	Description *string `json:"description,omitempty"`
 }
 
 type DeleteIpSetArgs struct {
@@ -1173,9 +1184,9 @@ type UnbindIpSetArgs struct {
 }
 
 type UpdateIpGroupArgs struct {
-	ClientToken string `json:"-"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	ClientToken string  `json:"-"`
+	Name        *string `json:"name,omitempty"`
+	Description *string `json:"description,omitempty"`
 }
 
 type DeleteIpGroupArgs struct {

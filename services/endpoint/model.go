@@ -55,8 +55,8 @@ type ListServiceResult struct {
 
 type UpdateEndpointArgs struct {
 	ClientToken string `json:"-"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	Name        string `json:"name,omitempty"`
+	Description string `json:"description,omitempty"`
 }
 
 type UpdateEndpointNSGArgs struct {
@@ -69,16 +69,17 @@ type UpdateEndpointESGArgs struct {
 }
 
 type CreateEndpointArgs struct {
-	ClientToken string           `json:"-"`
-	VpcId       string           `json:"vpcId"`
-	Name        string           `json:"name"`
-	SubnetId    string           `json:"subnetId"`
-	Service     string           `json:"service"`
-	Description string           `json:"description,omitempty"`
-	IpAddress   string           `json:"ipAddress,omitempty"`
-	Billing     *Billing         `json:"billing"`
-	Tags        []model.TagModel `json:"tags,omitempty"`
-	Bandwidth   int              `json:"bandwidth"`
+	ClientToken     string           `json:"-"`
+	VpcId           string           `json:"vpcId"`
+	Name            string           `json:"name"`
+	SubnetId        string           `json:"subnetId"`
+	Service         string           `json:"service"`
+	Description     string           `json:"description,omitempty"`
+	IpAddress       string           `json:"ipAddress,omitempty"`
+	Billing         *Billing         `json:"billing"`
+	Tags            []model.TagModel `json:"tags,omitempty"`
+	Bandwidth       int              `json:"bandwidth"`
+	ResourceGroupId string           `json:"resourceGroupId,omitempty"`
 }
 
 type CreateEndpointResult struct {

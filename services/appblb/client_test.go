@@ -375,9 +375,11 @@ func TestClient_DeleteAppIpGroupMember(t *testing.T) {
 
 func TestClient_CreateAppTCPListener(t *testing.T) {
 	createArgs := &CreateAppTCPListenerArgs{
-		ClientToken:  getClientToken(),
-		ListenerPort: 90,
-		Scheduler:    "RoundRobin",
+		ClientToken:       getClientToken(),
+		ListenerPort:      90,
+		Scheduler:         "RoundRobin",
+		TcpSessionTimeout: 900,
+		Description:       "test tcp listener",
 	}
 	err := APPBLB_CLIENT.CreateAppTCPListener(APPBLB_ID, createArgs)
 	ExpectEqual(t.Errorf, nil, err)
@@ -385,10 +387,9 @@ func TestClient_CreateAppTCPListener(t *testing.T) {
 
 func TestClient_UpdateAppTCPListener(t *testing.T) {
 	updateArgs := &UpdateAppTCPListenerArgs{
-		UpdateAppListenerArgs: UpdateAppListenerArgs{
-			ListenerPort: 90,
-			Scheduler:    "Hash",
-		},
+		ListenerPort: 90,
+		Scheduler:    "Hash",
+		Description:  "updated tcp listener",
 	}
 	err := APPBLB_CLIENT.UpdateAppTCPListener(APPBLB_ID, updateArgs)
 	ExpectEqual(t.Errorf, nil, err)
@@ -404,9 +405,11 @@ func TestClient_DescribeAppTCPListeners(t *testing.T) {
 
 func TestClient_CreateAppUDPListener(t *testing.T) {
 	createArgs := &CreateAppUDPListenerArgs{
-		ClientToken:  getClientToken(),
-		ListenerPort: 91,
-		Scheduler:    "RoundRobin",
+		ClientToken:       getClientToken(),
+		ListenerPort:      91,
+		Scheduler:         "RoundRobin",
+		UdpSessionTimeout: 90,
+		Description:       "test udp listener",
 	}
 	err := APPBLB_CLIENT.CreateAppUDPListener(APPBLB_ID, createArgs)
 	ExpectEqual(t.Errorf, nil, err)
@@ -414,10 +417,9 @@ func TestClient_CreateAppUDPListener(t *testing.T) {
 
 func TestClient_UpdateAppUDPListener(t *testing.T) {
 	updateArgs := &UpdateAppUDPListenerArgs{
-		UpdateAppListenerArgs: UpdateAppListenerArgs{
-			ListenerPort: 91,
-			Scheduler:    "Hash",
-		},
+		ListenerPort: 91,
+		Scheduler:    "Hash",
+		Description:  "updated udp listener",
 	}
 	err := APPBLB_CLIENT.UpdateAppUDPListener(APPBLB_ID, updateArgs)
 	ExpectEqual(t.Errorf, nil, err)
@@ -440,6 +442,10 @@ func TestClient_CreateAppHTTPListener(t *testing.T) {
 		ClientToken:  getClientToken(),
 		ListenerPort: 92,
 		Scheduler:    "RoundRobin",
+		AdditionalAttributes: &AdditionalAttributesModel{
+			GzipJson: "on",
+		},
+		Description: "test http listener",
 	}
 	err := APPBLB_CLIENT.CreateAppHTTPListener(APPBLB_ID, createArgs)
 	ExpectEqual(t.Errorf, nil, err)
@@ -451,6 +457,10 @@ func TestClient_UpdateAppHTTPListener(t *testing.T) {
 		ListenerPort: 92,
 		Scheduler:    "LeastConnection",
 		KeepSession:  True,
+		AdditionalAttributes: &AdditionalAttributesModel{
+			GzipJson: "on",
+		},
+		Description: "updated http listener",
 	}
 	err := APPBLB_CLIENT.UpdateAppHTTPListener(APPBLB_ID, updateArgs)
 	ExpectEqual(t.Errorf, nil, err)
@@ -536,6 +546,10 @@ func TestClient_CreateAppHTTPSListener(t *testing.T) {
 		ListenerPort: 93,
 		Scheduler:    "RoundRobin",
 		CertIds:      []string{CERT_ID},
+		AdditionalAttributes: &AdditionalAttributesModel{
+			GzipJson: "on",
+		},
+		Description: "test https listener",
 	}
 	err := APPBLB_CLIENT.CreateAppHTTPSListener(APPBLB_ID, createArgs)
 	ExpectEqual(t.Errorf, nil, err)
@@ -548,6 +562,10 @@ func TestClient_UpdateAppHTTPSListener(t *testing.T) {
 		Scheduler:    "LeastConnection",
 		KeepSession:  True,
 		CertIds:      []string{CERT_ID},
+		AdditionalAttributes: &AdditionalAttributesModel{
+			GzipJson: "on",
+		},
+		Description: "updated https listener",
 	}
 	err := APPBLB_CLIENT.UpdateAppHTTPSListener(APPBLB_ID, updateArgs)
 	ExpectEqual(t.Errorf, nil, err)
@@ -567,6 +585,7 @@ func TestClient_CreateAppSSLListener(t *testing.T) {
 		ListenerPort: 94,
 		Scheduler:    "RoundRobin",
 		CertIds:      []string{CERT_ID},
+		Description:  "test ssl listener",
 	}
 	err := APPBLB_CLIENT.CreateAppSSLListener(APPBLB_ID, createArgs)
 	ExpectEqual(t.Errorf, nil, err)
@@ -578,6 +597,7 @@ func TestClient_UpdateAppSSLListener(t *testing.T) {
 		ListenerPort: 94,
 		Scheduler:    "LeastConnection",
 		CertIds:      []string{CERT_ID},
+		Description:  "updated ssl listener",
 	}
 	err := APPBLB_CLIENT.UpdateAppSSLListener(APPBLB_ID, updateArgs)
 	ExpectEqual(t.Errorf, nil, err)

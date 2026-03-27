@@ -778,6 +778,31 @@ func RebootInstance(cli bce.Client, instanceId string, reqBody *bce.Body) (*Batc
 	return jsonBody, nil
 }
 
+func BatchRebootInstance(cli bce.Client, reqBody *bce.Body) (*BatchOperationResp, error) {
+	// Build the request
+	req := &bce.BceRequest{}
+	req.SetUri(getBatchInstanceUri())
+	req.SetMethod(http.PUT)
+	req.SetParam("reboot", "")
+	req.SetBody(reqBody)
+
+	// Send request and get response
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+
+	jsonBody := &BatchOperationResp{}
+	if err := resp.ParseJsonBody(jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
 func RecoveryInstance(cli bce.Client, reqBody *bce.Body) error {
 	// Build the request
 	req := &bce.BceRequest{}
@@ -1482,6 +1507,9 @@ func GetInstanceNoChargeList(cli bce.Client, args *ListInstanceArgs) (*ListInsta
 		}
 		if len(args.KeypairId) != 0 {
 			req.SetParam("keypairId", args.KeypairId)
+		}
+		if len(args.InstanceIds) != 0 {
+			req.SetParam("instanceIds", args.InstanceIds)
 		}
 	}
 	if args == nil || args.MaxKeys == 0 {

@@ -45,6 +45,8 @@ const (
 	CONSTANT_RECORD = "record"
 
 	REQUEST_UPDATE_DELETEPROTECT_URL = "/deleteProtect"
+
+	CONSTANT_TRANSFER = "transfer"
 )
 
 // Client of EIP service is a kind of BceClient, so derived from BceClient
@@ -133,4 +135,24 @@ func getModifyDdosThresholdUri(version string, ip string) string {
 
 func getUpdateEipDeleteProtectUri(eip string) string {
 	return getEipUriWithEip(eip) + REQUEST_UPDATE_DELETEPROTECT_URL
+}
+
+func getCancelEipTransferUri(version string) string {
+	return bce.URI_PREFIX + version + bce.URI_PREFIX + CONSTANT_TRANSFER
+}
+
+func getCreateEipTransferUri(version string) string {
+	return bce.URI_PREFIX + version + bce.URI_PREFIX + CONSTANT_TRANSFER
+}
+
+func getListEipTransferUri(version string) string {
+	return bce.URI_PREFIX + version + bce.URI_PREFIX + CONSTANT_TRANSFER
+}
+
+func getReceiveEipTransferUri(version string) string {
+	return bce.URI_PREFIX + version + bce.URI_PREFIX + CONSTANT_TRANSFER
+}
+
+func getRejectEipTransferUri(version string) string {
+	return bce.URI_PREFIX + version + bce.URI_PREFIX + CONSTANT_TRANSFER
 }

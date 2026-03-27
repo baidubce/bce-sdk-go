@@ -17,6 +17,7 @@ func CreatePeerConn() {
 		fmt.Println("create client err:", err)
 		return
 	}
+	deleteProtect := false
 	args := &vpc.CreatePeerConnArgs{
 		// 请求标识
 		ClientToken: getClientToken(),
@@ -42,6 +43,8 @@ func CreatePeerConn() {
 		Billing: &vpc.Billing{
 			PaymentTiming: vpc.PAYMENT_TIMING_POSTPAID,
 		},
+		// 设置对等连接的释放保护开关，可选，默认为false
+		DeleteProtect: &deleteProtect,
 	}
 	result, err := client.CreatePeerConn(args)
 	if err != nil {

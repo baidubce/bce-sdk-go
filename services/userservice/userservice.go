@@ -152,6 +152,10 @@ func (c *Client) UserServiceAddAuth(service string, args *UserServiceAuthArgs) e
 		args = &UserServiceAuthArgs{}
 	}
 
+	if len(service) == 0 {
+		return fmt.Errorf("unset service")
+	}
+
 	if len(args.AuthList) == 0 {
 		return fmt.Errorf("unset auth list")
 	}

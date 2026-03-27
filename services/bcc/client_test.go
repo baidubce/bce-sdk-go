@@ -395,6 +395,17 @@ func TestRebootInstance(t *testing.T) {
 	fmt.Println(res)
 }
 
+func TestBatchRebootInstance(t *testing.T) {
+	instanceIds := []string{"i-inst1", "i-inst2"}
+	batchRebootArgs := &api.BatchRebootInstanceReq{
+		InstanceIds: instanceIds,
+		ForceStop:   false,
+	}
+	res, err := BCC_CLIENT.BatchRebootInstance(batchRebootArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(res)
+}
+
 func TestRebuildInstance(t *testing.T) {
 	rebuildArgs := &api.RebuildInstanceArgs{
 		ImageId:   "ImageId",

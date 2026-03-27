@@ -13,8 +13,10 @@ func UpdatePeerConn() {
 		return
 	}
 	args := &vpc.UpdatePeerConnArgs{
+		// 请求标识
+		ClientToken: getClientToken(),
 		// 设置对等连接的接口ID 不可更改，必选
-		LocalIfId:   "localIfId",
+		LocalIfId: "localIfId",
 		// 设置对等连接的本端端口名称
 		LocalIfName: "test-update",
 		// 设置对等连接的本端端口描述
@@ -23,8 +25,8 @@ func UpdatePeerConn() {
 	peerConnId := "peer-conn-id"
 	if err := client.UpdatePeerConn(peerConnId, args); err != nil {
 		fmt.Println("update peer conn error: ", err)
-		return 
+		return
 	}
-	
+
 	fmt.Printf("update peer conn %s success", peerConnId)
 }

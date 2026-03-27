@@ -861,6 +861,7 @@ func TestGetPeerConnDetail(t *testing.T) {
 
 func TestUpdatePeerConn(t *testing.T) {
 	args := &UpdatePeerConnArgs{
+		ClientToken: getClientToken(),
 		LocalIfId:   LocalIfID,
 		LocalIfName: "local-interface-update",
 		Description: "peer conn update",
@@ -935,6 +936,11 @@ func TestClosePeerConnSyncDNS(t *testing.T) {
 
 	// wait until dns sync completed
 	err = waitStateForPeerConn(PeerConnID, DNS_STATUS_CLOSE)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestRefundPeerConn(t *testing.T) {
+	err := VPC_CLIENT.RefundPeerConn(PeerConnID, getClientToken())
 	ExpectEqual(t.Errorf, nil, err)
 }
 
@@ -1240,10 +1246,12 @@ func TestDeleteIpAddress(t *testing.T) {
 }
 
 func TestUpdateIpSet(t *testing.T) {
+	name := "test_update_ip_set"
+	description := "this is a test"
 	args := &UpdateIpSetArgs{
 		ClientToken: getClientToken(),
-		Name:        "test_update_ip_set",
-		Description: "this is a test",
+		Name:        &name,
+		Description: &description,
 	}
 	IpSetID = "ips-2etsti1g24hv"
 	err := VPC_CLIENT.UpdateIpSet(IpSetID, args)
@@ -1317,10 +1325,12 @@ func TestUnbindIpSet(t *testing.T) {
 }
 
 func TestUpdateIpGroup(t *testing.T) {
+	name := "test_update_ip_group"
+	description := "this is a test"
 	args := &UpdateIpGroupArgs{
 		ClientToken: getClientToken(),
-		Name:        "test_update_ip_group",
-		Description: "this is a test",
+		Name:        &name,
+		Description: &description,
 	}
 	IpGroupID = "ipg-9vd6xtyjz0in"
 	err := VPC_CLIENT.UpdateIpGroup(IpGroupID, args)
@@ -1369,4 +1379,104 @@ func TestGetRouteRuleDetail(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 	r, _ := json.Marshal(result)
 	fmt.Println("GetRouteRuleDetail result:", string(r))
+}
+
+// TestCreateIPv6Gateway - 测试创建IPv6网关接口（补充了ResourceGroupId和DeleteProtect字段）
+func TestCreateIPv6Gateway(t *testing.T) {
+	deleteProtect := true
+	args := &CreateIPv6GatewayArgs{
+		ClientToken:     getClientToken(),
+		Name:            "TestSDK-IPv6Gateway",
+		VpcId:           "vpc-90akjp09ehwx",
+		BandwidthInMbps: 10,
+		Billing: &Billing{
+			PaymentTiming: PAYMENT_TIMING_POSTPAID,
+		},
+		Tags: []model.TagModel{
+			{
+				TagKey:   "tagKey",
+				TagValue: "tagValue",
+			},
+		},
+		ResourceGroupId: "RESG-evSwqZkkaeS",
+		DeleteProtect:   &deleteProtect,
+	}
+	result, err := VPC_CLIENT.CreateIPv6Gateway(args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, _ := json.Marshal(result)
+	fmt.Println("CreateIPv6Gateway result:", string(r))
+}
+
+// TestListIPv6Gateway - 测试查询IPv6网关列表接口（验证DeleteProtect返回字段）
+func TestListIPv6Gateway(t *testing.T) {
+	args := &ListIPv6GatewayArgs{
+		VpcId: "vpc-90akjp09ehwx",
+	}
+	result, err := VPC_CLIENT.ListIPv6Gateway(args)
+	ExpectEqual(t.Errorf, nil, err)
+	r, _ := json.Marshal(result)
+	fmt.Println("ListIPv6Gateway result:", string(r))
+}
+
+// TestDeleteIPv6GatewayEgressOnlyRule - 测试删除IPv6只出不进策略接口（已修复WithBody问题）
+func TestDeleteIPv6GatewayEgressOnlyRule(t *testing.T) {
+	gatewayId := "gw-aU5MtkOD"
+	egressOnlyRuleId := "ipv6_seg-4Aae8TGv"
+	args := &DeleteIPv6GatewayEgressOnlyRuleArgs{
+		ClientToken: getClientToken(),
+	}
+	err := VPC_CLIENT.DeleteIPv6GatewayEgressOnlyRule(gatewayId, egressOnlyRuleId, args)
+	ExpectEqual(t.Errorf, nil, err)
+	fmt.Println("DeleteIPv6GatewayEgressOnlyRule success")
+}
+
+// TestUpdateIPv6GatewayRateLimitRule - 测试更新IPv6网关限速策略接口（使用指针类型参数）
+func TestUpdateIPv6GatewayRateLimitRule(t *testing.T) {
+	gatewayId := "gw-aU5MtkOD"
+	rateLimitRuleId := "ipv6_qos-5i3lWW0j"
+	ingressBandwidth := 5
+	egressBandwidth := 5
+	args := &UpdateIPv6GatewayRateLimitRuleArgs{
+		ClientToken:            getClientToken(),
+		IngressBandwidthInMbps: &ingressBandwidth,
+		EgressBandwidthInMbps:  &egressBandwidth,
+	}
+	err := VPC_CLIENT.UpdateIPv6GatewayRateLimitRule(gatewayId, rateLimitRuleId, args)
+	ExpectEqual(t.Errorf, nil, err)
+	fmt.Println("UpdateIPv6GatewayRateLimitRule success")
+}
+
+// TestDeleteIPv6GatewayRateLimitRule - 测试删除IPv6网关限速策略接口（已修复WithBody问题）
+func TestDeleteIPv6GatewayRateLimitRule(t *testing.T) {
+	gatewayId := "gw-aU5MtkOD"
+	rateLimitRuleId := "ipv6_qos-5i3lWW0j"
+	args := &DeleteIPv6GatewayRateLimitRuleArgs{
+		ClientToken: getClientToken(),
+	}
+	err := VPC_CLIENT.DeleteIPv6GatewayRateLimitRule(gatewayId, rateLimitRuleId, args)
+	ExpectEqual(t.Errorf, nil, err)
+	fmt.Println("DeleteIPv6GatewayRateLimitRule success")
+}
+
+// TestUpdateIPv6GatewayDeleteProtect - 测试更新IPv6网关释放保护接口（新增接口）
+func TestUpdateIPv6GatewayDeleteProtect(t *testing.T) {
+	gatewayId := "gw-aU5MtkOD"
+	args := &UpdateIPv6GatewayDeleteProtectArgs{
+		ClientToken:   getClientToken(),
+		DeleteProtect: false,
+	}
+	err := VPC_CLIENT.UpdateIPv6GatewayDeleteProtect(gatewayId, args)
+	ExpectEqual(t.Errorf, nil, err)
+	fmt.Println("UpdateIPv6GatewayDeleteProtect success")
+}
+
+// TestDeleteIPv6Gateway - 测试删除IPv6网关接口（已修复WithBody问题）
+func TestDeleteIPv6Gateway(t *testing.T) {
+	gatewayId := "gw-aU5MtkOD"
+	args := &DeleteIPv6GatewayArgs{
+		ClientToken: getClientToken(),
+	}
+	err := VPC_CLIENT.DeleteIPv6Gateway(gatewayId, args)
+	ExpectEqual(t.Errorf, nil, err)
+	fmt.Println("DeleteIPv6Gateway success")
 }

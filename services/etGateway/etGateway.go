@@ -100,7 +100,7 @@ func (c *Client) UpdateEtGateway(updateEtGatewayArgs *UpdateEtGatewayArgs) error
 func (c *Client) DeleteEtGateway(etGatewayId, clientToken string) error {
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForEtGatewayId(etGatewayId)).
-		WithQueryParam("clientToken", clientToken).
+		WithQueryParamFilter("clientToken", clientToken).
 		WithMethod(http.DELETE).
 		Do()
 }

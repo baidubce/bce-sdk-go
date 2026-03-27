@@ -117,6 +117,17 @@ func (c *Client) StartHpas(body *api.StartHpasReq) error {
 	return api.StartHpas(c, body)
 }
 
+// ModifyHpasJumbo -
+//
+// PARAMS:
+//   - body: body参数
+//
+// RETURNS:
+//   - error: the return error if any occurs
+func (c *Client) ModifyHpasJumbo(body *api.ModifyJumboReq) error {
+	return api.ModifyHpasJumbo(c, body)
+}
+
 // RebootHpas -
 //
 // PARAMS:

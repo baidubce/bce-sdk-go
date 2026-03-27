@@ -183,7 +183,7 @@ func (c *Client) ListPrivateZone(request *ListPrivateZoneRequest) (
 //     - *api.ListRecordResponse:
 //     - error: the return error if any occurs
 func (c *Client) ListRecord(zoneId string, request *ListRecordRequest) (*ListRecordResponse, error) {
-	return ListRecord(c, zoneId, request.Marker, request.MaxKeys, request.SourceType)
+	return ListRecord(c, zoneId, request)
 }
 
 // UnbindVpc -

@@ -89,28 +89,28 @@ func TestMockHTTPClient(t *testing.T) {
 	time1 := 2 * time.Second
 	respBody := "body-string"
 	testMockRoundTripper := &MockRoundTripper{
-		Err:         fmt.Errorf("erro1"),
-		StatusCode:  http.StatusOK,
-		StatusMsg:   http.StatusText(http.StatusOK),
+		Err:         []error{fmt.Errorf("erro1")},
+		StatusCode:  []int{http.StatusOK},
+		StatusMsg:   []string{http.StatusText(http.StatusOK)},
 		RespBody:    []string{respBody},
 		RequestTime: &time1,
 		Headers:     make(map[string]string),
 	}
-	ExpectEqual(t, fmt.Errorf("erro1"), testMockRoundTripper.Err)
-	ExpectEqual(t, http.StatusOK, testMockRoundTripper.StatusCode)
-	ExpectEqual(t, http.StatusText(http.StatusOK), testMockRoundTripper.StatusMsg)
+	ExpectEqual(t, fmt.Errorf("erro1"), testMockRoundTripper.Err[0])
+	ExpectEqual(t, http.StatusOK, testMockRoundTripper.StatusCode[0])
+	ExpectEqual(t, http.StatusText(http.StatusOK), testMockRoundTripper.StatusMsg[0])
 	ExpectEqual(t, respBody, testMockRoundTripper.RespBody[0])
 	ExpectEqual(t, time1, *testMockRoundTripper.RequestTime)
 	ExpectEqual(t, make(map[string]string), testMockRoundTripper.Headers)
 	option := SetHTTPClientDoError(fmt.Errorf("error2"))
 	option(testMockRoundTripper)
-	ExpectEqual(t, fmt.Errorf("error2"), testMockRoundTripper.Err)
+	ExpectEqual(t, fmt.Errorf("error2"), testMockRoundTripper.Err[0])
 	option = SetStatusCode(http.StatusAccepted)
 	option(testMockRoundTripper)
-	ExpectEqual(t, http.StatusAccepted, testMockRoundTripper.StatusCode)
+	ExpectEqual(t, http.StatusAccepted, testMockRoundTripper.StatusCode[0])
 	option = SetStatusMsg(http.StatusText(http.StatusAccepted))
 	option(testMockRoundTripper)
-	ExpectEqual(t, http.StatusText(http.StatusAccepted), testMockRoundTripper.StatusMsg)
+	ExpectEqual(t, http.StatusText(http.StatusAccepted), testMockRoundTripper.StatusMsg[0])
 	respBody1 := "body--string--1"
 	option = SetRespBody(respBody1)
 	option(testMockRoundTripper)
@@ -128,7 +128,7 @@ func TestMockHTTPClient(t *testing.T) {
 	ExpectEqual(t, len(reqBody), req.ContentLength)
 	resp, err := testMockRoundTripper.RoundTrip(req)
 	ExpectEqual(t, nil, resp)
-	ExpectEqual(t, testMockRoundTripper.Err, err)
+	ExpectEqual(t, testMockRoundTripper.Err[0], err)
 	testMockRoundTripper.Err = nil
 	resp, err = testMockRoundTripper.RoundTrip(req)
 	ExpectEqual(t, nil, err)
@@ -138,6 +138,11 @@ func TestMockHTTPClient(t *testing.T) {
 	resp.Body.Read(buf)
 	ExpectEqual(t, respBody1, string(buf))
 	ExpectEqual(t, map[string][]string{"Key1": {"value1"}}, resp.Header)
+	//multi error
+	option = AppendHTTPClientDoError([]error{fmt.Errorf("error1"), fmt.Errorf("error2")})
+	option(testMockRoundTripper)
+	ExpectEqual(t, 2, len(testMockRoundTripper.Err))
+
 	//multi resp body
 	respBody11 := "resp-body-001"
 	respBody22 := "resp-body-002"

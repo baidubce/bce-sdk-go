@@ -47,5 +47,8 @@ func ListEtGatewayDetail() {
 		fmt.Println("et gateway etGateway speed: ", etGateway.Speed)
 		fmt.Println("et gateway etGateway channel id: ", etGateway.ChannelId)
 		fmt.Println("et gateway etGateway channel local cidrs: ", etGateway.LocalCidrs)
+		fmt.Println("et gateway etGateway enableIpv6: ", etGateway.EnableIpv6)
+		fmt.Println("et gateway etGateway ipv6 local cidrs: ", etGateway.Ipv6LocalCidrs)
+		fmt.Println("et gateway etGateway tags: ", etGateway.Tags)
 	}
 }

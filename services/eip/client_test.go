@@ -1,14 +1,16 @@
 package eip
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/model"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"testing"
+
+	"github.com/baidubce/bce-sdk-go/model"
 
 	"github.com/baidubce/bce-sdk-go/util"
 	"github.com/baidubce/bce-sdk-go/util/log"
@@ -569,5 +571,87 @@ func TestClient_UpdateEipDeleteProtect(t *testing.T) {
 		ClientToken:   "",
 	}
 	err := EIP_CLIENT.UpdateEipDeleteProtect(EIP_ADDRESS, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_CancelEipTransfer(t *testing.T) {
+	cancelEipTransferRequest := &CancelEipTransferRequest{
+		ClientToken:    util.PtrString(""),
+		TransferIdList: []*string{},
+	}
+	err := EIP_CLIENT.CancelEipTransfer(cancelEipTransferRequest)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_CreateEipTransfer(t *testing.T) {
+	createEipTransferRequest := &CreateEipTransferRequest{
+		ClientToken:          util.PtrString(""),
+		TransferType:         util.PtrString(""),
+		TransferResourceList: []*string{},
+		ToUserId:             util.PtrString(""),
+	}
+	result := &CreateEipTransferResponse{}
+	result, err := EIP_CLIENT.CreateEipTransfer(createEipTransferRequest)
+	if err != nil {
+		fmt.Println("request failed:", err)
+		return
+	}
+	data, err := json.MarshalIndent(result, "", "    ")
+	if err != nil {
+		fmt.Println("json marshalIndent failed:", err)
+		return
+	}
+	fmt.Println(string(data))
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_ListEipTransfer(t *testing.T) {
+	listEipTransferRequest := &ListEipTransferRequest{
+		MaxKeys:           util.PtrInt32(10),
+		Marker:            util.PtrString(""),
+		Direction:         util.PtrString(""),
+		TransferId:        util.PtrString(""),
+		Status:            util.PtrString(""),
+		FuzzyTransferId:   util.PtrString(""),
+		FuzzyInstanceId:   util.PtrString(""),
+		FuzzyInstanceName: util.PtrString(""),
+		FuzzyInstanceIp:   util.PtrString(""),
+	}
+	result := &ListEipTransferResponse{}
+	result, err := EIP_CLIENT.ListEipTransfer(listEipTransferRequest)
+	if err != nil {
+		fmt.Println("request failed:", err)
+		return
+	}
+	data, err := json.Marshal(result)
+	if err != nil {
+		fmt.Println("json marshal failed:", err)
+		return
+	}
+	var out bytes.Buffer
+	err = json.Indent(&out, data, "", "  ")
+	if err != nil {
+		fmt.Println("json indent failed:", err)
+		return
+	}
+	fmt.Println(out.String())
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_AcceptEipTransfer(t *testing.T) {
+	acceptEipTransferRequest := &AcceptEipTransferRequest{
+		ClientToken:    util.PtrString(""),
+		TransferIdList: []*string{},
+	}
+	err := EIP_CLIENT.AcceptEipTransfer(acceptEipTransferRequest)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_RejectEipTransfer(t *testing.T) {
+	rejectEipTransferRequest := &RejectEipTransferRequest{
+		ClientToken:    util.PtrString(""),
+		TransferIdList: []*string{},
+	}
+	err := EIP_CLIENT.RejectEipTransfer(rejectEipTransferRequest)
 	ExpectEqual(t.Errorf, nil, err)
 }

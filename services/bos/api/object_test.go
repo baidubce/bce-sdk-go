@@ -817,6 +817,31 @@ func TestAppendObject(t *testing.T) {
 	ExpectEqual(t, nil, err)
 	ExpectEqual(t, "67b92a7c2a9b9c1809a6ae3295dcc127", res.ETag)
 	ExpectEqual(t, 100, res.NextAppendOffset)
+
+	// case9: first return 409, second return 200
+	args.ObjectExpires = 3
+	options9 := []util.MockRoundTripperOption{
+		util.AppendStatusCode([]int{http.StatusConflict, http.StatusOK}),
+		util.AppendStatusMsg([]string{http.StatusText(http.StatusConflict), http.StatusText(http.StatusOK)}),
+		util.AddHeaders(map[string]string{
+			my_http.BCE_NEXT_APPEND_OFFSET: "100",
+			my_http.ETAG:                   "67b92a7c2a9b9c1809a6ae3295dcc127",
+		}),
+	}
+	mockHttpClient9 := util.NewMockHTTPClient(options9...)
+	ExpectEqual(t, true, mockHttpClient9 != nil)
+	client.HTTPClient = mockHttpClient9
+	content9, err := bce.NewBodyFromString(data)
+	ExpectEqual(t, nil, err)
+	res, err = AppendObject(client, bucket, object, content9, args, nil)
+	ExpectEqual(t, bceServiceErro409, err)
+	ExpectEqual(t, nil, res)
+	content91, err := bce.NewBodyFromString(data)
+	ExpectEqual(t, nil, err)
+	res, err = AppendObject(client, bucket, object, content91, args, nil)
+	ExpectEqual(t, nil, err)
+	ExpectEqual(t, "67b92a7c2a9b9c1809a6ae3295dcc127", res.ETag)
+	ExpectEqual(t, 100, res.NextAppendOffset)
 }
 
 func TestDeleteObject(t *testing.T) {
@@ -990,6 +1015,42 @@ func TestGeneratePresignedUrlInternal(t *testing.T) {
 	log.Warnf("pre-signed url: %s", res)
 	res = GeneratePresignedUrlPathStyle(conf, signer, bucket, "", expire, object, headers, params)
 	log.Warnf("pre-signed url: %s", res)
+
+	// case: test line 989 branch - !path_style && method == GET && invalid object
+	conf.Endpoint = "localhost:8080"
+	conf.CnameEnabled = false
+
+	// case5: path_style=false, method=GET, object=""
+	res = GeneratePresignedUrlInternal(conf, signer, bucket, "", expire, my_http.GET, headers, params, false)
+	ExpectEqual(t, "", res)
+
+	// case6: path_style=false, method=GET (default), object="/"
+	res = GeneratePresignedUrlInternal(conf, signer, bucket, "/", expire, "", headers, params, false)
+	ExpectEqual(t, "", res)
+
+	// case7: path_style=false, method=GET, object="v1"
+	res = GeneratePresignedUrlInternal(conf, signer, bucket, "v1", expire, my_http.GET, headers, params, false)
+	ExpectEqual(t, "", res)
+
+	// case8: path_style=false, method=GET, object="/v1/"
+	res = GeneratePresignedUrlInternal(conf, signer, bucket, "/v1/", expire, my_http.GET, headers, params, false)
+	ExpectEqual(t, "", res)
+
+	// case9: path_style=false, method=GET, object="/v1" (trimmed to "v1")
+	res = GeneratePresignedUrlInternal(conf, signer, bucket, "/v1", expire, my_http.GET, headers, params, false)
+	ExpectEqual(t, "", res)
+
+	// case10: path_style=false, method=PUT, object="" (should NOT return empty, PUT method bypasses check)
+	res = GeneratePresignedUrlInternal(conf, signer, bucket, "", expire, my_http.PUT, headers, params, false)
+	ExpectEqual(t, true, res != "")
+
+	// case11: path_style=true, method=GET, object="" (should NOT return empty, path_style=true bypasses check)
+	res = GeneratePresignedUrlInternal(conf, signer, bucket, "", expire, my_http.GET, headers, params, true)
+	ExpectEqual(t, "", res)
+
+	// case12: path_style=false, method=GET, object="valid-object" (valid object, should NOT return empty)
+	res = GeneratePresignedUrlInternal(conf, signer, bucket, "valid-object", expire, my_http.GET, headers, params, false)
+	ExpectEqual(t, true, res != "")
 }
 
 func TestPutObjectAcl(t *testing.T) {

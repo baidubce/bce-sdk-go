@@ -37,4 +37,5 @@ type CreateHpasReq struct {
 	ReservedInstance    *CreateCombinedCouponReq `json:"reservedInstance,omitempty"`
 	RootDiskSizeInGb    int                      `json:"rootDiskSizeInGb,omitempty"`
 	RootDiskStorageType string                   `json:"rootDiskStorageType,omitempty"`
+	EnableJumboFrame    bool                     `json:"enableJumboFrame,omitempty"`
 }

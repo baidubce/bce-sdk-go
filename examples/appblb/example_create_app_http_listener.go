@@ -27,6 +27,10 @@ func CreateAppHTTPListener() {
 	createAppHTTPListenerArgs := &appblb.CreateAppHTTPListenerArgs{
 		ListenerPort: 8080,         // 监听端口
 		Scheduler:    "RoundRobin", // 调度算法
+		AdditionalAttributes: &appblb.AdditionalAttributesModel{ // HTTP定制配置
+			GzipJson: "on",
+		},
+		Description: "http listener", // 描述信息
 	}
 
 	// 创建appblb http监听器

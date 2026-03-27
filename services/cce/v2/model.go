@@ -33,6 +33,11 @@ type Interface interface {
 	ListInstancesByPage(args *ListInstancesByPageArgs) (*ListInstancesResponse, error)
 	CreateScaleUpInstanceGroupTask(args *CreateScaleUpInstanceGroupTaskArgs) (*CreateTaskResp, error)
 	CreateScaleDownInstanceGroupTask(args *CreateScaleDownInstanceGroupTaskArgs) (*CreateTaskResp, error)
+	GetInstanceGroupUpgradeComponentVersions(args *GetInstanceGroupUpgradeComponentVersionsArgs) (*GetInstanceGroupUpgradeComponentVersionsResponse, error)
+
+	CreateWorkflow(args *CreateWorkflowArgs) (*CreateWorkflowResponse, error)
+	GetWorkflow(args *GetWorkflowArgs) (*GetWorkflowResponse, error)
+	UpdateWorkflow(args *UpdateWorkflowArgs) (*UpdateWorkflowResponse, error)
 
 	GetClusterQuota() (*GetQuotaResponse, error)
 	GetClusterNodeQuota(clusterID string) (*GetQuotaResponse, error)
@@ -912,6 +917,71 @@ type AttachInstancesToInstanceGroupRequest struct {
 type AttachInstancesToInstanceGroupResponse struct {
 	CommonResponse
 	TaskID string `json:"taskID"`
+}
+
+type GetInstanceGroupUpgradeComponentVersionsArgs struct {
+	ClusterID       string
+	InstanceGroupID string
+}
+
+type GetInstanceGroupUpgradeComponentVersionsResponse struct {
+	RequestID string                   `json:"requestID"`
+	Result    *types.UpgradeComponents `json:"result"`
+}
+
+type CreateWorkflowRequest struct {
+	WorkflowType   types.WorkflowType   `json:"workflowType"`
+	WorkflowConfig types.WorkflowConfig `json:"workflowConfig"`
+	WatchDogConfig types.WatchDogConfig `json:"watchDogConfig"`
+}
+
+type CreateWorkflowResponse struct {
+	WorkflowID string `json:"workflowID"`
+	RequestID  string `json:"requestID"`
+}
+
+type Workflow struct {
+	Spec   *types.WorkflowSpec   `json:"spec"`
+	Status *types.WorkflowStatus `json:"status"`
+}
+
+type GetWorkflowResponse struct {
+	Workflow *Workflow `json:"workflow"`
+}
+
+type UpdateWorkflowAction string
+
+const (
+	UpdateWorkflowActionPause          UpdateWorkflowAction = "pause"
+	UpdateWorkflowActionResume         UpdateWorkflowAction = "resume"
+	UpdateWorkflowActionUpdateSpec     UpdateWorkflowAction = "updateSpec"
+)
+
+type UpdateWorkflowRequest struct {
+	Action UpdateWorkflowAction `json:"action"`
+	Spec   *types.WorkflowSpec  `json:"spec,omitempty"`
+}
+
+type UpdateWorkflowResponse struct {
+	ClusterID  string `json:"clusterID"`
+	WorkflowID string `json:"workflowID"`
+	RequestID  string `json:"requestID"`
+}
+
+type CreateWorkflowArgs struct {
+	ClusterID string
+	Request   *CreateWorkflowRequest
+}
+
+type GetWorkflowArgs struct {
+	ClusterID  string
+	WorkflowID string
+}
+
+type UpdateWorkflowArgs struct {
+	ClusterID  string
+	WorkflowID string
+	Request    *UpdateWorkflowRequest
 }
 
 // KubeConfigType - kube config 类型

@@ -25,10 +25,10 @@ func UpdateAppTCPListener() {
 
 	blbID := "Your BlbID" // blb实例ID
 	updateAppTCPListenerArgs := &appblb.UpdateAppTCPListenerArgs{
-		UpdateAppListenerArgs: appblb.UpdateAppListenerArgs{
-			ListenerPort: 80,           // 监听端口
-			Scheduler:    "RoundRobin", // 调度算法
-		},
+		ListenerPort:      80,                     // 监听端口
+		Scheduler:         "RoundRobin",           // 调度算法
+		TcpSessionTimeout: 900,                    // TCP连接超时时间（秒）
+		Description:       "updated tcp listener", // 描述信息
 	}
 
 	// 更新appblb tcp监听器

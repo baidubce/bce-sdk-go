@@ -57,6 +57,7 @@ const (
 	REQUEST_RECYCLE              = "/recycle"
 	REQUEST_DELETEPREPAY         = "/volume/deletePrepay"
 	REQUEST_PROGRESS             = "/volume/progress"
+	REQUEST_BATCH_INSTANCE_URI   = "/batchAction"
 
 	//
 	REQUEST_FLAVOR_SPEC_URI                        = "/instance/flavorSpec"
@@ -138,6 +139,10 @@ func getInstanceBySpecUri() string {
 
 func getInstanceUriWithId(id string) string {
 	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + "/" + id
+}
+
+func getBatchInstanceUri() string {
+	return URI_PREFIXV2 + REQUEST_INSTANCE_URI + REQUEST_BATCH_INSTANCE_URI
 }
 
 func getPrepaidInstanceDeleteUri() string {

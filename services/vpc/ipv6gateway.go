@@ -89,7 +89,6 @@ func (c *Client) DeleteIPv6Gateway(gatewayId string, args *DeleteIPv6GatewayArgs
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForIpv6GatewayId(gatewayId)).
 		WithMethod(http.DELETE).
-		WithBody(args).
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		Do()
 }
@@ -189,7 +188,6 @@ func (c *Client) DeleteIPv6GatewayEgressOnlyRule(gatewayId, egressOnlyRuleId str
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForIpv6GatewayId(gatewayId)+"/egressOnlyRule/"+egressOnlyRuleId).
 		WithMethod(http.DELETE).
-		WithBody(args).
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		Do()
 }
@@ -267,7 +265,6 @@ func (c *Client) DeleteIPv6GatewayRateLimitRule(gatewayId, rateLimitRuleId strin
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForIpv6GatewayId(gatewayId)+"/rateLimitRule/"+rateLimitRuleId).
 		WithMethod(http.DELETE).
-		WithBody(args).
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		Do()
 }
@@ -288,6 +285,27 @@ func (c *Client) UpdateIPv6GatewayRateLimitRule(gatewayId, rateLimitRuleId strin
 
 	return bce.NewRequestBuilder(c).
 		WithURL(getURLForIpv6GatewayId(gatewayId)+"/rateLimitRule/"+rateLimitRuleId).
+		WithMethod(http.PUT).
+		WithBody(args).
+		WithQueryParamFilter("clientToken", args.ClientToken).
+		Do()
+}
+
+// UpdateIPv6GatewayDeleteProtect - update the delete protect status of the specified ipv6 gateway
+//
+// PARAMS:
+//   - gatewayId: the id of the specific ipv6 gateway
+//   - args: the arguments to update ipv6 gateway delete protect
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) UpdateIPv6GatewayDeleteProtect(gatewayId string, args *UpdateIPv6GatewayDeleteProtectArgs) error {
+	if args == nil {
+		return errors.New("The UpdateIPv6GatewayDeleteProtectArgs cannot be nil.")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithURL(getURLForIpv6GatewayId(gatewayId)+"/deleteProtect").
 		WithMethod(http.PUT).
 		WithBody(args).
 		WithQueryParamFilter("clientToken", args.ClientToken).

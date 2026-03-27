@@ -27,13 +27,14 @@ import (
 // CreateProbe - create a new probe with the specified parameters
 //
 // PARAMS:
-//     - args: the arguments to create a probe
+//   - args: the arguments to create a probe
+//
 // RETURNS:
-//     - *CreateProbeResult: the ID of the probe newly created
-//     - error: nil if success otherwise the specific error
+//   - *CreateProbeResult: the ID of the probe newly created
+//   - error: nil if success otherwise the specific error
 func (c *Client) CreateProbe(args *CreateProbeArgs) (*CreateProbeResult, error) {
 	if args == nil {
-		return nil, fmt.Errorf("CreateProbeResult cannot be nil.")
+		return nil, fmt.Errorf("CreateProbeArgs cannot be nil.")
 	}
 	result := &CreateProbeResult{}
 	err := bce.NewRequestBuilder(c).
@@ -50,10 +51,11 @@ func (c *Client) CreateProbe(args *CreateProbeArgs) (*CreateProbeResult, error) 
 // UpdateProbe - update a probe with the specified parameters
 //
 // PARAMS:
-//     - probeId: the ID of the probe to be updated
-//     - args: the arguments to update the probe
+//   - probeId: the ID of the probe to be updated
+//   - args: the arguments to update the probe
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) UpdateProbe(probeId string, args *UpdateProbeArgs) error {
 	if probeId == "" {
 		return fmt.Errorf("The probeId cannot be blank.")
@@ -72,10 +74,11 @@ func (c *Client) UpdateProbe(probeId string, args *UpdateProbeArgs) error {
 
 // DeleteProbe - delete a probe
 // PARAMS:
-//     - probeId: the ID of the probe to be deleted
-//     - clientToken: the client token of the request
+//   - probeId: the ID of the probe to be deleted
+//   - clientToken: the client token of the request
+//
 // RETURNS:
-//     - error: nil if success otherwise the specific error
+//   - error: nil if success otherwise the specific error
 func (c *Client) DeleteProbe(probeId string, clientToken string) error {
 	if probeId == "" {
 		return fmt.Errorf("The probeId cannot be blank.")
@@ -91,10 +94,11 @@ func (c *Client) DeleteProbe(probeId string, clientToken string) error {
 // ListProbes - list all probes of the user
 //
 // PARAMS:
-//     - args: the arguments to list probes
+//   - args: the arguments to list probes
+//
 // RETURNS:
-//     - *ListProbesResult: the infromation of all probes
-//     - error: nil if success otherwise the specific error
+//   - *ListProbesResult: the infromation of all probes
+//   - error: nil if success otherwise the specific error
 func (c *Client) ListProbes(args *ListProbesArgs) (*ListProbesResult, error) {
 	if args == nil {
 		args = &ListProbesArgs{}
@@ -120,10 +124,11 @@ func (c *Client) ListProbes(args *ListProbesArgs) (*ListProbesResult, error) {
 // GetProbeDetail - get details of a probe
 //
 // PARAMS:
-//     - probeId: the ID of the probe to get
+//   - probeId: the ID of the probe to get
+//
 // RETURNS:
-//     - *Probe: the infromation of the probe
-//     - error: nil if success otherwise the specific error
+//   - *Probe: the infromation of the probe
+//   - error: nil if success otherwise the specific error
 func (c *Client) GetProbeDetail(probeId string) (*Probe, error) {
 	if probeId == "" {
 		return nil, fmt.Errorf("The probeId cannot be blank.")

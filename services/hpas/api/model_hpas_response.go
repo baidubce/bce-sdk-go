@@ -43,6 +43,8 @@ type HpasResponse struct {
 	KeypairName         string        `json:"keypairName"`
 	UserData            string        `json:"userData"`
 	VolumeInfo          []VolumeInfo  `json:"volumeInfo"`
+	EnableJumboFrame    bool          `json:"enableJumboFrame"`
+	SupportJumboFrame   bool          `json:"supportJumboFrame"`
 }
 
 type RdmaNicTopo struct {

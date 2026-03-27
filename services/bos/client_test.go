@@ -515,7 +515,7 @@ func TestListObjectVersions(t *testing.T) {
 			    "eTag":"fba9dede5f27731c9771645a39863328",
 			    "size":434234,
 			    "storageClass":"STANDARD",
-			    "isLatest":1,
+			    "isLatest":true,
 			    "versionId":"AKyQMlG4ihY=",
 			    "owner":{
 				   "id":"168bf6fd8fa74d9789f35a283a1f15e2",
@@ -2111,6 +2111,53 @@ func TestUploadPart(t *testing.T) {
 		"a", "b", 1, []byte(content), nil, api.ErrorOption)
 	ExpectEqual(t.Errorf, err, optionError)
 	ExpectEqual(t.Errorf, res, "")
+
+	// UploadPartWithArgs - body is nil
+	res, err = client.UploadPartWithArgs(EXISTS_BUCKET, "a", "b", 1, nil, nil)
+	ExpectEqual(t.Errorf, err, bce.NewBceClientError("upload part content should not be empty"))
+	ExpectEqual(t.Errorf, res, "")
+
+	// UploadPartWithArgs - handle options error
+	res, err = client.UploadPartWithArgs(EXISTS_BUCKET, "a", "b", 1, nil, nil, api.ErrorOption)
+	ExpectEqual(t.Errorf, err, optionError)
+	ExpectEqual(t.Errorf, res, "")
+
+	// UploadPartWithArgs - body is valid, args is nil
+	body3, err := bce.NewBodyFromString(content)
+	ExpectEqual(t.Errorf, err, nil)
+	res, err = client.UploadPartWithArgs(EXISTS_BUCKET, "a", "b", 1, body3, nil)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res, "827ccb0eea8a706c4c34a16891f84e7b")
+
+	// UploadPartWithArgs - body is valid, args with ContentMD5
+	body4, err := bce.NewBodyFromString(content)
+	ExpectEqual(t.Errorf, err, nil)
+	uploadPartArgs := &api.UploadPartArgs{
+		ContentMD5: "test-content-md5",
+	}
+	res, err = client.UploadPartWithArgs(EXISTS_BUCKET, "a", "b", 1, body4, uploadPartArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res, "827ccb0eea8a706c4c34a16891f84e7b")
+
+	// UploadPartWithArgs - body is valid, args with TrafficLimit
+	body5, err := bce.NewBodyFromString(content)
+	ExpectEqual(t.Errorf, err, nil)
+	uploadPartArgs2 := &api.UploadPartArgs{
+		TrafficLimit: 819200, // 100KB/s in bits
+	}
+	res, err = client.UploadPartWithArgs(EXISTS_BUCKET, "a", "b", 2, body5, uploadPartArgs2)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res, "827ccb0eea8a706c4c34a16891f84e7b")
+
+	// UploadPartWithArgs - body is valid, args with ContentCrc32
+	body6, err := bce.NewBodyFromString(content)
+	ExpectEqual(t.Errorf, err, nil)
+	uploadPartArgs3 := &api.UploadPartArgs{
+		ContentCrc32: "test-crc32",
+	}
+	res, err = client.UploadPartWithArgs(EXISTS_BUCKET, "a", "b", 3, body6, uploadPartArgs3)
+	ExpectEqual(t.Errorf, err, nil)
+	ExpectEqual(t.Errorf, res, "827ccb0eea8a706c4c34a16891f84e7b")
 }
 func TestUploadPartCopy(t *testing.T) {
 	respBody := `{   
@@ -2359,6 +2406,95 @@ func TestUploadSuperFile(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 	err = client4.UploadSuperFile(EXISTS_BUCKET, "super-object", currentFileName(), "")
 	ExpectEqual(t.Errorf, "EOF", err.Error())
+
+	// case5: test with crc32 calculation success - verify ContentCrc32 is set in completeArgs
+	// Create a test file large enough for multipart upload (>1MB)
+	testFileName5 := "/tmp/test-upload-super-file-crc32-" + strconv.FormatInt(time.Now().UnixMicro(), 10)
+	testFile5, err := os.Create(testFileName5)
+	ExpectEqual(t.Errorf, nil, err)
+	// Write 2MB of test data to ensure multipart upload
+	testData5 := make([]byte, 2*1024*1024)
+	for i := range testData5 {
+		testData5[i] = byte(i % 256)
+	}
+	_, err = testFile5.Write(testData5)
+	ExpectEqual(t.Errorf, nil, err)
+	testFile5.Close()
+
+	respBody5Complete := `{
+		"location":"http://bj.bcebos.com/BucketName/ObjectName",
+		"bucket":"BucketName",
+		"key":"object",
+		"eTag":"3858f62230ac3c915f300c664312c11f"
+	}`
+	options5 := append(options, util.AppendRespBody([]string{respBody1, respBody5Complete}))
+	client5, err := NewMockBosClient(ak, sk, endpoint, "", options5...)
+	ExpectEqual(t.Errorf, nil, err)
+	client5.MultipartSize = 1 * 1024 * 1024 // 1MB part size
+	err = client5.UploadSuperFile(EXISTS_BUCKET, "super-object-crc32", testFileName5, "")
+	ExpectEqual(t.Errorf, nil, err)
+	os.Remove(testFileName5)
+
+	// case6: test with storage class parameter
+	testFileName6 := "/tmp/test-upload-super-file-storage-" + strconv.FormatInt(time.Now().UnixMicro(), 10)
+	testFile6, err := os.Create(testFileName6)
+	ExpectEqual(t.Errorf, nil, err)
+	testData6 := make([]byte, 2*1024*1024)
+	for i := range testData6 {
+		testData6[i] = byte(i % 256)
+	}
+	_, err = testFile6.Write(testData6)
+	ExpectEqual(t.Errorf, nil, err)
+	testFile6.Close()
+
+	options6 := append(options, util.AppendRespBody([]string{respBody1, respBody5Complete}))
+	client6, err := NewMockBosClient(ak, sk, endpoint, "", options6...)
+	ExpectEqual(t.Errorf, nil, err)
+	client6.MultipartSize = 1 * 1024 * 1024
+	err = client6.UploadSuperFile(EXISTS_BUCKET, "super-object-storage", testFileName6, api.STORAGE_CLASS_STANDARD_IA)
+	ExpectEqual(t.Errorf, nil, err)
+	os.Remove(testFileName6)
+
+	// case7: test with ContentCrc32cFlag enabled (verified through UploadPartArgs)
+	testFileName7 := "/tmp/test-upload-super-file-crc32c-" + strconv.FormatInt(time.Now().UnixMicro(), 10)
+	testFile7, err := os.Create(testFileName7)
+	ExpectEqual(t.Errorf, nil, err)
+	testData7 := make([]byte, 2*1024*1024)
+	for i := range testData7 {
+		testData7[i] = byte(i % 256)
+	}
+	_, err = testFile7.Write(testData7)
+	ExpectEqual(t.Errorf, nil, err)
+	testFile7.Close()
+
+	options7 := append(options, util.AppendRespBody([]string{respBody1, respBody5Complete}))
+	client7, err := NewMockBosClient(ak, sk, endpoint, "", options7...)
+	ExpectEqual(t.Errorf, nil, err)
+	client7.MultipartSize = 1 * 1024 * 1024
+	err = client7.UploadSuperFile(EXISTS_BUCKET, "super-object-crc32c", testFileName7, "")
+	ExpectEqual(t.Errorf, nil, err)
+	os.Remove(testFileName7)
+
+	// case8: test with multiple parts to verify crc32 accumulation
+	testFileName8 := "/tmp/test-upload-super-file-multipart-crc32-" + strconv.FormatInt(time.Now().UnixMicro(), 10)
+	testFile8, err := os.Create(testFileName8)
+	ExpectEqual(t.Errorf, nil, err)
+	// Write 3MB to have 3 parts with 1MB part size
+	testData8 := make([]byte, 3*1024*1024)
+	for i := range testData8 {
+		testData8[i] = byte(i % 256)
+	}
+	_, err = testFile8.Write(testData8)
+	ExpectEqual(t.Errorf, nil, err)
+	testFile8.Close()
+
+	options8 := append(options, util.AppendRespBody([]string{respBody1, respBody5Complete}))
+	client8, err := NewMockBosClient(ak, sk, endpoint, "", options8...)
+	ExpectEqual(t.Errorf, nil, err)
+	client8.MultipartSize = 1 * 1024 * 1024 // 1MB part size, will create 3 parts
+	err = client8.UploadSuperFile(EXISTS_BUCKET, "super-object-multipart", testFileName8, "")
+	ExpectEqual(t.Errorf, nil, err)
+	os.Remove(testFileName8)
 }
 func TestDownloadSuperFile(t *testing.T) {
 	//mock bos client
@@ -2769,9 +2905,9 @@ func TestParallelUpload(t *testing.T) {
 	client5, err := NewMockBosClient(ak, sk, endpoint, "", options5...)
 	ExpectEqual(t.Errorf, nil, err)
 	uploadId := "a44cc9bab11cbd156984767aad637851"
-	uploadInfo, err := client5.parallelPartUpload(EXISTS_BUCKET, EXISTS_OBJECT, currentFileName(), uploadId)
+	completeArgs, err := client5.parallelPartUpload(EXISTS_BUCKET, EXISTS_OBJECT, currentFileName(), uploadId)
 	ExpectEqual(t.Errorf, nil, err)
-	ExpectEqual(t.Errorf, 1, len(uploadInfo))
+	ExpectEqual(t.Errorf, 1, len(completeArgs.Parts))
 
 	// case6:
 	options6 := append(options, util.AppendRespBody([]string{""}))
@@ -2783,9 +2919,120 @@ func TestParallelUpload(t *testing.T) {
 	errChan := make(chan error, 1)
 	resultChan := make(chan api.UploadInfoType, 1)
 	parallelChan <- 1
-	client6.singlePartUpload(EXISTS_BUCKET, EXISTS_OBJECT, uploadId, 1, content6, parallelChan, errChan, resultChan)
+	client6.singlePartUpload(EXISTS_BUCKET, EXISTS_OBJECT, uploadId, 1, content6, parallelChan, errChan, resultChan, nil)
 	result7 := <-resultChan
 	ExpectEqual(t.Errorf, "b54357faf0632cce46e942fa68356b38", result7.ETag)
+
+	// case7: parallelPartUpload with large file (multiple parts) to test crc32 accumulation
+	testFileName7 := "/tmp/test-parallel-upload-crc32-" + strconv.FormatInt(time.Now().UnixMicro(), 10)
+	testFile7, err := os.Create(testFileName7)
+	ExpectEqual(t.Errorf, nil, err)
+	// Write 2MB of test data to have 2 parts with 1MB part size
+	testData7 := make([]byte, 2*1024*1024)
+	for i := range testData7 {
+		testData7[i] = byte(i % 256)
+	}
+	_, err = testFile7.Write(testData7)
+	ExpectEqual(t.Errorf, nil, err)
+	testFile7.Close()
+
+	options7 := append(options, util.AppendRespBody([]string{""}))
+	client7, err := NewMockBosClient(ak, sk, endpoint, "", options7...)
+	ExpectEqual(t.Errorf, nil, err)
+	client7.MultipartSize = 1 * 1024 * 1024 // 1MB part size
+	completeArgs7, err := client7.parallelPartUpload(EXISTS_BUCKET, EXISTS_OBJECT, testFileName7, uploadId)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, 2, len(completeArgs7.Parts))
+	ExpectEqual(t.Errorf, true, completeArgs7.ContentCrc32 != "")
+	ExpectEqual(t.Errorf, true, completeArgs7.ContentCrc32cFlag)
+	os.Remove(testFileName7)
+
+	// case8: parallelPartUpload with empty file (0 bytes) to test partNum=0 branch
+	testFileName8 := "/tmp/test-parallel-upload-empty-" + strconv.FormatInt(time.Now().UnixMicro(), 10)
+	testFile8, err := os.Create(testFileName8)
+	ExpectEqual(t.Errorf, nil, err)
+	testFile8.Close()
+
+	options8 := append(options, util.AppendRespBody([]string{""}))
+	client8, err := NewMockBosClient(ak, sk, endpoint, "", options8...)
+	ExpectEqual(t.Errorf, nil, err)
+	completeArgs8, err := client8.parallelPartUpload(EXISTS_BUCKET, EXISTS_OBJECT, testFileName8, uploadId)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, 1, len(completeArgs8.Parts)) // partNum should be at least 1
+	os.Remove(testFileName8)
+
+	// case9: parallelPartUpload with file not exist
+	options9 := append(options, util.AppendRespBody([]string{""}))
+	client9, err := NewMockBosClient(ak, sk, endpoint, "", options9...)
+	ExpectEqual(t.Errorf, nil, err)
+	_, err = client9.parallelPartUpload(EXISTS_BUCKET, EXISTS_OBJECT, "/tmp/not-exist-file-12345", uploadId)
+	ExpectEqual(t.Errorf, true, err != nil)
+	ExpectEqual(t.Errorf, "open /tmp/not-exist-file-12345: no such file or directory", err.Error())
+
+	// case10: parallelPartUpload with 3 parts to verify ContentCrc32 calculation
+	testFileName10 := "/tmp/test-parallel-upload-3parts-" + strconv.FormatInt(time.Now().UnixMicro(), 10)
+	testFile10, err := os.Create(testFileName10)
+	ExpectEqual(t.Errorf, nil, err)
+	// Write 3MB of test data
+	testData10 := make([]byte, 3*1024*1024)
+	for i := range testData10 {
+		testData10[i] = byte(i % 256)
+	}
+	_, err = testFile10.Write(testData10)
+	ExpectEqual(t.Errorf, nil, err)
+	testFile10.Close()
+
+	options10 := append(options, util.AppendRespBody([]string{""}))
+	client10, err := NewMockBosClient(ak, sk, endpoint, "", options10...)
+	ExpectEqual(t.Errorf, nil, err)
+	client10.MultipartSize = 1 * 1024 * 1024 // 1MB part size, will create 3 parts
+	completeArgs10, err := client10.parallelPartUpload(EXISTS_BUCKET, EXISTS_OBJECT, testFileName10, uploadId)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, 3, len(completeArgs10.Parts))
+	ExpectEqual(t.Errorf, true, completeArgs10.ContentCrc32 != "")
+	ExpectEqual(t.Errorf, true, completeArgs10.ContentCrc32cFlag)
+	os.Remove(testFileName10)
+
+	// case11: parallelPartUpload with ContentCrc32cFlag verification
+	testFileName11 := "/tmp/test-parallel-upload-crc32c-" + strconv.FormatInt(time.Now().UnixMicro(), 10)
+	testFile11, err := os.Create(testFileName11)
+	ExpectEqual(t.Errorf, nil, err)
+	testData11 := make([]byte, 1*1024*1024+100) // slightly larger than 1MB
+	for i := range testData11 {
+		testData11[i] = byte(i % 256)
+	}
+	_, err = testFile11.Write(testData11)
+	ExpectEqual(t.Errorf, nil, err)
+	testFile11.Close()
+
+	options11 := append(options, util.AppendRespBody([]string{""}))
+	client11, err := NewMockBosClient(ak, sk, endpoint, "", options11...)
+	ExpectEqual(t.Errorf, nil, err)
+	client11.MultipartSize = 1 * 1024 * 1024
+	completeArgs11, err := client11.parallelPartUpload(EXISTS_BUCKET, EXISTS_OBJECT, testFileName11, uploadId)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, 2, len(completeArgs11.Parts))
+	// Verify that ContentCrc32cFlag is set when crc32CalcSucc is true
+	ExpectEqual(t.Errorf, true, completeArgs11.ContentCrc32cFlag)
+	os.Remove(testFileName11)
+
+	// case12: singlePartUpload with UploadPartArgs containing ContentCrc32
+	options12 := append(options, util.AppendRespBody([]string{""}))
+	client12, err := NewMockBosClient(ak, sk, endpoint, "", options12...)
+	ExpectEqual(t.Errorf, nil, err)
+	content12, err := bce.NewBodyFromStringV2("test content for crc32", false)
+	ExpectEqual(t.Errorf, nil, err)
+	parallelChan12 := make(chan int, 1)
+	errChan12 := make(chan error, 1)
+	resultChan12 := make(chan api.UploadInfoType, 1)
+	parallelChan12 <- 1
+	uploadArgs12 := &api.UploadPartArgs{
+		ContentCrc32:      "1234567890",
+		ContentCrc32cFlag: true,
+	}
+	client12.singlePartUpload(EXISTS_BUCKET, EXISTS_OBJECT, uploadId, 1, content12, parallelChan12, errChan12, resultChan12, uploadArgs12)
+	result12 := <-resultChan12
+	ExpectEqual(t.Errorf, "b54357faf0632cce46e942fa68356b38", result12.ETag)
 }
 
 func TestParallelUpload_CompleteOk(t *testing.T) {

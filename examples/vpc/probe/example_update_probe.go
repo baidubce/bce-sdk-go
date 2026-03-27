@@ -13,12 +13,12 @@ func UpdateProbe() {
 
 	probeId := "Your Probe ID"
 	updateProbeArgs := &vpc.UpdateProbeArgs{
-		Name:        "TestSDK1",          // 探测名称
-		Frequency:   20,                  // 探测频率
-		DestIp:      "192.168.0.8",       // 探测目标ip
-		DestPort:    "88",                // 探测目标端口
-		Payload:     "test udp update",   // 探测包内容
-		Description: "test update probe", // 子网描述
+		Name:        util.PtrString("TestSDK1"),          // 探测名称
+		Frequency:   util.PtrInt(20),                     // 探测频率
+		DestIp:      util.PtrString("192.168.0.8"),       // 探测目标ip
+		DestPort:    util.PtrInt(88),                     // 探测目标端口
+		Payload:     util.PtrString("test udp update"),   // 探测包内容
+		Description: util.PtrString("test update probe"), // 子网描述
 		ClientToken: util.NewUUID(),
 	}
 	err := client.UpdateProbe(probeId, updateProbeArgs) // 更新探测

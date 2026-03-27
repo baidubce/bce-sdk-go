@@ -542,6 +542,27 @@ func (c *Client) RebootInstance(instanceId string, forceStop bool) (*api.BatchOp
 	return api.RebootInstance(c, instanceId, body)
 }
 
+// BatchRebootInstance - restart instances
+//
+// PARAMS:
+//   - instanceIds: the specific instance ID
+//   - forceStop: choose to force stop an instance or not
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) BatchRebootInstance(args *api.BatchRebootInstanceReq) (*api.BatchOperationResp, error) {
+	jsonBytes, jsonErr := json.Marshal(args)
+	if jsonErr != nil {
+		return nil, jsonErr
+	}
+	body, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.BatchRebootInstance(c, body)
+}
+
 func (c *Client) RecoveryInstance(args *api.RecoveryInstanceArgs) error {
 	jsonBytes, jsonErr := json.Marshal(args)
 	if jsonErr != nil {

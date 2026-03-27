@@ -336,10 +336,15 @@ type DescribeLoadBalancerDetailResult struct {
 	EipV6RouteType         string           `json:"eipV6RouteType"`
 }
 
+type AdditionalAttributesModel struct {
+	GzipJson string `json:"gzipJson,omitempty"`
+}
+
 type CreateAppTCPListenerArgs struct {
 	TcpSessionTimeout int    `json:"tcpSessionTimeout,omitempty"`
 	ListenerPort      uint16 `json:"listenerPort"`
 	Scheduler         string `json:"scheduler"`
+	Description       string `json:"description,omitempty"`
 	ClientToken       string `json:"-"`
 }
 
@@ -347,21 +352,24 @@ type CreateAppUDPListenerArgs struct {
 	UdpSessionTimeout int    `json:"udpSessionTimeout,omitempty"`
 	ListenerPort      uint16 `json:"listenerPort"`
 	Scheduler         string `json:"scheduler"`
+	Description       string `json:"description,omitempty"`
 	ClientToken       string `json:"-"`
 }
 
 type CreateAppHTTPListenerArgs struct {
-	ClientToken           string `json:"-"`
-	ListenerPort          uint16 `json:"listenerPort"`
-	Scheduler             string `json:"scheduler"`
-	KeepSession           *bool  `json:"keepSession,omitempty"`
-	KeepSessionType       string `json:"keepSessionType,omitempty"`
-	KeepSessionTimeout    int    `json:"keepSessionTimeout,omitempty"`
-	KeepSessionCookieName string `json:"keepSessionCookieName,omitempty"`
-	XForwardedFor         *bool  `json:"xForwardedFor,omitempty"`
-	XForwardedProto       *bool  `json:"xForwardedProto,omitempty"`
-	ServerTimeout         int    `json:"serverTimeout,omitempty"`
-	RedirectPort          uint16 `json:"redirectPort,omitempty"`
+	ClientToken           string                     `json:"-"`
+	ListenerPort          uint16                     `json:"listenerPort"`
+	Scheduler             string                     `json:"scheduler"`
+	KeepSession           *bool                      `json:"keepSession,omitempty"`
+	KeepSessionType       string                     `json:"keepSessionType,omitempty"`
+	KeepSessionTimeout    int                        `json:"keepSessionTimeout,omitempty"`
+	KeepSessionCookieName string                     `json:"keepSessionCookieName,omitempty"`
+	XForwardedFor         *bool                      `json:"xForwardedFor,omitempty"`
+	XForwardedProto       *bool                      `json:"xForwardedProto,omitempty"`
+	AdditionalAttributes  *AdditionalAttributesModel `json:"additionalAttributes,omitempty"`
+	ServerTimeout         int                        `json:"serverTimeout,omitempty"`
+	RedirectPort          uint16                     `json:"redirectPort,omitempty"`
+	Description           string                     `json:"description,omitempty"`
 }
 
 type CreateAppHTTPSListenerArgs struct {
@@ -374,6 +382,7 @@ type CreateAppHTTPSListenerArgs struct {
 	KeepSessionCookieName string                       `json:"keepSessionCookieName,omitempty"`
 	XForwardedFor         *bool                        `json:"xForwardedFor,omitempty"`
 	XForwardedProto       *bool                        `json:"xForwardedProto,omitempty"`
+	AdditionalAttributes  *AdditionalAttributesModel   `json:"additionalAttributes,omitempty"`
 	ServerTimeout         int                          `json:"serverTimeout,omitempty"`
 	CertIds               []string                     `json:"certIds"`
 	AdditionalCertDomains []AdditionalCertDomainsModel `json:"additionalCertDomains,omitempty"`
@@ -382,6 +391,7 @@ type CreateAppHTTPSListenerArgs struct {
 	AppliedCiphers        string                       `json:"appliedCiphers,omitempty"`
 	DualAuth              *bool                        `json:"dualAuth,omitempty"`
 	ClientCertIds         []string                     `json:"clientCertIds,omitempty"`
+	Description           string                       `json:"description,omitempty"`
 }
 
 type CreateAppSSLListenerArgs struct {
@@ -394,41 +404,44 @@ type CreateAppSSLListenerArgs struct {
 	AppliedCiphers      string   `json:"appliedCiphers,omitempty"`
 	DualAuth            *bool    `json:"dualAuth,omitempty"`
 	ClientCertIds       []string `json:"clientCertIds,omitempty"`
+	Description         string   `json:"description,omitempty"`
 }
 
-type UpdateAppListenerArgs struct {
+type UpdateAppTCPListenerArgs struct {
 	ClientToken       string `json:"-"`
 	ListenerPort      uint16 `json:"-"`
 	Scheduler         string `json:"scheduler,omitempty"`
 	TcpSessionTimeout int    `json:"tcpSessionTimeout,omitempty"`
-	UdpSessionTimeout int    `json:"udpSessionTimeout,omitempty"`
-}
-
-type UpdateAppTCPListenerArgs struct {
-	UpdateAppListenerArgs
+	Description       string `json:"description,omitempty"`
 }
 
 type UpdateAppUDPListenerArgs struct {
-	UpdateAppListenerArgs
+	ClientToken       string `json:"-"`
+	ListenerPort      uint16 `json:"-"`
+	Scheduler         string `json:"scheduler,omitempty"`
+	UdpSessionTimeout int    `json:"udpSessionTimeout,omitempty"`
+	Description       string `json:"description,omitempty"`
 }
 
 type UpdateAppHTTPListenerArgs struct {
-	ClientToken           string `json:"-"`
-	ListenerPort          uint16 `json:"-"`
-	Scheduler             string `json:"scheduler"`
-	KeepSession           *bool  `json:"keepSession,omitempty"`
-	KeepSessionType       string `json:"keepSessionType,omitempty"`
-	KeepSessionTimeout    int    `json:"keepSessionTimeout,omitempty"`
-	KeepSessionCookieName string `json:"keepSessionCookieName,omitempty"`
-	XForwardedFor         *bool  `json:"xForwardedFor,omitempty"`
-	XForwardedProto       *bool  `json:"xForwardedProto,omitempty"`
-	ServerTimeout         int    `json:"serverTimeout,omitempty"`
-	RedirectPort          uint16 `json:"redirectPort,omitempty"`
+	ClientToken           string                     `json:"-"`
+	ListenerPort          uint16                     `json:"-"`
+	Scheduler             string                     `json:"scheduler"`
+	KeepSession           *bool                      `json:"keepSession,omitempty"`
+	KeepSessionType       string                     `json:"keepSessionType,omitempty"`
+	KeepSessionTimeout    int                        `json:"keepSessionTimeout,omitempty"`
+	KeepSessionCookieName string                     `json:"keepSessionCookieName,omitempty"`
+	XForwardedFor         *bool                      `json:"xForwardedFor,omitempty"`
+	XForwardedProto       *bool                      `json:"xForwardedProto,omitempty"`
+	AdditionalAttributes  *AdditionalAttributesModel `json:"additionalAttributes,omitempty"`
+	ServerTimeout         int                        `json:"serverTimeout,omitempty"`
+	RedirectPort          uint16                     `json:"redirectPort,omitempty"`
+	Description           string                     `json:"description,omitempty"`
 }
 
 type UpdateAppHTTPSListenerArgs struct {
 	ClientToken           string                       `json:"-"`
-	ListenerPort          uint16                       `json:"listenerPort"`
+	ListenerPort          uint16                       `json:"-"`
 	Scheduler             string                       `json:"scheduler"`
 	KeepSession           *bool                        `json:"keepSession,omitempty"`
 	KeepSessionType       string                       `json:"keepSessionType,omitempty"`
@@ -436,6 +449,7 @@ type UpdateAppHTTPSListenerArgs struct {
 	KeepSessionCookieName string                       `json:"keepSessionCookieName,omitempty"`
 	XForwardedFor         *bool                        `json:"xForwardedFor,omitempty"`
 	XForwardedProto       *bool                        `json:"xForwardedProto,omitempty"`
+	AdditionalAttributes  *AdditionalAttributesModel   `json:"additionalAttributes,omitempty"`
 	ServerTimeout         int                          `json:"serverTimeout,omitempty"`
 	CertIds               []string                     `json:"certIds"`
 	AdditionalCertDomains []AdditionalCertDomainsModel `json:"additionalCertDomains"`
@@ -444,6 +458,7 @@ type UpdateAppHTTPSListenerArgs struct {
 	AppliedCiphers        string                       `json:"appliedCiphers,omitempty"`
 	DualAuth              *bool                        `json:"dualAuth,omitempty"`
 	ClientCertIds         []string                     `json:"clientCertIds,omitempty"`
+	Description           string                       `json:"description,omitempty"`
 }
 
 type UpdateAppSSLListenerArgs struct {
@@ -456,34 +471,33 @@ type UpdateAppSSLListenerArgs struct {
 	AppliedCiphers      string   `json:"appliedCiphers,omitempty"`
 	DualAuth            *bool    `json:"dualAuth,omitempty"`
 	ClientCertIds       []string `json:"clientCertIds,omitempty"`
-}
-
-type AppListenerModel struct {
-	Port              uint16 `json:"listenerPort"`
-	Scheduler         string `json:"scheduler"`
-	TcpSessionTimeout int    `json:"tcpSessionTimeout"`
-	UdpSessionTimeout int    `json:"udpSessionTimeout"`
+	Description         string   `json:"description,omitempty"`
 }
 
 type AppTCPListenerModel struct {
-	AppListenerModel
+	ListenerPort      uint16 `json:"listenerPort"`
+	Scheduler         string `json:"scheduler"`
+	TcpSessionTimeout int    `json:"tcpSessionTimeout"`
 }
 
 type AppUDPListenerModel struct {
-	AppListenerModel
+	ListenerPort      uint16 `json:"listenerPort"`
+	Scheduler         string `json:"scheduler"`
+	UdpSessionTimeout int    `json:"udpSessionTimeout"`
 }
 
 type AppHTTPListenerModel struct {
-	ListenerPort          uint16 `json:"listenerPort"`
-	Scheduler             string `json:"scheduler"`
-	KeepSession           bool   `json:"keepSession"`
-	KeepSessionType       string `json:"keepSessionType"`
-	KeepSessionTimeout    int    `json:"keepSessionTimeout"`
-	KeepSessionCookieName string `json:"keepSessionCookieName"`
-	XForwardedFor         bool   `json:"xForwardedFor"`
-	XForwardedProto       bool   `json:"xForwardedProto"`
-	ServerTimeout         int    `json:"serverTimeout"`
-	RedirectPort          int    `json:"redirectPort"`
+	ListenerPort          uint16                     `json:"listenerPort"`
+	Scheduler             string                     `json:"scheduler"`
+	KeepSession           bool                       `json:"keepSession"`
+	KeepSessionType       string                     `json:"keepSessionType"`
+	KeepSessionTimeout    int                        `json:"keepSessionTimeout"`
+	KeepSessionCookieName string                     `json:"keepSessionCookieName"`
+	XForwardedFor         bool                       `json:"xForwardedFor"`
+	XForwardedProto       bool                       `json:"xForwardedProto"`
+	AdditionalAttributes  *AdditionalAttributesModel `json:"additionalAttributes,omitempty"`
+	ServerTimeout         int                        `json:"serverTimeout"`
+	RedirectPort          int                        `json:"redirectPort"`
 }
 
 type AppHTTPSListenerModel struct {
@@ -495,6 +509,7 @@ type AppHTTPSListenerModel struct {
 	KeepSessionCookieName string                       `json:"keepSessionCookieName"`
 	XForwardedFor         bool                         `json:"xForwardedFor"`
 	XForwardedProto       bool                         `json:"xForwardedProto"`
+	AdditionalAttributes  *AdditionalAttributesModel   `json:"additionalAttributes,omitempty"`
 	ServerTimeout         int                          `json:"serverTimeout"`
 	CertIds               []string                     `json:"certIds"`
 	AdditionalCertDomains []AdditionalCertDomainsModel `json:"additionalCertDomains"`
@@ -531,7 +546,7 @@ type AppAllListenerModel struct {
 	ServerTimeout         int                          `json:"serverTimeout"`
 	RedirectPort          int                          `json:"redirectPort"`
 	CertIds               []string                     `json:"certIds"`
-	AdditionalCertDomains []AdditionalCertDomainsModel `json:"AdditionalCertDomains"`
+	AdditionalCertDomains []AdditionalCertDomainsModel `json:"additionalCertDomains"`
 	EncryptionType        string                       `json:"encryptionType"`
 	EncryptionProtocols   []string                     `json:"encryptionProtocols"`
 	AppliedCiphers        string                       `json:"appliedCiphers"`

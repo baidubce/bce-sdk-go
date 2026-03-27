@@ -24,6 +24,7 @@ var (
 	optionError1      *bce.BceClientError  = bce.NewBceClientError("Handle options error: error option")
 	postOptionError   *bce.BceClientError  = bce.NewBceClientError("Handle post options error: error option")
 	bceServiceErro404 *bce.BceServiceError = bce.NewBceServiceError("NOTFound", "404 NOT Found", "", http.StatusNotFound)
+	bceServiceErro409 *bce.BceServiceError = bce.NewBceServiceError("", "Conflict", "", http.StatusConflict)
 )
 
 func init() {
@@ -58,7 +59,7 @@ func NewMockBosClient() (*bce.BceClient, error) {
 		UserAgent:                 "bce.DEFAULT_USER_AGENT",
 		Credentials:               &auth.BceCredentials{AccessKeyId: "ak", SecretAccessKey: "sk"},
 		SignOption:                defaultSignOptions,
-		Retry:                     bce.NewBackOffRetryPolicy(3, 100, 20000),
+		Retry:                     DEFAULT_BOS_RETRY_POLICY,
 		ConnectionTimeoutInMillis: bce.DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS,
 	}
 	return bce.NewBceClientWithExclusiveHTTPClient(config, &auth.BceV1Signer{})

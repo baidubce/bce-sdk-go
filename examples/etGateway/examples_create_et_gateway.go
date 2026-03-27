@@ -16,14 +16,15 @@ func CreateEtGateway() {
 		return
 	}
 	args := &etGateway.CreateEtGatewayArgs{
-		Name:        "test-et-gateway",
-		VpcId:       "vpc-2pa2x0bjt26i",
-		Description: "test create et gateway",
-		Speed:       100,
-		EtId:        "et-aaccd",
-		ChannelId:   "sdxs",
-		LocalCidrs:  []string{"10.240.0.0/16", "192.168.3.0/24"},
-		ClientToken: getClientToken(),
+		Name:            "test-et-gateway",
+		VpcId:           "vpc-2pa2x0bjt26i",
+		Description:     "test create et gateway",
+		Speed:           100,
+		EtId:            "et-aaccd",
+		ChannelId:       "sdxs",
+		LocalCidrs:      []string{"10.240.0.0/16", "192.168.3.0/24"},
+		ClientToken:     getClientToken(),
+		ResourceGroupId: "RESG-xxx", // 资源组ID，可选
 		Tags: []model.TagModel{
 			{
 				TagKey:   "tagKey",

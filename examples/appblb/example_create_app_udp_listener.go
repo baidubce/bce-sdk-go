@@ -25,8 +25,10 @@ func CreateAppUDPListener() {
 
 	blbID := "Your BlbID" // blb实例ID
 	createAppUDPListenerArgs := &appblb.CreateAppUDPListenerArgs{
-		ListenerPort: 80,           // 监听端口
-		Scheduler:    "RoundRobin", // 调度算法
+		ListenerPort:      80,             // 监听端口
+		Scheduler:         "RoundRobin",   // 调度算法
+		UdpSessionTimeout: 90,             // UDP会话超时时间（秒）
+		Description:       "udp listener", // 描述信息
 	}
 
 	// 创建appblb udp监听器

@@ -100,6 +100,35 @@ func TestCreateInstance(t *testing.T) {
 	Hpas_id = createResult.HpasIds[0]
 }
 
+func TestCreateInstanceWithJumboFrame(t *testing.T) {
+	createInstanceArgs := &api.CreateHpasReq{
+		AppType:             "unixbench_indexscore",
+		AppPerformanceLevel: "1.6k",
+		Name:                "enableJumboFrametest",
+		ApplicationName:     "",
+		AutoSeqSuffix:       false,
+		Description:         "desc",
+		PurchaseNum:         1,
+		ZoneName:            "cn-bj-a",
+		ImageId:             "m-xxx",
+		SubnetId:            "sbn-mxxxx",
+		Password:            "xxxxxxx",
+		EhcClusterId:        "ehc-lPsUtEUU",
+		SecurityGroupIds:    []string{"g-xxxx"},
+		EnableJumboFrame:    true,
+		SecurityGroupType:   "normal",
+		BillingModel: api.BillingModel{
+			ChargeType: "Postpaid",
+		},
+		RootDiskSizeInGb:    400,
+		RootDiskStorageType: "enhanced_ssd_pl1",
+	}
+	createResult, err := HPAS_CLIENT.CreateHpas(createInstanceArgs)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(createResult)
+	Hpas_id = createResult.HpasIds[0]
+}
+
 func TestDeleteHpas(t *testing.T) {
 	deleteInstanceArgs := &api.DeleteHpasReq{
 		HpasIds: []string{"hpas-yQtvbIDe"},
@@ -534,6 +563,16 @@ func TestDescribeHpasSpecs(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(resp)
 }
+
+func TestModifyHpasJumbo(t *testing.T) {
+	req := &api.ModifyJumboReq{
+		HpasIds:          []string{"hpas-FAK3YbjU"},
+		EnableJumboFrame: false,
+	}
+	err := HPAS_CLIENT.ModifyHpasJumbo(req)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
 
 func TestDescribeInstanceInventoryQuantity(t *testing.T) {
 	req := &api.DescribeInstanceInventoryQuantityReq{

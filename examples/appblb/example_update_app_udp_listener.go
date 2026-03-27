@@ -25,10 +25,10 @@ func UpdateAppUDPListener() {
 
 	blbID := "Your BlbID" // blb实例ID
 	updateAppUDPListenerArgs := &appblb.UpdateAppUDPListenerArgs{
-		UpdateAppListenerArgs: appblb.UpdateAppListenerArgs{
-			ListenerPort: 80,           // 监听端口
-			Scheduler:    "RoundRobin", // 调度算法
-		},
+		ListenerPort:      80,                     // 监听端口
+		Scheduler:         "RoundRobin",           // 调度算法
+		UdpSessionTimeout: 90,                     // UDP会话超时时间（秒）
+		Description:       "updated udp listener", // 描述信息
 	}
 
 	// 更新appblb udp监听器

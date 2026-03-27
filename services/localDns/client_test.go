@@ -3,13 +3,14 @@ package localDns
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/baidubce/bce-sdk-go/util"
-	"github.com/baidubce/bce-sdk-go/util/log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"testing"
+
+	"github.com/baidubce/bce-sdk-go/util"
+	"github.com/baidubce/bce-sdk-go/util/log"
 )
 
 var (
@@ -150,8 +151,12 @@ func TestClient_DeleteRecord(t *testing.T) {
 
 func TestClient_ListRecord(t *testing.T) {
 	listRecordRequest := &ListRecordRequest{
-		Marker:  "rc-14ifmguzv5j2",
-		MaxKeys: 1000,
+		Marker:     "rc-14ifmguzv5j2",
+		MaxKeys:    1000,
+		Rr:         "www",
+		Type:       "A",
+		Value:      "192.168",
+		SearchMode: "LIKE",
 	}
 	res, err := LD_CLIENT.ListRecord(ZONE_ID, listRecordRequest)
 	fmt.Print(res)

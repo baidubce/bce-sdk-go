@@ -28,6 +28,10 @@ func UpdateAppHTTPSListener() {
 		ListenerPort: 8081,                          // 监听端口
 		Scheduler:    "RoundRobin",                  // 调度算法
 		CertIds:      []string{"cert-xxxxxxxxxxxx"}, // 证书ID列表
+		AdditionalAttributes: &appblb.AdditionalAttributesModel{ // HTTPS定制配置
+			GzipJson: "on",
+		},
+		Description: "updated https listener", // 描述信息
 	}
 
 	// 更新appblb https监听器

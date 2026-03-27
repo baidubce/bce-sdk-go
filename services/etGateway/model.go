@@ -11,15 +11,16 @@ const (
 )
 
 type CreateEtGatewayArgs struct {
-	Name        string           `json:"name"`
-	VpcId       string           `json:"vpcId"`
-	Speed       int              `json:"speed"`
-	Description string           `json:"description"`
-	EtId        string           `json:"etId"`
-	ChannelId   string           `json:"channelId"`
-	LocalCidrs  []string         `json:"localCidrs"`
-	ClientToken string           `json:"clientToken,omitempty"`
-	Tags        []model.TagModel `json:"tags,omitempty"`
+	Name            string           `json:"name"`
+	VpcId           string           `json:"vpcId"`
+	Speed           int              `json:"speed"`
+	Description     string           `json:"description,omitempty"`
+	EtId            string           `json:"etId,omitempty"`
+	ChannelId       string           `json:"channelId,omitempty"`
+	LocalCidrs      []string         `json:"localCidrs,omitempty"`
+	ClientToken     string           `json:"clientToken,omitempty"`
+	Tags            []model.TagModel `json:"tags,omitempty"`
+	ResourceGroupId string           `json:"resourceGroupId,omitempty"`
 }
 
 type CreateEtGatewayResult struct {
@@ -43,16 +44,19 @@ type ListEtGatewayResult struct {
 	MaxKeys     int         `json:"maxKeys"`
 }
 type EtGateway struct {
-	EtGatewayId string   `json:"etGatewayId"`
-	Name        string   `json:"name"`
-	Status      string   `json:"status"`
-	Speed       int      `json:"speed"`
-	CreateTime  string   `json:"createTime"`
-	Description string   `json:"description"`
-	VpcId       string   `json:"vpcId"`
-	EtId        string   `json:"etId"`
-	ChannelId   string   `json:"channelId"`
-	LocalCidrs  []string `json:"localCidrs"`
+	EtGatewayId    string           `json:"etGatewayId"`
+	Name           string           `json:"name"`
+	Status         string           `json:"status"`
+	Speed          int              `json:"speed"`
+	CreateTime     string           `json:"createTime"`
+	Description    string           `json:"description"`
+	VpcId          string           `json:"vpcId"`
+	EtId           string           `json:"etId"`
+	ChannelId      string           `json:"channelId"`
+	LocalCidrs     []string         `json:"localCidrs"`
+	EnableIpv6     int              `json:"enableIpv6"`
+	Ipv6LocalCidrs []string         `json:"ipv6LocalCidrs"`
+	Tags           []model.TagModel `json:"tags,omitempty"`
 }
 
 type EtGatewayDetail struct {
@@ -66,9 +70,12 @@ type EtGatewayDetail struct {
 	EtId                string           `json:"etId"`
 	ChannelId           string           `json:"channelId"`
 	LocalCidrs          []string         `json:"localCidrs"`
+	EnableIpv6          int              `json:"enableIpv6"`
+	Ipv6LocalCidrs      []string         `json:"ipv6LocalCidrs"`
 	HealthCheckSourceIp string           `json:"healthCheckSourceIp"`
 	HealthCheckDestIp   string           `json:"healthCheckDestIp"`
 	HealthCheckType     string           `json:"healthCheckType"`
+	HealthCheckPort     int              `json:"healthCheckPort"`
 	HealthCheckInterval int              `json:"healthCheckInterval"`
 	HealthThreshold     int              `json:"healthThreshold"`
 	UnhealthThreshold   int              `json:"unhealthThreshold"`
@@ -77,12 +84,14 @@ type EtGatewayDetail struct {
 
 //  参数localCidrs只有在专线网关处于running状态时允许更新。
 type UpdateEtGatewayArgs struct {
-	ClientToken string   `json:"clientToken,omitempty"`
-	EtGatewayId string   `json:"etGatewayId"`
-	Name        string   `json:"name,omitempty"`
-	Speed       int      `json:"speed,omitempty"`
-	Description string   `json:"description,omitempty"`
-	LocalCidrs  []string `json:"localCidrs,omitempty"`
+	ClientToken    string   `json:"clientToken,omitempty"`
+	EtGatewayId    string   `json:"etGatewayId"`
+	Name           string   `json:"name,omitempty"`
+	Speed          int      `json:"speed,omitempty"`
+	Description    *string  `json:"description,omitempty"`
+	LocalCidrs     []string `json:"localCidrs,omitempty"`
+	EnableIpv6     *int     `json:"enableIpv6,omitempty"`
+	Ipv6LocalCidrs []string `json:"ipv6LocalCidrs,omitempty"`
 }
 type BindEtArgs struct {
 	ClientToken string   `json:"clientToken,omitempty"`

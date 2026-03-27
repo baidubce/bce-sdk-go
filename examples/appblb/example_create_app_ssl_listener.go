@@ -28,6 +28,7 @@ func CreateAppSSLListener() {
 		ListenerPort: 8083,                          // 监听端口
 		Scheduler:    "RoundRobin",                  // 调度算法
 		CertIds:      []string{"cert-xxxxxxxxxxxx"}, // 证书ID列表
+		Description:  "ssl listener",                // 描述信息
 	}
 
 	// 创建appblb ssl监听器

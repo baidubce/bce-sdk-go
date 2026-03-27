@@ -25,6 +25,8 @@ func UpdateEndpoint() {
 	client, _ := endpoint.NewClient(ak, sk, Endpoint)         // 初始化client
 
 	endpointId := "endpoint id"
+
+	// 示例1: 同时更新name和description
 	args := &endpoint.UpdateEndpointArgs{
 		Name:        "UpdateName",
 		Description: "UpdateDescription",
@@ -34,4 +36,11 @@ func UpdateEndpoint() {
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	// 示例2: 仅更新name，不修改description
+	// args2 := &endpoint.UpdateEndpointArgs{
+	// 	Name: "UpdateNameOnly",
+	// 	// Description字段不设置，服务端将保持原值不变
+	// }
+	// err = client.UpdateEndpoint(endpointId, args2)
 }

@@ -81,7 +81,6 @@ func (c *Client) DeleteIpSet(ipSetId string, args *DeleteIpSetArgs) error {
 	err := bce.NewRequestBuilder(c).
 		WithURL(getURLForIpSetId(ipSetId)).
 		WithMethod(http.DELETE).
-		WithBody(args).
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		Do()
 	return err
@@ -193,7 +192,6 @@ func (c *Client) DeleteIpGroup(ipGroupId string, args *DeleteIpGroupArgs) error 
 	err := bce.NewRequestBuilder(c).
 		WithURL(getURLForIpGroupId(ipGroupId)).
 		WithMethod(http.DELETE).
-		WithBody(args).
 		WithQueryParamFilter("clientToken", args.ClientToken).
 		Do()
 	return err

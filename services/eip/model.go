@@ -503,3 +503,69 @@ type UpdateEipDeleteProtectArgs struct {
 	DeleteProtect *bool  `json:"deleteProtect,omitempty"`
 	ClientToken   string `json:"-"`
 }
+
+type CancelEipTransferRequest struct {
+	ClientToken    *string   `json:"-"`
+	TransferIdList []*string `json:"transferIdList,omitempty"`
+}
+
+type CreateEipTransferRequest struct {
+	ClientToken          *string   `json:"-"`
+	TransferType         *string   `json:"transferType,omitempty"`
+	TransferResourceList []*string `json:"transferResourceList,omitempty"`
+	ToUserId             *string   `json:"toUserId,omitempty"`
+}
+
+type ListEipTransferRequest struct {
+	MaxKeys           *int32  `json:"-"`
+	Marker            *string `json:"-"`
+	Direction         *string `json:"-"`
+	TransferId        *string `json:"-"`
+	Status            *string `json:"-"`
+	FuzzyTransferId   *string `json:"-"`
+	FuzzyInstanceId   *string `json:"-"`
+	FuzzyInstanceName *string `json:"-"`
+	FuzzyInstanceIp   *string `json:"-"`
+}
+
+type ListEipTransferResponse struct {
+	TransferList []*TransferEipVo `json:"transferList,omitempty"`
+	Marker       *string          `json:"marker,omitempty"`
+	IsTruncated  *bool            `json:"isTruncated,omitempty"`
+	NextMarker   *string          `json:"nextMarker,omitempty"`
+	MaxKeys      *int32           `json:"maxKeys,omitempty"`
+}
+
+type AcceptEipTransferRequest struct {
+	ClientToken    *string   `json:"-"`
+	TransferIdList []*string `json:"transferIdList,omitempty"`
+}
+
+type RejectEipTransferRequest struct {
+	ClientToken    *string   `json:"-"`
+	TransferIdList []*string `json:"transferIdList,omitempty"`
+}
+
+type TransferEipVo struct {
+	TransferId        *string `json:"transferId,omitempty"`
+	TransferType      *string `json:"transferType,omitempty"`
+	UserId            *string `json:"userId,omitempty"`
+	ToUserId          *string `json:"toUserId,omitempty"`
+	InstanceId        *string `json:"instanceId,omitempty"`
+	InstanceName      *string `json:"instanceName,omitempty"`
+	InstanceIp        *string `json:"instanceIP,omitempty"`
+	InstanceType      *string `json:"instanceType,omitempty"`
+	InstanceBandwidth *int32  `json:"instanceBandwidth,omitempty"`
+	Status            *string `json:"status,omitempty"`
+	CreateTime        *string `json:"createTime,omitempty"`
+	UpdateTime        *string `json:"updateTime,omitempty"`
+}
+
+type TransferInfo struct {
+	TransferId *string `json:"transferId,omitempty"`
+	InstanceId *string `json:"instanceId,omitempty"`
+}
+
+type CreateEipTransferResponse struct {
+	Transfers []*TransferInfo `json:"transfers,omitempty"`
+}

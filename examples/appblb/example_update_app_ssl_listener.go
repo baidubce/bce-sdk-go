@@ -28,6 +28,7 @@ func UpdateAppSSLListener() {
 		ListenerPort: 8082,                          // 监听端口
 		Scheduler:    "RoundRobin",                  // 调度算法
 		CertIds:      []string{"cert-xxxxxxxxxxxx"}, // 证书ID列表
+		Description:  "updated ssl listener",        // 描述信息
 	}
 
 	// 更新appblb ssl监听器
