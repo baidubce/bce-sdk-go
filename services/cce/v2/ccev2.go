@@ -25,6 +25,10 @@ func (c *Client) CreateCluster(args *CreateClusterArgs) (*CreateClusterResponse,
 		return nil, err
 	}
 
+	if err := encodeUserScriptInInstanceGroupSpecs(args.CreateClusterRequest.NodeGroupSpecs); err != nil {
+		return nil, err
+	}
+
 	result := &CreateClusterResponse{}
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.POST).
@@ -91,6 +95,7 @@ func (c *Client) DeleteCluster(args *DeleteClusterArgs) (*DeleteClusterResponse,
 		WithURL(getClusterUriWithIDURI(args.ClusterID)).
 		WithQueryParamFilter("deleteResource", strconv.FormatBool(args.DeleteResource)).
 		WithQueryParamFilter("deleteCDSSnapshot", strconv.FormatBool(args.DeleteCDSSnapshot)).
+		WithQueryParamFilter("batchRefundResource", strconv.FormatBool(args.BatchRefundResource)).
 		WithQueryParamFilter("moveOut", strconv.FormatBool(args.MoveOut)).
 		WithResult(result).
 		Do()
@@ -108,6 +113,46 @@ func (c *Client) UpdateClusterForbidDelete(args *UpdateClusterForbidDeleteArgs) 
 		WithMethod(http.PUT).
 		WithURL(getUpdateClusterForbidDeleteURI(args.ClusterID)).
 		WithBody(args.UpdateClusterForbidDeleteRequest).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// UpdateAPIServerCertSAN 更新集群 APIServer 证书 SAN
+func (c *Client) UpdateAPIServerCertSAN(args *UpdateAPIServerCertSANArgs) (*UpdateAPIServerCertSANResponse, error) {
+	if args == nil || args.Request == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+	if args.ClusterID == "" {
+		return nil, fmt.Errorf("clusterID is empty")
+	}
+
+	result := &UpdateAPIServerCertSANResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getUpdateAPIServerCertSANURI(args.ClusterID)).
+		WithBody(args.Request).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// ConfigureKMSEncryption 配置集群 KMS 落盘加密
+func (c *Client) ConfigureKMSEncryption(args *ConfigureKMSEncryptionArgs) (*ConfigureKMSEncryptionResponse, error) {
+	if args == nil || args.Request == nil {
+		return nil, fmt.Errorf("args is nil")
+	}
+	if args.ClusterID == "" {
+		return nil, fmt.Errorf("clusterID is empty")
+	}
+
+	result := &ConfigureKMSEncryptionResponse{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getConfigureKMSEncryptionURI(args.ClusterID)).
+		WithBody(args.Request).
 		WithResult(result).
 		Do()
 

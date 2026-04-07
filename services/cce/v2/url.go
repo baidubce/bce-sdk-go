@@ -95,7 +95,9 @@ const (
 
 	REQUIREREPAIRAUTH_URL = "/requireRepairAuth"
 
-	REQUEST_FORBIDDELETE_URL = "/forbiddelete"
+	REQUEST_FORBIDDELETE_URL       = "/forbiddelete"
+	REQUEST_KMS_ENCRYPTION_URL     = "/kmsencryption"
+	REQUEST_APISERVER_CERT_SAN_URL = "/apiservercertsan"
 
 	// backup
 	BACKUP_REPO_URL          = "/backuprepositorys"
@@ -152,6 +154,14 @@ func getClusterListURI() string {
 
 func getUpdateClusterForbidDeleteURI(clusterID string) string {
 	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_FORBIDDELETE_URL
+}
+
+func getConfigureKMSEncryptionURI(clusterID string) string {
+	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_KMS_ENCRYPTION_URL
+}
+
+func getUpdateAPIServerCertSANURI(clusterID string) string {
+	return URI_PREFIX + REQUEST_CLUSTER_URL + "/" + clusterID + REQUEST_APISERVER_CERT_SAN_URL
 }
 
 func getClusterInstanceListURI(clusterID string) string {
@@ -365,6 +375,22 @@ func encodeUserScriptInInstanceSet(instancesSets []*InstanceSet) error {
 	}
 	for _, instanceSet := range instancesSets {
 		encodeUserScript(&instanceSet.InstanceSpec)
+	}
+	return nil
+}
+
+func encodeUserScriptInInstanceGroupSpecs(instanceGroupSpecs []*InstanceGroupSpec) error {
+	if instanceGroupSpecs == nil {
+		return nil
+	}
+	for _, instanceGroupSpec := range instanceGroupSpecs {
+		if instanceGroupSpec == nil {
+			continue
+		}
+		encodeUserScript(&instanceGroupSpec.InstanceTemplate.InstanceSpec)
+		for i := range instanceGroupSpec.InstanceTemplates {
+			encodeUserScript(&instanceGroupSpec.InstanceTemplates[i].InstanceSpec)
+		}
 	}
 	return nil
 }

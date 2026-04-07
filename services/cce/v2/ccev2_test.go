@@ -4,6 +4,7 @@
 package v2
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -208,6 +209,46 @@ func TestClient_CreateCluster(t *testing.T) {
 
 	// 等集群创建完成
 	time.Sleep(time.Duration(180) * time.Second)
+}
+
+func TestEncodeUserScriptInInstanceGroupSpecs(t *testing.T) {
+	preUserScript := "#!/bin/bash\necho pre"
+	postUserScript := "#!/bin/bash\necho post"
+	args := []*InstanceGroupSpec{
+		{
+			InstanceTemplate: InstanceTemplate{
+				InstanceSpec: types.InstanceSpec{
+					DeployCustomConfig: types.DeployCustomConfig{
+						PreUserScript: preUserScript,
+					},
+				},
+			},
+			InstanceTemplates: []InstanceTemplate{
+				{
+					InstanceSpec: types.InstanceSpec{
+						DeployCustomConfig: types.DeployCustomConfig{
+							PostUserScript: postUserScript,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	if err := encodeUserScriptInInstanceGroupSpecs(args); err != nil {
+		t.Fatalf("encodeUserScriptInInstanceGroupSpecs failed: %v", err)
+	}
+
+	ExpectEqual(
+		t.Errorf,
+		base64.StdEncoding.EncodeToString([]byte(preUserScript)),
+		args[0].InstanceTemplate.InstanceSpec.DeployCustomConfig.PreUserScript,
+	)
+	ExpectEqual(
+		t.Errorf,
+		base64.StdEncoding.EncodeToString([]byte(postUserScript)),
+		args[0].InstanceTemplates[0].InstanceSpec.DeployCustomConfig.PostUserScript,
+	)
 }
 
 func TestClient_GetCluster(t *testing.T) {
@@ -891,6 +932,118 @@ func TestClient_UpdateInstanceScaleDownProtection(t *testing.T) {
 				return
 			}
 			t.Logf("Request ID: %s, failed instances: %v", resp.RequestID, resp.FailedInstances)
+		})
+	}
+}
+
+func TestClient_GetClusterEventSteps_EmptyClusterID(t *testing.T) {
+	c := &Client{}
+
+	resp, err := c.GetClusterEventSteps("")
+	if err == nil {
+		t.Fatal("expected error for empty clusterID")
+	}
+	if resp != nil {
+		t.Fatalf("response = %+v, want nil", resp)
+	}
+	ExpectEqual(t.Errorf, "cluster is empty", err.Error())
+}
+
+func TestClient_UpdateClusterForbidDelete_EmptyArgs(t *testing.T) {
+	c := &Client{}
+
+	resp, err := c.UpdateClusterForbidDelete(nil)
+	if err == nil {
+		t.Fatal("expected error for nil args")
+	}
+	if resp != nil {
+		t.Fatalf("response = %+v, want nil", resp)
+	}
+	ExpectEqual(t.Errorf, "args is nil", err.Error())
+}
+
+func TestClient_UpdateAPIServerCertSAN_InvalidArgs(t *testing.T) {
+	c := &Client{}
+
+	testCases := []struct {
+		name string
+		args *UpdateAPIServerCertSANArgs
+		want string
+	}{
+		{
+			name: "nil args",
+			args: nil,
+			want: "args is nil",
+		},
+		{
+			name: "nil request",
+			args: &UpdateAPIServerCertSANArgs{
+				ClusterID: "cce-test123",
+			},
+			want: "args is nil",
+		},
+		{
+			name: "empty cluster id",
+			args: &UpdateAPIServerCertSANArgs{
+				Request: &UpdateAPIServerCertSANRequest{},
+			},
+			want: "clusterID is empty",
+		},
+	}
+
+	for _, tt := range testCases {
+		t.Run(tt.name, func(t *testing.T) {
+			resp, err := c.UpdateAPIServerCertSAN(tt.args)
+			if err == nil {
+				t.Fatal("expected error")
+			}
+			if resp != nil {
+				t.Fatalf("response = %+v, want nil", resp)
+			}
+			ExpectEqual(t.Errorf, tt.want, err.Error())
+		})
+	}
+}
+
+func TestClient_ConfigureKMSEncryption_InvalidArgs(t *testing.T) {
+	c := &Client{}
+
+	testCases := []struct {
+		name string
+		args *ConfigureKMSEncryptionArgs
+		want string
+	}{
+		{
+			name: "nil args",
+			args: nil,
+			want: "args is nil",
+		},
+		{
+			name: "nil request",
+			args: &ConfigureKMSEncryptionArgs{
+				ClusterID: "cce-test123",
+			},
+			want: "args is nil",
+		},
+		{
+			name: "empty cluster id",
+			args: &ConfigureKMSEncryptionArgs{
+				Request: &ConfigureKMSEncryptionRequest{},
+			},
+			want: "clusterID is empty",
+		},
+	}
+
+	for _, tt := range testCases {
+		t.Run(tt.name, func(t *testing.T) {
+			resp, err := c.ConfigureKMSEncryption(tt.args)
+			if err == nil {
+				t.Fatal("expected error")
+			}
+			if resp != nil {
+				t.Fatalf("response = %+v, want nil", resp)
+			}
+			ExpectEqual(t.Errorf, tt.want, err.Error())
 		})
 	}
 }

@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"time"
 
+	bccapi "github.com/baidubce/bce-sdk-go/services/bcc/api"
 	"github.com/baidubce/bce-sdk-go/services/cce/v2/types"
 	"github.com/baidubce/bce-sdk-go/services/vpc"
 )
@@ -26,6 +27,10 @@ type Interface interface {
 	GetCluster(clusterID string) (*GetClusterResponse, error)
 	DeleteCluster(args *DeleteClusterArgs) (*DeleteClusterResponse, error)
 	ListClusters(args *ListClustersArgs) (*ListClustersResponse, error)
+	UpdateClusterForbidDelete(args *UpdateClusterForbidDeleteArgs) (*UpdateClusterForbidDeleteResponse, error)
+	GetClusterEventSteps(clusterID string) (*GetEventStepsResponse, error)
+	UpdateAPIServerCertSAN(args *UpdateAPIServerCertSANArgs) (*UpdateAPIServerCertSANResponse, error)
+	ConfigureKMSEncryption(args *ConfigureKMSEncryptionArgs) (*ConfigureKMSEncryptionResponse, error)
 
 	CreateInstances(args *CreateInstancesArgs) (*CreateInstancesResponse, error)
 	GetInstance(args *GetInstanceArgs) (*GetInstanceResponse, error)
@@ -64,10 +69,11 @@ type CreateClusterArgs struct {
 }
 
 type DeleteClusterArgs struct {
-	ClusterID         string
-	DeleteResource    bool
-	DeleteCDSSnapshot bool
-	MoveOut           bool
+	ClusterID           string
+	DeleteResource      bool
+	DeleteCDSSnapshot   bool
+	BatchRefundResource bool
+	MoveOut             bool
 }
 
 type ListClustersArgs struct {
@@ -86,6 +92,41 @@ type UpdateClusterForbidDeleteArgs struct {
 
 type UpdateClusterForbidDeleteRequest struct {
 	ForbidDelete bool
+}
+
+type KMSEncryptionAction string
+
+const (
+	KMSEncryptionActionEnable  KMSEncryptionAction = "enable"
+	KMSEncryptionActionDisable KMSEncryptionAction = "disable"
+)
+
+type ConfigureKMSEncryptionArgs struct {
+	ClusterID string
+	Request   *ConfigureKMSEncryptionRequest
+}
+
+type ConfigureKMSEncryptionRequest struct {
+	ConfigureKMSEncryption ConfigureKMSEncryption `json:"configureKMSEncryption"`
+}
+
+type ConfigureKMSEncryption struct {
+	Action   KMSEncryptionAction `json:"action"`
+	KMSKeyID string              `json:"kmsKeyID,omitempty"`
+}
+
+type UpdateAPIServerCertSANArgs struct {
+	ClusterID string
+	Request   *UpdateAPIServerCertSANRequest
+}
+
+type UpdateAPIServerCertSANRequest struct {
+	ConfigureAPIServerCertSAN ConfigureAPIServerCertSAN `json:"configureAPIServerCertSAN"`
+}
+
+type ConfigureAPIServerCertSAN struct {
+	ClusterID        string   `json:"clusterID"`
+	APIServerCertSAN []string `json:"apiServerCertSAN"`
 }
 
 type CreateInstancesArgs struct {
@@ -116,13 +157,42 @@ type ListInstancesByPageArgs struct {
 
 // CreateClusterRequest - 创建 Cluster 参数
 type CreateClusterRequest struct {
-	ClusterSpec *types.ClusterSpec   `json:"cluster"`
-	MasterSpecs []*InstanceSet       `json:"masters,omitempty"`
-	NodeSpecs   []*InstanceSet       `json:"nodes,omitempty"`
-	Options     CreateClusterOptions `json:"options"`
+	Metadata       *CreateClusterMetadata `json:"metadata,omitempty"`
+	ClusterSpec    *types.ClusterSpec     `json:"cluster"`
+	MasterSpecs    []*InstanceSet         `json:"masters,omitempty"`
+	NodeSpecs      []*InstanceSet         `json:"nodes,omitempty"`
+	NodeGroupSpecs []*InstanceGroupSpec   `json:"nodeGroups,omitempty"`
+	Options        CreateClusterOptions   `json:"options"`
 }
+
+type CreateClusterMetadata struct {
+	Labels      map[string]string `json:"labels,omitempty"`
+	Annotations map[string]string `json:"annotations,omitempty"`
+}
+
 type CreateClusterOptions struct {
-	SkipNetworkCheck *bool `json:"skipNetworkCheck"`
+	SkipNetworkCheck           *bool                 `json:"skipNetworkCheck"`
+	CreateSecurityGroups       *CreateSecurityGroups `json:"createSecurityGroups,omitempty"`
+	CheckDefaultSecurityGroups *bool                 `json:"checkDefaultSecurityGroups,omitempty"`
+}
+
+type CreateSecurityGroups struct {
+	NetworkInfo ClusterNetworkInfo       `json:"networkInfo"`
+	Master      *types.SecurityGroupType `json:"master,omitempty"`
+	Node        *types.SecurityGroupType `json:"node,omitempty"`
+	ENI         *types.SecurityGroupType `json:"eni,omitempty"`
+}
+
+type ClusterNetworkInfo struct {
+	VPCID            string   `json:"vpcID"`
+	VPCCIDR          string   `json:"vpcCIDR"`
+	VPCCIDRIPv6      string   `json:"vpcCIDRIPv6,omitempty"`
+	SecondaryCidrs   []string `json:"secondaryCidrs,omitempty"`
+	PodCIDR          string   `json:"podCIDR,omitempty"`
+	PodCIDRIPv6      string   `json:"podCIDRIPv6,omitempty"`
+	NodePortRangeMin int      `json:"nodePortRangeMin"`
+	NodePortRangeMax int      `json:"nodePortRangeMax"`
+	ExposedPublic    bool     `json:"exposedPublic"`
 }
 type InstanceSet struct {
 	InstanceSpec types.InstanceSpec `json:"instanceSpec"`
@@ -139,28 +209,60 @@ type ExistedInstanceInCluster struct {
 
 // GetEventStepsResponse 查询 Cluster/Instance 创建/删除 返回
 type GetEventStepsResponse struct {
-	Status    string  `json:"status"`
-	Steps     []*Step `json:"steps"`
-	RequestID string  `json:"requestID"`
+	Status    EventStatus `json:"status"`
+	Steps     []*Step     `json:"steps"`
+	RequestID string      `json:"requestID"`
 }
 
 // Step - 集群操作步骤
 type Step struct {
-	StepName   string `json:"stepName"`
-	StepStatus string `json:"stepStatus"`
+	StepName   string           `json:"stepName"`
+	StepStatus string           `json:"stepStatus"`
+	SubSteps   []OrderedSubStep `json:"subSteps,omitempty"`
 	StepInfo
+}
+
+type OrderedSubStep struct {
+	SubStepName   string `json:"subStepName"`
+	SubStepStatus string `json:"subStepStatus"`
+	SubStepInfo
 }
 
 // StepInfo - 步骤信息
 type StepInfo struct {
-	Ready        bool              `json:"ready,omitempty"`
-	StartTime    time.Time         `json:"startTime,omitempty"`    // 第一次开始时间
-	FinishedTime time.Time         `json:"finishedTime,omitempty"` // 最后一次成功时间
-	CostSeconds  int               `json:"costSeconds,omitempty"`  // 花费时间
-	RetryCount   int               `json:"retryCount,omitempty"`   // 重试次数
-	TraceID      string            `json:"traceID,omitempty"`      // cce 侧 requestID, errorInfo 暴露后，去除该字段
-	ErrMsg       string            `json:"errMsg,omitempty"`       // 失败信息
-	ErrorInfo    ReconcileResponse `json:"errInfo,omitempty"`      // 失败信息
+	Ready            bool              `json:"ready,omitempty"`
+	Skipped          bool              `json:"skipped,omitempty"`
+	StartTime        time.Time         `json:"startTime,omitempty"`    // 第一次开始时间
+	FinishedTime     time.Time         `json:"finishedTime,omitempty"` // 最后一次成功时间
+	CostSeconds      int               `json:"costSeconds,omitempty"`  // 花费时间
+	RetryCount       int               `json:"retryCount,omitempty"`   // 重试次数
+	TraceID          string            `json:"traceID,omitempty"`      // cce 侧 requestID, errorInfo 暴露后，去除该字段
+	ErrMsg           string            `json:"errMsg,omitempty"`       // 失败信息
+	ErrorInfo        ReconcileResponse `json:"errInfo,omitempty"`      // 失败信息
+	DecideDeployType string            `json:"decideDeployType,omitempty"`
+	ActionName       string            `json:"actionName,omitempty"`
+	Retryable        bool              `json:"retryable,omitempty"`
+	Skippable        bool              `json:"skippable,omitempty"`
+	UserAction       string            `json:"userAction,omitempty"`
+	UserActionTime   time.Time         `json:"userActionTime,omitempty"`
+}
+
+type SubStepInfo struct {
+	Ready          bool              `json:"ready,omitempty"`
+	Skipped        bool              `json:"skipped,omitempty"`
+	StartTime      time.Time         `json:"startTime,omitempty"`
+	FinishedTime   time.Time         `json:"finishedTime,omitempty"`
+	CostSeconds    int               `json:"costSeconds,omitempty"`
+	RetryCount     int               `json:"retryCount,omitempty"`
+	TraceID        string            `json:"traceID,omitempty"`
+	ErrMsg         string            `json:"errMsg,omitempty"`
+	ErrorInfo      ReconcileResponse `json:"errInfo,omitempty"`
+	ActionName     string            `json:"actionName,omitempty"`
+	Retryable      bool              `json:"retryable,omitempty"`
+	Skippable      bool              `json:"skippable,omitempty"`
+	Description    string            `json:"description,omitempty"`
+	UserAction     string            `json:"userAction,omitempty"`
+	UserActionTime time.Time         `json:"userActionTime,omitempty"`
 }
 
 // ReconcileResponse controller reconcile 流程中暴露出去的信息
@@ -170,6 +272,20 @@ type ReconcileResponse struct {
 	TraceID    string `json:"traceID,omitempty"` // message里可能有底层返回的requestID，这里用TraceID作区分
 	Suggestion string `json:"suggestion,omitempty"`
 }
+
+type EventStatus string
+
+const (
+	EventStatusCreating      EventStatus = "creating"
+	EventStatusCreated       EventStatus = "created"
+	EventStatusCreateFailed  EventStatus = "create_failed"
+	EventStatusDeleting      EventStatus = "deleting"
+	EventStatusDeleted       EventStatus = "deleted"
+	EventStatusDeleteFailed  EventStatus = "delete_failed"
+	EventStatusUpgrading     EventStatus = "upgrading"
+	EventStatusUpgraded      EventStatus = "upgraded"
+	EventStatusUpgradeFailed EventStatus = "upgrade_failed"
+)
 
 // ListInstancesByPageParams - 分页查询集群实例列表参数
 type ListInstancesByPageParams struct {
@@ -185,6 +301,7 @@ type ListInstancesByPageParams struct {
 // CreateClusterResponse - 创建 Cluster 返回
 type CreateClusterResponse struct {
 	ClusterID string `json:"clusterID"`
+	OrderID   string `json:"orderID,omitempty"`
 	RequestID string `json:"requestID"`
 }
 
@@ -308,8 +425,9 @@ type Cluster struct {
 	Spec   *ClusterSpec   `json:"spec"`
 	Status *ClusterStatus `json:"status"`
 
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	CreatedAt time.Time         `json:"createdAt,omitempty"`
+	UpdatedAt time.Time         `json:"updatedAt,omitempty"`
+	Instances []*SimpleInstance `json:"instances,omitempty"`
 }
 
 // 作为返回值的ClusterSpec
@@ -320,15 +438,26 @@ type ClusterSpec struct {
 
 	Description string `json:"description"`
 
-	K8SVersion types.K8SVersion `json:"k8sVersion"`
+	K8SVersion     types.K8SVersion  `json:"k8sVersion"`
+	RuntimeType    types.RuntimeType `json:"runtimeType"`
+	RuntimeVersion string            `json:"runtimeVersion"`
 
 	VPCID   string `json:"vpcID"`
 	VPCCIDR string `json:"vpcCIDR"`
+	VPCUUID string `json:"vpcUUID"`
+	VPCName string `json:"vpcName"`
 
 	Plugins []string `json:"plugins"`
 
-	MasterConfig           types.MasterConfig           `json:"masterConfig"`
-	ContainerNetworkConfig types.ContainerNetworkConfig `json:"containerNetworkConfig"`
+	ForbidDelete bool `json:"forbidDelete"`
+
+	MasterConfig                types.MasterConfig           `json:"masterConfig"`
+	ContainerNetworkConfig      types.ContainerNetworkConfig `json:"containerNetworkConfig"`
+	K8SCustomConfig             types.K8SCustomConfig        `json:"k8sCustomConfig,omitempty"`
+	ResourceChargingOption      types.ResourceChargingOption `json:"resourceChargingOption,omitempty"`
+	MasterDefaultSecurityGroups []types.SecurityGroupV2      `json:"masterDefaultSecurityGroups,omitempty"`
+	NodeDefaultSecurityGroups   []types.SecurityGroupV2      `json:"nodeDefaultSecurityGroups,omitempty"`
+	ENIDefaultSecurityGroups    []types.SecurityGroupV2      `json:"eniDefaultSecurityGroups,omitempty"`
 
 	Tags []types.Tag `json:"tags"`
 }
@@ -337,9 +466,16 @@ type ClusterSpec struct {
 type ClusterStatus struct {
 	ClusterBLB BLB `json:"clusterBLB"`
 
-	ClusterPhase types.ClusterPhase `json:"clusterPhase"`
+	InfrastructureReady    bool               `json:"infrastructureReady"`
+	APIServerAccessSuccess bool               `json:"apiServerAccessSuccess"`
+	K8SPluginDeploySuccess bool               `json:"k8sPluginDeploySuccess"`
+	ClusterPhase           types.ClusterPhase `json:"clusterPhase"`
 
 	NodeNum int `json:"nodeNum"`
+
+	UpgradeWorkflowID               string `json:"upgradeWorkflowID,omitempty"`
+	WorkflowMessage                 string `json:"workflowMessage,omitempty"`
+	ProblemDetectorServiceSourceBCM bool   `json:"problemDetectorServiceSourceBCM"`
 }
 
 // BLB 定义 BLB 类型
@@ -347,6 +483,17 @@ type BLB struct {
 	ID    string `json:"id"`
 	VPCIP string `json:"vpcIP"`
 	EIP   string `json:"eip"`
+}
+
+type SimpleInstance struct {
+	CCEInstanceID        string                   `json:"cceInstanceID"`
+	InstanceName         string                   `json:"instanceName"`
+	ClusterID            string                   `json:"clusterID"`
+	ClusterRole          types.ClusterRole        `json:"clusterRole"`
+	InstanceChargingType bccapi.PaymentTimingType `json:"instanceChargingType"`
+	InstanceID           string                   `json:"instanceID"`
+	InstanceUUID         string                   `json:"instanceUUID"`
+	InstancePhase        types.InstancePhase      `json:"instancePhase"`
 }
 
 // InstancePage - 节点分页查询返回
@@ -1145,6 +1292,18 @@ type UpdateAddonArgs struct {
 type UpdateClusterForbidDeleteResponse struct {
 	Success      bool `json:"success"`
 	ForbidDelete bool `json:"forbidDelete"`
+}
+
+type ConfigureKMSEncryptionResponse struct {
+	Success    bool   `json:"success"`
+	WorkflowID string `json:"workflowID"`
+	RequestID  string `json:"requestID,omitempty"`
+}
+
+type UpdateAPIServerCertSANResponse struct {
+	Success    bool   `json:"success"`
+	WorkflowID string `json:"workflowID"`
+	RequestID  string `json:"requestID,omitempty"`
 }
 
 // UpdateInstanceScaleDownProtectionArgs 修改节点缩容保护状态的请求参数

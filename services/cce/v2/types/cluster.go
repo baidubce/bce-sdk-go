@@ -11,7 +11,7 @@ package types
 
 const (
 	// LatestSupportedK8SVersion latest K8S Version that we supported
-	LatestSupportedK8SVersion = "1.16.8"
+	LatestSupportedK8SVersion = "1.34.2"
 
 	// DefaultRuntime default runtime
 	DefaultRuntime = "docker"
@@ -78,6 +78,10 @@ type ClusterSpec struct {
 
 	// 资源分组 ID
 	ResourceGroupID string `json:"resourceGroupID,omitempty"`
+
+	MasterDefaultSecurityGroups []SecurityGroupV2 `json:"masterDefaultSecurityGroups,omitempty"`
+	NodeDefaultSecurityGroups   []SecurityGroupV2 `json:"nodeDefaultSecurityGroups,omitempty"`
+	ENIDefaultSecurityGroups    []SecurityGroupV2 `json:"eniDefaultSecurityGroups,omitempty"`
 }
 
 // ResourceChargingOption 定义IaaS资源付费配置
@@ -116,15 +120,34 @@ type PluginHelmConfig struct {
 
 // K8SCustomConfig - K8S 自定义配置
 type K8SCustomConfig struct {
-	MasterFeatureGates  map[string]bool `json:"masterFeatureGates,omitempty"`  // 自定义 FeatureGates
-	NodeFeatureGates    map[string]bool `json:"nodeFeatureGates,omitempty"`    // 自定义 FeatureGates
-	AdmissionPlugins    []string        `json:"admissionPlugins,omitempty"`    // 自定义 AdmissionPlugins
-	PauseImage          string          `json:"pauseImage,omitempty"`          // 自定义 PauseImage
-	KubeAPIQPS          int             `json:"kubeAPIQPS,omitempty"`          // 自定义 KubeAPIQPS
-	KubeAPIBurst        int             `json:"kubeAPIBurst,omitempty"`        // 自定义 KubeAPIBurst
-	SchedulerPredicates []string        `json:"schedulerPredicates,omitempty"` // 自定义 SchedulerPredicates
-	SchedulerPriorities map[string]int  `json:"schedulerPriorities,omitempty"` // 自定义 SchedulerPriorities
-	ETCDDataPath        string          `json:"etcdDataPath,omitempty"`        // 自定义 etcd数据目录
+	CustomLabels                    map[string]string        `json:"customLabels,omitempty"`
+	MasterFeatureGates              map[string]bool          `json:"masterFeatureGates,omitempty"`  // 自定义 FeatureGates
+	NodeFeatureGates                map[string]bool          `json:"nodeFeatureGates,omitempty"`    // 自定义 FeatureGates
+	AdmissionPlugins                []string                 `json:"admissionPlugins,omitempty"`    // 自定义 AdmissionPlugins
+	PauseImage                      string                   `json:"pauseImage,omitempty"`          // 自定义 PauseImage
+	KubeAPIQPS                      int                      `json:"kubeAPIQPS,omitempty"`          // 自定义 KubeAPIQPS
+	KubeAPIBurst                    int                      `json:"kubeAPIBurst,omitempty"`        // 自定义 KubeAPIBurst
+	SchedulerPredicates             []string                 `json:"schedulerPredicates,omitempty"` // 自定义 SchedulerPredicates
+	SchedulerPriorities             map[string]int           `json:"schedulerPriorities,omitempty"` // 自定义 SchedulerPriorities
+	ETCDDataPath                    string                   `json:"etcdDataPath,omitempty"`        // 自定义 etcd数据目录
+	EnableKMSProvider               bool                     `json:"enableKMSProvider,omitempty"`
+	EnableHostname                  bool                     `json:"enableHostname,omitempty"`
+	KMSKeyID                        string                   `json:"kmsKeyID,omitempty"`
+	EnableLBServiceController       bool                     `json:"enableLBServiceController,omitempty"`
+	EnableCloudNodeController       bool                     `json:"enableCloudNodeController,omitempty"`
+	DisableCCM                      bool                     `json:"disableCCM,omitempty"`
+	EnableEdgeHub                   bool                     `json:"enableEdgeHub,omitempty"`
+	EnableDefaultPluginDeployByHelm bool                     `json:"enableDefaultPluginDeployByHelm,omitempty"`
+	DisableKubeletReadOnlyPort      bool                     `json:"disableKubeletReadOnlyPort,omitempty"`
+	APIServerCertSAN                []string                 `json:"apiServerCertSAN,omitempty"`
+	APIAudiences                    []string                 `json:"apiAudiences,omitempty"`
+	ServiceAccountIssuers           []string                 `json:"serviceAccountIssuers,omitempty"`
+	NonMasqueradeCIDR               string                   `json:"nonMasqueradeCIDR,omitempty"`
+	InsecureRegistries              []string                 `json:"insecureRegistries,omitempty"`
+	CPUManagerPolicy                K8SCPUManagerPolicy      `json:"cpuManagerPolicy,omitempty"`
+	KubeletBindAddressType          KubeletBindAddressType   `json:"kubeletBindAddressType,omitempty"`
+	TopologyManagerScope            K8STopologyManagerScope  `json:"topologyManagerScope,omitempty"`
+	TopologyManagerPolicy           K8STopologyManagerPolicy `json:"topologyManagerPolicy,omitempty"`
 }
 
 // ClusterType usually used to init Provider
@@ -133,7 +156,14 @@ type ClusterType string
 
 const (
 	// ClusterTypeNormal = 普通类型集群
-	ClusterTypeNormal ClusterType = "normal"
+	ClusterTypeNormal      ClusterType = "normal"
+	ClusterTypeCrossVPCENI ClusterType = "crossvpceni"
+	ClusterTypeServerless  ClusterType = "serverless"
+	ClusterTypeGPUShare    ClusterType = "gpuShare"
+	ClusterTypeEdge        ClusterType = "edge"
+	ClusterTypeCloudEdge   ClusterType = "cloudEdge"
+	ClusterTypeAIHPC       ClusterType = "aihpc"
+	ClusterTypeARM         ClusterType = "arm"
 )
 
 // K8SVersion defines the k8stypes version of cluster
@@ -150,15 +180,23 @@ const (
 	// K8S_1_13_4  K8SVersion = "1.13.4"
 	// 支持在console创建集群
 	// K8S_1_13_10 K8SVersion = "1.13.10"
-	// K8S_1_16_3  K8SVersion = "1.16.3"
-	// K8S_1_16_8  K8SVersion = "1.16.8"
-	// K8S_1_17_17 K8SVersion = "1.17.17"
-	K8S_1_18_9  K8SVersion = "1.18.9"
-	K8S_1_20_8  K8SVersion = "1.20.8"
-	K8S_1_21_14 K8SVersion = "1.21.14"
-	K8S_1_22_5  K8SVersion = "1.22.5"
-	K8S_1_24_4  K8SVersion = "1.24.4"
-	K8S_1_26_9  K8SVersion = "1.26.9"
+	K8S_1_14_9                      K8SVersion = "1.14.9"
+	K8S_1_16_3                      K8SVersion = "1.16.3"
+	K8S_1_16_8                      K8SVersion = "1.16.8"
+	K8S_1_17_17                     K8SVersion = "1.17.17"
+	K8S_1_18_9                      K8SVersion = "1.18.9"
+	K8S_1_18_9_BilibiliMixprotocols K8SVersion = "1.18.9-bilibili-mixprotocols"
+	K8S_1_20_8                      K8SVersion = "1.20.8"
+	K8S_1_20_8_arm64                K8SVersion = "1.20.8-arm64"
+	K8S_1_21_14                     K8SVersion = "1.21.14"
+	K8S_1_22_5                      K8SVersion = "1.22.5"
+	K8S_1_24_4                      K8SVersion = "1.24.4"
+	K8S_1_26_9                      K8SVersion = "1.26.9"
+	K8S_1_28_8                      K8SVersion = "1.28.8"
+	K8S_1_30_1                      K8SVersion = "1.30.1"
+	K8S_1_31_1                      K8SVersion = "1.31.1"
+	K8S_1_32_7                      K8SVersion = "1.32.7"
+	K8S_1_34_2                      K8SVersion = "1.34.2"
 )
 
 // MasterConfig Master 配置
@@ -173,8 +211,18 @@ type MasterConfig struct {
 
 	ClusterBLBVPCSubnetID string `json:"clusterBLBVPCSubnetID,omitempty"`
 
+	ClusterBLBID  string `json:"clusterBLBID,omitempty"`
+	ClusterBLBEIP string `json:"clusterBLBEIP,omitempty"`
+
 	ManagedClusterMasterOption `json:"managedClusterMasterOption,omitempty"`
 }
+
+type BLBSource string
+
+const (
+	BLBSourceCCE  BLBSource = "CCE"
+	BLBSourceUser BLBSource = "USER"
+)
 
 // ManagedClusterMasterOption 托管集群 Master 配置
 type ManagedClusterMasterOption struct {
@@ -182,7 +230,8 @@ type ManagedClusterMasterOption struct {
 	MasterVPCSubnetUUID     string        `json:"masterVPCSubnetUUID,omitempty"`
 	MasterSecurityGroupUUID string        `json:"masterSecurityGroupUUID,omitempty"`
 
-	MasterFlavor MasterFlavor `json:"masterFlavor,omitempty"`
+	MasterFlavor     MasterFlavor `json:"masterFlavor,omitempty"`
+	ClusterBLBSource BLBSource    `json:"clusterBLBSource,omitempty"`
 }
 
 type MasterFlavor string
@@ -209,6 +258,8 @@ const (
 type ContainerNetworkConfig struct {
 	// CCE 支持网络类型: kubenet 及 vpc-cni
 	Mode ContainerNetworkMode `json:"mode,omitempty"` // If not set, set mode = kubenet
+
+	EBPFConfig EBPFConfiguration `json:"ebpfConfig,omitempty"`
 
 	// ENI 网络模式子网
 	ENIVPCSubnetIDs    map[AvailableZone][]string `json:"eniVPCSubnetIDs,omitempty"`
@@ -237,7 +288,24 @@ type ContainerNetworkConfig struct {
 
 	// KubeProxy 的模式: iptables 和 ipvs
 	KubeProxyMode KubeProxyMode `json:"kubeProxyMode,omitempty"` // If not set, kubeProxyMode=ipvs
+
+	NetworkPolicyType  NetworkPolicyType `json:"networkPolicyType,omitempty"`
+	EnableNodeLocalDNS bool              `json:"enableNodeLocalDNS,omitempty"`
+	NodeLocalDNSAddr   string            `json:"nodeLocalDNSAddr,omitempty"`
+	NetDeviceDriver    string            `json:"netDeviceDriver,omitempty"`
+	EnableRDMA         bool              `json:"enableRDMA,omitempty"`
+	EnableCVEni        bool              `json:"enableCVEni,omitempty"`
 }
+
+type EBPFConfiguration struct {
+	Enabled                  bool   `json:"enabled,omitempty"`
+	DatapathV2Enabled        bool   `json:"datapathV2Enabled,omitempty"`
+	KubeProxyReplacementMode string `json:"kubeProxyReplacementMode,omitempty"`
+	ServiceLBMode            string `json:"serviceLBMode,omitempty"`
+	CNIChainingMode          string `json:"cniChainingMode,omitempty"`
+}
+
+type EBPFConfig = EBPFConfiguration
 
 // ContainerNetworkIPType - 容器 IP 类型
 type ContainerNetworkIPType string
@@ -290,15 +358,25 @@ const (
 
 	// KubeProxyModeIptables --proxy-mode=iptables
 	KubeProxyModeIptables KubeProxyMode = "iptables"
+	KubeProxyModeCilium   KubeProxyMode = "cilium"
+	KubeProxyModeEBPF     KubeProxyMode = "ebpf"
+)
+
+type NetworkPolicyType string
+
+const (
+	NetworkPolicyTypeNone  NetworkPolicyType = "none"
+	NetworkPolicyTypeFelix NetworkPolicyType = "felix"
+	NetworkPolicyTypeEBPF  NetworkPolicyType = "eBPF"
 )
 
 // MasterType 定义 Master 机器来源
 type MasterType string
 
 const (
-	// MasterTypeManaged 托管 Master
-	MasterTypeManaged MasterType = "managed"
+	MasterTypeManagedPro MasterType = "managedPro"
 
+	MasterTypeManaged MasterType = "managed"
 	// MasterTypeCustom 自定义集群, 包含:
 	// 1. 新建 BCC;
 	// 2. 已有 BCC;
@@ -307,6 +385,8 @@ const (
 
 	// MasterTypeServerless Serverless集群Master
 	MasterTypeServerless MasterType = "serverless"
+
+	MasterTypeContainerizedCustom MasterType = "containerizedCustom"
 )
 
 // ClusterHA Cluster Master 对应副本数
@@ -350,6 +430,54 @@ const (
 
 	// ClusterPhaseDeleteFailed 集群删除失败
 	ClusterPhaseDeleteFailed ClusterPhase = "delete_failed"
+
+	// ClusterPhaseUpgrading 集群升级中
+	ClusterPhaseUpgrading ClusterPhase = "upgrading"
+
+	// ClusterPhaseUpgradeFailed 集群更新失败
+	ClusterPhaseUpgradeFailed ClusterPhase = "upgrade_failed"
+
+	// ClusterPhaseEIPOpening 集群 APIServer 公网访问开启中
+	ClusterPhaseEIPOpening ClusterPhase = "eip_opening"
+
+	// ClusterPhaseEIPOpenFailed 集群 APIServer 公网访问开启失败
+	ClusterPhaseEIPOpenFailed ClusterPhase = "eip_open_failed"
+
+	// ClusterPhaseEIPClosing 集群 APIServer 公网访问关闭中
+	ClusterPhaseEIPClosing ClusterPhase = "eip_closing"
+
+	// ClusterPhaseEIPCloseFailed 集群 APIServer 公网访问关闭失败
+	ClusterPhaseEIPCloseFailed ClusterPhase = "eip_close_failed"
+
+	// ClusterPhaseAPIServerCertSANUpdating 集群 APIServer 证书 SAN 更新中
+	ClusterPhaseAPIServerCertSANUpdating ClusterPhase = "apiserver_san_updating"
+
+	// ClusterPhaseAPIServerCertSANFailed 集群 APIServer 证书 SAN 更新失败
+	ClusterPhaseAPIServerCertSANFailed ClusterPhase = "apiserver_san_update_failed"
+
+	// ClusterPhaseStarting 集群启动中
+	ClusterPhaseStarting ClusterPhase = "starting"
+
+	// ClusterPhaseReleasing 集群释放中
+	ClusterPhaseReleasing ClusterPhase = "releasing"
+
+	// ClusterPhaseStoping 集群停止中
+	ClusterPhaseStoping ClusterPhase = "stoping"
+
+	// ClusterPhaseStoped 集群已停止
+	ClusterPhaseStoped ClusterPhase = "stoped"
+
+	// ClusterPhaseKMSEncryptionEnabling 集群 KMS 落盘加密开启中
+	ClusterPhaseKMSEncryptionEnabling ClusterPhase = "kms_encryption_enabling"
+
+	// ClusterPhaseKMSEncryptionEnableFailed 集群 KMS 落盘加密开启失败
+	ClusterPhaseKMSEncryptionEnableFailed ClusterPhase = "kms_encryption_enable_failed"
+
+	// ClusterPhaseKMSEncryptionDisabling 集群 KMS 落盘加密关闭中
+	ClusterPhaseKMSEncryptionDisabling ClusterPhase = "kms_encryption_disabling"
+
+	// ClusterPhaseKMSEncryptionDisableFailed 集群 KMS 落盘加密关闭失败
+	ClusterPhaseKMSEncryptionDisableFailed ClusterPhase = "kms_encryption_disable_failed"
 )
 
 // AuthenticateMode - 认证类型
