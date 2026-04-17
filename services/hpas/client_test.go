@@ -584,3 +584,22 @@ func TestDescribeInstanceInventoryQuantity(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 	fmt.Println(resp)
 }
+
+func TestDetachHpasVolume(t *testing.T) {
+	req := &api.DetachHpasVolumeReq{
+		VolumeIds: []string{"vol-xxxxxxx"},
+	}
+	err := HPAS_CLIENT.DetachHpasVolume(req)
+	ExpectEqual(t.Errorf, err, nil)
+}
+
+func TestAttachHpasVolume(t *testing.T)  {
+	req := &api.AttachHpasVolumeReq{
+		HpasId:    "hpas-xxxxxxx",
+		VolumeIds:   []string{"vol-xxxxxxx"},
+	}
+	resp, err := HPAS_CLIENT.AttachHpasVolume(req)
+	ExpectEqual(t.Errorf, err, nil)
+	fmt.Println(resp)
+}
+

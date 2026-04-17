@@ -1336,3 +1336,61 @@ func DescribeInstanceInventoryQuantity(cli bce.Client, body *DescribeInstanceInv
 	}
 	return res, nil
 }
+
+func AttachHpasVolume(cli bce.Client, body *AttachHpasVolumeReq) (*AttachHpasVolumeResp, error){
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "AttachVolumes")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return nil, err
+	}
+	if resp.IsFail() {
+		return nil, resp.ServiceError()
+	}
+	res := &AttachHpasVolumeResp{}
+	if err := resp.ParseJsonBody(res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func DetachHpasVolume(cli bce.Client, body *DetachHpasVolumeReq) error {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	path := "/"
+	req.SetUri(path)
+	req.SetParam("action", "DetachVolumes")
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	return nil
+}

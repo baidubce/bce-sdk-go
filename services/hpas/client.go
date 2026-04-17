@@ -476,3 +476,11 @@ func (c *Client) DescribeHpasSpecs(body *api.DescribeHpasSpecsReq) (*api.Describ
 func (c *Client) DescribeInstanceInventoryQuantity(body *api.DescribeInstanceInventoryQuantityReq) (*api.DescribeInstanceInventoryQuantityResp, error) {
 	return api.DescribeInstanceInventoryQuantity(c, body)
 }
+
+func (c *Client) DetachHpasVolume(body *api.DetachHpasVolumeReq) error {
+	return api.DetachHpasVolume(c, body)
+}
+
+func (c *Client) AttachHpasVolume(body *api.AttachHpasVolumeReq) (*api.AttachHpasVolumeResp, error) {
+	return api.AttachHpasVolume(c, body)
+}

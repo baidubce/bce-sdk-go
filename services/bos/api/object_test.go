@@ -331,7 +331,9 @@ func TestCopyObject(t *testing.T) {
 	bucket := "test-bucket"
 	object := "test-object"
 	source := "src-bucket/src-object"
-	args := &CopyObjectArgs{}
+	args := &CopyObjectArgs{
+		SrcVersionId: "test-src-version-id",
+	}
 
 	// case1: empty source
 	res, err := CopyObject(client, bucket, object, "", args, nil)
