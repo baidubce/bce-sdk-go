@@ -364,7 +364,7 @@ func CopyObject(cli bce.Client, bucket, object, source string, args *CopyObjectA
 	if len(source) == 0 {
 		return nil, bce.NewBceClientError("copy source should not be null")
 	}
-	if len(args.SrcVersionId) > 0 {
+	if args != nil && len(args.SrcVersionId) > 0 {
 		source = source + "?versionId=" + args.SrcVersionId
 	}
 	req.SetHeader(http.BCE_COPY_SOURCE, util.UriEncode(source, false))
@@ -988,13 +988,13 @@ func GeneratePresignedUrlInternal(conf *bce.BceClientConfiguration, signer auth.
 	if len(method) == 0 {
 		method = http.GET
 	}
-	objectTrimSlash := strings.Trim(object, "/")
-	if method == http.GET && objectTrimSlash == "" {
-		log.Warnf("objectKey is empty, cannot generate presigned url.")
+	if bucket != "" && !isValidBucketName(bucket) {
+		log.Warnf("invalid bucket name: %s", bucket)
 		return ""
 	}
-	if !path_style && method == http.GET && objectTrimSlash == "v1" {
-		log.Warnf("objectKey '%s' is invalid, cannot generate presigned url.", object)
+	err := validateObjectKey(object)
+	if method == http.GET && err != nil {
+		fmt.Printf("cannot generate presigned url: %v", err)
 		return ""
 	}
 	req.SetMethod(method)
@@ -1391,11 +1391,18 @@ func GetObjectTag(cli bce.Client, bucket, object string, ctx *BosContext,
 		return nil, err
 	}
 
-	result, err := ParseObjectTagResult(bodyBytes)
-	if err != nil {
-		return nil, err
+	result := &GetObjectTagResult{}
+	if len(bodyBytes) > 0 {
+		err := json.Unmarshal(bodyBytes, result)
+		if err != nil {
+			return nil, err
+		}
 	}
-	return result, nil
+	if len(result.TagSet) == 0 {
+		return map[string]interface{}{}, nil
+	}
+
+	return result.TagSet[0].TagInfo, err
 }
 
 func DeleteObjectTag(cli bce.Client, bucket, object string, ctx *BosContext, options ...Option) error {

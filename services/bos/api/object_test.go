@@ -1053,6 +1053,22 @@ func TestGeneratePresignedUrlInternal(t *testing.T) {
 	// case12: path_style=false, method=GET, object="valid-object" (valid object, should NOT return empty)
 	res = GeneratePresignedUrlInternal(conf, signer, bucket, "valid-object", expire, my_http.GET, headers, params, false)
 	ExpectEqual(t, true, res != "")
+
+	// case13: invalid bucket name (uppercase letters)
+	res = GeneratePresignedUrlInternal(conf, signer, "INVALID_BUCKET", "valid-object", expire, my_http.GET, headers, params, false)
+	ExpectEqual(t, "", res)
+
+	// case14: invalid bucket name (too short)
+	res = GeneratePresignedUrlInternal(conf, signer, "ab", "valid-object", expire, my_http.GET, headers, params, false)
+	ExpectEqual(t, "", res)
+
+	// case15: invalid bucket name (starts with hyphen)
+	res = GeneratePresignedUrlInternal(conf, signer, "-invalid", "valid-object", expire, my_http.GET, headers, params, false)
+	ExpectEqual(t, "", res)
+
+	// case16: empty bucket is allowed (bucket validation skipped)
+	res = GeneratePresignedUrlInternal(conf, signer, "", "valid-object", expire, my_http.GET, headers, params, false)
+	ExpectEqual(t, true, res != "")
 }
 
 func TestPutObjectAcl(t *testing.T) {
@@ -1426,6 +1442,23 @@ func TestGetObjectTag(t *testing.T) {
 	res, err = GetObjectTag(client, bucket, object, nil)
 	ExpectEqual(t, nil, err)
 	ExpectEqual(t, 10, len(res))
+
+	// case7: empty
+	respBody7 := ""
+	AttachMockHttpClientOk(t, client, &respBody7)
+	res, err = GetObjectTag(client, bucket, object, nil)
+	ExpectEqual(t, nil, err)
+	ExpectEqual(t, 0, len(res))
+
+	// case8: no such tag
+	respBody8 := `{
+		"code": "NoSuchTag",
+		"message": "The requested tag does not exist"
+	}`
+	AttachMockHttpClientOk(t, client, &respBody8)
+	res, err = GetObjectTag(client, bucket, object, nil)
+	ExpectEqual(t, nil, err)
+	ExpectEqual(t, 0, len(res))
 }
 
 func TestDeleteObjectTag(t *testing.T) {

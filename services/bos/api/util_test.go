@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"runtime"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/baidubce/bce-sdk-go/bce"
@@ -396,4 +397,132 @@ func TestGetObjectMetaOptions(t *testing.T) {
 	ExpectEqual(t, 3, objMeta1.objectTagCount)
 	ExpectEqual(t, "BCE_CONTENT_CRC64ECMA", objMeta1.ContentCrc64ECMA)
 	ExpectEqual(t, map[string]string{"Key1": "value1", "Key2": "value2"}, objMeta1.UserMeta)
+}
+
+func TestValidateObjectKey(t *testing.T) {
+	testCases := []struct {
+		name      string
+		objectKey string
+		wantErr   bool
+	}{
+		// 有效的 object key
+		{"valid simple key", "test-object", false},
+		{"valid path key", "dir1/dir2/file.txt", false},
+		{"valid key with hyphen", "my-bucket-object-123", false},
+		{"valid key with underscore", "my_object_name", false},
+		{"valid key with dot", "file.tar.gz", false},
+		{"valid chinese key", "中文对象名", false},
+		{"valid key with special chars", "a@b#c$d%e", false},
+		{"valid long path", "a/b/c/d/e/f/g/h/i/j/file.txt", false},
+
+		// 路径穿越攻击 - 应该拒绝
+		{"path traversal ..", "../etc/passwd", true},
+		{"path traversal middle ..", "dir/../secret", true},
+		{"path traversal end ..", "dir/subdir/..", true},
+		{"path traversal multiple ..", "../../root", true},
+		{"path traversal encoded ..", "dir/..%2F../secret", true}, // 原始字符串包含 ..
+
+		// 空 key - 应该拒绝
+		{"empty key", "", true},
+		{"only slash", "/", true},
+		{"multiple slashes", "///", true},
+
+		// v1 保留字 - 应该拒绝
+		{"reserved v1", "v1", true},
+		{"v1 with leading slash", "/v1", true},
+		{"v1 with trailing slash", "v1/", true},
+		{"v1 with both slashes", "/v1/", true},
+
+		// v1 作为路径的一部分 - 应该允许
+		{"v1 in path", "dir/v1/file.txt", false},
+		{"v1 prefix", "v1-something", false},
+		{"v1 suffix", "something-v1", false},
+		{"v10 not v1", "v10", false},
+
+		// 边界情况
+		{"single char", "a", false},
+		{"single dot becomes empty", ".", true}, // path.Clean("/.") = "/" -> trim = "" -> invalid
+		{"double slash in path", "dir//file", false},
+		{"leading slash preserved content", "/valid/path", false},
+		{"spaces are valid chars", "   ", false}, // 空格不会被trim，是有效字符
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			err := validateObjectKey(tc.objectKey)
+			if tc.wantErr {
+				ExpectEqual(t, true, err != nil)
+			} else {
+				ExpectEqual(t, nil, err)
+			}
+		})
+	}
+}
+
+func TestIsValidBucketName(t *testing.T) {
+	testCases := []struct {
+		name   string
+		bucket string
+		valid  bool
+	}{
+		// 有效的 bucket 名称 (3-63字符, 小写字母/数字/连字符, 以字母或数字开头和结尾)
+		{"valid simple", "mybucket", true},
+		{"valid with hyphen", "my-bucket", true},
+		{"valid with numbers", "bucket123", true},
+		{"valid mixed", "my-bucket-123", true},
+		{"valid min length 3", "abc", true},
+		{"valid 63 chars", "a" + strings.Repeat("b", 61) + "c", true},
+
+		// 无效的 bucket 名称
+		{"empty", "", false},
+		{"too short 1 char", "a", false},
+		{"too short 2 chars", "ab", false},
+		{"too long 64 chars", "a" + strings.Repeat("b", 62) + "c", false},
+		{"starts with hyphen", "-mybucket", false},
+		{"ends with hyphen", "mybucket-", false},
+		{"uppercase letters", "MyBucket", false},
+		{"contains underscore", "my_bucket", false},
+		{"contains dot", "my.bucket", false},
+		{"contains space", "my bucket", false},
+		{"starts with number", "123bucket", true}, // 数字开头是允许的
+		{"only numbers", "123456", true},
+		{"special chars", "my@bucket", false},
+		{"chinese chars", "我的桶", false},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			result := isValidBucketName(tc.bucket)
+			ExpectEqual(t, tc.valid, result)
+		})
+	}
+}
+
+func TestSendRequestWithInvalidBucket(t *testing.T) {
+	// mock bce client
+	client, err := NewMockBosClient()
+	ExpectEqual(t, nil, err)
+
+	// prepare request / response
+	req := &BosRequest{}
+	resp := &BosResponse{}
+	bosContext := newDefaultBosContext()
+
+	req.SetUri("/invalid_bucket/test-object")
+	req.SetMethod(http.MethodGet)
+	req.SetBucket("INVALID_BUCKET") // 大写字母，不合法
+
+	options := []util.MockRoundTripperOption{
+		util.SetStatusCode(http.StatusOK),
+		util.SetStatusMsg(http.StatusText(http.StatusOK)),
+	}
+	mockHttpClient := util.NewMockHTTPClient(options...)
+	client.HTTPClient = mockHttpClient
+
+	// 应该返回 BceClientError
+	err = SendRequest(client, req, resp, bosContext)
+	ExpectEqual(t, true, err != nil)
+	_, isClientErr := err.(*bce.BceClientError)
+	ExpectEqual(t, true, isClientErr)
+	ExpectEqual(t, true, strings.Contains(err.Error(), "invalid bucket name"))
 }

@@ -249,7 +249,7 @@ func TestHeadBucket(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	options1 := []util.MockRoundTripperOption{
 		util.SetStatusCode(http.StatusOK),
@@ -289,7 +289,7 @@ func TestPutBucket(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	args := &PutBucketArgs{
 		TagList:       "key1=value1&key2=value2",
 		EnableMultiAz: true,
@@ -338,7 +338,7 @@ func TestDeleteBucket(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	options1 := []util.MockRoundTripperOption{
 		util.SetStatusCode(http.StatusOK),
@@ -377,7 +377,7 @@ func TestGetBucketLocation(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{ "locationConstraint": "bj" }`
 	options1 := []util.MockRoundTripperOption{
@@ -437,7 +437,7 @@ func TestPutBucketAcl(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	options1 := []util.MockRoundTripperOption{
 		util.SetStatusCode(http.StatusOK),
@@ -489,7 +489,7 @@ func TestGetBucketAcl(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{
 		"owner" : { "id" : "16df583fe6824d73a5f858f06de0af03" },
@@ -556,7 +556,7 @@ func TestPutBucketLogging(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	body1, err := bce.NewBodyFromString("logging config string")
@@ -590,7 +590,7 @@ func TestGetBucketLogging(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{
 		"status" : "enabled",
@@ -632,7 +632,7 @@ func TestDeleteBucketLogging(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = DeleteBucketLogging(client, bucket, nil)
@@ -655,7 +655,7 @@ func TestPutBucketLifecycle(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	body1, err := bce.NewBodyFromString("lifecycle config string")
@@ -686,7 +686,7 @@ func TestGetBucketLifecycle(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{
 		"rule": [
@@ -785,7 +785,7 @@ func TestDeleteBucketLifecycle(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = DeleteBucketLifecycle(client, bucket, nil)
@@ -808,7 +808,7 @@ func TestPutBucketStorageclass(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = PutBucketStorageclass(client, bucket, STORAGE_CLASS_STANDARD, nil)
@@ -831,7 +831,7 @@ func TestGetBucketStorageclass(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{"storageClass": "COLD"}`
 	AttachMockHttpClientOk(t, client, &respBody1)
@@ -866,7 +866,7 @@ func TestPutBucketReplication(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	body1, err := bce.NewBodyFromString("replication config string")
@@ -897,7 +897,7 @@ func TestGetBucketReplication(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{
 		"status": "enabled",
@@ -941,7 +941,7 @@ func TestListBucketReplication(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{
 		"rules": [
@@ -989,7 +989,7 @@ func TestDeleteBucketReplication(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = DeleteBucketReplication(client, bucket, "ruleId", nil)
@@ -1012,7 +1012,7 @@ func TestGetBucketReplicationProgress(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{
 		"status" : "enabled",
@@ -1051,7 +1051,7 @@ func TestPutBucketEncryption(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = PutBucketEncryption(client, bucket, ENCRYPTION_AES256, nil)
@@ -1074,7 +1074,7 @@ func TestGetBucketEncryption(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{"encryptionAlgorithm":"SM4"}`
 	AttachMockHttpClientOk(t, client, &respBody1)
@@ -1109,7 +1109,7 @@ func TestDeleteBucketEncryption(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = DeleteBucketEncryption(client, bucket, nil)
@@ -1132,7 +1132,7 @@ func TestPutBucketStaticWebsite(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	body1, err := bce.NewBodyFromString("static website config string")
@@ -1163,7 +1163,7 @@ func TestGetBucketStaticWebsite(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := ` {
 		"index": "index.html",
@@ -1202,7 +1202,7 @@ func TestDeleteBucketStaticWebsite(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = DeleteBucketStaticWebsite(client, bucket, nil)
@@ -1225,7 +1225,7 @@ func TestPutBucketCors(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	body1, err := bce.NewBodyFromString("cors config string")
@@ -1256,7 +1256,7 @@ func TestGetBucketCors(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{
 		"corsConfiguration": [
@@ -1308,7 +1308,7 @@ func TestDeleteBucketCors(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = DeleteBucketCors(client, bucket, nil)
@@ -1331,7 +1331,7 @@ func TestPutBucketCopyrightProtection(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = PutBucketCopyrightProtection(client, nil, bucket, "resource")
@@ -1354,7 +1354,7 @@ func TestGetBucketCopyrightProtection(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{	"resource": [ "bucket/prefix/*", "bucket/*/suffix" ] }`
 	AttachMockHttpClientOk(t, client, &respBody1)
@@ -1389,7 +1389,7 @@ func TestDeleteBucketCopyrightProtection(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = DeleteBucketCopyrightProtection(client, bucket, nil)
@@ -1412,7 +1412,7 @@ func TestPutBucketTrash(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = PutBucketTrash(client, bucket, PutBucketTrashReq{"trashDir"}, nil)
@@ -1435,7 +1435,7 @@ func TestGetBucketTrash(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{
 		"trashDir": ".trash/"
@@ -1472,7 +1472,7 @@ func TestDeleteBucketTrash(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = DeleteBucketTrash(client, bucket, nil)
@@ -1495,7 +1495,7 @@ func TestPutAndGetBucketNotification(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	argsJsonStr := `{
 		"notifications": [
 			{
@@ -1566,7 +1566,7 @@ func TestDeleteBucketNotification(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = DeleteBucketNotification(client, bucket, nil)
@@ -1589,7 +1589,7 @@ func TestPutAndGetBucketMirror(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	argsJsonStr := `{
 	"bucketMirroringConfiguration":[
 		{
@@ -1664,7 +1664,7 @@ func TestDeleteBucketMirror(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = DeleteBucketMirror(client, bucket, nil)
@@ -1687,7 +1687,7 @@ func TestPutBucketTag(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	args := &PutBucketTagArgs{
 		Tags: []Tag{
 			{TagKey: "key1", TagValue: "value1"},
@@ -1716,7 +1716,7 @@ func TestGetBucketTag(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{
         "tag":[
@@ -1756,7 +1756,7 @@ func TestDeleteBucketTag(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = DeleteBucketTag(client, bucket, nil)
@@ -1779,7 +1779,7 @@ func TestGetBosShareLink(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: share code invalid
 	res, err := GetBosShareLink(client, bucket, "prefix", "111", 180, nil)
 	ExpectEqual(t, fmt.Errorf("shareCode length must be 0 or 6"), err)
@@ -1822,7 +1822,7 @@ func TestPutBucketVersioning(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	args := &BucketVersioningArgs{Status: "enabled"}
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
@@ -1846,7 +1846,7 @@ func TestGetBucketVersioning(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{"status": "enabled"}`
 	AttachMockHttpClientOk(t, client, &respBody1)
@@ -1881,7 +1881,7 @@ func TestPutAndGetBucketInventory(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	argsJsonStr := `{
 		"inventoryRuleList":[
 			{
@@ -1986,7 +1986,7 @@ func TestDeleteBucketInventory(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = DeleteBucketInventory(client, bucket, "id", nil)
@@ -2009,7 +2009,7 @@ func TestPutBucketQuota(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	args := &BucketQuotaArgs{
 		MaxObjectCount:       100,
 		MaxCapacityMegaBytes: 99999999,
@@ -2036,7 +2036,7 @@ func TestGetBucketQuota(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{ "maxObjectCount": 50,  "maxCapacityMegaBytes"  : 12334424 }`
 	AttachMockHttpClientOk(t, client, &respBody1)
@@ -2072,7 +2072,7 @@ func TestDeleteBucketQuota(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = DeleteBucketQuota(client, bucket, nil)
@@ -2095,7 +2095,7 @@ func TestPutBucketRequestPayment(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	args := &RequestPaymentArgs{RequestPayment: "Requester"}
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
@@ -2119,7 +2119,7 @@ func TestGetBucketRequestPayment(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{"requestPayment": "Requester"}`
 	AttachMockHttpClientOk(t, client, &respBody1)
@@ -2154,7 +2154,7 @@ func TestInitBucketObjectLock(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	args := &InitBucketObjectLockArgs{
 		RetentionDays: 10,
 	}
@@ -2180,7 +2180,7 @@ func TestGetBucketObjectLock(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	respBody1 := `{
 		"lockStatus": "IN_PROGRESS",
@@ -2223,7 +2223,7 @@ func TestDeleteBucketObjectLock(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = DeleteBucketObjectLock(client, bucket, nil)
@@ -2246,7 +2246,7 @@ func TestCompleteBucketObjectLock(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
 	err = CompleteBucketObjectLock(client, bucket, nil)
@@ -2269,7 +2269,7 @@ func TestExtendBucketObjectLock(t *testing.T) {
 	//mock bce client
 	client, err := NewMockBosClient()
 	ExpectEqual(t, nil, err)
-	bucket := "test_bucket"
+	bucket := "test-bucket"
 	args := &ExtendBucketObjectLockArgs{ExtendRetentionDays: 1}
 	//case1: ok
 	AttachMockHttpClientOk(t, client, nil)
