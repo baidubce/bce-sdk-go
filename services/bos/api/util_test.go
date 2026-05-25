@@ -94,8 +94,9 @@ func TestUtil(t *testing.T) {
 	}
 	for _, v := range testTagsToStr {
 		match := false
+		tagStr := taggingMapToStr(v.tags)
 		for _, res := range v.res {
-			match = match || util.Equal(res, taggingMapToStr(v.tags))
+			match = match || util.Equal(res, tagStr)
 		}
 		ExpectEqual(t, true, match)
 	}
@@ -422,7 +423,7 @@ func TestValidateObjectKey(t *testing.T) {
 		{"path traversal multiple ..", "../../root", true},
 		{"path traversal encoded ..", "dir/..%2F../secret", true}, // 原始字符串包含 ..
 
-		// 空 key - 应该拒绝
+		// 空 key - 应该拒绝（Clean后为空字符串）
 		{"empty key", "", true},
 		{"only slash", "/", true},
 		{"multiple slashes", "///", true},
@@ -441,7 +442,7 @@ func TestValidateObjectKey(t *testing.T) {
 
 		// 边界情况
 		{"single char", "a", false},
-		{"single dot becomes empty", ".", true}, // path.Clean("/.") = "/" -> trim = "" -> invalid
+		{"single dot becomes empty", ".", true}, // path.Clean("/.") = "/" -> trim = "" -> len==0 -> invalid
 		{"double slash in path", "dir//file", false},
 		{"leading slash preserved content", "/valid/path", false},
 		{"spaces are valid chars", "   ", false}, // 空格不会被trim，是有效字符
@@ -525,4 +526,80 @@ func TestSendRequestWithInvalidBucket(t *testing.T) {
 	_, isClientErr := err.(*bce.BceClientError)
 	ExpectEqual(t, true, isClientErr)
 	ExpectEqual(t, true, strings.Contains(err.Error(), "invalid bucket name"))
+}
+
+func TestSendRequestWithInvalidObjectKey(t *testing.T) {
+	client, err := NewMockBosClient()
+	ExpectEqual(t, nil, err)
+
+	options := []util.MockRoundTripperOption{
+		util.SetStatusCode(http.StatusOK),
+		util.SetStatusMsg(http.StatusText(http.StatusOK)),
+	}
+	mockHttpClient := util.NewMockHTTPClient(options...)
+	client.HTTPClient = mockHttpClient
+
+	bosContext := newDefaultBosContext()
+
+	// case1: object key with path traversal "..", IsObjectReq=true triggers validation
+	req1 := &BosRequest{}
+	resp1 := &BosResponse{}
+	req1.SetUri("/test-bucket/../etc/passwd")
+	req1.SetMethod(http.MethodGet)
+	req1.SetBucket("test-bucket")
+	req1.SetObject("../etc/passwd")
+	req1.SetIsObjectReq(true)
+
+	err = SendRequest(client, req1, resp1, bosContext)
+	ExpectEqual(t, true, err != nil)
+	ExpectEqual(t, true, strings.Contains(err.Error(), "invalid object key"))
+
+	// case2: object key is "v1" (reserved), IsObjectReq=true triggers validation
+	req2 := &BosRequest{}
+	resp2 := &BosResponse{}
+	req2.SetUri("/test-bucket/v1")
+	req2.SetMethod(http.MethodGet)
+	req2.SetBucket("test-bucket")
+	req2.SetObject("v1")
+	req2.SetIsObjectReq(true)
+
+	err = SendRequest(client, req2, resp2, bosContext)
+	ExpectEqual(t, true, err != nil)
+	ExpectEqual(t, true, strings.Contains(err.Error(), "invalid object key"))
+
+	// case3: IsObjectReq=false, validation is skipped even with invalid object key
+	req3 := &BosRequest{}
+	resp3 := &BosResponse{}
+	req3.SetUri("/test-bucket/../etc/passwd")
+	req3.SetMethod(http.MethodGet)
+	req3.SetBucket("test-bucket")
+	req3.SetObject("../etc/passwd")
+	// IsObjectReq defaults to false, so validation is not triggered
+
+	err = SendRequest(client, req3, resp3, bosContext)
+	ExpectEqual(t, nil, err)
+
+	// case4: valid object key passes validation with IsObjectReq=true
+	req4 := &BosRequest{}
+	resp4 := &BosResponse{}
+	req4.SetUri("/test-bucket/valid-object")
+	req4.SetMethod(http.MethodGet)
+	req4.SetBucket("test-bucket")
+	req4.SetObject("valid-object")
+	req4.SetIsObjectReq(true)
+
+	err = SendRequest(client, req4, resp4, bosContext)
+	ExpectEqual(t, nil, err)
+
+	// case5: empty object key with IsObjectReq=true triggers validation and fails
+	req5 := &BosRequest{}
+	resp5 := &BosResponse{}
+	req5.SetUri("/test-bucket/")
+	req5.SetMethod(http.MethodGet)
+	req5.SetBucket("test-bucket")
+	req5.SetIsObjectReq(true)
+
+	err = SendRequest(client, req5, resp5, bosContext)
+	ExpectEqual(t, true, err != nil)
+	ExpectEqual(t, true, strings.Contains(err.Error(), "invalid object key"))
 }

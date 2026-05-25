@@ -75,6 +75,15 @@ func ListDevInstance(cli bce.Client, args *ListDevInstanceArgs) (*ListDevInstanc
 	if args.OnlyMyDevs {
 		req.SetParam("onlyMyDevs", "true")
 	}
+	if args.Status != "" {
+		req.SetParam("status", args.Status)
+	}
+	if args.OrderBy != "" {
+		req.SetParam("orderBy", args.OrderBy)
+	}
+	if args.Order != "" {
+		req.SetParam("order", args.Order)
+	}
 
 	// Send request and get response
 	resp := &bce.BceResponse{}

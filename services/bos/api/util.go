@@ -359,6 +359,12 @@ func SendRequest(cli bce.Client, req *BosRequest, resp *BosResponse, ctx *BosCon
 	if req.Bucket() != "" && !isValidBucketName(req.Bucket()) {
 		return bce.NewBceClientError(fmt.Sprintf("invalid bucket name: %s", req.Bucket()))
 	}
+	if req.IsObjectReq() {
+		if err = validateObjectKey(req.Object()); err != nil {
+			return bce.NewBceClientError(err.Error())
+		}
+	}
+
 	req.SetContext(ctx.Ctx)
 	var body *bce.TeeReadNopCloser
 	if req.Body() != nil {
@@ -367,6 +373,8 @@ func SendRequest(cli bce.Client, req *BosRequest, resp *BosResponse, ctx *BosCon
 	if body != nil {
 		body.Mark()
 	}
+	// sdk do not need to set request id
+	req.SetWithOutRequestId(true)
 	if ctx.ApiVersion == API_VERSION_V2 {
 		err = cli.SendRequestV2(&req.BceRequest, &resp.BceResponse)
 	} else {

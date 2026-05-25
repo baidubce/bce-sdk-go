@@ -11,6 +11,13 @@ func PostMigration(cli bce.Client, args *PostMigrationArgs) (*PostMigrationResul
 	if args == nil {
 		return nil, bce.NewBceClientError("PostMigrationArgs is nil")
 	}
+	defaultVal := int64(-1)
+	if args.SourceConfig.ObjectBeginTime == nil {
+		args.SourceConfig.ObjectBeginTime = &defaultVal
+	}
+	if args.SourceConfig.ObjectEndTime == nil {
+		args.SourceConfig.ObjectEndTime = &defaultVal
+	}
 	req := &bce.BceRequest{}
 	req.SetMethod(http.POST)
 	req.SetUri("v1")

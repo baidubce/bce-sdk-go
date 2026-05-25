@@ -3,6 +3,9 @@ package dev
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"reflect"
 	"runtime"
@@ -137,6 +140,90 @@ func TestListDevInstance(t *testing.T) {
 	ExpectEqual(t.Errorf, err, nil)
 	ret, _ := json.Marshal(res)
 	fmt.Println(string(ret))
+}
+
+func TestListDevInstanceWithExtraQueryParams(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			t.Fatalf("method = %s, want GET", r.Method)
+		}
+		if r.URL.Path != DefaultUrl {
+			t.Fatalf("path = %s, want %s", r.URL.Path, DefaultUrl)
+		}
+		query := r.URL.Query()
+		expected := map[string]string{
+			"action":         ApiDescribeDevInstances,
+			"pageNumber":     "2",
+			"pageSize":       "20",
+			"queryKey":       "devInstanceName",
+			"queryVal":       "dev-test",
+			"queueName":      "default",
+			"resourcePoolId": "cce-test",
+			"onlyMyDevs":     "true",
+			"status":         "3",
+			"orderBy":        "createdAt",
+			"order":          "desc",
+		}
+		for key, want := range expected {
+			if got := query.Get(key); got != want {
+				t.Fatalf("query %s = %q, want %q; raw query=%s", key, got, want, r.URL.RawQuery)
+			}
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = io.WriteString(w, `{"devInstances":[],"totalCount":0,"requestId":"req-test"}`)
+	}))
+	defer server.Close()
+
+	client, err := NewClient("ak", "sk", server.URL)
+	if err != nil {
+		t.Fatalf("NewClient failed: %v", err)
+	}
+	client.DefaultClient.Config.Credentials = nil
+	res, err := client.ListDevInstance(&ListDevInstanceArgs{
+		QueryKey:       "devInstanceName",
+		QueryVal:       "dev-test",
+		ResourcePoolId: "cce-test",
+		QueueName:      "default",
+		OnlyMyDevs:     true,
+		PageNumber:     2,
+		PageSize:       20,
+		Status:         "3",
+		OrderBy:        "createdAt",
+		Order:          "desc",
+	})
+	if err != nil {
+		t.Fatalf("ListDevInstance failed: %v", err)
+	}
+	if res.RequestId != "req-test" || res.TotalCount != 0 || len(res.DevInstances) != 0 {
+		t.Fatalf("unexpected response: %+v", res)
+	}
+}
+
+func TestListDevInstanceSkipsEmptyExtraQueryParams(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		query := r.URL.Query()
+		for _, key := range []string{"status", "orderBy", "order"} {
+			if got := query.Get(key); got != "" {
+				t.Fatalf("query %s = %q, want empty; raw query=%s", key, got, r.URL.RawQuery)
+			}
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = io.WriteString(w, `{"devInstances":[],"totalCount":0,"requestId":"req-empty"}`)
+	}))
+	defer server.Close()
+
+	client, err := NewClient("ak", "sk", server.URL)
+	if err != nil {
+		t.Fatalf("NewClient failed: %v", err)
+	}
+	client.DefaultClient.Config.Credentials = nil
+	res, err := client.ListDevInstance(&ListDevInstanceArgs{})
+	if err != nil {
+		t.Fatalf("ListDevInstance failed: %v", err)
+	}
+	if res.RequestId != "req-empty" {
+		t.Fatalf("requestId = %q, want req-empty", res.RequestId)
+	}
 }
 
 func TestStopDevInstance(t *testing.T) {

@@ -439,6 +439,13 @@ type UpdateAclRuleArgs struct {
 	Action               AclRuleActionType   `json:"action,omitempty"`
 }
 
+// Session 连接会话的超时时间, 单位秒
+type NatSessionConfig struct {
+	IcmpTimeout int `json:"icmpTimeout,omitempty"`
+	UdpTimeout  int `json:"udpTimeout,omitempty"`
+	TcpTimeout  int `json:"tcpTimeout,omitempty"`
+}
+
 // CreateNatGatewayArgs defines the structure of the input parameters for the CreateNatGateway api
 type CreateNatGatewayArgs struct {
 	ClientToken     string             `json:"-"`
@@ -452,6 +459,7 @@ type CreateNatGatewayArgs struct {
 	Billing         *Billing           `json:"billing"`
 	Tags            []model.TagModel   `json:"tags,omitempty"`
 	ResourceGroupId string             `json:"resourceGroupId,omitempty"`
+	SessionConfig   *NatSessionConfig  `json:"sessionConfig,omitempty"`
 }
 
 type ResizeNatGatewayArgs struct {
@@ -495,20 +503,21 @@ type ListNatGatewayResult struct {
 
 // NAT is the result for getNatGatewayDetail api.
 type NAT struct {
-	Id            string           `json:"id"`
-	Name          string           `json:"name"`
-	NatType       string           `json:"natType"`
-	VpcId         string           `json:"vpcId"`
-	Spec          string           `json:"spec,omitempty"`
-	CuNum         int              `json:"cuNum,omitempty"`
-	Status        NatStatusType    `json:"status"`
-	Eips          []string         `json:"eips"`
-	DnatEips      []string         `json:"dnatEips"`
-	BindEips      []string         `json:"bindEips"`
-	PaymentTiming string           `json:"paymentTiming"`
-	ExpiredTime   string           `json:"expiredTime"`
-	Tags          []model.TagModel `json:"tags"`
-	IpVersion     *string          `json:"ipVersion,omitempty"`
+	Id            string            `json:"id"`
+	Name          string            `json:"name"`
+	NatType       string            `json:"natType"`
+	VpcId         string            `json:"vpcId"`
+	Spec          string            `json:"spec,omitempty"`
+	CuNum         int               `json:"cuNum,omitempty"`
+	Status        NatStatusType     `json:"status"`
+	Eips          []string          `json:"eips"`
+	DnatEips      []string          `json:"dnatEips"`
+	BindEips      []string          `json:"bindEips"`
+	PaymentTiming string            `json:"paymentTiming"`
+	ExpiredTime   string            `json:"expiredTime"`
+	Tags          []model.TagModel  `json:"tags"`
+	IpVersion     *string           `json:"ipVersion,omitempty"`
+	SessionConfig *NatSessionConfig `json:"sessionConfig,omitempty"`
 }
 
 type SnatRule struct {

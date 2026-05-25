@@ -857,6 +857,31 @@ func ListPurchasableDisksInfo(cli bce.Client, zoneName string) (*ListPurchasable
 	return jsonBody, nil
 }
 
+func modifyVolumeDeleteProtection(cli bce.Client, body *ModifyVolumeDeleteProtectionArgs) error {
+	req := &bce.BceRequest{}
+	req.SetMethod(http.POST)
+	req.SetUri(getModifyVolumeDeleteProtectionUri())
+
+	jsonBytes, err := json.Marshal(body)
+	if err != nil {
+		return err
+	}
+	jsonBody, err := bce.NewBodyFromBytes(jsonBytes)
+	if err != nil {
+		return err
+	}
+	req.SetBody(jsonBody)
+
+	resp := &bce.BceResponse{}
+	if err := cli.SendRequest(req, resp); err != nil {
+		return err
+	}
+	if resp.IsFail() {
+		return resp.ServiceError()
+	}
+	return nil
+}
+
 // DeletePrepayVolume - delete the volumes for prepay
 //
 // PARAMS:

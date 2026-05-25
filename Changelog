@@ -1,5 +1,19 @@
 发行说明:记录每次SDK更新的说明,最新版本的SDK包含以前所有版本的更新内容。
 ---------------------------------------------------------------------
+【版本:v0.9.267】
+涉及产品：BCC
+    查询实例列表支持返回rdma拓扑信息
+涉及产品: AIHC
+    开发机CLI SDK：ListDevInstanceArgs新增status、orderBy、order查询参数
+    开发机CLI SDK：所有Result结构体嵌入CommonResp，支持业务错误码统一探测
+    磁盘释放保护相关
+涉及产品：NAT
+    NAT支持sessionConfig
+涉及产品：BOS
+    SDK侧取消设置request id的header
+    完善ObjectKey参数合法性检查
+涉及产品：CLOUDFLOW
+    创建迁移任务的参数中ObjectBeginTime和ObjectEndTime默认设为-1
 【版本:v0.9.266】
 涉及产品: BOS
     对象无标签时get object tagging应答200

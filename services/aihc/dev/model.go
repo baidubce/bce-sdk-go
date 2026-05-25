@@ -1,6 +1,13 @@
 package dev
 
+// CommonResp 包装 OpenAPI 错误字段；嵌入到 Result 中以便统一探测 HTTP 200 中的业务错误
+type CommonResp struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
 type CreateDevInstanceResult struct {
+	CommonResp
 	DevInstanceId string `json:"devInstanceId"`
 	RequestId     string `json:"requestId"`
 }
@@ -13,9 +20,13 @@ type ListDevInstanceArgs struct {
 	OnlyMyDevs     bool   `json:"onlyMyDevs"`
 	PageNumber     int    `json:"pageNumber"`
 	PageSize       int    `json:"pageSize"`
+	Status         string `json:"status"`
+	OrderBy        string `json:"orderBy"`
+	Order          string `json:"order"`
 }
 
 type ListDevInstanceResult struct {
+	CommonResp
 	DevInstances []*DevInstanceBrief `json:"devInstances"`
 	TotalCount   int32               `json:"totalCount"`
 	RequestId    string              `json:"requestId"`
@@ -26,6 +37,7 @@ type QueryDevInstanceDetailArgs struct {
 }
 
 type QueryDevInstanceDetailResult struct {
+	CommonResp
 	DevInstance DevInstanceDetail `json:"devInstance"`
 	RequestId   string            `json:"requestId"`
 }
@@ -35,6 +47,7 @@ type StartDevInstanceArgs struct {
 }
 
 type StartDevInstanceResult struct {
+	CommonResp
 	DevInstanceId string `json:"devInstanceId"`
 	RequestId     string `json:"requestId"`
 }
@@ -44,6 +57,7 @@ type StopDevInstanceArgs struct {
 }
 
 type StopDevInstanceResult struct {
+	CommonResp
 	DevInstanceId string `json:"devInstanceId"`
 	RequestId     string `json:"requestId"`
 }
@@ -53,11 +67,13 @@ type DeleteDevInstanceArgs struct {
 }
 
 type DeleteDevInstanceResult struct {
+	CommonResp
 	DevInstanceId string `json:"devInstanceId"`
 	RequestId     string `json:"requestId"`
 }
 
 type TimedStopDevInstanceResult struct {
+	CommonResp
 	DevInstanceId string `json:"devInstanceId"`
 	RequestId     string `json:"requestId"`
 }
@@ -73,12 +89,14 @@ type ListDevInstanceEventArgs struct {
 }
 
 type ListDevInstanceEventResult struct {
+	CommonResp
 	Events     []*Event `json:"events"`
 	TotalCount int32    `json:"totalCount"`
 	RequestId  string   `json:"requestId"`
 }
 
 type CreateDevInstanceImagePackJobResult struct {
+	CommonResp
 	ImagePackJobId string `json:"imagePackJobId"`
 	DevInstanceId  string `json:"devInstanceId"`
 	RequestId      string `json:"requestId"`
@@ -90,6 +108,7 @@ type DevInstanceImagePackJobDetailArgs struct {
 }
 
 type DevInstanceImagePackJobDetailResult struct {
+	CommonResp
 	ImagePackJobDetail ImagePackJobDetail `json:"devInstanceImagePackJob"`
 
 	RequestId string `json:"requestId"`

@@ -59,7 +59,7 @@ func NewMockBosClient() (*bce.BceClient, error) {
 		UserAgent:                 "bce.DEFAULT_USER_AGENT",
 		Credentials:               &auth.BceCredentials{AccessKeyId: "ak", SecretAccessKey: "sk"},
 		SignOption:                defaultSignOptions,
-		Retry:                     DEFAULT_BOS_RETRY_POLICY,
+		Retry:                     NewBosRetryPolicy(3, 1000, 10),
 		ConnectionTimeoutInMillis: bce.DEFAULT_CONNECTION_TIMEOUT_IN_MILLIS,
 	}
 	return bce.NewBceClientWithExclusiveHTTPClient(config, &auth.BceV1Signer{})

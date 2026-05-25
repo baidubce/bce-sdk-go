@@ -994,7 +994,7 @@ func TestGeneratePresignedUrlInternal(t *testing.T) {
 	params := map[string]string{"param1": "value1", "param2": "value2"}
 	signer := &auth.BceV1Signer{}
 
-	// case1: object is empty
+	// case1: object is empty, validateObjectKey rejects empty key
 	res := GeneratePresignedUrlInternal(conf, signer, bucket, "", expire, "", headers, params, true)
 	ExpectEqual(t, "", res)
 
@@ -1022,11 +1022,11 @@ func TestGeneratePresignedUrlInternal(t *testing.T) {
 	conf.Endpoint = "localhost:8080"
 	conf.CnameEnabled = false
 
-	// case5: path_style=false, method=GET, object=""
+	// case5: path_style=false, method=GET, object="" (empty key rejected by validateObjectKey)
 	res = GeneratePresignedUrlInternal(conf, signer, bucket, "", expire, my_http.GET, headers, params, false)
 	ExpectEqual(t, "", res)
 
-	// case6: path_style=false, method=GET (default), object="/"
+	// case6: path_style=false, method=GET (default), object="/" (Clean后为空，被拒绝)
 	res = GeneratePresignedUrlInternal(conf, signer, bucket, "/", expire, "", headers, params, false)
 	ExpectEqual(t, "", res)
 
@@ -1042,11 +1042,11 @@ func TestGeneratePresignedUrlInternal(t *testing.T) {
 	res = GeneratePresignedUrlInternal(conf, signer, bucket, "/v1", expire, my_http.GET, headers, params, false)
 	ExpectEqual(t, "", res)
 
-	// case10: path_style=false, method=PUT, object="" (should NOT return empty, PUT method bypasses check)
+	// case10: path_style=false, method=PUT, object="" (empty key rejected by validateObjectKey)
 	res = GeneratePresignedUrlInternal(conf, signer, bucket, "", expire, my_http.PUT, headers, params, false)
-	ExpectEqual(t, true, res != "")
+	ExpectEqual(t, "", res)
 
-	// case11: path_style=true, method=GET, object="" (should NOT return empty, path_style=true bypasses check)
+	// case11: path_style=true, method=GET, object="" (empty key rejected by validateObjectKey)
 	res = GeneratePresignedUrlInternal(conf, signer, bucket, "", expire, my_http.GET, headers, params, true)
 	ExpectEqual(t, "", res)
 

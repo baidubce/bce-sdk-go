@@ -18,8 +18,8 @@ type MigrationPrefixSourceConfig struct {
 	MigrationConfigCommon
 	Prefixes        []string `json:"prefixes,omitempty"`
 	Prefix          string   `json:"prefix,omitempty"`
-	ObjectBeginTime int64    `json:"objectBeginTime,omitempty"` // default: -1
-	ObjectEndTime   int64    `json:"objectEndTime,omitempty"`   // default: -1
+	ObjectBeginTime *int64   `json:"objectBeginTime,omitempty"` // default: -1
+	ObjectEndTime   *int64   `json:"objectEndTime,omitempty"`   // default: -1
 }
 
 type MigrationListSourceConfig struct {

@@ -106,75 +106,78 @@ const (
 
 // Instance define instance model
 type InstanceModel struct {
-	InstanceId             string                 `json:"id"`
-	SerialNumber           string                 `json:"serialNumber"`
-	InstanceName           string                 `json:"name"`
-	Hostname               string                 `json:"hostname"`
-	InstanceType           InstanceType           `json:"instanceType"`
-	Spec                   string                 `json:"spec"`
-	Description            string                 `json:"desc"`
-	Status                 InstanceStatus         `json:"status"`
-	ChargeStatus           string                 `json:"chargeStatus"`
-	PaymentTiming          string                 `json:"paymentTiming"`
-	CreationTime           string                 `json:"createTime"`
-	ExpireTime             string                 `json:"expireTime"`
-	ReleaseTime            string                 `json:"releaseTime"`
-	PublicIP               string                 `json:"publicIp"`
-	InternalIP             string                 `json:"internalIp"`
-	CpuCount               int                    `json:"cpuCount"`
-	IsomerismCard          string                 `json:"isomerismCard"`
-	NpuVideoMemory         string                 `json:"npuVideoMemory"`
-	GpuCard                string                 `json:"gpuCard"`
-	FpgaCard               string                 `json:"fpgaCard"`
-	CardCount              string                 `json:"cardCount"`
-	MemoryCapacityInGB     int                    `json:"memoryCapacityInGB"`
-	LocalDiskSizeInGB      int                    `json:"localDiskSizeInGB"`
-	ImageId                string                 `json:"imageId"`
-	NetworkCapacityInMbps  int                    `json:"networkCapacityInMbps"`
-	PlacementPolicy        string                 `json:"placementPolicy"`
-	ZoneName               string                 `json:"zoneName"`
-	FlavorSubType          string                 `json:"flavorSubType"`
-	SubnetId               string                 `json:"subnetId"`
-	VpcId                  string                 `json:"vpcId"`
-	AutoRenew              bool                   `json:"autoRenew"`
-	KeypairId              string                 `json:"keypairId"`
-	KeypairName            string                 `json:"keypairName"`
-	DedicatedHostId        string                 `json:"dedicatedHostId"`
-	Tags                   []model.TagModel       `json:"tags"`
-	Ipv6                   string                 `json:"ipv6"`
-	Ipv6Addresses          []string               `json:"Ipv6Addresses"`
-	EniQuota               int                    `json:"eniQuota"`
-	EriQuota               int                    `json:"eriQuota"`
-	RdmaType               string                 `json:"rdmaType"`
-	RdmaTypeApi            string                 `json:"rdmaTypeApi"`
-	SwitchId               string                 `json:"switchId"`
-	HostId                 string                 `json:"hostId"`
-	DeploysetId            string                 `json:"deploysetId"`
-	RackId                 string                 `json:"rackId"`
-	NicInfo                NicInfo                `json:"nicInfo"`
-	EniNum                 string                 `json:"eniNum"`
-	DeploySetList          []DeploySetSimpleModel `json:"deploysetList"`
-	DeletionProtection     int                    `json:"deletionProtection"`
-	NetEthQueueCount       string                 `json:"netEthQueueCount"`
-	Volumes                []VolumeModel          `json:"volumes"`
-	EnableJumboFrame       bool                   `json:"enableJumboFrame"`
-	IsEipAutoRelatedDelete bool                   `json:"isEipAutoRelatedDelete"`
-	ResGroupInfos          []ResGroupInfoModel    `json:"resGroupInfos"`
-	EhcClusterId           string                 `json:"ehcClusterId"`
-	AutoRenewPeriodUnit    string                 `json:"autoRenewPeriodUnit,omitempty"`
-	AutoRenewPeriod        int                    `json:"autoRenewPeriod,omitempty"`
-	RoleName               string                 `json:"roleName"`
-	CreatedFrom            string                 `json:"createdFrom"`
-	HosteyeType            string                 `json:"hosteyeType"`
-	RepairStatus           string                 `json:"repairStatus"`
-	OsVersion              string                 `json:"osVersion"`
-	OsArch                 string                 `json:"osArch"`
-	OsName                 string                 `json:"osName"`
-	ImageName              string                 `json:"imageName"`
-	ImageType              string                 `json:"imageType"`
-	CpuThreadConfig        string                 `json:"cpuThreadConfig"`
-	NumaConfig             string                 `json:"numaConfig"`
-	Application            string                 `json:"application"`
+	InstanceId             string                  `json:"id"`
+	SerialNumber           string                  `json:"serialNumber"`
+	InstanceName           string                  `json:"name"`
+	Hostname               string                  `json:"hostname"`
+	InstanceType           InstanceType            `json:"instanceType"`
+	Spec                   string                  `json:"spec"`
+	Description            string                  `json:"desc"`
+	Status                 InstanceStatus          `json:"status"`
+	ChargeStatus           string                  `json:"chargeStatus"`
+	PaymentTiming          string                  `json:"paymentTiming"`
+	CreationTime           string                  `json:"createTime"`
+	ExpireTime             string                  `json:"expireTime"`
+	ReleaseTime            string                  `json:"releaseTime"`
+	PublicIP               string                  `json:"publicIp"`
+	InternalIP             string                  `json:"internalIp"`
+	CpuCount               int                     `json:"cpuCount"`
+	IsomerismCard          string                  `json:"isomerismCard"`
+	NpuVideoMemory         string                  `json:"npuVideoMemory"`
+	GpuCard                string                  `json:"gpuCard"`
+	FpgaCard               string                  `json:"fpgaCard"`
+	CardCount              string                  `json:"cardCount"`
+	MemoryCapacityInGB     int                     `json:"memoryCapacityInGB"`
+	LocalDiskSizeInGB      int                     `json:"localDiskSizeInGB"`
+	ImageId                string                  `json:"imageId"`
+	NetworkCapacityInMbps  int                     `json:"networkCapacityInMbps"`
+	PlacementPolicy        string                  `json:"placementPolicy"`
+	ZoneName               string                  `json:"zoneName"`
+	FlavorSubType          string                  `json:"flavorSubType"`
+	SubnetId               string                  `json:"subnetId"`
+	VpcId                  string                  `json:"vpcId"`
+	AutoRenew              bool                    `json:"autoRenew"`
+	KeypairId              string                  `json:"keypairId"`
+	KeypairName            string                  `json:"keypairName"`
+	DedicatedHostId        string                  `json:"dedicatedHostId"`
+	Tags                   []model.TagModel        `json:"tags"`
+	Ipv6                   string                  `json:"ipv6"`
+	Ipv6Addresses          []string                `json:"Ipv6Addresses"`
+	EniQuota               int                     `json:"eniQuota"`
+	EriQuota               int                     `json:"eriQuota"`
+	RdmaType               string                  `json:"rdmaType"`
+	RdmaTypeApi            string                  `json:"rdmaTypeApi"`
+	SwitchId               string                  `json:"switchId"`
+	HostId                 string                  `json:"hostId"`
+	DeploysetId            string                  `json:"deploysetId"`
+	RackId                 string                  `json:"rackId"`
+	NicInfo                NicInfo                 `json:"nicInfo"`
+	EniNum                 string                  `json:"eniNum"`
+	DeploySetList          []DeploySetSimpleModel  `json:"deploysetList"`
+	RdmaPodName            string                  `json:"rdmaPodName"`
+	RdmaUnitID             string                  `json:"rdmaUnitID"`
+	RdmaNicTopo            []InstanceRdmaTopoModel `json:"rdmaNicTopo"`
+	DeletionProtection     int                     `json:"deletionProtection"`
+	NetEthQueueCount       string                  `json:"netEthQueueCount"`
+	Volumes                []VolumeModel           `json:"volumes"`
+	EnableJumboFrame       bool                    `json:"enableJumboFrame"`
+	IsEipAutoRelatedDelete bool                    `json:"isEipAutoRelatedDelete"`
+	ResGroupInfos          []ResGroupInfoModel     `json:"resGroupInfos"`
+	EhcClusterId           string                  `json:"ehcClusterId"`
+	AutoRenewPeriodUnit    string                  `json:"autoRenewPeriodUnit,omitempty"`
+	AutoRenewPeriod        int                     `json:"autoRenewPeriod,omitempty"`
+	RoleName               string                  `json:"roleName"`
+	CreatedFrom            string                  `json:"createdFrom"`
+	HosteyeType            string                  `json:"hosteyeType"`
+	RepairStatus           string                  `json:"repairStatus"`
+	OsVersion              string                  `json:"osVersion"`
+	OsArch                 string                  `json:"osArch"`
+	OsName                 string                  `json:"osName"`
+	ImageName              string                  `json:"imageName"`
+	ImageType              string                  `json:"imageType"`
+	CpuThreadConfig        string                  `json:"cpuThreadConfig"`
+	NumaConfig             string                  `json:"numaConfig"`
+	Application            string                  `json:"application"`
 }
 
 type DeploySetSimpleModel struct {
@@ -278,12 +281,13 @@ type EphemeralDiskV3 struct {
 }
 
 type CreateCdsModel struct {
-	CdsSizeInGB        int         `json:"cdsSizeInGB"`
-	StorageType        StorageType `json:"storageType"`
-	SnapShotId         string      `json:"snapshotId,omitempty"`
-	EncryptKey         string      `json:"encryptKey,omitempty"`
-	DeleteWithInstance bool        `json:"deleteWithInstance,omitempty"`
-	CdsExtraIo         int         `json:"cdsExtraIo,omitempty"`
+	CdsSizeInGB            int         `json:"cdsSizeInGB"`
+	StorageType            StorageType `json:"storageType"`
+	SnapShotId             string      `json:"snapshotId,omitempty"`
+	EncryptKey             string      `json:"encryptKey,omitempty"`
+	DeleteWithInstance     bool        `json:"deleteWithInstance,omitempty"`
+	CdsExtraIo             int         `json:"cdsExtraIo,omitempty"`
+	EnableDeleteProtection bool        `json:"enableDeleteProtection,omitempty"`
 }
 
 type CreateCdsModelV3 struct {
@@ -593,6 +597,7 @@ type CreateInstanceBySpecArgs struct {
 	NumaConfig                 string           `json:"numaConfig"`
 	KeepImageLogin             bool             `json:"keepImageLogin"`
 	IsEipAutoRelatedDelete     bool             `json:"isEipAutoRelatedDelete"`
+	EnableDeleteProtection     bool             `json:"enableDeleteProtection"`
 }
 
 type CreateInstanceBySpecArgsV2 struct {
@@ -807,6 +812,7 @@ type ListInstanceArgs struct {
 	PrivateIps        string
 	Ipv6Addresses     string
 	EhcClusterId      string
+	ShowRdmaTopo      bool
 	FuzzyInstanceName string
 }
 
@@ -1398,38 +1404,47 @@ type ResGroupInfoModel struct {
 	GroupName string `json:"groupName"`
 }
 
+type InstanceRdmaTopoModel struct {
+	RdmaIp      string `json:"rdmaIp"`
+	SwitchName  string `json:"switchName"`
+	SwitchPort  string `json:"switchPort"`
+	RdmaMac     string `json:"rdmaMac"`
+	RdmaGateway string `json:"rdmaGateway"`
+}
+
 type VolumeModel struct {
-	Type               VolumeType               `json:"type"`
-	StorageType        StorageType              `json:"storageType"`
-	Id                 string                   `json:"id"`
-	Name               string                   `json:"name"`
-	DiskSizeInGB       int                      `json:"diskSizeInGB"`
-	PaymentTiming      string                   `json:"paymentTiming"`
-	ExpireTime         string                   `json:"expireTime"`
-	Status             VolumeStatus             `json:"status"`
-	EbcDiskSize        int                      `json:"ebcDiskSize"`
-	Desc               string                   `json:"desc"`
-	Attachments        []VolumeAttachmentModel  `json:"attachments"`
-	ZoneName           string                   `json:"zoneName"`
-	AutoSnapshotPolicy *AutoSnapshotPolicyModel `json:"autoSnapshotPolicy"`
-	CreateTime         string                   `json:"createTime"`
-	IsSystemVolume     bool                     `json:"isSystemVolume"`
-	RegionId           string                   `json:"regionId"`
-	SourceSnapshotId   string                   `json:"sourceSnapshotId"`
-	SnapshotNum        string                   `json:"snapshotNum"`
-	Tags               []model.TagModel         `json:"tags"`
-	ResGroupInfos      []ResGroupInfo           `json:"resGroupInfos"`
-	EnableAutoRenew    bool                     `json:"enableAutoRenew"`
-	AutoRenewTime      int                      `json:"autoRenewTime"`
-	Encrypted          bool                     `json:"encrypted"`
-	EncryptKey         string                   `json:"encryptKey"`
-	EncryptKeySpec     string                   `json:"encryptKeySpec"`
-	ClusterId          string                   `json:"clusterId"`
-	RoleName           string                   `json:"roleName"`
-	CreatedFrom        string                   `json:"createdFrom"`
-	ReleaseTime        string                   `json:"releaseTime"`
-	VolumeId           string                   `json:"volumeId"`
-	ProductCategory    string                   `json:"productCategory"`
+	Type                   VolumeType               `json:"type"`
+	StorageType            StorageType              `json:"storageType"`
+	Id                     string                   `json:"id"`
+	Name                   string                   `json:"name"`
+	DiskSizeInGB           int                      `json:"diskSizeInGB"`
+	PaymentTiming          string                   `json:"paymentTiming"`
+	ExpireTime             string                   `json:"expireTime"`
+	Status                 VolumeStatus             `json:"status"`
+	EbcDiskSize            int                      `json:"ebcDiskSize"`
+	Desc                   string                   `json:"desc"`
+	Attachments            []VolumeAttachmentModel  `json:"attachments"`
+	ZoneName               string                   `json:"zoneName"`
+	AutoSnapshotPolicy     *AutoSnapshotPolicyModel `json:"autoSnapshotPolicy"`
+	CreateTime             string                   `json:"createTime"`
+	IsSystemVolume         bool                     `json:"isSystemVolume"`
+	RegionId               string                   `json:"regionId"`
+	SourceSnapshotId       string                   `json:"sourceSnapshotId"`
+	SnapshotNum            string                   `json:"snapshotNum"`
+	Tags                   []model.TagModel         `json:"tags"`
+	ResGroupInfos          []ResGroupInfo           `json:"resGroupInfos"`
+	EnableAutoRenew        bool                     `json:"enableAutoRenew"`
+	AutoRenewTime          int                      `json:"autoRenewTime"`
+	Encrypted              bool                     `json:"encrypted"`
+	EncryptKey             string                   `json:"encryptKey"`
+	EncryptKeySpec         string                   `json:"encryptKeySpec"`
+	ClusterId              string                   `json:"clusterId"`
+	RoleName               string                   `json:"roleName"`
+	CreatedFrom            string                   `json:"createdFrom"`
+	ReleaseTime            string                   `json:"releaseTime"`
+	VolumeId               string                   `json:"volumeId"`
+	ProductCategory        string                   `json:"productCategory"`
+	EnableDeleteProtection bool                     `json:"enableDeleteProtection"`
 }
 
 type VolumeModelV3 struct {
@@ -1474,27 +1489,28 @@ type AttachVolumeResult struct {
 }
 
 type CreateCDSVolumeArgs struct {
-	Name               string               `json:"name,omitempty"`
-	Description        string               `json:"description,omitempty"`
-	SnapshotId         string               `json:"snapshotId,omitempty"`
-	ZoneName           string               `json:"zoneName,omitempty"`
-	PurchaseCount      int                  `json:"purchaseCount,omitempty"`
-	CdsSizeInGB        int                  `json:"cdsSizeInGB,omitempty"`
-	StorageType        StorageType          `json:"storageType,omitempty"`
-	Billing            *Billing             `json:"billing"`
-	EncryptKey         string               `json:"encryptKey"`
-	RenewTimeUnit      string               `json:"renewTimeUnit"`
-	RenewTime          int                  `json:"renewTime"`
-	InstanceId         string               `json:"instanceId"`
-	ClusterId          string               `json:"clusterId"`
-	Tags               []model.TagModel     `json:"tags"`
-	ResGroupId         string               `json:"resGroupId,omitempty"`
-	AutoSnapshotPolicy []AutoSnapshotPolicy `json:"autoSnapshotPolicy"`
-	ClientToken        string               `json:"-"`
-	ChargeType         string               `json:"chargeType"`
-	CdsExtraIo         int                  `json:"cdsExtraIo"`
-	ShareSnapshotId    string               `json:"shareSnapshotId"`
-	RelationTag        *bool                `json:"relationTag"`
+	Name                   string               `json:"name,omitempty"`
+	Description            string               `json:"description,omitempty"`
+	SnapshotId             string               `json:"snapshotId,omitempty"`
+	ZoneName               string               `json:"zoneName,omitempty"`
+	PurchaseCount          int                  `json:"purchaseCount,omitempty"`
+	CdsSizeInGB            int                  `json:"cdsSizeInGB,omitempty"`
+	StorageType            StorageType          `json:"storageType,omitempty"`
+	Billing                *Billing             `json:"billing"`
+	EncryptKey             string               `json:"encryptKey"`
+	RenewTimeUnit          string               `json:"renewTimeUnit"`
+	RenewTime              int                  `json:"renewTime"`
+	InstanceId             string               `json:"instanceId"`
+	ClusterId              string               `json:"clusterId"`
+	Tags                   []model.TagModel     `json:"tags"`
+	ResGroupId             string               `json:"resGroupId,omitempty"`
+	AutoSnapshotPolicy     []AutoSnapshotPolicy `json:"autoSnapshotPolicy"`
+	ClientToken            string               `json:"-"`
+	ChargeType             string               `json:"chargeType"`
+	CdsExtraIo             int                  `json:"cdsExtraIo"`
+	ShareSnapshotId        string               `json:"shareSnapshotId"`
+	RelationTag            *bool                `json:"relationTag"`
+	EnableDeleteProtection bool                 `json:"enableDeleteProtection"`
 }
 
 type AutoSnapshotPolicy struct {
@@ -2913,6 +2929,11 @@ type ReplaceSgV2Req struct {
 
 type ReplaceSgV2Resp struct {
 	RequestId *string `json:"requestId"`
+}
+
+type ModifyVolumeDeleteProtectionArgs struct {
+	VolumeIds              []string `json:"volumeIds"`
+	EnableDeleteProtection bool     `json:"enableDeleteProtection"`
 }
 
 type CreateSnapshotShareReq struct {

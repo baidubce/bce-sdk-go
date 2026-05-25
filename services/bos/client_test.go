@@ -107,6 +107,7 @@ func NewMockBosClient(ak, sk, endpoint, respBody string, options ...util.MockRou
 		return nil, fmt.Errorf("util.NewMockHTTPClient fail")
 	}
 	config = config.WithHttpClient(*mockHttpClient)
+	config.retryPolicy = api.NewBosRetryPolicy(3, 1000, 10)
 	return NewClientWithConfig(config)
 }
 
