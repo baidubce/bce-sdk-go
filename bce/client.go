@@ -83,6 +83,9 @@ func (c *BceClient) buildHttpRequest(request *BceRequest) {
 	if request.Protocol() == "" {
 		request.SetProtocol(DEFAULT_PROTOCOL)
 	}
+	if c.Config.BaseUrl != "" {
+		request.SetUri(c.Config.BaseUrl + request.Uri())
+	}
 	if len(c.Config.ProxyUrl) != 0 {
 		request.SetProxyUrl(c.Config.ProxyUrl)
 	}
