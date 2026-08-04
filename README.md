@@ -69,6 +69,7 @@ bce-sdk-go
 |  |--etGateway           //专线网关
 |  |--havip               //高可用虚拟IP
 |  |--iam                 //身份管理
+|  |--kafka               //Kafka服务目录
 |  |--media               //音视频处理MCP
 |  |--rds                 //云数据库
 |  |--scs                 //SCS服务目录
@@ -282,6 +283,7 @@ ENIC弹性网卡 | ENIC          | github.com/baidubce/bce-sdk-go/services/eni  
 高可用虚拟IP | HAVIP         | github.com/baidubce/bce-sdk-go/services/havip          | [HAVIP.md](./doc/HAVIP.md)
 专线网关 | EtGateway     | github.com/baidubce/bce-sdk-go/services/etGateway      | [ETGateway.md](./doc/ETGateway.md)
 身份管理 | IAM           | github.com/baidubce/bce-sdk-go/services/iam            | [IAM.md](./doc/IAM.md)
+Kafka服务 | KAFKA         | github.com/baidubce/bce-sdk-go/services/kafka          | [KAFKA.md](./doc/KAFKA.md)
 内网DNS | LOCALDNS      | github.com/baidubce/bce-sdk-go/services/localDns       | [LOCALDNS.md](./doc/LOCALDNS.md)
 音视频处理MCP | MCP           | github.com/baidubce/bce-sdk-go/services/media          | [MCP.md](./doc/MCP.md)
 云数据库 | RDS           | github.com/baidubce/bce-sdk-go/services/rds            | [RDS.md](./doc/RDS.md)

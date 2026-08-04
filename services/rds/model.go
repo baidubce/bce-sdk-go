@@ -50,6 +50,7 @@ type CreateRdsArgs struct {
 	ResourceGroupId      string                          `json:"resourceGroupId,omitempty"`
 	InitialDataReference *InitialData                    `json:"initialDataReference,omitempty"`
 	Data                 []RecoveryToSourceInstanceModel `json:"data,omitempty"`
+	ResourceType         string                          `json:"resourceType,omitempty"`
 }
 
 type Billing struct {
@@ -464,6 +465,144 @@ type UpdateSecurityIpsArgs struct {
 	SecurityIps []string `json:"securityIps"`
 }
 
+type InstanceSecurityGroupListResult struct {
+	EniId       string                 `json:"eniId"`
+	EniUuid     string                 `json:"eniUuid"`
+	EniName     string                 `json:"eniName"`
+	Primary     bool                   `json:"primary"`
+	Groups      []OpenApiSecurityGroup `json:"groups"`
+	ActiveRules []SecurityGroupRule    `json:"activeRules"`
+}
+
+type OpenApiSecurityGroup struct {
+	SecurityGroupId     string              `json:"securityGroupId"`
+	SecurityGroupUuid   string              `json:"securityGroupUuid"`
+	SecurityGroupName   string              `json:"securityGroupName"`
+	SecurityGroupRemark string              `json:"securityGroupRemark"`
+	ProjectId           string              `json:"projectId"`
+	TenantId            string              `json:"tenantId"`
+	VpcId               string              `json:"vpcId"`
+	VpcName             string              `json:"vpcName"`
+	Inbound             []SecurityGroupRule `json:"inbound"`
+	Outbound            []SecurityGroupRule `json:"outbound"`
+	Rules               []SecurityGroupRule `json:"rules"`
+}
+
+type SecurityGroupRule struct {
+	Id                  string `json:"id"`
+	Uuid                string `json:"uuid"`
+	SecurityGroupRuleId string `json:"securityGroupRuleId"`
+	SecurityGroupId     string `json:"securityGroupId"`
+	SecurityGroupUuid   string `json:"securityGroupUuid"`
+	TenantId            string `json:"tenantId"`
+	Direction           string `json:"direction"`
+	Ethertype           string `json:"ethertype"`
+	Protocol            string `json:"protocol"`
+	PortRange           string `json:"portRange"`
+	RemoteGroupId       string `json:"remoteGroupId"`
+	RemoteGroupName     string `json:"remoteGroupName"`
+	DestGroupId         string `json:"destGroupId"`
+	RemoteIP            string `json:"remoteIP"`
+	DestIp              string `json:"destIp"`
+	Name                string `json:"name"`
+}
+
+type ListSecurityGroupsByVpcArgs struct {
+	From     string `json:"-"`
+	VpcId    string `json:"vpcId"`
+	PageNo   int    `json:"pageNo,omitempty"`
+	PageSize int    `json:"pageSize,omitempty"`
+	OrderBy  string `json:"orderBy,omitempty"`
+	Order    string `json:"order,omitempty"`
+}
+
+type ListSecurityGroupsByVpcResult struct {
+	PageNo     int             `json:"pageNo"`
+	PageSize   int             `json:"pageSize"`
+	TotalCount int             `json:"totalCount"`
+	OrderBy    string          `json:"orderBy"`
+	Order      string          `json:"order"`
+	Result     []SecurityGroup `json:"result"`
+}
+
+type SecurityGroup struct {
+	SecurityGroupId string `json:"securityGroupId"`
+	Uuid            string `json:"uuid"`
+	Name            string `json:"name"`
+	Desc            string `json:"desc"`
+	VpcId           string `json:"vpcId"`
+}
+
+type SecurityGroupBindArgs struct {
+	From               string   `json:"-"`
+	InstanceId         string   `json:"instanceId"`
+	SecurityGroupIds   []string `json:"securityGroupIds"`
+	InstanceIds        []string `json:"instanceIds,omitempty"`
+	InstanceUuid       string   `json:"instanceUuid,omitempty"`
+	SecurityGroupUuids []string `json:"securityGroupUuids,omitempty"`
+	InstanceType       string   `json:"instanceType,omitempty"`
+	SubInstanceType    string   `json:"subInstanceType,omitempty"`
+}
+
+type ListEnterpriseSecurityGroupsArgs struct {
+	PageNo   int    `json:"pageNo,omitempty"`
+	PageSize int    `json:"pageSize,omitempty"`
+	Order    string `json:"order,omitempty"`
+	OrderBy  string `json:"orderBy,omitempty"`
+}
+
+type ListEnterpriseSecurityGroupsResult struct {
+	PageNo     int                       `json:"pageNo"`
+	PageSize   int                       `json:"pageSize"`
+	TotalCount int                       `json:"totalCount"`
+	Order      string                    `json:"order"`
+	OrderBy    string                    `json:"orderBy"`
+	Result     []EnterpriseSecurityGroup `json:"result"`
+}
+
+type InstanceEnterpriseSecurityGroupsResult struct {
+	InstanceUuid             string                    `json:"instanceUuid"`
+	EnterpriseSecurityGroups []EnterpriseSecurityGroup `json:"enterpriseSecurityGroups"`
+	ActiveEsgRules           []EsgRule                 `json:"activeEsgRules"`
+}
+
+type EnterpriseSecurityGroup struct {
+	EsgId        string                 `json:"esgId"`
+	EsgUuid      string                 `json:"esgUuid"`
+	Name         string                 `json:"name"`
+	Desc         string                 `json:"desc"`
+	AssociateNum int                    `json:"associateNum"`
+	CreatedTime  string                 `json:"createdTime"`
+	UpdatedTime  string                 `json:"updatedTime"`
+	Tags         map[string]interface{} `json:"tags"`
+	Rules        []EsgRule              `json:"rules"`
+}
+
+type EsgRule struct {
+	EsgRuleId        string `json:"esgRuleId"`
+	EsgRuleUuid      string `json:"esgRuleUuid"`
+	EsgUuid          string `json:"esgUuid"`
+	Action           string `json:"action"`
+	Direction        string `json:"direction"`
+	Ethertype        string `json:"ethertype"`
+	Protocol         string `json:"protocol"`
+	PortRange        string `json:"portRange"`
+	SourcePortRange  string `json:"sourcePortRange"`
+	Priority         int    `json:"priority"`
+	RemoteIpPrefix   string `json:"remoteIpPrefix"`
+	LocalIpPrefix    string `json:"localIpPrefix"`
+	IpCollectionUuid string `json:"ipCollectionUuid"`
+	IpCollectionType int    `json:"ipCollectionType"`
+	Remark           string `json:"remark"`
+	CreatedTime      string `json:"createdTime"`
+	UpdatedTime      string `json:"updatedTime"`
+}
+
+type EnterpriseSecurityGroupBindArgs struct {
+	InstanceId string   `json:"instanceId"`
+	EsgUuids   []string `json:"esgUuids"`
+}
+
 type ListParametersResult struct {
 	Etag       string      `json:"etag"`
 	Parameters []Parameter `json:"parameters"`
@@ -569,6 +708,7 @@ type Database struct {
 	Remark            string             `json:"remark"`
 	DbStatus          string             `json:"dbStatus"`
 	AccountPrivileges []AccountPrivilege `json:"accountPrivileges"`
+	CdcEnabled        bool               `json:"cdcEnabled"`
 }
 
 type AccountPrivilege struct {
@@ -585,6 +725,15 @@ type CreateDatabaseArgs struct {
 	DbName            string             `json:"dbName"`
 	Remark            string             `json:"remark"`
 	AccountPrivileges []AccountPrivilege `json:"accountPrivileges"`
+}
+
+type ModifyDatabaseCdcArgs struct {
+	DbNames    []string `json:"dbNames"`
+	ModifyType string   `json:"modifyType"`
+}
+
+type ModifyDatabaseCdcResult struct {
+	TaskId string `json:"taskId"`
 }
 
 type TaskListArgs struct {
@@ -763,8 +912,43 @@ type RdsMinorVersion struct {
 	FeatureDescription string `json:"featureDescription"`
 }
 
+type MajorVersionListResult struct {
+	RdsMajorVersionList []RdsMajorVersion `json:"rdsMajorVersionList"`
+}
+
+type RdsMajorVersion struct {
+	DbVersion          string `json:"dbVersion"`
+	DbType             string `json:"dbType"`
+	MinorVersion       string `json:"minorVersion"`
+	RdsMinorVersion    string `json:"rdsMinorVersion"`
+	FeatureDescription string `json:"featureDescription"`
+	OrderId            string `json:"orderId"`
+	InstanceVersion    string `json:"instanceVersion"`
+	RuntimeVersion     string `json:"runtimeVersion"`
+}
+
+type DtsSourceCheckResult struct {
+	Pass   bool   `json:"pass"`
+	ErrMsg string `json:"errMsg"`
+}
+
+type MajorVersionPreCheckResult struct {
+	TdeStatus string `json:"tdeStatus"`
+	Sysdb     string `json:"sysdb"`
+	Gtid      string `json:"gtid"`
+	Noninnodb string `json:"noninnodb"`
+	Fts       string `json:"fts"`
+	Event     string `json:"event"`
+	Trigger   string `json:"trigger"`
+}
+
 type UpgradeMinorVersionArgs struct {
 	TargetMinorVersion string `json:"targetMinorVersion"`
+	EffectiveTime      string `json:"effectiveTime"`
+}
+
+type UpgradeMajorVersionArgs struct {
+	TargetMajorVersion string `json:"targetMajorVersion"`
 	EffectiveTime      string `json:"effectiveTime"`
 }
 

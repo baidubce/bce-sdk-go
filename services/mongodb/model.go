@@ -413,3 +413,71 @@ type ReadonlyNodesList struct {
 type GetReadonlyNodesResult struct {
 	ReadOnlyList []ReadonlyNodesList `json:"readOnlyList,omitempty"`
 }
+
+type RoleInfo struct {
+	DbName string `json:"dbName"`
+	Role   string `json:"role"`
+}
+
+type UserModel struct {
+	Name        string     `json:"name"`
+	Description string     `json:"description,omitempty"`
+	Roles       []RoleInfo `json:"roles,omitempty"`
+}
+
+type ListUsersArgs struct {
+	Marker  string
+	MaxKeys int
+}
+
+type ListUsersResult struct {
+	Marker      string      `json:"marker,omitempty"`
+	MaxKeys     int         `json:"maxKeys,omitempty"`
+	IsTruncated bool        `json:"isTruncated,omitempty"`
+	NextMarker  string      `json:"nextMarker,omitempty"`
+	Result      []UserModel `json:"result,omitempty"`
+}
+
+type UpdateUserRolesArgs struct {
+	Name  string     `json:"name"`
+	Roles []RoleInfo `json:"roles"`
+}
+
+type DropUserArgs struct {
+	Name string `json:"name"`
+}
+
+type CreateUserArgs struct {
+	Name        string     `json:"name"`
+	Password    string     `json:"password"`
+	Description string     `json:"description,omitempty"`
+	Roles       []RoleInfo `json:"roles"`
+}
+
+type DatabaseModel struct {
+	Name        string `json:"name"`
+	Description string `json:"description,omitempty"`
+}
+
+type ListDatabasesArgs struct {
+	Marker  string
+	MaxKeys int
+}
+
+type ListDatabasesResult struct {
+	Marker      string          `json:"marker,omitempty"`
+	MaxKeys     int             `json:"maxKeys,omitempty"`
+	IsTruncated bool            `json:"isTruncated,omitempty"`
+	NextMarker  string          `json:"nextMarker,omitempty"`
+	Result      []DatabaseModel `json:"result,omitempty"`
+}
+
+type DropDatabaseArgs struct {
+	Name string `json:"name"`
+}
+
+type CreateDatabaseArgs struct {
+	Name           string `json:"name"`
+	CollectionName string `json:"collectionName"`
+	Description    string `json:"description,omitempty"`
+}

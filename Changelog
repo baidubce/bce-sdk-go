@@ -1,5 +1,38 @@
 发行说明:记录每次SDK更新的说明,最新版本的SDK包含以前所有版本的更新内容。
 ---------------------------------------------------------------------
+【版本:v0.9.273】
+涉及产品：KAFKA
+    新增 KAFKA SDK
+涉及产品：MONGODB
+    新增查看用户列表接口(ListUsers)
+    新增创建用户接口(CreateUser)
+    新增更新用户角色接口(UpdateUserRoles)
+    新增删除用户接口(DropUser)
+    新增查看数据库列表接口(ListDatabases)
+    新增创建数据库接口(CreateDatabase)
+    新增删除数据库接口(DropDatabase)
+涉及产品：RDS
+    创建主实例接口新增resourceType参数
+    新增查询实例可升级大版本列表接口
+    新增迁移评估检查接口
+    新增大版本升级前置检查接口
+    新增实例升级大版本接口
+    新增查询实例绑定的普通安全组列表接口
+    新增查询VPC下安全组列表接口
+    新增解绑普通安全组接口
+    新增批量替换实例普通安全组接口
+    新增查询企业安全组列表接口
+    新增查询实例绑定的企业安全组信息接口
+    新增绑定企业安全组接口
+    新增解绑企业安全组接口
+    新增修改数据库CDC状态接口
+    数据库列表响应新增cdcEnabled字段
+涉及产品：DuMemory
+    新增查询后台操作状态接口
+    查询记忆列表接口新增State、DocumentID、EntityID、Tags、TagsMatch参数
+    新增根据作用域查询记忆列表接口(ListMemoriesWithScope)
+    修复RetainAsync未设置异步标记的问题
+    删除cloudmemory,现在使用dumemory
 【版本:v0.9.272】
 涉及产品：BCC
     查询实例套餐规格接口返回结果EbcFlavor新增EnableJumboFrame字段

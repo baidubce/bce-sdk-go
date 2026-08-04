@@ -151,6 +151,20 @@ func (c *Client) ListTagsWithScope(ctx context.Context, bankID string, scope Ent
 	return out, err
 }
 
+// ListMemoriesWithScope lists memory units filtered by entity scope. When
+// TagsMatch is empty or still at the upstream/default "any", scoped filtering
+// uses "all_strict" so all scope tags must match and untagged global memories
+// are excluded. Other ListMemoriesOptions filters are preserved.
+func (c *Client) ListMemoriesWithScope(ctx context.Context, bankID string, scope EntityScope, opts ListMemoriesOptions) (*hindsight.ListMemoryUnitsResponse, error) {
+	scopeTags, err := scope.Tags()
+	if err != nil {
+		return nil, err
+	}
+	opts.Tags = mergeTags(opts.Tags, scopeTags)
+	opts.TagsMatch = scopedTagsMatchValue(opts.TagsMatch)
+	return c.ListMemories(ctx, bankID, opts)
+}
+
 // ListDocumentsWithScope lists documents filtered by entity scope. When
 // TagsMatch is empty or still at the upstream/default "any", scoped filtering
 // uses "all_strict" so all scope tags must match and untagged global documents

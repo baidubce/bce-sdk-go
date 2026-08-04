@@ -79,6 +79,19 @@ func TestScopedAPIsApplyTagsAndDefaultTagsMatch(t *testing.T) {
 				t.Fatalf("reflect tags_match = %#v, want all_strict", body["tags_match"])
 			}
 			_, _ = w.Write([]byte(`{"text":"ok"}`))
+		case "/v1/default/banks/bank/memories/list":
+			if r.Method != http.MethodGet {
+				t.Fatalf("memories list method = %s", r.Method)
+			}
+			query := r.URL.Query()
+			if query.Get("tags_match") != "all_strict" {
+				t.Fatalf("memories list tags_match = %q, want all_strict", query.Get("tags_match"))
+			}
+			assertQueryTags(t, r, wantTags)
+			if query.Get("state") != "active" || query.Get("document_id") != "doc-1" || query.Get("entity_id") != "entity-1" {
+				t.Fatalf("memory filters = %v", query)
+			}
+			_, _ = w.Write([]byte(`{"items":[],"total":0,"limit":10,"offset":0}`))
 		case "/v1/default/banks/bank/documents":
 			if r.Method != http.MethodGet {
 				t.Fatalf("documents method = %s", r.Method)
@@ -186,6 +199,17 @@ func TestScopedAPIsApplyTagsAndDefaultTagsMatch(t *testing.T) {
 	reflectReq.Tags = []string{"topic:coffee"}
 	if _, err := client.ReflectWithScope(ctx, "bank", scope, reflectReq); err != nil {
 		t.Fatalf("ReflectWithScope: %v", err)
+	}
+
+	if _, err := client.ListMemoriesWithScope(ctx, "bank", scope, dumemory.ListMemoriesOptions{
+		Q:          "coffee",
+		State:      "active",
+		DocumentID: "doc-1",
+		EntityID:   "entity-1",
+		Tags:       []string{"topic:coffee"},
+		Limit:      10,
+	}); err != nil {
+		t.Fatalf("ListMemoriesWithScope: %v", err)
 	}
 
 	if _, err := client.ListDocumentsWithScope(ctx, "bank", scope, dumemory.ListDocumentsOptions{Tags: []string{"topic:coffee"}, Limit: 10}); err != nil {

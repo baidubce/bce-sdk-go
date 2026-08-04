@@ -18,8 +18,9 @@ import (
 
 var (
 	RDS_CLIENT *Client
-	RDS_ID     = "rds-W3NYp4m9"
+	RDS_ID     = "rds-Qmg6MGgs"
 	ORDERID    string
+	VpcId      = "65554ee8-9094-4d13-99fb-7a0f23b687d2"
 	// set this value before start test
 	ACCOUNT_NAME = "baidu"
 	PASSWORD     = "xxxxxx"
@@ -471,6 +472,83 @@ func TestClient_SecurityIps(t *testing.T) {
 	}
 }
 
+func TestClient_InstanceSecurityGroupList(t *testing.T) {
+	result, err := RDS_CLIENT.InstanceSecurityGroupList(RDS_ID)
+	jsonData, _ := json.Marshal(result)
+	fmt.Println(string(jsonData))
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_ListSecurityGroupsByVpc(t *testing.T) {
+	args := &ListSecurityGroupsByVpcArgs{
+		VpcId:    VpcId,
+		PageNo:   1,
+		PageSize: 10,
+		OrderBy:  "createdTime",
+		Order:    "desc",
+	}
+	result, err := RDS_CLIENT.ListSecurityGroupsByVpc(args)
+	jsonData, _ := json.Marshal(result)
+	fmt.Println(string(jsonData))
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_SecurityGroupUnbind(t *testing.T) {
+	args := &SecurityGroupBindArgs{
+		InstanceId:       RDS_ID,
+		SecurityGroupIds: []string{"g-411u7bzri76z", "g-urdnq1avti0m"},
+	}
+	err := RDS_CLIENT.SecurityGroupUnbind(args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_SecurityGroupBatchBind(t *testing.T) {
+	args := &SecurityGroupBindArgs{
+		InstanceId:       RDS_ID,
+		SecurityGroupIds: []string{"g-411u7bzri76z", "g-urdnq1avti0m"},
+	}
+	err := RDS_CLIENT.SecurityGroupBatchBind(args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_ListEnterpriseSecurityGroups(t *testing.T) {
+	args := &ListEnterpriseSecurityGroupsArgs{
+		PageNo:   1,
+		PageSize: 10,
+		Order:    "desc",
+		OrderBy:  "createdTime",
+	}
+	result, err := RDS_CLIENT.ListEnterpriseSecurityGroups(args)
+	jsonData, _ := json.Marshal(result)
+	fmt.Println(string(jsonData))
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_InstanceEnterpriseSecurityGroups(t *testing.T) {
+	result, err := RDS_CLIENT.InstanceEnterpriseSecurityGroups(RDS_ID)
+	jsonData, _ := json.Marshal(result)
+	fmt.Println(string(jsonData))
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_EnterpriseSecurityGroupBind(t *testing.T) {
+	args := &EnterpriseSecurityGroupBindArgs{
+		InstanceId: RDS_ID,
+		EsgUuids:   []string{"uuid-aaaa"},
+	}
+	err := RDS_CLIENT.EnterpriseSecurityGroupBind(args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_EnterpriseSecurityGroupUnbind(t *testing.T) {
+	args := &EnterpriseSecurityGroupBindArgs{
+		InstanceId: RDS_ID,
+		EsgUuids:   []string{"uuid-aaaa"},
+	}
+	err := RDS_CLIENT.EnterpriseSecurityGroupUnbind(args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
 func TestClient_ListParameters(t *testing.T) {
 	//isAvailable(RDS_ID)
 	listRdsArgs := &ListRdsArgs{
@@ -672,6 +750,17 @@ func TestClient_CreateDatabase(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
+func TestClient_ModifyDatabaseCdc(t *testing.T) {
+	args := &ModifyDatabaseCdcArgs{
+		DbNames:    []string{"test_db"},
+		ModifyType: "enable",
+	}
+	result, err := RDS_CLIENT.ModifyDatabaseCdc(RDS_ID, args)
+	jsonData, _ := json.Marshal(result)
+	fmt.Println(string(jsonData))
+	ExpectEqual(t.Errorf, nil, err)
+}
+
 func TestClient_TaskList(t *testing.T) {
 	args := &TaskListArgs{
 		InstanceId: RDS_ID,
@@ -837,12 +926,42 @@ func TestClient_InstanceMinorVersionList(t *testing.T) {
 	ExpectEqual(t.Errorf, nil, err)
 }
 
+func TestClient_InstanceMajorVersionList(t *testing.T) {
+	result, err := RDS_CLIENT.InstanceMajorVersionList(RDS_ID)
+	jsonData, _ := json.Marshal(result)
+	fmt.Println(string(jsonData))
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_InstanceDtsSourceCheck(t *testing.T) {
+	result, err := RDS_CLIENT.InstanceDtsSourceCheck(RDS_ID)
+	jsonData, _ := json.Marshal(result)
+	fmt.Println(string(jsonData))
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_InstanceMajorVersionPreCheck(t *testing.T) {
+	result, err := RDS_CLIENT.InstanceMajorVersionPreCheck(RDS_ID, "tdeStatus")
+	jsonData, _ := json.Marshal(result)
+	fmt.Println(string(jsonData))
+	ExpectEqual(t.Errorf, nil, err)
+}
+
 func TestClient_InstanceUpgradeMinorVersion(t *testing.T) {
 	args := &UpgradeMinorVersionArgs{
 		TargetMinorVersion: "5.7.38",
 		EffectiveTime:      "immediate",
 	}
 	err := RDS_CLIENT.InstanceUpgradeMinorVersion(RDS_ID, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestClient_InstanceUpgradeMajorVersion(t *testing.T) {
+	args := &UpgradeMajorVersionArgs{
+		TargetMajorVersion: "8.0",
+		EffectiveTime:      "immediate",
+	}
+	err := RDS_CLIENT.InstanceUpgradeMajorVersion(RDS_ID, args)
 	ExpectEqual(t.Errorf, nil, err)
 }
 

@@ -588,6 +588,16 @@ func TestDeleteSecurityIps(t *testing.T) {
 	ExpectEqual(t.Errorf, 0, cnt)
 }
 
+func TestListUsers(t *testing.T) {
+	instanceId := "m-TQRq6P"
+	args := &ListUsersArgs{
+		MaxKeys: 10,
+	}
+	result, err := CLIENT.ListUsers(instanceId, args)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, true, result != nil)
+}
+
 func init() {
 	_, f, _, _ := runtime.Caller(0)
 	for i := 0; i < 1; i++ {
@@ -636,4 +646,75 @@ func ExpectEqual(alert func(format string, args ...interface{}),
 		return false
 	}
 	return true
+}
+
+func TestUpdateUserRoles(t *testing.T) {
+	instanceId := "m-TQRq6P"
+	args := &UpdateUserRolesArgs{
+		Name: "testUser",
+		Roles: []RoleInfo{
+			{
+				DbName: "testdb",
+				Role:   "read",
+			},
+		},
+	}
+	err := CLIENT.UpdateUserRoles(instanceId, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestDropUser(t *testing.T) {
+	instanceId := "m-TQRq6P"
+	args := &DropUserArgs{
+		Name: "testUser",
+	}
+	err := CLIENT.DropUser(instanceId, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestCreateUser(t *testing.T) {
+	instanceId := "m-TQRq6P"
+	args := &CreateUserArgs{
+		Name:        "testUser",
+		Password:    "Test@12345",
+		Description: "test user",
+		Roles: []RoleInfo{
+			{
+				DbName: "testdb",
+				Role:   "readWrite",
+			},
+		},
+	}
+	err := CLIENT.CreateUser(instanceId, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestListDatabases(t *testing.T) {
+	instanceId := "m-TQRq6P"
+	args := &ListDatabasesArgs{
+		MaxKeys: 10,
+	}
+	result, err := CLIENT.ListDatabases(instanceId, args)
+	ExpectEqual(t.Errorf, nil, err)
+	ExpectEqual(t.Errorf, true, result != nil)
+}
+
+func TestDropDatabase(t *testing.T) {
+	instanceId := "m-TQRq6P"
+	args := &DropDatabaseArgs{
+		Name: "testdb",
+	}
+	err := CLIENT.DropDatabase(instanceId, args)
+	ExpectEqual(t.Errorf, nil, err)
+}
+
+func TestCreateDatabase(t *testing.T) {
+	instanceId := "m-TQRq6P"
+	args := &CreateDatabaseArgs{
+		Name:           "testdb",
+		CollectionName: "testcol",
+		Description:    "test database",
+	}
+	err := CLIENT.CreateDatabase(instanceId, args)
+	ExpectEqual(t.Errorf, nil, err)
 }

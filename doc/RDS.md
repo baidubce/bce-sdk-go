@@ -1091,6 +1091,25 @@ fmt.Printf("create database success\n")
 
 ```
 
+## 修改数据库 CDC 状态
+
+使用以下代码可以批量开启或关闭指定数据库的 CDC 功能（仅支持 SQL Server 实例，异步任务）
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.ModifyDatabaseCdcArgs{
+    DbNames:    []string{"db1", "db2"},
+    ModifyType: "enable",
+}
+result, err := client.ModifyDatabaseCdc(instanceId, args)
+if err != nil {
+    fmt.Printf("modify database cdc error: %+v\n", err)
+    return
+}
+fmt.Printf("modify database cdc success, taskId: %s\n", result.TaskId)
+
+```
+
 # 任务管理
 
 ## 获取任务列表
@@ -1426,6 +1445,72 @@ if err != nil {
     return
 }
 fmt.Printf("update instance minor version list success\n")
+
+```
+## 查看实例允许升级的大版本列表
+
+使用以下代码可以查看实例允许升级的大版本列表
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.InstanceMajorVersionList(instanceId)
+if err != nil {
+    fmt.Printf("get instance major version list error: %+v\n", err)
+    return
+}
+fmt.Printf("get instance major version list success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+
+```
+## 迁移评估
+
+使用以下代码可以对实例进行迁移评估检查
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.InstanceDtsSourceCheck(instanceId)
+if err != nil {
+    fmt.Printf("check instance dts source error: %+v\n", err)
+    return
+}
+fmt.Printf("check instance dts source success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+
+```
+## 大版本升级前置检查
+
+使用以下代码可以对实例进行大版本升级前置检查
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.InstanceMajorVersionPreCheck(instanceId, "tdeStatus")
+if err != nil {
+    fmt.Printf("pre check instance major version error: %+v\n", err)
+    return
+}
+fmt.Printf("pre check instance major version success\n")
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+
+```
+## 实例升级大版本
+
+使用以下代码可以升级大版本
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.UpgradeMajorVersionArgs{
+    TargetMajorVersion: "8.0",
+    EffectiveTime:      "immediate",
+}
+err := client.InstanceUpgradeMajorVersion(instanceId, args)
+if err != nil {
+    fmt.Printf("update instance major version error: %+v\n", err)
+    return
+}
+fmt.Printf("update instance major version success\n")
 
 ```
 # SmartDBA
@@ -2335,6 +2420,155 @@ fmt.Printf("update securityIp list success\n")
 >
 > - 在更新白名单时需要通过查看白名单接口获取最新的Etag。
 > - 白名单需要全量更新，每次更新需要把全部白名单列表都添加上。
+
+## 查询实例安全组列表
+
+使用以下代码可以查询指定实例绑定的普通安全组列表。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.InstanceSecurityGroupList(instanceId)
+if err != nil {
+    fmt.Printf("get instance security group list error: %+v\n", err)
+    return
+}
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+fmt.Printf("get instance security group list success\n")
+```
+
+## 查询 VPC 下安全组列表
+
+使用以下代码可以查询指定 VPC 下的安全组列表。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.ListSecurityGroupsByVpcArgs{
+    VpcId:    "vpc-xxxx",
+    PageNo:   1,
+    PageSize: 10,
+    OrderBy:  "createdTime",
+    Order:    "desc",
+}
+result, err := client.ListSecurityGroupsByVpc(args)
+if err != nil {
+    fmt.Printf("list security groups by vpc error: %+v\n", err)
+    return
+}
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+fmt.Printf("list security groups by vpc success\n")
+```
+
+## 解绑安全组
+
+使用以下代码可以解绑指定实例的普通安全组。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.SecurityGroupBindArgs{
+    InstanceId:       instanceId,
+    SecurityGroupIds: []string{"sg-aaaa"},
+}
+err := client.SecurityGroupUnbind(args)
+if err != nil {
+    fmt.Printf("unbind security group error: %+v\n", err)
+    return
+}
+fmt.Printf("unbind security group success\n")
+```
+
+## 批量替换实例安全组
+
+使用以下代码可以批量替换指定实例绑定的普通安全组。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.SecurityGroupBindArgs{
+    InstanceId:       instanceId,
+    SecurityGroupIds: []string{"sg-aaaa", "sg-bbbb"},
+}
+err := client.SecurityGroupBatchBind(args)
+if err != nil {
+    fmt.Printf("batch bind security group error: %+v\n", err)
+    return
+}
+fmt.Printf("batch bind security group success\n")
+```
+
+## 查询企业安全组列表
+
+使用以下代码可以查询当前账号下可用的企业安全组列表。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.ListEnterpriseSecurityGroupsArgs{
+    PageNo:   1,
+    PageSize: 10,
+    Order:    "desc",
+    OrderBy:  "createdTime",
+}
+result, err := client.ListEnterpriseSecurityGroups(args)
+if err != nil {
+    fmt.Printf("list enterprise security groups error: %+v\n", err)
+    return
+}
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+fmt.Printf("list enterprise security groups success\n")
+```
+
+## 查询实例绑定的企业安全组信息
+
+使用以下代码可以查询指定实例绑定的企业安全组详情。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+result, err := client.InstanceEnterpriseSecurityGroups(instanceId)
+if err != nil {
+    fmt.Printf("get instance enterprise security groups error: %+v\n", err)
+    return
+}
+jsonData, _ := json.Marshal(result)
+fmt.Println(string(jsonData))
+fmt.Printf("get instance enterprise security groups success\n")
+```
+
+## 绑定企业安全组
+
+使用以下代码可以为指定实例绑定企业安全组。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.EnterpriseSecurityGroupBindArgs{
+    InstanceId: instanceId,
+    EsgUuids:   []string{"uuid-aaaa"},
+}
+err := client.EnterpriseSecurityGroupBind(args)
+if err != nil {
+    fmt.Printf("bind enterprise security group error: %+v\n", err)
+    return
+}
+fmt.Printf("bind enterprise security group success\n")
+```
+
+## 解绑企业安全组
+
+使用以下代码可以解绑指定实例的企业安全组。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/rds"
+args := &rds.EnterpriseSecurityGroupBindArgs{
+    InstanceId: instanceId,
+    EsgUuids:   []string{"uuid-aaaa"},
+}
+err := client.EnterpriseSecurityGroupUnbind(args)
+if err != nil {
+    fmt.Printf("unbind enterprise security group error: %+v\n", err)
+    return
+}
+fmt.Printf("unbind enterprise security group success\n")
+```
 
 # 错误处理
 

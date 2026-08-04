@@ -82,6 +82,25 @@ func ListTagsWithScope() {
 	fmt.Println(response)
 }
 
+func ListMemoriesWithScope() {
+	endpoint, apiKey := "Your endpoint", "Your apiKey"
+	client := dumemory.New(endpoint, apiKey)
+	scope := dumemory.EntityScope{UserID: "your-user-id", AppID: "your-app-id"}
+
+	response, err := client.ListMemoriesWithScope(context.Background(), "your-bank-id", scope, dumemory.ListMemoriesOptions{
+		Q:          "preference",
+		State:      "active",
+		DocumentID: "your-document-id",
+		EntityID:   "your-entity-id",
+		Tags:       []string{"topic:preference"},
+		Limit:      20,
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response)
+}
+
 func ListDocumentsWithScope() {
 	endpoint, apiKey := "Your endpoint", "Your apiKey"
 	client := dumemory.New(endpoint, apiKey)

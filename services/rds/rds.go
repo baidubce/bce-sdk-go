@@ -726,6 +726,185 @@ func (c *Client) UpdateSecurityIps(instanceId, Etag string, args *UpdateSecurity
 		Do()
 }
 
+// InstanceSecurityGroupList - list security groups bound to an instance
+//
+// PARAMS:
+//   - instanceId: the specific rds Instance's ID
+//
+// RETURNS:
+//   - *InstanceSecurityGroupListResult: security groups bound to an instance
+//   - error: nil if success otherwise the specific error
+func (c *Client) InstanceSecurityGroupList(instanceId string) (*InstanceSecurityGroupListResult, error) {
+	result := &InstanceSecurityGroupListResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getRdsUriWithInstanceId(instanceId) + "/securityList").
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// ListSecurityGroupsByVpc - list security groups in a vpc
+//
+// PARAMS:
+//   - args: the arguments to list security groups in a vpc
+//
+// RETURNS:
+//   - *ListSecurityGroupsByVpcResult: security groups in a vpc
+//   - error: nil if success otherwise the specific error
+func (c *Client) ListSecurityGroupsByVpc(args *ListSecurityGroupsByVpcArgs) (*ListSecurityGroupsByVpcResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("unset args")
+	}
+	if args.PageSize == 0 {
+		args.PageSize = DEFAULT_PAGE_SIZE
+	}
+	if args.PageNo == 0 {
+		args.PageNo = DEFAULT_PAGE_NUM
+	}
+	result := &ListSecurityGroupsByVpcResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getRdsUri()+"/security/listByVpc").
+		WithQueryParamFilter("from", args.From).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// SecurityGroupUnbind - unbind security groups from an instance
+//
+// PARAMS:
+//   - args: the arguments to unbind security groups
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) SecurityGroupUnbind(args *SecurityGroupBindArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getRdsUri()+"/security/unbind").
+		WithQueryParamFilter("from", args.From).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+}
+
+// SecurityGroupBatchBind - batch replace security groups bound to an instance
+//
+// PARAMS:
+//   - args: the arguments to batch replace security groups
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) SecurityGroupBatchBind(args *SecurityGroupBindArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getRdsUri()+"/security/batchBind").
+		WithQueryParamFilter("from", args.From).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+}
+
+// ListEnterpriseSecurityGroups - list enterprise security groups
+//
+// PARAMS:
+//   - args: the arguments to list enterprise security groups
+//
+// RETURNS:
+//   - *ListEnterpriseSecurityGroupsResult: enterprise security groups
+//   - error: nil if success otherwise the specific error
+func (c *Client) ListEnterpriseSecurityGroups(args *ListEnterpriseSecurityGroupsArgs) (*ListEnterpriseSecurityGroupsResult, error) {
+	if args == nil {
+		args = &ListEnterpriseSecurityGroupsArgs{}
+	}
+	if args.PageSize == 0 {
+		args.PageSize = DEFAULT_PAGE_SIZE
+	}
+	if args.PageNo == 0 {
+		args.PageNo = DEFAULT_PAGE_NUM
+	}
+	result := &ListEnterpriseSecurityGroupsResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getRdsUri()+"/enterprise/security/list").
+		WithQueryParamFilter("pageNo", strconv.Itoa(args.PageNo)).
+		WithQueryParamFilter("pageSize", strconv.Itoa(args.PageSize)).
+		WithQueryParamFilter("order", args.Order).
+		WithQueryParamFilter("orderBy", args.OrderBy).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// InstanceEnterpriseSecurityGroups - get enterprise security groups bound to an instance
+//
+// PARAMS:
+//   - instanceId: the specific rds Instance's ID
+//
+// RETURNS:
+//   - *InstanceEnterpriseSecurityGroupsResult: enterprise security groups bound to an instance
+//   - error: nil if success otherwise the specific error
+func (c *Client) InstanceEnterpriseSecurityGroups(instanceId string) (*InstanceEnterpriseSecurityGroupsResult, error) {
+	result := &InstanceEnterpriseSecurityGroupsResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getRdsUri() + "/enterprise/security/" + instanceId).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// EnterpriseSecurityGroupBind - bind enterprise security groups to an instance
+//
+// PARAMS:
+//   - args: the arguments to bind enterprise security groups
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) EnterpriseSecurityGroupBind(args *EnterpriseSecurityGroupBindArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getRdsUri()+"/enterprise/security/bind").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+}
+
+// EnterpriseSecurityGroupUnbind - unbind enterprise security groups from an instance
+//
+// PARAMS:
+//   - args: the arguments to unbind enterprise security groups
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) EnterpriseSecurityGroupUnbind(args *EnterpriseSecurityGroupBindArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getRdsUri()+"/enterprise/security/unbind").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+}
+
 // ListParameters - list all parameters of a RDS instance
 //
 // PARAMS:
@@ -960,6 +1139,31 @@ func (c *Client) ListDatabases(instanceId string) (*ListDatabasesResult, error) 
 	err := bce.NewRequestBuilder(c).
 		WithMethod(http.GET).
 		WithURL(getRdsUriWithInstanceId(instanceId) + "/databases").
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// ModifyDatabaseCdc - enable or disable CDC for databases of a SQL Server instance
+//
+// PARAMS:
+//   - instanceId: id of the instance
+//   - args: the arguments to modify database CDC status
+//
+// RETURNS:
+//   - *ModifyDatabaseCdcResult: result containing the async task ID
+//   - error: nil if success otherwise the specific error
+func (c *Client) ModifyDatabaseCdc(instanceId string, args *ModifyDatabaseCdcArgs) (*ModifyDatabaseCdcResult, error) {
+	if args == nil {
+		return nil, fmt.Errorf("unset args")
+	}
+	result := &ModifyDatabaseCdcResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.POST).
+		WithURL(getRdsUriWithInstanceId(instanceId)+"/databases/cdc").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
 		WithResult(result).
 		Do()
 
@@ -1395,6 +1599,68 @@ func (c *Client) InstanceMinorVersionList(instanceId string) (*MinorVersionListR
 	return result, err
 }
 
+// InstanceMajorVersionList - list major versions available for instance
+//
+// PARAMS:
+//   - InstanceId: instance id
+//
+// RETURNS:
+//   - *MajorVersionListResult: the result of list major versions available for instance
+//   - error: nil if success otherwise the specific error
+func (c *Client) InstanceMajorVersionList(instanceId string) (*MajorVersionListResult, error) {
+	result := &MajorVersionListResult{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL("/v1/rds/instance/" + instanceId + "/majorVersionList").
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// InstanceDtsSourceCheck - check whether instance passes dts source assessment
+//
+// PARAMS:
+//   - InstanceId: instance id
+//
+// RETURNS:
+//   - *DtsSourceCheckResult: the result of dts source check
+//   - error: nil if success otherwise the specific error
+func (c *Client) InstanceDtsSourceCheck(instanceId string) (*DtsSourceCheckResult, error) {
+	result := &DtsSourceCheckResult{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL("/v1/rds/instance/" + instanceId + "/dtsSourceCheck").
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// InstanceMajorVersionPreCheck - pre-check whether instance can upgrade major version
+//
+// PARAMS:
+//   - InstanceId: instance id
+//   - checkType: check type
+//
+// RETURNS:
+//   - *MajorVersionPreCheckResult: the result of major version pre-check
+//   - error: nil if success otherwise the specific error
+func (c *Client) InstanceMajorVersionPreCheck(instanceId string, checkType string) (*MajorVersionPreCheckResult, error) {
+	result := &MajorVersionPreCheckResult{}
+
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL("/v1/rds/instance/"+instanceId+"/majorVersion/preCheck").
+		WithQueryParam("checkType", checkType).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
 // InstanceUpgradeMinorVersion - upgrade minor version
 //
 // PARAMS:
@@ -1410,6 +1676,29 @@ func (c *Client) InstanceUpgradeMinorVersion(instanceId string, args *UpgradeMin
 		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
 		WithBody(args).
 		WithQueryParam("upgradeMinorVersion", "").
+		Do()
+
+	return err
+}
+
+// InstanceUpgradeMajorVersion - upgrade major version
+//
+// PARAMS:
+//   - instanceId: the instance id
+//   - args: the arguments used to upgrade major version
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) InstanceUpgradeMajorVersion(instanceId string, args *UpgradeMajorVersionArgs) error {
+	if args == nil {
+		return fmt.Errorf("unset args")
+	}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL("/v1/rds/instance/"+instanceId).
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		WithQueryParam("upgradeMajorVersion", "").
 		Do()
 
 	return err

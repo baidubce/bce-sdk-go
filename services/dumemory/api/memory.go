@@ -15,6 +15,11 @@ type ListMemoriesOptions struct {
 	Type               string
 	Q                  string
 	ConsolidationState string
+	State              string
+	DocumentID         string
+	EntityID           string
+	Tags               []string
+	TagsMatch          string
 	Limit              int32
 	Offset             int32
 }
@@ -31,6 +36,8 @@ func (c *Client) Retain(ctx context.Context, bankID string, req hindsight.Retain
 // the request body. This wrapper sets req.Async = true (when supported by
 // the deployed server) and otherwise behaves like Retain.
 func (c *Client) RetainAsync(ctx context.Context, bankID string, req hindsight.RetainRequest) (*hindsight.RetainResponse, error) {
+	asynchronous := true
+	req.Async = &asynchronous
 	out, _, err := c.hindsight.MemoryAPI.RetainMemories(ctx, bankID).RetainRequest(req).Execute()
 	return out, err
 }
@@ -58,6 +65,21 @@ func (c *Client) ListMemories(ctx context.Context, bankID string, opts ListMemor
 	}
 	if opts.ConsolidationState != "" {
 		call = call.ConsolidationState(opts.ConsolidationState)
+	}
+	if opts.State != "" {
+		call = call.State(opts.State)
+	}
+	if opts.DocumentID != "" {
+		call = call.DocumentId(opts.DocumentID)
+	}
+	if opts.EntityID != "" {
+		call = call.EntityId(opts.EntityID)
+	}
+	if len(opts.Tags) > 0 {
+		call = call.Tags(opts.Tags)
+	}
+	if opts.TagsMatch != "" {
+		call = call.TagsMatch(opts.TagsMatch)
 	}
 	if opts.Limit != 0 {
 		call = call.Limit(opts.Limit)

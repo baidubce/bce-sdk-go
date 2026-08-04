@@ -41,6 +41,12 @@ func (c *Client) ListOperations(ctx context.Context, bankID string, opts ListOpe
 	return out, err
 }
 
+// GetOperationStatus gets a single operation via GET /operations/{bankId}/{operationId}.
+func (c *Client) GetOperationStatus(ctx context.Context, bankID, operationID string) (*hindsight.OperationStatusResponse, error) {
+	out, _, err := c.hindsight.OperationsAPI.GetOperationStatus(ctx, bankID, operationID).Execute()
+	return out, err
+}
+
 // CancelOperation cancels a single operation via DELETE /operations/{bankId}/{operationId}.
 //
 // Note: the Baidu reference table lists DELETE /operations/{bankId} as

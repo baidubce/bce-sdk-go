@@ -965,3 +965,209 @@ func (c *Client) ListLogFiles(instanceId string, args *ListLogFilesArgs) (*ListL
 
 	return result, err
 }
+
+// ListUsers - list all users of a MONGODB instance / 查看用户列表
+//
+// PARAMS:
+//   - instanceId: the specific mongodb Instance's ID
+//   - args: the arguments to list users
+//
+// RETURNS:
+//   - *ListUsersResult: the result of list users
+//   - error: nil if success otherwise the specific error
+func (c *Client) ListUsers(instanceId string, args *ListUsersArgs) (*ListUsersResult, error) {
+	if args == nil {
+		args = &ListUsersArgs{}
+	}
+
+	if args.MaxKeys <= 0 || args.MaxKeys > 1000 {
+		args.MaxKeys = 1000
+	}
+
+	result := &ListUsersResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getMongodbUriWithInstanceId(instanceId)).
+		WithQueryParam("listUsers", "").
+		WithQueryParamFilter("marker", args.Marker).
+		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// UpdateUserRoles - update user's roles of a MONGODB instance / 更新用户权限
+//
+// PARAMS:
+//   - instanceId: the specific mongodb Instance's ID
+//   - args: the arguments to update user's roles
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) UpdateUserRoles(instanceId string, args *UpdateUserRolesArgs) error {
+	if args == nil {
+		return errors.New("unset args")
+	}
+
+	if args.Name == "" {
+		return errors.New("unset Name")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getMongodbUriWithInstanceId(instanceId)).
+		WithQueryParam("updateRole", "").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+}
+
+// DropUser - drop a user of a MONGODB instance / 删除用户
+//
+// PARAMS:
+//   - instanceId: the specific mongodb Instance's ID
+//   - args: the arguments to drop user
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) DropUser(instanceId string, args *DropUserArgs) error {
+	if args == nil {
+		return errors.New("unset args")
+	}
+
+	if args.Name == "" {
+		return errors.New("unset Name")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getMongodbUriWithInstanceId(instanceId)).
+		WithQueryParam("dropUser", "").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+}
+
+// CreateUser - create a user for a MONGODB instance / 创建用户
+//
+// PARAMS:
+//   - instanceId: the specific mongodb Instance's ID
+//   - args: the arguments to create a user
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) CreateUser(instanceId string, args *CreateUserArgs) error {
+	if args == nil {
+		return errors.New("unset args")
+	}
+
+	if args.Name == "" {
+		return errors.New("unset Name")
+	}
+
+	if args.Password == "" {
+		return errors.New("unset Password")
+	}
+
+	cryptedPass, err := Aes128EncryptUseSecreteKey(c.Config.Credentials.SecretAccessKey, args.Password)
+	if err != nil {
+		return err
+	}
+	args.Password = cryptedPass
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getMongodbUriWithInstanceId(instanceId)).
+		WithQueryParam("createUser", "").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+}
+
+// ListDatabases - list all user databases of a MONGODB instance / 查看用户数据库列表
+//
+// PARAMS:
+//   - instanceId: the specific mongodb Instance's ID
+//   - args: the arguments to list databases
+//
+// RETURNS:
+//   - *ListDatabasesResult: the result of list databases
+//   - error: nil if success otherwise the specific error
+func (c *Client) ListDatabases(instanceId string, args *ListDatabasesArgs) (*ListDatabasesResult, error) {
+	if args == nil {
+		args = &ListDatabasesArgs{}
+	}
+
+	if args.MaxKeys <= 0 || args.MaxKeys > 1000 {
+		args.MaxKeys = 1000
+	}
+
+	result := &ListDatabasesResult{}
+	err := bce.NewRequestBuilder(c).
+		WithMethod(http.GET).
+		WithURL(getMongodbUriWithInstanceId(instanceId)).
+		WithQueryParam("listDatabases", "").
+		WithQueryParamFilter("marker", args.Marker).
+		WithQueryParamFilter("maxKeys", strconv.Itoa(args.MaxKeys)).
+		WithResult(result).
+		Do()
+
+	return result, err
+}
+
+// DropDatabase - drop a user database of a MONGODB instance / 删除用户数据库
+//
+// PARAMS:
+//   - instanceId: the specific mongodb Instance's ID
+//   - args: the arguments to drop database
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) DropDatabase(instanceId string, args *DropDatabaseArgs) error {
+	if args == nil {
+		return errors.New("unset args")
+	}
+
+	if args.Name == "" {
+		return errors.New("unset Name")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getMongodbUriWithInstanceId(instanceId)).
+		WithQueryParam("dropDatabase", "").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+}
+
+// CreateDatabase - create a user database for a MONGODB instance / 创建用户数据库
+//
+// PARAMS:
+//   - instanceId: the specific mongodb Instance's ID
+//   - args: the arguments to create database
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) CreateDatabase(instanceId string, args *CreateDatabaseArgs) error {
+	if args == nil {
+		return errors.New("unset args")
+	}
+
+	if args.Name == "" {
+		return errors.New("unset Name")
+	}
+
+	if args.CollectionName == "" {
+		return errors.New("unset CollectionName")
+	}
+
+	return bce.NewRequestBuilder(c).
+		WithMethod(http.PUT).
+		WithURL(getMongodbUriWithInstanceId(instanceId)).
+		WithQueryParam("createDatabase", "").
+		WithHeader(http.CONTENT_TYPE, bce.DEFAULT_CONTENT_TYPE).
+		WithBody(args).
+		Do()
+}

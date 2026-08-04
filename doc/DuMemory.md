@@ -97,6 +97,7 @@ client = DuMemory.NewWithTimeout("https://cloud.memory.bj.baidubce.com/api", "<A
 | 指令 | PATCH | /v1/default/banks/{bankId}/directives/{directiveId} | `UpdateDirective` |
 | 指令 | DELETE | /v1/default/banks/{bankId}/directives/{directiveId} | `DeleteDirective` |
 | 操作 | GET | /v1/default/banks/{bankId}/operations | `ListOperations` |
+| 操作 | GET | /v1/default/banks/{bankId}/operations/{operationId} | `GetOperationStatus` |
 | 操作 | DELETE | /v1/default/banks/{bankId}/operations/{operationId} | `CancelOperation` |
 | 文件 | POST | /v1/default/banks/{bankId}/files/retain | `FilesRetain` |
 | 标签作用域扩展 | POST | /v1/default/banks/{bankId}/memories | `RetainWithScope` |
@@ -104,6 +105,7 @@ client = DuMemory.NewWithTimeout("https://cloud.memory.bj.baidubce.com/api", "<A
 | 标签作用域扩展 | POST | /v1/default/banks/{bankId}/reflect | `ReflectWithScope` |
 | 标签作用域扩展 | GET | /v1/default/banks/{bankId}/memories/{memoryId} | `GetMemoryWithScope` |
 | 标签作用域扩展 | GET | /v1/default/banks/{bankId}/tags | `ListTagsWithScope` |
+| 标签作用域扩展 | GET | /v1/default/banks/{bankId}/memories/list | `ListMemoriesWithScope` |
 | 标签作用域扩展 | GET | /v1/default/banks/{bankId}/documents | `ListDocumentsWithScope` |
 | 标签作用域扩展 | PATCH | /v1/default/banks/{bankId}/documents/{documentId} | `UpdateDocumentTagsWithScope` |
 | 标签作用域扩展 | GET | /v1/default/banks/{bankId}/directives | `ListDirectivesWithScope` |
@@ -775,7 +777,7 @@ out, err := client.ConsolidateBank(ctx, "demo-bank", nil)
 
 **接口说明**
 
-向指定 bank 写入一组记忆条目，可选同步或异步处理。
+向指定 bank 写入一组记忆条目，可选同步或异步处理。`RetainAsync` 会在 SDK 内强制设置请求体 `async=true`。
 
 **请求 URI**
 
@@ -1019,12 +1021,12 @@ out, err := client.Reflect(ctx, "demo-bank",
 
 **接口说明**
 
-分页列出 bank 下的记忆单元，支持按类型、查询关键词、整合状态过滤。
+分页列出 bank 下的记忆单元，支持按类型、关键词、整合状态、记忆状态、来源文档、关联实体和 tags 过滤。
 
 **请求 URI**
 
 ```
-GET /v1/default/banks/{bankId}/memories/list?type=&q=&consolidation_state=&limit=&offset=
+GET /v1/default/banks/{bankId}/memories/list?type=&q=&consolidation_state=&state=&document_id=&entity_id=&tags=&tags_match=&limit=&offset=
 Host: cloud.memory.bj.baidubce.com
 Authorization: Bearer <API_KEY>
 ```
@@ -1041,6 +1043,11 @@ Authorization: Bearer <API_KEY>
 | type | String | 否 | Query 参数 | 节点/事实类型 |
 | q | String | 否 | Query 参数 | 关键词模糊匹配 |
 | consolidation_state | String | 否 | Query 参数 | 整合状态过滤 |
+| state | String | 否 | Query 参数 | 记忆状态过滤 |
+| document_id | String | 否 | Query 参数 | 来源文档 ID |
+| entity_id | String | 否 | Query 参数 | 关联实体 ID |
+| tags | Array<String> | 否 | Query 参数 | 标签过滤，可传多个 |
+| tags_match | String | 否 | Query 参数 | 标签匹配模式：`any`、`all`、`any_strict`、`all_strict`、`exact` |
 | limit | Integer | 否 | Query 参数 | 分页大小 |
 | offset | Integer | 否 | Query 参数 | 偏移量 |
 
@@ -1060,7 +1067,7 @@ Authorization: Bearer <API_KEY>
 **请求示例**
 
 ```
-GET /v1/default/banks/demo-bank/memories/list?limit=20&offset=0
+GET /v1/default/banks/demo-bank/memories/list?state=active&document_id=doc-1&entity_id=entity-1&tags=topic:coffee&tags_match=all_strict&limit=20&offset=0
 Host: cloud.memory.bj.baidubce.com
 Authorization: Bearer bce-v3/ALTAK-xxx/xxx
 ```
@@ -1074,8 +1081,14 @@ Authorization: Bearer bce-v3/ALTAK-xxx/xxx
 **SDK 方法**
 
 ```go
-out, err := client.ListMemories(ctx, "demo-bank",
-    DuMemory.ListMemoriesOptions{Limit: 20})
+out, err := client.ListMemories(ctx, "demo-bank", DuMemory.ListMemoriesOptions{
+    State:      "active",
+    DocumentID: "doc-1",
+    EntityID:   "entity-1",
+    Tags:       []string{"topic:coffee"},
+    TagsMatch:  "all_strict",
+    Limit:      20,
+})
 ```
 
 ---
@@ -2299,7 +2312,87 @@ out, err := client.ListOperations(ctx, "demo-bank",
 
 ---
 
-### 8.2 取消后台操作 CancelOperation
+### 8.2 查询后台操作状态 GetOperationStatus
+
+**接口说明**
+
+根据 operation ID 查询单个异步操作的当前状态、进度、错误信息、结果元数据及子操作状态。
+
+**请求 URI**
+
+```
+GET /v1/default/banks/{bankId}/operations/{operationId}
+Host: cloud.memory.bj.baidubce.com
+Authorization: Bearer <API_KEY>
+```
+
+**请求头域**
+
+除公共头域外，无其它特殊头域。
+
+**请求参数**
+
+| 参数名称 | 参数类型 | 是否必须 | 参数位置 | 描述 |
+| --- | --- | --- | --- | --- |
+| bankId | String | 是 | URL 参数 | 记忆库 ID |
+| operationId | String | 是 | URL 参数 | 操作 ID |
+
+**返回头域**
+
+除公共头域外，无其它特殊头域。
+
+**返回参数**
+
+| 参数名称 | 参数类型 | 描述 |
+| --- | --- | --- |
+| operation_id | String | 操作 ID |
+| status | String | 操作状态，如 `pending`、`processing`、`completed`、`failed`、`cancelled` |
+| operation_type | String | 操作类型，可空 |
+| created_at | String | 创建时间，可空 |
+| updated_at | String | 更新时间，可空 |
+| completed_at | String | 完成时间，可空 |
+| error_message | String | 错误信息，可空 |
+| retry_count | Integer | 已重试次数，可空 |
+| next_retry_at | String | 下次重试时间，可空 |
+| progress | Object | 操作进度信息，可空 |
+| result_metadata | Object | 操作结果元数据，可空 |
+| child_operations | Array<ChildOperationStatus> | 子操作状态列表，可空 |
+| task_payload | Object | 任务请求载荷，可空 |
+
+**请求示例**
+
+```
+GET /v1/default/banks/demo-bank/operations/op-1
+Host: cloud.memory.bj.baidubce.com
+Authorization: Bearer bce-v3/ALTAK-xxx/xxx
+```
+
+**返回示例**
+
+```json
+{
+  "operation_id": "op-1",
+  "status": "processing",
+  "operation_type": "retain",
+  "created_at": "2026-06-09T10:00:00Z",
+  "updated_at": "2026-06-09T10:00:05Z",
+  "retry_count": 0,
+  "progress": {
+    "current": 1,
+    "total": 3
+  }
+}
+```
+
+**SDK 方法**
+
+```go
+out, err := client.GetOperationStatus(ctx, "demo-bank", "op-1")
+```
+
+---
+
+### 8.3 取消后台操作 CancelOperation
 
 **接口说明**
 
@@ -2833,7 +2926,80 @@ out, err := client.ListTagsWithScope(ctx, "demo-bank", scope, dumemory.ListTagsO
 
 ---
 
-### 10.6 作用域列出文档 ListDocumentsWithScope
+### 10.6 作用域列出记忆 ListMemoriesWithScope
+
+**接口说明**
+
+按实体作用域分页列出记忆单元。SDK 会将 `EntityScope` 生成的 tags 与 `ListMemoriesOptions.Tags` 合并并去重；`TagsMatch` 为空或为上游默认值 `any` 时自动使用 `all_strict`，确保所有作用域 tags 都命中并排除无 tag 的 global memory。其它 `ListMemoriesOptions` 过滤条件保持不变。
+
+**请求 URI**
+
+```
+GET /v1/default/banks/{bankId}/memories/list?type=&q=&consolidation_state=&state=&document_id=&entity_id=&tags=&tags_match=&limit=&offset=
+Host: cloud.memory.bj.baidubce.com
+Authorization: Bearer <API_KEY>
+```
+
+**请求头域**
+
+除公共头域外，无其它特殊头域。
+
+**请求参数**
+
+| 参数名称 | 参数类型 | 是否必须 | 参数位置 | 描述 |
+| --- | --- | --- | --- | --- |
+| bankId | String | 是 | URL 参数 | 记忆库 ID |
+| scope | EntityScope | 是 | SDK 参数 | 至少包含一个实体 ID |
+| type | String | 否 | Query 参数 | 节点/事实类型 |
+| q | String | 否 | Query 参数 | 关键词模糊匹配 |
+| consolidation_state | String | 否 | Query 参数 | 整合状态过滤 |
+| state | String | 否 | Query 参数 | 记忆状态过滤 |
+| document_id | String | 否 | Query 参数 | 来源文档 ID |
+| entity_id | String | 否 | Query 参数 | 关联实体 ID |
+| tags | Array<String> | 否 | Query 参数 | 业务 tags；SDK 自动追加 scope tags |
+| tags_match | String | 否 | Query 参数 | 默认使用 `all_strict` |
+| limit | Integer | 否 | Query 参数 | 分页大小 |
+| offset | Integer | 否 | Query 参数 | 偏移量 |
+
+**返回头域**
+
+除公共头域外，无其它特殊头域。
+
+**返回参数**
+
+同 `ListMemories`，包含 `items`、`total`、`limit`、`offset`。
+
+**请求示例**
+
+```
+GET /v1/default/banks/demo-bank/memories/list?state=active&document_id=doc-1&entity_id=entity-1&tags=topic:coffee&tags=user_id:u-001&tags=app_id:app-001&tags_match=all_strict&limit=20
+Host: cloud.memory.bj.baidubce.com
+Authorization: Bearer bce-v3/ALTAK-xxx/xxx
+```
+
+**返回示例**
+
+```json
+{ "items": [], "total": 0, "limit": 20, "offset": 0 }
+```
+
+**SDK 方法**
+
+```go
+scope := dumemory.EntityScope{UserID: "u-001", AppID: "app-001"}
+out, err := client.ListMemoriesWithScope(ctx, "demo-bank", scope, dumemory.ListMemoriesOptions{
+    Q:          "coffee",
+    State:      "active",
+    DocumentID: "doc-1",
+    EntityID:   "entity-1",
+    Tags:       []string{"topic:coffee"},
+    Limit:      20,
+})
+```
+
+---
+
+### 10.7 作用域列出文档 ListDocumentsWithScope
 
 **接口说明**
 
@@ -2897,7 +3063,7 @@ out, err := client.ListDocumentsWithScope(ctx, "demo-bank", scope, dumemory.List
 
 ---
 
-### 10.7 作用域更新文档标签 UpdateDocumentTagsWithScope
+### 10.8 作用域更新文档标签 UpdateDocumentTagsWithScope
 
 **接口说明**
 
@@ -2963,7 +3129,7 @@ out, err := client.UpdateDocumentTagsWithScope(ctx, "demo-bank", "doc-001", scop
 
 ---
 
-### 10.8 作用域列出指令 ListDirectivesWithScope
+### 10.9 作用域列出指令 ListDirectivesWithScope
 
 **接口说明**
 
@@ -3028,7 +3194,7 @@ out, err := client.ListDirectivesWithScope(ctx, "demo-bank", scope, dumemory.Lis
 
 ---
 
-### 10.9 作用域创建指令 CreateDirectiveWithScope
+### 10.10 作用域创建指令 CreateDirectiveWithScope
 
 **接口说明**
 
@@ -3105,7 +3271,7 @@ out, err := client.CreateDirectiveWithScope(ctx, "demo-bank", scope, *req)
 
 ---
 
-### 10.10 作用域更新指令 UpdateDirectiveWithScope
+### 10.11 作用域更新指令 UpdateDirectiveWithScope
 
 **接口说明**
 
@@ -3181,7 +3347,7 @@ out, err := client.UpdateDirectiveWithScope(ctx, "demo-bank", "dir-001", scope, 
 
 ---
 
-### 10.11 作用域列出心智模型 ListMentalModelsWithScope
+### 10.12 作用域列出心智模型 ListMentalModelsWithScope
 
 **接口说明**
 
@@ -3245,7 +3411,7 @@ out, err := client.ListMentalModelsWithScope(ctx, "demo-bank", scope, dumemory.L
 
 ---
 
-### 10.12 作用域创建心智模型 CreateMentalModelWithScope
+### 10.13 作用域创建心智模型 CreateMentalModelWithScope
 
 **接口说明**
 
@@ -3319,7 +3485,7 @@ out, err := client.CreateMentalModelWithScope(ctx, "demo-bank", scope, *req)
 
 ---
 
-### 10.13 作用域更新心智模型 UpdateMentalModelWithScope
+### 10.14 作用域更新心智模型 UpdateMentalModelWithScope
 
 **接口说明**
 

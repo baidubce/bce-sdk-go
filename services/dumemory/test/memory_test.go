@@ -4,6 +4,10 @@
 package dumemory_test
 
 import (
+	"context"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/baidubce/bce-sdk-go/services/dumemory/api"
@@ -43,6 +47,27 @@ func TestRetainAsync(t *testing.T) {
 		t.Fatalf("RetainAsync: %v", err)
 	}
 	t.Logf("RetainAsync => %+v", out)
+}
+
+func TestRetainAsyncSetsAsync(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var body dumemory.RetainRequest
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			t.Fatalf("decode request: %v", err)
+		}
+		if body.Async == nil || !*body.Async {
+			t.Fatalf("async = %v, want true", body.Async)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"success":true,"bank_id":"bank","items_count":1,"async":true}`))
+	}))
+	defer server.Close()
+
+	client := dumemory.New(server.URL, "test-token")
+	req := dumemory.NewRetainRequest([]dumemory.MemoryItem{*dumemory.NewMemoryItem("hello async")})
+	if _, err := client.RetainAsync(context.Background(), "bank", *req); err != nil {
+		t.Fatalf("RetainAsync: %v", err)
+	}
 }
 
 func TestRecall(t *testing.T) {
