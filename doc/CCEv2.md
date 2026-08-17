@@ -239,6 +239,9 @@ ExpireSeconds | int   | 签名字符串的有效期
 ## 创建集群
 使用以下代码可以创建一个CCE Cluster。
 ```go
+ippoolMinAllocateIPs := 10
+bceCustomerMaxIP := 64
+
 args := &ccev2.CreateClusterArgs{
     CreateClusterRequest: &ccev2.CreateClusterRequest{
         ClusterSpec: &types.ClusterSpec{
@@ -261,6 +264,8 @@ args := &ccev2.CreateClusterArgs{
                 LBServiceVPCSubnetID: "lb-service-vpc-subnet-id",
                 ClusterPodCIDR: "172.28.0.0/16",
                 ClusterIPServiceCIDR: "172.31.0.0/16",
+                IPPoolMinAllocateIPs: &ippoolMinAllocateIPs,
+                BCECustomerMaxIP: &bceCustomerMaxIP,
             },
         },
         NodeSpecs: []*ccev2.InstanceSet{
@@ -1075,3 +1080,8 @@ Instance 增加字段:
 增加节点组配置参数：
 - 支持选择ehc集群
 - 支持本地磁盘挂载路径
+
+## v1.4.3 [2026-07-27]
+增加创建集群容器网络配置参数：
+- 支持 `IPPoolMinAllocateIPs`
+- 支持 `BCECustomerMaxIP`

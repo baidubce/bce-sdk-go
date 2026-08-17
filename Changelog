@@ -1,5 +1,12 @@
 发行说明:记录每次SDK更新的说明,最新版本的SDK包含以前所有版本的更新内容。
 ---------------------------------------------------------------------
+【版本:v0.9.274】
+涉及产品：CCE
+    创建集群容器网络配置支持IPPoolMinAllocateIPs和BCECustomerMaxIP参数
+涉及产品：AIHC
+    创建训练任务新增PreInitCommand、AdvancedSettings参数
+    数据源挂载参数新增DatasetVersion参数
+    资源池NodeResourceAmount参数类型修改
 【版本:v0.9.273】
 涉及产品：KAFKA
     新增 KAFKA SDK

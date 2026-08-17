@@ -295,6 +295,12 @@ type ContainerNetworkConfig struct {
 	NetDeviceDriver    string            `json:"netDeviceDriver,omitempty"`
 	EnableRDMA         bool              `json:"enableRDMA,omitempty"`
 	EnableCVEni        bool              `json:"enableCVEni,omitempty"`
+
+	// cce-network-v2 ippool-min-allocate-ips, valid when creating a cluster.
+	IPPoolMinAllocateIPs *int `json:"ippoolMinAllocateIPs,omitempty"`
+
+	// cce-network-v2 bce-customer-max-ip, valid when creating a cluster.
+	BCECustomerMaxIP *int `json:"bceCustomerMaxIp,omitempty"`
 }
 
 type EBPFConfiguration struct {

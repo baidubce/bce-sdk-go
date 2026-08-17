@@ -42,6 +42,8 @@ type OpenAPIGetJobResponseResult struct {
 	K8sNamespace                string              `json:"k8sNamespace"`
 	FaultToleranceArgs          string              `json:"faultToleranceArgs,omitempty"`
 	LogCollectionFilePatterns   []string            `json:"logCollectionFilePatterns,omitempty"`
+	PreInitCommand              string              `json:"preInitCommand,omitempty"` // 前置命令，RayJob 顶层各角色共享
+	AdvancedSettings            *AdvancedSettings   `json:"advancedSettings"`        // RayJob 顶层高级参数（runtimeEnv / submitterBackoffLimit），未配置时序列化为 null
 }
 
 type OpenAPIEnv struct {
@@ -123,6 +125,8 @@ type AIJobDatasourceOptions struct {
 	//cfs 挂载点信息
 	CfsInstanceID string `json:"cfsInstanceId"`
 	CfsMountPoint string `json:"cfsMountPoint"`
+	// 数据集版本，用于指定挂载数据集的版本
+	DatasetVersion string `json:"datasetVersion"`
 }
 
 type OpenAPIDatasourceOptions struct {
@@ -158,14 +162,17 @@ type OpenAPIJobDeleteResponseResult struct {
 
 // create Job
 type OpenAPIJobCreateRequest struct {
-	Name           string              `json:"name"`
-	Queue          string              `json:"queue"`
-	JobFramework   string              `json:"jobFramework"`
-	JobSpec        OpenAPIAIJobSpec    `json:"jobSpec"`
-	FaultTolerance bool                `json:"faultTolerance"`
-	Labels         []OpenAPILabel      `json:"labels"`
-	Priority       string              `json:"priority"`
-	Datasources    []OpenAPIDatasource `json:"datasources"`
+	Name             string              `json:"name"`
+	Queue            string              `json:"queue"`
+	JobFramework     string              `json:"jobFramework"`
+	JobSpec          interface{}         `json:"jobSpec"` // ray使用map[string]OpenAPIAIJobSpec，其他任务使用OpenAPIAIJobSpec
+	AdvancedSettings *AdvancedSettings   `json:"advancedSettings,omitempty"`
+	PreInitCommand   string              `json:"preInitCommand,omitempty"` // 前置命令，RayJob 各角色共享（仅 RayJob 可用，提交前由校验拦截）
+	VisibleScope     *int                `json:"visibleScope,omitempty"`
+	FaultTolerance   bool                `json:"faultTolerance"`
+	Labels           []OpenAPILabel      `json:"labels"`
+	Priority         string              `json:"priority"`
+	Datasources      []OpenAPIDatasource `json:"datasources"`
 	// 两者选其一
 	FaultToleranceConfig *OpenAPIJobFaultToleranceConfig `json:"faultToleranceConfig,omitempty"`
 	FaultToleranceArgs   *string                         `json:"faultToleranceArgs,omitempty"`
@@ -181,6 +188,12 @@ type OpenAPIJobCreateRequest struct {
 	PreferredNodeAffinity      []string `json:"preferredNodeAffinity"`
 	RunningTimeoutStopTimeUnit string   `json:"runningTimeoutStopTimeUnit"` // 最大运行时长，1m、1h、1d, 分别表示 1分、1时、1天
 	RetentionPeriod            string   `json:"retentionPeriod"`            // 任务保存时间，格式1m, 1h, 1d, 分别表示 1分、1时、1天
+}
+
+// AdvancedSettings 为 RayJob 顶层高级参数
+type AdvancedSettings struct {
+	RuntimeEnv            string `json:"runtimeEnv,omitempty"`
+	SubmitterBackoffLimit int32  `json:"submitterBackoffLimit,omitempty"`
 }
 
 type CodeSourceV3 struct {

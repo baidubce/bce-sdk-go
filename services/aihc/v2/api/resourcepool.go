@@ -296,7 +296,7 @@ type NodeResource struct {
 type NodeResourceAmount struct {
 	MilliCPUcores       int64              `json:"milliCPUcores,omitempty"`
 	MemoryBytes         int64              `json:"memoryBytes,omitempty"`
-	GPUNum              int64              `json:"gpuNum,omitempty"`
+	GPUNum              float64            `json:"gpuNum,omitempty"`
 	GPUMemoryGi         int64              `json:"gpuMemoryGi,omitempty"`
 	AcceleratorCardList []*AcceleratorCard `json:"acceleratorCardList,omitempty"`
 }
