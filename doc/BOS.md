@@ -1909,6 +1909,52 @@ if err != nil {
 
 当BOS服务端出现异常时，BOS服务端会返回给用户相应的错误信息，以便定位问题。常见服务端异常可参见[BOS错误信息格式](https://cloud.baidu.com/doc/BOS/API.html#.E9.94.99.E8.AF.AF.E4.BF.A1.E6.81.AF.E6.A0.BC.E5.BC.8F)
 
+## 获取请求ID
+
+向BOS反馈问题时通常需要提供request id。请求失败时可以从`BceServiceError.RequestId`获取；**请求成功时**（例如请求返回成功但结果不符合预期）可以通过下面两种方式获取。
+
+### 方式一：ResponseCommon出参（适用于所有接口）
+
+`api.WithResponseCommon`是一个普通的option，所有接受`options ...api.Option`的接口都可以传入，包括只返回`error`或只返回`(string, error)`的接口。只要收到了HTTP响应，无论成功还是失败都会填充；若请求在发出之前就失败（如参数校验不通过），传入的结构体不会被改写。
+
+```
+// import "github.com/baidubce/bce-sdk-go/services/bos/api"
+
+meta := &api.ResponseCommon{}
+err := bosClient.DeleteBucket("test-bucket", api.WithResponseCommon(meta))
+fmt.Println("request id:", meta.RequestId)
+fmt.Println("debug id:", meta.DebugId)
+fmt.Println("status code:", meta.StatusCode)
+if err != nil {
+	fmt.Println("delete bucket failed:", err)
+}
+```
+
+### 方式二：直接从结果结构体读取
+
+返回结果结构体的接口（如`ListBuckets`、`GetObjectMeta`、`ListParts`、`CompleteMultipartUpload`等）已内嵌`ResponseCommon`，可直接读取：
+
+```
+res, err := bosClient.ListBuckets()
+if err != nil {
+	return err
+}
+fmt.Println("request id:", res.RequestId)
+```
+
+这些字段全部带有`json:"-"`标签，不会影响任何请求体或响应体的序列化结果。
+
+### 分片上传等复合接口
+
+`UploadSuperFile`、`DownloadSuperFile`、`ParallelUpload`、`ParallelCopy`内部会发起多次请求，此处回传的是**最后一次串行请求**的request id：前两者需改用新增的`UploadSuperFileWithOptions`/`DownloadSuperFileWithOptions`传入`WithResponseCommon`（原方法签名保持不变），后两者直接从返回的`*api.CompleteMultipartUploadResult`读取。并发上传/下载的各个分片不共享该出参，因此不存在数据竞争。
+
+```
+meta := &api.ResponseCommon{}
+err := bosClient.UploadSuperFileWithOptions("test-bucket", "test-object", "/path/to/file", "",
+	api.WithResponseCommon(meta))
+fmt.Println("complete multipart upload request id:", meta.RequestId)
+```
+
 ## SDK日志
 
 BOS GO SDK自行实现了支持六个级别、三种输出（标准输出、标准错误、文件）、基本格式设置的日志模块，导入路径为`github.com/baidubce/bce-sdk-go/util/log`。输出为文件时支持设置五种日志滚动方式（不滚动、按天、按小时、按分钟、按大小），此时还需设置输出日志文件的目录。详见示例代码。
