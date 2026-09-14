@@ -286,6 +286,7 @@ func TestGetStatTopByGroup(t *testing.T) {
 // any subset of fields can be combined in a single request.
 func TestSetSiteConfig(t *testing.T) {
 	query := false
+	cacheKeyIgnoreCase := false
 	offlineMode := "ON"
 	httpToHttpsEnabled := "ON"
 	httpToHttpsCode := "302"
@@ -299,9 +300,24 @@ func TestSetSiteConfig(t *testing.T) {
 	isa := "ON"
 	grpcOrigin := "ON"
 	http2Origin := "ON"
-	ruleIgnoreCase := true
 	ruleCacheKeyQuery := false
 	ruleCacheKeyIgnoreCase := false
+	clientCacheTtlMode := "custom"
+	clientCacheTtl := 150
+	webSocketEnabled := true
+	webSocketTimeout := 10
+	sslMode := "strong"
+	sslCipherList := "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256:" +
+		"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:" +
+		"TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+	sslModePtr := &sslMode
+	sslCipherListPtr := &sslCipherList
+	ocsp := "ON"
+	realIpEnabled := true
+	realIpName := "True-Client-Ip"
+	originHttpPort := 80
+	originHttpsPort := 443
+	originHost := "1.test.com"
 
 	result, err := testCli.SetSiteConfig(testAuthoritySite, &api.SiteConfig{
 		// 节点缓存配置
@@ -319,6 +335,7 @@ func TestSetSiteConfig(t *testing.T) {
 		CacheKey: &api.CacheKey{
 			Query:       &query,
 			IncludeArgs: &[]string{"test1"},
+			IgnoreCase:  &cacheKeyIgnoreCase,
 		},
 
 		// 离线模式配置
@@ -353,12 +370,6 @@ func TestSetSiteConfig(t *testing.T) {
 		// 智能加速配置
 		Isa: &isa,
 
-		//// 自定义HTTP头配置
-		HttpHeader: &[]api.HttpHeader{
-			{Type: "response", Header: "Cache-Control", Value: "test", Action: "add"},
-			{Type: "origin", Header: "Expires", Value: "test", Action: "add"},
-		},
-
 		// 状态码缓存配置
 		CacheCodeTtl: &[]api.CacheCodeTtl{
 			{Value: "404", Weight: 100, OverrideOrigin: true, Ttl: 10, Type: "code"},
@@ -379,10 +390,9 @@ func TestSetSiteConfig(t *testing.T) {
 				Rules: [][]api.Rule{
 					{
 						{
-							MatchFrom:  "path",
-							Operator:   "inValues",
-							Values:     []string{"/test", "/test2"},
-							IgnoreCase: &ruleIgnoreCase,
+							MatchFrom: "host",
+							Operator:  "inValues",
+							Values:    []string{"1.ly.com"},
 						},
 					},
 				},
@@ -394,13 +404,72 @@ func TestSetSiteConfig(t *testing.T) {
 						Query:       &ruleCacheKeyQuery,
 						IncludeArgs: &[]string{"v"},
 						IgnoreCase:  &ruleCacheKeyIgnoreCase,
+						Headers:     &[]string{"Accept-Language"},
+						Cookie:      &[]string{"uid"},
 					},
 					Http3: &api.HTTP3{Enable: &http3Enable},
-					HttpHeader: &[]api.HttpHeader{
-						{Type: "response", Header: "X-Cache-By", Value: "rule", Action: "add"},
+
+					// 源站配置
+					OriginConfig: &[]api.OriginItem{
+						{
+							Addr:             "1.2.3.4",
+							Type:             "IP",
+							UpstreamProtocol: "*",
+							HttpPort:         &originHttpPort,
+							HttpsPort:        &originHttpsPort,
+							Host:             &originHost,
+						},
 					},
 				},
 			},
+		},
+
+		// 回源请求头配置
+		OriginRequest: &api.OriginRequest{
+			AddHeaders: &api.HeaderMap{
+				"test":  "${uri}",
+				"test2": "11",
+			},
+			RemoveHeaders: &api.HeaderMap{
+				"Content-Type": "",
+			},
+		},
+
+		// 节点响应头配置
+		ClientResponse: &api.ClientResponse{
+			AddHeaders: &api.HeaderMap{
+				"test":  "${uri}",
+				"test2": "11",
+			},
+			RemoveHeaders: &api.HeaderMap{
+				"Content-Type": "",
+			},
+		},
+
+		// 浏览器缓存TTL配置
+		ClientCacheTtl: &api.ClientCacheTtl{
+			Mode: &clientCacheTtlMode,
+			Ttl:  &clientCacheTtl,
+		},
+
+		// webSocket配置
+		WebSocket: &api.WebSocket{
+			Enabled: &webSocketEnabled,
+			Timeout: &webSocketTimeout,
+		},
+
+		// SSL/TLS安全配置
+		SslProtocols:  &[]string{"TLSv1.2", "TLSv1.3"},
+		SslMode:       &sslModePtr,
+		SslCipherList: &sslCipherListPtr,
+
+		// OCSP配置
+		Ocsp: &ocsp,
+
+		// 用户ip获取配置
+		RealIp: &api.RealIp{
+			Enabled: &realIpEnabled,
+			Name:    &realIpName,
 		},
 	})
 

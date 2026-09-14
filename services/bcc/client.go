@@ -1421,6 +1421,54 @@ func (c *Client) DeleteSnapshot(snapshotId string) error {
 	return api.DeleteSnapshot(c, snapshotId)
 }
 
+// CreateInstanceSnapshot - create an instance snapshot (consistent snapshot group)
+//
+// PARAMS:
+//   - args: the arguments to create instance snapshot
+//
+// RETURNS:
+//   - *api.CreateInstanceSnapshotResult: the result of create instance snapshot
+//   - error: nil if success otherwise the specific error
+func (c *Client) CreateInstanceSnapshot(args *api.CreateInstanceSnapshotArgs) (
+	*api.CreateInstanceSnapshotResult, error) {
+	return api.CreateInstanceSnapshot(c, args)
+}
+
+// DeleteInstanceSnapshot - delete the specified instance snapshots
+//
+// PARAMS:
+//   - args: the arguments to delete instance snapshots
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) DeleteInstanceSnapshot(args *api.DeleteInstanceSnapshotArgs) error {
+	return api.DeleteInstanceSnapshot(c, args)
+}
+
+// RenameInstanceSnapshot - rename the specified instance snapshots
+//
+// PARAMS:
+//   - args: the arguments to rename instance snapshots
+//
+// RETURNS:
+//   - error: nil if success otherwise the specific error
+func (c *Client) RenameInstanceSnapshot(args *api.RenameInstanceSnapshotArgs) error {
+	return api.RenameInstanceSnapshot(c, args)
+}
+
+// ListInstanceSnapshot - list instance snapshots with the marker paging
+//
+// PARAMS:
+//   - args: the arguments to list instance snapshots
+//
+// RETURNS:
+//   - *api.ListInstanceSnapshotResult: the result of the instance snapshot list
+//   - error: nil if success otherwise the specific error
+func (c *Client) ListInstanceSnapshot(args *api.ListInstanceSnapshotArgs) (
+	*api.ListInstanceSnapshotResult, error) {
+	return api.ListInstanceSnapshot(c, args)
+}
+
 // CreateAutoSnapshotPolicy - create an auto snapshot policy
 //
 // PARAMS:

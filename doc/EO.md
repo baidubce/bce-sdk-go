@@ -393,10 +393,12 @@ fmt.Printf("err:%+v\n", err)
 ```go
 cli := GetDefaultClient()
 query := false
+cacheKeyIgnoreCase := false
 resp, err := cli.SetSiteConfig("your_site.com", &api.SiteConfig{
 	CacheKey: &api.CacheKey{
 		Query:       &query,
 		IncludeArgs: &[]string{"test1"},
+		IgnoreCase:  &cacheKeyIgnoreCase,
 	},
 })
 result, _ := json.Marshal(resp)
@@ -408,7 +410,8 @@ fmt.Printf("err:%+v\n", err)
 
 | 字段        | 类型      | 是否必选 | 说明                                    |
 | ----------- | --------- | -------- |---------------------------------------|
-| Query       | *Bool     | 是       | `true` 保留全部参数参与缓存；`false` 忽略全部参数参与缓存。 |
+| Query       | *Bool     | 否       | `true` 保留全部参数参与缓存；`false` 忽略全部参数参与缓存。 |
+| IgnoreCase  | *Bool     | 否       | `true` 开启忽略大小写；`false` 关闭忽略大小写。       |
 | IncludeArgs | *[]String | 否       | 保留指定参数参与缓存（仅 `Query=false` 时有效）。      |
 | ExcludeArgs | *[]String | 否       | 忽略指定参数参与缓存（仅 `Query=false` 时有效）。      |
 
@@ -579,34 +582,6 @@ fmt.Printf("err:%+v\n", err)
 | ---- | ------- |------|---------------------------|
 | Isa  | *String | 是    | `ON` 开启智能加速；`OFF` 关闭智能加速。 |
 
-## 设置自定义 HTTP 头配置
-
-> 注意：本接口为全量更新，每次设置需带上希望保留的全部规则，否则原有配置会被覆盖。
-
-```go
-cli := GetDefaultClient()
-resp, err := cli.SetSiteConfig("your_site.com", &api.SiteConfig{
-	HttpHeader: &[]api.HttpHeader{
-		{Type: "response", Header: "Cache-Control", Value: "test", Action: "add"},
-		{Type: "origin", Header: "Expires", Value: "test", Action: "add"},
-	},
-})
-result, _ := json.Marshal(resp)
-fmt.Printf("result: %s\n", result)
-fmt.Printf("err:%+v\n", err)
-```
-
-`api.HttpHeader` 字段说明：
-
-| 字段   | 类型   | 是否必选 | 说明                                                                                       |
-| ------ | ------ | -------- | ------------------------------------------------------------------------------------------ |
-| Type   | String | 是       | `origin` 表示回源生效；`response` 表示给用户响应时生效。                                   |
-| Header | String | 是       | header 为 http 头字段，一般为 HTTP 的标准 Header，其长度限制为 128。也可以是用户自定义的 Header。                                                     |
-| Value  | String | 是       | 指定 header 的值，其长度限制为 1000。可以是常量，也可以是变量；删除 HTTP 头时可以传空字符串 `""`。<br>**变量约束**：以 `$` 开始的子串必须符合 `${x}` 模式，合法变量为：<br>• `${uri}` 客户端请求的 URL 路径部分（不含查询参数）<br>• `${host}` 客户端请求 host 头部值<br>• `${scheme}` 客户端请求协议（`http` 或 `https`）<br>• `${request_uri}` 客户端请求路径和参数（含查询参数）<br>• `${jvip}` 节点 IP<br>• `${remote_addr}` 客户端 IP（存在代理时不准确）<br>• `${request_id}` 请求的唯一标识符<br>**典型非法值**：<br>• 变量不符合限制，如 `X-REQ-${url}`<br>• 含 `$` 但不符合 `${x}` 模式，如 `X-REQ-$uri`<br>注意：value 不支持 `$` 纯字符透传，如 `X-$` 非法。 |
-| Action | String | 是       | 设置 HTTP 头合法值为 `add`，删除 HTTP 头合法值为 `remove`。                                                                |
-
-注：最多设置 20 条 HTTP 回源请求头规则，最多设置 20 条 HTTP 节点响应头规则；不支持删除以 `ohc`、`baidu` 开头的回源请求头。
-
 ## 设置状态码缓存配置
 
 ```go
@@ -676,36 +651,272 @@ fmt.Printf("err:%+v\n", err)
 
 ```go
 cli := GetDefaultClient()
+
+// 忽略大小写
 ignoreCase := true
-cacheKeyQuery := true
-cacheKeyIgnoreCase := false
+
+// 各配置项取值
+cacheKeyQuery := false
+cacheKeyIgnoreCase := true
+offlineMode := "OFF"
+refreshRevalidateEnabled := true
+httpToHttpsEnabled := "ON"
+httpToHttpsCode := "302"
+hstsMaxAge := -1
+hstsIncludeSubDomains := false
+hstsPreload := false
+isa := "ON"
+http2Disable := "OFF"
+http3Enable := true
+webSocketEnabled := true
+webSocketTimeout := 10
+http2Origin := "ON"
+clientMaxBodySize := "500m"
+compress := "ON"
+originLoadTimeout := 30
+originConnectTimeout := 5
+enableRedirectFollow := "ON"
+maxRedirectFollowCount := 2
+originRange := "force_all"
+originPartSize := "512k"
+realIpEnabled := true
+realIpName := "True-Client-Ip"
+errorPageCode400 := 400
+errorPageUrl400 := "http://test.eo.com/400.html"
+errorPageCode403 := 403
+errorPageUrl403 := "http://test.eo.com/403.html"
+trafficLimitEnable := true
+trafficLimitRate := 1
+trafficLimitStartHour := 10
+trafficLimitEndHour := 19
+trafficLimitRateUnit := "k"
+antiType := "typeA"
+antiSecretKey := "your_secret_key"
+antiNewsecretKey := "your_new_secret_key"
+antiTimeout := 1800
+antiTimestampFormat := "dec"
+antiAuthArg := "auth_key"
+originArgIgnore := true
+urlRuleScheme := "http"
+urlRuleHost := "test.eo.com"
+urlRuleDstPath := "/test/1.txt"
+urlRuleQuery := "OFF"
+urlRuleStatus := 302
+sslMode := "custom"
+sslCipherList := "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256"
+sslModePtr := &sslMode
+sslCipherListPtr := &sslCipherList
+ocsp := "ON"
+clientCacheTtlMode := "custom"
+clientCacheTtlValue := 150
+originHttpPort := 80
+originHttpsPort := 443
+originHost := "test.eo.com"
+
 resp, err := cli.SetSiteConfig("your_site.com", &api.SiteConfig{
 	PageRules: &[]api.PageRule{
 		{
 			Name:   "rule",
 			Status: "ON",
 			Rules: [][]api.Rule{
+				// 同一内层切片内的条件为「与」关系
 				{
-					{
-						MatchFrom:  "path",
-						Operator:   "inValues",
-						Values:     []string{"/test", "/test2"},
-						IgnoreCase: &ignoreCase,
-					},
+					{MatchFrom: "path", Operator: "inValues", Values: []string{"/test"}, IgnoreCase: &ignoreCase},
+					{MatchFrom: "directory", Operator: "inValues", Values: []string{"/test/"}},
+					{MatchFrom: "arg", Operator: "inValues", MatchKey: "test", Values: []string{"abc"}},
+					{MatchFrom: "suffix", Operator: "inValues", Values: []string{"jpg"}},
+					{MatchFrom: "header", Operator: "inValues", MatchKey: "user-agent", Values: []string{"test"}},
+					{MatchFrom: "fullUrl", Operator: "inValues", Values: []string{"/test/test.txt"}},
+					{MatchFrom: "basename", Operator: "inValues", Values: []string{"test.mp4"}},
+					// 中国内地用 Pro，其他国家用 Cty
+					{MatchFrom: "remoteGeos", Operator: "inValues", Values: []api.RemoteGeo{
+						{Pro: "beijing"},
+						{Cty: "bt"},
+					}},
+					// 支持 IP 地址和 IP 段
+					{MatchFrom: "remoteAddrs", Operator: "inValues", Values: []string{"1.2.3.4", "172.16.0.0/12"}},
+					// 运营商用单个字符串，多个以 | 分隔
+					{MatchFrom: "remoteIsp", Operator: "inValues", Values: "cm|un|ct"},
+					{MatchFrom: "method", Operator: "inValues", Values: []string{"GET", "POST"}},
+					{MatchFrom: "cookie", Operator: "inValues", MatchKey: "test", Values: []string{"abc"}},
+					{MatchFrom: "host", Operator: "inValues", Values: []string{"1.test.com"}},
+				},
+				// 不同内层切片之间为「或」关系
+				{
+					// 正则匹配，Values 传单个字符串
+					{MatchFrom: "path", Operator: "regex", Values: "^/example/test[123]/$"},
+					// 存在性判断，不需要 Values
+					{MatchFrom: "arg", Operator: "exists", MatchKey: "test"},
 				},
 			},
 			Config: &api.RuleConfig{
+				// 节点缓存
 				CacheTtl: &[]api.CacheTtl{
-					{Value: "/", Weight: 100, OverrideOrigin: true, Ttl: 3600, Type: "path"},
+					{Value: "/", Weight: 100, OverrideOrigin: false, Ttl: 0, Type: "path"},
 				},
+
+				// 自定义 cacheKey
 				CacheKey: &api.RuleCacheKey{
 					Query:       &cacheKeyQuery,
-					IncludeArgs: &[]string{"test"},
 					IgnoreCase:  &cacheKeyIgnoreCase,
+					IncludeArgs: &[]string{"a", "b"},
+					Headers:     &[]string{"Accept-Language"},
+					Cookie:      &[]string{"uid"},
 				},
-				HttpHeader: &[]api.HttpHeader{
-					{Type: "response", Header: "X-Cache-By", Value: "rule", Action: "add"},
+
+				// 离线模式
+				OfflineMode: &offlineMode,
+
+				// 忽略客户端刷新
+				RefreshRevalidate: &api.RefreshRevalidate{Enabled: &refreshRevalidateEnabled},
+
+				// 强制 HTTPS
+				HttpToHttpsEnabled: &httpToHttpsEnabled,
+				HttpToHttpsCode:    &httpToHttpsCode,
+
+				// HSTS
+				Hsts: &api.HSTS{
+					MaxAge:            &hstsMaxAge,
+					IncludeSubDomains: &hstsIncludeSubDomains,
+					Preload:           &hstsPreload,
 				},
+
+				// 智能加速
+				Isa: &isa,
+
+				// HTTP2 / HTTP3 / WebSocket
+				Http2Disable: &http2Disable,
+				Http3:        &api.HTTP3{Enable: &http3Enable},
+				WebSocket: &api.WebSocket{
+					Enabled: &webSocketEnabled,
+					Timeout: &webSocketTimeout,
+				},
+
+				// HTTP2 回源、最大上传大小
+				Http2Origin:       &http2Origin,
+				ClientMaxBodySize: &clientMaxBodySize,
+
+				// 页面压缩
+				Compress:            &compress,
+				CompressMethodArray: &[]string{"gzip", "br"},
+
+				// 回源超时时间
+				OriginTimeout: &api.OriginTimeout{
+					LoadTimeout:    &originLoadTimeout,
+					ConnectTimeout: &originConnectTimeout,
+				},
+
+				// 回源 301/302 跟随
+				OriginRedirectOptions: &api.OriginRedirectOptions{
+					EnableRedirectFollow:   &enableRedirectFollow,
+					MaxRedirectFollowCount: &maxRedirectFollowCount,
+				},
+
+				// 回源 range
+				OriginOptions: &api.OriginOptions{
+					Range:    &originRange,
+					PartSize: &originPartSize,
+				},
+
+				// 用户 IP 获取
+				RealIp: &api.RealIp{
+					Enabled: &realIpEnabled,
+					Name:    &realIpName,
+				},
+
+				// 自定义错误页面
+				ErrorPage: &[]api.ErrorPage{
+					{Code: &errorPageCode400, Url: &errorPageUrl400},
+					{Code: &errorPageCode403, Url: &errorPageUrl403},
+				},
+
+				// 单链接限速
+				TrafficLimit: &api.TrafficLimit{
+					Enable:         &trafficLimitEnable,
+					LimitRate:      &trafficLimitRate,
+					LimitStartHour: &trafficLimitStartHour,
+					LimitEndHour:   &trafficLimitEndHour,
+					LimitRateUnit:  &trafficLimitRateUnit,
+				},
+
+				// URL 鉴权
+				AntiHotLink: &api.AntiHotLink{
+					AntiType:        &antiType,
+					SecretKey:       &antiSecretKey,
+					NewsecretKey:    &antiNewsecretKey,
+					Timeout:         &antiTimeout,
+					TimestampFormat: &antiTimestampFormat,
+					AuthArg:         &antiAuthArg,
+				},
+
+				// 回源请求参数
+				OriginArg: &api.OriginArg{
+					Ignore: &originArgIgnore,
+					Args:   &[]string{"test"},
+				},
+
+				// 访问 URL 重定向
+				UrlRules: &[]api.UrlRules{
+					{
+						Scheme:  &urlRuleScheme,
+						Host:    &urlRuleHost,
+						DstPath: &urlRuleDstPath,
+						Query:   &urlRuleQuery,
+						Status:  &urlRuleStatus,
+					},
+				},
+
+				// SSL/TLS 安全配置
+				SslProtocols:  &[]string{"TLSv1.0", "TLSv1.1", "TLSv1.2", "TLSv1.3"},
+				SslMode:       &sslModePtr,
+				SslCipherList: &sslCipherListPtr,
+
+				// OCSP Stapling
+				Ocsp: &ocsp,
+
+				// 状态码缓存
+				CacheCodeTtl: &[]api.CacheCodeTtl{
+					{Value: "404", Weight: 100, OverrideOrigin: true, Ttl: 10, Type: "code"},
+					{Value: "400", Weight: 100, OverrideOrigin: true, Ttl: 10, Type: "code"},
+				},
+
+				// 浏览器缓存 TTL
+				ClientCacheTtl: &api.ClientCacheTtl{
+					Mode: &clientCacheTtlMode,
+					Ttl:  &clientCacheTtlValue,
+				},
+
+				// HTTP 回源请求头
+				OriginRequest: &api.OriginRequest{
+					AddHeaders:    &api.HeaderMap{"test": "${uri}", "test2": "11"},
+					RemoveHeaders: &api.HeaderMap{"Content-Type": ""},
+				},
+
+				// HTTP 节点响应头
+				ClientResponse: &api.ClientResponse{
+					AddHeaders:    &api.HeaderMap{"test": "${uri}", "test2": "11"},
+					RemoveHeaders: &api.HeaderMap{"Content-Type": ""},
+				},
+
+				// 源站修改（与 OriginPool 二选一）
+				OriginConfig: &[]api.OriginItem{
+					{
+						Addr:             "1.1.1.1",
+						Type:             "IP",
+						UpstreamProtocol: "*",
+						HttpPort:         &originHttpPort,
+						HttpsPort:        &originHttpsPort,
+						Host:             &originHost,
+					},
+				},
+
+				// 源站池（与 OriginConfig 二选一，二者不可同时设置）
+				//OriginPool: &api.OriginPool{
+				//	OriginPoolId:     "your_origin_pool_id",
+				//	UpstreamProtocol: "*",
+				//	HttpPort:         &originHttpPort,
+				//	HttpsPort:        &originHttpsPort,
+				//},
 			},
 		},
 	},
@@ -725,15 +936,24 @@ fmt.Printf("err:%+v\n", err)
 | Rules  | [][]api.Rule     | 是       | 请求的匹配规则。     |
 | Config | *api.RuleConfig  | 是       | 命中后生效的配置项集合。 |
 
+注：`SiteConfig.PageRules` 为指针 + `omitempty`，未设置时不下发；如需清空所有规则，可显式传 `&[]api.PageRule{}`。
+
 `api.Rule` 字段说明：
 
 | 字段       | 类型                | 是否必选 | 说明                                                                                        |
 | ---------- |-------------------| -------- |-------------------------------------------------------------------------------------------|
-| MatchFrom  | String            | 是       | 匹配类型。                                                                                     |
-| Operator   | String            | 是       | 操作符；。 |
-| MatchKey   | String            | 否       | 匹配类型的key。                                                                                 |
-| Values     | String / []String | 是       | 匹配值列表。                                                                                    |
+| MatchFrom  | String            | 是       | 匹配类型。 |
+| Operator   | String            | 是       | 操作符。                                     |
+| MatchKey   | String            | 否       | 匹配类型的 key，`arg`、`header`、`cookie` 等需要指定 key 的匹配类型使用。                                |
+| Values     | interface{}       | 否       | 匹配值。 |
 | IgnoreCase | *Bool             | 否       | 是否忽略大小写。                                                                                  |
+
+`api.RemoteGeo` 字段说明（`matchFrom=remoteGeos` 时作为 `Values` 的元素）：
+
+| 字段 | 类型   | 是否必选 | 说明                       |
+| ---- | ------ | -------- |--------------------------|
+| Pro  | String | 否       | 中国内地省份，如 `beijing`。      |
+| Cty  | String | 否       | 其他国家，如 `bt`。             |
 
 `api.RuleConfig` 主要字段说明：
 
@@ -754,7 +974,6 @@ fmt.Printf("err:%+v\n", err)
 | ClientMaxBodySize     | *String                 | 最大上传大小。         |
 | Compress              | *String                 | 页面压缩开关。         |
 | CompressMethodArray   | *[]String               | 页面压缩方式。         |
-| HttpHeader            | *[]api.HttpHeader       | 自定义 HTTP 头。     |
 | OriginTimeout         | *api.OriginTimeout      | 回源超时时间。         |
 | OriginRedirectOptions | *api.OriginRedirectOptions | 回源301/302跟随。    |
 | OriginOptions         | *api.OriginOptions      | 回源range。        |
@@ -764,8 +983,320 @@ fmt.Printf("err:%+v\n", err)
 | AntiHotLink           | *api.AntiHotLink        | URL鉴权。          |
 | OriginArg             | *api.OriginArg          | 回源请求参数。         |
 | UrlRules              | *[]api.UrlRules         | 访问URL重定向。       |
+| SslProtocols          | *[]String               | SSL/TLS 版本。      |
+| SslMode               | **String                | 加密算法套件模式。       |
+| SslCipherList         | **String                | 加密算法套件列表。       |
+| Ocsp                  | *String                 | OCSP。            |
+| CacheCodeTtl          | *[]api.CacheCodeTtl     | 状态码缓存。          |
+| ClientCacheTtl        | *api.ClientCacheTtl     | 浏览器缓存 TTL。      |
+| OriginConfig          | *[]api.OriginItem       | 源站配置。            |
+| OriginPool            | *api.OriginPool         | 源站池。             |
+| OriginRequest         | *api.OriginRequest      | HTTP 回源请求头。      |
+| ClientResponse        | *api.ClientResponse     | HTTP 节点响应头。      |
 
-注：`SiteConfig.PageRules` 为指针 + `omitempty`，未设置时不下发；如需清空所有规则，可显式传 `&[]api.PageRule{}`。
+`api.RuleCacheKey` 字段说明（`IncludeArgs` 与 `ExcludeArgs` 不可同时设置；二者仅在 `Query=false` 时生效）：
+
+| 字段        | 类型      | 是否必选 | 说明                                                            |
+| ----------- | --------- | -------- |---------------------------------------------------------------|
+| Query       | *Bool     | 否       | `true` 保留全部参数参与缓存；`false` 忽略全部参数参与缓存。                        |
+| IgnoreCase  | *Bool     | 否       | `true` 开启忽略大小写；`false` 关闭忽略大小写。                              |
+| IncludeArgs | *[]String | 否       | 保留指定参数参与缓存（仅 `Query=false` 时有效）。                             |
+| ExcludeArgs | *[]String | 否       | 忽略指定参数参与缓存（仅 `Query=false` 时有效）。                             |
+| Headers     | *[]String | 否       | 参与缓存键的 HTTP 请求头名称，最多 10 个，单个名称最长 255 字符。                     |
+| Cookie      | *[]String | 否       | 参与缓存键的 cookie 参数名，最多 10 个，单个参数最长 255 字符。                     |
+
+`api.OriginItem` 字段说明：
+
+| 字段             | 类型                     | 是否必选 | 说明                                                                     |
+| ---------------- | ------------------------ | -------- |------------------------------------------------------------------------|
+| Addr             | String                   | 是       | 源站地址。支持 IPv4/IPv6 地址或域名，也支持 BOS 的 bucket 地址；不能重复。               |
+| Type             | String                   | 是       | 源站类型。合法值：`IP`、`DOMAIN`、`BUCKET`。                                   |
+| UpstreamProtocol | String                   | 是       | 回源协议。合法值：`http`、`https`、`*`（协议跟随）。                                |
+| HttpPort         | *Int                     | 否       | HTTP 回源端口号。                                                          |
+| HttpsPort        | *Int                     | 否       | HTTPS 回源端口号。                                                         |
+| Host             | *String                  | 否       | 回源时使用的 host。                                                        |
+| ThirdBucketAuth  | *api.ThirdBucketAuth     | 否       | 对象存储源站鉴权配置。                                                |
+
+`api.ThirdBucketAuth` 字段说明（`AuthType` 为 `bos` 时，`Ak`/`Sk`/`Bucket`/`Region`/`Service` 均无需传值）：
+
+| 字段     | 类型    | 是否必选 | 说明                                                                                                          |
+| -------- | ------- | -------- |-------------------------------------------------------------------------------------------------------------|
+| AuthType | String  | 是       | 对象存储来源类型。合法值：`aws_v2`、`aws_v4`（AWS S3）、`bos`。取 `aws_v2`/`aws_v4` 时，`OriginItem.Type` 必须为 `DOMAIN`；取 `bos` 时，`OriginItem.Type` 必须为 `BUCKET`。 |
+| Enabled  | *Bool   | 否       | 是否启用私有 bucket 鉴权，合法值 `true`、`false`，默认 `false`。                                              |
+| Ak       | *String | 是       | 对象存储的 Access Key。关闭私有 bucket 鉴权时传空即可。                                                       |
+| Sk       | *String | 是       | 对象存储的 Secret Access Key。关闭私有 bucket 鉴权时传空即可。                                                |
+| Bucket   | *String | 否       | 对象存储的 bucket。`aws_v2` 必须设置；`aws_v4` 无需设置。                                                     |
+| Region   | *String | 否       | 对象存储的区域。`aws_v4` 选填（默认 `us-east-1`）；`aws_v2` 无需设置。                                         |
+| Service  | *String | 否       | 对象存储的服务。`aws_v4` 选填（默认 `s3`）；`aws_v2` 无需设置。                                                |
+
+注：「无需设置」表示该字段对当前来源类型无效，即使传值也不会生效。`Ak`/`Sk` 属于敏感凭证，建议从环境变量或密钥管理服务读取，不要硬编码在代码中。
+
+`api.OriginPool` 字段说明：
+
+| 字段             | 类型      | 是否必选 | 说明             |
+| ---------------- | --------- | -------- |----------------|
+| OriginPoolId     | String    | 是       | 源站池 ID。        |
+| UpstreamProtocol | String    | 是       | 回源协议。          |
+| HttpPort         | *Int      | 否       | HTTP 回源端口号。    |
+| HttpsPort        | *Int      | 否       | HTTPS 回源端口号。   |
+
+注：`OriginConfig` 与 `OriginPool` 不可同时设置，同一条规则中只能选择其中一种回源方式。
+
+## 设置回源请求头配置
+
+> 注意：本接口为全量更新，每次设置需带上希望保留的全部回源请求头，否则原有配置会被覆盖。
+
+```go
+cli := GetDefaultClient()
+resp, err := cli.SetSiteConfig("your_site.com", &api.SiteConfig{
+	OriginRequest: &api.OriginRequest{
+		AddHeaders: &api.HeaderMap{
+			"test":  "${uri}",
+			"test2": "11",
+		},
+		RemoveHeaders: &api.HeaderMap{
+			"Content-Type": "",
+		},
+	},
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+清空回源请求头配置：显式传入非 nil 的空 `HeaderMap`（序列化为 `[]`）。
+
+```go
+resp, err := cli.SetSiteConfig("your_site.com", &api.SiteConfig{
+	OriginRequest: &api.OriginRequest{
+		AddHeaders:    &api.HeaderMap{},
+		RemoveHeaders: &api.HeaderMap{},
+	},
+})
+```
+
+`api.OriginRequest` 字段说明：
+
+| 字段          | 类型                 | 是否必选 | 说明                                                         |
+| ------------- | -------------------- | -------- | ------------------------------------------------------------ |
+| AddHeaders    | *api.HeaderMap       | 否       | 添加回源请求头。key 为 HTTP 头字段，一般为 HTTP 标准 Header，长度限制 128，也可以是自定义 Header；value 为该 header 的值，长度限制 1000，可以是常量也可以是变量。<br>**变量约束**：以 `$` 开始的子串必须符合 `${x}` 模式，合法变量为：<br>• `${uri}` 客户端请求的 URL 路径部分（不含查询参数）<br>• `${host}` 客户端请求 host 头部值<br>• `${scheme}` 客户端请求协议（`http` 或 `https`）<br>• `${request_uri}` 客户端请求路径和参数（含查询参数）<br>• `${jvip}` 节点 IP<br>• `${remote_addr}` 客户端 IP（存在代理时不准确）<br>• `${request_id}` 请求的唯一标识符<br>**典型非法值**：<br>• 变量不符合限制，如 `X-REQ-${url}`<br>• 含 `$` 但不符合 `${x}` 模式，如 `X-REQ-$uri`<br>注意：value 不支持 `$` 纯字符透传，如 `X-$` 非法。 |
+| RemoveHeaders | *api.HeaderMap       | 否       | 删除回源请求头。key、value 的合法取值同 `AddHeaders`。       |
+
+`api.HeaderMap` 本质是 `map[string]string`。服务端在「未配置任何头」时返回的是空数组 `[]` 而非空对象 `{}`，因此 SDK 为该类型定制了 JSON 编解码：解码时同时兼容 `[]` 和 `{}`，编码时空 map 会序列化为 `[]`。
+
+注：最多设置 20 条 HTTP 回源请求头规则；不支持删除以 `ohc`、`baidu` 开头的回源请求头。
+
+## 设置节点响应头配置
+
+> 注意：本接口为全量更新，每次设置需带上希望保留的全部节点响应头，否则原有配置会被覆盖。
+
+```go
+cli := GetDefaultClient()
+resp, err := cli.SetSiteConfig("your_site.com", &api.SiteConfig{
+	ClientResponse: &api.ClientResponse{
+		AddHeaders: &api.HeaderMap{
+			"test":  "${uri}",
+			"test2": "11",
+		},
+		RemoveHeaders: &api.HeaderMap{
+			"Content-Type": "",
+		},
+	},
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+清空节点响应头配置：显式传入非 nil 的空 `HeaderMap`（序列化为 `[]`）。
+
+```go
+resp, err := cli.SetSiteConfig("your_site.com", &api.SiteConfig{
+	ClientResponse: &api.ClientResponse{
+		AddHeaders:    &api.HeaderMap{},
+		RemoveHeaders: &api.HeaderMap{},
+	},
+})
+```
+
+`api.ClientResponse` 字段说明：
+
+| 字段          | 类型                 | 是否必选 | 说明                                                         |
+| ------------- | -------------------- | -------- | ------------------------------------------------------------ |
+| AddHeaders    | *api.HeaderMap       | 否       | 添加节点响应头。key 为 HTTP 头字段，一般为 HTTP 标准 Header，长度限制 128，也可以是自定义 Header；value 为该 header 的值，长度限制 1000，可以是常量也可以是变量。<br>**变量约束**：以 `$` 开始的子串必须符合 `${x}` 模式，合法变量为：<br>• `${uri}` 客户端请求的 URL 路径部分（不含查询参数）<br>• `${host}` 客户端请求 host 头部值<br>• `${scheme}` 客户端请求协议（`http` 或 `https`）<br>• `${request_uri}` 客户端请求路径和参数（含查询参数）<br>• `${jvip}` 节点 IP<br>• `${remote_addr}` 客户端 IP（存在代理时不准确）<br>• `${request_id}` 请求的唯一标识符<br>**典型非法值**：<br>• 变量不符合限制，如 `X-REQ-${url}`<br>• 含 `$` 但不符合 `${x}` 模式，如 `X-REQ-$uri`<br>注意：value 不支持 `$` 纯字符透传，如 `X-$` 非法。 |
+| RemoveHeaders | *api.HeaderMap       | 否       | 删除节点响应头。key、value 的合法取值同 `AddHeaders`。       |
+
+注：最多设置 20 条 HTTP 节点响应头规则。
+
+## 设置浏览器缓存 TTL 配置
+
+```go
+cli := GetDefaultClient()
+clientCacheTtlMode := "custom"
+clientCacheTtl := 150
+
+resp, err := cli.SetSiteConfig("your_site.com", &api.SiteConfig{
+	ClientCacheTtl: &api.ClientCacheTtl{
+		Mode: &clientCacheTtlMode,
+		Ttl:  &clientCacheTtl,
+	},
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+`api.ClientCacheTtl` 字段说明：
+
+| 字段 | 类型    | 是否必选 | 说明                                                                                          |
+| ---- | ------- | -------- | --------------------------------------------------------------------------------------------- |
+| Mode | *String | 是       | 工作模式。合法值：`follow`（遵循源站）、`no_cache`（不缓存）、`custom`（自定义缓存时间）。     |
+| Ttl  | *Int    | 否       | 浏览器端自定义缓存时长，单位秒；仅当 `Mode` 为 `custom` 时有效。最小值 1，最大值 315360000（10 年）。 |
+
+## 设置 webSocket 配置
+
+```go
+cli := GetDefaultClient()
+webSocketEnabled := true
+webSocketTimeout := 10
+
+resp, err := cli.SetSiteConfig("your_site.com", &api.SiteConfig{
+	WebSocket: &api.WebSocket{
+		Enabled: &webSocketEnabled,
+		Timeout: &webSocketTimeout,
+	},
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+`api.WebSocket` 字段说明：
+
+| 字段    | 类型  | 是否必选 | 说明                                                       |
+| ------- | ----- | -------- | ---------------------------------------------------------- |
+| Enabled | *Bool | 是       | `true` 表示开启，`false` 表示关闭。                        |
+| Timeout | *Int  | 否       | 最大连接超时时长，取值范围 1-300 秒；开启时必传，关闭时不传。 |
+
+## 设置 SSL/TLS 安全配置
+
+```go
+cli := GetDefaultClient()
+sslMode := "strong"
+sslCipherList := "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256:" +
+	"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:" +
+	"TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+sslModePtr := &sslMode
+sslCipherListPtr := &sslCipherList
+
+resp, err := cli.SetSiteConfig("your_site.com", &api.SiteConfig{
+	SslProtocols:  &[]string{"TLSv1.2", "TLSv1.3"},
+	SslMode:       &sslModePtr,
+	SslCipherList: &sslCipherListPtr,
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+选择「全部加密算法套件」时无需传 `SslCipherList`：
+
+```go
+cli := GetDefaultClient()
+sslMode := "all"
+sslModePtr := &sslMode
+resp, err := cli.SetSiteConfig("your_site.com", &api.SiteConfig{
+	SslProtocols: &[]string{"TLSv1.0", "TLSv1.1", "TLSv1.2", "TLSv1.3"},
+	SslMode:      &sslModePtr,
+})
+```
+
+关闭 SSL/TLS 配置：三个字段都需要下发 `null`。`SslProtocols` 传指向 nil 切片的指针，`SslMode`/`SslCipherList` 传指向 nil 指针的指针。
+
+```go
+cli := GetDefaultClient()
+var nilProtocols []string
+var nilStr *string
+resp, err := cli.SetSiteConfig("your_site.com", &api.SiteConfig{
+	SslProtocols:  &nilProtocols,
+	SslMode:       &nilStr,
+	SslCipherList: &nilStr,
+})
+```
+
+SSL/TLS 相关字段说明：
+
+| 字段          | 类型       | 是否必选 | 说明                                                                                                       |
+| ------------- | ---------- | -------- | ---------------------------------------------------------------------------------------------------------- |
+| SslProtocols  | *[]String  | 是       | SSL/TLS 版本。合法值：`TLSv1.0`、`TLSv1.1`、`TLSv1.2`、`TLSv1.3`，可传一个或多个，且**必须是连续版本**。      |
+| SslMode       | **String   | 是       | 加密算法套件模式。合法值：`all`（全部套件）、`strong`（强套件，必须同时设置 TLSv1.2 与 TLSv1.3）、`custom`（自定义套件，必须同时设置 TLSv1.2 与 TLSv1.3）。 |
+| SslCipherList | **String   | 否       | 加密算法套件列表，多个套件以英文冒号 `:` 分隔。`all` 模式无需传；`strong` 模式必须传齐 TLSv1.2 的 6 项强套件；`custom` 模式可选传 TLSv1.2 支持的套件。 |
+
+注：`SslMode` 与 `SslCipherList` 是**双指针**类型。外层指针为 nil 时该字段不下发；外层非 nil 而内层为 nil 时下发 `null`（用于关闭配置）；内层非 nil 时下发其字符串值。这是因为关闭 SSL/TLS 配置要求显式下发 `null`，单层指针无法与「不设置」区分。
+
+`SslCipherList` 可选值：
+
+| TLS 协议 | 支持的加密算法套件 |
+| -------- | ------------------ |
+| TLSv1.0  | `TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA`、`TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA`、`TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA`、`TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA`、`TLS_RSA_WITH_AES_128_CBC_SHA`、`TLS_RSA_WITH_AES_256_CBC_SHA` |
+| TLSv1.2  | **强加密算法套件（`strong` 模式下 6 项缺一不可）**：`TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256`、`TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256`、`TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256`、`TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`、`TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384`、`TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384`<br>**其他加密算法套件**：`TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256`、`TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256`、`TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384`、`TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384`、`TLS_RSA_WITH_AES_128_GCM_SHA256`、`TLS_RSA_WITH_AES_256_GCM_SHA384`、`TLS_RSA_WITH_AES_128_CBC_SHA256`、`TLS_RSA_WITH_AES_256_CBC_SHA256`<br>`custom` 模式下强套件与其他套件均可自由选择。 |
+| TLSv1.3  | `TLS_AES_256_GCM_SHA384`、`TLS_CHACHA20_POLY1305_SHA256`、`TLS_AES_128_GCM_SHA256`。`strong` 与 `custom` 模式下这 3 项默认支持，无需重复传参。 |
+
+## 设置 OCSP 配置
+
+```go
+cli := GetDefaultClient()
+ocsp := "ON"
+
+resp, err := cli.SetSiteConfig("your_site.com", &api.SiteConfig{
+	Ocsp: &ocsp,
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+`Ocsp` 字段说明：
+
+| 字段 | 类型    | 是否必选 | 说明                                    |
+| ---- | ------- | -------- | --------------------------------------- |
+| Ocsp | *String | 是       | `ON` 开启 OCSP；`OFF` 关闭 OCSP。       |
+
+## 设置用户 ip 获取配置
+
+```go
+cli := GetDefaultClient()
+realIpEnabled := true
+realIpName := "True-Client-Ip"
+
+resp, err := cli.SetSiteConfig("your_site.com", &api.SiteConfig{
+	RealIp: &api.RealIp{
+		Enabled: &realIpEnabled,
+		Name:    &realIpName,
+	},
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+关闭用户 ip 获取时不传 `Name`：
+
+```go
+realIpEnabled := false
+resp, err := cli.SetSiteConfig("your_site.com", &api.SiteConfig{
+	RealIp: &api.RealIp{
+		Enabled: &realIpEnabled,
+	},
+})
+```
+
+`api.RealIp` 字段说明：
+
+| 字段    | 类型    | 是否必选 | 说明                                                                       |
+| ------- | ------- | -------- | -------------------------------------------------------------------------- |
+| Enabled | *Bool   | 是       | `true` 表示开启，`false` 表示关闭。                                        |
+| Name    | *String | 否       | 承载用户 IP 的头部名称，合法值：`True-Client-Ip`、`X-Real-IP`；开启时必传，关闭时不传。 |
 
 ## 查询站点配置
 
@@ -815,11 +1346,17 @@ fmt.Printf("SiteConfig: %s\n", allData)
 // cfg.ClientMaxBodySize 为该站点当前的最大上传大小配置;
 // cfg.Compress 和 cfg.CompressMethodArray 为该站点当前的页面压缩配置;
 // cfg.Isa 为该站点当前的智能加速配置;
-// cfg.HttpHeader 为该站点当前的自定义 HTTP 头配置;
 // cfg.CacheCodeTtl 为该站点当前的状态码缓存配置;
 // cfg.GrpcOrigin 为该站点当前的 gRPC 回源配置;
 // cfg.Http2Origin 为该站点当前的 HTTP2 回源配置;
 // cfg.PageRules 为该站点当前的规则引擎配置;
+// cfg.OriginRequest 为该站点当前的回源请求头配置;
+// cfg.ClientResponse 为该站点当前的节点响应头配置;
+// cfg.ClientCacheTtl 为该站点当前的浏览器缓存 TTL 配置;
+// cfg.WebSocket 为该站点当前的 webSocket 配置;
+// cfg.SslProtocols、cfg.SslMode 和 cfg.SslCipherList 为该站点当前的 SSL/TLS 安全配置;
+// cfg.Ocsp 为该站点当前的 OCSP 配置;
+// cfg.RealIp 为该站点当前的用户 ip 获取配置;
 ```
 
 

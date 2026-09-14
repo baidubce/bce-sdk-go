@@ -3302,3 +3302,103 @@ type BatchRebootInstanceReq struct {
 	InstanceIds []string `json:"instanceIds"`
 	ForceStop   bool     `json:"forceStop"`
 }
+
+// InstanceSnapshotStatus is the status of an instance snapshot group.
+// NOTE: it is a different enum from SnapshotStatus which is used by the sub
+// snapshots inside the group. This one keeps the raw lowercase values.
+type InstanceSnapshotStatus string
+
+const (
+	InstanceSnapshotStatusCreating      InstanceSnapshotStatus = "creating"
+	InstanceSnapshotStatusActive        InstanceSnapshotStatus = "active"
+	InstanceSnapshotStatusRollback      InstanceSnapshotStatus = "rollback"
+	InstanceSnapshotStatusErrorRollback InstanceSnapshotStatus = "errorRollback"
+	InstanceSnapshotStatusDeleting      InstanceSnapshotStatus = "deleting"
+	InstanceSnapshotStatusErrorDeleting InstanceSnapshotStatus = "error_deleting"
+	InstanceSnapshotStatusErrorDelete   InstanceSnapshotStatus = "errorDelete"
+	InstanceSnapshotStatusDeleted       InstanceSnapshotStatus = "deleted"
+	InstanceSnapshotStatusError         InstanceSnapshotStatus = "error"
+	InstanceSnapshotStatusUnknown       InstanceSnapshotStatus = "unknown"
+)
+
+// SnapshotCreationMethod is the uppercase form of the snapshot createMethod.
+type SnapshotCreationMethod string
+
+const (
+	SnapshotCreationMethodManual    SnapshotCreationMethod = "MANUAL"
+	SnapshotCreationMethodAuto      SnapshotCreationMethod = "AUTO"
+	SnapshotCreationMethodMigration SnapshotCreationMethod = "MIGRATION"
+	SnapshotCreationMethodUnknown   SnapshotCreationMethod = "UNKNOWN"
+)
+
+type CreateInstanceSnapshotArgs struct {
+	ClientToken     string           `json:"-"`
+	InstanceId      string           `json:"instanceId"`
+	Name            string           `json:"name"`
+	Desc            string           `json:"desc,omitempty"`
+	Volumes         []string         `json:"volumes,omitempty"`
+	RetentionInDays int              `json:"retentionInDays,omitempty"`
+	ResGroupId      string           `json:"resGroupId,omitempty"`
+	Tags            []model.TagModel `json:"tags,omitempty"`
+}
+
+type CreateInstanceSnapshotResult struct {
+	InSnapshotId string   `json:"inSnapshotId"`
+	SnapshotIds  []string `json:"snapshotIds"`
+}
+
+type DeleteInstanceSnapshotArgs struct {
+	DeleteInsnapIds []string `json:"deleteInsnapIds"`
+}
+
+type RenameInstanceSnapshotArgs struct {
+	InsnapIds []string `json:"insnapIds"`
+	Name      string   `json:"name"`
+}
+
+type ListInstanceSnapshotArgs struct {
+	Marker              string   `json:"marker,omitempty"`
+	MaxKeys             int      `json:"maxKeys,omitempty"`
+	InstanceIds         []string `json:"instanceIds,omitempty"`
+	InstanceSnapshotIds []string `json:"instanceSnapshotIds,omitempty"`
+}
+
+type ListInstanceSnapshotResult struct {
+	Marker            string                  `json:"marker"`
+	IsTruncated       bool                    `json:"isTruncated"`
+	NextMarker        string                  `json:"nextMarker"`
+	MaxKeys           int                     `json:"maxKeys"`
+	InstanceSnapshots []InstanceSnapshotModel `json:"instanceSnapshots"`
+}
+
+type InstanceSnapshotModel struct {
+	InstanceSnapshotId        string                    `json:"instanceSnapshotId"`
+	InstanceSnapshotName      string                    `json:"instanceSnapshotName"`
+	InstanceSnapshotSizeInGiB int                       `json:"instanceSnapshotSizeInGiB"`
+	CreatedTime               string                    `json:"createdTime"`
+	InstanceSnapshotStatus    InstanceSnapshotStatus    `json:"instanceSnapshotStatus"`
+	InstanceId                string                    `json:"instanceId"`
+	Snapshots                 []InstanceSnapshotSubItem `json:"snapshots"`
+}
+
+type InstanceSnapshotSubItem struct {
+	SnapshotId         string                 `json:"snapshotId"`
+	SnapshotName       string                 `json:"snapshotName"`
+	SnapshotSizeInGiB  int                    `json:"snapshotSizeInGiB"`
+	SnapshotStatus     SnapshotStatus         `json:"snapshotStatus"`
+	VolumeId           string                 `json:"volumeId"`
+	InstanceSnapshotId string                 `json:"instanceSnapshotId"`
+	CreationMethod     SnapshotCreationMethod `json:"creationMethod"`
+	Description        string                 `json:"description"`
+	CreatedTime        string                 `json:"createdTime"`
+	ExpiredTime        string                 `json:"expiredTime"`
+	Encrypted          bool                   `json:"encrypted"`
+	ImageId            string                 `json:"imageId"`
+	// IncludeDataVolumes, Progress and Tags are declared by the server side UO
+	// but never filled by the converter, so they are always null in the
+	// response of ListInstanceSnapshot. They are pointers/slice so that the
+	// null stays distinguishable from a real false/empty value.
+	IncludeDataVolumes *bool            `json:"includeDataVolumes"`
+	Progress           *string          `json:"progress"`
+	Tags               []model.TagModel `json:"tags"`
+}

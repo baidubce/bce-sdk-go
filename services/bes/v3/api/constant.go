@@ -1,0 +1,184 @@
+package api
+
+const (
+	HEADER_REGION          = "X-Region"
+	HEADER_X_BCE_ACCESSKEY = "X-Bce-Accesskey"
+
+	HEADER_PRAGMA                 = "Pragma"
+	HEADER_X_CONTENT_TYPE_OPTIONS = "X-Content-Type-Options"
+
+	CONTENT_TYPE_ZIP = "application/zip"
+
+	URI_PREFIX_V3 = "/v3"
+	URI_CLUSTERS  = URI_PREFIX_V3 + "/clusters"
+
+	URI_ORDERS              = "orders"
+	URI_TO_PREPAY           = "to-prepay"
+	URI_TO_POSTPAY          = "to-postpay"
+	URI_CANCEL              = "cancel"
+	URI_MARGIN_PRICES       = "margin-prices"
+	URI_ORDER_RENEW_CONFIRM = URI_PREFIX_V3 + "/order/renew/confirm"
+	URI_ORDER_PRICES        = URI_PREFIX_V3 + "/orders/prices"
+
+	URI_AUDIT             = "audit"
+	URI_AUDIT_EVENT_TYPES = "event-types"
+	URI_AUDIT_EVENTS      = "events"
+	URI_BCT_AUTH_SWITCH   = URI_CLUSTERS + "/bct/auth/switch"
+	URI_BCT_EVENTS_QUERY  = URI_PREFIX_V3 + "/bct/events/query"
+
+	URI_BACKUP                     = "backup"
+	URI_BACKUP_INDICES             = "indices"
+	URI_BACKUP_LIST_BY_PATTERN     = "_list_by_pattern"
+	URI_BACKUP_SNAPSHOTS           = "snapshots"
+	URI_BACKUP_SNAPSHOT_CONFIGS    = "snapshot-configs"
+	URI_BACKUP_MANUAL_SNAPSHOT_CFG = "manual-snapshot-configs"
+	URI_BACKUP_AUTO_SNAPSHOT_CFG   = "auto-snapshot-configs"
+	URI_BACKUP_RESTORES            = "restores"
+	URI_BACKUP_RESTORE_CLUSTERS    = "restore-clusters"
+	URI_BACKUP_RULE                = "rule"
+	URI_BACKUP_EXPORTS             = "exports"
+
+	URI_SYSTEM_PLUGINS = "system-plugins"
+	URI_CUSTOM_PLUGINS = "custom-plugins"
+	URI_VERSIONS       = "versions"
+	URI_FILES          = "files"
+
+	URI_DIAGNOSIS                 = "diagnosis"
+	URI_DIAGNOSIS_OVERVIEW        = "overview"
+	URI_DIAGNOSIS_OVERVIEW_WEEKLY = "weekly"
+	URI_DIAGNOSIS_OVERVIEW_LATEST = "latest"
+	URI_DIAGNOSIS_MANUAL          = "manual"
+	URI_DIAGNOSIS_MANUAL_COUNT    = "count"
+	URI_DIAGNOSIS_REPORTS         = "reports"
+	URI_DIAGNOSIS_BUSY            = "busy"
+	URI_DIAGNOSIS_AUTHORIZE       = "authorize"
+	URI_DIAGNOSIS_ITEMS           = "items"
+	URI_DIAGNOSIS_AUTO            = "auto"
+
+	URI_SCHEDULES = "schedules"
+	URI_USERS     = "users"
+	URI_ADMINS    = "admins"
+	URI_PASSWORDS = "passwords"
+)
+
+const (
+	PAYMENT_POSTPAID = "Postpaid"
+	PAYMENT_PREPAID  = "Prepaid"
+)
+
+const (
+	ENGINE_OPENSEARCH     = "OPENSEARCH"
+	ENGINE_TYPE_COMMUNITY = "COMMUNITY"
+)
+
+const (
+	NODE_SPEC_TYPE_DATA             = "data"
+	NODE_SPEC_TYPE_DATA_WARM        = "data_warm"
+	NODE_SPEC_TYPE_DATA_COLD        = "data_cold"
+	NODE_SPEC_TYPE_DEDICATED_MASTER = "dedicatedMaster"
+	NODE_SPEC_TYPE_COORDINATING     = "coordinating"
+	NODE_SPEC_TYPE_DASHBOARDS       = "dashboards"
+	NODE_SPEC_TYPE_ML               = "ml"
+)
+
+const (
+	RESIZE_MODE_DIRECT     = "DIRECT"
+	RESIZE_MODE_ROLLING    = "ROLLING"
+	RESIZE_MODE_COLD       = "COLD"
+	RESIZE_MODE_BLUE_GREEN = "BLUE_GREEN"
+)
+
+const (
+	ACCESS_TYPE_OPENSEARCH = "OPENSEARCH"
+	ACCESS_TYPE_DASHBOARDS = "DASHBOARDS"
+)
+
+const (
+	NETWORK_TYPE_PUBLIC  = "PUBLIC"
+	NETWORK_TYPE_PRIVATE = "PRIVATE"
+)
+
+const (
+	UPGRADE_TYPE_ENGINE = "ENGINE"
+	UPGRADE_TYPE_KERNEL = "KERNEL"
+)
+
+const (
+	UPGRADE_OPERATION_CHECK   = "CHECK"
+	UPGRADE_OPERATION_UPGRADE = "UPGRADE"
+)
+
+const (
+	RESTART_TYPE_CLUSTER = "CLUSTER"
+	RESTART_TYPE_NODE    = "NODE"
+)
+
+const (
+	RESTART_MODE_BLUE_GREEN = "BLUE_GREEN"
+	RESTART_MODE_ROLLING    = "ROLLING"
+	RESTART_MODE_FORCE      = "FORCE"
+)
+
+const (
+	BATCH_UNIT_COUNT   = "COUNT"
+	BATCH_UNIT_PERCENT = "PERCENT"
+)
+
+const (
+	SNAPSHOT_TYPE_AUTO   = "AUTO"
+	SNAPSHOT_TYPE_MANUAL = "MANUAL"
+)
+
+const (
+	SNAPSHOT_STATUS_IN_PROGRESS = "IN_PROGRESS"
+	SNAPSHOT_STATUS_UNKNOWN     = "UNKNOWN"
+	SNAPSHOT_STATUS_SUCCESS     = "SUCCESS"
+	SNAPSHOT_STATUS_FAILED      = "FAILED"
+	SNAPSHOT_STATUS_INVALID     = "INVALID"
+	SNAPSHOT_STATUS_CANCELLED   = "CANCELLED"
+)
+
+const (
+	RESTORE_STATUS_IN_PROGRESS = "IN_PROGRESS"
+	RESTORE_STATUS_CANCELLING  = "CANCELLING"
+	RESTORE_STATUS_SUCCESS     = "SUCCESS"
+	RESTORE_STATUS_FAILED      = "FAILED"
+)
+
+const (
+	EXPORT_STATUS_PENDING     = "PENDING"
+	EXPORT_STATUS_IN_PROGRESS = "IN_PROGRESS"
+	EXPORT_STATUS_SUCCESS     = "SUCCESS"
+	EXPORT_STATUS_FAILED      = "FAILED"
+)
+
+const (
+	EXPORT_MODE_PENDING = "PENDING"
+)
+
+const (
+	PLUGIN_VERSION_STATUS_PRE_INSTALLED = "PreInstalled"
+	PLUGIN_VERSION_STATUS_INSTALLED     = "Installed"
+	PLUGIN_VERSION_STATUS_INSTALLING    = "Installing"
+	PLUGIN_VERSION_STATUS_UNINSTALLING  = "Uninstalling"
+	PLUGIN_VERSION_STATUS_UNINSTALLED   = "Uninstalled"
+)
+
+const (
+	DIAGNOSIS_GRADE_SAFE      = "SAFE"
+	DIAGNOSIS_GRADE_LOW_RISK  = "LOW_RISK"
+	DIAGNOSIS_GRADE_HIGH_RISK = "HIGH_RISK"
+	DIAGNOSIS_GRADE_ERROR     = "ERROR"
+)
+
+const (
+	SCHEDULE_TYPE_DELETE      = "DELETE"
+	SCHEDULE_TYPE_ROLLOVER    = "ROLLOVER"
+	SCHEDULE_TYPE_FORCE_MERGE = "FORCE_MERGE"
+)
+
+const (
+	SCHEDULE_STATUS_SUCCESS = "SUCCESS"
+	SCHEDULE_STATUS_ERROR   = "ERROR"
+	SCHEDULE_STATUS_DOING   = "DOING"
+)

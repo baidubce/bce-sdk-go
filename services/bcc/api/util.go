@@ -48,6 +48,8 @@ const (
 	REQUEST_SECURITYGROUP_URI    = "/securityGroup"
 	REQUEST_SNAPSHOT_URI         = "/snapshot"
 	REQUEST_CHAIN_URI            = "/chain"
+	REQUEST_INSNAP_URI           = "/insnap"
+	REQUEST_RENAME_URI           = "/rename"
 	REQUEST_SPEC_URI             = "/instance/spec"
 	REQUEST_SUBNET_URI           = "/subnet"
 	REQUEST_VPC_URI              = "/vpc"
@@ -272,6 +274,22 @@ func getSnapshotUri() string {
 
 func getSnapshotChainUri() string {
 	return URI_PREFIXV2 + REQUEST_SNAPSHOT_URI + REQUEST_CHAIN_URI
+}
+
+func getCreateInstanceSnapshotUri() string {
+	return URI_PREFIXV2 + REQUEST_SNAPSHOT_URI + REQUEST_INSNAP_URI + REQUEST_CREATE_URI
+}
+
+func getDeleteInstanceSnapshotUri() string {
+	return URI_PREFIXV2 + REQUEST_SNAPSHOT_URI + REQUEST_INSNAP_URI + REQUEST_DELETE_URI
+}
+
+func getRenameInstanceSnapshotUri() string {
+	return URI_PREFIXV2 + REQUEST_SNAPSHOT_URI + REQUEST_INSNAP_URI + REQUEST_RENAME_URI
+}
+
+func getListInstanceSnapshotUri() string {
+	return URI_PREFIXV2 + REQUEST_SNAPSHOT_URI + REQUEST_INSNAP_URI + REQUEST_LIST_URI
 }
 
 func getSnapshotUriWithId(id string) string {
