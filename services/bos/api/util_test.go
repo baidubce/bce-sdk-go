@@ -415,13 +415,21 @@ func TestValidateObjectKey(t *testing.T) {
 		{"valid chinese key", "中文对象名", false},
 		{"valid key with special chars", "a@b#c$d%e", false},
 		{"valid long path", "a/b/c/d/e/f/g/h/i/j/file.txt", false},
+		{"valid key with consecutive dots", "agent.log...log", false},
+		{"valid key with double dots in name", "file..txt", false},
+		{"valid key with dots in path segment", "dir/a..b/file.txt", false},
+		{"valid key ending with dots", "agent.log..", false},
+		{"valid key starting with dots", "..agent.log", false},
+		{"valid key only dots segment", "...", false},
 
 		// 路径穿越攻击 - 应该拒绝
 		{"path traversal ..", "../etc/passwd", true},
 		{"path traversal middle ..", "dir/../secret", true},
 		{"path traversal end ..", "dir/subdir/..", true},
 		{"path traversal multiple ..", "../../root", true},
-		{"path traversal encoded ..", "dir/..%2F../secret", true}, // 原始字符串包含 ..
+		{"path traversal bare ..", "..", true},
+		// %2F 会被 UriEncode 转义为 %252F，不构成路径穿越
+		{"encoded slash is not traversal", "dir/..%2F../secret", false},
 
 		// 空 key - 应该拒绝（Clean后为空字符串）
 		{"empty key", "", true},

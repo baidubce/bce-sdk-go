@@ -8,6 +8,8 @@ type OpenAPIGetJobResponse struct {
 type OpenAPIGetJobDetailResponseResult struct {
 	OpenAPIGetJobResponseResult
 	PodList *OpenAPIPodList `json:"podList"`
+	// 监控端口配置，从任务 rawRequest 还原；仅任务详情返回，任务列表不返回
+	PortConfigs *PortConfigs `json:"portConfigs,omitempty"`
 }
 
 type OpenAPIGetJobResponseResult struct {
@@ -43,7 +45,9 @@ type OpenAPIGetJobResponseResult struct {
 	FaultToleranceArgs          string              `json:"faultToleranceArgs,omitempty"`
 	LogCollectionFilePatterns   []string            `json:"logCollectionFilePatterns,omitempty"`
 	PreInitCommand              string              `json:"preInitCommand,omitempty"` // 前置命令，RayJob 顶层各角色共享
-	AdvancedSettings            *AdvancedSettings   `json:"advancedSettings"`        // RayJob 顶层高级参数（runtimeEnv / submitterBackoffLimit），未配置时序列化为 null
+	AdvancedSettings            *AdvancedSettings   `json:"advancedSettings"`         // RayJob 顶层高级参数（runtimeEnv / submitterBackoffLimit），未配置时序列化为 null
+	// 是否闲时任务（best-effort），服务端由 priority == "lowest" 推导；任务详情与任务列表均返回
+	IdleTask bool `json:"idleTask"`
 }
 
 type OpenAPIEnv struct {
@@ -85,7 +89,7 @@ type OpenAPIPod struct {
 type OpenAPIDatasource struct {
 	//数据集ID
 	ID string `json:"id"`
-	// Type 数据源类型 dataset/pfsl1/pfsl2/emptydir/hostpath/cfs
+	// Type 数据源类型 dataset/pfsl1/pfsl2/pfsl3/emptydir/hostpath/cfs
 	Type string `json:"type"`
 	// SourcePath为源路径，存储类型为pfs时，代表用户传入的pfs路径；存储类型为hostPath时，代表节点上的本地路径
 	SourcePath string `json:"sourcePath,omitempty"`
@@ -127,6 +131,9 @@ type AIJobDatasourceOptions struct {
 	CfsMountPoint string `json:"cfsMountPoint"`
 	// 数据集版本，用于指定挂载数据集的版本
 	DatasetVersion string `json:"datasetVersion"`
+	// pfsl3 挂载信息
+	PfsL3InstanceID string `json:"pfsL3InstanceId,omitempty"`
+	PfsL3MountPoint string `json:"pfsL3MountPoint,omitempty"`
 }
 
 type OpenAPIDatasourceOptions struct {
@@ -171,7 +178,7 @@ type OpenAPIJobCreateRequest struct {
 	VisibleScope     *int                `json:"visibleScope,omitempty"`
 	FaultTolerance   bool                `json:"faultTolerance"`
 	Labels           []OpenAPILabel      `json:"labels"`
-	Priority         string              `json:"priority"`
+	Priority         string              `json:"priority,omitempty"`
 	Datasources      []OpenAPIDatasource `json:"datasources"`
 	// 两者选其一
 	FaultToleranceConfig *OpenAPIJobFaultToleranceConfig `json:"faultToleranceConfig,omitempty"`
@@ -188,12 +195,23 @@ type OpenAPIJobCreateRequest struct {
 	PreferredNodeAffinity      []string `json:"preferredNodeAffinity"`
 	RunningTimeoutStopTimeUnit string   `json:"runningTimeoutStopTimeUnit"` // 最大运行时长，1m、1h、1d, 分别表示 1分、1时、1天
 	RetentionPeriod            string   `json:"retentionPeriod"`            // 任务保存时间，格式1m, 1h, 1d, 分别表示 1分、1时、1天
+	// 监控端口配置（自定义 metrics 采集），未配置时不序列化
+	PortConfigs *PortConfigs `json:"portConfigs,omitempty"`
+	// 是否闲时任务（借用其他队列闲置资源的 best-effort 任务，可能被回收）；
+	// 仅全托管资源池 + 支持闲时提交的队列可用，为 true 时服务端强制把 priority 改写为 lowest
+	IdleTask bool `json:"idleTask"`
 }
 
 // AdvancedSettings 为 RayJob 顶层高级参数
 type AdvancedSettings struct {
 	RuntimeEnv            string `json:"runtimeEnv,omitempty"`
 	SubmitterBackoffLimit int32  `json:"submitterBackoffLimit,omitempty"`
+	// RedisInstanceId SCS Redis 实例 ID，配置后开启 head 节点 GCS 容错高可用，后端据此解析 domain:port
+	RedisInstanceId string `json:"redisInstanceId,omitempty"`
+	// RedisUsername Redis 访问用户名，缺省由后端填充 default
+	RedisUsername string `json:"redisUsername,omitempty"`
+	// RedisPassword Redis 访问密码，配置 redisInstanceId 时必填
+	RedisPassword string `json:"redisPassword,omitempty"`
 }
 
 type CodeSourceV3 struct {
@@ -239,6 +257,28 @@ type AlertRuleReq struct {
 	Description     string   `json:"description"  `
 	NotifyRuleID    string   `json:"notifyRuleId" `
 	Severity        string   `json:"severity,omitempty"`
+}
+
+// PortConfigs 为训练任务监控端口配置（自定义 metrics 采集），创建请求与任务详情共用。
+// portConfig 当前仅允许 1 个元素；创建时无需传 instanceId/agentId，服务端会自动补齐
+// （详情接口回显补齐后的值）。
+type PortConfigs struct {
+	PortConfig []PortConfig `json:"portConfig"`
+	// cprom 监控实例ID，服务端自动补齐；仅任务详情回显，创建请求无需传入
+	// 注意：与 alertConfig 下的 instanceId（AlertRuleReq.CpromInstanceID）是两个独立字段
+	InstanceID string `json:"instanceId,omitempty"`
+	// cprom 采集 Agent ID，服务端自动补齐；仅任务详情回显，创建请求无需传入
+	AgentID string `json:"agentId,omitempty"`
+}
+
+// PortConfig 为单条监控端口配置
+type PortConfig struct {
+	// 容器监听端口，取值 1-29999 或 32768-65535，且不可为保留端口 2222/6379/8265/9101/10000（服务端校验）
+	ContainerPort int32 `json:"containerPort"`
+	// 端口用途，当前仅支持 "Metrics"
+	Usage string `json:"usage"`
+	// metrics 采集路径，缺省 "/metrics"
+	Path string `json:"path,omitempty"`
 }
 
 type OpenAPIJobCreateResponse struct {

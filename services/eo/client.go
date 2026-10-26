@@ -221,3 +221,225 @@ func (cli *Client) SetSiteConfig(site string, config *api.SiteConfig) (*api.Site
 func (cli *Client) GetSiteConfig(site string) (*api.SiteConfig, error) {
 	return api.GetSiteConfig(cli, site)
 }
+
+// SetLimitConsumption - set the usage-capping configuration
+//
+// PARAMS:
+//   - config: the limit-consumption configuration to be set
+//
+// RETURNS:
+//   - *api.LimitConsumptionResult: whether the setting succeeded
+//   - error: nil if success otherwise the specific error
+func (cli *Client) SetLimitConsumption(config *api.LimitConsumption) (*api.LimitConsumptionResult, error) {
+	return api.SetLimitConsumption(cli, config)
+}
+
+// GetLimitConsumption - query the usage-capping rules of a site
+//
+// PARAMS:
+//   - query: the query conditions, `Site` is required
+//
+// RETURNS:
+//   - *api.LimitConsumptionQueryResult: the matched rules and pagination info
+//   - error: nil if success otherwise the specific error
+func (cli *Client) GetLimitConsumption(query *api.LimitConsumptionQuery) (*api.LimitConsumptionQueryResult, error) {
+	return api.GetLimitConsumption(cli, query)
+}
+
+// DeleteLimitConsumption - delete the usage-capping rule of a site or a domain
+//
+// PARAMS:
+//   - target: the delete target, both `Site` and `Object` are required
+//
+// RETURNS:
+//   - *api.LimitConsumptionResult: whether the deletion succeeded
+//   - error: nil if success otherwise the specific error
+func (cli *Client) DeleteLimitConsumption(target *api.LimitConsumptionDelete) (*api.LimitConsumptionResult, error) {
+	return api.DeleteLimitConsumption(cli, target)
+}
+
+// CreateOriginPool - create an origin pool for a site
+//
+// PARAMS:
+//   - site: the site name
+//   - pool: the origin pool definition
+//
+// RETURNS:
+//   - *api.CreateOriginPoolResult: whether the creation succeeded
+//   - error: nil if success otherwise the specific error
+func (cli *Client) CreateOriginPool(site string, pool *api.OriginPoolConfig) (*api.OriginPoolResult, error) {
+	return api.CreateOriginPool(cli, site, pool)
+}
+
+// UpdateOriginPool - update an origin pool of a site
+//
+// PARAMS:
+//   - site: the site name
+//   - originPoolId: the origin pool id to be updated
+//   - pool: the origin pool definition
+//
+// RETURNS:
+//   - *api.OriginPoolResult: whether the update succeeded
+//   - error: nil if success otherwise the specific error
+func (cli *Client) UpdateOriginPool(site string, originPoolId string, pool *api.OriginPoolConfig) (*api.OriginPoolResult, error) {
+	return api.UpdateOriginPool(cli, site, originPoolId, pool)
+}
+
+// DeleteOriginPool - delete an origin pool of a site
+//
+// PARAMS:
+//   - site: the site name
+//   - originPoolId: the origin pool id to be deleted
+//
+// RETURNS:
+//   - *api.OriginPoolResult: whether the deletion succeeded
+//   - error: nil if success otherwise the specific error
+func (cli *Client) DeleteOriginPool(site string, originPoolId string) (*api.OriginPoolResult, error) {
+	return api.DeleteOriginPool(cli, site, originPoolId)
+}
+
+// QueryOriginPool - query the origin pools of a site
+//
+// PARAMS:
+//   - query: the query conditions, `Site` is required
+//
+// RETURNS:
+//   - *api.QueryOriginPoolResult: the matched origin pools and pagination info
+//   - error: nil if success otherwise the specific error
+func (cli *Client) QueryOriginPool(query *api.QueryOriginPoolRequest) (*api.QueryOriginPoolResult, error) {
+	return api.QueryOriginPool(cli, query)
+}
+
+// CreateLoadBalance - create a load balance for a site
+//
+// PARAMS:
+//   - req: the load balance definition
+//
+// RETURNS:
+//   - *api.LoadBalanceResult: whether the creation succeeded
+//   - error: nil if success otherwise the specific error
+func (cli *Client) CreateLoadBalance(req *api.LoadBalanceRequest) (*api.LoadBalanceResult, error) {
+	return api.CreateLoadBalance(cli, req)
+}
+
+// UpdateLoadBalance - update a load balance of a site
+//
+// PARAMS:
+//   - id: the load balance id to be updated
+//   - req: the load balance definition
+//
+// RETURNS:
+//   - *api.LoadBalanceResult: whether the update succeeded
+//   - error: nil if success otherwise the specific error
+func (cli *Client) UpdateLoadBalance(id string, req *api.LoadBalanceRequest) (*api.LoadBalanceResult, error) {
+	return api.UpdateLoadBalance(cli, id, req)
+}
+
+// DeleteLoadBalance - delete a load balance of a site
+//
+// PARAMS:
+//   - id: the load balance id to be deleted
+//   - siteId: the site id that the load balance belongs to
+//
+// RETURNS:
+//   - *api.LoadBalanceResult: whether the deletion succeeded
+//   - error: nil if success otherwise the specific error
+func (cli *Client) DeleteLoadBalance(id string, siteId int) (*api.LoadBalanceResult, error) {
+	return api.DeleteLoadBalance(cli, id, siteId)
+}
+
+// QueryLoadBalance - query the load balances of a site
+//
+// PARAMS:
+//   - query: the query conditions, `SiteId` is required
+//
+// RETURNS:
+//   - *api.QueryLoadBalanceResult: the matched load balances and pagination info
+//   - error: nil if success otherwise the specific error
+func (cli *Client) QueryLoadBalance(query *api.QueryLoadBalanceRequest) (*api.QueryLoadBalanceResult, error) {
+	return api.QueryLoadBalance(cli, query)
+}
+
+// CreateDomain - create an accelerated domain for a site
+//
+// PARAMS:
+//   - req: the domain definition
+//
+// RETURNS:
+//   - *api.CreateDomainResult: the creation status and generated cname
+//   - error: nil if success otherwise the specific error
+func (cli *Client) CreateDomain(req *api.CreateDomainRequest) (*api.CreateDomainResult, error) {
+	return api.CreateDomain(cli, req)
+}
+
+// QueryDomainConfig - query the configuration of a domain
+//
+// PARAMS:
+//   - domain: the accelerated domain to be queried
+//
+// RETURNS:
+//   - *api.QueryDomainConfigResult: the domain and its full configuration
+//   - error: nil if success otherwise the specific error
+func (cli *Client) QueryDomainConfig(domain string) (*api.QueryDomainConfigResult, error) {
+	return api.QueryDomainConfig(cli, domain)
+}
+
+// UpdateDomainConfig - update the configuration of a domain
+//
+// PARAMS:
+//   - req: the update request, `Site` and `Config` are required
+//
+// RETURNS:
+//   - *api.DomainOperationResult: the update result
+//   - error: nil if success otherwise the specific error
+func (cli *Client) UpdateDomainConfig(req *api.UpdateDomainConfigRequest) (*api.DomainOperationResult, error) {
+	return api.UpdateDomainConfig(cli, req)
+}
+
+// QueryDomains - query the accelerated domain list and their simple configs
+//
+// PARAMS:
+//   - req: the query conditions, all fields are optional; nil means query all
+//
+// RETURNS:
+//   - *api.QueryDomainsResult: the domain list and pagination info
+//   - error: nil if success otherwise the specific error
+func (cli *Client) QueryDomains(req *api.QueryDomainsRequest) (*api.QueryDomainsResult, error) {
+	return api.QueryDomains(cli, req)
+}
+
+// StartDomain - enable one or more accelerated domains
+//
+// PARAMS:
+//   - req: the domains to be enabled, set either `Domain` or `Domains`
+//
+// RETURNS:
+//   - *api.DomainOperationResult: the operation result
+//   - error: nil if success otherwise the specific error
+func (cli *Client) StartDomain(req *api.DomainBatchRequest) (*api.DomainOperationResult, error) {
+	return api.StartDomain(cli, req)
+}
+
+// StopDomain - disable one or more accelerated domains
+//
+// PARAMS:
+//   - req: the domains to be disabled, set either `Domain` or `Domains`
+//
+// RETURNS:
+//   - *api.DomainOperationResult: the operation result
+//   - error: nil if success otherwise the specific error
+func (cli *Client) StopDomain(req *api.DomainBatchRequest) (*api.DomainOperationResult, error) {
+	return api.StopDomain(cli, req)
+}
+
+// DeleteDomain - delete one or more accelerated domains
+//
+// PARAMS:
+//   - req: the domains to be deleted, set either `Domain` or `Domains`
+//
+// RETURNS:
+//   - *api.DomainOperationResult: the operation result
+//   - error: nil if success otherwise the specific error
+func (cli *Client) DeleteDomain(req *api.DomainBatchRequest) (*api.DomainOperationResult, error) {
+	return api.DeleteDomain(cli, req)
+}

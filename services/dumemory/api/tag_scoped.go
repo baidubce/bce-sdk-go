@@ -195,7 +195,7 @@ func (c *Client) UpdateDocumentTagsWithScope(ctx context.Context, bankID, docume
 // TagsMatch is empty or still at the upstream/default "any", scoped filtering
 // uses "all_strict" so all scope tags must match and untagged global directives
 // are excluded.
-func (c *Client) ListDirectivesWithScope(ctx context.Context, bankID string, scope EntityScope, opts ListDirectivesOptions) (*hindsight.DirectiveListResponse, error) {
+func (c *Client) ListDirectivesWithScope(ctx context.Context, bankID string, scope EntityScope, opts ListDirectivesOptions) (*DirectiveList, error) {
 	scopeTags, err := scope.Tags()
 	if err != nil {
 		return nil, err

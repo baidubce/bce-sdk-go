@@ -361,3 +361,140 @@ func GetSiteConfig(cli bce.Client, site string) (*SiteConfig, error) {
 
 	return respObj, nil
 }
+
+// LimitConsumption defined the usage-capping configuration.
+type LimitConsumption struct {
+	Site             string `json:"site"`
+	Object           string `json:"object"`
+	Enabled          bool   `json:"enabled"`
+	Type             string `json:"type"`
+	Threshold        string `json:"threshold"`
+	StatisticalCycle int    `json:"statisticalCycle"`
+	Action           string `json:"action"`
+}
+
+// LimitConsumptionResult defined the response of SetLimitConsumption
+type LimitConsumptionResult struct {
+	Success bool `json:"success"`
+}
+
+// SetLimitConsumption - set the usage-capping configuration
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - config: the limit-consumption configuration to be set
+//
+// RETURNS:
+//   - *LimitConsumptionResult: whether the setting succeeded
+//   - error: nil if success otherwise the specific error
+func SetLimitConsumption(cli bce.Client, config *LimitConsumption) (*LimitConsumptionResult, error) {
+	if config == nil {
+		return nil, errors.New("config is required")
+	}
+	if config.Site == "" {
+		return nil, errors.New("site is required")
+	}
+	if config.Object == "" {
+		return nil, errors.New("object is required")
+	}
+
+	params := map[string]string{"action": "update"}
+	respObj := &LimitConsumptionResult{}
+	err := httpRequest(cli, "POST", "/v2/geo/limit-consumption", params, config, respObj)
+	if err != nil {
+		return nil, err
+	}
+
+	return respObj, nil
+}
+
+// LimitConsumptionQuery defined the query conditions of GetLimitConsumption.
+type LimitConsumptionQuery struct {
+	Site     string `json:"site"`
+	Object   string `json:"object,omitempty"`
+	PageNo   int    `json:"pageNo,omitempty"`
+	PageSize int    `json:"pageSize,omitempty"`
+}
+
+// LimitConsumptionRule defined a single usage-capping rule returned by the query.
+type LimitConsumptionRule struct {
+	Object           string `json:"object"`
+	Enabled          bool   `json:"enabled"`
+	Activated        bool   `json:"activated"`
+	Type             string `json:"type"`
+	Threshold        string `json:"threshold"`
+	StatisticalCycle int    `json:"statisticalCycle"`
+	Action           string `json:"action"`
+}
+
+// LimitConsumptionQueryResult defined the response of GetLimitConsumption.
+type LimitConsumptionQueryResult struct {
+	Rules         []LimitConsumptionRule `json:"rules"`
+	TotalCount    int                    `json:"totalCount"`
+	PageNo        int                    `json:"pageNo"`
+	PageSize      int                    `json:"pageSize"`
+	AllObjectList []string               `json:"allObjectList"`
+}
+
+// GetLimitConsumption - query the usage-capping rules of a site
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - query: the query conditions, `Site` is required
+//
+// RETURNS:
+//   - *LimitConsumptionQueryResult: the matched rules and pagination info
+//   - error: nil if success otherwise the specific error
+func GetLimitConsumption(cli bce.Client, query *LimitConsumptionQuery) (*LimitConsumptionQueryResult, error) {
+	if query == nil {
+		return nil, errors.New("query is required")
+	}
+	if query.Site == "" {
+		return nil, errors.New("site is required")
+	}
+
+	params := map[string]string{"action": "query"}
+	respObj := &LimitConsumptionQueryResult{}
+	err := httpRequest(cli, "POST", "/v2/geo/limit-consumption", params, query, respObj)
+	if err != nil {
+		return nil, err
+	}
+
+	return respObj, nil
+}
+
+// LimitConsumptionDelete defined the target of DeleteLimitConsumption.
+type LimitConsumptionDelete struct {
+	Site   string `json:"site"`
+	Object string `json:"object"`
+}
+
+// DeleteLimitConsumption - delete the usage-capping rule of a site or a domain
+//
+// PARAMS:
+//   - cli: the client agent which can perform sending request
+//   - target: the delete target, both `Site` and `Object` are required
+//
+// RETURNS:
+//   - *LimitConsumptionResult: whether the deletion succeeded
+//   - error: nil if success otherwise the specific error
+func DeleteLimitConsumption(cli bce.Client, target *LimitConsumptionDelete) (*LimitConsumptionResult, error) {
+	if target == nil {
+		return nil, errors.New("target is required")
+	}
+	if target.Site == "" {
+		return nil, errors.New("site is required")
+	}
+	if target.Object == "" {
+		return nil, errors.New("object is required")
+	}
+
+	params := map[string]string{"action": "delete"}
+	respObj := &LimitConsumptionResult{}
+	err := httpRequest(cli, "POST", "/v2/geo/limit-consumption", params, target, respObj)
+	if err != nil {
+		return nil, err
+	}
+
+	return respObj, nil
+}

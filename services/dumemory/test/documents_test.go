@@ -21,8 +21,8 @@ func pickFirstDocumentID(t *testing.T, c *dumemory.Client) string {
 	if resp == nil || len(resp.Items) == 0 {
 		t.Skip("no documents available; create one via FilesRetain first")
 	}
-	id, ok := resp.Items[0]["id"].(string)
-	if !ok || id == "" {
+	id := resp.Items[0].Id
+	if id == "" {
 		t.Skipf("first document has no id field: %v", resp.Items[0])
 	}
 	return id

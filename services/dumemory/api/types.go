@@ -41,7 +41,9 @@ func NewConsolidationRequest() *ConsolidationRequest { return hindsight.NewConso
 type MemoryItem = hindsight.MemoryItem
 
 // NewMemoryItem builds a MemoryItem with the given content string.
-func NewMemoryItem(content string) *MemoryItem { return hindsight.NewMemoryItem(content) }
+func NewMemoryItem(content string) *MemoryItem {
+	return hindsight.NewMemoryItem(hindsight.Content{String: &content})
+}
 
 // RetainRequest is the request body for Retain / RetainAsync.
 type RetainRequest = hindsight.RetainRequest
@@ -88,6 +90,9 @@ func NewUpdateMentalModelRequest() *UpdateMentalModelRequest {
 }
 
 // ---- Directives ----
+
+// DirectiveList is the paginated response body for ListDirectives.
+type DirectiveList = hindsight.DirectiveListResponse
 
 // CreateDirectiveRequest is the request body for CreateDirective.
 type CreateDirectiveRequest = hindsight.CreateDirectiveRequest

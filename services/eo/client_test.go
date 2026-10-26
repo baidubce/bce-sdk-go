@@ -392,7 +392,7 @@ func TestSetSiteConfig(t *testing.T) {
 						{
 							MatchFrom: "host",
 							Operator:  "inValues",
-							Values:    []string{"1.ly.com"},
+							Values:    []string{"1.test.com"},
 						},
 					},
 				},
@@ -493,4 +493,356 @@ func TestGetSiteConfig(t *testing.T) {
 	data, _ := json.Marshal(cfg)
 	t.Logf("siteConfig: %s", string(data))
 	checkClientErr(t, "GetSiteConfig", err)
+}
+
+// TestSetLimitConsumption - set usage-capping config for a site or a domain
+func TestSetLimitConsumption(t *testing.T) {
+	result, err := testCli.SetLimitConsumption(&api.LimitConsumption{
+		Site:             testAuthoritySite,
+		Object:           "site", // "site" 表示整站；域名则填具体域名
+		Enabled:          false,
+		Type:             "flow",
+		Threshold:        "200GB",
+		StatisticalCycle: 300,
+		Action:           "stop",
+	})
+
+	data, _ := json.Marshal(result)
+	t.Logf("setLimitConsumption: %s", string(data))
+	checkClientErr(t, "SetLimitConsumption", err)
+}
+
+// TestGetLimitConsumption - query usage-capping rules of a site
+func TestGetLimitConsumption(t *testing.T) {
+	result, err := testCli.GetLimitConsumption(&api.LimitConsumptionQuery{
+		Site:     testAuthoritySite,
+		PageNo:   1,
+		PageSize: 20,
+	})
+
+	data, _ := json.Marshal(result)
+	t.Logf("getLimitConsumption: %s", string(data))
+	checkClientErr(t, "GetLimitConsumption", err)
+}
+
+// TestDeleteLimitConsumption - delete usage-capping rule of a site or a domain
+func TestDeleteLimitConsumption(t *testing.T) {
+	result, err := testCli.DeleteLimitConsumption(&api.LimitConsumptionDelete{
+		Site:   testAuthoritySite,
+		Object: "site", // "site" 表示整站；域名则填具体域名
+	})
+
+	data, _ := json.Marshal(result)
+	t.Logf("deleteLimitConsumption: %s", string(data))
+	checkClientErr(t, "DeleteLimitConsumption", err)
+}
+
+// TestCreateOriginPool - create an origin pool for a site
+func TestCreateOriginPool(t *testing.T) {
+	originHost := "test.host.com"
+	result, err := testCli.CreateOriginPool(testAuthoritySite, &api.OriginPoolConfig{
+		Name: "test",
+		OriginConfig: []api.OriginPoolItem{
+			{
+				Addr:            "your.bos.bucket1.name",
+				Type:            "BUCKET",
+				Host:            &originHost,
+				Weight:          50,
+				ThirdBucketAuth: &api.OriginPoolBucketAuth{AuthType: "bos", Enabled: false},
+			},
+			{
+				Addr:   "1.2.3.4",
+				Type:   "IP",
+				Host:   &originHost,
+				Weight: 50,
+			},
+		},
+	})
+
+	data, _ := json.Marshal(result)
+	t.Logf("createOriginPool: %s", string(data))
+	checkClientErr(t, "CreateOriginPool", err)
+}
+
+// TestQueryOriginPool - query the origin pools of a site
+func TestQueryOriginPool(t *testing.T) {
+	result, err := testCli.QueryOriginPool(&api.QueryOriginPoolRequest{
+		Site:     testAuthoritySite,
+		PageNo:   2,
+		PageSize: 10,
+	})
+
+	data, _ := json.Marshal(result)
+	t.Logf("queryOriginPool: %s", string(data))
+	checkClientErr(t, "QueryOriginPool", err)
+}
+
+// TestUpdateOriginPool - update an origin pool of a site
+func TestUpdateOriginPool(t *testing.T) {
+	originHost := "test.host.com"
+	result, err := testCli.UpdateOriginPool(testAuthoritySite, "geo_df9LiHmnB0dF", &api.OriginPoolConfig{
+		Name: "test1217",
+		OriginConfig: []api.OriginPoolItem{
+			{
+				Addr:            "your.bos.bucket1.name",
+				Type:            "BUCKET",
+				Host:            &originHost,
+				Weight:          50,
+				ThirdBucketAuth: &api.OriginPoolBucketAuth{AuthType: "bos", Enabled: false},
+			},
+			{
+				Addr:   "1.2.3.4",
+				Type:   "IP",
+				Host:   &originHost,
+				Weight: 50,
+			},
+		},
+	})
+
+	data, _ := json.Marshal(result)
+	t.Logf("updateOriginPool: %s", string(data))
+	checkClientErr(t, "UpdateOriginPool", err)
+}
+
+// TestDeleteOriginPool - delete an origin pool of a site
+func TestDeleteOriginPool(t *testing.T) {
+	result, err := testCli.DeleteOriginPool(testAuthoritySite, "geo_df9LiHmnB0dF")
+
+	data, _ := json.Marshal(result)
+	t.Logf("deleteOriginPool: %s", string(data))
+	checkClientErr(t, "DeleteOriginPool", err)
+}
+
+// TestCreateLoadBalance - create a load balance for a site
+func TestCreateLoadBalance(t *testing.T) {
+	result, err := testCli.CreateLoadBalance(&api.LoadBalanceRequest{
+		SiteId:       1,
+		Name:         "test",
+		DispatchMode: "priority_mode", // 主备调度；加权轮询用 "weight_mode"
+		SessionMode:  "IP",            // 会话保持，或 "OFF"
+		DetectConfig: &api.DetectConfig{
+			HealthCheckType:   "ICMP",
+			ProbeInterval:     10,
+			ProbeMinSuccesses: 5,
+			ProbeMaxFails:     5,
+			ProbeTimeout:      3,
+		},
+		OriginPoolIds:        []string{"geo_Wcizr850oayz"},
+		FallbackOriginPoolId: "geo_xGen5sexyI9v",
+	})
+
+	data, _ := json.Marshal(result)
+	t.Logf("createLoadBalance: %s", string(data))
+	checkClientErr(t, "CreateLoadBalance", err)
+}
+
+// TestQueryLoadBalance - query the load balances of a site
+func TestQueryLoadBalance(t *testing.T) {
+	result, err := testCli.QueryLoadBalance(&api.QueryLoadBalanceRequest{
+		SiteId: 1,
+		//FetchAll: true, // 全量查询；分页查询传 PageNo/PageSize
+		PageNo:   1,
+		PageSize: 10,
+	})
+
+	data, _ := json.Marshal(result)
+	t.Logf("queryLoadBalance: %s", string(data))
+	checkClientErr(t, "QueryLoadBalance", err)
+}
+
+// TestUpdateLoadBalance - update a load balance of a site
+func TestUpdateLoadBalance(t *testing.T) {
+	result, err := testCli.UpdateLoadBalance("eo_lb_wn1XUeil7aCg", &api.LoadBalanceRequest{
+		SiteId:       1,
+		Name:         "test",
+		DispatchMode: "weight_mode", // 加权轮询；主备调度用 "priority_mode"
+		SessionMode:  "OFF",
+		DetectConfig: &api.DetectConfig{
+			ProbeInterval:     100,
+			ProbeMinSuccesses: 5,
+			ProbeMaxFails:     5,
+			ProbeSucceedCode:  "2xx",
+			ProbeUrl:          "/test",
+			ProbeTimeout:      3,
+			ProbeMethod:       "GET",
+		},
+		OriginPoolIds:        []string{"geo_z7IqfgPN1uYL"},
+		Weights:              []int{10},
+		FallbackOriginPoolId: "geo_xnPe2TVp8d8B",
+	})
+
+	data, _ := json.Marshal(result)
+	t.Logf("updateLoadBalance: %s", string(data))
+	checkClientErr(t, "UpdateLoadBalance", err)
+}
+
+// TestDeleteLoadBalance - delete a load balance of a site
+func TestDeleteLoadBalance(t *testing.T) {
+	result, err := testCli.DeleteLoadBalance("eo_lb_wn1XUeil7aCg", 933)
+
+	data, _ := json.Marshal(result)
+	t.Logf("deleteLoadBalance: %s", string(data))
+	checkClientErr(t, "DeleteLoadBalance", err)
+}
+
+// TestCreateDomain - create an accelerated domain for a site
+func TestCreateDomain(t *testing.T) {
+	originHost := "test.eo.com"
+	httpPort := 80
+
+	t.Run("IP源站", func(t *testing.T) {
+		result, err := testCli.CreateDomain(&api.CreateDomainRequest{
+			SiteId: 1,
+			Domain: "a.test.com",
+			OriginConfig: []api.DomainOriginConfig{
+				{
+					Addr:             "1.2.3.4",
+					Type:             "IP",
+					UpstreamProtocol: "http",
+					HttpPort:         &httpPort,
+					Host:             &originHost,
+				},
+			},
+		})
+		data, _ := json.Marshal(result)
+		t.Logf("createDomain(IP): %s", string(data))
+		checkClientErr(t, "CreateDomain(IP)", err)
+	})
+
+	t.Run("源站池", func(t *testing.T) {
+		result, err := testCli.CreateDomain(&api.CreateDomainRequest{
+			SiteId:           1,
+			Domain:           "b.test.com",
+			OriginPoolId:     "geo_1qrUW3nppJIy",
+			UpstreamProtocol: "http",
+			HttpPort:         &httpPort,
+		})
+		data, _ := json.Marshal(result)
+		t.Logf("createDomain(originPool): %s", string(data))
+		checkClientErr(t, "CreateDomain(originPool)", err)
+	})
+
+	t.Run("负载均衡", func(t *testing.T) {
+		result, err := testCli.CreateDomain(&api.CreateDomainRequest{
+			SiteId:           1,
+			Domain:           "c.test.com",
+			LoadBalanceId:    "eo_lb_30RjuhwJ7anZ",
+			UpstreamProtocol: "http",
+			HttpPort:         &httpPort,
+		})
+		data, _ := json.Marshal(result)
+		t.Logf("createDomain(loadBalance): %s", string(data))
+		checkClientErr(t, "CreateDomain(loadBalance)", err)
+	})
+}
+
+// TestQueryDomainConfig - query the configuration of a domain
+func TestQueryDomainConfig(t *testing.T) {
+	result, err := testCli.QueryDomainConfig("1.test.com")
+
+	data, _ := json.Marshal(result)
+	t.Logf("queryDomainConfig: %s", string(data))
+	checkClientErr(t, "QueryDomainConfig", err)
+}
+
+// TestUpdateDomainConfig - update the configuration of a domain
+func TestUpdateDomainConfig(t *testing.T) {
+	originHost := "test.host.com"
+	httpPort := 80
+	result, err := testCli.UpdateDomainConfig(&api.UpdateDomainConfigRequest{
+		Site:   "test.com",
+		Domain: "1.test.com",
+		Config: &api.DomainConfigUpdate{
+			OriginConfig: []api.DomainOriginConfig{
+				{
+					Addr:             "1.2.3.5",
+					Type:             "IP",
+					Host:             &originHost,
+					HttpPort:         &httpPort,
+					UpstreamProtocol: "http",
+				},
+			},
+			Ipv6Dispatch: &api.Ipv6Dispatch{Enable: "ON"},
+		},
+	})
+
+	data, _ := json.Marshal(result)
+	t.Logf("updateDomainConfig: %s", string(data))
+	checkClientErr(t, "UpdateDomainConfig", err)
+}
+
+// TestQueryDomains - query the accelerated domain list
+func TestQueryDomains(t *testing.T) {
+	result, err := testCli.QueryDomains(&api.QueryDomainsRequest{
+		SiteId:   1,
+		PageNo:   1,
+		PageSize: 10,
+	})
+
+	data, _ := json.Marshal(result)
+	t.Logf("queryDomains: %s", string(data))
+	checkClientErr(t, "QueryDomains", err)
+}
+
+// TestStartDomain - enable one or more accelerated domains
+func TestStartDomain(t *testing.T) {
+	t.Run("启用单个域名", func(t *testing.T) {
+		result, err := testCli.StartDomain(&api.DomainBatchRequest{
+			Domain: "1.test.com",
+		})
+		data, _ := json.Marshal(result)
+		t.Logf("startDomain(single): %s", string(data))
+		checkClientErr(t, "StartDomain(single)", err)
+	})
+
+	t.Run("批量启用域名", func(t *testing.T) {
+		result, err := testCli.StartDomain(&api.DomainBatchRequest{
+			Domains: []string{"1.test.com", "2.test.com"},
+		})
+		data, _ := json.Marshal(result)
+		t.Logf("startDomain(batch): %s", string(data))
+		checkClientErr(t, "StartDomain(batch)", err)
+	})
+}
+
+// TestStopDomain - disable one or more accelerated domains
+func TestStopDomain(t *testing.T) {
+	t.Run("停用单个域名", func(t *testing.T) {
+		result, err := testCli.StopDomain(&api.DomainBatchRequest{
+			Domain: "1.test.com",
+		})
+		data, _ := json.Marshal(result)
+		t.Logf("stopDomain(single): %s", string(data))
+		checkClientErr(t, "StopDomain(single)", err)
+	})
+
+	t.Run("批量停用域名", func(t *testing.T) {
+		result, err := testCli.StopDomain(&api.DomainBatchRequest{
+			Domains: []string{"1.test.com", "2.test.com"},
+		})
+		data, _ := json.Marshal(result)
+		t.Logf("stopDomain(batch): %s", string(data))
+		checkClientErr(t, "StopDomain(batch)", err)
+	})
+}
+
+// TestDeleteDomain - delete one or more accelerated domains
+func TestDeleteDomain(t *testing.T) {
+	t.Run("删除单个域名", func(t *testing.T) {
+		result, err := testCli.DeleteDomain(&api.DomainBatchRequest{
+			Domain: "1.test.com",
+		})
+		data, _ := json.Marshal(result)
+		t.Logf("deleteDomain(single): %s", string(data))
+		checkClientErr(t, "DeleteDomain(single)", err)
+	})
+
+	t.Run("批量删除域名", func(t *testing.T) {
+		result, err := testCli.DeleteDomain(&api.DomainBatchRequest{
+			Domains: []string{"1.test.com", "2.test.com"},
+		})
+		data, _ := json.Marshal(result)
+		t.Logf("deleteDomain(batch): %s", string(data))
+		checkClientErr(t, "DeleteDomain(batch)", err)
+	})
 }

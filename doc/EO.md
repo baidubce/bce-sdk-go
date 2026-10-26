@@ -1359,4 +1359,822 @@ fmt.Printf("SiteConfig: %s\n", allData)
 // cfg.RealIp 为该站点当前的用户 ip 获取配置;
 ```
 
+## 设置用量封顶配置
+
+设置用量封顶接口：`POST /v2/geo/limit-consumption?action=update`。
+
+```go
+cli := GetDefaultClient()
+resp, err := cli.SetLimitConsumption(&api.LimitConsumption{
+	Site:             "your_site.com",
+	Object:           "site", // "site" 表示整站；设置某个域名则填具体域名，如 "1.your_site.com"
+	Enabled:          true,
+	Type:             "flow", // flow 流量 / bandwidth 带宽 / pv 请求数
+	Threshold:        "100GB",
+	StatisticalCycle: 300, // 单位秒，合法值 300 / 3600 / 86400；Type 为 bandwidth 时固定 300
+	Action:           "stop",
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+关闭用量封顶时各字段仍需传全，`Enabled` 置为 `false`：
+
+```go
+cli := GetDefaultClient()
+resp, err := cli.SetLimitConsumption(&api.LimitConsumption{
+	Site:             "your_site.com",
+	Object:           "site",
+	Enabled:          false,
+	Type:             "flow",
+	Threshold:        "100GB",
+	StatisticalCycle: 300,
+	Action:           "stop",
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+`api.LimitConsumption` 字段说明：
+
+| 字段             | 类型   | 是否必选 | 说明                                                                                       |
+| ---------------- | ------ | -------- |------------------------------------------------------------------------------------------|
+| Site             | String | 是       | 站点名称。                                                                                 |
+| Object           | String | 是       | 生效对象。`site` 表示整站；其他值为站点下的域名。                                           |
+| Enabled          | Bool   | 是       | 开启/关闭用量封顶。`true` 开启，`false` 关闭。                                             |
+| Type             | String | 是       | 检测类型。合法值：`flow`（流量）、`bandwidth`（带宽）、`pv`（请求数）。                       |
+| Threshold        | String | 是       | 检测阈值。`flow` 单位 `MB`/`GB`/`TB`；`bandwidth` 单位 `Mbps`/`Gbps`/`Tbps`；`pv` 填数值字符串（如 `1234`）。 |
+| StatisticalCycle | Int    | 是       | 检测周期（秒）。合法值 `300`/`3600`/`86400`；`Type` 为 `bandwidth` 时固定 `300`。            |
+| Action           | String | 是       | 达到阈值触发的动作，固定值 `stop`（停止加速域名）。                                         |
+
+## 查询用量封顶配置
+
+查询用量封顶接口：`POST /v2/geo/limit-consumption?action=query`。
+
+```go
+cli := GetDefaultClient()
+resp, err := cli.GetLimitConsumption(&api.LimitConsumptionQuery{
+	Site:     "your_site.com",
+	Object:   "", // 可选，仅支持填加速域名作为过滤条件
+	PageNo:   1,  // 可选，默认 1
+	PageSize: 20, // 可选，默认 10
+})
+if err != nil {
+	fmt.Printf("err:%+v\n", err)
+	return
+}
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+```
+
+`api.LimitConsumptionQuery` 字段说明：
+
+| 字段     | 类型   | 是否必选 | 说明                                       |
+| -------- | ------ | -------- |------------------------------------------|
+| Site     | String | 是       | 站点名称。                                 |
+| Object   | String | 否       | 生效对象过滤条件，仅支持填加速域名。        |
+| PageNo   | Int    | 否       | 分页编号，默认 1。                         |
+| PageSize | Int    | 否       | 每页返回数目，默认 10。                     |
+
+`api.LimitConsumptionQueryResult` 字段说明：
+
+| 字段          | 类型                        | 说明                                         |
+| ------------- | --------------------------- |--------------------------------------------|
+| Rules         | []api.LimitConsumptionRule  | 用量封顶规则列表。                            |
+| TotalCount    | Int                         | 规则总数，用于分页。                          |
+| PageNo        | Int                         | 分页编号。                                   |
+| PageSize      | Int                         | 每页返回数目。                               |
+| AllObjectList | []String                    | 所有生效对象列表，`site` 表示站点，其余为域名。 |
+
+`api.LimitConsumptionRule` 字段说明：
+
+| 字段             | 类型   | 说明                                                                       |
+| ---------------- | ------ |--------------------------------------------------------------------------|
+| Object           | String | 生效对象。`site` 表示整站；其他值为站点下的域名。                           |
+| Enabled          | Bool   | 用量封顶是否开启。                                                         |
+| Activated        | Bool   | 是否已触发阈值并执行 `Action`。`true` 已触发，`false` 未触发。             |
+| Type             | String | 检测类型：`flow`（流量）、`bandwidth`（带宽）、`pv`（请求数）。              |
+| Threshold        | String | 检测阈值，单位随 `Type` 变化。                                             |
+| StatisticalCycle | Int    | 检测周期（秒）。                                                           |
+| Action           | String | 达到阈值触发的动作，固定值 `stop`。                                         |
+
+## 删除用量封顶配置
+
+删除用量封顶接口：`POST /v2/geo/limit-consumption?action=delete`。
+
+```go
+cli := GetDefaultClient()
+resp, err := cli.DeleteLimitConsumption(&api.LimitConsumptionDelete{
+	Site:   "your_site.com",
+	Object: "site", // "site" 表示整站；删除某个域名则填具体域名，如 "1.your_site.com"
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+`api.LimitConsumptionDelete` 字段说明：
+
+| 字段   | 类型   | 是否必选 | 说明                                             |
+| ------ | ------ | -------- |------------------------------------------------|
+| Site   | String | 是       | 站点名称。                                       |
+| Object | String | 是       | 删除对象。`site` 表示整站；其他值为站点下的域名。 |
+
+## 创建源站池
+
+创建源站池接口：`POST /v2/geo/origin-pool?action=create`。
+
+```go
+cli := GetDefaultClient()
+originHost := "test.host.com"
+resp, err := cli.CreateOriginPool("your_site.com", &api.OriginPoolConfig{
+	Name: "test",
+	OriginConfig: []api.OriginPoolItem{
+		{
+			Addr:   "1.2.3.4",
+			Type:   "IP",
+			Host:   &originHost,
+			Weight: 50,
+		},
+		{
+			Addr:   "your.bos.bucket1.name",
+			Type:   "BUCKET",
+			Host:   &originHost,
+			Weight: 50,
+			ThirdBucketAuth: &api.OriginPoolBucketAuth{
+				AuthType: "bos",
+				Enabled:  false,
+			},
+		},
+	},
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+`api.OriginPoolConfig` 字段说明：
+
+| 字段         | 类型                  | 是否必选 | 说明                               |
+| ------------ | --------------------- | -------- |----------------------------------|
+| Name         | String                | 是       | 源站池名称，长度 0-120。            |
+| OriginConfig | []api.OriginPoolItem  | 是       | 源站配置列表。                      |
+
+`api.OriginPoolItem` 字段说明：
+
+| 字段            | 类型                     | 是否必选 | 说明                                                                 |
+| --------------- | ------------------------ | -------- |--------------------------------------------------------------------|
+| Addr            | String                   | 是       | 源站地址。IP/DOMAIN 类型传 IPv4/IPv6/域名；BUCKET 类型传 BOS bucket 名称。 |
+| Type            | String                   | 是       | 源站类型。IP/DOMAIN 类型取 `IP`/`DOMAIN`；对象存储取 `BUCKET`（BOS）/`DOMAIN`（S3）。 |
+| Host            | *String                  | 否       | 回源时使用的 host 值。                                               |
+| Weight          | Int                      | 是       | 源站权重，1-100 的整数，默认 50。                                    |
+| ThirdBucketAuth | *api.OriginPoolBucketAuth | 否       | 对象存储鉴权配置，仅 BUCKET/DOMAIN（S3）类型需要。                   |
+
+`api.OriginPoolBucketAuth` 字段说明（仅 BOS/S3 鉴权场景使用）：
+
+| 字段     | 类型    | 是否必选 | 说明                                                                                     |
+| -------- | ------- | -------- |----------------------------------------------------------------------------------------|
+| AuthType | String  | 是       | 鉴权类型：`aws_v2`、`aws_v4`（S3）、`bos`。                                             |
+| Enabled  | Bool    | 是       | 私有访问鉴权开关，`true` 开启、`false` 关闭。                                           |
+| Ak       | *String | 否       | 仅 S3 生效，开启鉴权时必填。Access Key。                                               |
+| Sk       | *String | 否       | 仅 S3 生效，开启鉴权时必填。Secret Access Key。                                        |
+| Bucket   | *String | 否       | 仅 S3 生效。`aws_v2` 必填，`aws_v4` 无需设置。                                         |
+| Region   | *String | 否       | 仅 S3 生效。`aws_v2` 无需设置，`aws_v4` 选填默认 `us-east-1`。                         |
+| Service  | *String | 否       | 仅 S3 生效。`aws_v2` 无需设置，`aws_v4` 选填默认 `s3`。                                |
+
+注：每个站点最多 50 个源站池，每个源站池最多 20 个源站。BOS 类型的 `Ak`/`Sk`/`Bucket`/`Region`/`Service` 无需传值。
+
+## 查询源站池
+
+查询源站池接口：`POST /v2/geo/origin-pool?action=query`。
+
+```go
+cli := GetDefaultClient()
+resp, err := cli.QueryOriginPool(&api.QueryOriginPoolRequest{
+	Site:         "your_site.com",
+	Name:         "",    // 可选，按源站池名称过滤
+	OriginPoolId: "",    // 可选，按源站池 ID 过滤
+	PageNo:       1,     // 可选，默认 1
+	PageSize:     10,    // 可选，默认 10
+})
+if err != nil {
+	fmt.Printf("err:%+v\n", err)
+	return
+}
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+```
+
+`api.QueryOriginPoolRequest` 字段说明：
+
+| 字段         | 类型   | 是否必选 | 说明                      |
+| ------------ | ------ | -------- |-------------------------|
+| Site         | String | 是       | 站点名称。                |
+| Name         | String | 否       | 源站池名称过滤。           |
+| OriginPoolId | String | 否       | 源站池 ID 过滤。          |
+| PageNo       | Int    | 否       | 页码，默认 1。            |
+| PageSize     | Int    | 否       | 每页条数，默认 10。        |
+
+`api.QueryOriginPoolResult` 字段说明：
+
+| 字段        | 类型                    | 说明                    |
+| ----------- | ----------------------- |-----------------------|
+| OriginPools | []api.OriginPoolDetail  | 源站池列表。             |
+| PageNo      | Int                     | 页码。                 |
+| PageSize    | Int                     | 每页条数。               |
+| Total       | Int                     | 源站池总数。             |
+
+`api.OriginPoolDetail` 字段说明：
+
+| 字段         | 类型                      | 说明                                         |
+| ------------ | ------------------------- |--------------------------------------------|
+| Id           | Int                       | 索引 ID。                                   |
+| Uid          | String                    | 用户 ID。                                   |
+| Site         | String                    | 站点名称。                                   |
+| Name         | String                    | 源站池名称。                                 |
+| OriginPoolId | String                    | 源站池 ID。                                  |
+| Status       | String                    | 源站池状态：`ON` 使用中，`OFF` 未使用。        |
+| Count        | Int                       | 源站数量。                                   |
+| OriginConfig | []api.OriginPoolDetailItem | 源站配置列表。                                |
+| Instance     | []api.OriginPoolInstance  | 引用该源站池的实例（域名/规则引擎/负载均衡）。  |
+| Slb          | []interface{}             | 拓展字段。                                   |
+
+`api.OriginPoolDetailItem` 字段说明：
+
+| 字段            | 类型                      | 说明                    |
+| --------------- | ------------------------- |-----------------------|
+| Addr            | String                    | 源站地址。                 |
+| Type            | String                    | 源站类型。                 |
+| Host            | *String                   | 回源 host 值。            |
+| Weight          | Int                       | 源站权重，默认 50。           |
+| Backup          | Bool                      | 是否主源站配置，恒为 `false`。   |
+| ThirdBucketAuth | *api.OriginPoolBucketAuth | 对象存储鉴权配置，仅对象存储类型源站返回。 |
+
+`api.OriginPoolInstance` 字段说明：
+
+| 字段            | 类型   | 说明                                               |
+| --------------- | ------ |--------------------------------------------------|
+| Domain          | String | 引用该源站池的域名。                                 |
+| Name            | String | 引用该源站池的规则引擎名称。                          |
+| LoadBalanceName | String | 引用该源站池的负载均衡名称。                          |
+| Type            | String | 引用类型。                                          |
+| Site            | String | 引用方的所属站点。                                   |
+
+## 修改源站池
+
+修改源站池接口：`POST /v2/geo/origin-pool?action=update`。
+
+```go
+cli := GetDefaultClient()
+originHost := "test.host.com"
+resp, err := cli.UpdateOriginPool("your_site.com", "geo_LGKm6ryALtnO", &api.OriginPoolConfig{
+	Name: "test",
+	OriginConfig: []api.OriginPoolItem{
+		{
+			Addr:            "your.bos.bucket1.name",
+			Type:            "BUCKET",
+			Host:            &originHost,
+			Weight:          50,
+			ThirdBucketAuth: &api.OriginPoolBucketAuth{AuthType: "bos", Enabled: false},
+		},
+		{
+			Addr:   "1.2.3.4",
+			Type:   "IP",
+			Host:   &originHost,
+			Weight: 50,
+		},
+	},
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+参数说明：
+
+| 参数         | 类型                | 是否必选 | 说明                       |
+| ------------ | ------------------- | -------- |--------------------------|
+| site         | String              | 是       | 站点名称。                 |
+| originPoolId | String              | 是       | 要修改的源站池 ID。         |
+| originPool   | *api.OriginPoolConfig | 是       | 源站池配置，字段同创建。     |
+
+## 删除源站池
+
+删除源站池接口：`POST /v2/geo/origin-pool?action=delete`。
+
+```go
+cli := GetDefaultClient()
+resp, err := cli.DeleteOriginPool("your_site.com", "geo_tZhP32iF2mWU")
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+参数说明：
+
+| 参数         | 类型   | 是否必选 | 说明               |
+| ------------ | ------ | -------- |------------------|
+| site         | String | 是       | 站点名称。         |
+| originPoolId | String | 是       | 要删除的源站池 ID。 |
+
+## 创建负载均衡
+
+创建负载均衡接口：`POST /v2/geo/load-balance`。
+
+```go
+cli := GetDefaultClient()
+resp, err := cli.CreateLoadBalance(&api.LoadBalanceRequest{
+	SiteId:       1,
+	Name:         "test",
+	DispatchMode: "priority_mode", // 主备调度；加权轮询用 "weight_mode"
+	SessionMode:  "IP",            // 会话保持，或 "OFF"
+	DetectConfig: &api.DetectConfig{
+		HealthCheckType:   "ICMP",
+		ProbeInterval:     10,
+		ProbeMinSuccesses: 5,
+		ProbeMaxFails:     5,
+		ProbeTimeout:      3,
+	},
+	OriginPoolIds:        []string{"geo_fIyyiMbsYCtl", "geo_BE4APhb3xOC7"},
+	FallbackOriginPoolId: "geo_fIyyiMbsYCtl",
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+`api.LoadBalanceRequest` 字段说明：
+
+| 字段                 | 类型               | 是否必选 | 说明                                                                 |
+| -------------------- | ------------------ | -------- |--------------------------------------------------------------------|
+| SiteId               | Int                | 是       | 负载均衡所属站点 ID。                                                 |
+| Name                 | String             | 是       | 负载均衡名称，支持 `a-z`、`A-Z`、`0-9`、`_`、`*`、`-`，长度限制 200。 |
+| DispatchMode         | String             | 是       | 负载均衡策略：`priority_mode`（主备调度）或 `weight_mode`（加权轮询）。 |
+| SessionMode          | String             | 是       | 会话保持：`IP` 或 `OFF`。                                            |
+| DetectConfig         | *api.DetectConfig  | 是       | 健康探测配置。                                                       |
+| OriginPoolIds        | []String           | 是       | 源站池 ID 数组。主备调度时顺序表示优先级。                            |
+| Weights              | []Int              | 否       | 源站池权重，`weight_mode` 时必传，与 `OriginPoolIds` 一一对应。       |
+| FallbackOriginPoolId | String             | 否       | 兜底源站池 ID，不设置则不传。                                        |
+
+`api.DetectConfig` 字段说明：
+
+| 字段               | 类型   | 是否必选 | 说明                                                                 |
+| ------------------ | ------ | -------- |--------------------------------------------------------------------|
+| HealthCheckType    | String | 否       | 健康探测类型：`ICMP`、`TCP`、`UDP`、`OFF`；HTTP/HTTPS 类型时无需传。 |
+| ProbeInterval      | Int    | 是       | 探测间隔，10-3600，单位秒。                                          |
+| ProbeMinSuccesses  | Int    | 是       | 健康阈值，最小成功阈值 1-5，需与最大失败阈值一致。                     |
+| ProbeMaxFails      | Int    | 是       | 最大失败阈值 1-5，需与最小成功阈值一致。                              |
+| ProbeTimeout       | Int    | 是       | 探测超时时间，合法值固定为 3。                                        |
+| ProbeSucceedCode   | String | 否       | 状态码：`1xx`/`2xx`/`3xx`/`4xx`/`5xx`，HTTP/HTTPS 时必填。           |
+| ProbeUrl           | String | 否       | 探测路径，HTTP/HTTPS 时必填，如 `/health/test.txt`。                 |
+| ProbeMethod        | String | 否       | 探测请求方法，HTTP/HTTPS 时必填，合法值 `GET`。                      |
+| CheckData          | String | 否       | 探测请求内容，500 字符内，UDP 时必填。                                |
+| CheckResult        | String | 否       | 探测返回结果，500 字符内，UDP 时选填。                                |
+
+
+## 查询负载均衡
+
+查询负载均衡接口：`GET /v2/geo/load-balance`。
+
+```go
+cli := GetDefaultClient()
+resp, err := cli.QueryLoadBalance(&api.QueryLoadBalanceRequest{
+	SiteId:   1,
+	Name:     "test",    // 可选，按名称过滤
+	Id:       "",        // 可选，按负载均衡 ID 过滤
+	FetchAll: true,      // 可选，true 全量查询；false 或不传则分页
+	PageNo:   1,         // 可选，默认 1
+	PageSize: 10,        // 可选，默认 10
+})
+if err != nil {
+	fmt.Printf("err:%+v\n", err)
+	return
+}
+data, _ := json.Marshal(resp)
+fmt.Printf("loadBalances: %s\n", data)
+```
+
+`api.QueryLoadBalanceRequest` 字段说明：
+
+| 字段     | 类型   | 是否必选 | 说明                                   |
+| -------- | ------ | -------- |--------------------------------------|
+| SiteId   | Int    | 是       | 负载均衡所属站点 ID。                   |
+| Name     | String | 否       | 负载均衡名称过滤。                      |
+| Id       | String | 否       | 负载均衡 ID 过滤。                      |
+| FetchAll | Bool   | 否       | `true` 全量查询；`false`/不传分页查询。  |
+| PageNo   | Int    | 否       | 页码，默认 1。                          |
+| PageSize | Int    | 否       | 每页条数，默认 10。                      |
+
+`api.QueryLoadBalanceResult` 字段说明：
+
+| 字段               | 类型                       | 说明                     |
+| ------------------ | -------------------------- |------------------------|
+| Total              | Int                        | 负载均衡总数。            |
+| LoadBalanceDetail  | []api.LoadBalanceDetail    | 负载均衡详情列表。         |
+| PageNo             | Int                        | 页码（分页查询时存在）。    |
+| PageSize           | Int                        | 每页条数（分页查询时存在）。 |
+
+`api.LoadBalanceDetail` 字段说明：
+
+| 字段                 | 类型                      | 说明                                     |
+| -------------------- | ------------------------- |----------------------------------------|
+| LoadBalanceId        | String                    | 负载均衡 ID。                            |
+| Name                 | String                    | 负载均衡名称。                            |
+| Status               | String                    | 是否被引用。                              |
+| DispatchMode         | String                    | 负载均衡策略。                            |
+| SessionMode          | String                    | 会话保持。                               |
+| DetectConfig         | *api.DetectConfig         | 健康探测配置。                            |
+| OriginPoolIds        | []String                  | 源站池 ID 数组。                          |
+| WeightList           | []Int                     | 权重列表，`weight_mode` 时对应各源站池权重，否则为空。 |
+| FallbackOriginPoolId | *String                   | 兜底源站池 ID，未设置时为 null。            |
+| OriginPoolCount      | Int                       | 引用源站池数量。                          |
+| Instance             | []api.LoadBalanceInstance | 引用该负载均衡的实例。                     |
+
+`api.LoadBalanceInstance` 字段说明：
+
+| 字段   | 类型   | 说明               |
+| ------ | ------ |------------------|
+| Domain | String | 引用该负载均衡的域名。 |
+| Type   | String | 实例类型。          |
+| Site   | String | 实例所属站点。       |
+
+## 修改负载均衡
+
+修改负载均衡接口：`PUT /v2/geo/load-balance/{id}`，`{id}` 为路径参数。
+
+```go
+cli := GetDefaultClient()
+resp, err := cli.UpdateLoadBalance("eo_lb_gG5WnKassxm6", &api.LoadBalanceRequest{
+	SiteId:       1,
+	Name:         "test",
+	DispatchMode: "weight_mode", // 加权轮询；主备调度用 "priority_mode"
+	SessionMode:  "OFF",
+	DetectConfig: &api.DetectConfig{
+		ProbeInterval:     100,
+		ProbeMinSuccesses: 5,
+		ProbeMaxFails:     5,
+		ProbeSucceedCode:  "2xx",
+		ProbeUrl:          "/test",
+		ProbeTimeout:      3,
+		ProbeMethod:       "GET",
+	},
+	OriginPoolIds:        []string{"geo_X8zcYPHclKlz", "geo_D7Qts5KDPXfl"},
+	Weights:              []int{10, 50},
+	FallbackOriginPoolId: "geo_X8zcYPHclKlz",
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+参数说明：
+
+| 参数 | 类型                   | 是否必选 | 说明                    |
+| ---- | ---------------------- | -------- |-----------------------|
+| id   | String                 | 是       | 要修改的负载均衡 ID（路径参数）。 |
+| req  | *api.LoadBalanceRequest | 是       | 负载均衡配置，字段同创建。    |
+
+## 删除负载均衡
+
+删除负载均衡接口：`DELETE /v2/geo/load-balance/{id}`，`{id}` 为路径参数。
+
+```go
+cli := GetDefaultClient()
+resp, err := cli.DeleteLoadBalance("eo_lb_gG5WnKassxm6", 1)
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+参数说明：
+
+| 参数   | 类型   | 是否必选 | 说明                    |
+| ------ | ------ | -------- |-----------------------|
+| id     | String | 是       | 要删除的负载均衡 ID（路径参数）。 |
+| siteId | Int    | 是       | 负载均衡所属站点 ID。       |
+
+## 创建加速域名
+
+创建加速域名接口：`POST /v2/geo/domain?action=create`。
+
+```go
+cli := GetDefaultClient()
+originHost := "test.eo.com"
+httpPort := 80
+resp, err := cli.CreateDomain(&api.CreateDomainRequest{
+	SiteId: 1,
+	Domain: "a.test.com",
+	OriginConfig: []api.DomainOriginConfig{
+		{
+			Addr:             "1.2.3.4",
+			Type:             "IP",
+			UpstreamProtocol: "http",
+			HttpPort:         &httpPort,
+			Host:             &originHost,
+		},
+	},
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+`api.CreateDomainRequest` 字段说明：
+
+| 字段             | 类型                    | 是否必选 | 说明                                                   |
+| ---------------- | ----------------------- | -------- |------------------------------------------------------|
+| Domain           | String                  | 是       | 加速域名，如 `www.test.com`、`*.test.com`。             |
+| SiteId           | Int                     | 是       | 对应的站点 ID。                                        |
+| OriginConfig     | []api.DomainOriginConfig | 否       | 源站配置（IP/域名/对象存储）。                          |
+| OriginPoolId     | String                  | 否       | 源站池 ID，使用源站池时传。                             |
+| UpstreamProtocol | String                  | 否       | 回源协议：`http`、`https`、`*`。使用源站池或负载均衡时必传。 |
+| Ipv6Dispatch     | *api.Ipv6Dispatch       | 否       | 域名 IPv6 配置。                                        |
+| HttpPort         | *Int                    | 否       | HTTP 回源端口。使用源站池/负载均衡时必传，协议 `*` 时必传。 |
+| HttpsPort        | *Int                    | 否       | HTTPS 回源端口。规则同上。                              |
+| LoadBalanceId    | String                  | 否       | 负载均衡 ID，使用负载均衡时传。                          |
+
+`api.DomainOriginConfig` 字段说明：
+
+| 字段             | 类型                      | 是否必选 | 说明                                       |
+| ---------------- | ------------------------- | -------- |------------------------------------------|
+| Addr             | String                    | 是       | 源站地址。IP/DOMAIN 传 IP/域名；BUCKET 传 bucket 名。 |
+| Type             | String                    | 是       | 源站类型：`IP`、`DOMAIN`、`BUCKET`。         |
+| Host             | *String                   | 否       | 回源 host 值。                               |
+| Weight           | *Int                      | 否       | 权重，仅查询结果中使用源站池/负载均衡作为源站时返回，创建/更新时无需传。 |
+| UpstreamProtocol | String                    | 是       | 回源协议：`http`、`https`、`*`。              |
+| HttpPort         | *Int                      | 否       | HTTP 回源端口，协议 `*` 时必传。               |
+| HttpsPort        | *Int                      | 否       | HTTPS 回源端口，协议 `*` 时必传。              |
+| Backup           | *Bool                     | 否       | 查询结果中恒存在且恒为 `false`（表示主源站）；创建/更新时无需传。 |
+| ThirdBucketAuth  | *api.OriginPoolBucketAuth | 否       | 对象存储鉴权配置，对象存储类型源站必传。        |
+
+`api.Ipv6Dispatch` 字段说明：
+
+| 字段   | 类型   | 是否必选 | 说明                        |
+| ------ | ------ | -------- |---------------------------|
+| Enable | String | 是       | IPv6 开关：`ON` 开启，`OFF` 关闭。 |
+
+## 查询加速域名配置
+
+查询加速域名配置接口：`POST /v2/geo/domain/config?action=query`。
+
+```go
+cli := GetDefaultClient()
+resp, err := cli.QueryDomainConfig("1.test.com")
+if err != nil {
+	fmt.Printf("err:%+v\n", err)
+	return
+}
+
+// resp.Domain 为查询的域名
+// resp.Config 为该域名的完整配置，类型为 json.RawMessage（原始 JSON）
+// 服务端返回的所有字段都原样保留，SDK 不做字段建模，调用方按需解析
+
+// 方式一：直接拿到原始 JSON 字符串
+fmt.Printf("config: %s\n", string(resp.Config))
+
+// 方式二：按需解析成自己的结构体
+var cfg struct {
+	Status      string `json:"status"`
+	HttpsEnabled string `json:"httpsEnabled"`
+	OriginConfig []api.DomainOriginConfig `json:"originConfig"`
+}
+if err := json.Unmarshal(resp.Config, &cfg); err != nil {
+	fmt.Printf("unmarshal err:%+v\n", err)
+	return
+}
+fmt.Printf("status: %s, httpsEnabled: %s\n", cfg.Status, cfg.HttpsEnabled)
+```
+
+## 更新加速域名配置
+
+更新加速域名配置接口：`POST /v2/geo/domain/config?action=update`。
+
+```go
+cli := GetDefaultClient()
+originHost := "test.host.com"
+httpPort := 80
+resp, err := cli.UpdateDomainConfig(&api.UpdateDomainConfigRequest{
+	Site:   "your_site.com",
+	Domain: "1.your_site.com", // 与 Domains 二选一，Domain 优先级更高
+	Config: &api.DomainConfigUpdate{
+		OriginConfig: []api.DomainOriginConfig{
+			{
+				Addr:             "1.2.3.4",
+				Type:             "IP",
+				Host:             &originHost,
+				HttpPort:         &httpPort,
+				UpstreamProtocol: "http",
+			},
+		},
+		Ipv6Dispatch: &api.Ipv6Dispatch{Enable: "ON"},
+		HttpsEnabled: "ON",
+		CertId:       "xxx",
+	},
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+`api.UpdateDomainConfigRequest` 字段说明：
+
+| 字段    | 类型                    | 是否必选 | 说明                                   |
+| ------- | ----------------------- | -------- |--------------------------------------|
+| Site    | String                  | 是       | 域名所属站点。                          |
+| Domain  | String                  | 否       | 加速域名，优先级高于 `Domains`。         |
+| Domains | []String                | 否       | 批量配置的域名，仅支持证书配置。          |
+| Config  | *api.DomainConfigUpdate | 是       | 要更新的配置信息。                       |
+
+`api.DomainConfigUpdate` 字段说明（全部可选，按需下发）：
+
+| 字段             | 类型                     | 说明                                     |
+| ---------------- | ------------------------ |----------------------------------------|
+| OriginConfig     | []api.DomainOriginConfig | 源站配置（IP/域名/对象存储）。             |
+| OriginPoolId     | String                   | 源站池 ID。                              |
+| UpstreamProtocol | String                   | 回源协议：`http`、`https`、`*`。          |
+| Ipv6Dispatch     | *api.Ipv6Dispatch        | IPv6 配置。                              |
+| HttpPort         | *Int                     | HTTP 回源端口。                          |
+| HttpsPort        | *Int                     | HTTPS 回源端口。                         |
+| LoadBalanceId    | String                   | 负载均衡 ID。                            |
+| CertId           | String                   | 证书 ID，`HttpsEnabled` 为 `ON` 时必传。 |
+| HttpsEnabled     | String                   | HTTPS 开关：`ON`/`OFF`。                 |
+
+返回 `api.DomainOperationResult`：
+
+| 字段    | 类型   | 说明                                             |
+| ------- | ------ |------------------------------------------------|
+| Status  | String | 操作结果：`OK` 全部成功，`PartialFailed` 部分成功。 |
+| Total   | Int    | 需要操作的域名数目。                              |
+| Success | Int    | 操作成功的域名数目。                              |
+| ErrMsg  | String | `Status` 非 `OK` 时的错误详情。                   |
+
+## 查询加速域名列表
+
+查询加速域名列表接口：`POST /v2/geo/domain?action=queryDomainsWithConfig`。请求参数全部可选，传 `nil` 或空结构体表示查询全部。
+
+```go
+cli := GetDefaultClient()
+resp, err := cli.QueryDomains(&api.QueryDomainsRequest{
+	SiteId:   1,     // 可选，按站点过滤
+	Keyword:  "",    // 可选，域名关键字模糊查询
+	Status:   "",    // 可选，RUNNING/STOPPED/OVERDUE 等，不区分大小写
+	PageNo:   1,     // 可选，默认 1
+	PageSize: 10,    // 可选，默认 10
+})
+if err != nil {
+	fmt.Printf("err:%+v\n", err)
+	return
+}
+data, _ := json.Marshal(resp)
+fmt.Printf("domains: %s\n", data)
+```
+
+`api.QueryDomainsRequest` 字段说明（全部可选）：
+
+| 字段     | 类型   | 说明                                          |
+| -------- | ------ |---------------------------------------------|
+| SiteId   | Int    | 站点 ID。                                      |
+| Keyword  | String | 域名关键字，模糊查询。                          |
+| Status   | String | 域名状态过滤，不区分大小写，默认 `ALL`。          |
+| PageNo   | Int    | 页码，默认 1。                                 |
+| PageSize | Int    | 每页条数，默认 10。                             |
+
+`api.QueryDomainsResult` 字段说明：
+
+| 字段            | 类型                  | 说明                                   |
+| --------------- | --------------------- |--------------------------------------|
+| SiteDomainCount | Int                   | 当前站点已创建子域名数（传 siteId 时）。 |
+| PlanDomainQuota | Int                   | 当前套餐子域名额度（传 siteId 时）。     |
+| PlanDomainCount | Int                   | 套餐已创建子域名数（传 siteId 时）。     |
+| Domains         | []api.DomainSummary   | 加速域名列表。                          |
+| Total           | Int                   | 响应元素个数。                          |
+| PageNo          | Int                   | 页码。                                 |
+| PageSize        | Int                   | 每页条数。                             |
+
+`api.DomainSummary` 字段说明：
+
+| 字段              | 类型                     | 说明                                     |
+| ----------------- | ------------------------ |----------------------------------------|
+| Domain            | String                   | 加速域名。                                |
+| SiteId            | Int                      | 站点 ID。                                |
+| Cname             | String                   | CNAME 信息。                             |
+| CnameStatus       | *Int                     | CNAME 状态（响应示例中出现，说明表未列）。   |
+| Status            | String                   | 域名状态：`RUNNING`/`STOPPED`/`OVERDUE`。 |
+| BanStatus         | String                   | 封禁状态：`ADMIN`/`CLOSURE`/`USER`。       |
+| HttpsEnabled      | String                   | HTTPS 开关：`ON`/`OFF`。                  |
+| OriginConfig      | []api.DomainOriginConfig | 源站配置，使用负载均衡时为 null。           |
+| OriginInformation | String                   | 源站地址或源站池/负载均衡名称。             |
+| OriginType        | String                   | 源站类型。示例中出现的取值：`IP/DOMAIN`、`BUCKET`、`OriginPool`、`LoadBalance`。 |
+| LoadBalanceId     | String                   | 负载均衡 ID。                             |
+| OriginPoolId      | String                   | 源站池 ID。                               |
+| OriginPools       | *api.DomainOriginPools   | 使用负载均衡时的源站配置。                  |
+| Ipv6Dispatch      | *api.Ipv6Dispatch        | IPv6 配置。                               |
+
+`api.DomainOriginPools` 字段说明（仅域名使用负载均衡作为源站时返回）：
+
+| 字段                 | 类型                         | 说明                                     |
+| -------------------- | ---------------------------- |----------------------------------------|
+| Origins              | []api.DomainOriginPoolItem   | 负载均衡使用的源站池数组，每个元素对应一个源站池。 |
+| DispatchMode         | String                       | 负载均衡策略：`priority_mode`/`weight_mode`。 |
+| SessionMode          | String                       | 会话保持：`IP`/`OFF`。                    |
+| DetectConfig         | *api.DetectConfig            | 健康探测配置。                            |
+| FallbackOriginConfig | []api.DomainOriginConfig     | 兜底源站池的源站配置，未配置时为空数组。      |
+
+`api.DomainOriginPoolItem` 字段说明：
+
+| 字段             | 类型                     | 说明                                            |
+| ---------------- | ------------------------ |-----------------------------------------------|
+| OriginPoolWeight | *Int                     | 源站池权重，仅 `weight_mode`（加权轮询）时存在。   |
+| OriginConfig     | []api.DomainOriginConfig | 该源站池内的源站配置。                            |
+
+## 启用加速域名
+
+启用加速域名接口：`POST /v2/geo/domain?action=start`。可启用单个域名或批量启用，`Domain` 与 `Domains` 至少传一个，同时传时 `Domain` 优先。
+
+```go
+cli := GetDefaultClient()
+
+// 启用单个域名
+resp, err := cli.StartDomain(&api.DomainBatchRequest{
+	Domain: "1.test.com",
+})
+
+// 批量启用域名
+resp, err = cli.StartDomain(&api.DomainBatchRequest{
+	Domains: []string{"1.test.com", "2.test.com"},
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+`api.DomainBatchRequest` 字段说明（启用/停用/删除域名共用）：
+
+| 字段    | 类型     | 是否必选 | 说明                                  |
+| ------- | -------- | -------- |-------------------------------------|
+| Domain  | String   | 否       | 单个加速域名，优先级高于 `Domains`。    |
+| Domains | []String | 否       | 批量操作的域名数组。                   |
+
+两者至少传一个。域名必须属于当前用户且属于 EO 产品，否则返回 403。
+
+返回 `api.DomainOperationResult`：
+
+| 字段    | 类型   | 说明                                             |
+| ------- | ------ |------------------------------------------------|
+| Status  | String | 操作结果：`OK` 全部成功，`PartialFailed` 部分成功。 |
+| Total   | Int    | 需要操作的域名数目。                              |
+| Success | Int    | 操作成功的域名数目。                              |
+| ErrMsg  | String | `Status` 非 `OK` 时的错误详情。                   |
+
+## 停用加速域名
+
+停用加速域名接口：`POST /v2/geo/domain?action=stop`。`Domain` 与 `Domains` 至少传一个，同时传时 `Domain` 优先。
+
+```go
+cli := GetDefaultClient()
+
+// 停用单个域名
+resp, err := cli.StopDomain(&api.DomainBatchRequest{
+	Domain: "1.test.com",
+})
+
+// 批量停用域名
+resp, err = cli.StopDomain(&api.DomainBatchRequest{
+	Domains: []string{"1.test.com", "2.test.com"},
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+域名必须属于当前用户且属于 EO 产品，否则返回 403。
+
+## 删除加速域名
+
+删除加速域名接口：`POST /v2/geo/domain?action=delete`。`Domain` 与 `Domains` 至少传一个，同时传时 `Domain` 优先。
+
+> 注意：删除域名不可恢复，批量删除前请确认域名列表无误。
+
+```go
+cli := GetDefaultClient()
+
+// 删除单个域名
+resp, err := cli.DeleteDomain(&api.DomainBatchRequest{
+	Domain: "1.test.com",
+})
+
+// 批量删除域名
+resp, err = cli.DeleteDomain(&api.DomainBatchRequest{
+	Domains: []string{"1.test.com", "2.test.com"},
+})
+result, _ := json.Marshal(resp)
+fmt.Printf("result: %s\n", result)
+fmt.Printf("err:%+v\n", err)
+```
+
+域名必须属于当前用户且属于 EO 产品，否则返回 403。
+
+
 
