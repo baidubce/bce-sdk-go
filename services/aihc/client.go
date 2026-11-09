@@ -6,6 +6,7 @@ import (
 	"github.com/baidubce/bce-sdk-go/services/aihc/client"
 	"github.com/baidubce/bce-sdk-go/services/aihc/dataset"
 	"github.com/baidubce/bce-sdk-go/services/aihc/dev"
+	"github.com/baidubce/bce-sdk-go/services/aihc/eval"
 	inference "github.com/baidubce/bce-sdk-go/services/aihc/inference/v2"
 	"github.com/baidubce/bce-sdk-go/services/aihc/resource"
 )
@@ -15,6 +16,7 @@ type Interface interface {
 	inference.Interface
 	dataset.Interface
 	dev.Interface
+	eval.Interface
 }
 
 type Client struct {
@@ -22,6 +24,7 @@ type Client struct {
 	inferenceClient *inference.Client
 	devClient       *dev.Client
 	datasetClient   *dataset.Client
+	evalClient      *eval.Client
 	GlobalClient    *client.Client
 }
 
@@ -52,6 +55,12 @@ func NewClient(ak, sk, endpoint string) (Interface, error) {
 	}
 	clientset.datasetClient = datasetClient
 
+	evalClient, err := eval.NewClient(ak, sk, endpoint)
+	if err != nil {
+		return nil, err
+	}
+	clientset.evalClient = evalClient
+
 	return clientset, nil
 }
 
@@ -75,6 +84,12 @@ func NewClientWithSTS(ak, sk, sessionToken, endpoint string) (Interface, error) 
 		return nil, err
 	}
 	clientset.datasetClient = datasetClient
+
+	evalClient, err := eval.NewClientWithSTS(ak, sk, sessionToken, endpoint)
+	if err != nil {
+		return nil, err
+	}
+	clientset.evalClient = evalClient
 
 	return clientset, nil
 }
@@ -273,4 +288,46 @@ func (clientset *Client) DescribeDatasetVersion(datasetId, versionId string) (*v
 
 func (clientset *Client) DescribeDatasetVersions(datasetId string, options *v2.DescribeDatasetVersionsOptions) (*v2.DescribeDatasetVersionsResponse, error) {
 	return clientset.datasetClient.DescribeDatasetVersions(datasetId, options)
+}
+
+// 具身评测
+
+func (clientset *Client) CreateEmbodiedEval(args *eval.CreateEmbodiedEvalArgs) (*eval.CreateEmbodiedEvalResult, error) {
+	return clientset.evalClient.CreateEmbodiedEval(args)
+}
+
+func (clientset *Client) DescribeEmbodiedEvals(args *eval.DescribeEmbodiedEvalsArgs) (*eval.DescribeEmbodiedEvalsResult, error) {
+	return clientset.evalClient.DescribeEmbodiedEvals(args)
+}
+
+func (clientset *Client) DescribeEmbodiedEval(evalId string) (*eval.DescribeEmbodiedEvalDetailResult, error) {
+	return clientset.evalClient.DescribeEmbodiedEval(evalId)
+}
+
+func (clientset *Client) StopEmbodiedEval(args *eval.StopEmbodiedEvalArgs) (*eval.EmbodiedEvalIdResult, error) {
+	return clientset.evalClient.StopEmbodiedEval(args)
+}
+
+func (clientset *Client) DeleteEmbodiedEval(args *eval.DeleteEmbodiedEvalArgs) (*eval.EmbodiedEvalIdResult, error) {
+	return clientset.evalClient.DeleteEmbodiedEval(args)
+}
+
+func (clientset *Client) DescribeEmbodiedEvalResult(evalId string) (*eval.DescribeEmbodiedEvalResultResult, error) {
+	return clientset.evalClient.DescribeEmbodiedEvalResult(evalId)
+}
+
+func (clientset *Client) DescribeEmbodiedEvalVideo(args *eval.DescribeEmbodiedEvalVideoArgs) (*eval.DescribeEmbodiedEvalVideoResult, error) {
+	return clientset.evalClient.DescribeEmbodiedEvalVideo(args)
+}
+
+func (clientset *Client) DescribeEmbodiedEvalModels(args *eval.DescribeEmbodiedEvalModelsArgs) (*eval.DescribeEmbodiedEvalModelsResult, error) {
+	return clientset.evalClient.DescribeEmbodiedEvalModels(args)
+}
+
+func (clientset *Client) DescribeEmbodiedEvalModel(args *eval.DescribeEmbodiedEvalModelArgs) (*eval.DescribeEmbodiedEvalModelResult, error) {
+	return clientset.evalClient.DescribeEmbodiedEvalModel(args)
+}
+
+func (clientset *Client) DescribeEmbodiedEvalBenchmarks(args *eval.DescribeEmbodiedEvalBenchmarksArgs) (*eval.DescribeEmbodiedEvalBenchmarksResult, error) {
+	return clientset.evalClient.DescribeEmbodiedEvalBenchmarks(args)
 }

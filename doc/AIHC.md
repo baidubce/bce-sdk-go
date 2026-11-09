@@ -935,6 +935,90 @@ if err != nil {
 > 注意:
 > - 根据接口文档去填写具体的访问参数，接口链接为[删除实例重建](https://cloud.baidu.com/doc/AIHC/s/Rm2eg9dtl#%E5%88%A0%E9%99%A4%E5%AE%9E%E4%BE%8B%E9%87%8D%E5%BB%BA)
 
+## 具身评测
+具身评测 OpenAPI 的 10 个 Action 在 `services/aihc/eval` 包里，一个方法对应一个 Action，请求为 `POST|GET /?action=<Action>`、请求头 `version: v2`。
+
+### 创建评测任务
+`ClientToken` 是幂等键，只放在 query：每次调用生成一个新值（如 UUID），只在重试同一次调用时复用；同一 token 带不同参数创建会返回 403 `IdempotentParameterMismatch`。不传时 SDK 为本次调用生成一个，SDK 内部重试会复用它；调用方自己重试同一次创建时要传回同一个值。
+
+```go
+// import "github.com/baidubce/bce-sdk-go/services/aihc/eval"
+ak, sk, endpoint := "Your ak", "Your sk", "aihc.bj.baidubce.com"
+
+client, _ := eval.NewClient(ak, sk, endpoint)
+result, err := client.CreateEmbodiedEval(&eval.CreateEmbodiedEvalArgs{
+    ClientToken:    "4a7f3c2e-0b8d-4f5a-9c61-2d3e4f5a6b7c",
+    Name:           "eval-1",
+    ResourcePoolId: "aihc-serverless",
+    QueueId:        "q-1",
+    ModelConfig: &eval.ModelConfig{
+        ModelType:    "public",
+        ModelName:    "openvla_7b",
+        Replicas:     1,
+        MaxBatchSize: 1,
+        Resources:    []eval.Resource{{Name: "baidu.com/a800_80g_cgpu", Quantity: 1}, {Name: "cpu", Quantity: 8}, {Name: "memory", Quantity: 64}},
+    },
+    BenchmarkConfigs: []eval.BenchmarkConfig{{
+        Name:            "libero",
+        SubBench:        "libero_spatial",
+        Resources:       []eval.Resource{{Name: "baidu.com/a800_80g_cgpu", Quantity: 1}, {Name: "cpu", Quantity: 8}, {Name: "memory", Quantity: 32}},
+        ParallelShards:  1,
+        EpisodesPerTask: 10,
+        ModelOverride:   &eval.ModelOverride{ChunkSize: 1},
+    }},
+})
+if err != nil {
+    panic(err)
+}
+fmt.Println(result.EvalId)
+```
+
+> 注意:
+> - 模型与评测集的默认配置可先用 `DescribeEmbodiedEvalModel`、`DescribeEmbodiedEvalBenchmarks` 查出，再改成创建请求
+> - 自定义镜像带私有仓库凭据时，镜像必须在 `ccr-registry.baidubce.com` 上；`ImageConfig` 打印时密码显示为 `******`
+
+### 查询评测任务列表 / 详情
+
+```go
+list, err := client.DescribeEmbodiedEvals(&eval.DescribeEmbodiedEvalsArgs{
+    PageNumber: 1,
+    PageSize:   10,
+    Status:     "Running,Failed",
+})
+detail, err := client.DescribeEmbodiedEval("em-0123456789ab")
+```
+
+### 停止 / 删除评测任务
+
+```go
+_, err = client.StopEmbodiedEval(&eval.StopEmbodiedEvalArgs{EvalId: "em-0123456789ab"})
+_, err = client.DeleteEmbodiedEval(&eval.DeleteEmbodiedEvalArgs{EvalId: "em-0123456789ab"})
+```
+
+### 查询评测结果与回放视频
+
+```go
+res, err := client.DescribeEmbodiedEvalResult("em-0123456789ab") // 结果未产出时 res.Result 为 nil
+video, err := client.DescribeEmbodiedEvalVideo(&eval.DescribeEmbodiedEvalVideoArgs{
+    EvalId:  "em-0123456789ab",
+    VideoId: "v-xxx",
+})
+```
+
+### 查询可评测模型与评测集元数据
+
+```go
+models, err := client.DescribeEmbodiedEvalModels(&eval.DescribeEmbodiedEvalModelsArgs{Source: "public"})
+model, err := client.DescribeEmbodiedEvalModel(&eval.DescribeEmbodiedEvalModelArgs{ModelName: "openvla_7b"})
+benches, err := client.DescribeEmbodiedEvalBenchmarks(&eval.DescribeEmbodiedEvalBenchmarksArgs{
+    ModelName: "openvla_7b",
+    Source:    "public",
+})
+```
+
+> 注意:
+> - 失败时返回 `*bce.BceServiceError`，`StatusCode`、`Code`、`Message`、`RequestId` 与服务端错误体一致
+
 # 错误处理
 
 GO语言以error类型标识错误，百舸服务支持两种错误见下表：
