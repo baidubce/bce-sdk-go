@@ -1,5 +1,12 @@
 发行说明:记录每次SDK更新的说明,最新版本的SDK包含以前所有版本的更新内容。
 ---------------------------------------------------------------------
+【版本:v0.9.279】
+涉及产品：AIHC
+    具身评测创建与详情支持自建推理服务（modelType=selfHosted），bearerToken 与 url query 不进 String() 输出
+    具身评测创建支持指定输出位置 outputConf，详情与结果返回输出位置 outputInfo
+    具身评测创建的 dataSources 支持 type=dataset（id 必填，options.datasetVersion 不填取最新版本）
+涉及产品: BCC
+    修复事件中心返回参数错误
 【版本:v0.9.278】
 涉及产品：AIHC
     新增具身评测 OpenAPI：创建、列表、详情、停止、删除、结果、回放视频、可评测模型、模型元数据、评测集元数据

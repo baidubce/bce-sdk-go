@@ -3053,7 +3053,7 @@ type AuthorizeServerEventReq struct {
 
 type AuthorizeServerEventResp struct {
 	RequestId                                    string   `json:"requestId"`
-	AssociatedPlannedMaintenanceServerEventIds   *string  `json:"associatedPlannedMaintenanceServerEventIds"`
+	AssociatedPlannedMaintenanceServerEventIds   []string `json:"associatedPlannedMaintenanceServerEventIds"`
 	AssociatedUnplannedMaintenanceServerEventIds []string `json:"associatedUnplannedMaintenanceServerEventIds"`
 }
 

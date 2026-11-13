@@ -349,6 +349,186 @@ func TestImageConfigStringMasksPassword(t *testing.T) {
 	}
 }
 
+func TestCreateEmbodiedEvalSelfHosted(t *testing.T) {
+	c, got := newTestClient(t, 200, `{"requestId":"r-1","evalId":"em-1"}`)
+	_, err := c.CreateEmbodiedEval(&CreateEmbodiedEvalArgs{
+		ClientToken: "token-1", Name: "eval-1", ResourcePoolId: "aihc-serverless", QueueId: "q-1",
+		ModelConfig: &ModelConfig{ModelType: "selfHosted", SelfHosted: &SelfHosted{Endpoints: []SelfHostedEndpoint{{
+			Url: "wss://10.0.0.8:8443/infer?route=a", ServerTimeoutSec: 120, BearerToken: "sk-0123456789abcdef"}}}},
+		BenchmarkConfigs: []BenchmarkConfig{{Name: "libero", SubBench: "libero_spatial", ParallelShards: 1, EpisodesPerTask: 10}},
+	})
+	if err != nil {
+		t.Fatalf("CreateEmbodiedEval failed: %v", err)
+	}
+	mc := got.body["modelConfig"].(map[string]interface{})
+	ep := mc["selfHosted"].(map[string]interface{})["endpoints"].([]interface{})[0].(map[string]interface{})
+	if mc["modelType"] != "selfHosted" || ep["url"] != "wss://10.0.0.8:8443/infer?route=a" ||
+		ep["serverTimeoutSec"] != float64(120) || ep["bearerToken"] != "sk-0123456789abcdef" {
+		t.Errorf("unexpected selfHosted body: %v", mc)
+	}
+	// 不传的超时按服务端默认值；hasBearerToken 只在详情里出现，不能下发
+	for _, k := range []string{"attachTimeoutSec", "hasBearerToken"} {
+		if _, ok := ep[k]; ok {
+			t.Errorf("%s should be omitted, endpoint=%v", k, ep)
+		}
+	}
+	// selfHosted 不能带模型侧字段，零值的 replicas/maxBatchSize/resources 服务端按未传处理
+	if mc["replicas"] != float64(0) || mc["maxBatchSize"] != float64(0) || mc["resources"] != nil {
+		t.Errorf("model fields should stay zero, got %v", mc)
+	}
+	if _, ok := mc["modelName"]; ok {
+		t.Errorf("modelName should be omitted, got %v", mc)
+	}
+}
+
+func TestDescribeEmbodiedEvalSelfHosted(t *testing.T) {
+	c, _ := newTestClient(t, 200, `{"requestId":"r-1","evalId":"em-1","modelConfig":{"modelType":"selfHosted","modelName":"selfHosted",
+		"selfHosted":{"endpoints":[{"url":"wss://10.0.0.8:8443/infer?***","serverTimeoutSec":60,"attachTimeoutSec":300,"hasBearerToken":true}]}}}`)
+	res, err := c.DescribeEmbodiedEval("em-1")
+	if err != nil {
+		t.Fatalf("DescribeEmbodiedEval failed: %v", err)
+	}
+	ep := res.ModelConfig.SelfHosted.Endpoints[0]
+	if !ep.HasBearerToken || ep.BearerToken != "" || ep.AttachTimeoutSec != 300 || ep.Url != "wss://10.0.0.8:8443/infer?***" {
+		t.Errorf("unexpected endpoint: %+v", ep)
+	}
+}
+
+func TestSelfHostedEndpointStringMasksSecrets(t *testing.T) {
+	ep := SelfHostedEndpoint{Url: "wss://user:pw@10.0.0.8:8443/infer?sig=url-secret#frag", BearerToken: "sk-secret-token"}
+	sh := SelfHosted{Endpoints: []SelfHostedEndpoint{ep}}
+	for _, s := range []string{fmt.Sprintf("%v", ep), fmt.Sprintf("%+v", &ep), fmt.Sprintf("%+v", sh)} {
+		for _, secret := range []string{"sk-secret-token", "url-secret", "pw@", "frag"} {
+			if strings.Contains(s, secret) {
+				t.Errorf("String() leaks %q: %s", secret, s)
+			}
+		}
+		if !strings.Contains(s, "wss://10.0.0.8:8443/infer?***") || !strings.Contains(s, "******") {
+			t.Errorf("String() should keep host/path and show mask: %s", s)
+		}
+	}
+	if s := fmt.Sprint(SelfHostedEndpoint{Url: "ws://h:1/p\x7f"}); !strings.Contains(s, "<invalid url>") {
+		t.Errorf("invalid url must not be echoed: %s", s)
+	}
+	// JSON 序列化仍要带上 token 和完整 url，创建请求依赖它
+	b, _ := json.Marshal(ep)
+	if !strings.Contains(string(b), "sk-secret-token") || !strings.Contains(string(b), "sig=url-secret") {
+		t.Errorf("json should keep token and url: %s", string(b))
+	}
+}
+
+// outputConf 不传时不下发；传了原样下发，空的 mountPath、subdir 不下发
+func TestCreateEmbodiedEvalOutputConf(t *testing.T) {
+	cases := []struct {
+		name string
+		conf *OutputConf
+		want map[string]interface{} // nil 表示 body 里不能有 outputConf
+	}{
+		{name: "nil", conf: nil, want: nil},
+		// 非 nil 原样下发，空 mode 由服务端按 default 处理，SDK 不归一
+		{name: "empty", conf: &OutputConf{}, want: map[string]interface{}{"mode": ""}},
+		{name: "default", conf: &OutputConf{Mode: "default"}, want: map[string]interface{}{"mode": "default"}},
+		{name: "custom", conf: &OutputConf{Mode: "custom", MountPath: "/data/lqy", Subdir: "run/1"},
+			want: map[string]interface{}{"mode": "custom", "mountPath": "/data/lqy", "subdir": "run/1"}},
+	}
+	for _, tc := range cases {
+		c, got := newTestClient(t, 200, `{"requestId":"r-1","evalId":"em-1"}`)
+		_, err := c.CreateEmbodiedEval(&CreateEmbodiedEvalArgs{
+			ClientToken: "token-1", Name: "eval-1",
+			DataSources: []DataSource{{Type: "bos", SourcePath: "bucket/prefix", MountPath: "/data/lqy"}},
+			OutputConf:  tc.conf,
+		})
+		if err != nil {
+			t.Fatalf("%s: CreateEmbodiedEval failed: %v", tc.name, err)
+		}
+		raw, ok := got.body["outputConf"]
+		if tc.want == nil {
+			if ok {
+				t.Errorf("%s: outputConf should be omitted, body=%v", tc.name, got.body)
+			}
+			continue
+		}
+		oc, isMap := raw.(map[string]interface{})
+		if !ok || !isMap {
+			t.Errorf("%s: outputConf = %v, want object %v", tc.name, raw, tc.want)
+			continue
+		}
+		if len(oc) != len(tc.want) {
+			t.Errorf("%s: outputConf = %v, want %v", tc.name, oc, tc.want)
+		}
+		for k, v := range tc.want {
+			if oc[k] != v {
+				t.Errorf("%s: outputConf.%s = %v, want %v", tc.name, k, oc[k], v)
+			}
+		}
+	}
+}
+
+// 详情：有 outputInfo 时逐字段解析，缺省时为 nil
+func TestDescribeEmbodiedEvalOutputInfo(t *testing.T) {
+	c, _ := newTestClient(t, 200, `{"requestId":"r-1","evalId":"em-1",
+		"outputInfo":{"outputConf":{"mode":"custom","mountPath":"/data/lqy","subdir":"run/1"},"storageType":"dataset",
+		"resultDir":"/data/lqy/run/1/em-1/result","videoDir":"/data/lqy/run/1/em-1/videos",
+		"storageLocation":"bos://user-bucket/datasets/ds-abc/v2/run/1/em-1/"}}`)
+	res, err := c.DescribeEmbodiedEval("em-1")
+	if err != nil {
+		t.Fatalf("DescribeEmbodiedEval failed: %v", err)
+	}
+	oi := res.OutputInfo
+	if oi == nil || oi.OutputConf == nil {
+		t.Fatalf("outputInfo not parsed: %+v", res)
+	}
+	want := OutputInfo{StorageType: "dataset", ResultDir: "/data/lqy/run/1/em-1/result", VideoDir: "/data/lqy/run/1/em-1/videos",
+		StorageLocation: "bos://user-bucket/datasets/ds-abc/v2/run/1/em-1/"}
+	if oi.StorageType != want.StorageType || oi.ResultDir != want.ResultDir || oi.VideoDir != want.VideoDir ||
+		oi.StorageLocation != want.StorageLocation {
+		t.Errorf("outputInfo = %+v, want %+v", *oi, want)
+	}
+	if *oi.OutputConf != (OutputConf{Mode: "custom", MountPath: "/data/lqy", Subdir: "run/1"}) {
+		t.Errorf("outputInfo.outputConf = %+v", *oi.OutputConf)
+	}
+
+	c, _ = newTestClient(t, 200, `{"requestId":"r-1","evalId":"em-1","status":"Running"}`)
+	res, err = c.DescribeEmbodiedEval("em-1")
+	if err != nil {
+		t.Fatalf("DescribeEmbodiedEval failed: %v", err)
+	}
+	if res.OutputInfo != nil {
+		t.Errorf("outputInfo omitted by server should be nil, got %+v", *res.OutputInfo)
+	}
+}
+
+// 结果：老任务形态（默认位置、不含 evalId）能解析，缺省时为 nil
+func TestDescribeEmbodiedEvalResultOutputInfo(t *testing.T) {
+	c, _ := newTestClient(t, 200, `{"requestId":"r-1","evalId":"em-1","result":{"score":1},
+		"outputInfo":{"outputConf":{"mode":"default"},"storageType":"default","resultDir":"/mnt/aihc-eval-result",
+		"videoDir":"/mnt/aihc-eval-result/em-1/videos","storageLocation":"bos://aihc-eval-acc-1-bj/results/"}}`)
+	res, err := c.DescribeEmbodiedEvalResult("em-1")
+	if err != nil {
+		t.Fatalf("DescribeEmbodiedEvalResult failed: %v", err)
+	}
+	oi := res.OutputInfo
+	if oi == nil || oi.OutputConf == nil {
+		t.Fatalf("outputInfo not parsed: %+v", res)
+	}
+	if *oi.OutputConf != (OutputConf{Mode: "default"}) || oi.StorageType != "default" || oi.ResultDir != "/mnt/aihc-eval-result" ||
+		oi.VideoDir != "/mnt/aihc-eval-result/em-1/videos" || oi.StorageLocation != "bos://aihc-eval-acc-1-bj/results/" {
+		t.Errorf("unexpected outputInfo: %+v conf=%+v", *oi, *oi.OutputConf)
+	}
+	if m, ok := res.Result.(map[string]interface{}); !ok || m["score"] != float64(1) {
+		t.Errorf("result = %v, want object", res.Result)
+	}
+
+	c, _ = newTestClient(t, 200, `{"requestId":"r-1","evalId":"em-1","result":null}`)
+	res, err = c.DescribeEmbodiedEvalResult("em-1")
+	if err != nil {
+		t.Fatalf("DescribeEmbodiedEvalResult failed: %v", err)
+	}
+	if res.OutputInfo != nil {
+		t.Errorf("outputInfo omitted by server should be nil, got %+v", *res.OutputInfo)
+	}
+}
+
 func TestNewClient(t *testing.T) {
 	if _, err := NewClient("ak", "sk", ""); err != nil {
 		t.Errorf("empty endpoint should use default, got %v", err)

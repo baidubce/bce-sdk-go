@@ -1,12 +1,17 @@
 package eval
 
+import (
+	"fmt"
+	"net/url"
+)
+
 // Resource 资源：name 取 cpu、memory、sharedMemory 或卡型（如 baidu.com/a800_80g_cgpu），memory、sharedMemory 单位 GB
 type Resource struct {
 	Name     string  `json:"name"`
 	Quantity float64 `json:"quantity"`
 }
 
-// DataSource 数据源挂载，首版创建只支持 type=bos；平台挂载由后端自动补，不用传
+// DataSource 数据源挂载，创建只收 type=bos、dataset（dataset 时 id 必填，版本放 options.datasetVersion）；平台挂载由后端自动补，不用传
 type DataSource struct {
 	Type       string             `json:"type"`
 	Name       string             `json:"name,omitempty"`
@@ -31,15 +36,64 @@ type DataSourceOptions struct {
 
 // ModelConfig 模型服务配置，创建请求、详情回显、模型元数据的 defaultModelConfig 共用
 type ModelConfig struct {
-	// ModelType public / customCKPT / customImage
+	// ModelType public / customCKPT / customImage / selfHosted
 	ModelType string `json:"modelType"`
-	// ModelName public、customCKPT 必填；customImage 必须为空
-	ModelName    string       `json:"modelName,omitempty"`
-	CkptPath     string       `json:"ckptPath,omitempty"`
+	// ModelName public、customCKPT 必填；customImage 必须为空；selfHosted 为空或 selfHosted
+	ModelName string `json:"modelName,omitempty"`
+	CkptPath  string `json:"ckptPath,omitempty"`
+	// Replicas、MaxBatchSize、Resources selfHosted 不能传（保持零值）
 	Replicas     int32        `json:"replicas"`
 	MaxBatchSize int32        `json:"maxBatchSize"`
 	Resources    []Resource   `json:"resources"`
 	CustomImage  *CustomImage `json:"customImage,omitempty"`
+	// SelfHosted modelType 为 selfHosted 时必填，其他类型不能传
+	SelfHosted *SelfHosted `json:"selfHosted,omitempty"`
+}
+
+// SelfHosted 自建推理服务：平台不拉起模型服务，评测节点直连 endpoints 里的地址
+type SelfHosted struct {
+	// Endpoints 本期只支持 1 个
+	Endpoints []SelfHostedEndpoint `json:"endpoints"`
+}
+
+// SelfHostedEndpoint 自建推理服务地址
+type SelfHostedEndpoint struct {
+	// Url ws:// 或 wss://；详情里 query 整段换成 ?***，拿详情重建时要重新传完整 url
+	Url string `json:"url"`
+	// ServerTimeoutSec 单帧推理超时 1～900 秒，0 按 60；详情里是生效值
+	ServerTimeoutSec int32 `json:"serverTimeoutSec,omitempty"`
+	// AttachTimeoutSec 等待服务就绪的总时长 30～900 秒，0 按 300；详情里是生效值
+	AttachTimeoutSec int32 `json:"attachTimeoutSec,omitempty"`
+	// BearerToken 建连时放进 Authorization: Bearer <token>，不要带 Bearer 前缀；只写不读，详情里不返回
+	BearerToken string `json:"bearerToken,omitempty"`
+	// HasBearerToken 只在详情里返回：创建时带了 bearerToken。为 true 时拿详情重建要重新传 BearerToken
+	HasBearerToken bool `json:"hasBearerToken,omitempty"`
+}
+
+// String 不输出 bearerToken 和 url query，避免凭据经 %v / %+v 打进日志
+func (e SelfHostedEndpoint) String() string {
+	token := ""
+	if e.BearerToken != "" {
+		token = "******"
+	}
+	return fmt.Sprintf("{Url:%s ServerTimeoutSec:%d AttachTimeoutSec:%d BearerToken:%s HasBearerToken:%t}",
+		maskURLQuery(e.Url), e.ServerTimeoutSec, e.AttachTimeoutSec, token, e.HasBearerToken)
+}
+
+// maskURLQuery 把 query 整段换成 ?***、去掉 userinfo 和 fragment；解析失败不回显原串
+func maskURLQuery(raw string) string {
+	u, err := url.Parse(raw)
+	if err != nil {
+		return "<invalid url>"
+	}
+	hasQuery := u.RawQuery != "" || u.ForceQuery
+	// 流水线是 Go 1.13，没有 RawFragment；只清 Fragment 时 String() 不再输出 #fragment
+	u.User, u.RawQuery, u.ForceQuery, u.Fragment = nil, "", false, ""
+	s := u.String()
+	if hasQuery {
+		s += "?***"
+	}
+	return s
 }
 
 // CustomImage 模型服务自定义镜像，modelType 为 customImage 时必填
@@ -105,6 +159,40 @@ type CreateEmbodiedEvalArgs struct {
 	DataSources      []DataSource      `json:"dataSources,omitempty"`
 	ModelConfig      *ModelConfig      `json:"modelConfig"`
 	BenchmarkConfigs []BenchmarkConfig `json:"benchmarkConfigs"`
+	// OutputConf 评测输出位置；nil 不下发，写默认结果桶
+	OutputConf *OutputConf `json:"outputConf,omitempty"`
+}
+
+// OutputConf 评测输出位置，创建请求与 OutputInfo.OutputConf 共用。SDK 不校验，规则以服务端为准
+type OutputConf struct {
+	// Mode 空或 default：默认结果桶；custom：写到本次评测 DataSources 里的一个用户挂载
+	Mode string `json:"mode"`
+	// MountPath custom 必填，等于 DataSources 里某个挂载的 mountPath（数据集没填 mountPath 时按版本默认挂载路径比对），
+	// 不能是平台挂载点。只能命中非只读的 bos，或底层为 BOS、文件夹格式、当前用户可写的 dataset；mode 为空或 default 时不能传。
+	// 输出根 <mountPath>[/<subdir>] 不能等于或落在其他挂载（含平台挂载、/mnt/aihc-eval-result）之下；
+	// 结果文件的 <桶>/<前缀>/<evalId>/result/... 不能超过 1024 字节
+	MountPath string `json:"mountPath,omitempty"`
+	// Subdir 选填，仅 custom：挂载内的相对子目录，只含字母、数字和 . _ - /，不以 / 开头或结尾，path.Clean 后不变，
+	// 不含 ..，不能是 .，不超过 128 字节；mode 为空或 default 时不能传
+	Subdir string `json:"subdir,omitempty"`
+}
+
+// OutputInfo 服务端解析出的输出位置，详情和结果接口回显。
+// 服务端取不出输出配置记录（记录损坏、mode 未知或自定义记录不完整）时不返回，此时为 nil，其余字段照常返回。
+// 老任务（输出位置功能上线前创建，没有输出配置记录）按默认位置回显，结果文件直接在输出根下：
+// ResultDir 是 /mnt/aihc-eval-result，StorageLocation 是 bos://<默认桶>/results/，都不含 evalId
+type OutputInfo struct {
+	// OutputConf 创建时的 outputConf，可直接填回 CreateEmbodiedEvalArgs.OutputConf。
+	// 没传、mode 为空和老任务都回显 Mode=default；MountPath、Subdir 为空时省略
+	OutputConf *OutputConf `json:"outputConf,omitempty"`
+	// StorageType default（默认结果桶，含老任务）/ bos / dataset
+	StorageType string `json:"storageType"`
+	// ResultDir 结果文件目录的 Pod 内路径，新任务是 <输出根>/<evalId>/result
+	ResultDir string `json:"resultDir"`
+	// VideoDir 视频目录的 Pod 内路径，<输出根>/<evalId>/videos
+	VideoDir string `json:"videoDir"`
+	// StorageLocation 输出在 BOS 上的位置，新任务是 bos://<桶>/<前缀>/<evalId>/，前缀为空时 bos://<桶>/<evalId>/
+	StorageLocation string `json:"storageLocation"`
 }
 
 // CreateEmbodiedEvalResult 创建评测任务的返回
@@ -187,6 +275,8 @@ type DescribeEmbodiedEvalDetailResult struct {
 	DataSources      []DataSource      `json:"dataSources"`
 	ModelConfig      *ModelConfig      `json:"modelConfig"`
 	BenchmarkConfigs []BenchmarkConfig `json:"benchmarkConfigs"`
+	// OutputInfo 输出位置，取不出时为 nil。输出配置不在顶层回显，复制任务时把 OutputInfo.OutputConf 填到创建请求
+	OutputInfo *OutputInfo `json:"outputInfo,omitempty"`
 }
 
 // StopEmbodiedEvalArgs 停止评测任务的参数
@@ -212,6 +302,8 @@ type DescribeEmbodiedEvalResultResult struct {
 	RequestId string      `json:"requestId"`
 	EvalId    string      `json:"evalId"`
 	Result    interface{} `json:"result"`
+	// OutputInfo 输出位置，语义同 DescribeEmbodiedEvalDetailResult.OutputInfo
+	OutputInfo *OutputInfo `json:"outputInfo,omitempty"`
 }
 
 // DescribeEmbodiedEvalVideoArgs 查询回放视频地址的参数，两个字段都必填
